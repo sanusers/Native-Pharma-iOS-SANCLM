@@ -172,7 +172,7 @@ class LeaveApplicationVC: UIViewController {
         
         let singleSelectionVC = UIStoryboard.singleSelectionVC
         singleSelectionVC.searchTitle = "Select Leave Type"
-        singleSelectionVC.selectionData = searchData
+        singleSelectionVC.selectionData = leaveType
         singleSelectionVC.didSelectCompletion { selectedIndex in
             self.selectedLeaveType = leaveType[selectedIndex]
             

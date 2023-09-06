@@ -140,7 +140,7 @@ class MasterSyncVC : UIViewController {
         selectionData = headquarter.map{SelectionData(name: $0.name ?? "",id: $0.id ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
-        selectionVC.selectionData = selectionData
+        selectionVC.selectionData = headquarter
         selectionVC.didSelectCompletion{ (index) in
             self.selectedHeadquarter = headquarter[index]
         }

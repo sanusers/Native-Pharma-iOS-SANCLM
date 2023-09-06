@@ -953,8 +953,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "759"
-            endingLineNumber = "759"
+            startingLineNumber = "753"
+            endingLineNumber = "753"
             landmarkName = "swipeAction(_:)"
             landmarkType = "7">
             <Locations>
@@ -1016,8 +1016,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "750"
-            endingLineNumber = "750"
+            startingLineNumber = "744"
+            endingLineNumber = "744"
             landmarkName = "swipeAction(_:)"
             landmarkType = "7">
             <Locations>
@@ -1079,8 +1079,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "912"
-            endingLineNumber = "912"
+            startingLineNumber = "906"
+            endingLineNumber = "906"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
             <Locations>
@@ -1157,8 +1157,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "909"
-            endingLineNumber = "909"
+            startingLineNumber = "903"
+            endingLineNumber = "903"
             landmarkName = "MainVC"
             landmarkType = "21">
             <Locations>
@@ -1235,8 +1235,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "911"
-            endingLineNumber = "911"
+            startingLineNumber = "905"
+            endingLineNumber = "905"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1251,8 +1251,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "913"
-            endingLineNumber = "913"
+            startingLineNumber = "907"
+            endingLineNumber = "907"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1267,8 +1267,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "932"
-            endingLineNumber = "932"
+            startingLineNumber = "926"
+            endingLineNumber = "926"
             landmarkName = "tableView(_:numberOfRowsInSection:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1665,8 +1665,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "521"
-            endingLineNumber = "521"
+            startingLineNumber = "515"
+            endingLineNumber = "515"
             landmarkName = "fetchHome()"
             landmarkType = "7">
          </BreakpointContent>

@@ -8,6 +8,7 @@
 import Foundation
 
 
+
 class RcpaListViewModel {
     
     private var rcpaListViewModel = [RcpaViewModel]()
@@ -21,13 +22,15 @@ class RcpaListViewModel {
         return rcpaListViewModel.count
     }
     
-    
     func removeAtIndex(_ index : Int) {
         rcpaListViewModel.remove(at: index)
     }
     
     
+    
 }
+
+
 
 class RcpaViewModel {
     
@@ -36,8 +39,6 @@ class RcpaViewModel {
     init(rcpaHeaderData: RcpaHeaderData) {
         self.rcpaHeaderData = rcpaHeaderData
     }
-    
-    
     
 }
 
@@ -53,8 +54,6 @@ struct RcpaHeaderData {
     var total : String
     
     var rate : String
-    
-    
     
     
 }

@@ -19,8 +19,8 @@ class SingleSelectionVC : UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var searchTitle : String!
-    var selectionData = [SelectionData]()
-    var originalData = [SelectionData]()
+    var selectionData = [AnyObject]()
+    var originalData = [AnyObject]()
   
     var completion : SelectionCallBack?
     
@@ -61,6 +61,8 @@ extension SingleSelectionVC : tableViewProtocols {
         let lists = self.selectionData[indexPath.row]
         
         if let index = self.originalData.firstIndex(where: { (list) -> Bool in
+            
+            print(self.originalData)
             return list.id == lists.id
         }){
             if let completion = self.completion {
@@ -86,7 +88,7 @@ class SingleSelectionCell : UITableViewCell {
 }
 
  
-struct SelectionData {
-    var name : String!
-    var id : String!
-}
+//struct SelectionData {
+//    var name : String!
+//    var id : String!
+//}

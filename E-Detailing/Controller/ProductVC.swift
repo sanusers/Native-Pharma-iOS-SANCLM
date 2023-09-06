@@ -248,14 +248,11 @@ class ProductVC : UIViewController {
     }
     
     
-    
-    
-    
-    
-    
     @IBAction func closeRcpaAction(_ sender: UIButton) {
         
-        
+        UIView.animate(withDuration: 1.5) {
+            self.viewRcpa.isHidden = true
+        }
         
     }
     
@@ -290,7 +287,6 @@ class ProductVC : UIViewController {
         let inputValue = self.inputSelectedListViewModel.inputData()
         let jointWorkValue = self.jointWorkSelectedListViewModel.getJointWorkData()
         let additionalCallValue = self.addittionalCallListViewModel.getAdditionalCallData()
-        
         
         
         
@@ -411,7 +407,7 @@ class ProductVC : UIViewController {
 //                        }
                         
                     }catch {
-                        
+                        print(error)
                     }
                 case .failure(let error):
                 
@@ -461,6 +457,10 @@ class ProductVC : UIViewController {
     
     @IBAction func addRcpaAction(_ sender: UIButton) {
         
+        UIView.animate(withDuration: 1.5) {
+            
+            self.viewRcpa.isHidden = false
+        }
         
     }
     
@@ -470,13 +470,12 @@ class ProductVC : UIViewController {
         
         let chemists = DBManager.shared.getChemist()
         
-        
         var data = [SelectionData]()
         
         data = chemists.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
-        selectionVC.selectionData = data
+        selectionVC.selectionData = chemists
         selectionVC.didSelectCompletion { selectedIndex in
             self.lblChemistName.text = chemists[selectedIndex].name
             
@@ -497,7 +496,7 @@ class ProductVC : UIViewController {
         data = products.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
-        selectionVC.selectionData = data
+        selectionVC.selectionData = products
         selectionVC.didSelectCompletion { selectedIndex in
             self.lblProductName.text = products[selectedIndex].name
             
@@ -507,14 +506,10 @@ class ProductVC : UIViewController {
         }
         self.present(selectionVC, animated: true)
         
-        
-        
     }
     
     
     @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
-        
-        
         
         self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "")))
         
@@ -573,7 +568,6 @@ class ProductVC : UIViewController {
         }
     }
     
-    
 }
 
 
@@ -628,7 +622,8 @@ extension ProductVC : tableViewProtocols {
                 return cell
             case self.rcpaCompetitorTableView:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaTableViewCell", for: indexPath) as! RcpaTableViewCell
-            
+            cell.btnCompetitorCompany.addTarget(self, action: #selector(rcpaCompetitorCompany(_:)), for: .touchUpInside)
+            cell.btnCompetitorBrand.addTarget(self, action: #selector(rcpaCompetitorBrand(_:)), for: .touchUpInside)
                 return cell
             default :
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell", for: indexPath) as! ProductNameTableViewCell
@@ -737,6 +732,25 @@ extension ProductVC : tableViewProtocols {
             default:
                 return 70
         }
+    }
+    
+    
+    @objc func rcpaCompetitorCompany(_ sender : UIButton) {
+        let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.rcpaCompetitorTableView)
+        guard let indexPath = self.inputSampleTableView.indexPathForRow(at: buttonPosition) else{
+            return
+        }
+        
+        
+    }
+    
+    @objc func rcpaCompetitorBrand(_ sender : UIButton) {
+        let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.rcpaCompetitorTableView)
+        guard let indexPath = self.inputSampleTableView.indexPathForRow(at: buttonPosition) else{
+            return
+        }
+        
+        
     }
     
     @objc func deleteInput(_ sender : UIButton){

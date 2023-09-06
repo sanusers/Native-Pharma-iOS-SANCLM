@@ -615,7 +615,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
                 data = workType.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
                 
                 let selectionVC = UIStoryboard.singleSelectionVC
-                selectionVC.selectionData = data
+                selectionVC.selectionData = workType
                 self.present(selectionVC, animated: true)
             }
             
@@ -628,7 +628,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
                 data = territory.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
                 
                 let selectionVC = UIStoryboard.singleSelectionVC
-                selectionVC.selectionData = data
+                selectionVC.selectionData = territory
                 self.present(selectionVC, animated: true)
             }
         }

@@ -341,12 +341,10 @@ class MainVC : UIViewController {
     @IBAction func workTypeAction(_ sender: UIButton) {
         
         let workType = DBManager.shared.getWorkType()
-        var data = [SelectionData]()
         
-        data = workType.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
-        selectionVC.selectionData = data
+        selectionVC.selectionData = workType
         selectionVC.didSelectCompletion { selectedIndex in
             self.selectedWorktype = workType[selectedIndex]
         }
@@ -358,12 +356,10 @@ class MainVC : UIViewController {
     
     @IBAction func headquarterAction(_ sender: UIButton) {
         let hq = DBManager.shared.getSubordinate()
-        var data = [SelectionData]()
         
-        data = hq.map{SelectionData(name: $0.name ?? "",id: $0.id ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
-        selectionVC.selectionData = data
+        selectionVC.selectionData = hq
         selectionVC.didSelectCompletion { selectedIndex in
             self.selectedHeadquarter = hq[selectedIndex]
         }
@@ -375,12 +371,10 @@ class MainVC : UIViewController {
     @IBAction func clusterAction(_ sender: UIButton) {
         
         let territory = DBManager.shared.getTerritory()
-        var data = [SelectionData]()
         
-        data = territory.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
-        selectionVC.selectionData = data
+        selectionVC.selectionData = territory
         selectionVC.didSelectCompletion { selectedIndex in
             self.selectedCluster = territory[selectedIndex]
         }
