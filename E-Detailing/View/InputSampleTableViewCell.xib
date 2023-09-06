@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Satoshi-Bold.otf">
+            <string>Satoshi-Bold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="73" id="HqK-RK-99T" customClass="InputSampleTableViewCell" customModule="E_Detailing" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HqK-RK-99T" id="rVk-hn-zko">
+                <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gyE-dv-puG">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q4h-Ic-qqr">
+                                <rect key="frame" x="50" y="17.5" width="118" height="22.5"/>
+                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsb-pm-TNr">
+                                <rect key="frame" x="323" y="8.5" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="Zfc-B6-E33"/>
+                                    <constraint firstAttribute="height" constant="40" id="rtZ-ic-EuO"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Button" image="DeleteIcon"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wcm-wB-aAL">
+                                <rect key="frame" x="20" y="62" width="353" height="1"/>
+                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="f1F-oP-CVc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0aV-Wi-Nbw">
+                                <rect key="frame" x="183" y="11.5" width="78.5" height="34"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="0aV-Wi-Nbw" firstAttribute="leading" secondItem="q4h-Ic-qqr" secondAttribute="trailing" constant="15" id="1f9-CN-6eb"/>
+                            <constraint firstItem="q4h-Ic-qqr" firstAttribute="width" secondItem="gyE-dv-puG" secondAttribute="width" multiplier="0.3" id="Eft-zu-UMy"/>
+                            <constraint firstItem="q4h-Ic-qqr" firstAttribute="leading" secondItem="gyE-dv-puG" secondAttribute="leading" constant="50" id="IhK-xj-pwD"/>
+                            <constraint firstItem="0aV-Wi-Nbw" firstAttribute="centerY" secondItem="gyE-dv-puG" secondAttribute="centerY" constant="-8" id="JCf-vt-Rw1"/>
+                            <constraint firstItem="0aV-Wi-Nbw" firstAttribute="width" secondItem="gyE-dv-puG" secondAttribute="width" multiplier="0.2" id="JR9-BX-SMh"/>
+                            <constraint firstItem="Wcm-wB-aAL" firstAttribute="leading" secondItem="gyE-dv-puG" secondAttribute="leading" constant="20" id="XNi-W5-HdB"/>
+                            <constraint firstAttribute="bottom" secondItem="Wcm-wB-aAL" secondAttribute="bottom" constant="10" id="ZyT-Oq-0TI"/>
+                            <constraint firstItem="q4h-Ic-qqr" firstAttribute="centerY" secondItem="gyE-dv-puG" secondAttribute="centerY" constant="-8" id="jt0-nk-Q9e"/>
+                            <constraint firstAttribute="trailing" secondItem="fsb-pm-TNr" secondAttribute="trailing" constant="30" id="sPo-4b-5th"/>
+                            <constraint firstItem="fsb-pm-TNr" firstAttribute="centerY" secondItem="gyE-dv-puG" secondAttribute="centerY" constant="-8" id="tRy-cR-7fa"/>
+                            <constraint firstAttribute="trailing" secondItem="Wcm-wB-aAL" secondAttribute="trailing" constant="20" id="zXj-RS-UWj"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="gyE-dv-puG" firstAttribute="top" secondItem="rVk-hn-zko" secondAttribute="top" id="Qq0-9L-vab"/>
+                    <constraint firstAttribute="trailing" secondItem="gyE-dv-puG" secondAttribute="trailing" id="d2Q-7A-YQF"/>
+                    <constraint firstItem="gyE-dv-puG" firstAttribute="leading" secondItem="rVk-hn-zko" secondAttribute="leading" id="joy-vX-7b9"/>
+                    <constraint firstAttribute="bottom" secondItem="gyE-dv-puG" secondAttribute="bottom" id="nwq-l8-vOe"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="btnDelete" destination="fsb-pm-TNr" id="MlM-vw-mmF"/>
+                <outlet property="lblName" destination="q4h-Ic-qqr" id="1nS-NI-eVF"/>
+                <outlet property="txtSampleQty" destination="0aV-Wi-Nbw" id="LiF-ih-j3U"/>
+            </connections>
+            <point key="canvasLocation" x="-2.5609756097560976" y="-88.728813559322035"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="DeleteIcon" width="40" height="40"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

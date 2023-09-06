@@ -1,0 +1,54 @@
+PODS:
+  - Alamofire (5.6.2)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
+  - ExpyTableView (1.2.1)
+  - FSCalendar (2.8.2)
+  - GoogleMaps (6.2.1):
+    - GoogleMaps/Maps (= 6.2.1)
+  - GoogleMaps/Base (6.2.1)
+  - GoogleMaps/Maps (6.2.1):
+    - GoogleMaps/Base
+  - ReachabilitySwift (5.0.0)
+  - SVProgressHUD (2.2.5)
+  - Toast-Swift (5.0.1)
+  - UICircularProgressRing (8.0.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - Charts
+  - ExpyTableView
+  - FSCalendar
+  - GoogleMaps
+  - ReachabilitySwift
+  - SVProgressHUD
+  - Toast-Swift
+  - UICircularProgressRing
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - Charts
+    - ExpyTableView
+    - FSCalendar
+    - GoogleMaps
+    - ReachabilitySwift
+    - SVProgressHUD
+    - Toast-Swift
+    - UICircularProgressRing
+
+SPEC CHECKSUMS:
+  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
+  ExpyTableView: 19cf224c2ff04b1ec215ec52bc4ba6f81fa809ed
+  FSCalendar: e6a2eb9c571bf0719ed797ef807e08426753c241
+  GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+  UICircularProgressRing: 19927375b2b21b5fa5fd9582f15ccdef9659da16
+
+PODFILE CHECKSUM: 6e085424ac8fb04502fd7f4be0f91c1ad4e5e89d
+
+COCOAPODS: 1.12.1
