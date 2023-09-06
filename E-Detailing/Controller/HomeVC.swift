@@ -610,9 +610,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
             if indexPath.section == 0 {
                
                 let workType = DBManager.shared.getWorkType()
-                var data = [SelectionData]()
                 
-                data = workType.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
                 
                 let selectionVC = UIStoryboard.singleSelectionVC
                 selectionVC.selectionData = workType
@@ -623,9 +621,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
             if indexPath.section == 2 {
                
                 let territory = DBManager.shared.getTerritory()
-                var data = [SelectionData]()
                 
-                data = territory.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
                 
                 let selectionVC = UIStoryboard.singleSelectionVC
                 selectionVC.selectionData = territory

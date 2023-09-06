@@ -470,9 +470,6 @@ class ProductVC : UIViewController {
         
         let chemists = DBManager.shared.getChemist()
         
-        var data = [SelectionData]()
-        
-        data = chemists.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
         selectionVC.selectionData = chemists
@@ -491,9 +488,6 @@ class ProductVC : UIViewController {
         
         let products = DBManager.shared.getProduct()
         
-        var data = [SelectionData]()
-        
-        data = products.map{SelectionData(name: $0.name ?? "",id: $0.code ?? "")}
         
         let selectionVC = UIStoryboard.singleSelectionVC
         selectionVC.selectionData = products

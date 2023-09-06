@@ -167,8 +167,8 @@ class LeaveApplicationVC: UIViewController {
         
         let leaveType = DBManager.shared.getLeaveType()
         
-        var searchData = [SelectionData]()
-        searchData = leaveType.map{SelectionData(name: $0.leaveName, id: $0.leaveCode)}
+//        var searchData = [SelectionData]()
+//        searchData = leaveType.map{SelectionData(name: $0.leaveName, id: $0.leaveCode)}
         
         let singleSelectionVC = UIStoryboard.singleSelectionVC
         singleSelectionVC.searchTitle = "Select Leave Type"
