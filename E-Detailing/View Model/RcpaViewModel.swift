@@ -22,6 +22,10 @@ class RcpaListViewModel {
     }
     
     
+    func removeAtIndex(_ index : Int) {
+        rcpaListViewModel.remove(at: index)
+    }
+    
     
 }
 
@@ -49,6 +53,7 @@ struct RcpaHeaderData {
     var total : String
     
     var rate : String
+    
     
     
     
