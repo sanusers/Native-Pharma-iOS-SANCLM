@@ -367,7 +367,6 @@ class MainVC : UIViewController {
     }
     
     
-    
     @IBAction func clusterAction(_ sender: UIButton) {
         
         let territory = DBManager.shared.getTerritory()
