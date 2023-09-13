@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import Alamofire
-
+import Toast_Swift
 
 class ProductVC : UIViewController {
     
@@ -36,15 +36,12 @@ class ProductVC : UIViewController {
     @IBOutlet weak var btnRcpaProduct: UIButton!
     
     
-    
     @IBOutlet weak var viewSegmentControl: UIView!
-    
     
     
     @IBOutlet weak var ProductTableView: UITableView!
     @IBOutlet weak var productRatingTableView: UITableView!
     @IBOutlet weak var productSampleTableView: UITableView!
-    
     
     
     @IBOutlet weak var inputListTableView: UITableView!
@@ -60,13 +57,12 @@ class ProductVC : UIViewController {
     
     
     @IBOutlet weak var feedbackListTableView: UITableView!
-    
-    
     @IBOutlet weak var feedbackSelectedListTableView: UITableView!
     
     
     
     @IBOutlet weak var rcpaCompetitorTableView: UITableView!
+    @IBOutlet weak var rcpaAddedListTableView: UITableView!
     
     
     @IBOutlet weak var viewProduct: UIView!
@@ -101,6 +97,9 @@ class ProductVC : UIViewController {
     private var jointWorkSelectedListViewModel = JointWorksListViewModel()
     private var addittionalCallListViewModel = AdditionalCallsListViewModel()
     
+    
+    private var rcpaAddedListViewModel = RcpaAddedListViewModel()
+    
     private var rcpaCallListViewModel = RcpaListViewModel()
     
     
@@ -112,13 +111,12 @@ class ProductVC : UIViewController {
             txtfield.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
         }
         
+        
         [viewRcpaChemist,viewRcpaProduct,txtRcpaQty,txtRcpaRate,txtRcpaTotal].forEach { view in
             view.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
             view.layer.borderWidth = 1.5
             view.layer.cornerRadius = 8
-            
         }
-        
         
         self.products = DBManager.shared.getProduct()
         self.feedback = DBManager.shared.getFeedback()
@@ -152,6 +150,7 @@ class ProductVC : UIViewController {
         
         self.rcpaCompetitorTableView.register(UINib(nibName: "RcpaTableViewCell", bundle: nil), forCellReuseIdentifier: "RcpaTableViewCell")
         
+        self.rcpaAddedListTableView.register(UINib(nibName: "RcpaAddedListTableViewCell", bundle: nil), forCellReuseIdentifier: "RcpaAddedListTableViewCell")
         
         
     }
@@ -257,6 +256,18 @@ class ProductVC : UIViewController {
     }
     
     
+    @IBAction func rcpaSaveAction(_ sender: UIButton) {
+        
+        
+        
+        UIView.animate(withDuration: 1.5) {
+            self.viewRcpa.isHidden = true
+        }
+        
+    }
+    
+    
+    
     @IBAction func submitAction(_ sender: UIButton) {
         
         
@@ -268,13 +279,13 @@ class ProductVC : UIViewController {
         let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         
         
-        let timesLine = ["sTm" : "" , "eTm" : ""]
+   //     let timesLine = ["sTm" : "" , "eTm" : ""]
         
-        let slides : [String : Any] = ["Slide" : "", "SlidePath" : "", "SlideRemarks" : "", "SlideType" : "", "SlideRating" : "", "Times" : "times"]
+   //     let slides : [String : Any] = ["Slide" : "", "SlidePath" : "", "SlideRemarks" : "", "SlideType" : "", "SlideRating" : "", "Times" : "times"]
         
-        let times = ["eTm" : "", "sTm" : ""]
+//let times = ["eTm" : "", "sTm" : ""]
         
-        let product : [String : Any] = ["Code" : "" , "Name" : "", "Group" : "", "ProdFeedbk" : "", "Rating" : "", "Timesline" : "timesLine", "Appver" : "", "Mod" : "", "SmpQty" : "", "RxQty" : "" , "prdfeed" : "", "Type" : "", "StockistName" : "", "StockistCode" : "", "Slides" : "slides"]
+    //    let product : [String : Any] = ["Code" : "" , "Name" : "", "Group" : "", "ProdFeedbk" : "", "Rating" : "", "Timesline" : "timesLine", "Appver" : "", "Mod" : "", "SmpQty" : "", "RxQty" : "" , "prdfeed" : "", "Type" : "", "StockistName" : "", "StockistCode" : "", "Slides" : "slides"]
         
         
         
@@ -477,6 +488,8 @@ class ProductVC : UIViewController {
             self.lblChemistName.text = chemists[selectedIndex].name
             
             self.selectedChemistRcpa = chemists[selectedIndex]
+            
+            
         }
         self.present(selectionVC, animated: true)
         
@@ -505,7 +518,30 @@ class ProductVC : UIViewController {
     
     @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
         
-        self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "")))
+        
+        if self.rcpaCallListViewModel.numberOfCompetitorRows() != 0 {
+            self.btnRcpaChemist.isHidden = true
+        }
+        
+        
+        
+        self.rcpaAddedListViewModel.addRcpaChemist(RcpaAddedViewModel(rcpaChemist: RcpaChemist(chemist: self.selectedChemistRcpa)))
+        
+        self.rcpaAddedListViewModel.addRcpaProductAtSection(0, product: rcpaProduct(product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? ""))
+        
+        self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(0, row: 0, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "5", competitorTotal: "50", competitorQty: "10",remarks: ""))
+        
+        
+//        self.rcpaAddedListViewModel.addRcpaChemist(RcpaAddedViewModel(rcpaChemist: RcpaChemist(chemist: self.selectedChemistRcpa,products: [rcpaProduct(product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "",rcpas: [RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "5", competitorTotal: "50", competitorQty: "10",remarks: "")])])))
+//
+//
+//        self.rcpaAddedListViewModel.addRcpaChemist(RcpaAddedViewModel(rcpaChemist: RcpaChemist(chemist: self.selectedChemistRcpa,products: [rcpaProduct(product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "",rcpas: [])])))
+       
+        
+        self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.txtRcpaQty.text ?? "", total: self.txtRcpaTotal.text ?? "", rate: self.txtRcpaRate.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "5", competitorTotal: "50", competitorQty: "10",remarks: "")))
+        
+        print(self.rcpaCallListViewModel.fetchAtIndex(0).rcpaHeaderData.competitorCompanyName)
+        print(self.rcpaCallListViewModel.fetchAtIndex(0).rcpaHeaderData.competitorCompanyCode)
         
         self.rcpaCompetitorTableView.reloadData()
         
@@ -616,8 +652,19 @@ extension ProductVC : tableViewProtocols {
                 return cell
             case self.rcpaCompetitorTableView:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaTableViewCell", for: indexPath) as! RcpaTableViewCell
-            cell.btnCompetitorCompany.addTarget(self, action: #selector(rcpaCompetitorCompany(_:)), for: .touchUpInside)
-            cell.btnCompetitorBrand.addTarget(self, action: #selector(rcpaCompetitorBrand(_:)), for: .touchUpInside)
+                cell.btnCompetitorCompany.addTarget(self, action: #selector(rcpaCompetitorCompany(_:)), for: .touchUpInside)
+                cell.btnCompetitorBrand.addTarget(self, action: #selector(rcpaCompetitorBrand(_:)), for: .touchUpInside)
+                cell.btnDelete.addTarget(self, action: #selector(deleteRcpa(_:)), for: .touchUpInside)
+                cell.txtRcpaQty.text = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).competitorQty
+                cell.txtRcpaRate.text = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).competitorRate
+                cell.txtRcpaTotal.text = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).competitorTotal
+                cell.lblCompetitorCompany.text = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).competitorCompanyName
+                cell.lblCompetitorBrand.text = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).competitorBrandName
+                cell.lblProduct.text = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).productName
+                return cell
+            case self.rcpaAddedListTableView:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
+            
                 return cell
             default :
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell", for: indexPath) as! ProductNameTableViewCell
@@ -731,21 +778,109 @@ extension ProductVC : tableViewProtocols {
     
     @objc func rcpaCompetitorCompany(_ sender : UIButton) {
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.rcpaCompetitorTableView)
-        guard let indexPath = self.inputSampleTableView.indexPathForRow(at: buttonPosition) else{
+        guard let indexPath = self.rcpaCompetitorTableView.indexPathForRow(at: buttonPosition) else{
             return
         }
         
+        
+        
+        print(indexPath)
+        
+        
+        let competitors = DBManager.shared.getCompetitor()
+        
+        var data = [SelectionList]()
+        
+        
+        data = competitors.map{SelectionList(name: $0.compName ?? "", code: $0.compSlNo ?? "")}
+        
+        
+        let selectionVC = UIStoryboard.singleSelectionVC
+        selectionVC.searchTitle = "Select Competitor Company"
+        selectionVC.selectionList = data
+        selectionVC.isFromStruct = true
+        selectionVC.didSelectCompletion { selectedIndex in
+            
+            
+            if let cell = self.rcpaCompetitorTableView.cellForRow(at: indexPath) as? RcpaTableViewCell {
+                cell.lblCompetitorCompany.text = competitors[selectedIndex].compName
+            }
+            
+            self.rcpaCallListViewModel.setCompetitorCompanyAtIndex(indexPath.row, name: competitors[selectedIndex].compName ?? "", code: competitors[selectedIndex].compSlNo ?? "")
+            self.rcpaCompetitorTableView.reloadData()
+        }
+        self.present(selectionVC, animated: true)
         
     }
     
     @objc func rcpaCompetitorBrand(_ sender : UIButton) {
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.rcpaCompetitorTableView)
-        guard let indexPath = self.inputSampleTableView.indexPathForRow(at: buttonPosition) else{
+        guard let indexPath = self.rcpaCompetitorTableView.indexPathForRow(at: buttonPosition) else{
             return
         }
         
         
+        let competitors = DBManager.shared.getCompetitor()
+        
+        
+        let selectedCompetitor = competitors.filter{$0.compSlNo == self.rcpaCallListViewModel.fetchAtIndex(indexPath.row).competitorCompanyCode}
+        
+        
+        let code = selectedCompetitor.first?.compProductSlNo ?? ""
+        
+        let name = selectedCompetitor.first?.compProductName ?? ""
+        
+        // .components(separatedBy: "/")
+        
+        let productCode = code.components(separatedBy: "/")
+        
+        let productName = name.components(separatedBy: "/")
+        
+        let SelectedCode = self.rcpaCallListViewModel.fetchAtIndex(indexPath.row)
+        
+        print(code)
+        
+        print(name)
+        
+        print(SelectedCode)
+        
+        
+        var data = [SelectionList]()
+        
+        for i in 0..<productCode.count{
+            data.append(SelectionList(name: productName[i], code: productCode[i]))
+        }
+        
+       // data =
+        
+        let selectionVC = UIStoryboard.singleSelectionVC
+        selectionVC.selectionList = data
+        selectionVC.isFromStruct = true
+        selectionVC.didSelectCompletion { selectedIndex in
+            
+            if let cell = self.rcpaCompetitorTableView.cellForRow(at: indexPath) as? RcpaTableViewCell {
+                cell.lblCompetitorBrand.text = productName[selectedIndex]
+            }
+            
+            self.rcpaCallListViewModel.setCompetitorBrandAtIndex(indexPath.row, name: productName[selectedIndex], code: productCode[selectedIndex])
+            self.rcpaCompetitorTableView.reloadData()
+        }
+        self.present(selectionVC, animated: true)
+        print(indexPath)
+        
     }
+    
+    @objc func deleteRcpa(_ sender : UIButton) {
+        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.rcpaCompetitorTableView)
+        guard let indexPath = self.rcpaCompetitorTableView.indexPathForRow(at: buttonPosition) else{
+            return
+        }
+        
+        
+        self.rcpaCallListViewModel.removeAtIndex(indexPath.row)
+        self.rcpaCompetitorTableView.reloadData()
+    }
+    
     
     @objc func deleteInput(_ sender : UIButton){
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.inputSampleTableView)
@@ -788,10 +923,7 @@ extension ProductVC : tableViewProtocols {
         }
         
         self.inputSelectedListViewModel.setInputCodeAtIndex(indexPath.row, samQty: sender.text ?? "")
-        
-        print(sender.text!)
     }
-    
     
 }
 
@@ -800,3 +932,30 @@ extension ProductVC : UITextFieldDelegate {
     
 }
 
+
+
+//class selectionData {
+//
+//    var selectionList : SelectionList
+//
+//    init(selectionList: SelectionList) {
+//        self.selectionList = selectionList
+//    }
+//
+//    var name : String {
+//        return self.selectionList.name
+//    }
+//
+//    var code : String {
+//        return self.selectionList.code
+//    }
+//
+//}
+
+
+struct SelectionList{
+
+    var name : String
+    var code : String
+
+}

@@ -1168,11 +1168,31 @@ Chennai</string>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gco-2x-Ob7">
                                                 <rect key="frame" x="0.0" y="0.0" width="1180" height="550"/>
                                                 <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E3h-eq-idC">
+                                                        <rect key="frame" x="20" y="82.5" width="1140" height="467.5"/>
+                                                        <subviews>
+                                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="j3b-im-gHz">
+                                                                <rect key="frame" x="0.0" y="0.0" width="1140" height="467.5"/>
+                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                <connections>
+                                                                    <outlet property="dataSource" destination="Jwy-oC-nIs" id="vnw-7k-GxN"/>
+                                                                    <outlet property="delegate" destination="Jwy-oC-nIs" id="xBH-qw-BNq"/>
+                                                                </connections>
+                                                            </tableView>
+                                                        </subviews>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="trailing" secondItem="j3b-im-gHz" secondAttribute="trailing" id="LRJ-Or-nQ9"/>
+                                                            <constraint firstItem="j3b-im-gHz" firstAttribute="leading" secondItem="E3h-eq-idC" secondAttribute="leading" id="WWt-y3-8jN"/>
+                                                            <constraint firstItem="j3b-im-gHz" firstAttribute="top" secondItem="E3h-eq-idC" secondAttribute="top" id="b0D-3n-oCi"/>
+                                                            <constraint firstAttribute="bottom" secondItem="j3b-im-gHz" secondAttribute="bottom" id="xEo-o7-Jmb"/>
+                                                        </constraints>
+                                                    </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XHw-OQ-oQY">
                                                         <rect key="frame" x="20" y="0.0" width="1140" height="82.5"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RCPA Added" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ci5-Is-Bgk">
-                                                                <rect key="frame" x="15" y="15" width="115" height="24"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RCPA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ci5-Is-Bgk">
+                                                                <rect key="frame" x="15" y="15" width="51.5" height="24"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="19"/>
                                                                 <color key="textColor" red="0.15686274509803921" green="0.16470588235294117" blue="0.23529411764705882" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
@@ -1205,7 +1225,11 @@ Chennai</string>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
+                                                    <constraint firstItem="E3h-eq-idC" firstAttribute="top" secondItem="XHw-OQ-oQY" secondAttribute="bottom" id="5DB-Qc-b1M"/>
+                                                    <constraint firstAttribute="trailing" secondItem="E3h-eq-idC" secondAttribute="trailing" constant="20" id="Wwa-Qo-pBm"/>
                                                     <constraint firstItem="XHw-OQ-oQY" firstAttribute="leading" secondItem="gco-2x-Ob7" secondAttribute="leading" constant="20" id="chJ-Kx-IJK"/>
+                                                    <constraint firstItem="E3h-eq-idC" firstAttribute="leading" secondItem="gco-2x-Ob7" secondAttribute="leading" constant="20" id="dAH-Wr-gls"/>
+                                                    <constraint firstAttribute="bottom" secondItem="E3h-eq-idC" secondAttribute="bottom" id="fhk-TY-9ZV"/>
                                                     <constraint firstItem="XHw-OQ-oQY" firstAttribute="height" secondItem="gco-2x-Ob7" secondAttribute="height" multiplier="0.15" id="qMH-SL-xLL"/>
                                                     <constraint firstAttribute="trailing" secondItem="XHw-OQ-oQY" secondAttribute="trailing" constant="20" id="s1d-UC-Ybj"/>
                                                     <constraint firstItem="XHw-OQ-oQY" firstAttribute="top" secondItem="gco-2x-Ob7" secondAttribute="top" id="uOp-rG-sJM"/>
@@ -1248,7 +1272,7 @@ Chennai</string>
                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="Final Submit"/>
+                                                <state key="normal" title="Submit"/>
                                                 <connections>
                                                     <action selector="submitAction:" destination="Jwy-oC-nIs" eventType="touchUpInside" id="prk-bC-emD"/>
                                                 </connections>
@@ -1391,6 +1415,9 @@ Chennai</string>
                                                         <state key="normal" title="Save">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="rcpaSaveAction:" destination="Jwy-oC-nIs" eventType="touchUpInside" id="W24-ub-8wt"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -1691,7 +1718,7 @@ Chennai</string>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V8g-BC-553">
                                                 <rect key="frame" x="0.0" y="365" width="590" height="373"/>
                                                 <subviews>
-                                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Rti-hy-C1m">
+                                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Rti-hy-C1m">
                                                         <rect key="frame" x="0.0" y="0.0" width="590" height="373"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <connections>
@@ -1777,6 +1804,7 @@ Chennai</string>
                         <outlet property="lblProductName" destination="N2r-vc-O1A" id="aiS-H5-Alz"/>
                         <outlet property="productRatingTableView" destination="QDf-hZ-l1R" id="3Mc-cr-KVn"/>
                         <outlet property="productSampleTableView" destination="KmZ-He-tPf" id="qCG-aZ-rbZ"/>
+                        <outlet property="rcpaAddedListTableView" destination="j3b-im-gHz" id="lEn-4E-34o"/>
                         <outlet property="rcpaCompetitorTableView" destination="Rti-hy-C1m" id="G35-BQ-Ojl"/>
                         <outlet property="txtRcpaQty" destination="riU-LW-Ivh" id="byx-Tn-n1y"/>
                         <outlet property="txtRcpaRate" destination="M0x-iG-sbp" id="f6y-rx-tGH"/>

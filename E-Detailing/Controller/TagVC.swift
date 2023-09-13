@@ -253,6 +253,7 @@ class TagVC : UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    
 }
 
 
@@ -285,6 +286,7 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         
         print(surl)
         
+        
   //  http://crm.saneforce.in/iOSServer/db_api.php/?axn=save/image
         
         let url = URL(string: surl)!
@@ -296,7 +298,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
      //   let dat = Date().toString(format: "HHmmss") // self.events[i].timeStamp ?? ""
         
         let fileName = "\(appsetup.sfCode!)"+"_"+"\(date)" + ".jpeg"
-        
         
         
         let mimetype = mimeType(for: fileName)
@@ -328,9 +329,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         data.append(img!)
         data.append(jsonData!)
         data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        
-        
         
         
         

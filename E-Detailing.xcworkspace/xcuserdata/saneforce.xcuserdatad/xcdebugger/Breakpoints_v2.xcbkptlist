@@ -347,8 +347,8 @@
             filePath = "E-Detailing/Others/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
             landmarkName = "setupRootViewControllers()"
             landmarkType = "7">
          </BreakpointContent>
@@ -983,8 +983,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "752"
-            endingLineNumber = "752"
+            startingLineNumber = "753"
+            endingLineNumber = "753"
             landmarkName = "swipeAction(_:)"
             landmarkType = "7">
             <Locations>
@@ -1046,8 +1046,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "743"
-            endingLineNumber = "743"
+            startingLineNumber = "744"
+            endingLineNumber = "744"
             landmarkName = "swipeAction(_:)"
             landmarkType = "7">
             <Locations>
@@ -1109,8 +1109,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "905"
-            endingLineNumber = "905"
+            startingLineNumber = "906"
+            endingLineNumber = "906"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
             <Locations>
@@ -1187,8 +1187,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "902"
-            endingLineNumber = "902"
+            startingLineNumber = "903"
+            endingLineNumber = "903"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
             <Locations>
@@ -1265,8 +1265,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "904"
-            endingLineNumber = "904"
+            startingLineNumber = "905"
+            endingLineNumber = "905"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1281,8 +1281,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "906"
-            endingLineNumber = "906"
+            startingLineNumber = "907"
+            endingLineNumber = "907"
             landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1297,8 +1297,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "925"
-            endingLineNumber = "925"
+            startingLineNumber = "926"
+            endingLineNumber = "926"
             landmarkName = "MainVC"
             landmarkType = "21">
          </BreakpointContent>
@@ -1695,8 +1695,8 @@
             filePath = "E-Detailing/Controller/MainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "514"
-            endingLineNumber = "514"
+            startingLineNumber = "515"
+            endingLineNumber = "515"
             landmarkName = "fetchHome()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1762,6 +1762,117 @@
             startingLineNumber = "362"
             endingLineNumber = "362"
             landmarkName = "headquarterAction(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4FA1E1C2-62E2-4486-8447-965E92004013"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Controller/ProductVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "787"
+            endingLineNumber = "787"
+            landmarkName = "rcpaCompetitorCompany(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4FA1E1C2-62E2-4486-8447-965E92004013 - 242d2f4a10e945e1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.ProductVC.rcpaCompetitorCompany(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/E-Detailing/E-Detailing/Controller/ProductVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "760"
+                  endingLineNumber = "760"
+                  offsetFromSymbolStart = "1164">
+               </Location>
+               <Location
+                  uuid = "4FA1E1C2-62E2-4486-8447-965E92004013 - 242d2f4a10e945e1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.ProductVC.rcpaCompetitorCompany(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/E-Detailing/E-Detailing/Controller/ProductVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "760"
+                  endingLineNumber = "760"
+                  offsetFromSymbolStart = "976">
+               </Location>
+               <Location
+                  uuid = "4FA1E1C2-62E2-4486-8447-965E92004013 - 242d2f4a10e945a7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.ProductVC.rcpaCompetitorCompany(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/E-Detailing/E-Detailing/Controller/ProductVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "758"
+                  endingLineNumber = "758"
+                  offsetFromSymbolStart = "976">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9612E322-59D8-42CC-B5BE-19C174F729A0"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Controller/ProductVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "938"
+            endingLineNumber = "938"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BB2BB512-2A7C-4EC2-800E-430C56061507"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Controller/ProductVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "936"
+            endingLineNumber = "936"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B03E5D75-399C-4C1E-A2BB-32366AE34F53"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Controller/ProductVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "823"
+            endingLineNumber = "823"
+            landmarkName = "rcpaCompetitorBrand(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

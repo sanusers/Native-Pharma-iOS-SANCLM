@@ -51,6 +51,8 @@
 		38C94CAE2A60269F007F1871 /* LeaveStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C94CAD2A60269F007F1871 /* LeaveStatusCell.swift */; };
 		38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C94CAF2A6026CE007F1871 /* LeaveStatusCell.xib */; };
 		38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */; };
+		38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */; };
+		38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */; };
 		38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */; };
 		38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4CD2A9F4512001992C4 /* TaggingViewModel.swift */; };
 		38CBA4D02A9F59B3001992C4 /* DcrTagTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4CF2A9F59B3001992C4 /* DcrTagTitleCell.swift */; };
@@ -85,6 +87,8 @@
 		38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3E5352A80BE7200AE5AF6 /* CallVC.swift */; };
 		38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3E5372A80C75000AE5AF6 /* DoctorCallCell.swift */; };
 		38E3E53A2A80C78700AE5AF6 /* DoctorCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */; };
+		38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */; };
+		38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */; };
 		38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */; };
 		38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */; };
 		38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EBB8902A6BD447008E007C /* QuickLinkCell.xib */; };
@@ -168,6 +172,8 @@
 		38C94CAD2A60269F007F1871 /* LeaveStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveStatusCell.swift; sourceTree = "<group>"; };
 		38C94CAF2A6026CE007F1871 /* LeaveStatusCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeaveStatusCell.xib; sourceTree = "<group>"; };
 		38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarVC.swift; sourceTree = "<group>"; };
+		38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaSelectedCompetitorView.swift; sourceTree = "<group>"; };
+		38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaSelectedCompetitorView.xib; sourceTree = "<group>"; };
 		38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subordinate + Extension.swift"; sourceTree = "<group>"; };
 		38CBA4CD2A9F4512001992C4 /* TaggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewModel.swift; sourceTree = "<group>"; };
 		38CBA4CF2A9F59B3001992C4 /* DcrTagTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DcrTagTitleCell.swift; sourceTree = "<group>"; };
@@ -202,6 +208,8 @@
 		38E3E5352A80BE7200AE5AF6 /* CallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallVC.swift; sourceTree = "<group>"; };
 		38E3E5372A80C75000AE5AF6 /* DoctorCallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorCallCell.swift; sourceTree = "<group>"; };
 		38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoctorCallCell.xib; sourceTree = "<group>"; };
+		38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaAddedListTableViewCell.xib; sourceTree = "<group>"; };
+		38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaAddedListTableViewCell.swift; sourceTree = "<group>"; };
 		38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreCallVC.swift; sourceTree = "<group>"; };
 		38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLinkCell.swift; sourceTree = "<group>"; };
 		38EBB8902A6BD447008E007C /* QuickLinkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickLinkCell.xib; sourceTree = "<group>"; };
@@ -316,6 +324,10 @@
 				38E0409E2AA1FEAA007B757E /* TagDetailsView.swift */,
 				38C8C02F2AA5BD8A0068F0C0 /* RcpaTableViewCell.xib */,
 				38C8C02D2AA5BD810068F0C0 /* RcpaTableViewCell.swift */,
+				38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */,
+				38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */,
+				38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */,
+				38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -583,6 +595,7 @@
 				B287E68429F2A20F0097974D /* Satoshi-Medium.otf in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
+				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				B287E68329F2A20F0097974D /* Satoshi-LightItalic.otf in Resources */,
 				38CCA2B72A656B92008D5B12 /* LeaveAvailablityCell.xib in Resources */,
 				38C4245E2A2B4DB1004A89EF /* MasterSyncCell.xib in Resources */,
@@ -608,6 +621,7 @@
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
+				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -715,6 +729,7 @@
 				38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */,
 				38C855252A8CC9AB00C34A58 /* ProductViewModel.swift in Sources */,
 				38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */,
+				38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */,
 				B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,
 				38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */,
@@ -750,6 +765,7 @@
 				38C089122A431738001F628C /* SlideDownloaderCell.swift in Sources */,
 				38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */,
 				B2A711F629FBE1D3003A25BF /* Model.swift in Sources */,
+				38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */,
 				3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */,
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,

@@ -16,23 +16,41 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="330" id="p44-6a-3Pn" customClass="RcpaTableViewCell" customModule="E_Detailing" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="393" height="330"/>
+            <rect key="frame" x="0.0" y="0.0" width="393" height="390"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="p44-6a-3Pn" id="MST-zP-b9h">
-                <rect key="frame" x="0.0" y="0.0" width="393" height="330"/>
+                <rect key="frame" x="0.0" y="0.0" width="393" height="390"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ME-If-Qfm">
-                        <rect key="frame" x="10" y="10" width="373" height="310"/>
+                        <rect key="frame" x="10" y="10" width="373" height="370"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="cIr-Tt-eoz">
-                                <rect key="frame" x="0.0" y="0.0" width="373" height="310"/>
+                                <rect key="frame" x="0.0" y="0.0" width="373" height="370"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c7y-oe-cVg">
+                                        <rect key="frame" x="0.0" y="0.0" width="373" height="30"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S18-an-qaJ">
+                                                <rect key="frame" x="10" y="5" width="353" height="22.5"/>
+                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="S18-an-qaJ" secondAttribute="trailing" constant="10" id="0Dt-DN-h1v"/>
+                                            <constraint firstItem="S18-an-qaJ" firstAttribute="top" secondItem="c7y-oe-cVg" secondAttribute="top" constant="5" id="Lbw-e5-02z"/>
+                                            <constraint firstAttribute="height" constant="30" id="iKI-R8-yaF"/>
+                                            <constraint firstItem="S18-an-qaJ" firstAttribute="leading" secondItem="c7y-oe-cVg" secondAttribute="leading" constant="10" id="oEK-4d-7Jq"/>
+                                        </constraints>
+                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGS-ne-vml">
-                                        <rect key="frame" x="0.0" y="0.0" width="373" height="68"/>
+                                        <rect key="frame" x="0.0" y="30" width="373" height="81.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Competitor Company" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qds-Fn-5og">
-                                                <rect key="frame" x="10" y="10" width="323" height="19"/>
+                                                <rect key="frame" x="10" y="10" width="323" height="20"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -46,59 +64,60 @@
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" image="DeleteBinIcon"/>
                                             </button>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hNk-u7-0gZ">
-                                                <rect key="frame" x="10" y="34" width="353" height="40"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aqM-qX-Q1b">
+                                                <rect key="frame" x="10" y="35" width="353" height="40"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ED-5G-eF2">
-                                                        <rect key="frame" x="10" y="10" width="333" height="19"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tVq-Je-Pq9">
+                                                        <rect key="frame" x="10" y="10" width="333" height="25"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
-                                                        <color key="textColor" red="0.15686274509803921" green="0.1647058824" blue="0.23529411764705882" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eDL-14-G69">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FWd-kk-n1Y">
                                                         <rect key="frame" x="0.0" y="0.0" width="353" height="40"/>
                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
-                                                    <constraint firstItem="eDL-14-G69" firstAttribute="top" secondItem="hNk-u7-0gZ" secondAttribute="top" id="6j0-td-C7p"/>
-                                                    <constraint firstItem="5ED-5G-eF2" firstAttribute="top" secondItem="hNk-u7-0gZ" secondAttribute="top" constant="10" id="7Ub-Rd-LJG"/>
-                                                    <constraint firstAttribute="trailing" secondItem="5ED-5G-eF2" secondAttribute="trailing" constant="10" id="E8P-YE-NMQ"/>
-                                                    <constraint firstItem="eDL-14-G69" firstAttribute="leading" secondItem="hNk-u7-0gZ" secondAttribute="leading" id="EDI-Ge-hgm"/>
-                                                    <constraint firstAttribute="height" constant="40" id="JYL-LW-JyO"/>
-                                                    <constraint firstAttribute="bottom" secondItem="eDL-14-G69" secondAttribute="bottom" id="Yto-EM-EBA"/>
-                                                    <constraint firstAttribute="trailing" secondItem="eDL-14-G69" secondAttribute="trailing" id="lSF-2y-MWf"/>
-                                                    <constraint firstItem="5ED-5G-eF2" firstAttribute="leading" secondItem="hNk-u7-0gZ" secondAttribute="leading" constant="10" id="lvN-0W-Jtd"/>
+                                                    <constraint firstItem="FWd-kk-n1Y" firstAttribute="top" secondItem="aqM-qX-Q1b" secondAttribute="top" id="2Yk-vm-wEE"/>
+                                                    <constraint firstAttribute="height" constant="40" id="6ko-ji-16A"/>
+                                                    <constraint firstAttribute="trailing" secondItem="FWd-kk-n1Y" secondAttribute="trailing" id="7DN-I4-fuN"/>
+                                                    <constraint firstItem="FWd-kk-n1Y" firstAttribute="leading" secondItem="aqM-qX-Q1b" secondAttribute="leading" id="KbJ-Q6-cB1"/>
+                                                    <constraint firstAttribute="bottom" secondItem="tVq-Je-Pq9" secondAttribute="bottom" constant="5" id="OhA-cW-EZE"/>
+                                                    <constraint firstItem="tVq-Je-Pq9" firstAttribute="top" secondItem="aqM-qX-Q1b" secondAttribute="top" constant="10" id="ZSh-q2-KTs"/>
+                                                    <constraint firstAttribute="trailing" secondItem="tVq-Je-Pq9" secondAttribute="trailing" constant="10" id="pVP-qO-ubZ"/>
+                                                    <constraint firstAttribute="bottom" secondItem="FWd-kk-n1Y" secondAttribute="bottom" id="wfF-Ud-XrP"/>
+                                                    <constraint firstItem="tVq-Je-Pq9" firstAttribute="leading" secondItem="aqM-qX-Q1b" secondAttribute="leading" constant="10" id="zIh-G4-Jcc"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="GNY-E7-o3W" firstAttribute="leading" secondItem="Qds-Fn-5og" secondAttribute="trailing" constant="15" id="Ccd-wy-KPe"/>
-                                            <constraint firstItem="hNk-u7-0gZ" firstAttribute="leading" secondItem="tGS-ne-vml" secondAttribute="leading" constant="10" id="HmO-s7-Ri6"/>
-                                            <constraint firstItem="hNk-u7-0gZ" firstAttribute="top" secondItem="Qds-Fn-5og" secondAttribute="bottom" constant="5" id="M50-zb-Xi2"/>
-                                            <constraint firstAttribute="trailing" secondItem="hNk-u7-0gZ" secondAttribute="trailing" constant="10" id="M5u-dq-ZXZ"/>
+                                            <constraint firstAttribute="trailing" secondItem="aqM-qX-Q1b" secondAttribute="trailing" constant="10" id="PIU-SM-0TH"/>
+                                            <constraint firstItem="aqM-qX-Q1b" firstAttribute="top" secondItem="Qds-Fn-5og" secondAttribute="bottom" constant="5" id="RQM-14-mRU"/>
                                             <constraint firstAttribute="trailing" secondItem="GNY-E7-o3W" secondAttribute="trailing" constant="5" id="Wy3-vn-2WQ"/>
+                                            <constraint firstItem="aqM-qX-Q1b" firstAttribute="leading" secondItem="tGS-ne-vml" secondAttribute="leading" constant="10" id="cIj-ZG-gvF"/>
                                             <constraint firstItem="Qds-Fn-5og" firstAttribute="top" secondItem="tGS-ne-vml" secondAttribute="top" constant="10" id="iEP-lK-8lR"/>
                                             <constraint firstItem="Qds-Fn-5og" firstAttribute="leading" secondItem="tGS-ne-vml" secondAttribute="leading" constant="10" id="rZU-Uf-YEF"/>
                                             <constraint firstItem="GNY-E7-o3W" firstAttribute="top" secondItem="tGS-ne-vml" secondAttribute="top" constant="5" id="wfH-z6-Oqb"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e8e-SG-IBt">
-                                        <rect key="frame" x="0.0" y="68" width="373" height="68.5"/>
+                                        <rect key="frame" x="0.0" y="111.5" width="373" height="81.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Competitor Brand" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oV8-dL-PaT">
-                                                <rect key="frame" x="10" y="10" width="348" height="19"/>
+                                                <rect key="frame" x="10" y="10" width="348" height="20"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Htt-Me-weP">
-                                                <rect key="frame" x="10" y="34" width="353" height="40"/>
+                                                <rect key="frame" x="10" y="35" width="353" height="40"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BiT-h2-F8d">
-                                                        <rect key="frame" x="10" y="10" width="333" height="19"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BiT-h2-F8d">
+                                                        <rect key="frame" x="10" y="10" width="333" height="25"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
@@ -117,6 +136,7 @@
                                                     <constraint firstItem="BiT-h2-F8d" firstAttribute="leading" secondItem="Htt-Me-weP" secondAttribute="leading" constant="10" id="aMk-fj-TAF"/>
                                                     <constraint firstItem="Nk1-rj-P7q" firstAttribute="leading" secondItem="Htt-Me-weP" secondAttribute="leading" id="ftO-iu-NvS"/>
                                                     <constraint firstItem="BiT-h2-F8d" firstAttribute="top" secondItem="Htt-Me-weP" secondAttribute="top" constant="10" id="h1B-ZE-Bfe"/>
+                                                    <constraint firstAttribute="bottom" secondItem="BiT-h2-F8d" secondAttribute="bottom" constant="5" id="leX-Ie-ojz"/>
                                                     <constraint firstAttribute="height" constant="40" id="pTP-df-Z4X"/>
                                                     <constraint firstItem="Nk1-rj-P7q" firstAttribute="top" secondItem="Htt-Me-weP" secondAttribute="top" id="qOb-Sc-Dmz"/>
                                                 </constraints>
@@ -133,28 +153,28 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2ze-GI-aNF">
-                                        <rect key="frame" x="0.0" y="136.5" width="373" height="68"/>
+                                        <rect key="frame" x="0.0" y="193" width="373" height="81"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gAp-Gu-d3B">
-                                                <rect key="frame" x="0.0" y="0.0" width="373" height="68"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="373" height="81"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l2y-nl-qxw">
-                                                        <rect key="frame" x="0.0" y="0.0" width="123" height="68"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="123" height="81"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Qty" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t7L-Fy-hza">
-                                                                <rect key="frame" x="10" y="10" width="103" height="19"/>
+                                                                <rect key="frame" x="10" y="10" width="103" height="20"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                 <color key="textColor" red="0.15686274509803921" green="0.16470588235294117" blue="0.23529411764705882" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uHY-sX-Qqu">
-                                                                <rect key="frame" x="10" y="34" width="103" height="40"/>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uHY-sX-Qqu">
+                                                                <rect key="frame" x="10" y="35" width="103" height="40"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="40" id="JfM-tk-eRf"/>
                                                                 </constraints>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
-                                                                <textInputTraits key="textInputTraits"/>
+                                                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                                             </textField>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -168,22 +188,22 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Suc-9M-oca">
-                                                        <rect key="frame" x="123" y="0.0" width="123" height="68"/>
+                                                        <rect key="frame" x="123" y="0.0" width="123" height="81"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iic-CT-jMH">
-                                                                <rect key="frame" x="10" y="10" width="103" height="19"/>
+                                                                <rect key="frame" x="10" y="10" width="103" height="20"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MG2-d6-sOv">
-                                                                <rect key="frame" x="10" y="34" width="103" height="40"/>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MG2-d6-sOv">
+                                                                <rect key="frame" x="10" y="35" width="103" height="40"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="40" id="zNo-6E-m4S"/>
                                                                 </constraints>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
-                                                                <textInputTraits key="textInputTraits"/>
+                                                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                                             </textField>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -197,22 +217,22 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eE9-Nu-aEn">
-                                                        <rect key="frame" x="246" y="0.0" width="127" height="68"/>
+                                                        <rect key="frame" x="246" y="0.0" width="127" height="81"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ol-vb-DHT">
-                                                                <rect key="frame" x="10" y="10" width="107" height="19"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ol-vb-DHT">
+                                                                <rect key="frame" x="10" y="10" width="107" height="20"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OZq-Nj-OU4">
-                                                                <rect key="frame" x="10" y="34" width="107" height="40"/>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OZq-Nj-OU4">
+                                                                <rect key="frame" x="10" y="35" width="107" height="40"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="40" id="tUb-bi-7BV"/>
                                                                 </constraints>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
-                                                                <textInputTraits key="textInputTraits"/>
+                                                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                                             </textField>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -246,16 +266,16 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FC5-4L-fHs">
-                                        <rect key="frame" x="0.0" y="204.5" width="373" height="105.5"/>
+                                        <rect key="frame" x="0.0" y="274" width="373" height="96"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remarks" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cZf-Lx-VFZ">
-                                                <rect key="frame" x="10" y="10" width="353" height="19"/>
+                                                <rect key="frame" x="10" y="10" width="353" height="20"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="PfV-tp-pde">
-                                                <rect key="frame" x="10" y="34" width="353" height="61.5"/>
+                                                <rect key="frame" x="10" y="35" width="353" height="51"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
@@ -277,10 +297,14 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="FC5-4L-fHs" firstAttribute="leading" secondItem="cIr-Tt-eoz" secondAttribute="leading" id="76i-5R-0fY"/>
+                                    <constraint firstAttribute="trailing" secondItem="c7y-oe-cVg" secondAttribute="trailing" id="7kC-cH-Jko"/>
                                     <constraint firstItem="FC5-4L-fHs" firstAttribute="top" secondItem="2ze-GI-aNF" secondAttribute="bottom" id="Ge5-Xt-uUq"/>
                                     <constraint firstAttribute="trailing" secondItem="FC5-4L-fHs" secondAttribute="trailing" id="RHf-du-yte"/>
+                                    <constraint firstItem="c7y-oe-cVg" firstAttribute="leading" secondItem="cIr-Tt-eoz" secondAttribute="leading" id="SGl-iv-Azc"/>
                                     <constraint firstAttribute="bottom" secondItem="FC5-4L-fHs" secondAttribute="bottom" id="dGm-EB-JjF"/>
+                                    <constraint firstItem="c7y-oe-cVg" firstAttribute="top" secondItem="cIr-Tt-eoz" secondAttribute="top" id="jUk-UN-e1d"/>
                                     <constraint firstItem="2ze-GI-aNF" firstAttribute="height" secondItem="tGS-ne-vml" secondAttribute="height" id="svB-bB-ivL"/>
+                                    <constraint firstItem="tGS-ne-vml" firstAttribute="top" secondItem="c7y-oe-cVg" secondAttribute="bottom" id="tjr-Gx-ZeJ"/>
                                     <constraint firstItem="e8e-SG-IBt" firstAttribute="height" secondItem="tGS-ne-vml" secondAttribute="height" id="ymr-Jh-CWj"/>
                                 </constraints>
                             </stackView>
@@ -289,7 +313,7 @@
                         <constraints>
                             <constraint firstItem="cIr-Tt-eoz" firstAttribute="leading" secondItem="6ME-If-Qfm" secondAttribute="leading" id="7YK-cF-K0h"/>
                             <constraint firstItem="cIr-Tt-eoz" firstAttribute="top" secondItem="6ME-If-Qfm" secondAttribute="top" id="EW3-b6-8TW"/>
-                            <constraint firstAttribute="height" constant="310" id="KYE-6G-pqT"/>
+                            <constraint firstAttribute="height" constant="370" id="KYE-6G-pqT"/>
                             <constraint firstItem="tGS-ne-vml" firstAttribute="height" secondItem="6ME-If-Qfm" secondAttribute="height" multiplier="0.22" id="aII-7L-9OL"/>
                             <constraint firstAttribute="trailing" secondItem="cIr-Tt-eoz" secondAttribute="trailing" id="awo-85-Pgn"/>
                             <constraint firstAttribute="bottom" secondItem="cIr-Tt-eoz" secondAttribute="bottom" id="wI0-Ah-LtK"/>
@@ -306,9 +330,11 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="btnCompetitorBrand" destination="Nk1-rj-P7q" id="vNN-eV-tLp"/>
-                <outlet property="btnCompetitorCompany" destination="eDL-14-G69" id="o6a-xz-mP4"/>
+                <outlet property="btnCompetitorCompany" destination="FWd-kk-n1Y" id="AuT-hc-N0I"/>
+                <outlet property="btnDelete" destination="GNY-E7-o3W" id="TgX-pw-uFS"/>
                 <outlet property="lblCompetitorBrand" destination="BiT-h2-F8d" id="dQN-0y-wfY"/>
-                <outlet property="lblCompetitorCompany" destination="5ED-5G-eF2" id="oaU-OA-E31"/>
+                <outlet property="lblCompetitorCompany" destination="tVq-Je-Pq9" id="P6s-50-DWk"/>
+                <outlet property="lblProduct" destination="S18-an-qaJ" id="kfR-8s-s8l"/>
                 <outlet property="txtRcpaQty" destination="uHY-sX-Qqu" id="9Ud-xB-Azl"/>
                 <outlet property="txtRcpaRate" destination="MG2-d6-sOv" id="Yk3-XV-ZzF"/>
                 <outlet property="txtRcpaTotal" destination="OZq-Nj-OU4" id="a2y-Pl-izV"/>

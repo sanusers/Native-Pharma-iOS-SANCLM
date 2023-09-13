@@ -52,7 +52,7 @@ class InputSelectedListViewModel {
     }
     
     func setInputCodeAtIndex(_ index : Int , samQty : String) {
-        inputViewModel[index].input.updateInputCount(samQty) //  = samQty
+        inputViewModel[index].input.updateInputCount(samQty)
     }
     
     
@@ -88,6 +88,7 @@ struct InputData {
     mutating func updateInputCount(_ value : String) {
         inputCount = value
     }
+    
 }
 
 

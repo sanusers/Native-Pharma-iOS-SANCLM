@@ -40,7 +40,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }else if AppDefaults.shared.isLoggedIn() {
                 let mastersyncVC = UIStoryboard.masterSyncVC
                 mastersyncVC.isFromLaunch = true
-                
                 self.window?.rootViewController = UINavigationController.init(rootViewController:mastersyncVC)
                 
             }else {

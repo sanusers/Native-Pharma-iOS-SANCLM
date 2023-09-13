@@ -13,6 +13,8 @@ import UIKit
 class RcpaTableViewCell : UITableViewCell {
     
     
+    @IBOutlet weak var lblProduct: UILabel!
+    
     
     @IBOutlet weak var lblCompetitorCompany: UILabel!
     @IBOutlet weak var lblCompetitorBrand: UILabel!
@@ -21,6 +23,8 @@ class RcpaTableViewCell : UITableViewCell {
     @IBOutlet weak var btnCompetitorCompany: UIButton!
     @IBOutlet weak var btnCompetitorBrand: UIButton!
     
+    
+    @IBOutlet weak var btnDelete: UIButton!
     
     @IBOutlet weak var txtRcpaQty: UITextField!
     @IBOutlet weak var txtRcpaRate: UITextField!
@@ -33,4 +37,6 @@ class RcpaTableViewCell : UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
     }
+    
+    
 }
