@@ -136,9 +136,7 @@ class MasterSyncVC : UIViewController {
     
     @IBAction func headquarterAction(_ sender: UIButton) {
         let headquarter = DBManager.shared.getSubordinate()
-//        var selectionData = [SelectionData]()
-//        selectionData = headquarter.map{SelectionData(name: $0.name ?? "",id: $0.id ?? "")}
-        
+
         let selectionVC = UIStoryboard.singleSelectionVC
         selectionVC.selectionData = headquarter
         selectionVC.didSelectCompletion{ (index) in

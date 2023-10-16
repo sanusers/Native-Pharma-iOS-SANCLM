@@ -163,7 +163,7 @@ extension CallVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let precallvc = UIStoryboard.preCallVC
-        precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: DCRType(rawValue: self.dcrSegmentControl.selectedSegmentIndex)!)
+        precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: DCRType(rawValue: 0)!)
         self.navigationController?.pushViewController(precallvc, animated: true)
     }
     

@@ -39,7 +39,6 @@ class CallListViewModel {
     }
     
     func numberofDoctorsRows(_ type : DCRType) -> Int {
-        
         switch type {
         case .doctor:
             return DBManager.shared.getDoctor().count
@@ -116,3 +115,8 @@ class CallViewModel {
 
 
  
+struct DcrActivityType {
+    
+    var name : String
+    var type : DCRType
+}
