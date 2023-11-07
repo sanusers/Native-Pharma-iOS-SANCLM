@@ -1,0 +1,1291 @@
+//
+//  DBManager.swift
+//  E-Detailing
+//
+//  Created by SANEFORCE on 19/06/23.
+//
+
+import Foundation
+import CoreData
+import UIKit
+
+class DBManager {
+    
+    static let shared = DBManager()
+    
+    
+    
+    
+    // MARK: - Core Data stack
+
+    lazy var persistentContainer: NSPersistentContainer = {
+        /*
+         The persistent container for the application. This implementation
+         creates and returns a container, having loaded the store for the
+         application to it. This property is optional since there are legitimate
+         error conditions that could cause the creation of the store to fail.
+        */
+        let container = NSPersistentContainer(name: "E-Detailing")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                 
+                /*
+                 Typical reasons for an error here include:
+                 * The parent directory does not exist, cannot be created, or disallows writing.
+                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+                 * The device is out of space.
+                 * The store could not be migrated to the current model version.
+                 Check the error message to determine what the actual problem was.
+                 */
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        return container
+    }()
+
+    // MARK: - Core Data Saving support
+
+    func saveContext () {
+        let context = self.managedContext()
+        context.automaticallyMergesChangesFromParent = true
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+    
+    func managedContext() -> NSManagedObjectContext {
+        return self.persistentContainer.viewContext
+    }
+    
+    
+    func saveMasterData(type : MasterInfo, Values : [[String :Any]],id : String) {
+        
+        switch type {
+            
+        case .worktype:
+            self.saveWorkTypeData(values: Values)
+        case .headquartes:
+            break
+        case .competitors:
+            self.saveCompetitorData(values: Values)
+        case .inputs:
+            self.saveInputData(values: Values, id: id)
+        case .slideBrand:
+            self.saveSlideBrandData(values: Values)
+        case .products:
+            self.saveProductData(values: Values, id: id)
+        case .slides:
+            self.saveSlidesData(values: Values)
+        case .brands:
+            self.saveBrandData(values: Values)
+        case .departments:
+            self.saveDepartsData(values: Values)
+        case .speciality:
+            self.saveSpecialityData(values: Values)
+        case .category:
+            self.saveCategoryData(values: Values)
+        case .qualifications:
+            self.saveQualificationData(values: Values)
+        case .doctorClass:
+            self.saveDoctorClassData(values: Values)
+        case .docTypes:
+            break
+        case .ratingDetails:
+            break
+        case .ratingFeedbacks:
+            break
+        case .speakerList:
+            break
+        case .participantList:
+            break
+        case .indicationList:
+            break
+        case .setups:
+            break
+        case .clusters:
+            self.saveTerritoryData(values: Values, id: id)
+        case .doctors:
+            self.saveDoctorFencingData(values: Values, id: id)
+        case .chemists:
+            self.saveChemistData(values: Values, id: id)
+        case .stockists:
+            self.saveStockistData(values: Values, id: id)
+        case .unlistedDoctors:
+            self.saveUnListedDoctorData(values: Values, id: id)
+        case .institutions:
+            break
+        case .jointWork:
+            self.saveJointWorkData(values: Values, id: id)
+        case .subordinate:
+            self.saveSubordinateData(values: Values, id: id)
+        case .subordinateMGR:
+            self.saveSubordainateMgrData(values: Values, id: id)
+        case .doctorFencing:
+            self.saveDoctorFencingData(values: Values, id: id)
+        case .myDayPlan:
+            self.saveMyDayPlanData(values: Values)
+        case .syncAll:
+            break
+        case .slideSpeciality:
+            self.saveSlideSpecialityData(values: Values)
+        case .docFeedback:
+            self.saveFeedbackData(values: Values)
+        case .customSetup:
+            break
+        case .leaveType:
+            self.saveLeaveTypeData(values: Values)
+        case .tourPlanStatus:
+            break
+        case .visitControl:
+            self.saveVisitControlData(values: Values)
+        case .stockBalance:
+            self.saveStockBalance(values: Values)
+        case .mapCompDet:
+            self.saveMapCompDetData(values: Values)
+        case .empty:
+            break
+        }
+    }
+    
+    func hasMasterData() -> Bool {
+        var masterArray : [MasterData] = []
+        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterData")
+        
+        do {
+            masterArray = try self.managedContext().fetch(fetch) as! [MasterData]
+        }catch {
+            print("error",error.localizedDescription)
+        }
+            
+        return !masterArray.isEmpty
+    }
+    
+    func getMasterData() -> MasterData {
+        var masterArray:[MasterData] = []
+        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterData")
+        
+        do {
+            masterArray = try self.managedContext().fetch(fetch) as! [MasterData]
+        }
+        catch {
+            print("error",error.localizedDescription)
+        }
+        guard let master = masterArray.first else{
+            let mContext = self.managedContext()
+            let masterEntity = NSEntityDescription.entity(forEntityName: "MasterData", in: mContext)
+            let masterData = MasterData(entity: masterEntity!, insertInto: mContext)
+            return masterData
+        }
+        return master
+    }
+    
+    func deleteAllRecords() {
+        let context = self.managedContext()
+        
+        let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterData")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+    
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+        }catch {
+            
+        }
+    }
+    
+    
+    func saveSlidesData(values : [[String : Any]]) {
+        self.deleteSlidesData()
+        let masterData = self.getMasterData()
+        var slideArray = [ProductSlides]()
+        for (index,slide) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let slideEntity = NSEntityDescription.entity(forEntityName: "ProductSlides", in: contextNew)
+            let slideItem = ProductSlides(entity: slideEntity!, insertInto: contextNew)
+            slideItem.setValues(fromDictionary: slide, context: contextNew)
+            slideItem.index = Int16(index)
+            slideArray.append(slideItem)
+        }
+        
+        if let list = masterData.slides?.allObjects as? [ProductSlides] {
+            _ = list.map{masterData.removeFromSlides($0)}
+        }
+        
+        slideArray.forEach{ (slide) in
+            masterData.addToSlides(slide)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSlidesData() {
+        let masterData = self.getMasterData()
+        if let PrevList = masterData.slides?.allObjects as? [ProductSlides] {
+            _ = PrevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveSlideBrandData(values : [[String : Any]]) {
+        self.deleteSlideBrandData()
+        let masterData = self.getMasterData()
+        var slideBrandArray = [SlideBrand]()
+        for (index,brand) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let slideBrandEntity = NSEntityDescription.entity(forEntityName: "SlideBrand", in: contextNew)
+            let slideBrandItem = SlideBrand(entity: slideBrandEntity!, insertInto: contextNew)
+            slideBrandItem.setValues(fromDictionary: brand, context: contextNew)
+            slideBrandItem.index = Int16(index)
+            slideBrandArray.append(slideBrandItem)
+        }
+        if let list = masterData.slideBrand?.allObjects as? [SlideBrand]{
+            _ = list.map{masterData.removeFromSlideBrand($0)}
+        }
+        slideBrandArray.forEach { (brand) in
+            masterData.addToSlideBrand(brand)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSlideBrandData() {
+        let masterData = self.getMasterData()
+        if let PrevList = masterData.slideBrand?.allObjects as? [SlideBrand]{
+            _ = PrevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveSlideSpecialityData(values : [[String : Any]]) {
+        self.deleteSlideSpecialityData()
+        let masterData = self.getMasterData()
+        var slideSpecialityArray = [SlideSpeciality]()
+        for (index,speciality) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let slideSpecialityEntity = NSEntityDescription.entity(forEntityName: "SlideSpeciality", in: contextNew)
+            let slideSpecialityItem = SlideSpeciality(entity: slideSpecialityEntity!, insertInto: contextNew)
+            slideSpecialityItem.setValues(fromDictionary: speciality, context: contextNew)
+            slideSpecialityItem.index = Int16(index)
+            slideSpecialityArray.append(slideSpecialityItem)
+        }
+        if let list = masterData.slideSpeciality?.allObjects as? [SlideSpeciality]{
+            _ = list.map{masterData.removeFromSlideSpeciality($0)}
+        }
+        slideSpecialityArray.forEach { (special) in
+            masterData.addToSlideSpeciality(special)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSlideSpecialityData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.slideSpeciality?.allObjects as? [SlideSpeciality]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveSubordinateData(values : [[String : Any]],id : String) {
+        self.deleteSubordinate(id: id)
+        let masterData = self.getMasterData()
+        var subordinateArray = [Subordinate]()
+        for (index,subordinate) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let subordinateEntity = NSEntityDescription.entity(forEntityName: "Subordinate", in: contextNew)
+            let subordinateItem = Subordinate(entity: subordinateEntity!, insertInto: contextNew)
+            subordinateItem.setValues(fromDictionary: subordinate, context: contextNew, id1: id)
+            subordinateItem.index = Int16(index)
+            subordinateArray.append(subordinateItem)
+        }
+        
+        if let list = masterData.subordinate?.allObjects  as? [Subordinate] {
+            _ = list.map{masterData.removeFromSubordinate($0)}
+        }
+        
+        subordinateArray.forEach{ (subordinate) in
+            masterData.addToSubordinate(subordinate)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSubordinate(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.subordinate?.allObjects as? [Subordinate] {
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    
+    func saveSubordainateMgrData(values : [[String : Any]],id : String){
+        self.deleteSubordinateMgr(id: id)
+        let masterData = self.getMasterData()
+        var subordinateMgrArray = [Subordinate]()
+        for (index,subordinate) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let subordinateMgrEntity = NSEntityDescription.entity(forEntityName: "Subordinate", in: contextNew)
+            let subordinateMgrItem = Subordinate(entity: subordinateMgrEntity!, insertInto: contextNew)
+            subordinateMgrItem.setValues(fromDictionary: subordinate, context: contextNew, id1: id)
+            subordinateMgrItem.index = Int16(index)
+            subordinateMgrArray.append(subordinateMgrItem)
+        }
+        
+        if let list = masterData.subordinateMgr?.allObjects as? [Subordinate] {
+            _ = list.map{masterData.removeFromSubordinateMgr($0)}
+        }
+        
+        subordinateMgrArray.forEach{ (subordinateMgr) in
+            masterData.addToSubordinateMgr(subordinateMgr)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSubordinateMgr(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.subordinateMgr?.allObjects as? [Subordinate] {
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveDoctorFencingData(values : [[String : Any]],id : String) {
+        self.deleteDoctorData(id: id)
+        let masterData = self.getMasterData()
+        var doctorArray = [DoctorFencing]()
+        for (index,doctor) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let doctorEntity = NSEntityDescription.entity(forEntityName: "DoctorFencing", in: contextNew)
+            let doctorItem = DoctorFencing(entity: doctorEntity!, insertInto: contextNew)
+            doctorItem.setValues(fromDictionary: doctor, id: id)
+            doctorItem.index = Int16(index)
+            doctorArray.append(doctorItem)
+            
+        }
+        
+        if let list = masterData.doctorFencing?.allObjects as? [DoctorFencing]{
+            _ = list.map{masterData.removeFromDoctorFencing($0)}
+        }
+        doctorArray.forEach{ (doctor) in
+            masterData.addToDoctorFencing(doctor)
+        }
+        self.saveContext()
+    }
+    
+    func deleteDoctorData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.subordinateMgr?.allObjects as? [DoctorFencing] {
+            let data = prevList.filter{$0.mapId == id}
+            _ = data.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveChemistData (values : [[String : Any]],id : String) {
+        self.deleteChemistData(id: id)
+        let masterData = self.getMasterData()
+        var chemistArray = [Chemist]()
+        for (index , chemist) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let chemistEntity = NSEntityDescription.entity(forEntityName: "Chemist", in: contextNew)
+            let chemistItem = Chemist(entity: chemistEntity!, insertInto: contextNew)
+            chemistItem.setValues(fromDictionary: chemist, id: id)
+            chemistItem.index = Int16(index)
+            chemistArray.append(chemistItem)
+        }
+        if let list = masterData.chemist?.allObjects as? [Chemist] {
+            _ = list.map{masterData.removeFromChemist($0)}
+        }
+        chemistArray.forEach{ (chm) in
+            masterData.addToChemist(chm)
+        }
+        self.saveContext()
+    }
+    
+    func deleteChemistData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.chemist?.allObjects as? [Chemist]{
+            let data = prevList.filter{$0.mapId == id}
+            _ = data.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveStockistData(values : [[String :Any]],id : String) {
+        self.deleteStockistData(id: id)
+        let masterData = self.getMasterData()
+        var stockistArray = [Stockist]()
+        for (index,stockist) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let stockistEntity = NSEntityDescription.entity(forEntityName: "Stockist", in: contextNew)
+            let stockistItem = Stockist(entity: stockistEntity!, insertInto: contextNew)
+            stockistItem.setValues(fromDictionary: stockist, id: id)
+            stockistItem.index = Int16(index)
+            stockistArray.append(stockistItem)
+        }
+        if let list = masterData.stockist?.allObjects as? [Stockist] {
+            _ = list.map{masterData.removeFromStockist($0)}
+        }
+        stockistArray.forEach{ (stk) in
+            masterData.addToStockist(stk)
+        }
+        self.saveContext()
+    }
+    
+    func deleteStockistData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.stockist?.allObjects as? [Stockist]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveUnListedDoctorData(values : [[String : Any]],id : String) {
+        self.deleteUnListedDoctorData(id: id)
+        let masterData = self.getMasterData()
+        var unListedDoctorArray = [UnListedDoctor]()
+        for (index, doctor) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let doctorEntity = NSEntityDescription.entity(forEntityName: "UnListedDoctor", in: contextNew)
+            let doctorItem = UnListedDoctor(entity: doctorEntity!, insertInto: contextNew)
+            doctorItem.setValues(fromDictionary: doctor, context: contextNew, id: id)
+            doctorItem.index = Int16(index)
+            unListedDoctorArray.append(doctorItem)
+        }
+        if let list = masterData.unListedDoc?.allObjects as? [UnListedDoctor]{
+            _ = list.map{masterData.removeFromUnListedDoc($0)}
+        }
+        unListedDoctorArray.forEach{ (doc) in
+            masterData.addToUnListedDoc(doc)
+        }
+        self.saveContext()
+    }
+    
+    func deleteUnListedDoctorData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.unListedDoc?.allObjects as? [UnListedDoctor]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveWorkTypeData(values : [[String : Any]]){
+        self.deleteWorkTypeData()
+        let masterData = self.getMasterData()
+        var workTypeArray = [WorkType]()
+        for (index,workType) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let workTypeEntity = NSEntityDescription.entity(forEntityName: "WorkType", in: contextNew)
+            let workTypeItem = WorkType(entity: workTypeEntity!, insertInto: contextNew)
+            workTypeItem.setValues(fromDictionary: workType)
+            workTypeItem.index = Int16(index)
+            workTypeArray.append(workTypeItem)
+        }
+        if let list = masterData.workType?.allObjects as? [WorkType]{
+            _ = list.map{masterData.removeFromWorkType($0)}
+        }
+        workTypeArray.forEach{ (workType) in
+            masterData.addToWorkType(workType)
+        }
+        self.saveContext()
+    }
+    
+    func deleteWorkTypeData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.workType?.allObjects as? [WorkType] {
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveTerritoryData(values : [[String : Any]],id : String) {
+        self.deleteTerritoryData(id: id)
+        let masterData = self.getMasterData()
+        var territoryArray = [Territory]()
+        for (index,territory) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let territoryEntity = NSEntityDescription.entity(forEntityName: "Territory", in: contextNew)
+            let territoryItem = Territory(entity: territoryEntity!, insertInto: contextNew)
+            territoryItem.setValues(fromDictionary: territory, id: id)
+            territoryItem.index = Int16(index)
+            territoryArray.append(territoryItem)
+        }
+        if let list = masterData.territory?.allObjects as? [Territory]{
+            _ = list.map{masterData.removeFromTerritory($0)}
+        }
+        territoryArray.forEach{ (territory) in
+            masterData.addToTerritory(territory)
+        }
+        self.saveContext()
+    }
+    
+    func deleteTerritoryData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.territory?.allObjects as? [Territory]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveMyDayPlanData(values : [[String : Any]]) {
+        self.deleteMyDayPlanData()
+        let masterData = self.getMasterData()
+        var myDayPlanArray = [MyDayPlan]()
+        for (index,mydayPlan) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let myDayPlanEntity = NSEntityDescription.entity(forEntityName: "MyDayPlan", in: contextNew)
+            let myDayPlanItem = MyDayPlan(entity: myDayPlanEntity!, insertInto: contextNew)
+            myDayPlanItem.setValues(fromDictionary: mydayPlan, context: contextNew)
+            myDayPlanItem.index = Int16(index)
+            myDayPlanArray.append(myDayPlanItem)
+        }
+        if let list = masterData.myDayPlan?.allObjects as? [MyDayPlan] {
+            _ = list.map{masterData.removeFromMyDayPlan($0)}
+        }
+        myDayPlanArray.forEach{ (dayPlan) in
+            masterData.addToMyDayPlan(dayPlan)
+        }
+        self.saveContext()
+    }
+    
+    func deleteMyDayPlanData(){
+        let masterData = self.getMasterData()
+        if let prevList = masterData.myDayPlan?.allObjects as? [MyDayPlan]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveJointWorkData(values : [[String :Any]], id : String){
+        self.deleteJointWorkData(id: id)
+        let masterData = self.getMasterData()
+        var jointWorkArray = [JointWork]()
+        for (index,jointWrk) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let jointWorkEntity = NSEntityDescription.entity(forEntityName: "JointWork", in: contextNew)
+            let jointWorkItem = JointWork(entity: jointWorkEntity!, insertInto: contextNew)
+            jointWorkItem.setValues(fromDictionary: jointWrk, id: id)
+            jointWorkItem.index = Int16(index)
+            jointWorkArray.append(jointWorkItem)
+        }
+        if let list = masterData.jointWork?.allObjects as? [JointWork]{
+            _ = list.map{masterData.removeFromJointWork($0)}
+        }
+        jointWorkArray.forEach{ (jointWork) in
+            masterData.addToJointWork(jointWork)
+        }
+        self.saveContext()
+    }
+    
+    func deleteJointWorkData(id :String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.jointWork?.allObjects as? [JointWork]{
+            let data = prevList.filter{$0.mapId == id}
+                _ = data.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveProductData(values : [[String : Any]],id : String) {
+        self.deleteProductData(id: id)
+        let masterData = self.getMasterData()
+        var productArray = [Product]()
+        for (index,product) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let productEntity = NSEntityDescription.entity(forEntityName: "Product", in: contextNew)
+            let productItem = Product(entity: productEntity!, insertInto: contextNew)
+            productItem.setValues(fromDictionary: product, id: id)
+            productItem.index = Int16(index)
+            productArray.append(productItem)
+        }
+        if let list = masterData.product?.allObjects as? [Product]{
+            _ = list.map{masterData.removeFromProduct($0)}
+        }
+        productArray.forEach { (product) in
+            masterData.addToProduct(product)
+        }
+        self.saveContext()
+    }
+    func deleteProductData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.product?.allObjects as? [Product]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveInputData(values : [[String : Any]],id : String){
+        self.deleteInputData(id: id)
+        let masterData = self.getMasterData()
+        var inputArray = [Input]()
+        for (index,input) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let inputEntity = NSEntityDescription.entity(forEntityName: "Input", in: contextNew)
+            let inputItem = Input(entity: inputEntity!, insertInto: contextNew)
+            inputItem.setValues(fromDictionary: input, context: contextNew, id: id)
+            inputItem.index = Int16(index)
+            inputArray.append(inputItem)
+        }
+        if let list = masterData.input?.allObjects as? [Input]{
+            _ = list.map{masterData.removeFromInput($0)}
+        }
+        inputArray.forEach { (input) in
+            masterData.addToInput(input)
+        }
+        self.saveContext()
+    }
+    
+    func deleteInputData(id : String){
+        let masterData = self.getMasterData()
+        if let prevList = masterData.input?.allObjects as? [Input]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveBrandData(values : [[String : Any]]) {
+        self.deleteBrandData()
+        let masterData = self.getMasterData()
+        var brandArray = [Brand]()
+        for (index,brand) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let brandEntity = NSEntityDescription.entity(forEntityName: "Brand", in: contextNew)
+            let brandItem = Brand(entity: brandEntity!, insertInto: contextNew)
+            brandItem.setValues(fromDictionary: brand)
+            brandItem.index = Int16(index)
+            brandArray.append(brandItem)
+        }
+        if let list = masterData.brand?.allObjects as? [Brand]{
+            _ = list.map{masterData.removeFromBrand($0)}
+        }
+        brandArray.forEach { (brand) in
+            masterData.addToBrand(brand)
+        }
+        self.saveContext()
+    }
+    
+    func deleteBrandData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.brand?.allObjects as? [Brand]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveCompetitorData(values : [[String : Any]]){
+        self.deleteCompetitorData()
+        let masterData = self.getMasterData()
+        var competitorArray = [Competitor]()
+        for (index,competitor) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let competitorEntity = NSEntityDescription.entity(forEntityName: "Competitor", in: contextNew)
+            let competitorItem = Competitor(entity: competitorEntity!, insertInto: contextNew)
+            competitorItem.setValues(fromDictionary: competitor)
+            competitorItem.index = Int16(index)
+            competitorArray.append(competitorItem)
+        }
+        if let list = masterData.competitor?.allObjects as? [Competitor]{
+            _ = list.map{masterData.removeFromCompetitor($0)}
+        }
+        competitorArray.forEach { (competitor) in
+            masterData.addToCompetitor(competitor)
+        }
+        self.saveContext()
+    }
+    
+    func deleteCompetitorData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.competitor?.allObjects as? [Competitor]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveSpecialityData(values : [[String : Any]]) {
+        self.deleteSpecialityData()
+        let masterData = self.getMasterData()
+        var specialityArray = [Speciality]()
+        for (index,speciality) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let specialityEntity = NSEntityDescription.entity(forEntityName: "Speciality", in: contextNew)
+            let specialityItem = Speciality(entity: specialityEntity!, insertInto: contextNew)
+            specialityItem.setValues(fromDictionary: speciality)
+            specialityItem.index = Int16(index)
+            specialityArray.append(specialityItem)
+        }
+        if let list = masterData.speciality?.allObjects as? [Speciality]{
+            _ = list.map{masterData.removeFromSpeciality($0)}
+        }
+        specialityArray.forEach { (speciality) in
+            masterData.addToSpeciality(speciality)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSpecialityData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.speciality?.allObjects as? [Speciality]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveQualificationData(values : [[String : Any]]){
+        self.deleteQualificationData()
+        let masterData = self.getMasterData()
+        var qualificationArray = [Qualifications]()
+        for (index,quali) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let qualificationEntity = NSEntityDescription.entity(forEntityName: "Qualifications", in: contextNew)
+            let qualificationItem = Qualifications(entity: qualificationEntity!, insertInto: contextNew)
+            qualificationItem.setValues(fromDictionary: quali)
+            qualificationItem.index = Int16(index)
+            qualificationArray.append(qualificationItem)
+        }
+        if let list = masterData.qualification?.allObjects as? [Qualifications]{
+            _ = list.map{masterData.removeFromQualification($0)}
+        }
+        qualificationArray.forEach { (qualification) in
+            masterData.addToQualification(qualification)
+        }
+        self.saveContext()
+    }
+    
+    func deleteQualificationData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.qualification?.allObjects as? [Qualifications]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveCategoryData(values : [[String : Any]]) {
+        self.deleteCategoryData()
+        let masterData = self.getMasterData()
+        var categoryArray = [DoctorCategory]()
+        for (index,category) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let categoryEntity = NSEntityDescription.entity(forEntityName: "DoctorCategory", in: contextNew)
+            let categoryItem = DoctorCategory(entity: categoryEntity!, insertInto: contextNew)
+            categoryItem.setValues(fromDictionary: category)
+            categoryItem.index = Int16(index)
+            categoryArray.append(categoryItem)
+        }
+        if let list = masterData.category?.allObjects as? [DoctorCategory]{
+            _ = list.map{masterData.removeFromCategory($0)}
+        }
+        categoryArray.forEach { (category) in
+            masterData.addToCategory(category)
+        }
+        self.saveContext()
+    }
+    
+    func deleteCategoryData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.category?.allObjects as? [DoctorCategory]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveDoctorClassData(values : [[String : Any]]) {
+        self.deleteDoctorClassData()
+        let masterData = self.getMasterData()
+        var classArray = [DoctorClass]()
+        for (index,cls) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let classEntity = NSEntityDescription.entity(forEntityName: "DoctorClass", in: contextNew)
+            let classItem = DoctorClass(entity: classEntity!, insertInto: contextNew)
+            classItem.setValues(fromDictionary: cls)
+            classItem.index = Int16(index)
+            classArray.append(classItem)
+        }
+        if let list = masterData.doctorClass?.allObjects as? [DoctorClass]{
+            _ = list.map{masterData.removeFromDoctorClass($0)}
+        }
+        classArray.forEach { (docClass) in
+            masterData.addToDoctorClass(docClass)
+        }
+        self.saveContext()
+    }
+    
+    
+    func deleteDoctorClassData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.doctorClass?.allObjects as? [DoctorClass]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveDepartsData(values : [[String : Any]]) {
+        self.deleteDepartsData()
+        let masterData = self.getMasterData()
+        var departArray = [Departs]()
+        for (index,depart) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let departEntity = NSEntityDescription.entity(forEntityName: "Departs", in: contextNew)
+            let departItem = Departs(entity: departEntity!, insertInto: contextNew)
+            departItem.setValues(fromDictionary: depart)
+            departItem.index = Int16(index)
+            departArray.append(departItem)
+        }
+        if let list = masterData.departs?.allObjects as? [Departs]{
+            _ = list.map{masterData.removeFromDeparts($0)}
+        }
+        departArray.forEach { (departs) in
+            masterData.addToDeparts(departs)
+        }
+        self.saveContext()
+    }
+    
+    func deleteDepartsData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.departs?.allObjects as? [Departs]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveFeedbackData(values : [[String : Any]]) {
+        self.deleteFeedbackData()
+        let masterData = self.getMasterData()
+        var feedbackArray = [Feedback]()
+        for (index,feedback) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let feedbackEntity = NSEntityDescription.entity(forEntityName: "Feedback", in: contextNew)
+            let feedbackItem = Feedback(entity: feedbackEntity!, insertInto: contextNew)
+            feedbackItem.setValues(fromDictionary: feedback)
+            feedbackItem.index = Int16(index)
+            feedbackArray.append(feedbackItem)
+        }
+        if let list = masterData.feedback?.allObjects as? [Feedback]{
+            _ = list.map{masterData.removeFromFeedback($0)}
+        }
+        feedbackArray.forEach { Feedback in
+            masterData.addToFeedback(Feedback)
+        }
+        self.saveContext()
+    }
+    
+    func deleteFeedbackData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.feedback?.allObjects as? [Feedback]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveLeaveTypeData(values : [[String : Any]]) {
+        self.deleteLeaveTypeData()
+        let masterData = self.getMasterData()
+        var leaveArray = [LeaveType]()
+        for (index,leaveType) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let leaveTypeEntity = NSEntityDescription.entity(forEntityName: "LeaveType", in: contextNew)
+            let leaveTypeItem = LeaveType(entity: leaveTypeEntity!, insertInto: contextNew)
+            leaveTypeItem.setValues(fromDictionary: leaveType, context: contextNew)
+            leaveTypeItem.index = Int16(index)
+            leaveArray.append(leaveTypeItem)
+        }
+        if let list = masterData.leaveType?.allObjects as? [LeaveType]{
+            _ = list.map{masterData.removeFromLeaveType($0)}
+        }
+        leaveArray.forEach { LeaveType in
+            masterData.addToLeaveType(LeaveType)
+        }
+        self.saveContext()
+    }
+    
+    func deleteLeaveTypeData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.leaveType?.allObjects as? [LeaveType]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+ 
+    func saveVisitControlData(values : [[String : Any]]) {
+        self.deleteVisitControlData()
+        let masterData = self.getMasterData()
+        var vistiControlArray = [VisitControl]()
+        for (index,visitControl) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let visitControlEntity = NSEntityDescription.entity(forEntityName: "VisitControl", in: contextNew)
+            let visitControlItem = VisitControl(entity: visitControlEntity!, insertInto: contextNew)
+            visitControlItem.setValues(fromDictionary: visitControl)
+            visitControlItem.index = Int16(index)
+            vistiControlArray.append(visitControlItem)
+        }
+        if let list = masterData.visitControl?.allObjects as? [VisitControl]{
+            _ = list.map{masterData.removeFromVisitControl($0)}
+        }
+        vistiControlArray.forEach { VisitControl in
+            masterData.addToVisitControl(VisitControl)
+        }
+        self.saveContext()
+    }
+    
+    func deleteVisitControlData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.visitControl?.allObjects as? [VisitControl]{
+            _  = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    
+    func saveStockBalance(values : [[String : Any]]) {
+        self.deleteStockBalance()
+        guard let stock = values.first else{
+            return
+        }
+
+        let masterData = self.getMasterData()
+        let mContextnew = self.managedContext()
+        let StockEntity = NSEntityDescription.entity(forEntityName: "StockBalance", in: mContextnew)
+        let stockItem = StockBalance(entity: StockEntity!, insertInto: mContextnew)
+        stockItem.setValues(fromDictionary: stock, context: mContextnew)
+        masterData.stockBalance = stockItem
+        self.saveContext()
+    }
+    
+    func deleteStockBalance() {
+        let masterData = self.getMasterData()
+        if let list = masterData.stockBalance {
+            self.managedContext().delete(list)
+        }
+        self.saveContext()
+    }
+    
+    func saveMapCompDetData(values : [[String : Any]]){
+        self.deleteMapCompDetData()
+        let masterData = self.getMasterData()
+        var mapCompDetArray = [MapCompDet]()
+        for (index,map) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let mapCompDetEntity = NSEntityDescription.entity(forEntityName: "MapCompDet", in: contextNew)
+            let mapCompDetItem = MapCompDet(entity: mapCompDetEntity!, insertInto: contextNew)
+            mapCompDetItem.setValues(fromDictionary: map)
+            mapCompDetItem.index = Int16(index)
+            mapCompDetArray.append(mapCompDetItem)
+        }
+        if let list = masterData.mapCompDet?.allObjects as? [MapCompDet]{
+            _ = list.map{masterData.removeFromMapCompDet($0)}
+        }
+        mapCompDetArray.forEach{ MapCompDet in
+            masterData.addToMapCompDet(MapCompDet)
+        }
+        self.saveContext()
+    }
+    
+    func deleteMapCompDetData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.mapCompDet?.allObjects as? [MapCompDet]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func getSlide() -> [ProductSlides] {
+        let masterData = self.getMasterData()
+        guard let slideArray = masterData.slides?.allObjects as? [ProductSlides] else{
+            return [ProductSlides]()
+        }
+        let array = slideArray.sorted{ (item1 , item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getSlideBrand() -> [SlideBrand]{
+        let masterData = self.getMasterData()
+        guard let slideBrandArray = masterData.slideBrand?.allObjects as? [SlideBrand] else{
+            return [SlideBrand]()
+        }
+        let array = slideBrandArray.sorted{ (item1 , item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getSlideSpeciality() -> [SlideSpeciality]{
+        let masterData = self.getMasterData()
+        guard let slideSpecialityArray = masterData.slideSpeciality?.allObjects as? [SlideSpeciality] else{
+            return [SlideSpeciality]()
+        }
+        let array = slideSpecialityArray.sorted{ (item1 , item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getSubordinate() -> [Subordinate] {
+        let masterData = self.getMasterData()
+        guard let subordinateArray = masterData.subordinate?.allObjects as? [Subordinate] else{
+            return [Subordinate]()
+        }
+        let array = subordinateArray.sorted{ (item1 , item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getSubordinateMGR() -> [Subordinate] {
+        let masterData = self.getMasterData()
+        
+        guard let subordinateMgrArray = masterData.subordinateMgr?.allObjects as? [Subordinate] else{
+            return [Subordinate]()
+        }
+        
+        let array = subordinateMgrArray.sorted{ (item1 , item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getDoctor() -> [DoctorFencing]{
+        let masterData = self.getMasterData()
+        guard let doctorArray = masterData.doctorFencing?.allObjects as? [DoctorFencing] else {
+            return [DoctorFencing]()
+        }
+        let array = doctorArray.sorted{ (item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getChemist() -> [Chemist]{
+        let masterData = self.getMasterData()
+        guard let chemistArray = masterData.chemist?.allObjects as? [Chemist] else {
+            return [Chemist]()
+        }
+        let array = chemistArray.sorted{ (item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getStockist() -> [Stockist]{
+        let masterData = self.getMasterData()
+        guard let stockistArray = masterData.stockist?.allObjects as? [Stockist] else{
+            return [Stockist]()
+        }
+        let array = stockistArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getUnListedDoctor() -> [UnListedDoctor]{
+        let masterData = self.getMasterData()
+        guard let unlistedDoctorArray = masterData.unListedDoc?.allObjects as? [UnListedDoctor] else {
+            return [UnListedDoctor]()
+        }
+        let array = unlistedDoctorArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getWorkType() -> [WorkType]{
+        let masterData = self.getMasterData()
+        guard let workTypeArray = masterData.workType?.allObjects as? [WorkType] else{
+            return [WorkType]()
+        }
+        let array = workTypeArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getTerritory() -> [Territory]{
+        let masterData = self.getMasterData()
+        
+        guard let territoryArray = masterData.territory?.allObjects as? [Territory] else{
+            return [Territory]()
+        }
+        let array = territoryArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getMyDayPlan() -> [MyDayPlan]{
+        let masterData = self.getMasterData()
+        guard let mydayplanArray = masterData.myDayPlan?.allObjects as? [MyDayPlan] else{
+            return [MyDayPlan]()
+        }
+        let array = mydayplanArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getJointWork() -> [JointWork]{
+        let masterData = self.getMasterData()
+        guard let jointWorkArray = masterData.jointWork?.allObjects as? [JointWork] else{
+            return [JointWork]()
+        }
+        let array = jointWorkArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getProduct() -> [Product]{
+        let masterData = self.getMasterData()
+        guard let productArray = masterData.product?.allObjects as? [Product] else{
+            return [Product]()
+        }
+        let array = productArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+
+    func getInput() -> [Input]{
+        let masterData = self.getMasterData()
+        guard let inputArray = masterData.input?.allObjects as? [Input] else{
+            return [Input]()
+        }
+        let array = inputArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getBrands() -> [Brand]{
+        let masterData = self.getMasterData()
+        guard let brandArray = masterData.brand?.allObjects as? [Brand] else{
+            return [Brand]()
+        }
+        let array = brandArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getCompetitor() -> [Competitor]{
+        let masterData = self.getMasterData()
+        guard let competitorArray = masterData.competitor?.allObjects as? [Competitor] else{
+            return [Competitor]()
+        }
+        let array = competitorArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getSpeciality() -> [Speciality]{
+        let masterData = self.getMasterData()
+        guard let specialityArray = masterData.speciality?.allObjects as? [Speciality] else{
+            return [Speciality]()
+        }
+        let array = specialityArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getDoctorClass() -> [DoctorClass]{
+        let masterData = self.getMasterData()
+        guard let classArray = masterData.doctorClass?.allObjects as? [DoctorClass] else{
+            return [DoctorClass]()
+        }
+        let array = classArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getDeparts() -> [Departs]{
+        let masterData = self.getMasterData()
+        guard let departArray = masterData.departs?.allObjects as? [Departs] else{
+            return [Departs]()
+        }
+        let array = departArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getCategory() -> [DoctorCategory] {
+        let masterData = self.getMasterData()
+        guard let categoryArray = masterData.category?.allObjects as? [DoctorCategory] else{
+            return [DoctorCategory]()
+        }
+        let array = categoryArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+  
+    func getQualification() -> [Qualifications]{
+        let masterData = self.getMasterData()
+        guard let qualiArray = masterData.qualification?.allObjects as? [Qualifications] else{
+            return [Qualifications]()
+        }
+        let array = qualiArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getLeaveType() -> [LeaveType]{
+        let masterData = self.getMasterData()
+        guard let leaveArray = masterData.leaveType?.allObjects as? [LeaveType] else{
+            return [LeaveType]()
+        }
+        let array = leaveArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getVisitControl() -> [VisitControl]{
+        let masterData = self.getMasterData()
+        guard let visitArray = masterData.visitControl?.allObjects as? [VisitControl] else{
+            return [VisitControl]()
+        }
+        let array = visitArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getMapCompDet() -> [MapCompDet]{
+        let masterData = self.getMasterData()
+        guard let mapArray = masterData.mapCompDet?.allObjects as? [MapCompDet] else{
+            return [MapCompDet]()
+        }
+        let array = mapArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    
+    func getFeedback() -> [Feedback]{
+        let masterData = self.getMasterData()
+        guard let feedbackArray = masterData.feedback?.allObjects as? [Feedback] else{
+            return [Feedback]()
+        }
+        let array = feedbackArray.sorted { (item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getStockBalance() -> StockBalance? {
+        let masterData = self.getMasterData()
+        return masterData.stockBalance
+    }
+}
+

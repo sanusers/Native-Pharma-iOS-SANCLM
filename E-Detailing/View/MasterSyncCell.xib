@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Satoshi-Bold.otf">
+            <string>Satoshi-Bold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="7ip-Rl-FZG" customClass="MasterSyncCell" customModule="E_Detailing" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="210" height="100"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Yee-q8-msc">
+                <rect key="frame" x="0.0" y="0.0" width="210" height="100"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GU2-iu-TVH" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="210" height="100"/>
+                        <subviews>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="v0k-k2-b5q">
+                                <rect key="frame" x="180" y="10" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="J4J-Qo-sOj"/>
+                                    <constraint firstAttribute="height" constant="20" id="m3i-Vg-XT2"/>
+                                </constraints>
+                                <color key="color" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="0.89644557120000001" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eN-mx-6o0">
+                                <rect key="frame" x="10" y="10" width="150" height="22.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="xQc-ft-OQk"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qnb-C7-kQn">
+                                <rect key="frame" x="10" y="65" width="60" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="g65-TY-uiH"/>
+                                    <constraint firstAttribute="width" constant="60" id="zsW-4Z-Ojx"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65472371688741726" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8z7-Tb-eY9" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="210" height="100"/>
+                                <color key="backgroundColor" red="0.15686274509803921" green="0.16470588235294117" blue="0.23529411764705882" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Sync"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="shadowColor">
+                                        <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="v0k-k2-b5q" firstAttribute="leading" secondItem="5eN-mx-6o0" secondAttribute="trailing" constant="20" id="3B4-MR-s4A"/>
+                            <constraint firstAttribute="bottom" secondItem="Qnb-C7-kQn" secondAttribute="bottom" constant="15" id="ABP-Vn-git"/>
+                            <constraint firstItem="8z7-Tb-eY9" firstAttribute="leading" secondItem="GU2-iu-TVH" secondAttribute="leading" id="CAj-jE-loe"/>
+                            <constraint firstAttribute="bottom" secondItem="8z7-Tb-eY9" secondAttribute="bottom" id="PL1-Ib-04x"/>
+                            <constraint firstItem="Qnb-C7-kQn" firstAttribute="leading" secondItem="GU2-iu-TVH" secondAttribute="leading" constant="10" id="UkZ-Jw-S6s"/>
+                            <constraint firstItem="v0k-k2-b5q" firstAttribute="top" secondItem="GU2-iu-TVH" secondAttribute="top" constant="10" id="VSC-5i-dEh"/>
+                            <constraint firstAttribute="trailing" secondItem="8z7-Tb-eY9" secondAttribute="trailing" id="c0j-xT-zr7"/>
+                            <constraint firstAttribute="trailing" secondItem="v0k-k2-b5q" secondAttribute="trailing" constant="10" id="chn-Vi-dgn"/>
+                            <constraint firstItem="8z7-Tb-eY9" firstAttribute="top" secondItem="GU2-iu-TVH" secondAttribute="top" id="dVS-CX-pzp"/>
+                            <constraint firstAttribute="height" constant="100" id="gx4-zy-mws"/>
+                            <constraint firstItem="5eN-mx-6o0" firstAttribute="top" secondItem="GU2-iu-TVH" secondAttribute="top" constant="10" id="m1E-Vp-WAL"/>
+                            <constraint firstItem="5eN-mx-6o0" firstAttribute="leading" secondItem="GU2-iu-TVH" secondAttribute="leading" constant="10" id="nQK-K5-tAS"/>
+                            <constraint firstItem="Qnb-C7-kQn" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5eN-mx-6o0" secondAttribute="bottom" constant="10" id="xvA-Yi-2No"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="GU2-iu-TVH" firstAttribute="leading" secondItem="Yee-q8-msc" secondAttribute="leading" id="BZq-Qi-TnZ"/>
+                    <constraint firstItem="GU2-iu-TVH" firstAttribute="top" secondItem="Yee-q8-msc" secondAttribute="top" id="F7p-Ea-1jn"/>
+                    <constraint firstAttribute="trailing" secondItem="GU2-iu-TVH" secondAttribute="trailing" id="czq-9X-ZTZ"/>
+                    <constraint firstAttribute="bottom" secondItem="GU2-iu-TVH" secondAttribute="bottom" id="jzc-2b-A6D"/>
+                </constraints>
+            </collectionViewCellContentView>
+            <size key="customSize" width="283" height="95"/>
+            <connections>
+                <outlet property="activityIndicator" destination="v0k-k2-b5q" id="fmr-Ci-I2B"/>
+                <outlet property="btnSync" destination="8z7-Tb-eY9" id="mmP-cV-7sq"/>
+                <outlet property="lblCount" destination="Qnb-C7-kQn" id="KWF-ka-9NP"/>
+                <outlet property="lblName" destination="5eN-mx-6o0" id="T9P-Fd-3UZ"/>
+            </connections>
+            <point key="canvasLocation" x="30.73170731707317" y="208.98305084745763"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
