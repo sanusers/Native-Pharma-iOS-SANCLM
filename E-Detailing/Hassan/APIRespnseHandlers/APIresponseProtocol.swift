@@ -11,7 +11,8 @@ import Foundation
 protocol APIResponseProtocol{
     func responseDecode<T: Decodable>(to modal : T.Type,
                               _ result : @escaping Closure<T>) -> APIResponseProtocol
-    func responseJSON(_ result : @escaping Closure<[JSON]>) -> APIResponseProtocol
+    func responseArrJSON(_ result : @escaping Closure<[JSON]>) -> APIResponseProtocol
+    func responseJSON(_ result : @escaping Closure<JSON>) -> APIResponseProtocol
     func responseFailure(_ error :@escaping Closure<String>)
 }
 

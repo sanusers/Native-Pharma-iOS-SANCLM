@@ -11,7 +11,8 @@ class APIResponseHandler : APIResponseProtocol{
   
     init(){
     }
-    var jsonSeq : Closure<[JSON]>?
+    var jsonArrSeq : Closure<[JSON]>?
+    var jsonSeq : Closure<JSON>?
     var dataSeq : Closure<Data>?
     var errorSeq : Closure<String>?
     
@@ -22,28 +23,44 @@ class APIResponseHandler : APIResponseProtocol{
         return self
     }
     
-    func responseJSON(_ result: @escaping Closure<[JSON]>) -> APIResponseProtocol {
+    func responseJSON(_ result: @escaping Closure<JSON>) -> APIResponseProtocol {
         self.jsonSeq = result
         return self
     }
+    
+    
+    func responseArrJSON(_ result: @escaping Closure<[JSON]>) -> APIResponseProtocol {
+        self.jsonArrSeq = result
+        return self
+    }
+    
+    
     func responseFailure(_ error: @escaping Closure<String>) {
         self.errorSeq = error
         
       }
-      
 
-    
-
-    func handleSuccess(value : [JSON], data : Data){
+    func handleSuccess(value : JSON, data : Data){
         //
         if let jsonEscaping = self.jsonSeq{
-            jsonEscaping(value as [JSON])
+            jsonEscaping(value as JSON)
         }
         if let dataEscaping = dataSeq{
             dataEscaping(data)
             
         }
     }
+    
+    
+    func handleArrSuccess(value : [JSON], data : Data){
+        if let jsonEscaping = self.jsonArrSeq{
+            jsonEscaping(value as [JSON])
+        }
+        if let dataEscaping = dataSeq{
+            dataEscaping(data)
+        }
+    }
+    
     func handleFailure(value : String){
         self.errorSeq?(value)
      }

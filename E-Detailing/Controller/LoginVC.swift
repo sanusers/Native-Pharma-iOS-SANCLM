@@ -20,7 +20,7 @@ class LoginVC : UIViewController {
     
     @IBOutlet weak var imgLogo: UIImageView!
     
-    
+    var homeVM: HomeViewModal?
     var imgUrl : String!
     
     var weburl : String! 
@@ -28,19 +28,28 @@ class LoginVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.homeVM = HomeViewModal()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
      //   self.navigationController?.isNavigationBarHidden = true
         
         let data = AppDefaults.shared.getConfig()
         let url = URL(string: data.webUrl + data.logoImg)!
         
-        if let data = try? Data(contentsOf: url) {
-            
-            let imgData : [String : Any] = ["name" : AppDefaults.shared.appConfig!.logoImg , "data" : data]
-            AppDefaults.shared.save(key: .logoImage, value: imgData)
-            self.imgLogo.image = UIImage(data: data)
-         }
+        Dispatch.background {
+            // do stuff
+            print("Data fetching")
+            var imageData : Data?
+            if let data = try? Data(contentsOf: url) {
+                imageData = data
+                let imgData : [String : Any] = ["name" : AppDefaults.shared.appConfig!.logoImg , "data" : data]
+                AppDefaults.shared.save(key: .logoImage, value: imgData)
+            Dispatch.main {
+                // update UI
+                self.imgLogo.image = UIImage(data: imageData ?? Data())
+            }
+        }
+        }
+  
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -56,6 +65,19 @@ class LoginVC : UIViewController {
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             appDelegate.setupRootViewControllers()
         }
+    }
+    
+    func doUserLogin(param: [String: Any]) {
+        dump(param)
+        homeVM?.doUserLogin(params: param, api: .actionLogin, { responseData in
+            switch responseData {
+                
+            case .success(let loginData):
+                dump(loginData)
+            case .failure(let error):
+                dump(error)
+            }
+        })
     }
     
     
@@ -81,64 +103,80 @@ class LoginVC : UIViewController {
         print(AppDefaults.shared.appConfig!.webUrl)
         print(AppDefaults.shared.appConfig!.iosUrl)
         
+//        var params = [String: Any]()
+//        params["name"] = userId
+//        params["password"] = password
+//        params["versionNo"] = "V.1.0"
+//        params["mode"] = "iOS-Edeting"
+//        params["Device_version"] = version
+//        params["device_id"] = ""
+//        params["Device_name"] = modelName
+//        params["AppDeviceRegId"] = ""
+//        params["password"] = password
+//        params["location"] = ""
+//        let toSendParams = ["data" : params.toString()]
+       
+        
         let urlStr = appMainURL + "action/login" //"login"  // "http://crm.saneforce.in/apps/ConfigiOSEdet.json"
         
-        let params = "{\"name\" : \(userId),\"password\" : \(password), \"versionNo\" : \"V.1.0\",\"mode\": \"iOS-Edeting\",\"Device_version\" : \(version),\"device_id\" : \"\",\"Device_name\" : \(modelName),\"AppDeviceRegId\" : \"\", \"location\" : \"\"}"
+       // let params = "{\"name\" : \(userId),\"password\" : \(password), \"versionNo\" : \"V.1.0\",\"mode\": \"iOS-Edeting\",\"Device_version\" : \(version),\"device_id\" : \"\",\"Device_name\" : \(modelName),\"AppDeviceRegId\" : \"\", \"location\" : \"\"}"
         
         
         let paramStr = ["name" : userId,"password" : password,"versionNo": "i.1.0","mode" : "iOS-Edeting","Device_version": version,"device_id" : "","Device_name" : modelName,"AppDeviceRegId" : "", "location" : ""]
-        
-        print(params)
-        
+
+        print(paramStr)
+
         let param = ["data" : paramStr.toString()]
-        
+        doUserLogin(param: param)
+
         print(urlStr)
         print(param)
 
         let date = Date()
-        
+
         print(date)
-        AF.request(urlStr,method: .post,parameters: param).responseData(){ (response) in
-            
-            switch response.result {
-                
-                case .success(_):
-                    do {
-                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                        
-                        let date1 = Date()
-                        
-                        print(date1)
-        
-                        print("ssususnbjbo")
-                        print(apiResponse)
-                        print("ssusus")
-                        
-                        let status = self.getStatus(json: apiResponse)
-                        
-                        if status.isOk {
-                            
-                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
-                            
-                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                                appDelegate.setupRootViewControllers()
-                            }
-                        }
-                        
-                    }catch {
-                        
-                    }
-                case .failure(let error):
-                
-                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-                    print(error)
-                    return
-            }
-            
-            print("2")
-            print(response)
-            print("2")
-        }
+//        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
+//
+//            switch response.result {
+//
+//                case .success(_):
+//                    do {
+//                        let apiResponse = response
+//                        //try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
+//
+//                        let date1 = Date()
+//
+//                        print(date1)
+//
+//                        print("ssususnbjbo")
+//                        print(apiResponse)
+//                        print("ssusus")
+//
+//                        let status = self.getStatus(json: apiResponse)
+//
+//                        if status.isOk {
+//
+//                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
+//
+//                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+//                                appDelegate.setupRootViewControllers()
+//                            }
+//                        }
+//
+//                    }catch {
+//
+//                    }
+//                case .failure(let error):
+//
+//                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+//                    print(error)
+//                    return
+//            }
+//
+//            print("2")
+//            print(response)
+//            print("2")
+//        }
     }
     
     
@@ -300,3 +338,14 @@ extension Dictionary{
 //            }
 //
 //        }.resume()
+func background(work: @escaping () -> ()) {
+    DispatchQueue.global(qos: .userInitiated).async {
+        work()
+    }
+}
+
+func main(work: @escaping () -> ()) {
+    DispatchQueue.main.async {
+        work()
+    }
+}

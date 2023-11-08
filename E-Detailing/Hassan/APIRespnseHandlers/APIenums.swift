@@ -11,8 +11,8 @@ import Alamofire
 
 enum APIEnums : String{
     
-    case none
-    case loginAction = "action/login"
+    case none = ""
+    case actionLogin = "action/login"
     
 }
 
@@ -20,6 +20,8 @@ enum APIEnums : String{
 extension APIEnums{//Return method for API
     var method : HTTPMethod{
         switch self {
+        case .actionLogin:
+            return .post
         default:
             return .get
         }

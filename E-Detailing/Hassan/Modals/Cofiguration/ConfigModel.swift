@@ -45,7 +45,7 @@ class Config : Codable {
     
     
     enum CodingKeys: String, CodingKey {
-    
+        
         case appurl
         case webUrl = "weburl"
         case baseUrl = "baseurl"
@@ -59,18 +59,18 @@ class Config : Codable {
         case mailUrl = "mailUrl"
     }
     
-     init() {
-         self.webUrl = ""
+    init() {
+        self.webUrl = ""
         self.iosUrl = ""
         self.bgImg = ""
         self.division = ""
         self.logoImg = ""
         self.reportUrl = ""
         self.slideUrl = ""
-         self.baseUrl = ""
-         self.appurl = ""
-         self.mailUrl = ""
-         self.syncUrl = ""
+        self.baseUrl = ""
+        self.appurl = ""
+        self.mailUrl = ""
+        self.syncUrl = ""
     }
     
     required init(from decoder : Decoder) throws{
@@ -89,3 +89,33 @@ class Config : Codable {
     }
 }
 
+class LoginData: Codable {
+    let successCode: Int
+    let statusMessage: String
+    let successMessage: String
+    let message: String
+    
+    
+    enum CodingKeys: String, CodingKey {
+        
+        case successCode = "success"
+        case statusMessage = "msg"
+        case successMessage = "Msg"
+
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.successCode = container.safeDecodeValue(forKey: .successCode)
+        self.statusMessage = container.safeDecodeValue(forKey: .statusMessage)
+        self.successMessage = container.safeDecodeValue(forKey: .successMessage)
+        self.message = statusMessage.isEmpty ? successMessage : statusMessage
+    }
+    
+    init() {
+        self.successCode = Int()
+        self.statusMessage = String()
+        self.successMessage = String()
+        self.message = String()
+    }
+}

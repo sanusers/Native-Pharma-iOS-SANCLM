@@ -30,12 +30,12 @@ final class ConnectionHandler : NSObject {
                     params : Parameters) -> APIResponseProtocol{
         // + api.rawValue
         if api.method == .get {
-            return self.getRequest(forAPI: APIUrl,
+            return self.getRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
                                    params: params,
                                    CacheAttribute: api.cacheAttribute ? api : .none)
         } else {
-            return self.postRequest(forAPI: APIUrl,
-                                    params: params)
+            return self.postRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
+                                    params: params, CacheAttribute: api)
         }
     }
     
@@ -76,16 +76,10 @@ final class ConnectionHandler : NSObject {
         }
     }
     
-    func postRequest(forAPI api: String, params: JSON) -> APIResponseProtocol {
+    func postRequest(forAPI api: String, params: JSON, CacheAttribute: APIEnums) -> APIResponseProtocol {
         let responseHandler = APIResponseHandler()
-        var parameters = params
+        let parameters = params
         let startTime = Date()
-        
-      //  parameters["token"] = LocalStorage.shared.getString(key: .accessToken)
-        
-        //        parameters["user_type"] = Global_UserType
-        //        parameters["device_id"] = strDeviceToken
-        //        parameters["device_type"] = strDeviceType
         alamofireManager.request(api,
                                  method: .post,
                                  parameters: parameters,
@@ -98,39 +92,27 @@ final class ConnectionHandler : NSObject {
             
             self.networkChecker(with: startTime, EndTime: endTime, ContentData: response.data)
             
-            guard response.response?.statusCode != 401 else{//Unauthorized
-                if response.request?.url?.description.contains(APIUrl) ?? false{
-                    //self.doLogoutActions()
-                }
-                return
-            }
-            
-            guard response.response?.statusCode != 503 else { // Web Under Maintenance
-                //self.webServiceUnderMaintenance()
-                return
-            }
             switch response.result{
-            case .success(let arrvalue):
-    
-                let value = arrvalue as! Array<JSON>
-                
-                let json = value[0]
-                let error = json.string("error")
-                guard error.isEmpty else{
-                    if error == "user_not_found"
-                        && response.request?.url?.description.contains(APIUrl) ?? false{
-                        //self.doLogoutActions()
-                    }
-                    return
+            case .success(let value):
+                var ArrJSONseq = Array<JSON>()
+                var jsonseq = JSON()
+                if CacheAttribute == .none {
+                     ArrJSONseq = value as! Array<JSON>
+                } else {
+                    jsonseq = value as! JSON
                 }
-                if json.isSuccess
-                    || !api.contains(APIUrl)
-                    || response.response?.statusCode == 200{
-                    
-                    responseHandler.handleSuccess(value: value, data: response.data ?? Data())
+                if response.response?.statusCode == 200{
+                    //response.response.isSuccess
+                    //|| !api.contains(APIUrl)
+                   // ||
+                    if CacheAttribute == .none {
+                        responseHandler.handleArrSuccess(value: ArrJSONseq, data: response.data ?? Data())
+                    } else {
+                        responseHandler.handleSuccess(value: jsonseq, data: response.data ?? Data())
+                    }
                     //
                 }else{
-                    responseHandler.handleFailure(value: json.status_message)
+                   // responseHandler.handleFailure(value: json.status_message)
                 }
             case .failure(let error):
                 if error._code == 13 {
@@ -181,25 +163,25 @@ final class ConnectionHandler : NSObject {
                 return
             }
             switch response.result {
-            case .success(let arrvalue):
-    
-                let value = arrvalue as! Array<JSON>
-                
-                let json = value
-
-//                let error = json.string("error")
-//                guard error.isEmpty else{
-//                    if error == "user_not_found"
-//                        && response.request?.url?.description.contains(APIUrl) ?? false{
-//                        // self.doLogoutActions()
-//                    }
-//                    return
-//                }
+            case .success(let value):
+                var ArrJSONseq = Array<JSON>()
+                var jsonseq = JSON()
+                if CacheAttribute == .none {
+                    let ArrJSONseq = value as! Array<JSON>
+                } else {
+                    jsonseq = value as! JSON
+                }
+              
                 if  response.response?.statusCode == 200 {
 //                    json.isSuccess
 //                        || !api.contains(APIUrl)
 //                        ||
-                    responseHandler.handleSuccess(value: json, data: response.data ?? Data())
+                    if CacheAttribute == .none {
+                        responseHandler.handleArrSuccess(value: ArrJSONseq, data: response.data ?? Data())
+                    } else {
+                        responseHandler.handleSuccess(value: jsonseq, data: response.data ?? Data())
+                    }
+                   
                     // ??
                     //,data:  Data()
                 }else{
@@ -260,7 +242,7 @@ final class ConnectionHandler : NSObject {
                    let json = JSON(data){
                     if json.status_code == 1{
                         
-                        responseHandler.handleSuccess(value: [json], data: data)
+                        responseHandler.handleSuccess(value: json, data: data)
                         //
                     }else{
                         //                                           self.appDelegate.createToastMessage(json.status_message,

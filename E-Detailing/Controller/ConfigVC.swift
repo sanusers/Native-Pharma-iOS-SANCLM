@@ -80,6 +80,7 @@ class ConfigVC : UIViewController {
             self.showToast(controller: self, message: "Please Enter License Key", seconds: 2.0)
             return
         }
+        toValidateURL()
     }
     
     
