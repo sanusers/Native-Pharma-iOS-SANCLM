@@ -4,6 +4,8 @@ import Foundation
 import UIKit
 import Alamofire
 
+
+    //Hassan
 final class ConnectionHandler : NSObject {
     static let shared = ConnectionHandler()
     private let alamofireManager : Session
