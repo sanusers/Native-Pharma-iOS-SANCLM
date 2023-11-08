@@ -5,14 +5,6 @@ target 'E-Detailing' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-pod 'Charts'
-pod 'FSCalendar'
-pod 'UICircularProgressRing'
-pod 'ExpyTableView'
-pod 'Alamofire'
-pod 'ReachabilitySwift'
-pod 'GoogleMaps'
-pod 'SVProgressHUD'
-pod 'Toast-Swift'
+  # Pods for E-Detailing
 
 end
