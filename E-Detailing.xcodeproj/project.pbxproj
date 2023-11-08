@@ -348,6 +348,58 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		38BFB77F2AFB60A4005E141E /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				38E3C3632AF9FB0B00623C33 /* Constants.swift */,
+				38E3C3652AF9FB4400623C33 /* plistReader.swift */,
+				38E3C36A2AFA047400623C33 /* Codable.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		38BFB7802AFB60BC005E141E /* APIRespnseHandlers */ = {
+			isa = PBXGroup;
+			children = (
+				38E3C35B2AF9F9CF00623C33 /* APIresponseProtocol.swift */,
+				38E3C35D2AF9FA0400623C33 /* APIenums.swift */,
+				38E3C35F2AF9FA7000623C33 /* APIresponseHandler.swift */,
+				38E3C3612AF9FAAB00623C33 /* DecodeHelpers.swift */,
+			);
+			path = APIRespnseHandlers;
+			sourceTree = "<group>";
+		};
+		38BFB7812AFB61AB005E141E /* ConnectionHandlers */ = {
+			isa = PBXGroup;
+			children = (
+				38E3C3582AF9F98C00623C33 /* ConnectionHandler.swift */,
+			);
+			path = ConnectionHandlers;
+			sourceTree = "<group>";
+		};
+		38BFB7822AFB61C5005E141E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		38BFB7832AFB61CD005E141E /* ViewModals */ = {
+			isa = PBXGroup;
+			children = (
+				38E3C3562AF9F93F00623C33 /* ConfigViewModel.swift */,
+			);
+			path = ViewModals;
+			sourceTree = "<group>";
+		};
+		38BFB7842AFB62DD005E141E /* Modals */ = {
+			isa = PBXGroup;
+			children = (
+				38E3C36C2AFA0BAC00623C33 /* BaseViewModel.swift */,
+			);
+			path = Modals;
+			sourceTree = "<group>";
+		};
 		38C4245C2A2B4D1F004A89EF /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -442,22 +494,18 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		38E3C35A2AF9F99C00623C33 /* NetworkManager */ = {
+		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
+				38BFB7842AFB62DD005E141E /* Modals */,
+				38BFB7832AFB61CD005E141E /* ViewModals */,
+				38BFB7822AFB61C5005E141E /* Models */,
+				38BFB7812AFB61AB005E141E /* ConnectionHandlers */,
+				38BFB7802AFB60BC005E141E /* APIRespnseHandlers */,
+				38BFB77F2AFB60A4005E141E /* Utilities */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
-				38E3C3582AF9F98C00623C33 /* ConnectionHandler.swift */,
-				38E3C35B2AF9F9CF00623C33 /* APIresponseProtocol.swift */,
-				38E3C35D2AF9FA0400623C33 /* APIenums.swift */,
-				38E3C35F2AF9FA7000623C33 /* APIresponseHandler.swift */,
-				38E3C3612AF9FAAB00623C33 /* DecodeHelpers.swift */,
-				38E3C3632AF9FB0B00623C33 /* Constants.swift */,
-				38E3C3652AF9FB4400623C33 /* plistReader.swift */,
-				38E3C3562AF9F93F00623C33 /* ConfigViewModel.swift */,
-				38E3C36A2AFA047400623C33 /* Codable.swift */,
-				38E3C36C2AFA0BAC00623C33 /* BaseViewModel.swift */,
 			);
-			path = NetworkManager;
+			path = Hassan;
 			sourceTree = "<group>";
 		};
 		38E3C3672AFA032400623C33 /* Cofiguration */ = {
@@ -498,7 +546,7 @@
 		B287E62129F29C1B0097974D /* E-Detailing */ = {
 			isa = PBXGroup;
 			children = (
-				38E3C35A2AF9F99C00623C33 /* NetworkManager */,
+				38E3C35A2AF9F99C00623C33 /* Hassan */,
 				38C4D33A2A7BD9460029AC12 /* View Model */,
 				38C537D72A21D808007D68C5 /* Extension */,
 				3813B35D2A20E774006F3B78 /* Model */,

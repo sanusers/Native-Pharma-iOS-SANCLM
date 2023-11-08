@@ -1,11 +1,15 @@
+//
+//  ConnectionHandler.swift
+//  E-Detailing
+//
+//  Created by Hassan on 07/11/23.
+//
 
 
 import Foundation
 import UIKit
 import Alamofire
 
-
-    //Hassan
 final class ConnectionHandler : NSObject {
     static let shared = ConnectionHandler()
     private let alamofireManager : Session
