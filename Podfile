@@ -6,5 +6,13 @@ target 'E-Detailing' do
   use_frameworks!
 
   # Pods for E-Detailing
-
+pod 'Charts'
+pod 'FSCalendar'
+pod 'UICircularProgressRing'
+pod 'ExpyTableView'
+pod 'Alamofire'
+pod 'ReachabilitySwift'
+pod 'GoogleMaps'
+pod 'SVProgressHUD'
+pod 'Toast-Swift'
 end

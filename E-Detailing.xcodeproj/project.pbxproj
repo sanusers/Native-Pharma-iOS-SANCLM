@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B7849813497A4C47755C36A /* Pods_E_Detailing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE86D611E89C77BABBCD365B /* Pods_E_Detailing.framework */; };
 		3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E0FE2A46F0DE0066AF15 /* Doctor + Extension.swift */; };
 		3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1002A46FF790066AF15 /* Chemist + Extension.swift */; };
 		3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1022A470E5B0066AF15 /* Stockist + Extension.swift */; };
@@ -316,6 +317,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B7849813497A4C47755C36A /* Pods_E_Detailing.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
