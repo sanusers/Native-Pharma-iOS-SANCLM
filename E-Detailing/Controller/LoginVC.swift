@@ -74,9 +74,24 @@ class LoginVC : UIViewController {
                 
             case .success(let loginData):
                 dump(loginData)
-//                if loginData.successCode == 0 {
-//                    ConfigVC().showToast(controller: self, message: loginData.statusMessage, seconds: 2)
-//                }
+                if !(loginData.isSuccess ?? false) {
+                    ConfigVC().showToast(controller: self, message: loginData.successMessage ?? "", seconds: 2)
+                } else {
+                    do {
+                      try  AppDefaults.shared.toSaveEncodedData(object: loginData, key: .appSetUp) { isSaved in
+                          if isSaved {
+                              
+                              if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                  appDelegate.setupRootViewControllers()
+                              }
+                          } else {
+                              ConfigVC().showToast(controller: self, message: "Lodaing user Data failed try again later", seconds: 2)
+                          }
+                        }
+                    } catch {
+                        print("Unable to save data")
+                    }
+                }
             case .failure(let error):
                 dump(error)
             }
@@ -128,7 +143,7 @@ class LoginVC : UIViewController {
         print(paramStr)
 
         let param = ["data" : paramStr.toString()]
-     //   doUserLogin(param: param)
+        doUserLogin(param: param)
 
         print(urlStr)
         print(param)
@@ -136,48 +151,48 @@ class LoginVC : UIViewController {
         let date = Date()
 
         print(date)
-        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
-
-            switch response.result {
-
-                case .success(_):
-                    do {
-                        let apiResponse = response
-                        //try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-
-                        let date1 = Date()
-
-                        print(date1)
-
-                        print("ssususnbjbo")
-                        print(apiResponse)
-                        print("ssusus")
-
-                        let status = self.getStatus(json: apiResponse)
-
-                        if status.isOk {
-
-                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
-
-                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                                appDelegate.setupRootViewControllers()
-                            }
-                        }
-
-                    }catch {
-
-                    }
-                case .failure(let error):
-
-                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-                    print(error)
-                    return
-            }
-
-            print("2")
-            print(response)
-            print("2")
-        }
+//        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
+//
+//            switch response.result {
+//
+//                case .success(_):
+//                    do {
+//                        let apiResponse = response
+//                        //try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
+//
+//                        let date1 = Date()
+//
+//                        print(date1)
+//
+//                        print("ssususnbjbo")
+//                        print(apiResponse)
+//                        print("ssusus")
+//
+//                        let status = self.getStatus(json: apiResponse)
+//
+//                        if status.isOk {
+//
+//                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
+//
+//                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+//                                appDelegate.setupRootViewControllers()
+//                            }
+//                        }
+//
+//                    }catch {
+//
+//                    }
+//                case .failure(let error):
+//
+//                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+//                    print(error)
+//                    return
+//            }
+//
+//            print("2")
+//            print(response)
+//            print("2")
+//        }
     }
     
     

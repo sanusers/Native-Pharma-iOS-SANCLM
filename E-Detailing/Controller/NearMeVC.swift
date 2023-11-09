@@ -24,13 +24,13 @@ enum TaggingType : String {
         switch self {
             
         case .doctor:
-            return appsetup.docCap
+            return appsetup.docCap ?? ""
         case .chemist:
-            return appsetup.chmCap
+            return appsetup.chmCap ?? ""
         case .stockist:
-            return appsetup.stkCap
+            return appsetup.stkCap ?? ""
         case .unlistedDoctor:
-            return appsetup.nlCap
+            return appsetup.nlCap ?? ""
         }
     }
     

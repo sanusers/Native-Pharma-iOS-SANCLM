@@ -21,9 +21,9 @@ class  HomeViewModal: BaseViewModel {
             })
     }
     
-    func doUserLogin(params: JSON, api : APIEnums, _ result : @escaping (Result<NewAppSetupModel,Error>) -> Void) {
+    func doUserLogin(params: JSON, api : APIEnums, _ result : @escaping (Result<AppSetUp,Error>) -> Void) {
         ConnectionHandler.shared.getRequest(for: api, params: params)
-            .responseDecode(to: NewAppSetupModel.self, { (json) in
+            .responseDecode(to: AppSetUp.self, { (json) in
                 result(.success(json))
                 dump(json)
             }).responseFailure({ (error) in

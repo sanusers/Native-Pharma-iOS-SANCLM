@@ -23,17 +23,17 @@ enum DCRType : Int {
         let appSetup = AppDefaults.shared.getAppSetUp()
         switch self {
             case .doctor:
-                return appSetup.dpNeed
+                return appSetup.dpNeed ?? 0
             case .chemist:
-                return appSetup.cpNeed
+                return appSetup.cpNeed ?? 0
             case .stockist:
-                return appSetup.spNeed
+                return appSetup.spNeed ?? 0
             case .unlistedDoctor:
-                return appSetup.npNeed
+                return appSetup.npNeed ?? 0
             case .hospital:
                 return 1
             case .cip:
-                return appSetup.cipPNeed
+                return appSetup.cipPNeed ?? 0
         }
     }
     
@@ -41,17 +41,17 @@ enum DCRType : Int {
         let appSetup = AppDefaults.shared.getAppSetUp()
         switch self {
         case .doctor:
-            return appSetup.diNeed
+            return appSetup.diNeed ?? 0
         case .chemist:
-            return appSetup.ciNeed
+            return appSetup.ciNeed ?? 0
         case .stockist:
-            return appSetup.siNeed
+            return appSetup.siNeed ?? 0
         case .unlistedDoctor:
-            return appSetup.niNeed
+            return appSetup.niNeed ?? 0
         case .hospital:
             return 1
         case .cip:
-            return appSetup.cipINeed
+            return appSetup.cipINeed ?? 0
         }
     }
     
@@ -121,30 +121,30 @@ class CallVC : UIViewController {
         
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.docCap, type: .doctor)))
+        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.docCap ?? "", type: .doctor)))
         
         if appsetup.chmNeed == 0 {
-            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.chmCap, type: .chemist)))
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.chmCap ?? "", type: .chemist)))
         }
         
         if appsetup.stkNeed == 0 {
-            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.stkCap, type: .stockist)))
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.stkCap ?? "", type: .stockist)))
         }
         
         if appsetup.unlNeed == 0 {
-            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.nlCap, type: .unlistedDoctor)))
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.nlCap ?? "", type: .unlistedDoctor)))
         }
         
         if appsetup.hospNeed == 0 {
-            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption, type: .hospital)))
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption ?? "", type: .hospital)))
         }
         
         if appsetup.cipNeed == 0 {
-            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption, type: .cip)))
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption ?? "", type: .cip)))
         }
         
-        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption, type: .hospital)))
-        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption, type: .cip)))
+        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption ?? "", type: .hospital)))
+        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption ?? "", type: .cip)))
     }
     
     private func updateSegment() {

@@ -9,539 +9,812 @@ import Foundation
 
 
 
-class NewAppSetupModel : Codable {
+class AppSetUp : Codable {
+    var successMessage : String?
+    var isSuccess : Bool?
+    var activityNeed : Int?
+    var androidApp : Int?
+    var androidDetailing : Int?
+    var apprMandatoryNeed : Int?
+    var approvalNeed : Int?
+    var attendance : Int?
+    var appDeviceId : String?
+    var callFeedEnterable : Int?
+    var callReport : String?
+    var callReportFromDate : String?
+    var callReportToDate : String?
+    var chmAdQty : Int?
+    var chmSampleQtyNeed : Int?
+    var cipNeed : Int?
+    var circular : Int?
+    var cntRemarks : Int?
+    var currentDay : Int?
+    var ceNeed : Int?
+    var cfNeed : Int?
+    var cheBase :Int?
+    var ciNeed : Int?
+    var cipPobMdNeed : Int?
+    var cipPobNeed : Int?
+    var cipCaption : String?
+    var cipENeed : Int?
+    var cipFNeed : Int?
+    var cipINeed : Int?
+    var cipPNeed : Int?
+    var cipQNeed :Int?
+    var cipJointWrkNeed : Int?
+    var cpNeed : Int?
+    var cqNeed : Int?
+    var campNeed : Int?
+    var catNeed : Int?
+    var chmCap : String?
+    var chmEventMdNeed : Int?
+    var chmNeed : Int?
+    var chmQcap :String?
+    var chmRcpaCompetitorNeed : Int?
+    var chmRxQtyNeed : Int?
+    var chmSampleCap : String?
+    var chmInputCaption : String?
+    var chmPobMandatoryNeed : Int?
+    var chmPobNeed : Int?
+    var chmProductCaption : String?
+    var chmRcpaNeed : Int?
+    var chmClusterBased :Int?
+    var chmJointWrkMdNeed : Int?
+    var chmJointWrkNeed : Int?
+    var cipEventMdNeed : Int?
+    var cipSrtNd : Int?
+    var clusterCap : String?
+    var cmpgnNeed : Int?
+    var currentdayTpPlanned : Int?
+    var custSrtNeed : Int?
+    var deNeed : Int?
+    var dfNeed :Int?
+    var diNeed : Int?
+    var dpNeed : Int?
+    var dqNeed : Int?
+    var dsName : String?
+    var dcrLockDays : Int?
+    var dcrFirstSelfieNeed : Int?
+    var desig : String?
+    var detailingChem : Int?
+    var detailingType :Int?
+    var deviceIdNeed : Int?
+    var deviceRegId : String?
+    var disRad : String?
+    var divisionCode : String?
+    var dlyCtrl : Int?
+    var docInputCaption : String?
+    var docPobMandatoryNeed : Int?
+    var docPobNeed : Int?
+    var docProductCaption :String?
+    var docClusterBased : Int?
+    var docJointWrkMdNeed :Int?
+    var docJointWrkNeed : Int?
+    var docCap : String?
+    var docEventMdNeed : Int?
+    var docFeedMdNeed : Int?
+    var docInputMdNeed : Int?
+    var docNeed : Int?
+    var docProductMdNeed : Int?
+    var docRcpaCompetitorNeed : Int?
+    var docRcpaQMdNeed : Int?
+    var docRxNeed :Int?
+    var docRxQCap : String?
+    var docRxQMd :Int?
+    var docSampleNeed : Int?
+    var docSampleQCap : String?
+    var docSampleQMdNeed : Int?
+    var dashboard : Int?
+    var dayplanTpBased : Int?
+    var days : Int?
+    var dcrDocBusinessProduct : Int?
+    var desigCode : String?
+    var docBusinessProduct : Int?
+    var docBusinessValue : Int?
+    var doctorDobDow : Int?
+    var expenceNeed : Int?
+    var expenceMdNeed : Int?
+    var expenseNeed : Int?
+    var editHoliday : Int?
+    var editWeeklyOff : Int?
+    var entryformMgr : Int?
+    var entryFormNeed : Int?
+    var expense_Need : Int?
+    var faq : Int?
+    var geoTagNeed : Int?
+    var geoTagNeedChe : Int?
+    var geoTagNeedStock :Int?
+    var geoTagNeedUnList : Int?
+    var geoCheck :Int?
+    var geoNeed : Int?
+    var geoTagNeedCip : Int?
+    var gstOption : Int?
+    var geoTagImg : Int?
+    var heNeed : Int?
+    var hfNeed : Int?
+    var hiNeed : Int?
+    var hpNeed : Int?
+    var hqName : String?
+    var hqNeed :Int?
+    var hosPobMdNeed : Int?
+    var hosPobNeed :Int?
+    var hospEventNeed : Int?
+    var hospCaption : String?
+    var hospNeed : Int?
+    var inputValQty : Int?
+    var inputValidation : Int?
+    var leaveStatus : Int?
+    var leaveEntitlementNeed : Int?
+    var locationTrack : Int?
+    var iosApp : Int?
+    var iosDetailing : Int?
+    var mclDet : Int?
+    var mgrHlfDy : Int?
+    var mrHlfDy : Int?
+    var msdEntry :Int?
+    var mailNeed : Int?
+    var miscExpenseNeed : Int?
+    var missedDateMdNeed : Int?
+    var multiClusterNeed : Int?
+    var multipleDocNeed : Int?
+    var mydayplanNeed : Int?
+    var myPlnRmrksMand : Int?
+    var neNeed : Int?
+    var nfNeed :Int?
+    var niNeed : Int?
+    var nlCap : String?
+    var nlRxQCap : String?
+    var nlSampleQCap : String?
+    var npNeed : Int?
+    var nqNeed : Int?
+    var nextVst : Int?
+    var nextVstMdNeed : Int?
+    var noOfTpView :Int?
+    var orderCaption : String?
+    var orderManagement :Int?
+    var otherNeed : Int?
+    var primaryOrder : Int?
+    var primaryOrderCap : String?
+    var prodStkNeed : Int?
+    var productRateEditable : Int?
+    var pwdSetup : Int?
+    var pastLeavePost : Int?
+    var pobMinValue : Int?
+    var productFeedBack : Int?
+    var primarySecNeed : Int?
+    var proDetNeed : Int?
+    var prodDetNeed : Int?
+    var productRemarkNeed : Int?
+    var productRemarkMdNeed : Int?
+    var productPobNeed : Int?
+    var productPobNeedMsg : String?
+    var quesNeed : Int?
+    var quizHeading : String?
+    var quizNeed : Int?
+    var quizMandNeed : Int?
+    var quoteText : String?
+    var rcpaQtyNeed : Int?
+    var rcpaUnitNeed : Int?
+    var rcpaMdNeed :Int?
+    var rcpaMgrMdNeed : Int?
+    var rcpaNeed :Int?
+    var rcpaCompetitorExtra : Int?
+    var remainderCallCap : String?
+    var remainderGeo : Int?
+    var remainderProductMd : Int?
+    var rmdrNeed : Int?
+    var rcpaextra : Int?
+    var refDoc : Int?
+    var seNeed : Int?
+    var sfNeed : Int?
+    var sfStat : String?
+  //  var sfTpDate : Double?
+    var sfCode : String?
+    var sfName :String?
+    var sfPassword : String?
+    var sfUserName : String?
+    var sfEmail : String?
+    var sfMobile : String?
+    var sfEmpId : String?
+    var sfType : Int?
+    var stp : Int?
+    var siNeed : Int?
+    var spNeed : Int?
+    var sqNeed : Int?
+    var sampleValQty : Int?
+    var sampleValidation : Int?
+    var secondaryOrder : Int?
+    var secondaryOrderCaption : String?
+    var secondaryOrderDiscount : Int?
+    var sepRcpaNeed :Int?
+    var sequentailDcr : Int?
+    var srtNeed : Int?
+    var stateCode : Int?
+    var stkCap :String?
+    var stkEventMdNeed : Int?
+    var stkNeed :Int?
+    var stkQCap : String?
+    var stkInputCaption : String?
+    var stkPobMdNeed : Int?
+    var stkPobNeed : Int?
+    var stkProductCaption : String?
+    var stkClusterBased : Int?
+    var stkJointWrkMdNeed : Int?
+    var stkJointWrkNeed :Int?
+    var surveyNeed : Int?
+    var success : Int?
+    var subDivisionCode : String?
+    var tBase :Int?
+    var tpdcrDeviation : Int?
+    var tpdcrDeviationApprStatus : Int?
+    var tpdcrMgrAppr : Int?
+    var tpMdNeed : Int?
+    var tpBasedDcr : Int?
+    var targetReportNeed : Int?
+    var targetReportMdNeed : Int?
+    var taxNameCaption :String?
+    var tempNeed : Int?
+    var terrBasedTag :Int?
+    var terrotoryVisitNeed : Int?
+    var tpEndDate : Int?
+    var tpstartDate : Int?
+    var tpNeed : Int?
+    var tpnew : Int?
+    var trackingTime : String?
+    var travelDistanceNeed : Int?
+    var unlNeed : Int?
+    var ulDocClusterBased : Int?
+    var ulDocEventMd : Int?
+    var ulInputCaption : String?
+    var ulPobMdNeed :Int?
+    var ulPobNeed : Int?
+    var ulProductCaption :String?
+    var ulJointWrlMdNeed : Int?
+    var ulJointWrlNeed : Int?
+    var usrDfdUserName : String?
+    var visitNeed : Int?
+    var workAreaName : String?
     
-    var activityNeed : Int
-    var androidApp : Int
-    var androidDetailing : Int
-    var apprMandatoryNeed : Int
-    var approvalNeed : Int
-    var attendance : Int
-    var appDeviceId : String
-    var callFeedEnterable : Int
-    var callReport : String
-    var callReportFromDate : String!
-    var callReportToDate : String
-    var chmAdQty : Int
-    var chmSampleQtyNeed : Int
-    var cipNeed : Int
-    var circular : Int
-    var cntRemarks : Int
-    var currentDay : Int
-    var ceNeed : Int
-    var cfNeed : Int
-    var cheBase :Int
-    var ciNeed : Int
-    var cipPobMdNeed : Int
-    var cipPobNeed : Int
-    var cipCaption : String
-    var cipENeed : Int
-    var cipFNeed : Int
-    var cipINeed : Int
-    var cipPNeed : Int
-    var cipQNeed :Int
-    var cipJointWrkNeed : Int
-    var cpNeed : Int
-    var cqNeed : Int
-    var campNeed : Int
-    var catNeed : Int
-    var chmCap : String
-    var chmEventMdNeed : Int
-    var chmNeed : Int
-    var chmQcap :String
-    var chmRcpaCompetitorNeed : Int
-    var chmRxQtyNeed : Int
-    var chmSampleCap : String
-    var chmInputCaption : String
-    var chmPobMandatoryNeed : Int
-    var chmPobNeed : Int
-    var chmProductCaption : String
-    var chmRcpaNeed : Int
-    var chmClusterBased :Int
-    var chmJointWrkMdNeed : Int
-    var chmJointWrkNeed : Int
-    var cipEventMdNeed : Int
-    var cipSrtNd : Int
-    var clusterCap : String
-    var cmpgnNeed : Int
-    var currentdayTpPlanned : Int
-    var custSrtNeed : Int
-    var deNeed : Int
-    var dfNeed :Int
-    var diNeed : Int
-    var dpNeed : Int
-    var dqNeed : Int
-    var dsName : String
-    var dcrLockDays : Int
-    var dcrFirstSelfieNeed : Int
-    var desig : String
-    var detailingChem : Int
-    var detailingType :Int
-    var deviceIdNeed : Int
-    var deviceRegId : String
-    var disRad : String
-    var divisionCode : String
-    var dlyCtrl : Int
-    var docInputCaption : String
-    var docPobMandatoryNeed : Int
-    var docPobNeed : Int
-    var docProductCaption :String
-    var docClusterBased : Int
-    var docJointWrkMdNeed :Int
-    var docJointWrkNeed : Int
-    var docCap : String
-    var docEventMdNeed : Int
-    var docFeedMdNeed : Int
-    var docInputMdNeed : Int
-    var docNeed : Int
-    var docProductMdNeed : Int
-    var docRcpaCompetitorNeed : Int
-    var docRcpaQMdNeed : Int
-    var docRxNeed :Int
-    var docRxQCap : String
-    var docRxQMd :Int
-    var docSampleNeed : Int
-    var docSampleQCap : String
-    var docSampleQMdNeed : Int
-    var dashboard : Int
-    var dayplanTpBased : Int
-    var days : Int
-    var dcrDocBusinessProduct : Int
-    var desigCode : String
-    var docBusinessProduct : Int
-    var docBusinessValue : Int
-    var doctorDobDow : Int
-    var expenceNeed : Int
-    var expenceMdNeed : Int
-    var expenseNeed : Int
-    var editHoliday : Int
-    var editWeeklyOff : Int
-    var entryformMgr : Int
-    var entryFormNeed : Int
-    var expense_Need : Int
-    var faq : Int
-    var geoTagNeed : Int
-    var geoTagNeedChe : Int
-    var geoTagNeedStock :Int
-    var geoTagNeedUnList : Int
-    var geoCheck :Int
-    var geoNeed : Int
-    var geoTagNeedCip : Int
-    var gstOption : Int
-    var geoTagImg : Int
-    var heNeed : Int
-    var hfNeed : Int
-    var hiNeed : Int
-    var hpNeed : Int
-    var hqName : String
-    var hqNeed :Int
-    var hosPobMdNeed : Int
-    var hosPobNeed :Int
-    var hospEventNeed : Int
-    var hospCaption : String
-    var hospNeed : Int
-    var inputValQty : Int
-    var inputValidation : Int
-    var leaveStatus : Int
-    var leaveEntitlementNeed : Int
-    var locationTrack : Int
-    var iosApp : Int
-    var iosDetailing : Int
-    var mclDet : Int
-    var mgrHlfDy : Int
-    var mrHlfDy : Int
-    var msdEntry :Int
-    var mailNeed : Int
-    var miscExpenseNeed : Int
-    var missedDateMdNeed : Int
-    var multiClusterNeed : Int
-    var multipleDocNeed : Int
-    var mydayplanNeed : Int
-    var myPlnRmrksMand : Int
-    var neNeed : Int
-    var nfNeed :Int
-    var niNeed : Int
-    var nlCap : String
-    var nlRxQCap : String
-    var nlSampleQCap : String
-    var npNeed : Int
-    var nqNeed : Int
-    var nextVst : Int
-    var nextVstMdNeed : Int
-    var noOfTpView :Int
-    var orderCaption : String
-    var orderManagement :Int
-    var otherNeed : Int
-    var primaryOrder : Int
-    var primaryOrderCap : String
-    var prodStkNeed : Int
-    var productRateEditable : Int
-    var pwdSetup : Int
-    var pastLeavePost : Int
-    var pobMinValue : Int
-    var productFeedBack : Int
-    var primarySecNeed : Int
-    var proDetNeed : Int
-    var prodDetNeed : Int
-    var productRemarkNeed : Int
-    var productRemarkMdNeed : Int
-    var productPobNeed : Int
-    var productPobNeedMsg : String
-    var quesNeed : Int
-    var quizHeading : String
-    var quizNeed : Int
-    var quizMandNeed : Int
-    var quoteText : String
-    var rcpaQtyNeed : Int
-    var rcpaUnitNeed : Int
-    var rcpaMdNeed :Int
-    var rcpaMgrMdNeed : Int
-    var rcpaNeed :Int
-    var rcpaCompetitorExtra : Int
-    var remainderCallCap : String
-    var remainderGeo : Int
-    var remainderProductMd : Int
-    var rmdrNeed : Int
-    var rcpaextra : Int
-    var refDoc : Int
-    var seNeed : Int
-    var sfNeed : Int
-    var sfStat : String
-  //  var sfTpDate : Double
-    var sfCode : String
-    var sfName :String
-    var sfPassword : String
-    var sfUserName : String
-    var sfEmail : String
-    var sfMobile : String
-    var sfEmpId : String
-    var sfType : Int
-    var stp : Int
-    var siNeed : Int
-    var spNeed : Int
-    var sqNeed : Int
-    var sampleValQty : Int
-    var sampleValidation : Int
-    var secondaryOrder : Int
-    var secondaryOrderCaption : String
-    var secondaryOrderDiscount : Int
-    var sepRcpaNeed :Int
-    var sequentailDcr : Int
-    var srtNeed : Int
-    var stateCode : Int
-    var stkCap :String
-    var stkEventMdNeed : Int
-    var stkNeed :Int
-    var stkQCap : String
-    var stkInputCaption : String
-    var stkPobMdNeed : Int
-    var stkPobNeed : Int
-    var stkProductCaption : String
-    var stkClusterBased : Int
-    var stkJointWrkMdNeed : Int
-    var stkJointWrkNeed :Int
-    var surveyNeed : Int
-    var success : Int
-    var subDivisionCode : String
-    var tBase :Int
-    var tpdcrDeviation : Int
-    var tpdcrDeviationApprStatus : Int
-    var tpdcrMgrAppr : Int
-    var tpMdNeed : Int
-    var tpBasedDcr : Int
-    var targetReportNeed : Int
-    var targetReportMdNeed : Int
-    var taxNameCaption :String
-    var tempNeed : Int
-    var terrBasedTag :Int
-    var terrotoryVisitNeed : Int
-    var tpEndDate : Int
-    var tpstartDate : Int
-    var tpNeed : Int
-    var tpnew : Int
-    var trackingTime : String
-    var travelDistanceNeed : Int
-    var unlNeed : Int
-    var ulDocClusterBased : Int
-    var ulDocEventMd : Int
-    var ulInputCaption : String
-    var ulPobMdNeed :Int
-    var ulPobNeed : Int
-    var ulProductCaption :String
-    var ulJointWrlMdNeed : Int
-    var ulJointWrlNeed : Int
-    var usrDfdUserName : String
-    var visitNeed : Int
-    var workAreaName : String
-    
+    init() {
+        successMessage = ""
+        isSuccess = false
+        activityNeed = 0
+        androidApp = 0
+        androidDetailing = 0
+        apprMandatoryNeed = 0
+        approvalNeed = 0
+        attendance = 0
+        appDeviceId = ""
+        callFeedEnterable = 0
+        callReport = ""
+        callReportFromDate = ""
+        callReportToDate = ""
+        chmAdQty = 0
+        chmSampleQtyNeed = 0
+        cipNeed = 0
+        circular = 0
+        cntRemarks = 0
+        currentDay = 0
+        ceNeed = 0
+        cfNeed = 0
+        cheBase = 0
+        ciNeed = 0
+        cipPobMdNeed = 0
+        cipPobNeed = 0
+        cipCaption = ""
+        cipENeed = 0
+        cipFNeed = 0
+        cipINeed = 0
+        cipPNeed = 0
+        cipQNeed = 0
+        cipJointWrkNeed = 0
+        cpNeed = 0
+        cqNeed = 0
+        campNeed = 0
+        catNeed = 0
+        chmCap = ""
+        chmEventMdNeed = 0
+        chmNeed = 0
+        chmQcap = ""
+        chmRcpaCompetitorNeed = 0
+        chmRxQtyNeed = 0
+        chmSampleCap = ""
+        chmInputCaption = ""
+        chmPobMandatoryNeed = 0
+        chmPobNeed = 0
+        chmProductCaption = ""
+        chmRcpaNeed = 0
+        chmClusterBased = 0
+        chmJointWrkMdNeed = 0
+        chmJointWrkNeed = 0
+        cipEventMdNeed = 0
+        cipSrtNd = 0
+        clusterCap = ""
+        cmpgnNeed = 0
+        currentdayTpPlanned = 0
+        custSrtNeed = 0
+        deNeed = 0
+        dfNeed = 0
+        diNeed = 0
+        dpNeed = 0
+        dqNeed = 0
+        dsName = ""
+        dcrLockDays = 0
+        dcrFirstSelfieNeed = 0
+        desig = ""
+        detailingChem = 0
+        detailingType = 0
+        deviceIdNeed = 0
+        deviceRegId = ""
+        disRad = ""
+        divisionCode = ""
+        dlyCtrl = 0
+        docInputCaption = ""
+        docPobMandatoryNeed = 0
+        docPobNeed = 0
+        docProductCaption = ""
+        docClusterBased = 0
+        docJointWrkMdNeed = 0
+        docJointWrkNeed = 0
+        docCap = ""
+        docEventMdNeed = 0
+        docFeedMdNeed = 0
+        docInputMdNeed = 0
+        docNeed = 0
+        docProductMdNeed = 0
+        docRcpaCompetitorNeed = 0
+        docRcpaQMdNeed = 0
+        docRxNeed = 0
+        docRxQCap = ""
+        docRxQMd = 0
+        docSampleNeed = 0
+        docSampleQCap = ""
+        docSampleQMdNeed = 0
+        dashboard = 0
+        dayplanTpBased = 0
+        days = 0
+        dcrDocBusinessProduct = 0
+        desigCode = ""
+        docBusinessProduct = 0
+        docBusinessValue = 0
+        doctorDobDow = 0
+        expenceNeed = 0
+        expenceMdNeed = 0
+        expenseNeed = 0
+        editHoliday = 0
+        editWeeklyOff = 0
+        entryformMgr = 0
+        entryFormNeed = 0
+        expense_Need = 0
+        faq = 0
+        geoTagNeed = 0
+        geoTagNeedChe = 0
+        geoTagNeedStock = 0
+        geoTagNeedUnList = 0
+        geoCheck = 0
+        geoNeed = 0
+        geoTagNeedCip = 0
+        gstOption = 0
+        geoTagImg = 0
+        heNeed = 0
+        hfNeed = 0
+        hiNeed = 0
+        hpNeed = 0
+        hqName = ""
+        hqNeed = 0
+        hosPobMdNeed = 0
+        hosPobNeed = 0
+        hospEventNeed = 0
+        hospCaption = ""
+        hospNeed = 0
+        inputValQty = 0
+        inputValidation = 0
+        leaveStatus = 0
+        leaveEntitlementNeed = 0
+        locationTrack = 0
+        iosApp = 0
+        iosDetailing = 0
+        mclDet = 0
+        mgrHlfDy = 0
+        mrHlfDy = 0
+        msdEntry = 0
+        mailNeed = 0
+        miscExpenseNeed = 0
+        missedDateMdNeed = 0
+        multiClusterNeed = 0
+        multipleDocNeed = 0
+        mydayplanNeed = 0
+        myPlnRmrksMand = 0
+        neNeed = 0
+        nfNeed = 0
+        niNeed = 0
+        nlCap = ""
+        nlRxQCap = ""
+        nlSampleQCap = ""
+        npNeed = 0
+        nqNeed = 0
+        nextVst = 0
+        nextVstMdNeed = 0
+        noOfTpView = 0
+        orderCaption = ""
+        orderManagement = 0
+        otherNeed = 0
+        primaryOrder = 0
+        primaryOrderCap = ""
+        prodStkNeed = 0
+        productRateEditable = 0
+        pwdSetup = 0
+        pastLeavePost = 0
+        pobMinValue = 0
+        productFeedBack = 0
+        primarySecNeed = 0
+        proDetNeed = 0
+        prodDetNeed = 0
+        productRemarkNeed = 0
+        productRemarkMdNeed = 0
+        productPobNeed = 0
+        productPobNeedMsg = ""
+        quesNeed = 0
+        quizHeading = ""
+        quizNeed = 0
+        quizMandNeed = 0
+        quoteText = ""
+        rcpaQtyNeed = 0
+        rcpaUnitNeed = 0
+        rcpaMdNeed = 0
+        rcpaMgrMdNeed = 0
+        rcpaNeed = 0
+        rcpaCompetitorExtra = 0
+        remainderCallCap = ""
+        remainderGeo = 0
+        remainderProductMd = 0
+        rmdrNeed = 0
+        rcpaextra = 0
+        refDoc = 0
+        seNeed = 0
+        sfNeed = 0
+        sfStat = ""
+        //sfTpDate = 0.0
+        sfCode = ""
+        sfName = ""
+        sfPassword = ""
+        sfUserName = ""
+        sfEmail = ""
+        sfMobile = ""
+        sfEmpId = ""
+        sfType = 0
+        stp = 0
+        siNeed = 0
+        spNeed = 0
+        sqNeed = 0
+        sampleValQty = 0
+        sampleValidation = 0
+        secondaryOrder = 0
+        secondaryOrderCaption = ""
+        secondaryOrderDiscount = 0
+        sepRcpaNeed = 0
+        sequentailDcr = 0
+        srtNeed = 0
+        stateCode = 0
+        stkCap = ""
+        stkEventMdNeed = 0
+        stkNeed = 0
+        stkQCap = ""
+        stkInputCaption = ""
+        stkPobMdNeed = 0
+        stkPobNeed = 0
+        stkProductCaption = ""
+        stkClusterBased = 0
+        stkJointWrkMdNeed = 0
+        stkJointWrkNeed = 0
+        surveyNeed = 0
+        success = 0
+        subDivisionCode = ""
+        tBase = 0
+        tpdcrDeviation = 0
+        tpdcrDeviationApprStatus = 0
+        tpdcrMgrAppr = 0
+        tpMdNeed = 0
+        tpBasedDcr = 0
+        targetReportNeed = 0
+        targetReportMdNeed = 0
+        taxNameCaption = ""
+        tempNeed = 0
+        terrBasedTag = 0
+        terrotoryVisitNeed = 0
+        tpEndDate = 0
+        tpstartDate = 0
+        tpNeed = 0
+        tpnew = 0
+        trackingTime = ""
+        travelDistanceNeed = 0
+        unlNeed = 0
+        ulDocClusterBased = 0
+        ulDocEventMd = 0
+        ulInputCaption = ""
+        ulPobMdNeed = 0
+        ulPobNeed = 0
+        ulProductCaption = ""
+        ulJointWrlMdNeed = 0
+        ulJointWrlNeed = 0
+        usrDfdUserName = ""
+        visitNeed = 0
+        workAreaName = ""
+    }
     
     required init(from decoder: Decoder) throws {
+        
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.activityNeed = try container.decode(Int.self, forKey: .activityNeed)
-        self.androidApp = try container.decode(Int.self, forKey: .androidApp)
-        self.androidDetailing = try container.decode(Int.self, forKey: .androidDetailing)
-        self.apprMandatoryNeed = try container.decode(Int.self, forKey: .apprMandatoryNeed)
-        self.approvalNeed = try container.decode(Int.self, forKey: .approvalNeed)
-        self.attendance = try container.decode(Int.self, forKey: .attendance)
-        self.appDeviceId = try container.decode(String.self, forKey: .appDeviceId)
-        self.callFeedEnterable = try container.decode(Int.self, forKey: .callFeedEnterable)
-        self.callReport = try container.decode(String.self, forKey: .callReport)
-        self.callReportFromDate = try container.decodeIfPresent(String.self, forKey: .callReportFromDate)
-        self.callReportToDate = try container.decode(String.self, forKey: .callReportToDate)
-        self.chmAdQty = try container.decode(Int.self, forKey: .chmAdQty)
-        self.chmSampleQtyNeed = try container.decode(Int.self, forKey: .chmSampleQtyNeed)
-        self.cipNeed = try container.decode(Int.self, forKey: .cipNeed)
-        self.circular = try container.decode(Int.self, forKey: .circular)
-        self.cntRemarks = try container.decode(Int.self, forKey: .cntRemarks)
-        self.currentDay = try container.decode(Int.self, forKey: .currentDay)
-        self.ceNeed = try container.decode(Int.self, forKey: .ceNeed)
-        self.cfNeed = try container.decode(Int.self, forKey: .cfNeed)
-        self.cheBase = try container.decode(Int.self, forKey: .cheBase)
-        self.ciNeed = try container.decode(Int.self, forKey: .ciNeed)
-        self.cipPobMdNeed = try container.decode(Int.self, forKey: .cipPobMdNeed)
-        self.cipPobNeed = try container.decode(Int.self, forKey: .cipPobNeed)
-        self.cipCaption = try container.decode(String.self, forKey: .cipCaption)
-        self.cipENeed = try container.decode(Int.self, forKey: .cipENeed)
-        self.cipFNeed = try container.decode(Int.self, forKey: .cipFNeed)
-        self.cipINeed = try container.decode(Int.self, forKey: .cipINeed)
-        self.cipPNeed = try container.decode(Int.self, forKey: .cipPNeed)
-        self.cipQNeed = try container.decode(Int.self, forKey: .cipQNeed)
-        self.cipJointWrkNeed = try container.decode(Int.self, forKey: .cipJointWrkNeed)
-        self.cpNeed = try container.decode(Int.self, forKey: .cpNeed)
-        self.cqNeed = try container.decode(Int.self, forKey: .cqNeed)
-        self.campNeed = try container.decode(Int.self, forKey: .campNeed)
-        self.catNeed = try container.decode(Int.self, forKey: .catNeed)
-        self.chmCap = try container.decode(String.self, forKey: .chmCap)
-        self.chmEventMdNeed = try container.decode(Int.self, forKey: .chmEventMdNeed)
-        self.chmNeed = try container.decode(Int.self, forKey: .chmNeed)
-        self.chmQcap = try container.decode(String.self, forKey: .chmQcap)
-        self.chmRcpaCompetitorNeed = try container.decode(Int.self, forKey: .chmRcpaCompetitorNeed)
-        self.chmRxQtyNeed = try container.decode(Int.self, forKey: .chmRxQtyNeed)
-        self.chmSampleCap = try container.decode(String.self, forKey: .chmSampleCap)
-        self.chmInputCaption = try container.decode(String.self, forKey: .chmInputCaption)
-        self.chmPobMandatoryNeed = try container.decode(Int.self, forKey: .chmPobMandatoryNeed)
-        self.chmPobNeed = try container.decode(Int.self, forKey: .chmPobNeed)
-        self.chmProductCaption = try container.decode(String.self, forKey: .chmProductCaption)
-        self.chmRcpaNeed = try container.decode(Int.self, forKey: .chmRcpaNeed)
-        self.chmClusterBased = try container.decode(Int.self, forKey: .chmClusterBased)
-        self.chmJointWrkMdNeed = try container.decode(Int.self, forKey: .chmJointWrkMdNeed)
-        self.chmJointWrkNeed = try container.decode(Int.self, forKey: .chmJointWrkNeed)
-        self.cipEventMdNeed = try container.decode(Int.self, forKey: .cipEventMdNeed)
-        self.cipSrtNd = try container.decode(Int.self, forKey: .cipSrtNd)
-        self.clusterCap = try container.decode(String.self, forKey: .clusterCap)
-        self.cmpgnNeed = try container.decode(Int.self, forKey: .cmpgnNeed)
-        self.currentdayTpPlanned = try container.decode(Int.self, forKey: .currentdayTpPlanned)
-        self.custSrtNeed = try container.decode(Int.self, forKey: .custSrtNeed)
-        self.deNeed = try container.decode(Int.self, forKey: .deNeed)
-        self.dfNeed = try container.decode(Int.self, forKey: .dfNeed)
-        self.diNeed = try container.decode(Int.self, forKey: .diNeed)
-        self.dpNeed = try container.decode(Int.self, forKey: .dpNeed)
-        self.dqNeed = try container.decode(Int.self, forKey: .dqNeed)
-        self.dsName = try container.decode(String.self, forKey: .dsName)
-        self.dcrLockDays = try container.decode(Int.self, forKey: .dcrLockDays)
-        self.dcrFirstSelfieNeed = try container.decode(Int.self, forKey: .dcrFirstSelfieNeed)
-        self.desig = try container.decode(String.self, forKey: .desig)
-        self.detailingChem = try container.decode(Int.self, forKey: .detailingChem)
-        self.detailingType = try container.decode(Int.self, forKey: .detailingType)
-        self.deviceIdNeed = try container.decode(Int.self, forKey: .deviceIdNeed)
-        self.deviceRegId = try container.decode(String.self, forKey: .deviceRegId)
-        self.disRad = try container.decode(String.self, forKey: .disRad)
-        self.divisionCode = try container.decode(String.self, forKey: .divisionCode)
-        self.dlyCtrl = try container.decode(Int.self, forKey: .dlyCtrl)
-        self.docInputCaption = try container.decode(String.self, forKey: .docInputCaption)
-        self.docPobMandatoryNeed = try container.decode(Int.self, forKey: .docPobMandatoryNeed)
-        self.docPobNeed = try container.decode(Int.self, forKey: .docPobNeed)
-        self.docProductCaption = try container.decode(String.self, forKey: .docProductCaption)
-        self.docClusterBased = try container.decode(Int.self, forKey: .docClusterBased)
-        self.docJointWrkMdNeed = try container.decode(Int.self, forKey: .docJointWrkMdNeed)
-        self.docJointWrkNeed = try container.decode(Int.self, forKey: .docJointWrkNeed)
-        self.docCap = try container.decode(String.self, forKey: .docCap)
-        self.docEventMdNeed = try container.decode(Int.self, forKey: .docEventMdNeed)
-        self.docFeedMdNeed = try container.decode(Int.self, forKey: .docFeedMdNeed)
-        self.docInputMdNeed = try container.decode(Int.self, forKey: .docInputMdNeed)
-        self.docNeed = try container.decode(Int.self, forKey: .docNeed)
-        self.docProductMdNeed = try container.decode(Int.self, forKey: .docProductMdNeed)
-        self.docRcpaCompetitorNeed = try container.decode(Int.self, forKey: .docRcpaCompetitorNeed)
-        self.docRcpaQMdNeed = try container.decode(Int.self, forKey: .docRcpaQMdNeed)
-        self.docRxNeed = try container.decode(Int.self, forKey: .docRxNeed)
-        self.docRxQCap = try container.decode(String.self, forKey: .docRxQCap)
-        self.docRxQMd = try container.decode(Int.self, forKey: .docRxQMd)
-        self.docSampleNeed = try container.decode(Int.self, forKey: .docSampleNeed)
-        self.docSampleQCap = try container.decode(String.self, forKey: .docSampleQCap)
-        self.docSampleQMdNeed = try container.decode(Int.self, forKey: .docSampleQMdNeed)
-        self.dashboard = try container.decode(Int.self, forKey: .dashboard)
-        self.dayplanTpBased = try container.decode(Int.self, forKey: .dayplanTpBased)
-        self.days = try container.decode(Int.self, forKey: .days)
-        self.dcrDocBusinessProduct = try container.decode(Int.self, forKey: .dcrDocBusinessProduct)
-        self.desigCode = try container.decode(String.self, forKey: .desigCode)
-        self.docBusinessProduct = try container.decode(Int.self, forKey: .docBusinessProduct)
-        self.docBusinessValue = try container.decode(Int.self, forKey: .docBusinessValue)
-        self.doctorDobDow = try container.decode(Int.self, forKey: .doctorDobDow)
-        self.expenceNeed = try container.decode(Int.self, forKey: .expenceNeed)
-        self.expenceMdNeed = try container.decode(Int.self, forKey: .expenceMdNeed)
-        self.expenseNeed = try container.decode(Int.self, forKey: .expenseNeed)
-        self.editHoliday = try container.decode(Int.self, forKey: .editHoliday)
-        self.editWeeklyOff = try container.decode(Int.self, forKey: .editWeeklyOff)
-        self.entryformMgr = try container.decode(Int.self, forKey: .entryformMgr)
-        self.entryFormNeed = try container.decode(Int.self, forKey: .entryFormNeed)
-        self.expense_Need = try container.decode(Int.self, forKey: .expense_Need)
-        self.faq = try container.decode(Int.self, forKey: .faq)
-        self.geoTagNeed = try container.decode(Int.self, forKey: .geoTagNeed)
-        self.geoTagNeedChe = try container.decode(Int.self, forKey: .geoTagNeedChe)
-        self.geoTagNeedStock = try container.decode(Int.self, forKey: .geoTagNeedStock)
-        self.geoTagNeedUnList = try container.decode(Int.self, forKey: .geoTagNeedUnList)
-        self.geoCheck = try container.decode(Int.self, forKey: .geoCheck)
-        self.geoNeed = try container.decode(Int.self, forKey: .geoNeed)
-        self.geoTagNeedCip = try container.decode(Int.self, forKey: .geoTagNeedCip)
-        self.gstOption = try container.decode(Int.self, forKey: .gstOption)
-        self.geoTagImg = try container.decode(Int.self, forKey: .geoTagImg)
-        self.heNeed = try container.decode(Int.self, forKey: .heNeed)
-        self.hfNeed = try container.decode(Int.self, forKey: .hfNeed)
-        self.hiNeed = try container.decode(Int.self, forKey: .hiNeed)
-        self.hpNeed = try container.decode(Int.self, forKey: .hpNeed)
-        self.hqName = try container.decode(String.self, forKey: .hqName)
-        self.hqNeed = try container.decode(Int.self, forKey: .hqNeed)
-        self.hosPobMdNeed = try container.decode(Int.self, forKey: .hosPobMdNeed)
-        self.hosPobNeed = try container.decode(Int.self, forKey: .hosPobNeed)
-        self.hospEventNeed = try container.decode(Int.self, forKey: .hospEventNeed)
-        self.hospCaption = try container.decode(String.self, forKey: .hospCaption)
-        self.hospNeed = try container.decode(Int.self, forKey: .hospNeed)
-        self.inputValQty = try container.decode(Int.self, forKey: .inputValQty)
-        self.inputValidation = try container.decode(Int.self, forKey: .inputValidation)
-        self.leaveStatus = try container.decode(Int.self, forKey: .leaveStatus)
-        self.leaveEntitlementNeed = try container.decode(Int.self, forKey: .leaveEntitlementNeed)
-        self.locationTrack = try container.decode(Int.self, forKey: .locationTrack)
-        self.iosApp = try container.decode(Int.self, forKey: .iosApp)
-        self.iosDetailing = try container.decode(Int.self, forKey: .iosDetailing)
-        self.mclDet = try container.decode(Int.self, forKey: .mclDet)
-        self.mgrHlfDy = try container.decode(Int.self, forKey: .mgrHlfDy)
-        self.mrHlfDy = try container.decode(Int.self, forKey: .mrHlfDy)
-        self.msdEntry = try container.decode(Int.self, forKey: .msdEntry)
-        self.mailNeed = try container.decode(Int.self, forKey: .mailNeed)
-        self.miscExpenseNeed = try container.decode(Int.self, forKey: .miscExpenseNeed)
-        self.missedDateMdNeed = try container.decode(Int.self, forKey: .missedDateMdNeed)
-        self.multiClusterNeed = try container.decode(Int.self, forKey: .multiClusterNeed)
-        self.multipleDocNeed = try container.decode(Int.self, forKey: .multipleDocNeed)
-        self.mydayplanNeed = try container.decode(Int.self, forKey: .mydayplanNeed)
-        self.myPlnRmrksMand = try container.decode(Int.self, forKey: .myPlnRmrksMand)
-        self.neNeed = try container.decode(Int.self, forKey: .neNeed)
-        self.nfNeed = try container.decode(Int.self, forKey: .nfNeed)
-        self.niNeed = try container.decode(Int.self, forKey: .niNeed)
-        self.nlCap = try container.decode(String.self, forKey: .nlCap)
-        self.nlRxQCap = try container.decode(String.self, forKey: .nlRxQCap)
-        self.nlSampleQCap = try container.decode(String.self, forKey: .nlSampleQCap)
-        self.npNeed = try container.decode(Int.self, forKey: .npNeed)
-        self.nqNeed = try container.decode(Int.self, forKey: .nqNeed)
-        self.nextVst = try container.decode(Int.self, forKey: .nextVst)
-        self.nextVstMdNeed = try container.decode(Int.self, forKey: .nextVstMdNeed)
-        self.noOfTpView = try container.decode(Int.self, forKey: .noOfTpView)
-        self.orderCaption = try container.decode(String.self, forKey: .orderCaption)
-        self.orderManagement = try container.decode(Int.self, forKey: .orderManagement)
-        self.otherNeed = try container.decode(Int.self, forKey: .otherNeed)
-        self.primaryOrder = try container.decode(Int.self, forKey: .primaryOrder)
-        self.primaryOrderCap = try container.decode(String.self, forKey: .primaryOrderCap)
-        self.prodStkNeed = try container.decode(Int.self, forKey: .prodStkNeed)
-        self.productRateEditable = try container.decode(Int.self, forKey: .productRateEditable)
-        self.pwdSetup = try container.decode(Int.self, forKey: .pwdSetup)
-        self.pastLeavePost = try container.decode(Int.self, forKey: .pastLeavePost)
-        self.pobMinValue = try container.decode(Int.self, forKey: .pobMinValue)
-        self.productFeedBack = try container.decode(Int.self, forKey: .productFeedBack)
-        self.primarySecNeed = try container.decode(Int.self, forKey: .primarySecNeed)
-        self.proDetNeed = try container.decode(Int.self, forKey: .proDetNeed)
-        self.prodDetNeed = try container.decode(Int.self, forKey: .prodDetNeed)
-        self.productRemarkNeed = try container.decode(Int.self, forKey: .productRemarkNeed)
-        self.productRemarkMdNeed = try container.decode(Int.self, forKey: .productRemarkMdNeed)
-        self.productPobNeed = try container.decode(Int.self, forKey: .productPobNeed)
-        self.productPobNeedMsg = try container.decode(String.self, forKey: .productPobNeedMsg)
-        self.quesNeed = try container.decode(Int.self, forKey: .quesNeed)
-        self.quizHeading = try container.decode(String.self, forKey: .quizHeading)
-        self.quizNeed = try container.decode(Int.self, forKey: .quizNeed)
-        self.quizMandNeed = try container.decode(Int.self, forKey: .quizMandNeed)
-        self.quoteText = try container.decode(String.self, forKey: .quoteText)
-        self.rcpaQtyNeed = try container.decode(Int.self, forKey: .rcpaQtyNeed)
-        self.rcpaUnitNeed = try container.decode(Int.self, forKey: .rcpaUnitNeed)
-        self.rcpaMdNeed = try container.decode(Int.self, forKey: .rcpaMdNeed)
-        self.rcpaMgrMdNeed = try container.decode(Int.self, forKey: .rcpaMgrMdNeed)
-        self.rcpaNeed = try container.decode(Int.self, forKey: .rcpaNeed)
-        self.rcpaCompetitorExtra = try container.decode(Int.self, forKey: .rcpaCompetitorExtra)
-        self.remainderCallCap = try container.decode(String.self, forKey: .remainderCallCap)
-        self.remainderGeo = try container.decode(Int.self, forKey: .remainderGeo)
-        self.remainderProductMd = try container.decode(Int.self, forKey: .remainderProductMd)
-        self.rmdrNeed = try container.decode(Int.self, forKey: .rmdrNeed)
-        self.rcpaextra = try container.decode(Int.self, forKey: .rcpaextra)
-        self.refDoc = try container.decode(Int.self, forKey: .refDoc)
-        self.seNeed = try container.decode(Int.self, forKey: .seNeed)
-        self.sfNeed = try container.decode(Int.self, forKey: .sfNeed)
-        self.sfStat = try container.decode(String.self, forKey: .sfStat)
-      //  self.sfTpDate = try container.decode(Double.self, forKey: .sfTpDate)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.sfName = try container.decode(String.self, forKey: .sfName)
-        self.sfPassword = try container.decode(String.self, forKey: .sfPassword)
-        self.sfUserName = try container.decode(String.self, forKey: .sfUserName)
-        self.sfEmail = try container.decode(String.self, forKey: .sfEmail)
-        self.sfMobile = try container.decode(String.self, forKey: .sfMobile)
-        self.sfEmpId = try container.decode(String.self, forKey: .sfEmpId)
-        self.sfType = try container.decode(Int.self, forKey: .sfType)
-        self.stp = try container.decode(Int.self, forKey: .stp)
-        self.siNeed = try container.decode(Int.self, forKey: .siNeed)
-        self.spNeed = try container.decode(Int.self, forKey: .spNeed)
-        self.sqNeed = try container.decode(Int.self, forKey: .sqNeed)
-        self.sampleValQty = try container.decode(Int.self, forKey: .sampleValQty)
-        self.sampleValidation = try container.decode(Int.self, forKey: .sampleValidation)
-        self.secondaryOrder = try container.decode(Int.self, forKey: .secondaryOrder)
-        self.secondaryOrderCaption = try container.decode(String.self, forKey: .secondaryOrderCaption)
-        self.secondaryOrderDiscount = try container.decode(Int.self, forKey: .secondaryOrderDiscount)
-        self.sepRcpaNeed = try container.decode(Int.self, forKey: .sepRcpaNeed)
-        self.sequentailDcr = try container.decode(Int.self, forKey: .sequentailDcr)
-        self.srtNeed = try container.decode(Int.self, forKey: .srtNeed)
-        self.stateCode = try container.decode(Int.self, forKey: .stateCode)
-        self.stkCap = try container.decode(String.self, forKey: .stkCap)
-        self.stkEventMdNeed = try container.decode(Int.self, forKey: .stkEventMdNeed)
-        self.stkNeed = try container.decode(Int.self, forKey: .stkNeed)
-        self.stkQCap = try container.decode(String.self, forKey: .stkQCap)
-        self.stkInputCaption = try container.decode(String.self, forKey: .stkInputCaption)
-        self.stkPobMdNeed = try container.decode(Int.self, forKey: .stkPobMdNeed)
-        self.stkPobNeed = try container.decode(Int.self, forKey: .stkPobNeed)
-        self.stkProductCaption = try container.decode(String.self, forKey: .stkProductCaption)
-        self.stkClusterBased = try container.decode(Int.self, forKey: .stkClusterBased)
-        self.stkJointWrkMdNeed = try container.decode(Int.self, forKey: .stkJointWrkMdNeed)
-        self.stkJointWrkNeed = try container.decode(Int.self, forKey: .stkJointWrkNeed)
-        self.surveyNeed = try container.decode(Int.self, forKey: .surveyNeed)
-        self.success = try container.decode(Int.self, forKey: .success)
-        self.subDivisionCode = try container.decode(String.self, forKey: .subDivisionCode)
-        self.tBase = try container.decode(Int.self, forKey: .tBase)
-        self.tpdcrDeviation = try container.decode(Int.self, forKey: .tpdcrDeviation)
-        self.tpdcrDeviationApprStatus = try container.decode(Int.self, forKey: .tpdcrDeviationApprStatus)
-        self.tpdcrMgrAppr = try container.decode(Int.self, forKey: .tpdcrMgrAppr)
-        self.tpMdNeed = try container.decode(Int.self, forKey: .tpMdNeed)
-        self.tpBasedDcr = try container.decode(Int.self, forKey: .tpBasedDcr)
-        self.targetReportNeed = try container.decode(Int.self, forKey: .targetReportNeed)
-        self.targetReportMdNeed = try container.decode(Int.self, forKey: .targetReportMdNeed)
-        self.taxNameCaption = try container.decode(String.self, forKey: .taxNameCaption)
-        self.tempNeed = try container.decode(Int.self, forKey: .tempNeed)
-        self.terrBasedTag = try container.decode(Int.self, forKey: .terrBasedTag)
-        self.terrotoryVisitNeed = try container.decode(Int.self, forKey: .terrotoryVisitNeed)
-        self.tpEndDate = try container.decode(Int.self, forKey: .tpEndDate)
-        self.tpstartDate = try container.decode(Int.self, forKey: .tpstartDate)
-        self.tpNeed = try container.decode(Int.self, forKey: .tpNeed)
-        self.tpnew = try container.decode(Int.self, forKey: .tpnew)
-        self.trackingTime = try container.decode(String.self, forKey: .trackingTime)
-        self.travelDistanceNeed = try container.decode(Int.self, forKey: .travelDistanceNeed)
-        self.unlNeed = try container.decode(Int.self, forKey: .unlNeed)
-        self.ulDocClusterBased = try container.decode(Int.self, forKey: .ulDocClusterBased)
-        self.ulDocEventMd = try container.decode(Int.self, forKey: .ulDocEventMd)
-        self.ulInputCaption = try container.decode(String.self, forKey: .ulInputCaption)
-        self.ulPobMdNeed = try container.decode(Int.self, forKey: .ulPobMdNeed)
-        self.ulPobNeed = try container.decode(Int.self, forKey: .ulPobNeed)
-        self.ulProductCaption = try container.decode(String.self, forKey: .ulProductCaption)
-        self.ulJointWrlMdNeed = try container.decode(Int.self, forKey: .ulJointWrlMdNeed)
-        self.ulJointWrlNeed = try container.decode(Int.self, forKey: .ulJointWrlNeed)
-        self.usrDfdUserName = try container.decode(String.self, forKey: .usrDfdUserName)
-        self.visitNeed = try container.decode(Int.self, forKey: .visitNeed)
-        self.workAreaName = try container.decode(String.self, forKey: .workAreaName)
+        self.isSuccess = container.safeDecodeValue(forKey: .isSuccess)
+        self.successMessage =  container.safeDecodeValue(forKey: .successMessage)
+        self.activityNeed = container.safeDecodeValue(forKey: .activityNeed)
+        self.androidApp = container.safeDecodeValue(forKey: .androidApp)
+        self.androidDetailing = container.safeDecodeValue(forKey: .androidDetailing)
+        self.apprMandatoryNeed = container.safeDecodeValue(forKey: .apprMandatoryNeed)
+        self.approvalNeed = container.safeDecodeValue(forKey: .approvalNeed)
+        self.attendance = container.safeDecodeValue(forKey: .attendance)
+        self.appDeviceId = container.safeDecodeValue(forKey: .appDeviceId)
+        self.callFeedEnterable = container.safeDecodeValue(forKey: .callFeedEnterable)
+        self.callReport = container.safeDecodeValue(forKey: .callReport)
+        self.callReportFromDate = container.safeDecodeValue(forKey: .callReportFromDate)
+        self.callReportToDate = container.safeDecodeValue(forKey: .callReportToDate)
+        self.chmAdQty = container.safeDecodeValue(forKey: .chmAdQty)
+        self.chmSampleQtyNeed = container.safeDecodeValue(forKey: .chmSampleQtyNeed)
+        self.cipNeed = container.safeDecodeValue(forKey: .cipNeed)
+        self.circular = container.safeDecodeValue(forKey: .circular)
+        self.cntRemarks = container.safeDecodeValue(forKey: .cntRemarks)
+        self.currentDay = container.safeDecodeValue(forKey: .currentDay)
+        self.ceNeed = container.safeDecodeValue(forKey: .ceNeed)
+        self.cfNeed = container.safeDecodeValue(forKey: .cfNeed)
+        self.cheBase = container.safeDecodeValue(forKey: .cheBase)
+        self.ciNeed = container.safeDecodeValue(forKey: .ciNeed)
+        self.cipPobMdNeed = container.safeDecodeValue(forKey: .cipPobMdNeed)
+        self.cipPobNeed = container.safeDecodeValue(forKey: .cipPobNeed)
+        self.cipCaption = container.safeDecodeValue(forKey: .cipCaption)
+        self.cipENeed = container.safeDecodeValue(forKey: .cipENeed)
+        self.cipFNeed = container.safeDecodeValue(forKey: .cipFNeed)
+        self.cipINeed = container.safeDecodeValue(forKey: .cipINeed)
+        self.cipPNeed = container.safeDecodeValue(forKey: .cipPNeed)
+        self.cipQNeed = container.safeDecodeValue(forKey: .cipQNeed)
+        self.cipJointWrkNeed = container.safeDecodeValue(forKey: .cipJointWrkNeed)
+        self.cpNeed = container.safeDecodeValue(forKey: .cpNeed)
+        self.cqNeed = container.safeDecodeValue(forKey: .cqNeed)
+        self.campNeed = container.safeDecodeValue(forKey: .campNeed)
+        self.catNeed = container.safeDecodeValue(forKey: .catNeed)
+        self.chmCap = container.safeDecodeValue(forKey: .chmCap)
+        self.chmEventMdNeed = container.safeDecodeValue(forKey: .chmEventMdNeed)
+        self.chmNeed = container.safeDecodeValue(forKey: .chmNeed)
+        self.chmQcap = container.safeDecodeValue(forKey: .chmQcap)
+        self.chmRcpaCompetitorNeed = container.safeDecodeValue(forKey: .chmRcpaCompetitorNeed)
+        self.chmRxQtyNeed = container.safeDecodeValue(forKey: .chmRxQtyNeed)
+        self.chmSampleCap = container.safeDecodeValue(forKey: .chmSampleCap)
+        self.chmInputCaption = container.safeDecodeValue(forKey: .chmInputCaption)
+        self.chmPobMandatoryNeed = container.safeDecodeValue(forKey: .chmPobMandatoryNeed)
+        self.chmPobNeed = container.safeDecodeValue(forKey: .chmPobNeed)
+        self.chmProductCaption = container.safeDecodeValue(forKey: .chmProductCaption)
+        self.chmRcpaNeed = container.safeDecodeValue(forKey: .chmRcpaNeed)
+        self.chmClusterBased = container.safeDecodeValue(forKey: .chmClusterBased)
+        self.chmJointWrkMdNeed = container.safeDecodeValue(forKey: .chmJointWrkMdNeed)
+        self.chmJointWrkNeed = container.safeDecodeValue(forKey: .chmJointWrkNeed)
+        self.cipEventMdNeed = container.safeDecodeValue(forKey: .cipEventMdNeed)
+        self.cipSrtNd = container.safeDecodeValue(forKey: .cipSrtNd)
+        self.clusterCap = container.safeDecodeValue(forKey: .clusterCap)
+        self.cmpgnNeed = container.safeDecodeValue(forKey: .cmpgnNeed)
+        self.currentdayTpPlanned = container.safeDecodeValue(forKey: .currentdayTpPlanned)
+        self.custSrtNeed = container.safeDecodeValue(forKey: .custSrtNeed)
+        self.deNeed = container.safeDecodeValue(forKey: .deNeed)
+        self.dfNeed = container.safeDecodeValue(forKey: .dfNeed)
+        self.diNeed = container.safeDecodeValue(forKey: .diNeed)
+        self.dpNeed = container.safeDecodeValue(forKey: .dpNeed)
+        self.dqNeed = container.safeDecodeValue(forKey: .dqNeed)
+        self.dsName = container.safeDecodeValue(forKey: .dsName)
+        self.dcrLockDays = container.safeDecodeValue(forKey: .dcrLockDays)
+        self.dcrFirstSelfieNeed = container.safeDecodeValue(forKey: .dcrFirstSelfieNeed)
+        self.desig = container.safeDecodeValue(forKey: .desig)
+        self.detailingChem = container.safeDecodeValue(forKey: .detailingChem)
+        self.detailingType = container.safeDecodeValue(forKey: .detailingType)
+        self.deviceIdNeed = container.safeDecodeValue(forKey: .deviceIdNeed)
+        self.deviceRegId = container.safeDecodeValue(forKey: .deviceRegId)
+        self.disRad = container.safeDecodeValue(forKey: .disRad)
+        self.divisionCode = container.safeDecodeValue(forKey: .divisionCode)
+        self.dlyCtrl = container.safeDecodeValue(forKey: .dlyCtrl)
+        self.docInputCaption = container.safeDecodeValue(forKey: .docInputCaption)
+        self.docPobMandatoryNeed = container.safeDecodeValue(forKey: .docPobMandatoryNeed)
+        self.docPobNeed = container.safeDecodeValue(forKey: .docPobNeed)
+        self.docProductCaption = container.safeDecodeValue(forKey: .docProductCaption)
+        self.docClusterBased = container.safeDecodeValue(forKey: .docClusterBased)
+        self.docJointWrkMdNeed = container.safeDecodeValue(forKey: .docJointWrkMdNeed)
+        self.docJointWrkNeed = container.safeDecodeValue(forKey: .docJointWrkNeed)
+        self.docCap = container.safeDecodeValue(forKey: .docCap)
+        self.docEventMdNeed = container.safeDecodeValue(forKey: .docEventMdNeed)
+        self.docFeedMdNeed = container.safeDecodeValue(forKey: .docFeedMdNeed)
+        self.docInputMdNeed = container.safeDecodeValue(forKey: .docInputMdNeed)
+        self.docNeed = container.safeDecodeValue(forKey: .docNeed)
+        self.docProductMdNeed = container.safeDecodeValue(forKey: .docProductMdNeed)
+        self.docRcpaCompetitorNeed = container.safeDecodeValue(forKey: .docRcpaCompetitorNeed)
+        self.docRcpaQMdNeed = container.safeDecodeValue(forKey: .docRcpaQMdNeed)
+        self.docRxNeed = container.safeDecodeValue(forKey: .docRxNeed)
+        self.docRxQCap = container.safeDecodeValue(forKey: .docRxQCap)
+        self.docRxQMd = container.safeDecodeValue(forKey: .docRxQMd)
+        self.docSampleNeed = container.safeDecodeValue(forKey: .docSampleNeed)
+        self.docSampleQCap = container.safeDecodeValue(forKey: .docSampleQCap)
+        self.docSampleQMdNeed = container.safeDecodeValue(forKey: .docSampleQMdNeed)
+        self.dashboard = container.safeDecodeValue(forKey: .dashboard)
+        self.dayplanTpBased = container.safeDecodeValue(forKey: .dayplanTpBased)
+        self.days = container.safeDecodeValue(forKey: .days)
+        self.dcrDocBusinessProduct = container.safeDecodeValue(forKey: .dcrDocBusinessProduct)
+        self.desigCode = container.safeDecodeValue(forKey: .desigCode)
+        self.docBusinessProduct = container.safeDecodeValue(forKey: .docBusinessProduct)
+        self.docBusinessValue = container.safeDecodeValue(forKey: .docBusinessValue)
+        self.doctorDobDow = container.safeDecodeValue(forKey: .doctorDobDow)
+        self.expenceNeed = container.safeDecodeValue(forKey: .expenceNeed)
+        self.expenceMdNeed = container.safeDecodeValue(forKey: .expenceMdNeed)
+        self.expenseNeed = container.safeDecodeValue(forKey: .expenseNeed)
+        self.editHoliday = container.safeDecodeValue(forKey: .editHoliday)
+        self.editWeeklyOff = container.safeDecodeValue(forKey: .editWeeklyOff)
+        self.entryformMgr = container.safeDecodeValue(forKey: .entryformMgr)
+        self.entryFormNeed = container.safeDecodeValue(forKey: .entryFormNeed)
+        self.expense_Need = container.safeDecodeValue(forKey: .expense_Need)
+        self.faq = container.safeDecodeValue(forKey: .faq)
+        self.geoTagNeed = container.safeDecodeValue(forKey: .geoTagNeed)
+        self.geoTagNeedChe = container.safeDecodeValue(forKey: .geoTagNeedChe)
+        self.geoTagNeedStock = container.safeDecodeValue(forKey: .geoTagNeedStock)
+        self.geoTagNeedUnList = container.safeDecodeValue(forKey: .geoTagNeedUnList)
+        self.geoCheck = container.safeDecodeValue(forKey: .geoCheck)
+        self.geoNeed = container.safeDecodeValue(forKey: .geoNeed)
+        self.geoTagNeedCip = container.safeDecodeValue(forKey: .geoTagNeedCip)
+        self.gstOption = container.safeDecodeValue(forKey: .gstOption)
+        self.geoTagImg = container.safeDecodeValue(forKey: .geoTagImg)
+        self.heNeed = container.safeDecodeValue(forKey: .heNeed)
+        self.hfNeed = container.safeDecodeValue(forKey: .hfNeed)
+        self.hiNeed = container.safeDecodeValue(forKey: .hiNeed)
+        self.hpNeed = container.safeDecodeValue(forKey: .hpNeed)
+        self.hqName = container.safeDecodeValue(forKey: .hqName)
+        self.hqNeed = container.safeDecodeValue(forKey: .hqNeed)
+        self.hosPobMdNeed = container.safeDecodeValue(forKey: .hosPobMdNeed)
+        self.hosPobNeed = container.safeDecodeValue(forKey: .hosPobNeed)
+        self.hospEventNeed = container.safeDecodeValue(forKey: .hospEventNeed)
+        self.hospCaption = container.safeDecodeValue(forKey: .hospCaption)
+        self.hospNeed = container.safeDecodeValue(forKey: .hospNeed)
+        self.inputValQty = container.safeDecodeValue(forKey: .inputValQty)
+        self.inputValidation = container.safeDecodeValue(forKey: .inputValidation)
+        self.leaveStatus = container.safeDecodeValue(forKey: .leaveStatus)
+        self.leaveEntitlementNeed = container.safeDecodeValue(forKey: .leaveEntitlementNeed)
+        self.locationTrack = container.safeDecodeValue(forKey: .locationTrack)
+        self.iosApp = container.safeDecodeValue(forKey: .iosApp)
+        self.iosDetailing = container.safeDecodeValue(forKey: .iosDetailing)
+        self.mclDet = container.safeDecodeValue(forKey: .mclDet)
+        self.mgrHlfDy = container.safeDecodeValue(forKey: .mgrHlfDy)
+        self.mrHlfDy = container.safeDecodeValue(forKey: .mrHlfDy)
+        self.msdEntry = container.safeDecodeValue(forKey: .msdEntry)
+        self.mailNeed = container.safeDecodeValue(forKey: .mailNeed)
+        self.miscExpenseNeed = container.safeDecodeValue(forKey: .miscExpenseNeed)
+        self.missedDateMdNeed = container.safeDecodeValue(forKey: .missedDateMdNeed)
+        self.multiClusterNeed = container.safeDecodeValue(forKey: .multiClusterNeed)
+        self.multipleDocNeed = container.safeDecodeValue(forKey: .multipleDocNeed)
+        self.mydayplanNeed = container.safeDecodeValue(forKey: .mydayplanNeed)
+        self.myPlnRmrksMand = container.safeDecodeValue(forKey: .myPlnRmrksMand)
+        self.neNeed = container.safeDecodeValue(forKey: .neNeed)
+        self.nfNeed = container.safeDecodeValue(forKey: .nfNeed)
+        self.niNeed = container.safeDecodeValue(forKey: .niNeed)
+        self.nlCap = container.safeDecodeValue(forKey: .nlCap)
+        self.nlRxQCap = container.safeDecodeValue(forKey: .nlRxQCap)
+        self.nlSampleQCap = container.safeDecodeValue(forKey: .nlSampleQCap)
+        self.npNeed = container.safeDecodeValue(forKey: .npNeed)
+        self.nqNeed = container.safeDecodeValue(forKey: .nqNeed)
+        self.nextVst = container.safeDecodeValue(forKey: .nextVst)
+        self.nextVstMdNeed = container.safeDecodeValue(forKey: .nextVstMdNeed)
+        self.noOfTpView = container.safeDecodeValue(forKey: .noOfTpView)
+        self.orderCaption = container.safeDecodeValue(forKey: .orderCaption)
+        self.orderManagement = container.safeDecodeValue(forKey: .orderManagement)
+        self.otherNeed = container.safeDecodeValue(forKey: .otherNeed)
+        self.primaryOrder = container.safeDecodeValue(forKey: .primaryOrder)
+        self.primaryOrderCap = container.safeDecodeValue(forKey: .primaryOrderCap)
+        self.prodStkNeed = container.safeDecodeValue(forKey: .prodStkNeed)
+        self.productRateEditable = container.safeDecodeValue(forKey: .productRateEditable)
+        self.pwdSetup = container.safeDecodeValue(forKey: .pwdSetup)
+        self.pastLeavePost = container.safeDecodeValue(forKey: .pastLeavePost)
+        self.pobMinValue = container.safeDecodeValue(forKey: .pobMinValue)
+        self.productFeedBack = container.safeDecodeValue(forKey: .productFeedBack)
+        self.primarySecNeed = container.safeDecodeValue(forKey: .primarySecNeed)
+        self.proDetNeed = container.safeDecodeValue(forKey: .proDetNeed)
+        self.prodDetNeed = container.safeDecodeValue(forKey: .prodDetNeed)
+        self.productRemarkNeed = container.safeDecodeValue(forKey: .productRemarkNeed)
+        self.productRemarkMdNeed = container.safeDecodeValue(forKey: .productRemarkMdNeed)
+        self.productPobNeed = container.safeDecodeValue(forKey: .productPobNeed)
+        self.productPobNeedMsg = container.safeDecodeValue(forKey: .productPobNeedMsg)
+        self.quesNeed = container.safeDecodeValue(forKey: .quesNeed)
+        self.quizHeading = container.safeDecodeValue(forKey: .quizHeading)
+        self.quizNeed = container.safeDecodeValue(forKey: .quizNeed)
+        self.quizMandNeed = container.safeDecodeValue(forKey: .quizMandNeed)
+        self.quoteText = container.safeDecodeValue(forKey: .quoteText)
+        self.rcpaQtyNeed = container.safeDecodeValue(forKey: .rcpaQtyNeed)
+        self.rcpaUnitNeed = container.safeDecodeValue(forKey: .rcpaUnitNeed)
+        self.rcpaMdNeed = container.safeDecodeValue(forKey: .rcpaMdNeed)
+        self.rcpaMgrMdNeed = container.safeDecodeValue(forKey: .rcpaMgrMdNeed)
+        self.rcpaNeed = container.safeDecodeValue(forKey: .rcpaNeed)
+        self.rcpaCompetitorExtra = container.safeDecodeValue(forKey: .rcpaCompetitorExtra)
+        self.remainderCallCap = container.safeDecodeValue(forKey: .remainderCallCap)
+        self.remainderGeo = container.safeDecodeValue(forKey: .remainderGeo)
+        self.remainderProductMd = container.safeDecodeValue(forKey: .remainderProductMd)
+        self.rmdrNeed = container.safeDecodeValue(forKey: .rmdrNeed)
+        self.rcpaextra = container.safeDecodeValue(forKey: .rcpaextra)
+        self.refDoc = container.safeDecodeValue(forKey: .refDoc)
+        self.seNeed = container.safeDecodeValue(forKey: .seNeed)
+        self.sfNeed = container.safeDecodeValue(forKey: .sfNeed)
+        self.sfStat = container.safeDecodeValue(forKey: .sfStat)
+      //  self.sfTpDate = container.safeDecodeValue(Double.self, forKey: .sfTpDate)
+        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+        self.sfName = container.safeDecodeValue(forKey: .sfName)
+        self.sfPassword = container.safeDecodeValue(forKey: .sfPassword)
+        self.sfUserName = container.safeDecodeValue(forKey: .sfUserName)
+        self.sfEmail = container.safeDecodeValue(forKey: .sfEmail)
+        self.sfMobile = container.safeDecodeValue(forKey: .sfMobile)
+        self.sfEmpId = container.safeDecodeValue(forKey: .sfEmpId)
+        self.sfType = container.safeDecodeValue(forKey: .sfType)
+        self.stp = container.safeDecodeValue(forKey: .stp)
+        self.siNeed = container.safeDecodeValue(forKey: .siNeed)
+        self.spNeed = container.safeDecodeValue(forKey: .spNeed)
+        self.sqNeed = container.safeDecodeValue(forKey: .sqNeed)
+        self.sampleValQty = container.safeDecodeValue(forKey: .sampleValQty)
+        self.sampleValidation = container.safeDecodeValue(forKey: .sampleValidation)
+        self.secondaryOrder = container.safeDecodeValue(forKey: .secondaryOrder)
+        self.secondaryOrderCaption = container.safeDecodeValue(forKey: .secondaryOrderCaption)
+        self.secondaryOrderDiscount = container.safeDecodeValue(forKey: .secondaryOrderDiscount)
+        self.sepRcpaNeed = container.safeDecodeValue(forKey: .sepRcpaNeed)
+        self.sequentailDcr = container.safeDecodeValue(forKey: .sequentailDcr)
+        self.srtNeed = container.safeDecodeValue(forKey: .srtNeed)
+        self.stateCode = container.safeDecodeValue(forKey: .stateCode)
+        self.stkCap = container.safeDecodeValue(forKey: .stkCap)
+        self.stkEventMdNeed = container.safeDecodeValue(forKey: .stkEventMdNeed)
+        self.stkNeed = container.safeDecodeValue(forKey: .stkNeed)
+        self.stkQCap = container.safeDecodeValue(forKey: .stkQCap)
+        self.stkInputCaption = container.safeDecodeValue(forKey: .stkInputCaption)
+        self.stkPobMdNeed = container.safeDecodeValue(forKey: .stkPobMdNeed)
+        self.stkPobNeed = container.safeDecodeValue(forKey: .stkPobNeed)
+        self.stkProductCaption = container.safeDecodeValue(forKey: .stkProductCaption)
+        self.stkClusterBased = container.safeDecodeValue(forKey: .stkClusterBased)
+        self.stkJointWrkMdNeed = container.safeDecodeValue(forKey: .stkJointWrkMdNeed)
+        self.stkJointWrkNeed = container.safeDecodeValue(forKey: .stkJointWrkNeed)
+        self.surveyNeed = container.safeDecodeValue(forKey: .surveyNeed)
+      //  self.success = container.safeDecodeValue(forKey: .success)
+        self.subDivisionCode = container.safeDecodeValue(forKey: .subDivisionCode)
+        self.tBase = container.safeDecodeValue(forKey: .tBase)
+        self.tpdcrDeviation = container.safeDecodeValue(forKey: .tpdcrDeviation)
+        self.tpdcrDeviationApprStatus = container.safeDecodeValue(forKey: .tpdcrDeviationApprStatus)
+        self.tpdcrMgrAppr = container.safeDecodeValue(forKey: .tpdcrMgrAppr)
+        self.tpMdNeed = container.safeDecodeValue(forKey: .tpMdNeed)
+        self.tpBasedDcr = container.safeDecodeValue(forKey: .tpBasedDcr)
+        self.targetReportNeed = container.safeDecodeValue(forKey: .targetReportNeed)
+        self.targetReportMdNeed = container.safeDecodeValue(forKey: .targetReportMdNeed)
+        self.taxNameCaption = container.safeDecodeValue(forKey: .taxNameCaption)
+        self.tempNeed = container.safeDecodeValue(forKey: .tempNeed)
+        self.terrBasedTag = container.safeDecodeValue(forKey: .terrBasedTag)
+        self.terrotoryVisitNeed = container.safeDecodeValue(forKey: .terrotoryVisitNeed)
+        self.tpEndDate = container.safeDecodeValue(forKey: .tpEndDate)
+        self.tpstartDate = container.safeDecodeValue(forKey: .tpstartDate)
+        self.tpNeed = container.safeDecodeValue(forKey: .tpNeed)
+        self.tpnew = container.safeDecodeValue(forKey: .tpnew)
+        self.trackingTime = container.safeDecodeValue(forKey: .trackingTime)
+        self.travelDistanceNeed = container.safeDecodeValue(forKey: .travelDistanceNeed)
+        self.unlNeed = container.safeDecodeValue(forKey: .unlNeed)
+        self.ulDocClusterBased = container.safeDecodeValue(forKey: .ulDocClusterBased)
+        self.ulDocEventMd = container.safeDecodeValue(forKey: .ulDocEventMd)
+        self.ulInputCaption = container.safeDecodeValue(forKey: .ulInputCaption)
+        self.ulPobMdNeed = container.safeDecodeValue(forKey: .ulPobMdNeed)
+        self.ulPobNeed = container.safeDecodeValue(forKey: .ulPobNeed)
+        self.ulProductCaption = container.safeDecodeValue(forKey: .ulProductCaption)
+        self.ulJointWrlMdNeed = container.safeDecodeValue(forKey: .ulJointWrlMdNeed)
+        self.ulJointWrlNeed = container.safeDecodeValue(forKey: .ulJointWrlNeed)
+        self.usrDfdUserName = container.safeDecodeValue(forKey: .usrDfdUserName)
+        self.visitNeed = container.safeDecodeValue(forKey: .visitNeed)
+        self.workAreaName = container.safeDecodeValue(forKey: .workAreaName)
+        self.success = 0
     }
     
     enum CodingKeys: String, CodingKey {
+        case isSuccess = "success"
+        case successMessage = "msg"
         case activityNeed = "ActivityNd"
         case androidApp = "Android_App"
         case androidDetailing = "Android_Detailing"
@@ -772,7 +1045,7 @@ class NewAppSetupModel : Codable {
         case stkJointWrkMdNeed = "Stk_jointwork_Mandatory_Need"
         case stkJointWrkNeed = "Stk_jointwork_Need"
         case surveyNeed = "SurveyNd"
-        case success = "success"
+       // case success = "success"
         case subDivisionCode = "subdivision_code"
         case tBase = "TBase"
         case tpdcrDeviation = "TPDCR_Deviation"

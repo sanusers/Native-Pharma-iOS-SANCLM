@@ -19,6 +19,15 @@
 		385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424F2AFBABC300C0A58A /* BaseViewController.swift */; };
 		385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42512AFBAC2D00C0A58A /* BaseView.swift */; };
 		385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42532AFBB75300C0A58A /* AppSetupModel.swift */; };
+		3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */; };
+		3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8CE2AFCCE74009AB984 /* TourPlanVC.swift */; };
+		3865F8D12AFCCF62009AB984 /* StoryBoardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */; };
+		3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D32AFCE3BF009AB984 /* worksPlanTVC.swift */; };
+		3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */; };
+		3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */; };
+		3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */; };
+		3865F8DD2AFD0555009AB984 /* FSCalendarCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */; };
+		3865F8DE2AFD0555009AB984 /* FSCalendarCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */; };
@@ -176,6 +185,15 @@
 		385A424F2AFBABC300C0A58A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		385A42512AFBAC2D00C0A58A /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		385A42532AFBB75300C0A58A /* AppSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetupModel.swift; sourceTree = "<group>"; };
+		3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanView.swift; sourceTree = "<group>"; };
+		3865F8CE2AFCCE74009AB984 /* TourPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanVC.swift; sourceTree = "<group>"; };
+		3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBoardExtensions.swift; sourceTree = "<group>"; };
+		3865F8D32AFCE3BF009AB984 /* worksPlanTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = worksPlanTVC.swift; sourceTree = "<group>"; };
+		3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = worksPlanTVC.xib; sourceTree = "<group>"; };
+		3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkPlansInfoCVC.swift; sourceTree = "<group>"; };
+		3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkPlansInfoCVC.xib; sourceTree = "<group>"; };
+		3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarCVC.swift; sourceTree = "<group>"; };
+		3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FSCalendarCVC.xib; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38BCA67A2A248838002C77F6 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extensions.swift"; sourceTree = "<group>"; };
@@ -370,6 +388,35 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
+		3865F8CA2AFCCE3D009AB984 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				3865F8CE2AFCCE74009AB984 /* TourPlanVC.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		3865F8CD2AFCCE57009AB984 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
+			isa = PBXGroup;
+			children = (
+				3865F8D32AFCE3BF009AB984 /* worksPlanTVC.swift */,
+				3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */,
+				3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */,
+				3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */,
+				3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */,
+				3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */,
+			);
+			path = CellandXIB;
+			sourceTree = "<group>";
+		};
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -378,6 +425,7 @@
 				38E3C3652AF9FB4400623C33 /* plistReader.swift */,
 				38E3C36A2AFA047400623C33 /* Codable.swift */,
 				385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */,
+				3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -514,6 +562,9 @@
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
+				3865F8D22AFCE38E009AB984 /* CellandXIB */,
+				3865F8CD2AFCCE57009AB984 /* Views */,
+				3865F8CA2AFCCE3D009AB984 /* ViewControllers */,
 				385A424E2AFBABB000C0A58A /* Base */,
 				38BFB7842AFB62DD005E141E /* Modals */,
 				38BFB7832AFB61CD005E141E /* ViewModels */,
@@ -769,6 +820,8 @@
 				B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */,
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
+				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
+				3865F8DE2AFD0555009AB984 /* FSCalendarCVC.xib in Resources */,
 				B287E68429F2A20F0097974D /* Satoshi-Medium.otf in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
@@ -804,6 +857,7 @@
 				38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
+				3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */,
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -882,6 +936,7 @@
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,
 				38E3C36B2AFA047400623C33 /* Codable.swift in Sources */,
 				38CC72B32A75347E00BFDAF5 /* SideMenuCell.swift in Sources */,
+				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,
@@ -928,6 +983,7 @@
 				38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */,
 				38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */,
 				B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */,
+				3865F8DD2AFD0555009AB984 /* FSCalendarCVC.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,
 				38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */,
 				38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */,
@@ -937,6 +993,7 @@
 				38E3C3662AF9FB4400623C33 /* plistReader.swift in Sources */,
 				38E3C3602AF9FA7000623C33 /* APIresponseHandler.swift in Sources */,
 				38C94CAE2A60269F007F1871 /* LeaveStatusCell.swift in Sources */,
+				3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */,
 				38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */,
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
@@ -952,11 +1009,14 @@
 				3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */,
 				38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */,
 				38E5E4612AEBB39B00AF053A /* JointWorkTableViewCell.swift in Sources */,
+				3865F8D12AFCCF62009AB984 /* StoryBoardExtensions.swift in Sources */,
+				3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */,
 				38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */,
 				38CF07E22A9C99090051B577 /* LocationManager.swift in Sources */,
 				38E3C3642AF9FB0B00623C33 /* Constants.swift in Sources */,
 				B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */,
 				38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */,
+				3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */,
 				38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,

@@ -29,19 +29,19 @@ class AppDefaults {
     var slideUrl : String  = ""
     var reportUrl : String = ""
     var appConfig : Config?
+    var appSetup : AppSetUp?
     var sfCode : String = ""
     
     let userdefaults = UserDefaults.standard
     
     
-
     func getConfig() -> Config {
         
         let configData = UserDefaults.standard.data(forKey: keys.config.rawValue)
         let decoder = JSONDecoder()
         var isDecoded: Bool = false
         do {
-            let decodedData = try decoder.decode(Config.self, from: configData!)
+            let decodedData = try decoder.decode(Config.self, from: configData ?? Data())
             isDecoded = true
                         self.webUrl = decodedData.webUrl
                         self.iosUrl = decodedData.iosUrl
@@ -61,41 +61,33 @@ class AppDefaults {
         } else {
             return Config()
         }
-
-//        guard let config = self.get(key: .config, type: [String : Any]()) else {
-//           return AppConfig(fromDictionary: [:])
-//        }
-//
-//        let configData = AppConfig(fromDictionary: config)
-//
-//        if let config = configData.config {
-//
-//            self.webUrl = config.webUrl
-//            self.iosUrl = config.iosUrl
-//            self.syncUrl = config.syncUrl
-//            self.slideUrl = config.slideUrl
-//            self.imgLogo = config.logoImg
-//            self.reportUrl = config.reportUrl
-//        }
-//        return configData
     }
     
     
 
     
     func isConfigAdded () -> Bool {
-        guard let _ = self.get(key: .config, type: [String: Any]()) else {
+        if appConfig == nil {
             return false
         }
         return true
+//        guard let _ = self.get(key: .config, type: [String: Any]()) else {
+//            return false
+//        }
+//        return true
     }
     
     func isLoggedIn() -> Bool {
-        guard let appsetup = self.get(key: .appSetUp, type: [String : Any]())else{
-            return false
-        }
         
-        return !appsetup.isEmpty
+       let appSetup = AppDefaults.shared.getAppSetUp()
+     
+        return true
+        
+//        guard let appsetup = self.get(key: .appSetUp, type: [String : Any]())else{
+//            return false
+//        }
+//
+//        return !appsetup.isEmpty
     }
     
     func getLogoImgData() -> [String : Any] {
@@ -105,11 +97,36 @@ class AppDefaults {
         return data
     }
     
+//    func getAppSetUp() -> AppSetUp {
+//        guard let setup = self.get(key: .appSetUp, type: [String : Any]()) else {
+//            return AppSetUp(fromDictionary: [:])
+//        }
+//        return AppSetUp(fromDictionary: setup)
+//    }
+    
     func getAppSetUp() -> AppSetUp {
-        guard let setup = self.get(key: .appSetUp, type: [String : Any]()) else {
-            return AppSetUp(fromDictionary: [:])
+        
+        let appData = UserDefaults.standard.data(forKey: keys.appSetUp.rawValue)
+        let decoder = JSONDecoder()
+        var isDecoded: Bool = false
+        do {
+            let decodedData = try decoder.decode(AppSetUp.self, from: appData!)
+            isDecoded = true
+            self.appSetup = decodedData
+        } catch {
+            print("Unable to decode")
         }
-        return AppSetUp(fromDictionary: setup)
+        if isDecoded {
+            return appSetup ?? AppSetUp()
+        } else {
+            return AppSetUp()
+        }
+        
+        
+        
+        guard let setup = self.get(key: .appSetUp, type: [String : Any]()) else {
+           // return AppSetUp(fromDictionary: [:])
+        }
     }
     
     
@@ -159,7 +176,6 @@ class AppDefaults {
     
     func toSaveEncodedData<T: Codable>(object: T, key : keys, completion: (Bool) -> ()) throws {
         let encoder = JSONEncoder()
-        
         do {
             let encodedData = try encoder.encode(object)
             UserDefaults.standard.set(encodedData, forKey: key.rawValue)
@@ -169,6 +185,8 @@ class AppDefaults {
             completion(false)
         }
     }
+    
+    
     
 
     

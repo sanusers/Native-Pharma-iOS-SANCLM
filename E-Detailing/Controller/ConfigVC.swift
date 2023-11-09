@@ -96,7 +96,6 @@ class ConfigVC : UIViewController {
         let param = [String: Any]()
         homeVM!.getConfigData(params: param, api: .none) { result in
             switch result {
-                
             case .success(let response):
                 print(response)
                 let config = response.filter{$0.key.caseInsensitiveCompare(licenseKey) == .orderedSame}
