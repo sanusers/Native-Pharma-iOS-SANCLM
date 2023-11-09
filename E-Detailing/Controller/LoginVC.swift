@@ -74,6 +74,9 @@ class LoginVC : UIViewController {
                 
             case .success(let loginData):
                 dump(loginData)
+//                if loginData.successCode == 0 {
+//                    ConfigVC().showToast(controller: self, message: loginData.statusMessage, seconds: 2)
+//                }
             case .failure(let error):
                 dump(error)
             }
@@ -119,15 +122,13 @@ class LoginVC : UIViewController {
         
         let urlStr = appMainURL + "action/login" //"login"  // "http://crm.saneforce.in/apps/ConfigiOSEdet.json"
         
-       // let params = "{\"name\" : \(userId),\"password\" : \(password), \"versionNo\" : \"V.1.0\",\"mode\": \"iOS-Edeting\",\"Device_version\" : \(version),\"device_id\" : \"\",\"Device_name\" : \(modelName),\"AppDeviceRegId\" : \"\", \"location\" : \"\"}"
-        
-        
+  
         let paramStr = ["name" : userId,"password" : password,"versionNo": "i.1.0","mode" : "iOS-Edeting","Device_version": version,"device_id" : "","Device_name" : modelName,"AppDeviceRegId" : "", "location" : ""]
 
         print(paramStr)
 
         let param = ["data" : paramStr.toString()]
-        doUserLogin(param: param)
+     //   doUserLogin(param: param)
 
         print(urlStr)
         print(param)
@@ -135,48 +136,48 @@ class LoginVC : UIViewController {
         let date = Date()
 
         print(date)
-//        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
-//
-//            switch response.result {
-//
-//                case .success(_):
-//                    do {
-//                        let apiResponse = response
-//                        //try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-//
-//                        let date1 = Date()
-//
-//                        print(date1)
-//
-//                        print("ssususnbjbo")
-//                        print(apiResponse)
-//                        print("ssusus")
-//
-//                        let status = self.getStatus(json: apiResponse)
-//
-//                        if status.isOk {
-//
-//                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
-//
-//                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                                appDelegate.setupRootViewControllers()
-//                            }
-//                        }
-//
-//                    }catch {
-//
-//                    }
-//                case .failure(let error):
-//
-//                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-//                    print(error)
-//                    return
-//            }
-//
-//            print("2")
-//            print(response)
-//            print("2")
-//        }
+        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
+
+            switch response.result {
+
+                case .success(_):
+                    do {
+                        let apiResponse = response
+                        //try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
+
+                        let date1 = Date()
+
+                        print(date1)
+
+                        print("ssususnbjbo")
+                        print(apiResponse)
+                        print("ssusus")
+
+                        let status = self.getStatus(json: apiResponse)
+
+                        if status.isOk {
+
+                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
+
+                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                appDelegate.setupRootViewControllers()
+                            }
+                        }
+
+                    }catch {
+
+                    }
+                case .failure(let error):
+
+                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                    print(error)
+                    return
+            }
+
+            print("2")
+            print(response)
+            print("2")
+        }
     }
     
     
@@ -245,107 +246,3 @@ extension Dictionary{
 }
 
 
-
-
-
-//        AF.request(urlStr,method: .post,parameters: param).responseString { (response) in
-//            print("3")
-//            print(response)
-//            print("3")
-//        }
-//
-//
-//        AF.request(urlStr,method: .post,parameters: param).response { (response) in
-//            print("4")
-//            print(response)
-//            print("4")
-//        }
-//
-//        AF.request(urlStr,method: .post,parameters: param).responseDecodable(of: Config.self) { (response) in
-//
-//            print("5")
-//            print(response)
-//            print("5")
-//        }
-
-
-
-// AF.request(urlStr,method: .post,parameters: param).re
-
-//        AF.request(url).responseDecodable(of: Config.self){ (responseFeed) in
-//
-//            print(responseFeed)
-//
-//
-//
-//            let homeVC = UIStoryboard.homeVC
-//            self.navigationController?.pushViewController(homeVC, animated: true)
-//        }
-
-
-
-//        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
-//
-//            print("1")
-//            print(response)
-//            print("1")
-//
-//            switch response.result {
-//
-//                case .success(_):
-//                    do {
-//                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-//
-//
-//
-//                        print(apiResponse)
-//                    }catch {
-//
-//                    }
-//                case .failure(let error):
-//                    print(error)
-//                    return
-//            }
-//
-//        }
-
-
-
-
-//    {"name":"EMR123","password":"123","versionNo":"N TS - 1","mode":"Android-App","Device_version":"12","device_id":"e060ab25e4c9f7a1","Device_name":"220333QBI(Xiaomi)","AppDeviceRegId":"d37A27Z4TBuOoTT2vAVcFs:APA91bFHhkVZq1uMig_JHzACXDVj2aXVstqHAJyoLVUIiQK6KlO73-f1YYjpz3hzOAu50nem6nTQfNrgfuUL0l06NtF5_Am3eAUSRKQvW4-SNCgjMcBC8Kub_oXgr6DgpiMrgPZhWhI8","location":"0.0:0.0"}
-
-
-//        let jsonData = try? JSONSerialization.data(withJSONObject: params)
-//
-//        let url = URL(string: urlStr)!
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.httpBody = jsonData
-
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let data = data, error == nil else {
-//                print(error?.localizedDescription ?? "No data")
-//                return
-//            }
-//
-//            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-//
-//            if let responseJSON = responseJSON as? [String: Any] {
-//                print(responseJSON)
-//
-//            }
-//
-//        }.resume()
-func background(work: @escaping () -> ()) {
-    DispatchQueue.global(qos: .userInitiated).async {
-        work()
-    }
-}
-
-func main(work: @escaping () -> ()) {
-    DispatchQueue.main.async {
-        work()
-    }
-}

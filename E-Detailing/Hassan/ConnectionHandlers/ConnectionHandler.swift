@@ -167,7 +167,7 @@ final class ConnectionHandler : NSObject {
                 var ArrJSONseq = Array<JSON>()
                 var jsonseq = JSON()
                 if CacheAttribute == .none {
-                    let ArrJSONseq = value as! Array<JSON>
+                    ArrJSONseq = value as! Array<JSON>
                 } else {
                     jsonseq = value as! JSON
                 }

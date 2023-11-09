@@ -15,6 +15,10 @@
 		3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3813B35E2A20E9AE006F3B78 /* Config.swift */; };
 		384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384ED2BC2A39F8B900285B02 /* AppDefaults.swift */; };
 		385A424A2AFB840600C0A58A /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */; };
+		385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424C2AFBAB6400C0A58A /* View+UX.swift */; };
+		385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424F2AFBABC300C0A58A /* BaseViewController.swift */; };
+		385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42512AFBAC2D00C0A58A /* BaseView.swift */; };
+		385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42532AFBB75300C0A58A /* AppSetupModel.swift */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */; };
@@ -168,6 +172,10 @@
 		3813B35E2A20E9AE006F3B78 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		384ED2BC2A39F8B900285B02 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Extensions.swift"; sourceTree = "<group>"; };
+		385A424C2AFBAB6400C0A58A /* View+UX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+UX.swift"; sourceTree = "<group>"; };
+		385A424F2AFBABC300C0A58A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		385A42512AFBAC2D00C0A58A /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
+		385A42532AFBB75300C0A58A /* AppSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetupModel.swift; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38BCA67A2A248838002C77F6 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extensions.swift"; sourceTree = "<group>"; };
@@ -352,9 +360,20 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		385A424E2AFBABB000C0A58A /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				385A424F2AFBABC300C0A58A /* BaseViewController.swift */,
+				385A42512AFBAC2D00C0A58A /* BaseView.swift */,
+				38E3C36C2AFA0BAC00623C33 /* BaseViewModel.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				385A424C2AFBAB6400C0A58A /* View+UX.swift */,
 				38E3C3632AF9FB0B00623C33 /* Constants.swift */,
 				38E3C3652AF9FB4400623C33 /* plistReader.swift */,
 				38E3C36A2AFA047400623C33 /* Codable.swift */,
@@ -385,7 +404,6 @@
 		38BFB7832AFB61CD005E141E /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				38E3C36C2AFA0BAC00623C33 /* BaseViewModel.swift */,
 				38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
@@ -496,6 +514,7 @@
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
+				385A424E2AFBABB000C0A58A /* Base */,
 				38BFB7842AFB62DD005E141E /* Modals */,
 				38BFB7832AFB61CD005E141E /* ViewModels */,
 				38BFB7812AFB61AB005E141E /* ConnectionHandlers */,
@@ -510,6 +529,7 @@
 			isa = PBXGroup;
 			children = (
 				38E3C3682AFA033C00623C33 /* ConfigModel.swift */,
+				385A42532AFBB75300C0A58A /* AppSetupModel.swift */,
 			);
 			path = Cofiguration;
 			sourceTree = "<group>";
@@ -862,6 +882,7 @@
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,
 				38E3C36B2AFA047400623C33 /* Codable.swift in Sources */,
 				38CC72B32A75347E00BFDAF5 /* SideMenuCell.swift in Sources */,
+				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,
 				38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */,
@@ -885,6 +906,7 @@
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */,
 				38C4D5AA2A84F92D00D7C5E0 /* ProductNameTableViewCell.swift in Sources */,
+				385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */,
 				38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */,
 				38D528AC2A9A251300AD3F78 /* TaggingListVC.swift in Sources */,
 				B287E6BF29F2A7560097974D /* Extention.swift in Sources */,
@@ -937,8 +959,10 @@
 				38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */,
 				38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
+				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
 				38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */,
+				385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */,
 				38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */,
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
