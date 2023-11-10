@@ -28,27 +28,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupRootViewControllers() {
         
         
-        let tourplanVC = TourPlanVC.initWithStory()
-        self.window?.rootViewController = UINavigationController.init(rootViewController: tourplanVC)
+      //  let tourplanVC = TourPlanVC.initWithStory()
+     //   self.window?.rootViewController = UINavigationController.init(rootViewController: tourplanVC)
         
-//        if !AppDefaults.shared.isConfigAdded() {
-//            self.window?.rootViewController = UIStoryboard.apiconfigNavigationVC
-//        } else {
-//
-//            _ = AppDefaults.shared.getConfig()
-//
-//            if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
-//                self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.mainVC)
-//
-//            }else if AppDefaults.shared.isLoggedIn() {
-//                let mastersyncVC = UIStoryboard.masterSyncVC
-//                mastersyncVC.isFromLaunch = true
-//                self.window?.rootViewController = UINavigationController.init(rootViewController:mastersyncVC)
-//
-//            }else {
-//                self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.loginVC)
-//            }
-//        }
+        if !AppDefaults.shared.isConfigAdded() {
+            self.window?.rootViewController = UIStoryboard.apiconfigNavigationVC
+        } else {
+
+            _ = AppDefaults.shared.getConfig()
+
+            if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
+                self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.mainVC)
+
+            }else if AppDefaults.shared.isLoggedIn() {
+                let mastersyncVC = UIStoryboard.masterSyncVC
+                mastersyncVC.isFromLaunch = true
+                self.window?.rootViewController = UINavigationController.init(rootViewController:mastersyncVC)
+
+            }else {
+                self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.loginVC)
+            }
+        }
     }
 }
 

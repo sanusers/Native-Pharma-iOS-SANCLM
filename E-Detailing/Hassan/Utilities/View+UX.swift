@@ -188,7 +188,7 @@ extension UIView {
 //    }
 //
     func elevate(_ elevation: Double,
-                 shadowColor : UIColor = .gray,
+                 shadowColor : UIColor = .lightGray,
                  opacity : Float = 0.3) {
         self.layer.masksToBounds = false
         self.layer.shouldRasterize = true

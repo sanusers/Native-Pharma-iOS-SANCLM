@@ -210,6 +210,11 @@ class TourPlanView: BaseView {
 extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        print("::>--Tapped-->::")
+        let menuvc = MenuVC.initWithStory(self)
+        self.tourplanVC.modalPresentationStyle = .custom
+        menuvc.menuDelegate = self
+        self.tourplanVC.navigationController?.present(menuvc, animated: true)
         print(date)
         let dateformatter = DateFormatter()
         let month = DateFormatter()
@@ -228,10 +233,21 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
         let cell = calendar.dequeueReusableCell(withIdentifier: "DateCell", for: date, at: position)
       //  let cell : FSCalendarCVC = calendar.dequeueReusableCell(withIdentifier: "FSCalendarCVC", for: date, at: position) as! FSCalendarCVC
-        
+        cell.layer.borderColor = borderColor.cgColor
+        cell.layer.borderWidth = 1
+        cell.layer.masksToBounds = true
 
         cell.layer.masksToBounds = true
         return cell
     }
     
+}
+
+
+extension TourPlanView: MenuResponseProtocol {
+    func callPlanAPI() {
+        print("Called")
+    }
+    
+
 }

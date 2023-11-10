@@ -137,6 +137,10 @@
 		38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78E0B2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift */; };
 		38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E78E0D2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib */; };
 		38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */; };
+		38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EA3D0F2AFDE66300DA7018 /* MenuVC.swift */; };
+		38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EA3D112AFDE66E00DA7018 /* MenuVIew.swift */; };
+		38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EA3D142AFDED4C00DA7018 /* SessionInfoTVC.swift */; };
+		38EA3D172AFDED4C00DA7018 /* SessionInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */; };
 		38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */; };
 		38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EBB8902A6BD447008E007C /* QuickLinkCell.xib */; };
 		38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EDEA792A6A5F16000E857C /* MainVC.swift */; };
@@ -303,6 +307,10 @@
 		38E78E0B2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleEntryTableViewCell.swift; sourceTree = "<group>"; };
 		38E78E0D2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleEntryTableViewCell.xib; sourceTree = "<group>"; };
 		38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreCallVC.swift; sourceTree = "<group>"; };
+		38EA3D0F2AFDE66300DA7018 /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
+		38EA3D112AFDE66E00DA7018 /* MenuVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVIew.swift; sourceTree = "<group>"; };
+		38EA3D142AFDED4C00DA7018 /* SessionInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInfoTVC.swift; sourceTree = "<group>"; };
+		38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SessionInfoTVC.xib; sourceTree = "<group>"; };
 		38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLinkCell.swift; sourceTree = "<group>"; };
 		38EBB8902A6BD447008E007C /* QuickLinkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickLinkCell.xib; sourceTree = "<group>"; };
 		38EDEA792A6A5F16000E857C /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
@@ -392,6 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				3865F8CE2AFCCE74009AB984 /* TourPlanVC.swift */,
+				38EA3D0F2AFDE66300DA7018 /* MenuVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -400,6 +409,7 @@
 			isa = PBXGroup;
 			children = (
 				3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */,
+				38EA3D112AFDE66E00DA7018 /* MenuVIew.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -407,6 +417,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38EA3D132AFDECFB00DA7018 /* SessionCell */,
 				3865F8D32AFCE3BF009AB984 /* worksPlanTVC.swift */,
 				3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */,
 				3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */,
@@ -583,6 +594,15 @@
 				385A42532AFBB75300C0A58A /* AppSetupModel.swift */,
 			);
 			path = Cofiguration;
+			sourceTree = "<group>";
+		};
+		38EA3D132AFDECFB00DA7018 /* SessionCell */ = {
+			isa = PBXGroup;
+			children = (
+				38EA3D142AFDED4C00DA7018 /* SessionInfoTVC.swift */,
+				38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */,
+			);
+			path = SessionCell;
 			sourceTree = "<group>";
 		};
 		A8343534F7C81EDB68431942 /* Pods */ = {
@@ -828,6 +848,7 @@
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */,
+				38EA3D172AFDED4C00DA7018 /* SessionInfoTVC.xib in Resources */,
 				B287E68329F2A20F0097974D /* Satoshi-LightItalic.otf in Resources */,
 				38CCA2B72A656B92008D5B12 /* LeaveAvailablityCell.xib in Resources */,
 				38C4245E2A2B4DB1004A89EF /* MasterSyncCell.xib in Resources */,
@@ -939,6 +960,7 @@
 				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
+				38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,
 				38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */,
 				38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */,
@@ -959,6 +981,7 @@
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
+				38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */,
 				38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */,
 				38C4D5AA2A84F92D00D7C5E0 /* ProductNameTableViewCell.swift in Sources */,
 				385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */,
@@ -1025,6 +1048,7 @@
 				385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */,
 				38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */,
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
+				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
