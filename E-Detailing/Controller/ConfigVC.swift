@@ -149,12 +149,6 @@
 //
 //
 //
-//  ConfigVC.swift
-//  E-Detailing
-//
-//  Created by NAGAPRASATH N on 27/05/23.
-//
-
 //
 //  ConfigVC.swift
 //  E-Detailing
@@ -182,6 +176,19 @@ class ConfigVC : UIViewController {
         super.viewDidLoad()
         
         
+        
+        
+        [txtWebUrl,txtLicenceKey,txtDeviceId,txtLanguage].forEach { textfield in
+            textfield?.layer.borderColor = AppColors.primaryColorWith_25per_alpha.cgColor
+            textfield?.layer.borderWidth = 1.5
+            textfield?.layer.cornerRadius = 5
+            
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
+            
+            textfield?.leftView = paddingView
+            textfield?.leftViewMode = .always
+        }
+        
 //        AF.request("http://crm.sanclm.info/Apps/ConfigiOS.json").responseJSON{ (responseFeed) in
 //            print(responseFeed)
 //
@@ -194,9 +201,9 @@ class ConfigVC : UIViewController {
         
         print(deviceid ?? "")
         
-        self.txtWebUrl.text = "crm.saneforce.in"
-        
-        self.txtLicenceKey.text = "PHP"
+//        self.txtWebUrl.text = "crm.saneforce.in"
+//
+//        self.txtLicenceKey.text = "PHP"
         
         self.txtDeviceId.text = "\(uuid ?? "")"
         
@@ -274,8 +281,10 @@ class ConfigVC : UIViewController {
         let licenseKey = self.txtLicenceKey.text ?? ""
         
         
-        let urlStr = "http://\(webUrl)/apps/ConfigiOSEdet.json"
+        let urlStr = "http://\(webUrl)/apps/ConfigiOS.json"
+
         
+        // Edet
         
 //        AF.request(urlStr,method: .get,encoding: URLEncoding.default).responseJSON{ (responseFeed) in
 //            print(responseFeed)
@@ -315,7 +324,7 @@ class ConfigVC : UIViewController {
         
         let licenseKey = self.txtLicenceKey.text ?? ""
         
-        let urlStr = "http://\(webUrl.replacingOccurrences(of: " ", with: ""))/apps/ConfigiOSEdet.json"
+        let urlStr = "http://\(webUrl.replacingOccurrences(of: " ", with: ""))/apps/ConfigiOS.json" // ConfigiOSEdet
         
         
         
@@ -407,4 +416,3 @@ class ConfigVC : UIViewController {
 
 
 // 'TEST123VP','456'
-
