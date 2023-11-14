@@ -8,7 +8,10 @@
 import UIKit
 
 class SessionInfoTVC: UITableViewCell {
-
+    
+    
+    @IBOutlet var stackHeight: NSLayoutConstraint!
+    
     @IBOutlet var overallContentsHolder: UIView!
     @IBOutlet weak var lblName: UILabel!
     

@@ -111,6 +111,7 @@
 		38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0409E2AA1FEAA007B757E /* TagDetailsView.swift */; };
 		38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E040A02AA1FEB8007B757E /* TagDetailsView.xib */; };
 		38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E040A22AA215E8007B757E /* TagViewVC.swift */; };
+		38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E220712B032DC900FBF6B0 /* SessionDetails.swift */; };
 		38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2DE3A2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift */; };
 		38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */; };
 		38E3C3592AF9F98C00623C33 /* ConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C3582AF9F98C00623C33 /* ConnectionHandler.swift */; };
@@ -281,6 +282,7 @@
 		38E0409E2AA1FEAA007B757E /* TagDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDetailsView.swift; sourceTree = "<group>"; };
 		38E040A02AA1FEB8007B757E /* TagDetailsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagDetailsView.xib; sourceTree = "<group>"; };
 		38E040A22AA215E8007B757E /* TagViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewVC.swift; sourceTree = "<group>"; };
+		38E220712B032DC900FBF6B0 /* SessionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetails.swift; sourceTree = "<group>"; };
 		38E2DE3A2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRSelectionTitleCell.swift; sourceTree = "<group>"; };
 		38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		38E3C3582AF9F98C00623C33 /* ConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHandler.swift; sourceTree = "<group>"; };
@@ -471,6 +473,7 @@
 		38BFB7842AFB62DD005E141E /* Modals */ = {
 			isa = PBXGroup;
 			children = (
+				38E220702B032DAE00FBF6B0 /* TourPlan */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
 			);
 			path = Modals;
@@ -568,6 +571,14 @@
 				38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		38E220702B032DAE00FBF6B0 /* TourPlan */ = {
+			isa = PBXGroup;
+			children = (
+				38E220712B032DC900FBF6B0 /* SessionDetails.swift */,
+			);
+			path = TourPlan;
 			sourceTree = "<group>";
 		};
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
@@ -980,6 +991,7 @@
 				38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */,
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */,
+				38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */,
 				38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */,

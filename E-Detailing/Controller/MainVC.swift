@@ -1020,6 +1020,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }else if menuList[indexPath.row] == "Leave Application" {
                 let leaveVC = UIStoryboard.leaveVC
                 self.navigationController?.pushViewController(leaveVC, animated: true)
+            } else if menuList[indexPath.row] == "Tour Plan" {
+                  let tourplanVC = TourPlanVC.initWithStory()
+                self.navigationController?.pushViewController(tourplanVC, animated: true)
             }
             
             default :

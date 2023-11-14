@@ -60,6 +60,7 @@ class TourPlanView: BaseView {
     
     @IBOutlet var worksPlanTable: UITableView!
     
+    @IBOutlet var backHolder: UIView!
     /// General page type outlets
     @IBOutlet var lblSendToApproval: UILabel!
     @IBOutlet var generalButtonsHolder: UIView!
@@ -99,6 +100,13 @@ class TourPlanView: BaseView {
         self.tourplanVC = baseVC as? TourPlanVC
         toSetPagetype(ofType: .general)
         setupUI()
+        initViews()
+    }
+    
+    func initViews() {
+        backHolder.addTap {
+            self.tourplanVC.navigationController?.popViewController(animated: true)
+        }
     }
     
     func cellRegistration() {
