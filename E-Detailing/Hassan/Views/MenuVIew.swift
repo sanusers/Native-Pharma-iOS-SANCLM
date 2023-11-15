@@ -689,57 +689,49 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 let clusterItem = sessionDetailsArr.sessionDetails[selectedSession ?? 0].cluster
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-//                sessionDetailsArr.sessionDetails[selectedSession ?? 0].cluster?.forEach({ cluster in
-//                  //  dump(cluster.code)
-//                    sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID.forEach { id, isSelected in
-//                        if id == cluster.code {
-//
-//                            if isSelected  {
-//
-//                               self.selectedIndices.forEach({ index in
-//                                    if index == indexPath.row {
-//                                        dump("cluster name --> \(cluster.name!)")
-//                                        dump("cluster code --> \(cluster.code!)")
-//                                        dump("dictionary code --> \(id)")
-//                                        dump("isSelected --> \(isSelected)")
-//                                        print("Selected index --> \(indexPath.row)")
-//                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-//                                    } else {
-//                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-//                                    }
-//                                })
-//
-//
-//                            } else {
-//                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-//                            }
-//                        } else {
-//                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-//                        }
-//                    }
-//                })
+                sessionDetailsArr.sessionDetails[selectedSession ?? 0].cluster?.forEach({ cluster in
+                  //  dump(cluster.code)
+                    sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID.forEach { id, isSelected in
+                        if id == cluster.code {
+
+                            if isSelected  {
+
+                               self.selectedIndices.forEach({ index in
+                                    if index == indexPath.row {
+                                        dump("cluster name --> \(cluster.name!)")
+                                        dump("cluster code --> \(cluster.code!)")
+                                        dump("dictionary code --> \(id)")
+                                        dump("isSelected --> \(isSelected)")
+                                        print("Selected index --> \(indexPath.row)")
+                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                    } else {
+                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                    }
+                                })
+
+
+                            } else {
+                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            }
+                        } else {
+                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        }
+                    }
+                })
                 
-                
-                self.selectedIndices.forEach({ index in
-                     if index == indexPath.row {
-                         dump("cluster name --> \(item?.name!)")
-                         dump("cluster code --> \(item?.code!)")
-                         //dump("dictionary code --> \(id)")
-                        // dump("isSelected --> \(isSelected)")
-                         print("Selected index --> \(indexPath.row)")
-                         cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                     } else {
-                       //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                     }
-                 })
-                
+
                 cell.addTap { [self] in
                     _ = sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID
                    
                     
-                    if let code = sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] {
+                    if let _ = sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] {
 
                         sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] == true ? false : true
+                        
+                        if sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] == false {
+                            sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID.removeValue(forKey: item?.code ?? "")
+                        }
+                        
                     } else {
                         sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] = true
                     }
@@ -748,20 +740,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                    
                       if  sessionDetailsArr.sessionDetails[selectedSession ?? 0].selectedClusterID[item?.code ?? ""] == true {
                          let code = item?.code ?? ""
-                          let index = clusterItem?.firstIndex(where: {$0.code == code})
-                          self.selectedIndices.append(index ?? 0)
-                         // self.selectedIndices.append(indexPath.row)
+                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
+                        //  self.selectedIndices.append(index ?? 0)
+                          self.selectedIndices.append(indexPath.row)
                       } else {
-//                          self.selectedIndices.forEach({ index in
-//                              if index == indexPath.row {
-//                                  self.selectedIndices.remove(at: indexPath.row)
-//                              }
-//                          })
-                          for i in 0...selectedIndices.count - 1 {
-                              if i == indexPath.row {
-                                  self.selectedIndices.remove(at: i)
-                              }
-                          }
+                          let newArr = selectedIndices.filter { $0 != indexPath.row }
+                          self.selectedIndices = newArr
                       }
                   
                     
