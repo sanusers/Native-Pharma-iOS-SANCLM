@@ -7,16 +7,189 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F17179F7-A1B3-41C2-8791-2A616B7BBB9E"
+            uuid = "F33140C5-50F3-4902-B1E6-0D080C088DB7"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
-            landmarkName = "toLoadData()"
+            startingLineNumber = "751"
+            endingLineNumber = "751"
+            landmarkName = "tableView(_:cellForRowAt:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F33140C5-50F3-4902-B1E6-0D080C088DB7 - 63fabb2eb0e7b169"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "750"
+                  endingLineNumber = "750"
+                  offsetFromSymbolStart = "6184">
+               </Location>
+               <Location
+                  uuid = "F33140C5-50F3-4902-B1E6-0D080C088DB7 - 63fabb2eb0e7b688"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "751"
+                  endingLineNumber = "751"
+                  offsetFromSymbolStart = "4916">
+               </Location>
+               <Location
+                  uuid = "F33140C5-50F3-4902-B1E6-0D080C088DB7 - 63fabb2eb0e7b688"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "751"
+                  endingLineNumber = "751"
+                  offsetFromSymbolStart = "4976">
+               </Location>
+               <Location
+                  uuid = "F33140C5-50F3-4902-B1E6-0D080C088DB7 - a2dfe2a179afd1f2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (E_Detailing.Territory) -&gt; Swift.Bool in closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "751"
+                  endingLineNumber = "751"
+                  offsetFromSymbolStart = "56">
+               </Location>
+               <Location
+                  uuid = "F33140C5-50F3-4902-B1E6-0D080C088DB7 - 63fabb2eb0e7b6c6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "753"
+                  endingLineNumber = "753"
+                  offsetFromSymbolStart = "4500">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "95319F50-6B21-428E-B4EE-C3367931CF1E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "752"
+            endingLineNumber = "752"
+            landmarkName = "tableView(_:cellForRowAt:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "95319F50-6B21-428E-B4EE-C3367931CF1E - 63fabb2eb0e7b6a7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "752"
+                  endingLineNumber = "752"
+                  offsetFromSymbolStart = "5212">
+               </Location>
+               <Location
+                  uuid = "95319F50-6B21-428E-B4EE-C3367931CF1E - 63fabb2eb0e7b6c6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #11 () -&gt; () in E_Detailing.MenuView.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "753"
+                  endingLineNumber = "753"
+                  offsetFromSymbolStart = "4500">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "190966C0-88B9-45D5-B50A-DC1451974A84"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "725"
+            endingLineNumber = "725"
+            landmarkName = "tableView(_:cellForRowAt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "14A094DD-4CEF-4F49-8F1C-05841CB04BC6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1022"
+            endingLineNumber = "1022"
+            landmarkName = "textField(_:shouldChangeCharactersIn:replacementString:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D086BCED-37E0-4A7B-B092-B256A0692198"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1031"
+            endingLineNumber = "1031"
+            landmarkName = "textField(_:shouldChangeCharactersIn:replacementString:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
