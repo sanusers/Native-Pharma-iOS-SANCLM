@@ -220,16 +220,18 @@ class SessionDetail {
 
    var workType: [WorkType]?
    var selectedWorkTypeIndex: Int? = nil
+    var isForFieldWork: Bool = true
    var selectedClusterID: [String : Bool]
     var selectedHeadQuaterID: [String : Bool]
-    var selectedjointCallID: [String : Bool]
+    var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
     var selectedchemistID: [String : Bool]
    var headQuates: [Subordinate]?
    var cluster: [Territory]?
-   var jointCall: [JointWork]?
+   var jointWork: [JointWork]?
    var listedDoctors: [DoctorFencing]?
    var chemist: [Chemist]?
+    var stackList : [Stockist]?
 
 
 
@@ -237,13 +239,13 @@ class SessionDetail {
         self.workType = [WorkType]()
         self.headQuates = [Subordinate]()
         self.cluster = [Territory]()
-        self.jointCall = [JointWork]()
+        self.jointWork = [JointWork]()
         self.listedDoctors = [DoctorFencing]()
         self.chemist = [Chemist]()
         
         self.selectedClusterID = [String : Bool]()
         self.selectedHeadQuaterID = [String : Bool]()
-        self.selectedjointCallID = [String : Bool]()
+        self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
         
