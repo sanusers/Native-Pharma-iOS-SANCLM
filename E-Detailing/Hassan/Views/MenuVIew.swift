@@ -299,8 +299,8 @@ class MenuView : BaseView{
         case .workType:
             self.cellType = .workType
             addSessionView.isHidden = true
-            saveView.isHidden = false
-            clearview.isHidden = false
+            saveView.isHidden = true
+            clearview.isHidden = true
             self.selectViewHeightCons.constant = selectViewHeight
             self.searchHolderHeight.constant =   searchVIewHeight
             typesTitleHeightConst.constant = typesTitleHeight
@@ -1184,18 +1184,42 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                      - note : on tap action on cell if key code doent exists we are making value to true else value for key is removed
                                      - note : if value is false selectAllIV is set to checkBoxEmpty image since key does not holds all code values as true.
                                      */
-                                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
+                                    
+                                    if self.isSearched {
+                                        self.clusterArr?.enumerated().forEach({ index, cluster in
+                                            if cluster.code  ==  item?.code {
+                                            if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] {
+                                                    
+                                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == true ? false : true
+                                                    
+                                                    if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == false {
+                                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: cluster.code ?? "")
+                                                        self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                                    }
+                                                    
+                                                } else {
+                                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = true
+                                                }
+                                            }
+                                        })
                                         
-                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true ? false : true
-                                        
-                                        if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == false {
-                                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: item?.code ?? "")
-                                            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
-                                        }
                                         
                                     } else {
-                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
+                                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
+                                            
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true ? false : true
+                                            
+                                            if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == false {
+                                                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: item?.code ?? "")
+                                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                            }
+                                            
+                                        } else {
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
+                                        }
                                     }
+                                    
+              
                                     
                                     // MARK: - Append contents to selectedClusterID Dictionary ends
                                     
@@ -1206,18 +1230,41 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                      - note : selectedClusterID dictionary holds code key and Boolean value if key has true value we are appending elements to selectedClusterIndices array
                                      - note : toSetSelectAllImage function is called here, to set select all
                                      */
-                                    
-                                    if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
-                                        _ = item?.code ?? ""
-                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(indexPath.row)
+                                    if self.isSearched {
                                         
+                                        self.clusterArr?.enumerated().forEach({ index, cluster in
+                                            
+                                            if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == true {
+                                                _ = item?.code ?? ""
+                                                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(index)
+
+                                                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.count)
+                                            } else {
+                                                let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != index }
+                                                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
+                                                toSetSelectAllImage(selectedIndexCount: newArr.count)
+                                            }
+                                            
+                                        })
                                         
-                                        toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.count)
+                        
                                     } else {
-                                        let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != indexPath.row }
-                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
-                                        toSetSelectAllImage(selectedIndexCount: newArr.count)
+                                        if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
+                                            _ = item?.code ?? ""
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(indexPath.row)
+                                            
+                                            
+                                            toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.count)
+                                        } else {
+                                            let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != indexPath.row }
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
+                                            toSetSelectAllImage(selectedIndexCount: newArr.count)
+                                        }
                                     }
+                                    
+               
+                                    
+                
                                     
                                     //MARK: - Append contents to selectedClusterIndices Array ends
                                     
@@ -1782,6 +1829,7 @@ extension MenuView : UITextFieldDelegate {
                 })
                 if isMatched {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = filteredWorkType
+                    isSearched = true
                     self.menuTable.reloadData()
                 } else {
                     print("Not matched")
