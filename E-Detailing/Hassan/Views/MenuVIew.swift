@@ -77,6 +77,8 @@ class MenuView : BaseView{
     
     @IBOutlet var selectAllHeightConst: NSLayoutConstraint!
     
+    var isSearched: Bool = false
+    var isSearchedWorkTypeSelected: Bool = false
     ///properties to hold array elements
     var selectedClusterIndices : [Int] = []
     var selectedHeadQuatersIndices : [Int] = []
@@ -104,7 +106,7 @@ class MenuView : BaseView{
     ///constraint Constants
     let selectViewHeight: CGFloat = 50
     let searchVIewHeight: CGFloat = 50
-    let typesTitleHeight: CGFloat = 25
+    let typesTitleHeight: CGFloat = 35
     let cellStackHeightforFW : CGFloat = 450
     let cellStackHeightfOthers : CGFloat = 80
     let cellHeightForFW :  CGFloat = 520
@@ -291,6 +293,7 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = 0
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
          //   self.menuTable.reloadData()
             
         case .workType:
@@ -310,6 +313,7 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = 0
             typesTitle.text = "Work Type"
             self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
          //   self.menuTable.reloadData()
         case .cluster:
             self.cellType = .cluster
@@ -328,6 +332,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = false
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = self.clusterArr
          //   self.menuTable.reloadData()
         case .headQuater:
             self.cellType = .headQuater
@@ -346,6 +351,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = false
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
          //   self.menuTable.reloadData()
         case .jointCall:
             self.cellType = .jointCall
@@ -364,6 +370,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = false
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
          //   self.menuTable.reloadData()
         case .listedDoctor:
             self.cellType = .listedDoctor
@@ -382,6 +389,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = false
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
           //  self.menuTable.reloadData()
         case .chemist:
             self.cellType = .chemist
@@ -397,8 +405,10 @@ class MenuView : BaseView{
             self.selectView.isHidden = false
             self.countView.isHidden = true
             selectAllView.isHidden = false
+            typesTitleview.isHidden = false
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
           //  self.menuTable.reloadData()
 //        case .FieldWork:
 //            self.cellType = .FieldWork
@@ -422,7 +432,9 @@ class MenuView : BaseView{
 //            self.selectView.isHidden = true
           //  self.menuTable.reloadData()
         }
-
+        //self.isSearched = false
+        self.searchTF.text = ""
+        self.searchTF.placeholder = "Search"
         self.menuTable.reloadData()
         var targetRowIndexPath = IndexPath()
         if session == nil {
@@ -589,6 +601,11 @@ class MenuView : BaseView{
       
                 
             case .headQuater:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    
+                } else {
+                    
+                }
 //                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
 //                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
 //                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
@@ -828,6 +845,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.lblName.text = "Session \(indexPath.row + 1)"
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
+            let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
             
             if  isForFieldWork  {
@@ -844,12 +862,21 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
             }
-            
-            if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
-                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+            if isSearched {
+                if sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex != nil {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[searchedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblWorkType.text = "Select"
+                }
             } else {
-                cell.lblWorkType.text = "Select"
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblWorkType.text = "Select"
+                }
+
             }
+      
             var clusterNameArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
                 sessionDetailsArr.sessionDetails[indexPath.row].cluster?.forEach({ cluster in
@@ -930,33 +957,40 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             cell.clusterView.addTap {
                 self.cellType = .cluster
                 self.selectedSession = indexPath.row
+       
                 self.setPageType(.cluster)
             }
             cell.workTypeView.addTap {
                 self.cellType = .workType
+                
                  self.selectedSession = indexPath.row
+
                 self.setPageType(.workType)
             }
             
             cell.headQuatersView.addTap {
                 self.cellType = .headQuater
                  self.selectedSession = indexPath.row
+    
                 self.setPageType(.headQuater)
             }
             cell.jointCallView.addTap {
                 self.cellType = .jointCall
                  self.selectedSession = indexPath.row
+
                 self.setPageType(.jointCall)
             }
             cell.listedDoctorView.addTap {
                 self.cellType = .listedDoctor
                   self.selectedSession = indexPath.row
+
                 self.setPageType(.listedDoctor)
 
             }
             cell.chemistView.addTap {
                 self.cellType = .chemist
                  self.selectedSession = indexPath.row
+
                 self.setPageType(.chemist)
             }
             
@@ -975,36 +1009,85 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let item = sessionDetailsArr.sessionDetails[selectedSession].workType?[indexPath.row]
             cell.workTypeLbl.text = item?.name ?? ""
             let cacheIndex =  sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
-            if cacheIndex == nil {
-                self.selectedWorkTypeName = "Select"
-                self.selectTitleLbl.text = selectedWorkTypeName
-            } else {
-                self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
-                self.selectTitleLbl.text = selectedWorkTypeName
-            }
-       
-            if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
-                cell.workTypeLbl.textColor = .green
-            }
-            else {
-                cell.workTypeLbl.textColor = .black
-            }
-        
-            cell.addTap { [self] in
-                if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
+            let searchedCacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex
+    
+            
+            if isSearched {
+                if searchedCacheIndex == nil {
+                    self.selectedWorkTypeName = "Select"
+                    self.selectTitleLbl.text = selectedWorkTypeName
                 } else {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
-                    if item?.terrslFlg == "Y" {
-                        sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
-                    }
+                    
+                    self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[searchedCacheIndex ?? 0].name ?? ""
+                    self.selectTitleLbl.text = selectedWorkTypeName
                 }
-                
-                tableView.reloadData()
+            } else {
+                if cacheIndex == nil {
+                    self.selectedWorkTypeName = "Select"
+                    self.selectTitleLbl.text = selectedWorkTypeName
+                } else {
+                    self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
+                    self.selectTitleLbl.text = selectedWorkTypeName
+                }
             }
             
+
+            
+            if isSearched {
+                if sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex == indexPath.row {
+                    cell.workTypeLbl.textColor = .green
+                }
+                else {
+                    cell.workTypeLbl.textColor = .black
+                }
+            } else {
+                if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
+                    cell.workTypeLbl.textColor = .green
+                }
+                else {
+                    cell.workTypeLbl.textColor = .black
+                }
+            }
+            
+
+        
+            cell.addTap { [self] in
+                
+                if self.isSearched {
+                    self.workTypeArr?.enumerated().forEach({ index, workType in
+                        if workType.code  ==  item?.code {
+                            if sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex == index {
+                                sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex  = nil
+                               
+                            } else {
+                                sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = index
+                                
+                                if item?.terrslFlg == "Y" {
+                                    sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
+                                }
+                            }
+                        }
+                    })
+                 
+                } else {
+                    if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
+                    } else {
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
+                        if item?.terrslFlg == "Y" {
+                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
+                        }
+                    }
+                }
+               // tableView.reloadData()
+                setPageType(.session, for: self.selectedSession)
+                self.endEditing(true)
+            }
+
             
             cell.selectionStyle = .none
             return cell
@@ -1670,14 +1753,18 @@ extension MenuView : UITextFieldDelegate {
                     if workType.name!.lowercased().contains(newText) {
                         filteredWorkType.append(workType)
                         isMatched = true
+                        
                     }
                 })
                 if isMatched {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = filteredWorkType
+                    self.isSearched = true
+                    sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = nil
                     self.menuTable.reloadData()
                 } else {
                     print("Not matched")
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                  //  self.isSearched = false
                     self.menuTable.reloadData()
                 }
               

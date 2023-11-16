@@ -220,6 +220,7 @@ class SessionDetail {
 
    var workType: [WorkType]?
    var selectedWorkTypeIndex: Int? = nil
+    var searchedWorkTypeIndex: Int? = nil
     var isForFieldWork: Bool = true
    var selectedClusterID: [String : Bool]
     var selectedHeadQuaterID: [String : Bool]
