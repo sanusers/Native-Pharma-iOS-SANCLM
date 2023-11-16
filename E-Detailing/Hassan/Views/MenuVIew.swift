@@ -1691,9 +1691,6 @@ extension MenuView : UITextFieldDelegate {
                         filteredWorkType.append(cluster)
                         
                         isMatched = true
-                        
-                      
-                        
                     }
                 })
                 if isMatched {
@@ -1705,13 +1702,81 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.reloadData()
                 }
             case .headQuater:
-                break
+                var filteredWorkType = [Subordinate]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                sessionDetailsArr.sessionDetails[self.selectedSession].headQuates?.forEach({ cluster in
+                    if cluster.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(cluster)
+                        
+                        isMatched = true
+                    }
+                })
+                if isMatched {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = filteredWorkType
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
+                    self.menuTable.reloadData()
+                }
             case .jointCall:
-                break
+                var filteredWorkType = [JointWork]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                sessionDetailsArr.sessionDetails[self.selectedSession].jointWork?.forEach({ cluster in
+                    if cluster.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(cluster)
+                        
+                        isMatched = true
+                    }
+                })
+                if isMatched {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = filteredWorkType
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
+                    self.menuTable.reloadData()
+                }
             case .listedDoctor:
-                break
+                var filteredWorkType = [DoctorFencing]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors?.forEach({ cluster in
+                    if cluster.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(cluster)
+                        
+                        isMatched = true
+                    }
+                })
+                if isMatched {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = filteredWorkType
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
+                    self.menuTable.reloadData()
+                }
             case .chemist:
-                break
+                var filteredWorkType = [Chemist]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                sessionDetailsArr.sessionDetails[self.selectedSession].chemist?.forEach({ cluster in
+                    if cluster.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(cluster)
+                        
+                        isMatched = true
+                    }
+                })
+                if isMatched {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = filteredWorkType
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
+                    self.menuTable.reloadData()
+                }
             default:
                 break
             }
