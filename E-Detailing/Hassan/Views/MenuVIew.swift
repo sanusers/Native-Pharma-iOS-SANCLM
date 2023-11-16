@@ -402,11 +402,14 @@ class MenuView : BaseView{
 //            self.selectView.isHidden = true
           //  self.menuTable.reloadData()
         }
-        if index != nil {
-            self.menuTable.reloadData()
-        }else {
-            self.menuTable.reloadData()
+
+        self.menuTable.reloadData()
+        var targetRowIndexPath = IndexPath(row: self.selectedSession, section: 0)
+        if menuTable.indexPathExists(indexPath: targetRowIndexPath)
+        {
+            menuTable.scrollToRow(at: targetRowIndexPath, at: .bottom, animated: true)
         }
+       
 
     }
     
@@ -424,6 +427,9 @@ class MenuView : BaseView{
         }
         
         saveView.addTap { [self] in
+            
+            
+            
             switch self.cellType {
                 
             case .session:
@@ -739,14 +745,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.clusterView.addTap {
                 self.cellType = .cluster
-                //  self.selectedSession = indexPath.row
+                self.selectedSession = indexPath.row
                 self.setPageType(.cluster)
                 
                 //  tableView.reloadData()
             }
             cell.workTypeView.addTap {
                 self.cellType = .workType
-                // self.selectedSession = indexPath.row
+                 self.selectedSession = indexPath.row
                 self.setPageType(.workType)
                 
                 // tableView.reloadData()
@@ -754,28 +760,28 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.headQuatersView.addTap {
                 self.cellType = .headQuater
-                // self.selectedSession = indexPath.row
+                 self.selectedSession = indexPath.row
                 self.setPageType(.headQuater)
                 
                 // tableView.reloadData()
             }
             cell.jointCallView.addTap {
                 self.cellType = .jointCall
-                // self.selectedSession = indexPath.row
+                 self.selectedSession = indexPath.row
                 self.setPageType(.jointCall)
                 
                 // tableView.reloadData()
             }
             cell.listedDoctorView.addTap {
                 self.cellType = .listedDoctor
-                //  self.selectedSession = indexPath.row
+                  self.selectedSession = indexPath.row
                 self.setPageType(.listedDoctor)
                 
                 // tableView.reloadData()
             }
             cell.chemistView.addTap {
                 self.cellType = .chemist
-                //  self.selectedSession = indexPath.row
+                 self.selectedSession = indexPath.row
                 self.setPageType(.chemist)
                 
                 // tableView.reloadData()
@@ -790,7 +796,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 tableView.reloadData()
                 // self.didLayoutSubviews(baseVC: self.menuVC)
             }
-            self.selectedSession = indexPath.row
+          
             return cell
             
         case .workType:
@@ -851,7 +857,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                             
                                             if isSelected  {
                                                 
-                                                self.selectedClusterIndices.forEach({ index in
+                                                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.forEach({ index in
                                                     if index == indexPath.row {
                                                         dump("cluster name --> \(cluster.name!)")
                                                         dump("cluster code --> \(cluster.code!)")
@@ -914,10 +920,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                         _ = item?.code ?? ""
                                         //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                         //  self.selectedIndices.append(index ?? 0)
-                                        self.selectedClusterIndices.append(indexPath.row)
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(indexPath.row)
                                     } else {
-                                        let newArr = selectedClusterIndices.filter { $0 != indexPath.row }
-                                        self.selectedClusterIndices = newArr
+                                        let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != indexPath.row }
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
                                     }
                                     
                                     
@@ -940,7 +946,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                         
                                         if isSelected  {
                                             
-                                            self.selectedHeadQuatersIndices.forEach({ index in
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.forEach({ index in
                                                 if index == indexPath.row {
                                                     dump("cluster name --> \(quaters.name!)")
                                                     dump("cluster code --> \(quaters.id!)")
@@ -1002,10 +1008,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     _ = item?.id ?? ""
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
-                                    self.selectedHeadQuatersIndices.append(indexPath.row)
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.append(indexPath.row)
                                 } else {
-                                    let newArr = selectedHeadQuatersIndices.filter { $0 != indexPath.row }
-                                    self.selectedHeadQuatersIndices = newArr
+                                    let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.filter { $0 != indexPath.row }
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices = newArr
                                 }
                                 
                                 
@@ -1022,7 +1028,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                         
                                         if isSelected  {
                                             
-                                            self.selectedJointWorkIndices.forEach({ index in
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.forEach({ index in
                                                 if index == indexPath.row {
                                                     dump("cluster name --> \(work.name!)")
                                                     dump("cluster code --> \(work.code!)")
@@ -1083,10 +1089,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     _ = item?.code ?? ""
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
-                                    self.selectedJointWorkIndices.append(indexPath.row)
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.append(indexPath.row)
                                 } else {
-                                    let newArr = selectedJointWorkIndices.filter { $0 != indexPath.row }
-                                    self.selectedJointWorkIndices = newArr
+                                    let newArr = sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.filter { $0 != indexPath.row }
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices = newArr
                                 }
                                 
                                 
@@ -1105,7 +1111,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                         
                                         if isSelected  {
                                             
-                                            self.selectedDoctorsIndices.forEach({ index in
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.forEach({ index in
                                                 if index == indexPath.row {
                                                     dump("cluster name --> \(doctors.name!)")
                                                     dump("cluster code --> \(doctors.code!)")
@@ -1166,10 +1172,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     _ = item?.code ?? ""
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
-                                    self.selectedDoctorsIndices.append(indexPath.row)
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(indexPath.row)
                                 } else {
-                                    let newArr = selectedDoctorsIndices.filter { $0 != indexPath.row }
-                                    self.selectedDoctorsIndices = newArr
+                                    let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.filter { $0 != indexPath.row }
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices = newArr
                                 }
                                 
                                 
@@ -1202,7 +1208,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                         
                                         if isSelected  {
                                             
-                                            self.selectedChemistIndices.forEach({ index in
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.forEach({ index in
                                                 if index == indexPath.row {
                                                     dump("cluster name --> \(chemist.name!)")
                                                     dump("cluster code --> \(chemist.code!)")
@@ -1264,10 +1270,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     _ = item?.code ?? ""
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
-                                    self.selectedChemistIndices.append(indexPath.row)
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(indexPath.row)
                                 } else {
-                                    let newArr = selectedChemistIndices.filter { $0 != indexPath.row }
-                                    self.selectedChemistIndices = newArr
+                                    let newArr = sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.filter { $0 != indexPath.row }
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices = newArr
                                 }
                                 
                                 

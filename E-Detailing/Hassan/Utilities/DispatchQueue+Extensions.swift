@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 typealias Dispatch = DispatchQueue
 
@@ -29,5 +30,18 @@ extension Sequence where Element: Hashable {
     func uniqued() -> [Element] {
         var set = Set<Element>()
         return filter { set.insert($0).inserted }
+    }
+}
+
+extension UITableView
+{
+    func indexPathExists(indexPath:IndexPath) -> Bool {
+        if indexPath.section >= self.numberOfSections {
+            return false
+        }
+        if indexPath.row >= self.numberOfRows(inSection: indexPath.section) {
+            return false
+        }
+        return true
     }
 }
