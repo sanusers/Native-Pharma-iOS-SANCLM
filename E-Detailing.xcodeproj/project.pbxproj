@@ -98,6 +98,8 @@
 		38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CF0DD22A8E572A000EDD96 /* JointWorkViewModel.swift */; };
 		38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CF0DD42A8E57A6000EDD96 /* AdditionalCallViewModel.swift */; };
 		38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CF0DD62A8E57B7000EDD96 /* FeedbackViewModel.swift */; };
+		38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D2E0C12B04FC03002DD291 /* SelectAllTypesTVC.swift */; };
+		38D2E0C42B04FC03002DD291 /* SelectAllTypesTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D2E0C22B04FC03002DD291 /* SelectAllTypesTVC.xib */; };
 		38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38D528A72A9A033E00AD3F78 /* Tagging.storyboard */; };
 		38D528AA2A9A0AE600AD3F78 /* NearMeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D528A92A9A0AE600AD3F78 /* NearMeVC.swift */; };
 		38D528AC2A9A251300AD3F78 /* TaggingListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D528AB2A9A251300AD3F78 /* TaggingListVC.swift */; };
@@ -269,6 +271,8 @@
 		38CF0DD22A8E572A000EDD96 /* JointWorkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointWorkViewModel.swift; sourceTree = "<group>"; };
 		38CF0DD42A8E57A6000EDD96 /* AdditionalCallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallViewModel.swift; sourceTree = "<group>"; };
 		38CF0DD62A8E57B7000EDD96 /* FeedbackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewModel.swift; sourceTree = "<group>"; };
+		38D2E0C12B04FC03002DD291 /* SelectAllTypesTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAllTypesTVC.swift; sourceTree = "<group>"; };
+		38D2E0C22B04FC03002DD291 /* SelectAllTypesTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectAllTypesTVC.xib; sourceTree = "<group>"; };
 		38D528A72A9A033E00AD3F78 /* Tagging.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Tagging.storyboard; sourceTree = "<group>"; };
 		38D528A92A9A0AE600AD3F78 /* NearMeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearMeVC.swift; sourceTree = "<group>"; };
 		38D528AB2A9A251300AD3F78 /* TaggingListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingListVC.swift; sourceTree = "<group>"; };
@@ -612,6 +616,8 @@
 			children = (
 				38EA3D142AFDED4C00DA7018 /* SessionInfoTVC.swift */,
 				38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */,
+				38D2E0C12B04FC03002DD291 /* SelectAllTypesTVC.swift */,
+				38D2E0C22B04FC03002DD291 /* SelectAllTypesTVC.xib */,
 			);
 			path = SessionCell;
 			sourceTree = "<group>";
@@ -869,6 +875,7 @@
 				38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */,
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
 				B287E68529F2A20F0097974D /* Satoshi-MediumItalic.otf in Resources */,
+				38D2E0C42B04FC03002DD291 /* SelectAllTypesTVC.xib in Resources */,
 				B287E67D29F2A20F0097974D /* Satoshi-Black.otf in Resources */,
 				B287E68229F2A20F0097974D /* Satoshi-Light.otf in Resources */,
 				38C4D5AC2A84F94500D7C5E0 /* ProductNameTableViewCell.xib in Resources */,
@@ -1013,6 +1020,7 @@
 				38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */,
 				38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */,
 				38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */,
+				38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */,
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
 				38E3C3592AF9F98C00623C33 /* ConnectionHandler.swift in Sources */,
 				38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */,

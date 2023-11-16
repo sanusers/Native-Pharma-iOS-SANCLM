@@ -65,7 +65,11 @@ class MenuView : BaseView{
     
     @IBOutlet var searchHolderHeight: NSLayoutConstraint!
     
-
+    @IBOutlet var typesTitleview: UIView!
+    
+    @IBOutlet var typesTitle: UILabel!
+    
+    @IBOutlet var typesTitleHeightConst: NSLayoutConstraint!
     
     
     ///properties to hold array elements
@@ -93,6 +97,13 @@ class MenuView : BaseView{
     
     
     ///constraint Constants
+    let selectViewHeight: CGFloat = 50
+    let searchVIewHeight: CGFloat = 50
+    let typesTitleHeight: CGFloat = 25
+    let cellStackHeightforFW : CGFloat = 450
+    let cellStackHeightfOthers : CGFloat = 80
+    let cellHeightForFW :  CGFloat = 520
+    let cellHeightForOthers : CGFloat = 140
     
     
     override func willAppear(baseVC: BaseViewController) {
@@ -150,8 +161,8 @@ class MenuView : BaseView{
         
         
         searchHolderView.elevate(2)
-        searchHolderView.layer.borderColor = UIColor.gray.cgColor
-        searchHolderView.layer.borderWidth = 1
+        searchHolderView.layer.borderColor = UIColor.lightGray.cgColor
+        searchHolderView.layer.borderWidth = 0.5
         searchHolderView.layer.cornerRadius = 5
         
       //  self.menuTable.layoutIfNeeded()
@@ -180,13 +191,12 @@ class MenuView : BaseView{
     func toGenerateNewSession() {
         
         sessionDetail = SessionDetail()
-        sessionDetail.workType = workTypeArr
-        sessionDetail.headQuates =  headQuatersArr
-        sessionDetail.cluster = clusterArr
-        sessionDetail.jointWork = jointWorkArr
-        sessionDetail.listedDoctors = listedDocArr
-        sessionDetail.chemist = chemistArr
-        
+        sessionDetail.workType = workTypeArr?.uniqued()
+        sessionDetail.headQuates =  headQuatersArr?.uniqued()
+        sessionDetail.cluster = clusterArr?.uniqued()
+        sessionDetail.jointWork = jointWorkArr?.uniqued()
+        sessionDetail.listedDoctors = listedDocArr?.uniqued()
+        sessionDetail.chemist = chemistArr?.uniqued()
         self.sessionDetailsArr.sessionDetails.append(sessionDetail)
     }
     
@@ -241,6 +251,10 @@ class MenuView : BaseView{
         
         menuTable.register(UINib(nibName: "SessionInfoTVC", bundle: nil), forCellReuseIdentifier: "SessionInfoTVC")
         
+        menuTable.register(UINib(nibName: "SelectAllTypesTVC", bundle: nil), forCellReuseIdentifier: "SelectAllTypesTVC")
+        
+        
+        
     }
     
 //    override func didLayoutSubviews(baseVC: BaseViewController) {
@@ -263,8 +277,12 @@ class MenuView : BaseView{
             clearview.isHidden = true
             self.selectViewHeightCons.constant = 0
             self.searchHolderHeight.constant = 0
+            typesTitleHeightConst.constant = 0
             self.selectView.isHidden = true
             searchHolderView.isHidden = true
+            typesTitleview.isHidden = true
+            typesTitle.text = ""
+            self.menuTable.separatorStyle = .none
          //   self.menuTable.reloadData()
             
         case .workType:
@@ -272,12 +290,16 @@ class MenuView : BaseView{
             addSessionView.isHidden = true
             saveView.isHidden = false
             clearview.isHidden = false
-            self.selectViewHeightCons.constant = 40
-            self.searchHolderHeight.constant = 40
+            self.selectViewHeightCons.constant = selectViewHeight
+            self.searchHolderHeight.constant =   searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitleview.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
             self.selectView.isHidden = false
             searchHolderView.isHidden = false
+            typesTitle.text = "Work Type"
+            self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .cluster:
             self.cellType = .cluster
@@ -285,11 +307,15 @@ class MenuView : BaseView{
             saveView.isHidden = false
             clearview.isHidden = false
             self.countView.isHidden = false
-            self.selectViewHeightCons.constant = 40
-            self.searchHolderHeight.constant = 40
+            self.selectViewHeightCons.constant =   selectViewHeight
+            self.searchHolderHeight.constant = searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "Cluster"
+            typesTitleview.isHidden = false
             self.selectView.isHidden = false
             searchHolderView.isHidden = false
             self.countView.isHidden = true
+            self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .headQuater:
             self.cellType = .headQuater
@@ -297,11 +323,15 @@ class MenuView : BaseView{
             saveView.isHidden = false
             clearview.isHidden = false
             self.countView.isHidden = false
-            self.selectViewHeightCons.constant = 40
-            self.searchHolderHeight.constant = 40
+            self.selectViewHeightCons.constant =   selectViewHeight
+            self.searchHolderHeight.constant =  searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "Head Quarters"
+            typesTitleview.isHidden = false
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .jointCall:
             self.cellType = .jointCall
@@ -309,11 +339,15 @@ class MenuView : BaseView{
             saveView.isHidden = false
             clearview.isHidden = false
             self.countView.isHidden = false
-            self.selectViewHeightCons.constant = 40
-            self.searchHolderHeight.constant = 40
+            self.selectViewHeightCons.constant =  selectViewHeight
+            self.searchHolderHeight.constant = searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "Joint Call"
+            typesTitleview.isHidden = false
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .listedDoctor:
             self.cellType = .listedDoctor
@@ -321,11 +355,15 @@ class MenuView : BaseView{
             saveView.isHidden = false
             clearview.isHidden = false
             self.countView.isHidden = false
-            self.selectViewHeightCons.constant = 40
-            self.searchHolderHeight.constant = 40
+            self.selectViewHeightCons.constant =  selectViewHeight
+            self.searchHolderHeight.constant = searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "Listed doctor"
+            typesTitleview.isHidden = false
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            self.menuTable.separatorStyle = .singleLine
           //  self.menuTable.reloadData()
         case .chemist:
             self.cellType = .chemist
@@ -333,11 +371,14 @@ class MenuView : BaseView{
             saveView.isHidden = false
             clearview.isHidden = false
             self.countView.isHidden = false
-            self.selectViewHeightCons.constant = 40
-            self.searchHolderHeight.constant = 40
+            self.selectViewHeightCons.constant = selectViewHeight
+            self.searchHolderHeight.constant = searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "Chemist"
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            self.menuTable.separatorStyle = .singleLine
           //  self.menuTable.reloadData()
 //        case .FieldWork:
 //            self.cellType = .FieldWork
@@ -362,26 +403,7 @@ class MenuView : BaseView{
           //  self.menuTable.reloadData()
         }
         if index != nil {
-//            let indexPath = IndexPath(row: index ?? 0, section: 0)
-//            DispatchQueue.main.async {
-//                self.menuTable.reloadRows(at: [indexPath], with: .fade)
-//            }
             self.menuTable.reloadData()
-            //self.menuTable.reloadData()
-//            Dispatch.background {
-//                // do stuff
-//
-//
-//
-//                Dispatch.main {
-//                    // update UI
-//                    self.menuTable.beginUpdates()
-//
-//                    self.menuTable.endUpdates()
-//                }
-//
-//
-//            }
         }else {
             self.menuTable.reloadData()
         }
@@ -455,15 +477,15 @@ class MenuView : BaseView{
                     setPageType(.session, for: self.selectedSession)
                 }
             case .cluster:
-                setPageType(.cluster, for: self.selectedSession)
+                setPageType(.session, for: self.selectedSession)
             case .headQuater:
-                setPageType(.headQuater, for: self.selectedSession)
+                setPageType(.session, for: self.selectedSession)
             case .jointCall:
-                setPageType(.jointCall, for: self.selectedSession)
+                setPageType(.session, for: self.selectedSession)
             case .listedDoctor:
-                setPageType(.listedDoctor, for: self.selectedSession)
+                setPageType(.session, for: self.selectedSession)
             case .chemist:
-                setPageType(.chemist, for: self.selectedSession)
+                setPageType(.session, for: self.selectedSession)
 //            case .FieldWork:
 //                setPageType(.FieldWork, for: self.selectedSession)
 //            case .others:
@@ -619,18 +641,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
             
             if  isForFieldWork  {
-                cell.stackHeight.constant = 450
+                cell.stackHeight.constant = cellStackHeightforFW
                 [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.workTypeView].forEach { view in
                     view?.isHidden = false
                     // cell.workselectionHolder,
                 }
             }  else {
-                cell.stackHeight.constant = 80
+                cell.stackHeight.constant = cellStackHeightfOthers
                 [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView].forEach { view in
                     view?.isHidden = true
                     // cell.workselectionHolder,
                 }
-             
+                
             }
             
             if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
@@ -690,11 +712,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails[indexPath.row].listedDoctors?.forEach({ doctors in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
                         if key == doctors.code {
-                            jointWorkNameArr.append(doctors.name ?? "")
+                            listedDoctorsNameArr.append(doctors.name ?? "")
                         }
                     }
                 })
-                cell.lblListedDoctor.text = jointWorkNameArr.joined(separator:",")
+                cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:",")
             } else {
                 
                 cell.lblListedDoctor.text = "Select"
@@ -717,56 +739,56 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.clusterView.addTap {
                 self.cellType = .cluster
-              //  self.selectedSession = indexPath.row
+                //  self.selectedSession = indexPath.row
                 self.setPageType(.cluster)
-             
-              //  tableView.reloadData()
+                
+                //  tableView.reloadData()
             }
             cell.workTypeView.addTap {
                 self.cellType = .workType
-               // self.selectedSession = indexPath.row
+                // self.selectedSession = indexPath.row
                 self.setPageType(.workType)
-             
-               // tableView.reloadData()
+                
+                // tableView.reloadData()
             }
             
             cell.headQuatersView.addTap {
                 self.cellType = .headQuater
-               // self.selectedSession = indexPath.row
+                // self.selectedSession = indexPath.row
                 self.setPageType(.headQuater)
-             
-               // tableView.reloadData()
+                
+                // tableView.reloadData()
             }
             cell.jointCallView.addTap {
                 self.cellType = .jointCall
-               // self.selectedSession = indexPath.row
+                // self.selectedSession = indexPath.row
                 self.setPageType(.jointCall)
-             
-               // tableView.reloadData()
+                
+                // tableView.reloadData()
             }
             cell.listedDoctorView.addTap {
                 self.cellType = .listedDoctor
-              //  self.selectedSession = indexPath.row
+                //  self.selectedSession = indexPath.row
                 self.setPageType(.listedDoctor)
-             
-               // tableView.reloadData()
+                
+                // tableView.reloadData()
             }
             cell.chemistView.addTap {
                 self.cellType = .chemist
-              //  self.selectedSession = indexPath.row
+                //  self.selectedSession = indexPath.row
                 self.setPageType(.chemist)
-             
-               // tableView.reloadData()
+                
+                // tableView.reloadData()
             }
             
-                cell.deleteIcon.isHidden = false
+            cell.deleteIcon.isHidden = false
             
             
             cell.deleteIcon.addTap {
-               // self.sessionCount -= 1
+                // self.sessionCount -= 1
                 self.toRemoveSession(at: indexPath.row)
                 tableView.reloadData()
-               // self.didLayoutSubviews(baseVC: self.menuVC)
+                // self.didLayoutSubviews(baseVC: self.menuVC)
             }
             self.selectedSession = indexPath.row
             return cell
@@ -774,21 +796,21 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .workType:
             let cell = tableView.dequeueReusableCell(withIdentifier:"WorkTypeCell" ) as! WorkTypeCell
             let item = sessionDetailsArr.sessionDetails[selectedSession].workType?[indexPath.row]
-           // let item = self.workTypeArr?[indexPath.row]
+            // let item = self.workTypeArr?[indexPath.row]
             cell.workTypeLbl.text = item?.name ?? ""
             if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
                 cell.workTypeLbl.textColor = .green
             }
             else {
                 cell.workTypeLbl.textColor = .black
-               
+                
                 //cell.didSelected = cell.didSelected == true ? false : true
             }
             cell.addTap { [self] in
                 if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
                     sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
                     self.selectTitleLbl.text = "Select"
-                   // item.isSelected = false
+                    // item.isSelected = false
                 } else {
                     sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
                     if item?.terrslFlg == "Y" {
@@ -798,492 +820,521 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                     self.selectedWorkTypeName = item?.name ?? ""
                     self.selectTitleLbl.text = item?.name ?? ""
-                 //   item.isSelected = true
+                    //   item.isSelected = true
                 }
                 
                 tableView.reloadData()
             }
             
-          
+            
             cell.selectionStyle = .none
             return cell
-
-
+            
+            
         case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist:
-            let cell = tableView.dequeueReusableCell(withIdentifier:MenuTCell.identifier ) as! MenuTCell
             
-            var item : AnyObject?
-            switch self.cellType {
-            
-            case .cluster:
-               let item = sessionDetailsArr.sessionDetails[selectedSession].cluster?[indexPath.row]
-                let _ = sessionDetailsArr.sessionDetails[selectedSession].cluster
-                cell.lblName?.text = item?.name ?? ""
-                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].cluster?.forEach({ cluster in
-                  //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach { id, isSelected in
-                        if id == cluster.code {
-
-                            if isSelected  {
-
-                               self.selectedClusterIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(cluster.name!)")
-                                        dump("cluster code --> \(cluster.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+    
+                        
+                        let cell = tableView.dequeueReusableCell(withIdentifier:MenuTCell.identifier ) as! MenuTCell
+                        
+                        var item : AnyObject?
+                        switch self.cellType {
+                        case .cluster:
+                                let item = sessionDetailsArr.sessionDetails[selectedSession].cluster?[indexPath.row]
+                                let _ = sessionDetailsArr.sessionDetails[selectedSession].cluster
+                                cell.lblName?.text = item?.name ?? ""
+                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                sessionDetailsArr.sessionDetails[selectedSession].cluster?.forEach({ cluster in
+                                    //  dump(cluster.code)
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach { id, isSelected in
+                                        if id == cluster.code {
+                                            
+                                            if isSelected  {
+                                                
+                                                self.selectedClusterIndices.forEach({ index in
+                                                    if index == indexPath.row {
+                                                        dump("cluster name --> \(cluster.name!)")
+                                                        dump("cluster code --> \(cluster.code!)")
+                                                        dump("dictionary code --> \(id)")
+                                                        dump("isSelected --> \(isSelected)")
+                                                        print("Selected index --> \(indexPath.row)")
+                                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                    } else {
+                                                        //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                    }
+                                                })
+                                                
+                                                
+                                            } else {
+                                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                            }
+                                        } else {
+                                            // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                        }
                                     }
                                 })
-
-
-                            } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                            }
-                        } else {
-                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                        }
-                    }
-                })
-                
-
-                cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID
-                   
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
-
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: item?.code ?? "")
-                        }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
-                    }
-                    
-                    
-                   
-                      if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
-                          _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                          self.selectedClusterIndices.append(indexPath.row)
-                      } else {
-                          let newArr = selectedClusterIndices.filter { $0 != indexPath.row }
-                          self.selectedClusterIndices = newArr
-                      }
-                  
-                    
-                    var count = 0
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach({ (code, isSelected) in
-                       if isSelected {
-                           count += 1
-                       }
-                    })
-
-                    if count > 0 {
-                        self.selectTitleLbl.text = "Selected"
-                        self.countView.isHidden = false
-                        self.countLbl.text = "\(count)"
-                    } else {
-                        self.selectTitleLbl.text = "Select"
-                        self.countView.isHidden = true
-                        
-                    }
-                    tableView.reloadData()
-                }
-                
-                
-            case .headQuater:
-                item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
-                cell.lblName?.text = item?.name ?? ""
-                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].headQuates?.forEach({ quaters in
-                  //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach { id, isSelected in
-                        if id == quaters.id {
-
-                            if isSelected  {
-
-                                self.selectedHeadQuatersIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(quaters.name!)")
-                                        dump("cluster code --> \(quaters.id!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                
+                                var count = 0
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach({ (code, isSelected) in
+                                    if isSelected {
+                                        count += 1
                                     }
                                 })
-
-
-                            } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                            }
-                        } else {
-                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                        }
-                    }
-                })
-                
-
-                cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID
-                   
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] {
-
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: item?.id ?? "")
-                        }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] = true
-                    }
-                    
-                    
-                   
-                      if  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true {
-                          _ = item?.id ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                          self.selectedHeadQuatersIndices.append(indexPath.row)
-                      } else {
-                          let newArr = selectedHeadQuatersIndices.filter { $0 != indexPath.row }
-                          self.selectedHeadQuatersIndices = newArr
-                      }
-                  
-                    
-                    var count = 0
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach({ (id, isSelected) in
-                       if isSelected {
-                           count += 1
-                       }
-                    })
-
-                    if count > 0 {
-                        self.selectTitleLbl.text = "Selected"
-                        self.countView.isHidden = false
-                        self.countLbl.text = "\(count)"
-                    } else {
-                        self.selectTitleLbl.text = "Select"
-                        self.countView.isHidden = true
-                        
-                    }
-                    tableView.reloadData()
-                }
-            case .jointCall:
-                item = sessionDetailsArr.sessionDetails[selectedSession].jointWork?[indexPath.row]
-                cell.lblName?.text = item?.name ?? ""
-                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].jointWork?.forEach({ work in
-                  //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.forEach { id, isSelected in
-                        if id == work.code {
-
-                            if isSelected  {
-
-                               self.selectedJointWorkIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(work.name!)")
-                                        dump("cluster code --> \(work.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                
+                                if count > 0 {
+                                    self.selectTitleLbl.text = "Selected"
+                                    self.countView.isHidden = false
+                                    self.countLbl.text = "\(count)"
+                                } else {
+                                    self.selectTitleLbl.text = "Select"
+                                    self.countView.isHidden = true
+                                    
+                                }
+                                
+                                
+                                cell.addTap { [self] in
+                                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID
+                                    
+                                    
+                                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
+                                        
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true ? false : true
+                                        
+                                        if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == false {
+                                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: item?.code ?? "")
+                                        }
+                                        
                                     } else {
-                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
+                                    }
+                                    
+                                    
+                                    
+                                    if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
+                                        _ = item?.code ?? ""
+                                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
+                                        //  self.selectedIndices.append(index ?? 0)
+                                        self.selectedClusterIndices.append(indexPath.row)
+                                    } else {
+                                        let newArr = selectedClusterIndices.filter { $0 != indexPath.row }
+                                        self.selectedClusterIndices = newArr
+                                    }
+                                    
+                                    
+                                    tableView.reloadData()
+                                    
+                                }
+                              
+                            
+
+                            
+                            
+                        case .headQuater:
+                            item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
+                            cell.lblName?.text = item?.name ?? ""
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            sessionDetailsArr.sessionDetails[selectedSession].headQuates?.forEach({ quaters in
+                                //  dump(cluster.code)
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach { id, isSelected in
+                                    if id == quaters.id {
+                                        
+                                        if isSelected  {
+                                            
+                                            self.selectedHeadQuatersIndices.forEach({ index in
+                                                if index == indexPath.row {
+                                                    dump("cluster name --> \(quaters.name!)")
+                                                    dump("cluster code --> \(quaters.id!)")
+                                                    dump("dictionary code --> \(id)")
+                                                    dump("isSelected --> \(isSelected)")
+                                                    print("Selected index --> \(indexPath.row)")
+                                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                } else {
+                                                    //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                }
+                                            })
+                                            
+                                            
+                                        } else {
+                                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                        }
+                                    } else {
+                                        // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                    }
+                                }
+                            })
+                            
+                            var count = 0
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach({ (id, isSelected) in
+                                if isSelected {
+                                    count += 1
+                                }
+                            })
+                            
+                            if count > 0 {
+                                self.selectTitleLbl.text = "Selected"
+                                self.countView.isHidden = false
+                                self.countLbl.text = "\(count)"
+                            } else {
+                                self.selectTitleLbl.text = "Select"
+                                self.countView.isHidden = true
+                                
+                            }
+                            
+                            cell.addTap { [self] in
+                                _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID
+                                
+                                
+                                if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] {
+                                    
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true ? false : true
+                                    
+                                    if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == false {
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: item?.id ?? "")
+                                    }
+                                    
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] = true
+                                }
+                                
+                                
+                                
+                                if  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true {
+                                    _ = item?.id ?? ""
+                                    //  let index = clusterItem?.firstIndex(where: {$0.code == code})
+                                    //  self.selectedIndices.append(index ?? 0)
+                                    self.selectedHeadQuatersIndices.append(indexPath.row)
+                                } else {
+                                    let newArr = selectedHeadQuatersIndices.filter { $0 != indexPath.row }
+                                    self.selectedHeadQuatersIndices = newArr
+                                }
+                                
+                                
+                                tableView.reloadData()
+                            }
+                        case .jointCall:
+                            item = sessionDetailsArr.sessionDetails[selectedSession].jointWork?[indexPath.row]
+                            cell.lblName?.text = item?.name ?? ""
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            sessionDetailsArr.sessionDetails[selectedSession].jointWork?.forEach({ work in
+                                //  dump(cluster.code)
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.forEach { id, isSelected in
+                                    if id == work.code {
+                                        
+                                        if isSelected  {
+                                            
+                                            self.selectedJointWorkIndices.forEach({ index in
+                                                if index == indexPath.row {
+                                                    dump("cluster name --> \(work.name!)")
+                                                    dump("cluster code --> \(work.code!)")
+                                                    dump("dictionary code --> \(id)")
+                                                    dump("isSelected --> \(isSelected)")
+                                                    print("Selected index --> \(indexPath.row)")
+                                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                } else {
+                                                    //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                }
+                                            })
+                                            
+                                            
+                                        } else {
+                                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                        }
+                                    } else {
+                                        // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                    }
+                                }
+                            })
+                            var count = 0
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.forEach({ (code, isSelected) in
+                                if isSelected {
+                                    count += 1
+                                }
+                            })
+                            
+                            if count > 0 {
+                                self.selectTitleLbl.text = "Selected"
+                                self.countView.isHidden = false
+                                self.countLbl.text = "\(count)"
+                            } else {
+                                self.selectTitleLbl.text = "Select"
+                                self.countView.isHidden = true
+                                
+                            }
+                            
+                            cell.addTap { [self] in
+                                _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID
+                                
+                                
+                                if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] {
+                                    
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true ? false : true
+                                    
+                                    if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == false {
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: item?.code ?? "")
+                                    }
+                                    
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] = true
+                                }
+                                
+                                
+                                
+                                if  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true {
+                                    _ = item?.code ?? ""
+                                    //  let index = clusterItem?.firstIndex(where: {$0.code == code})
+                                    //  self.selectedIndices.append(index ?? 0)
+                                    self.selectedJointWorkIndices.append(indexPath.row)
+                                } else {
+                                    let newArr = selectedJointWorkIndices.filter { $0 != indexPath.row }
+                                    self.selectedJointWorkIndices = newArr
+                                }
+                                
+                                
+                                
+                                tableView.reloadData()
+                            }
+                            
+                        case .listedDoctor:
+                            item = sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?[indexPath.row]
+                            cell.lblName?.text = item?.name ?? ""
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.forEach({ doctors in
+                                //  dump(cluster.code)
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach { id, isSelected in
+                                    if id == doctors.code {
+                                        
+                                        if isSelected  {
+                                            
+                                            self.selectedDoctorsIndices.forEach({ index in
+                                                if index == indexPath.row {
+                                                    dump("cluster name --> \(doctors.name!)")
+                                                    dump("cluster code --> \(doctors.code!)")
+                                                    dump("dictionary code --> \(id)")
+                                                    dump("isSelected --> \(isSelected)")
+                                                    print("Selected index --> \(indexPath.row)")
+                                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                } else {
+                                                    //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                }
+                                            })
+                                            
+                                            
+                                        } else {
+                                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                        }
+                                    } else {
+                                        // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                    }
+                                }
+                            })
+                            var count = 0
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach({ (code, isSelected) in
+                                if isSelected {
+                                    count += 1
+                                }
+                            })
+                            
+                            if count > 0 {
+                                self.selectTitleLbl.text = "Selected"
+                                self.countView.isHidden = false
+                                self.countLbl.text = "\(count)"
+                            } else {
+                                self.selectTitleLbl.text = "Select"
+                                self.countView.isHidden = true
+                                
+                            }
+                            
+                            cell.addTap { [self] in
+                                _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID
+                                
+                                
+                                if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] {
+                                    
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true ? false : true
+                                    
+                                    if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == false {
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: item?.code ?? "")
+                                    }
+                                    
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] = true
+                                }
+                                
+                                
+                                
+                                if  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true {
+                                    _ = item?.code ?? ""
+                                    //  let index = clusterItem?.firstIndex(where: {$0.code == code})
+                                    //  self.selectedIndices.append(index ?? 0)
+                                    self.selectedDoctorsIndices.append(indexPath.row)
+                                } else {
+                                    let newArr = selectedDoctorsIndices.filter { $0 != indexPath.row }
+                                    self.selectedDoctorsIndices = newArr
+                                }
+                                
+                                
+                                var count = 0
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach({ (code, isSelected) in
+                                    if isSelected {
+                                        count += 1
                                     }
                                 })
-
-
-                            } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                
+                                if count > 0 {
+                                    self.selectTitleLbl.text = "Selected"
+                                    self.countView.isHidden = false
+                                    self.countLbl.text = "\(count)"
+                                } else {
+                                    self.selectTitleLbl.text = "Select"
+                                    self.countView.isHidden = true
+                                    
+                                }
+                                tableView.reloadData()
                             }
-                        } else {
-                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                        }
-                    }
-                })
-                
-
-                cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID
-                   
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] {
-
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: item?.code ?? "")
-                        }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] = true
-                    }
-                    
-                    
-                   
-                      if  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true {
-                          _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                          self.selectedJointWorkIndices.append(indexPath.row)
-                      } else {
-                          let newArr = selectedJointWorkIndices.filter { $0 != indexPath.row }
-                          self.selectedJointWorkIndices = newArr
-                      }
-                  
-                    
-                    var count = 0
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.forEach({ (code, isSelected) in
-                       if isSelected {
-                           count += 1
-                       }
-                    })
-
-                    if count > 0 {
-                        self.selectTitleLbl.text = "Selected"
-                        self.countView.isHidden = false
-                        self.countLbl.text = "\(count)"
-                    } else {
-                        self.selectTitleLbl.text = "Select"
-                        self.countView.isHidden = true
-                        
-                    }
-                    tableView.reloadData()
-                }
-                
-            case .listedDoctor:
-              item = sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?[indexPath.row]
-                cell.lblName?.text = item?.name ?? ""
-                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.forEach({ doctors in
-                  //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach { id, isSelected in
-                        if id == doctors.code {
-
-                            if isSelected  {
-
-                               self.selectedDoctorsIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(doctors.name!)")
-                                        dump("cluster code --> \(doctors.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        case .chemist:
+                            item = sessionDetailsArr.sessionDetails[selectedSession].chemist?[indexPath.row]
+                            cell.lblName?.text = item?.name ?? ""
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            sessionDetailsArr.sessionDetails[selectedSession].chemist?.forEach({ chemist in
+                                //  dump(cluster.code)
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach { id, isSelected in
+                                    if id == chemist.code {
+                                        
+                                        if isSelected  {
+                                            
+                                            self.selectedChemistIndices.forEach({ index in
+                                                if index == indexPath.row {
+                                                    dump("cluster name --> \(chemist.name!)")
+                                                    dump("cluster code --> \(chemist.code!)")
+                                                    dump("dictionary code --> \(id)")
+                                                    dump("isSelected --> \(isSelected)")
+                                                    print("Selected index --> \(indexPath.row)")
+                                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                } else {
+                                                    //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                                }
+                                            })
+                                            
+                                            
+                                        } else {
+                                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                        }
                                     } else {
-                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                        // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                                     }
-                                })
-
-
+                                }
+                            })
+                            
+                            var count = 0
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach({ (code, isSelected) in
+                                if isSelected {
+                                    count += 1
+                                }
+                            })
+                            
+                            if count > 0 {
+                                self.selectTitleLbl.text = "Selected"
+                                self.countView.isHidden = false
+                                self.countLbl.text = "\(count)"
                             } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                self.selectTitleLbl.text = "Select"
+                                self.countView.isHidden = true
+                                
                             }
-                        } else {
-                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            
+                            cell.addTap { [self] in
+                                _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID
+                                
+                                
+                                if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] {
+                                    
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true ? false : true
+                                    
+                                    if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == false {
+                                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: item?.code ?? "")
+                                    }
+                                    
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] = true
+                                }
+                                
+                                
+                                
+                                if  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true {
+                                    _ = item?.code ?? ""
+                                    //  let index = clusterItem?.firstIndex(where: {$0.code == code})
+                                    //  self.selectedIndices.append(index ?? 0)
+                                    self.selectedChemistIndices.append(indexPath.row)
+                                } else {
+                                    let newArr = selectedChemistIndices.filter { $0 != indexPath.row }
+                                    self.selectedChemistIndices = newArr
+                                }
+                                
+                                
+                                
+                                tableView.reloadData()
+                            }
+                        default:  return UITableViewCell()
                         }
-                    }
-                })
+                        cell.selectionStyle = .none
+                        return cell
+        
                 
 
-                cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID
-                   
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] {
-
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: item?.code ?? "")
-                        }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] = true
-                    }
-                    
-                    
-                   
-                      if  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true {
-                          _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                          self.selectedDoctorsIndices.append(indexPath.row)
-                      } else {
-                          let newArr = selectedDoctorsIndices.filter { $0 != indexPath.row }
-                          self.selectedDoctorsIndices = newArr
-                      }
-                  
-                    
-                    var count = 0
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach({ (code, isSelected) in
-                       if isSelected {
-                           count += 1
-                       }
-                    })
-
-                    if count > 0 {
-                        self.selectTitleLbl.text = "Selected"
-                        self.countView.isHidden = false
-                        self.countLbl.text = "\(count)"
-                    } else {
-                        self.selectTitleLbl.text = "Select"
-                        self.countView.isHidden = true
-                        
-                    }
-                    tableView.reloadData()
-                }
-            case .chemist:
-               item = sessionDetailsArr.sessionDetails[selectedSession].chemist?[indexPath.row]
-                cell.lblName?.text = item?.name ?? ""
-                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].chemist?.forEach({ chemist in
-                  //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach { id, isSelected in
-                        if id == chemist.code {
-
-                            if isSelected  {
-
-                               self.selectedChemistIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(chemist.name!)")
-                                        dump("cluster code --> \(chemist.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    }
-                                })
-
-
-                            } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                            }
-                        } else {
-                           // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                        }
-                    }
-                })
                 
-
-                cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID
-                   
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] {
-
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: item?.code ?? "")
-                        }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] = true
-                    }
-                    
-                    
-                   
-                      if  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true {
-                          _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                          self.selectedChemistIndices.append(indexPath.row)
-                      } else {
-                          let newArr = selectedChemistIndices.filter { $0 != indexPath.row }
-                          self.selectedChemistIndices = newArr
-                      }
-                  
-                    
-                    var count = 0
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach({ (code, isSelected) in
-                       if isSelected {
-                           count += 1
-                       }
-                    })
-
-                    if count > 0 {
-                        self.selectTitleLbl.text = "Selected"
-                        self.countView.isHidden = false
-                        self.countLbl.text = "\(count)"
-                    } else {
-                        self.selectTitleLbl.text = "Select"
-                        self.countView.isHidden = true
-                        
-                    }
-                    tableView.reloadData()
-                }
-            default:  return UITableViewCell()
+                
+                
+      
+                
+                
+                //        case .FieldWork:
+                //            let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
+                //            cell.selectionStyle = .none
+                //            [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.workTypeView].forEach { view in
+                //                view?.isHidden = false
+                //                // cell.workselectionHolder,
+                //            }
+                //
+                //            cell.lblName.text = "Session \(indexPath.row + 1)"
+                //            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
+                //            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
+                //
+                //            if  isForFieldWork  {
+                //                cell.stackHeight.constant = cellStackHeightforFW
+                //                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                //            }  else {
+                //                cell.stackHeight.constant = cellStackHeightfOthers
+                //                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                //            }
+                //
+                //
+                //            return cell
+                //        case .others:
+                //            let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
+                //            cell.selectionStyle = .none
+                //            [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView].forEach { view in
+                //                view?.isHidden = true
+                //                // cell.workselectionHolder,
+                //            }
+                //            cell.lblName.text = "Session \(indexPath.row + 1)"
+                //            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
+                //            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
+                //
+                //            if  isForFieldWork  {
+                //                cell.stackHeight.constant = cellStackHeightforFW
+                //                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                //            }  else {
+                //                cell.stackHeight.constant = cellStackHeightfOthers
+                //                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                //            }
+                //            return cell
+                
+                
+                
+                
             }
             
-          
-
-            
-          
-            cell.selectionStyle = .none
-            return cell
-
-            
-//        case .FieldWork:
-//            let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
-//            cell.selectionStyle = .none
-//            [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.workTypeView].forEach { view in
-//                view?.isHidden = false
-//                // cell.workselectionHolder,
-//            }
-//
-//            cell.lblName.text = "Session \(indexPath.row + 1)"
-//            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
-//            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
-//
-//            if  isForFieldWork  {
-//                cell.stackHeight.constant = 450
-//                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
-//            }  else {
-//                cell.stackHeight.constant = 80
-//                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
-//            }
-//
-//
-//            return cell
-//        case .others:
-//            let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
-//            cell.selectionStyle = .none
-//            [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView].forEach { view in
-//                view?.isHidden = true
-//                // cell.workselectionHolder,
-//            }
-//            cell.lblName.text = "Session \(indexPath.row + 1)"
-//            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
-//            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
-//
-//            if  isForFieldWork  {
-//                cell.stackHeight.constant = 450
-//                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
-//            }  else {
-//                cell.stackHeight.constant = 80
-//                cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
-//            }
-//            return cell
-        }
-        
-
+      
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -1295,15 +1346,20 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .session:
  
             if sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork  {
-                return 520
+                return cellHeightForFW
             }  else {
-                return 140
+                return cellHeightForOthers
             }
             //tableView.height / 1.1
         case .workType:
-            return tableView.height / 10
+            return tableView.height / 8
         case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist:
-            return tableView.height / 10
+            if indexPath.section == 0 {
+                return tableView.height / 8
+            } else {
+                return tableView.height / 8
+            }
+           
 //        case .FieldWork:
 //           // return 520
 //            if sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork  {

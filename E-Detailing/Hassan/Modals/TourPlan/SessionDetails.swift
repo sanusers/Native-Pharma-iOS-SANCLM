@@ -232,7 +232,11 @@ class SessionDetail {
    var listedDoctors: [DoctorFencing]?
    var chemist: [Chemist]?
     var stackList : [Stockist]?
-
+    var selectedClusterIndices : [Int]
+    var selectedHeadQuatersIndices : [Int]
+    var selectedJointWorkIndices : [Int]
+    var selectedDoctorsIndices : [Int]
+    var selectedChemistIndices : [Int]
 
 
     init() {
@@ -249,6 +253,11 @@ class SessionDetail {
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
         
+        self.selectedClusterIndices = [Int]()
+        self.selectedHeadQuatersIndices = [Int]()
+        self.selectedJointWorkIndices = [Int]()
+        self.selectedDoctorsIndices = [Int]()
+        self.selectedChemistIndices = [Int]()
     }
     }
 
