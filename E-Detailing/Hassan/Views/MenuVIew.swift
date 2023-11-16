@@ -198,6 +198,7 @@ class MenuView : BaseView{
         sessionDetail.listedDoctors = listedDocArr?.uniqued()
         sessionDetail.chemist = chemistArr?.uniqued()
         self.sessionDetailsArr.sessionDetails.append(sessionDetail)
+        
     }
     
     
@@ -268,7 +269,7 @@ class MenuView : BaseView{
 //        }
 //    }
     
-    func setPageType(_ pagetype: CellType, for index: Int? = nil) {
+    func setPageType(_ pagetype: CellType, for session: Int? = nil) {
         switch pagetype {
         case .session:
             self.cellType = .session
@@ -404,10 +405,15 @@ class MenuView : BaseView{
         }
 
         self.menuTable.reloadData()
-        var targetRowIndexPath = IndexPath(row: self.selectedSession, section: 0)
+        var targetRowIndexPath = IndexPath()
+        if session == nil {
+            targetRowIndexPath =   IndexPath(row: self.selectedSession, section: 0)
+        } else {
+            targetRowIndexPath =  IndexPath(row: session ?? 0, section: 0)
+        }
         if menuTable.indexPathExists(indexPath: targetRowIndexPath)
         {
-            menuTable.scrollToRow(at: targetRowIndexPath, at: .bottom, animated: true)
+            menuTable.scrollToRow(at: targetRowIndexPath, at: .top, animated: true)
         }
        
 
@@ -427,9 +433,6 @@ class MenuView : BaseView{
         }
         
         saveView.addTap { [self] in
-            
-            
-            
             switch self.cellType {
                 
             case .session:
@@ -501,10 +504,44 @@ class MenuView : BaseView{
         }
         
         addSessionView.addTap {
-            self.toGenerateNewSession()
-           // self.cellType = .session
-            self.setPageType(.session)
-          //  self.menuTable.reloadData()
+            let count = self.sessionDetailsArr.sessionDetails.count
+            if  count > 2 {
+                if #available(iOS 13.0, *) {
+                    (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
+                } else {
+                  print("Maximum plan added")
+                }
+            } else {
+                self.toGenerateNewSession()
+                
+                self.setPageType(.session, for: count)
+            }
+        }
+        
+        clearview.addTap { [self] in
+            switch self.cellType {
+                
+            case .session:
+                break
+            case .workType:
+                break
+            case .cluster:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeAll()
+                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.removeAll()
+            case .headQuater:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeAll()
+                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
+            case .jointCall:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeAll()
+                sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.removeAll()
+            case .listedDoctor:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeAll()
+                sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
+            case .chemist:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeAll()
+                sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
+            }
+            self.menuTable.reloadData()
         }
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handleMenuPan(_:)))
