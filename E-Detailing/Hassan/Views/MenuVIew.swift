@@ -71,6 +71,11 @@ class MenuView : BaseView{
     
     @IBOutlet var typesTitleHeightConst: NSLayoutConstraint!
     
+    @IBOutlet var selectAllView: UIView!
+    
+    @IBOutlet var selectAllIV: UIImageView!
+    
+    @IBOutlet var selectAllHeightConst: NSLayoutConstraint!
     
     ///properties to hold array elements
     var selectedClusterIndices : [Int] = []
@@ -104,7 +109,7 @@ class MenuView : BaseView{
     let cellStackHeightfOthers : CGFloat = 80
     let cellHeightForFW :  CGFloat = 520
     let cellHeightForOthers : CGFloat = 140
-    
+    var selectAllHeight : CGFloat = 50
     
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
@@ -282,6 +287,8 @@ class MenuView : BaseView{
             self.selectView.isHidden = true
             searchHolderView.isHidden = true
             typesTitleview.isHidden = true
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
          //   self.menuTable.reloadData()
@@ -299,6 +306,8 @@ class MenuView : BaseView{
             self.countView.isHidden = true
             self.selectView.isHidden = false
             searchHolderView.isHidden = false
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             typesTitle.text = "Work Type"
             self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
@@ -316,6 +325,8 @@ class MenuView : BaseView{
             self.selectView.isHidden = false
             searchHolderView.isHidden = false
             self.countView.isHidden = true
+            selectAllView.isHidden = false
+            selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .headQuater:
@@ -332,6 +343,8 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            selectAllView.isHidden = false
+            selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .jointCall:
@@ -348,6 +361,8 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            selectAllView.isHidden = false
+            selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
          //   self.menuTable.reloadData()
         case .listedDoctor:
@@ -364,6 +379,8 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            selectAllView.isHidden = false
+            selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
           //  self.menuTable.reloadData()
         case .chemist:
@@ -379,6 +396,8 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
+            selectAllView.isHidden = false
+            selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
           //  self.menuTable.reloadData()
 //        case .FieldWork:
@@ -407,7 +426,7 @@ class MenuView : BaseView{
         self.menuTable.reloadData()
         var targetRowIndexPath = IndexPath()
         if session == nil {
-            targetRowIndexPath =   IndexPath(row: self.selectedSession, section: 0)
+            targetRowIndexPath =   IndexPath(row: 0, section: 0)
         } else {
             targetRowIndexPath =  IndexPath(row: session ?? 0, section: 0)
         }
@@ -416,7 +435,6 @@ class MenuView : BaseView{
             menuTable.scrollToRow(at: targetRowIndexPath, at: .top, animated: true)
         }
        
-
     }
     
     
@@ -544,9 +562,138 @@ class MenuView : BaseView{
             self.menuTable.reloadData()
         }
         
+        
+        selectAllView.addTap { [self] in
+             
+            self.selectAllIV.image =  self.selectAllIV.image ==  UIImage(named: "checkBoxEmpty") ? UIImage(named: "checkBoxSelected") : UIImage(named: "checkBoxEmpty")
+            switch self.cellType {
+              
+            case .session:
+                break
+            case .workType:
+                break
+            case .cluster:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.removeAll()
+                    self.sessionDetailsArr.sessionDetails[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = true
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(index)
+                    })
+                } else {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
+                       // sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = false
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: cluster.code ?? "")
+                    })
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.removeAll()
+                }
+      
+                
+            case .headQuater:
+//                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+//                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
+//                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
+//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[cluster.code ?? ""] = true
+//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.append(index)
+//                    })
+//                } else {
+//                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ (index, cluster) in
+//                       // sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = false
+//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: cluster.code ?? "")
+//                    })
+//                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
+//                }
+                break
+            case .jointCall:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.removeAll()
+                    self.sessionDetailsArr.sessionDetails[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[cluster.code ?? ""] = true
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.append(index)
+                    })
+                } else {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: cluster.code ?? "")
+                    })
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.removeAll()
+                }
+            case .listedDoctor:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
+                    self.sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[cluster.code ?? ""] = true
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(index)
+                    })
+                } else {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: cluster.code ?? "")
+                    })
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
+                }
+            case .chemist:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
+                    self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[cluster.code ?? ""] = true
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(index)
+                    })
+                } else {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: cluster.code ?? "")
+                    })
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
+                }
+            }
+            self.menuTable.reloadData()
+        }
+        
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handleMenuPan(_:)))
         self.sideMenuHolderView.addGestureRecognizer(panGesture)
         self.sideMenuHolderView.isUserInteractionEnabled = true
+    }
+    
+    func toSetSelectAllImage(selectedIndexCount : Int) {
+        var isToSelectAll: Bool = false
+        switch self.cellType {
+        case .session:
+            break
+        case .workType:
+            break
+        case .cluster:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].cluster?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
+        case .headQuater:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].headQuates?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
+        case .jointCall:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].jointWork?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
+        case .listedDoctor:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
+        case .chemist:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].chemist?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
+        }
+        if isToSelectAll {
+            self.selectAllIV.image =  UIImage(named: "checkBoxSelected")
+        } else {
+            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+        }
     }
 
     //MARK: UDF, gestures  and animations
@@ -784,54 +931,41 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 self.cellType = .cluster
                 self.selectedSession = indexPath.row
                 self.setPageType(.cluster)
-                
-                //  tableView.reloadData()
             }
             cell.workTypeView.addTap {
                 self.cellType = .workType
                  self.selectedSession = indexPath.row
                 self.setPageType(.workType)
-                
-                // tableView.reloadData()
             }
             
             cell.headQuatersView.addTap {
                 self.cellType = .headQuater
                  self.selectedSession = indexPath.row
                 self.setPageType(.headQuater)
-                
-                // tableView.reloadData()
             }
             cell.jointCallView.addTap {
                 self.cellType = .jointCall
                  self.selectedSession = indexPath.row
                 self.setPageType(.jointCall)
-                
-                // tableView.reloadData()
             }
             cell.listedDoctorView.addTap {
                 self.cellType = .listedDoctor
                   self.selectedSession = indexPath.row
                 self.setPageType(.listedDoctor)
-                
-                // tableView.reloadData()
+
             }
             cell.chemistView.addTap {
                 self.cellType = .chemist
                  self.selectedSession = indexPath.row
                 self.setPageType(.chemist)
-                
-                // tableView.reloadData()
             }
             
             cell.deleteIcon.isHidden = false
             
             
             cell.deleteIcon.addTap {
-                // self.sessionCount -= 1
                 self.toRemoveSession(at: indexPath.row)
                 tableView.reloadData()
-                // self.didLayoutSubviews(baseVC: self.menuVC)
             }
           
             return cell
@@ -839,21 +973,26 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .workType:
             let cell = tableView.dequeueReusableCell(withIdentifier:"WorkTypeCell" ) as! WorkTypeCell
             let item = sessionDetailsArr.sessionDetails[selectedSession].workType?[indexPath.row]
-            // let item = self.workTypeArr?[indexPath.row]
             cell.workTypeLbl.text = item?.name ?? ""
+            let cacheIndex =  sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
+            if cacheIndex == nil {
+                self.selectedWorkTypeName = "Select"
+                self.selectTitleLbl.text = selectedWorkTypeName
+            } else {
+                self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
+                self.selectTitleLbl.text = selectedWorkTypeName
+            }
+       
             if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
                 cell.workTypeLbl.textColor = .green
             }
             else {
                 cell.workTypeLbl.textColor = .black
-                
-                //cell.didSelected = cell.didSelected == true ? false : true
             }
+        
             cell.addTap { [self] in
                 if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
                     sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
-                    self.selectTitleLbl.text = "Select"
-                    // item.isSelected = false
                 } else {
                     sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
                     if item?.terrslFlg == "Y" {
@@ -861,9 +1000,6 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     } else {
                         sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
                     }
-                    self.selectedWorkTypeName = item?.name ?? ""
-                    self.selectTitleLbl.text = item?.name ?? ""
-                    //   item.isSelected = true
                 }
                 
                 tableView.reloadData()
@@ -876,10 +1012,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
         case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist:
             
-    
+            // MARK: General note
+            /**
+             .headQuater, .jointCall, .listedDoctor, .chemist types follows same type of cell reloads and actions as .cluster
+             - note : do read documentstions of .cluster tyoe below and make changes to types appropriately
+             */
+            // MARK: General note ends
                         
                         let cell = tableView.dequeueReusableCell(withIdentifier:MenuTCell.identifier ) as! MenuTCell
-                        
                         var item : AnyObject?
                         switch self.cellType {
                         case .cluster:
@@ -887,6 +1027,16 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                 let _ = sessionDetailsArr.sessionDetails[selectedSession].cluster
                                 cell.lblName?.text = item?.name ?? ""
                                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            
+                            // MARK: - cells load action
+                            /**
+                            here  sessionDetailsArr.sessionDetails[selectedSession].cluster is an array which has cluster,
+                             sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID id dictionary which has selected cluster code and appropriate boolean values captured from cell tap action.
+                             
+                             - note : iterating through cluster Array and selectedClusterID dictionary if code in selectedClusterID dictionary is equal to code in cluster array
+                             - note : And furher if value for code in  selectedClusterID dictionary is true cell is modified accordingly
+                             */
+                            
                                 sessionDetailsArr.sessionDetails[selectedSession].cluster?.forEach({ cluster in
                                     //  dump(cluster.code)
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach { id, isSelected in
@@ -902,21 +1052,24 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                                         dump("isSelected --> \(isSelected)")
                                                         print("Selected index --> \(indexPath.row)")
                                                         cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                                    } else {
-                                                        //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                                                     }
                                                 })
-                                                
-                                                
                                             } else {
                                                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                                             }
                                         } else {
-                                            // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                                         }
                                     }
                                 })
                                 
+                            
+                            // MARK: - set count and selected label
+                            /**
+                            here  sessionDetailsArr.sessionDetails[selectedSession].cluster is an array which has cluster,
+                             sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID id dictionary which has selected cluster code and appropriate boolean values captured from cell tap action.
+                             - note : iterating through selectedClusterID dictionary if (code) value in selectedClusterID dictionary is is true count value is increamented
+                             */
+                            
                                 var count = 0
                                 sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach({ (code, isSelected) in
                                     if isSelected {
@@ -933,45 +1086,62 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     self.countView.isHidden = true
                                     
                                 }
-                                
+                            
+                            // MARK: - set count and selected ends
+                            
+                            
+                            // MARK: - cells load action ends
                                 
                                 cell.addTap { [self] in
                                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID
                                     
-                                    
+                                    // MARK: - Append contents to selectedClusterID Dictionary
+                                    /**
+                                     selectedClusterID dictionary holds code key and Boolean value
+                                     - note : on tap action on cell if key code doent exists we are making value to true else value for key is removed
+                                     - note : if value is false selectAllIV is set to checkBoxEmpty image since key does not holds all code values as true.
+                                     */
                                     if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
                                         
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true ? false : true
                                         
                                         if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == false {
                                             sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: item?.code ?? "")
+                                            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                         }
                                         
                                     } else {
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
                                     }
                                     
+                                    // MARK: - Append contents to selectedClusterID Dictionary ends
                                     
+                                    
+                                    // MARK: - Append contents to selectedClusterIndices Array
+                                    /**
+                                     selectedClusterIndices is a variable which holds all the selected cluster type indices
+                                     - note : selectedClusterID dictionary holds code key and Boolean value if key has true value we are appending elements to selectedClusterIndices array
+                                     - note : toSetSelectAllImage function is called here, to set select all
+                                     */
                                     
                                     if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
                                         _ = item?.code ?? ""
-                                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                                        //  self.selectedIndices.append(index ?? 0)
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(indexPath.row)
+                                        
+                                        
+                                        toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.count)
                                     } else {
                                         let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != indexPath.row }
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
+                                        toSetSelectAllImage(selectedIndexCount: newArr.count)
                                     }
                                     
+                                    //MARK: - Append contents to selectedClusterIndices Array ends
                                     
                                     tableView.reloadData()
                                     
                                 }
                               
-                            
-
-                            
-                            
                         case .headQuater:
                             item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
                             cell.lblName?.text = item?.name ?? ""
@@ -1033,6 +1203,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     
                                     if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == false {
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: item?.id ?? "")
+                                        self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                     }
                                     
                                 } else {
@@ -1046,9 +1217,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.append(indexPath.row)
+                                    toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.count)
                                 } else {
                                     let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.filter { $0 != indexPath.row }
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices = newArr
+                                    toSetSelectAllImage(selectedIndexCount: newArr.count)
                                 }
                                 
                                 
@@ -1114,6 +1287,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     
                                     if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == false {
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: item?.code ?? "")
+                                        self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                     }
                                     
                                 } else {
@@ -1127,9 +1301,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.append(indexPath.row)
+                                    toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.count)
                                 } else {
                                     let newArr = sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.filter { $0 != indexPath.row }
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices = newArr
+                                    toSetSelectAllImage(selectedIndexCount: newArr.count)
                                 }
                                 
                                 
@@ -1197,6 +1373,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     
                                     if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == false {
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: item?.code ?? "")
+                                        self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                     }
                                     
                                 } else {
@@ -1210,9 +1387,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(indexPath.row)
+                                    toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.count)
                                 } else {
                                     let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.filter { $0 != indexPath.row }
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices = newArr
+                                    toSetSelectAllImage(selectedIndexCount: newArr.count)
                                 }
                                 
                                 
@@ -1295,6 +1474,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     
                                     if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == false {
                                         sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: item?.code ?? "")
+                                        self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                     }
                                     
                                 } else {
@@ -1308,9 +1488,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     //  let index = clusterItem?.firstIndex(where: {$0.code == code})
                                     //  self.selectedIndices.append(index ?? 0)
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(indexPath.row)
+                                    toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.count)
                                 } else {
                                     let newArr = sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.filter { $0 != indexPath.row }
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices = newArr
+                                    toSetSelectAllImage(selectedIndexCount: newArr.count)
                                 }
                                 
                                 
@@ -1395,12 +1577,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             //tableView.height / 1.1
         case .workType:
-            return tableView.height / 8
+            return 50
         case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist:
             if indexPath.section == 0 {
-                return tableView.height / 8
+                return 50
             } else {
-                return tableView.height / 8
+                return 50
             }
            
 //        case .FieldWork:
