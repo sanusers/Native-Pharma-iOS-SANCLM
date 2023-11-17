@@ -526,7 +526,7 @@
                                                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c1P-go-xGM">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="308.5" height="42"/>
                                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                                        <textInputTraits key="textInputTraits"/>
+                                                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                                         <connections>
                                                                                             <action selector="userBegintoSearch:" destination="8A6-wE-JrT" eventType="editingDidEnd" id="N5A-SY-gE9"/>
                                                                                         </connections>
@@ -723,6 +723,25 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="glh-Hp-fNe">
                                                         <rect key="frame" x="4" y="200" width="405" height="428.5"/>
                                                         <subviews>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nJ6-6D-HWr">
+                                                                <rect key="frame" x="10.5" y="10" width="384.5" height="50"/>
+                                                                <subviews>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No results found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fZa-mU-zP6">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="384.5" height="50"/>
+                                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                    </label>
+                                                                </subviews>
+                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="50" id="avS-i7-7BR"/>
+                                                                    <constraint firstItem="fZa-mU-zP6" firstAttribute="leading" secondItem="nJ6-6D-HWr" secondAttribute="leading" id="dKz-Pm-Oyw"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="fZa-mU-zP6" secondAttribute="trailing" id="ga4-Sz-jxl"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="fZa-mU-zP6" secondAttribute="bottom" id="hNw-dx-5yJ"/>
+                                                                    <constraint firstItem="fZa-mU-zP6" firstAttribute="top" secondItem="nJ6-6D-HWr" secondAttribute="top" id="z9B-79-Jbq"/>
+                                                                </constraints>
+                                                            </view>
                                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="50" sectionHeaderHeight="108" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BrM-Lj-ttu">
                                                                 <rect key="frame" x="0.0" y="0.0" width="405" height="428.5"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -949,8 +968,11 @@
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <constraints>
                                                             <constraint firstItem="BrM-Lj-ttu" firstAttribute="leading" secondItem="glh-Hp-fNe" secondAttribute="leading" id="CiG-01-ov7"/>
+                                                            <constraint firstItem="nJ6-6D-HWr" firstAttribute="top" secondItem="glh-Hp-fNe" secondAttribute="top" constant="10" id="GjH-9O-6AS"/>
                                                             <constraint firstAttribute="trailing" secondItem="BrM-Lj-ttu" secondAttribute="trailing" id="LWe-yg-ERK"/>
                                                             <constraint firstItem="BrM-Lj-ttu" firstAttribute="top" secondItem="glh-Hp-fNe" secondAttribute="top" id="PaC-ES-skc"/>
+                                                            <constraint firstItem="nJ6-6D-HWr" firstAttribute="centerX" secondItem="glh-Hp-fNe" secondAttribute="centerX" id="SI9-96-DVV"/>
+                                                            <constraint firstItem="nJ6-6D-HWr" firstAttribute="width" secondItem="glh-Hp-fNe" secondAttribute="width" multiplier="0.95" id="W6X-fb-opO"/>
                                                             <constraint firstAttribute="bottom" secondItem="BrM-Lj-ttu" secondAttribute="bottom" id="rIQ-v4-XTt"/>
                                                         </constraints>
                                                     </view>
@@ -1018,6 +1040,7 @@
                             <outlet property="countLbl" destination="NlZ-qM-YNr" id="x4U-po-Ln1"/>
                             <outlet property="countView" destination="b6j-fq-Ssf" id="8ur-dy-kFw"/>
                             <outlet property="menuTable" destination="BrM-Lj-ttu" id="pb6-3C-WRL"/>
+                            <outlet property="noresultsView" destination="nJ6-6D-HWr" id="KBq-0u-bVC"/>
                             <outlet property="saveView" destination="NMU-1I-C3G" id="log-Zw-kaC"/>
                             <outlet property="searchHolderHeight" destination="Erq-CJ-RyC" id="qba-Xz-7Tq"/>
                             <outlet property="searchHolderView" destination="l1n-9P-9cf" id="Anh-mF-ICo"/>

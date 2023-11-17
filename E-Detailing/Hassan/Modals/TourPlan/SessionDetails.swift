@@ -223,6 +223,7 @@ class SessionDetail {
     var searchedWorkTypeIndex: Int? = nil
     var isForFieldWork: Bool = true
    var selectedClusterID: [String : Bool]
+  //  var searchedClusterID: [String : Bool]
     var selectedHeadQuaterID: [String : Bool]
     var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
@@ -234,6 +235,7 @@ class SessionDetail {
    var chemist: [Chemist]?
     var stackList : [Stockist]?
     var selectedClusterIndices : [Int]
+    var searchedClusterIndices : [Int]
     var selectedHeadQuatersIndices : [Int]
     var selectedJointWorkIndices : [Int]
     var selectedDoctorsIndices : [Int]
@@ -249,12 +251,14 @@ class SessionDetail {
         self.chemist = [Chemist]()
         
         self.selectedClusterID = [String : Bool]()
+     //   self.searchedClusterID = [String : Bool]()
         self.selectedHeadQuaterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
         
         self.selectedClusterIndices = [Int]()
+        self.searchedClusterIndices = [Int]()
         self.selectedHeadQuatersIndices = [Int]()
         self.selectedJointWorkIndices = [Int]()
         self.selectedDoctorsIndices = [Int]()
