@@ -67,6 +67,7 @@ class TourPlanView: BaseView {
     
     //MARK: if inactive: #282A3C (alpha 0.1)
     
+    @IBOutlet var titleHolder: UIView!
     
     /// SessionType outlets
     @IBOutlet var sessionTypeButtonsHolderView: UIView!
@@ -83,7 +84,7 @@ class TourPlanView: BaseView {
     //MARK: - Properties
     
     var tourplanVC : TourPlanVC!
-    
+    let appGraycolor = UIColor(hex: "#EEEEEE")
     
     //MARK: - View Lifecyle
     
@@ -127,20 +128,26 @@ class TourPlanView: BaseView {
     }
     
     private func updateCalender () {
-        
-        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
-        
-        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
-        
-        self.tourPlanCalander.appearance.todayColor = UIColor.clear
-        self.tourPlanCalander.appearance.weekdayTextColor = color
-        self.tourPlanCalander.appearance.headerTitleColor = headerColor
+        tourPlanCalander.calendarHeaderView.isHidden = true
+        tourPlanCalander.headerHeight = 6.0 // this makes some extra spacing, but you can try 0 or 1
+        //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
+        tourPlanCalander.appearance.borderDefaultColor = appGraycolor
+        tourPlanCalander.appearance.borderRadius = 0.5
+        tourPlanCalander.placeholderType = .none
+        //tourPlanCalander.placeholderType = FSCalendarPlaceholderTypeNone;
+        tourPlanCalander.calendarWeekdayView.backgroundColor = appGraycolor
+        self.tourPlanCalander.appearance.todayColor = appGraycolor
+        self.tourPlanCalander.appearance.weekdayTextColor = appGraycolor
+      
         self.tourPlanCalander.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 18)
         self.tourPlanCalander.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 16)
         self.tourPlanCalander.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 16)
+        
         self.tourPlanCalander.appearance.borderRadius = 0
-        self.tourPlanCalander.scrollDirection = .vertical
-        self.tourPlanCalander.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
+        self.tourPlanCalander.scrollDirection = .horizontal
+      //  self.tourPlanCalander.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
+        self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
+        
         tourPlanCalander.delegate = self
         tourPlanCalander.dataSource = self
         tourPlanCalander.reloadData()
@@ -198,6 +205,8 @@ class TourPlanView: BaseView {
     }
     
     func setupUI() {
+        titleHolder.elevate(2)
+        titleHolder.layer.cornerRadius = 5
         worksPlanTable.separatorStyle = .none
         cellRegistration()
         updateCalender()
@@ -212,6 +221,13 @@ class TourPlanView: BaseView {
         
         worksPlanTable.elevate(2)
         worksPlanTable.layer.cornerRadius = 10
+    }
+    
+    
+    func toTrimDate(date : Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd"
+        return dateFormatter.string(from: date)
     }
 }
 
@@ -231,23 +247,36 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         
     }
     
-    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
-        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.65))
-        return color
-    }
+//    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
+//        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.65))
+//        return color
+//    }
     
     
     func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
         let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
-        let cell = calendar.dequeueReusableCell(withIdentifier: "DateCell", for: date, at: position)
-      //  let cell : FSCalendarCVC = calendar.dequeueReusableCell(withIdentifier: "FSCalendarCVC", for: date, at: position) as! FSCalendarCVC
-        cell.layer.borderColor = borderColor.cgColor
-        cell.layer.borderWidth = 1
+        let cell = calendar.dequeueReusableCell(withIdentifier: "CustomCalendarCell", for: date, at: position) as! CustomCalendarCell
+        
+        
+        cell.customLabel.text = toTrimDate(date: date)
+        cell.customLabel.textColor = UIColor.gray
+        cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+       
+       // cell.addSubview(dateLbl)
+        
+        cell.titleLabel.isHidden = true
+        cell.shapeLayer.isHidden = true
+       // cell.layer.borderColor = borderColor.cgColor
+      //  cell.layer.borderWidth = 0.5
         cell.layer.masksToBounds = true
-
         cell.layer.masksToBounds = true
         return cell
     }
+    
+    
+
+    
+
     
 }
 
@@ -258,4 +287,40 @@ extension TourPlanView: MenuResponseProtocol {
     }
     
 
+}
+class CustomCalendarCell: FSCalendarCell {
+
+    // Your custom label
+    var customLabel: UILabel!
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init!(coder aDecoder: NSCoder!) {
+        super.init(coder: aDecoder)
+        setupViews()
+    }
+
+    private func setupViews() {
+        // Initialize and configure your custom label
+        customLabel = UILabel()
+        customLabel.textAlignment = .right
+        addSubview(customLabel)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        // Adjust the position of the custom label
+        customLabel.frame = CGRect(x: self.width - self.height / 3 - 10, y: 10, width: self.height / 3, height: self.height / 3)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        // Reset the state of the custom cell
+        customLabel.text = nil
+    }
 }
