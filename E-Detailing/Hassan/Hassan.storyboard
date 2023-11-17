@@ -527,9 +527,6 @@
                                                                                         <rect key="frame" x="0.0" y="0.0" width="308.5" height="42"/>
                                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
-                                                                                        <connections>
-                                                                                            <action selector="userBegintoSearch:" destination="8A6-wE-JrT" eventType="editingDidEnd" id="N5A-SY-gE9"/>
-                                                                                        </connections>
                                                                                     </textField>
                                                                                 </subviews>
                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>

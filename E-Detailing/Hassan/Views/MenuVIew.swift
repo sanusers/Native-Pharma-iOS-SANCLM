@@ -215,39 +215,7 @@ class MenuView : BaseView{
         self.sessionDetailsArr.sessionDetails.remove(at: index)
     }
     
-    @IBAction func userBegintoSearch(_ sender: UITextField) {
-        
-        
-        
-        switch self.cellType {
-            
-        case .workType:
-            // Filter the array to get people with the name "Bob"
-            let filteredtype = workTypeArr?.filter { $0.name?.localizedLowercase == sender.text?.localizedLowercase }
 
-            if let types = filteredtype {
-                // Access the person with the name "Bob"
-                print("Found : \(types.count) elements")
-            } else {
-                print("No person named Bob found.")
-            }
-        case .cluster:
-            break
-        case .headQuater:
-            break
-        case .jointCall:
-            break
-        case .listedDoctor:
-            break
-        case .chemist:
-            break
-
-        default:
-            break
-        }
-    }
-    
-    
     @objc func hideMenu() {
         self.hideMenuAndDismiss()
     }
@@ -296,7 +264,7 @@ class MenuView : BaseView{
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
             self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
-         //   self.menuTable.reloadData()
+      
             
         case .workType:
             self.cellType = .workType
@@ -316,7 +284,7 @@ class MenuView : BaseView{
             typesTitle.text = "Work Type"
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
-         //   self.menuTable.reloadData()
+        
         case .cluster:
             self.cellType = .cluster
             addSessionView.isHidden = true
@@ -335,7 +303,7 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = self.clusterArr
-         //   self.menuTable.reloadData()
+        
         case .headQuater:
             self.cellType = .headQuater
             addSessionView.isHidden = true
@@ -354,7 +322,7 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
-         //   self.menuTable.reloadData()
+       
         case .jointCall:
             self.cellType = .jointCall
             addSessionView.isHidden = true
@@ -373,7 +341,7 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
-         //   self.menuTable.reloadData()
+     
         case .listedDoctor:
             self.cellType = .listedDoctor
             addSessionView.isHidden = true
@@ -392,7 +360,7 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = selectAllHeight
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
-          //  self.menuTable.reloadData()
+        
         case .chemist:
             self.cellType = .chemist
             addSessionView.isHidden = true
@@ -412,8 +380,7 @@ class MenuView : BaseView{
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
         }
-        //self.isSearched = false
-      //  self.endEditing(true)
+   
         self.menuTable.isHidden = false
         self.searchTF.text = ""
         self.searchTF.placeholder = "Search"
@@ -447,6 +414,7 @@ class MenuView : BaseView{
         
         saveView.addTap { [self] in
             self.endEditing(true)
+            self.isSearched = false
             switch self.cellType {
                 
             case .session:
@@ -479,6 +447,7 @@ class MenuView : BaseView{
         
         selectView.addTap { [self] in
             self.endEditing(true)
+            self.isSearched = false
             switch self.cellType {
                 
             case .session:
@@ -528,19 +497,19 @@ class MenuView : BaseView{
                 break
             case .cluster:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeAll()
-                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.removeAll()
+              
             case .headQuater:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeAll()
-                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
+               
             case .jointCall:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeAll()
-                sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.removeAll()
+             
             case .listedDoctor:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeAll()
-                sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
+               
             case .chemist:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeAll()
-                sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
+             
             }
             self.menuTable.reloadData()
         }
@@ -548,6 +517,7 @@ class MenuView : BaseView{
         
         selectAllView.addTap { [self] in
             self.endEditing(true)
+            
             self.selectAllIV.image =  self.selectAllIV.image ==  UIImage(named: "checkBoxEmpty") ? UIImage(named: "checkBoxSelected") : UIImage(named: "checkBoxEmpty")
             switch self.cellType {
               
@@ -557,17 +527,21 @@ class MenuView : BaseView{
                 break
             case .cluster:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.removeAll()
+                 
                     self.sessionDetailsArr.sessionDetails[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = true
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(index)
+                     
+                        
+              
                     })
                 } else {
                     self.sessionDetailsArr.sessionDetails[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
-                       // sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = false
+                   
                         sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: cluster.code ?? "")
                     })
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.removeAll()
+                  
+                    
+          
                 }
       
                 
@@ -578,56 +552,56 @@ class MenuView : BaseView{
                     
                 }
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
+                 
                     self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[cluster.id ?? ""] = true
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.append(index)
+               
                     })
                 } else {
                     self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: cluster.id ?? "")
                     })
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.removeAll()
+                
                 }
                 break
             case .jointCall:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.removeAll()
+                  
                     self.sessionDetailsArr.sessionDetails[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[cluster.code ?? ""] = true
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.append(index)
+                    
                     })
                 } else {
                     self.sessionDetailsArr.sessionDetails[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: cluster.code ?? "")
                     })
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.removeAll()
+                   
                 }
             case .listedDoctor:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
+                   // sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
                     self.sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[cluster.code ?? ""] = true
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(index)
+                      //  sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(index)
                     })
                 } else {
                     self.sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: cluster.code ?? "")
                     })
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
+                
                 }
             case .chemist:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
+                   // sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
                     self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[cluster.code ?? ""] = true
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(index)
+                      //  sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(index)
                     })
                 } else {
                     self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: cluster.code ?? "")
                     })
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
+                  //  sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
                 }
             }
             self.menuTable.reloadData()
@@ -646,11 +620,22 @@ class MenuView : BaseView{
         case .workType:
             break
         case .cluster:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].cluster?.count ?? 0 {
-                isToSelectAll = true
+            
+            if isSearched {
+                if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].cluster?.count ?? 0 {
+                    isToSelectAll = true
+                } else {
+                    isToSelectAll = false
+                }
             } else {
-                isToSelectAll = false
+                if selectedIndexCount == self.clusterArr?.count ?? 0 {
+                    isToSelectAll = true
+                } else {
+                    isToSelectAll = false
+                }
             }
+            
+ 
         case .headQuater:
             if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].headQuates?.count ?? 0 {
                 isToSelectAll = true
@@ -860,28 +845,28 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var clusterNameArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
-                sessionDetailsArr.sessionDetails[indexPath.row].cluster?.forEach({ cluster in
+                self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.forEach { key, value in
                         if key == cluster.code {
                             clusterNameArr.append(cluster.name ?? "")
                         }
                     }
                 })
-                cell.lblCluster.text = clusterNameArr.joined(separator:",")
+                cell.lblCluster.text = clusterNameArr.joined(separator:", ")
             } else {
                 
                 cell.lblCluster.text = "Select"
             }
             var headQuatersNameArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
-                sessionDetailsArr.sessionDetails[indexPath.row].headQuates?.forEach({ headQuaters in
+                self.headQuatersArr?.forEach({ headQuaters in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
                         if key == headQuaters.id {
                             headQuatersNameArr.append(headQuaters.name ?? "")
                         }
                     }
                 })
-                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:",")
+                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
             } else {
                 
                 cell.lblHeadquaters.text = "Select"
@@ -891,14 +876,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var jointWorkNameArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.isEmpty {
-                sessionDetailsArr.sessionDetails[indexPath.row].jointWork?.forEach({ work in
+                self.jointWorkArr?.forEach({ work in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.forEach { key, value in
                         if key == work.code {
                             jointWorkNameArr.append(work.name ?? "")
                         }
                     }
                 })
-                cell.lblJointCall.text = jointWorkNameArr.joined(separator:",")
+                cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
             } else {
                 
                 cell.lblJointCall.text = "Select"
@@ -907,28 +892,28 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var listedDoctorsNameArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.isEmpty {
-                sessionDetailsArr.sessionDetails[indexPath.row].listedDoctors?.forEach({ doctors in
+                self.listedDocArr?.forEach({ doctors in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
                         if key == doctors.code {
                             listedDoctorsNameArr.append(doctors.name ?? "")
                         }
                     }
                 })
-                cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:",")
+                cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
             } else {
                 
                 cell.lblListedDoctor.text = "Select"
             }
             var chemistNameArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
-                sessionDetailsArr.sessionDetails[indexPath.row].chemist?.forEach({ chemist in
+                self.chemistArr?.forEach({ chemist in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.forEach { key, value in
                         if key == chemist.code {
                             chemistNameArr.append(chemist.name ?? "")
                         }
                     }
                 })
-                cell.lblChemist.text = chemistNameArr.joined(separator:",")
+                cell.lblChemist.text = chemistNameArr.joined(separator:", ")
             } else {
                 
                 cell.lblChemist.text = "Select"
@@ -940,7 +925,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.clusterView.addTap { [self] in
                
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterIndices.count)
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.count)
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
                     isToproceed = true
                 }
@@ -967,7 +952,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             
             cell.headQuatersView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuatersIndices.count)
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.count)
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
                     isToproceed = true
                 }
@@ -983,7 +968,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             cell.jointCallView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedJointWorkIndices.count)
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.count)
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
                     isToproceed = true
                 }
@@ -999,7 +984,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             cell.listedDoctorView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedDoctorsIndices.count)
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.count)
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
                     isToproceed = true
                 }
@@ -1016,7 +1001,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             cell.chemistView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedChemistIndices.count)
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.count)
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
                     isToproceed = true
                 }
@@ -1158,50 +1143,25 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                  - note : iterating through cluster Array and selectedClusterID dictionary if code in selectedClusterID dictionary is equal to code in cluster array
                  - note : And furher if value for code in  selectedClusterID dictionary is true cell is modified accordingly
                  */
-                
-                sessionDetailsArr.sessionDetails[selectedSession].cluster?.forEach({ cluster in
-                    //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach { id, isSelected in
-                        if id == cluster.code {
-                            
-                            if isSelected  {
-                                
-                                if isSearched  {
-                                    sessionDetailsArr.sessionDetails[selectedSession].searchedClusterIndices.forEach({ index in
-                                        if index == indexPath.row {
-                                            dump("cluster name --> \(cluster.name!)")
-                                            dump("cluster code --> \(cluster.code!)")
-                                            dump("dictionary code --> \(id)")
-                                            dump("isSelected --> \(isSelected)")
-                                            print("Selected index --> \(indexPath.row)")
-                                            cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                        }
-                                    })
+
+                    self.clusterArr?.forEach({ cluster in
+                        //  dump(cluster.code)
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach { id, isSelected in
+                            if id == cluster.code {
+
+                                if isSelected  {
+                                    if cluster.name ==  cell.lblName?.text {
+                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                    }
+                                    
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.forEach({ index in
-                                        if index == indexPath.row {
-                                            dump("cluster name --> \(cluster.name!)")
-                                            dump("cluster code --> \(cluster.code!)")
-                                            dump("dictionary code --> \(id)")
-                                            dump("isSelected --> \(isSelected)")
-                                            print("Selected index --> \(indexPath.row)")
-                                            cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                        }
-                                    })
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                                 }
-                                
-                                
-                                
-                                
                             } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                             }
-                        } else {
                         }
-                    }
-                })
-                
-                
+                    })
+
                 // MARK: - set count and selected label
                 /**
                  here  sessionDetailsArr.sessionDetails[selectedSession].cluster is an array which has cluster,
@@ -1232,6 +1192,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 // MARK: - cells load action ends
                 
                 cell.addTap { [self] in
+                    self.endEditing(true)
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID
                     
                     // MARK: - Append contents to selectedClusterID Dictionary
@@ -1257,6 +1218,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             }
                             
                         })
+                      
                     } else {
                         if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
                             
@@ -1271,66 +1233,6 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
                         }
                     }
-                    
-                    
-                    
-                    // MARK: - Append contents to selectedClusterID Dictionary ends
-                    
-                    
-                    // MARK: - Append contents to selectedClusterIndices Array
-                    /**
-                     selectedClusterIndices is a variable which holds all the selected cluster type indices
-                     - note : selectedClusterID dictionary holds code key and Boolean value if key has true value we are appending elements to selectedClusterIndices array
-                     - note : toSetSelectAllImage function is called here, to set select all
-                     */
-                    if self.isSearched {
-                        sessionDetailsArr.sessionDetails[selectedSession].searchedClusterIndices.removeAll()
-                        self.clusterArr?.enumerated().forEach({ index, cluster in
-                            
-                            if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == true {
-                                _ = item?.code ?? ""
-                                sessionDetailsArr.sessionDetails[selectedSession].searchedClusterIndices.append(index)
-                                
-                                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].searchedClusterIndices.count)
-                            } else {
-                                let newArr =  sessionDetailsArr.sessionDetails[selectedSession].searchedClusterIndices.filter { $0 != index }
-                                sessionDetailsArr.sessionDetails[selectedSession].searchedClusterIndices = newArr
-                                toSetSelectAllImage(selectedIndexCount: newArr.count)
-                            }
-                            
-                        })
-                        if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
-                            _ = item?.code ?? ""
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(indexPath.row)
-                            
-                            
-                            toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.count)
-                        } else {
-                            let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != indexPath.row }
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
-                            toSetSelectAllImage(selectedIndexCount: newArr.count)
-                        }
-                        
-                    } else {
-                        if  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true {
-                            _ = item?.code ?? ""
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.append(indexPath.row)
-                            
-                            
-                            toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.count)
-                        } else {
-                            let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices.filter { $0 != indexPath.row }
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterIndices = newArr
-                            toSetSelectAllImage(selectedIndexCount: newArr.count)
-                        }
-                    }
-                    
-                    
-                    
-                    
-                    
-                    //MARK: - Append contents to selectedClusterIndices Array ends
-                    
                     tableView.reloadData()
                     
                 }
@@ -1339,35 +1241,30 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].headQuates?.forEach({ quaters in
-                    //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach { id, isSelected in
-                        if id == quaters.id {
-                            
-                            if isSelected  {
+
+                    sessionDetailsArr.sessionDetails[selectedSession].headQuates?.forEach({ quaters in
+                        //  dump(cluster.code)
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach { id, isSelected in
+                            if id == quaters.id {
                                 
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(quaters.name!)")
-                                        dump("cluster code --> \(quaters.id!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
+                                if isSelected  {
+                                    
+             
+                                    if quaters.name ==  cell.lblName?.text {
                                         cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                        //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                                     }
-                                })
-                                
-                                
+                                    
+                                } else {
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                                }
                             } else {
-                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                             
                             }
-                        } else {
-                            // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                         }
-                    }
-                })
+                    })
+                
+                
+
                 
                 var count = 0
                 sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach({ (id, isSelected) in
@@ -1389,34 +1286,37 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.addTap { [self] in
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID
                     
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] {
-                        
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: item?.id ?? "")
-                            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                    if self.isSearched {
+                        self.headQuatersArr?.enumerated().forEach({ index, quarters in
+                            if quarters.id  ==  item?.code {
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] == true ? false : true
+                                }
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: quarters.id ?? "")
+                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                }
+                                
+                            }
+                            
+                        })
+                    } else {
+                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] {
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true ? false : true
+                            
+                            if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == false {
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: item?.id ?? "")
+                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                            }
+                            
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] = true
                         }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] = true
                     }
-                    
-                    
-                    
-                    if  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true {
-                        _ = item?.id ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.append(indexPath.row)
-                        toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.count)
-                    } else {
-                        let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices.filter { $0 != indexPath.row }
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuatersIndices = newArr
-                        toSetSelectAllImage(selectedIndexCount: newArr.count)
-                    }
-                    
+  
                     
                     tableView.reloadData()
                 }
@@ -1431,25 +1331,15 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                             if isSelected  {
                                 
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(work.name!)")
-                                        dump("cluster code --> \(work.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                        //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    }
-                                })
-                                
+                                if work.name ==  cell.lblName?.text {
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                }
                                 
                             } else {
                                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                             }
                         } else {
-                            // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+
                         }
                     }
                 })
@@ -1473,36 +1363,36 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.addTap { [self] in
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID
                     
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] {
-                        
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: item?.code ?? "")
-                            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                    if isSearched {
+                        self.jointWorkArr?.enumerated().forEach({ index, work in
+                            if work.code  ==  item?.code {
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] == true ? false : true
+                                }
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: work.code ?? "")
+                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                }
+                                
+                            }
+                            
+                        })
+                    } else {
+                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] {
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true ? false : true
+                            
+                            if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: item?.code ?? "")
+                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                            }
+                            
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] = true
                         }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] = true
                     }
-                    
-                    
-                    
-                    if  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true {
-                        _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.append(indexPath.row)
-                        toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.count)
-                    } else {
-                        let newArr = sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices.filter { $0 != indexPath.row }
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedJointWorkIndices = newArr
-                        toSetSelectAllImage(selectedIndexCount: newArr.count)
-                    }
-                    
-                    
-                    
                     tableView.reloadData()
                 }
                 
@@ -1517,25 +1407,15 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                             if isSelected  {
                                 
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(doctors.name!)")
-                                        dump("cluster code --> \(doctors.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                        //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    }
-                                })
+                                if doctors.name ==  cell.lblName?.text {
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                }
                                 
                                 
                             } else {
                                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                             }
                         } else {
-                            // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                         }
                     }
                 })
@@ -1559,51 +1439,37 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.addTap { [self] in
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID
                     
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] {
-                        
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: item?.code ?? "")
-                            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                    if self.isSearched {
+                        self.listedDocArr?.enumerated().forEach({ index, doctors in
+                            if doctors.code  ==  item?.code {
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] == true ? false : true
+                                }
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: doctors.code ?? "")
+                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                }
+                                
+                            }
+                            
+                        })
+                    } else {
+                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] {
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true ? false : true
+                            
+                            if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: item?.code ?? "")
+                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                            }
+                            
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] = true
                         }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] = true
                     }
-                    
-                    
-                    
-                    if  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true {
-                        _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(indexPath.row)
-                        toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.count)
-                    } else {
-                        let newArr =  sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.filter { $0 != indexPath.row }
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices = newArr
-                        toSetSelectAllImage(selectedIndexCount: newArr.count)
-                    }
-                    
-                    
-                    var count = 0
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach({ (code, isSelected) in
-                        if isSelected {
-                            count += 1
-                        }
-                    })
-                    
-                    if count > 0 {
-                        self.selectTitleLbl.text = "Selected"
-                        self.countView.isHidden = false
-                        self.countLbl.text = "\(count)"
-                    } else {
-                        self.selectTitleLbl.text = "Select"
-                        self.countView.isHidden = true
-                        
-                    }
+
                     tableView.reloadData()
                 }
             case .chemist:
@@ -1611,31 +1477,22 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                 sessionDetailsArr.sessionDetails[selectedSession].chemist?.forEach({ chemist in
-                    //  dump(cluster.code)
+                  
                     sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach { id, isSelected in
                         if id == chemist.code {
                             
                             if isSelected  {
                                 
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.forEach({ index in
-                                    if index == indexPath.row {
-                                        dump("cluster name --> \(chemist.name!)")
-                                        dump("cluster code --> \(chemist.code!)")
-                                        dump("dictionary code --> \(id)")
-                                        dump("isSelected --> \(isSelected)")
-                                        print("Selected index --> \(indexPath.row)")
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    } else {
-                                        //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    }
-                                })
+                                if chemist.name ==  cell.lblName?.text {
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                }
                                 
                                 
                             } else {
                                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                             }
                         } else {
-                            // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                       
                         }
                     }
                 })
@@ -1660,35 +1517,38 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.addTap { [self] in
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID
                     
-                    
-                    if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] {
-                        
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true ? false : true
-                        
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == false {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: item?.code ?? "")
-                            self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                    if self.isSearched {
+                        self.chemistArr?.enumerated().forEach({ index, chemist in
+                            if chemist.code  ==  item?.code {
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] == true ? false : true
+                                }
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: chemist.code ?? "")
+                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                }
+                                
+                            }
+                            
+                        })
+                    } else {
+                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] {
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true ? false : true
+                            
+                            if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: item?.code ?? "")
+                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                            }
+                            
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] = true
                         }
-                        
-                    } else {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] = true
                     }
                     
-                    
-                    
-                    if  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true {
-                        _ = item?.code ?? ""
-                        //  let index = clusterItem?.firstIndex(where: {$0.code == code})
-                        //  self.selectedIndices.append(index ?? 0)
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(indexPath.row)
-                        toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.count)
-                    } else {
-                        let newArr = sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.filter { $0 != indexPath.row }
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices = newArr
-                        toSetSelectAllImage(selectedIndexCount: newArr.count)
-                    }
-                    
-                    
+
                     
                     tableView.reloadData()
                 }
@@ -1819,19 +1679,6 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
-//                if isMatched {
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = filteredWorkType
-//                    self.isSearched = true
-//                    sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = nil
-//                    self.menuTable.reloadData()
-//                } else {
-//                    print("Not matched")
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
-//                  //  self.isSearched = false
-//                    self.menuTable.reloadData()
-//                }
-
-              
                 
             case .cluster:
                 var filteredWorkType = [Territory]()
@@ -1849,7 +1696,7 @@ extension MenuView : UITextFieldDelegate {
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = false
                     self.selectAllHeightConst.constant = selectAllHeight
-                    isSearched = false
+                    isSearched = true
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
@@ -1857,14 +1704,14 @@ extension MenuView : UITextFieldDelegate {
                         self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = filteredWorkType
                         isSearched = true
                         self.noresultsView.isHidden = true
-                        self.selectAllView.isHidden = false
-                        self.selectAllHeightConst.constant = selectAllHeight
+                        self.selectAllView.isHidden = true
+                        self.selectAllHeightConst.constant = 0
                         self.menuTable.isHidden = false
                         self.menuTable.reloadData()
                     } else {
                         print("Not matched")
                         self.noresultsView.isHidden = false
-                        isSearched = false
+                        isSearched = true
                         self.selectAllView.isHidden = true
                         self.selectAllHeightConst.constant = 0
                         self.menuTable.isHidden = true
@@ -1896,8 +1743,8 @@ extension MenuView : UITextFieldDelegate {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
@@ -1932,8 +1779,8 @@ extension MenuView : UITextFieldDelegate {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
@@ -1944,14 +1791,7 @@ extension MenuView : UITextFieldDelegate {
                     self.selectAllHeightConst.constant = 0
                     self.menuTable.isHidden = true
                 }
-//                if isMatched {
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = filteredWorkType
-//                    self.menuTable.reloadData()
-//                } else {
-//                    print("Not matched")
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
-//                    self.menuTable.reloadData()
-//                }
+
             case .listedDoctor:
                 var filteredWorkType = [DoctorFencing]()
                 filteredWorkType.removeAll()
@@ -1976,8 +1816,8 @@ extension MenuView : UITextFieldDelegate {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
@@ -1989,14 +1829,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
-//                if isMatched {
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = filteredWorkType
-//                    self.menuTable.reloadData()
-//                } else {
-//                    print("Not matched")
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
-//                    self.menuTable.reloadData()
-//                }
+
             case .chemist:
                 var filteredWorkType = [Chemist]()
                 filteredWorkType.removeAll()
@@ -2007,14 +1840,7 @@ extension MenuView : UITextFieldDelegate {
                         isMatched = true
                     }
                 })
-//                if isMatched {
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = filteredWorkType
-//                    self.menuTable.reloadData()
-//                } else {
-//                    print("Not matched")
-//                    self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
-//                    self.menuTable.reloadData()
-//                }
+
                 
                 if newText.isEmpty {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
@@ -2028,8 +1854,8 @@ extension MenuView : UITextFieldDelegate {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
