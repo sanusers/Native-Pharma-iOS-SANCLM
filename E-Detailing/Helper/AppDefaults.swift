@@ -174,17 +174,7 @@
 //        return nil
 //    }
 //
-//    func toSaveEncodedData<T: Codable>(object: T, key : keys, completion: (Bool) -> ()) throws {
-//        let encoder = JSONEncoder()
-//        do {
-//            let encodedData = try encoder.encode(object)
-//            UserDefaults.standard.set(encodedData, forKey: key.rawValue)
-//            completion(true)
-//        } catch {
-//            print("Unable to Encode")
-//            completion(false)
-//        }
-//    }
+
 //
 //
 //
@@ -208,6 +198,7 @@ enum keys : String {
     case appSetUp = "App Set Up"
     case slide = "Slides"
     case syncTime = "Sync Time"
+    case tourPlan = "TourPlan"
 }
 
 class AppDefaults {
@@ -221,9 +212,8 @@ class AppDefaults {
     var imgLogo : String = ""
     var slideUrl : String  = ""
     var reportUrl : String = ""
-    
     var sfCode : String = ""
-    
+    var  sessionDetailsArr : SessionDetailsArr?
     let userdefaults = UserDefaults.standard
     
     
@@ -317,4 +307,91 @@ class AppDefaults {
         return nil
     }
     
+        func toSaveEncodedData<T: Codable>(object: T, key : keys, completion: (Bool) -> ()) throws {
+            let encoder = JSONEncoder()
+            do {
+                let encodedData = try encoder.encode(object)
+                UserDefaults.standard.set(encodedData, forKey: key.rawValue)
+                completion(true)
+            } catch {
+                print("Unable to Encode")
+                completion(false)
+            }
+        }
+    
+    func getToutplanDetails() -> TourPlanArr {
+        let tourPlanArr = TourPlanArr()
+        let tourData = UserDefaults.standard.data(forKey: keys.tourPlan.rawValue)
+        let decoder = JSONDecoder()
+        var isDecoded: Bool = false
+        do {
+            let decodedData = try decoder.decode(SessionAPIResponseModel.self, from: tourData!)
+            isDecoded = true
+            
+            //self.appSetup = decodedData
+          
+            decodedData.tpData.forEach { tourplanData in
+                var tempSessionArr  = SessionDetailsArr()
+                tourplanData.sessions.forEach { session in
+                    var tempSession = SessionDetail()
+                    //Field Work Y or N:
+                    tempSession.isForFieldWork = session.FWFlg == "N" ? false : true
+                    
+                    
+                    //Work type
+                    tempSession.workTypeCode = session.WTCode
+                    
+                    //HeadQuarters
+                    let headQuatersCodes =  session.HQCodes.components(separatedBy: ",")
+                    headQuatersCodes.forEach { code in
+                        tempSession.selectedHeadQuaterID[code] = true
+                    }
+                    
+                    //Chemist
+                    let chemistCodes =  session.chemCode.components(separatedBy: ",")
+                    headQuatersCodes.forEach { code in
+                        tempSession.selectedchemistID[code] = true
+                    }
+                    
+                    
+                    //cluster
+                    let clusterCodes =  session.clusterCode.components(separatedBy: ",")
+                    headQuatersCodes.forEach { code in
+                        tempSession.selectedClusterID[code] = true
+                    }
+                    
+                    //Doctor
+                    let doctorCode =  session.drCode.components(separatedBy: ",")
+                    headQuatersCodes.forEach { code in
+                        tempSession.selectedlistedDoctorsID[code] = true
+                    }
+                    
+                    let jwCode = session.jwCode.components(separatedBy: ",")
+                    headQuatersCodes.forEach { code in
+                        tempSession.selectedjointWorkID[code] = true
+                    }
+                    
+                    tempSessionArr.sessionDetails.append(tempSession)
+                    tempSession = SessionDetail()
+                    
+                }
+                tempSessionArr.changeStatus = tourplanData.changeStatus
+                tempSessionArr.date = tourplanData.date
+                tempSessionArr.day = tourplanData.day
+                tempSessionArr.dayNo = tourplanData.dayNo
+                tempSessionArr.entryMode = tourplanData.entryMode
+                tempSessionArr.rejectionReason = tourplanData.rejectionReason
+                tourPlanArr.arrOfPlan.append(tempSessionArr)
+                tempSessionArr  = SessionDetailsArr()
+            }
+        } catch {
+            print("Unable to decode")
+        }
+        if isDecoded {
+            //return appSetup ?? AppSetUp()
+            return tourPlanArr
+        } else {
+            return TourPlanArr()
+        }
+    }
 }

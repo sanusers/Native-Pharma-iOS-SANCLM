@@ -676,3 +676,41 @@ extension AppDelegate {
         })
     }
 }
+
+
+extension UILabel {
+    func setFont(font customFont: CustomFont) {
+      
+        self.font = customFont.instance
+    }
+}
+
+extension UIView {
+   
+        
+    
+
+    func addExternalBorder(borderWidth: CGFloat = 2.0, borderColor: UIColor = .black) -> CALayer {
+        let externalBorder = CALayer()
+        externalBorder.frame = CGRect(x: -borderWidth, y: -borderWidth, width: frame.size.width + 2 * borderWidth, height: frame.size.height + 2 * borderWidth)
+        externalBorder.borderColor = borderColor.cgColor
+        externalBorder.borderWidth = borderWidth
+        externalBorder.name = Themes.externalBorderName
+
+        layer.insertSublayer(externalBorder, at: 0)
+        layer.masksToBounds = false
+
+        return externalBorder
+    }
+
+    func removeExternalBorders() {
+        layer.sublayers?.filter() { $0.name == Themes.externalBorderName }.forEach() {
+            $0.removeFromSuperlayer()
+        }
+    }
+
+    func removeExternalBorder(externalBorder: CALayer) {
+        guard externalBorder.name == Themes.externalBorderName else { return }
+        externalBorder.removeFromSuperlayer()
+    }
+}

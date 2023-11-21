@@ -33,6 +33,7 @@ class MenuVC: BaseViewController {
     
   
     var menuDelegate : MenuResponseProtocol?
+    var selectedDate : Date?
   //  var accountViewModel : AccountViewModel?
     var dictParms = [String: Any]()
     var imageURL = ""
@@ -60,11 +61,11 @@ class MenuVC: BaseViewController {
     
     
     //MARK:- initWithStory
-    class func initWithStory(_ delegate : MenuResponseProtocol?)-> MenuVC{
+    class func initWithStory(_ delegate : MenuResponseProtocol?, _ date: Date)-> MenuVC{
         
         let view : MenuVC = UIStoryboard.Hassan.instantiateViewController()
         view.modalPresentationStyle = .overCurrentContext
-
+        view.selectedDate = date
         view.menuDelegate = delegate
 
 

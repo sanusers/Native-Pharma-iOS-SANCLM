@@ -9,7 +9,7 @@ import UIKit
 
 extension worksPlanTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 8
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -19,7 +19,7 @@ extension worksPlanTVC: UICollectionViewDelegate, UICollectionViewDataSource, UI
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.width / 5, height: 100)
+        return CGSize(width: collectionView.width / 5, height: 75)
     }
     
     
@@ -45,6 +45,9 @@ class worksPlanTVC: UITableViewCell {
         self.layer.cornerRadius = 5
         self.overallContentsHolderView.elevate(2)
         self.overallContentsHolderView.layer.cornerRadius = 5
+        dateLbl.setFont(font: .bold(size: .SUBHEADER))
+        workTitLbl.setFont(font: .medium(size: .BODY))
+        nameLbl.setFont(font: .medium(size: .BODY))
         if let layout = self.workPlansInfoCollection.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .vertical
             layout.collectionView?.isScrollEnabled = false

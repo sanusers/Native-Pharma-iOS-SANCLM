@@ -216,32 +216,90 @@ class Menuchemist: Codable {
     }
     
 }
-class SessionDetail {
 
-   var workType: [WorkType]?
-   var selectedWorkTypeIndex: Int? = nil
+
+//extension WorkType: Codable {
+//    public func encode(to encoder: Encoder) throws {
+//        <#code#>
+//    }
+//
+//
+//
+//}
+//
+//
+//extension Subordinate: Codable {
+//
+//}
+//
+//extension Territory: Codable {
+//
+//}
+//
+//
+//extension JointWork : Codable {
+//
+//}
+//
+//extension DoctorFencing : Codable {
+//
+//}
+//
+//extension chemist: Codable {
+//
+//}
+
+class SessionDetail {
+    
+    var workType: [WorkType]?
+    var selectedWorkTypeIndex: Int? = nil
     var searchedWorkTypeIndex: Int? = nil
+  
     var isForFieldWork: Bool = true
-   var selectedClusterID: [String : Bool]
-  //  var searchedClusterID: [String : Bool]
+    var workTypeCode: String? = nil
+    var selectedClusterID: [String : Bool]
+    //  var searchedClusterID: [String : Bool]
     var selectedHeadQuaterID: [String : Bool]
     var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
     var selectedchemistID: [String : Bool]
-   var headQuates: [Subordinate]?
-   var cluster: [Territory]?
-   var jointWork: [JointWork]?
-   var listedDoctors: [DoctorFencing]?
-   var chemist: [Chemist]?
-    var stackList : [Stockist]?
-//    var selectedClusterIndices : [Int]
-//    var searchedClusterIndices : [Int]
-//    var selectedHeadQuatersIndices : [Int]
-//    var selectedJointWorkIndices : [Int]
-//    var selectedDoctorsIndices : [Int]
-//    var selectedChemistIndices : [Int]
+    var headQuates: [Subordinate]?
+    var cluster: [Territory]?
+    var jointWork: [JointWork]?
+    var listedDoctors: [DoctorFencing]?
+    var chemist: [Chemist]?
 
-
+   var FWFlg : String
+   var HQCodes : String
+   var HQNames : String
+   var WTCode : String
+   var WTName : String
+   var chemCode : String
+   var chemName : String
+   var cipCode : String
+   var cipName : String
+   var clusterCode : String
+   var clusterName : String
+   var drCode : String
+   var drName : String
+   var hospCode : String
+   var hospName : String
+   var jwCode : String
+   var jwName : String
+   var remarks : String
+   var stockistCode : String
+   var stockistName : String
+   var unListedDrCode : String
+   var unListedDrName : String
+    
+    //    var selectedClusterIndices : [Int]
+    //    var searchedClusterIndices : [Int]
+    //    var selectedHeadQuatersIndices : [Int]
+    //    var selectedJointWorkIndices : [Int]
+    //    var selectedDoctorsIndices : [Int]
+    //    var selectedChemistIndices : [Int]
+    
+    
     init() {
         self.workType = [WorkType]()
         self.headQuates = [Subordinate]()
@@ -251,25 +309,70 @@ class SessionDetail {
         self.chemist = [Chemist]()
         
         self.selectedClusterID = [String : Bool]()
-     //   self.searchedClusterID = [String : Bool]()
         self.selectedHeadQuaterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
-        
-//        self.selectedClusterIndices = [Int]()
-//        self.searchedClusterIndices = [Int]()
-//        self.selectedHeadQuatersIndices = [Int]()
-//        self.selectedJointWorkIndices = [Int]()
-//        self.selectedDoctorsIndices = [Int]()
-//        self.selectedChemistIndices = [Int]()
+        self.workTypeCode = ""
+        self.FWFlg = ""
+        self.HQCodes = ""
+        self.HQNames = ""
+        self.WTCode = ""
+        self.WTName = ""
+        self.chemCode = ""
+        self.chemName = ""
+        self.cipCode = ""
+        self.cipName = ""
+        self.clusterCode = ""
+        self.clusterName = ""
+        self.drCode = ""
+        self.drName = ""
+        self.hospCode = ""
+        self.hospName = ""
+        self.jwCode = ""
+        self.jwName = ""
+        self.remarks = ""
+        self.stockistCode = ""
+        self.stockistName = ""
+        self.unListedDrCode = ""
+        self.unListedDrName = ""
     }
-    }
+}
 
 class SessionDetailsArr {
+    var changeStatus : String
+    var date : String
+    var day : String
+    var dayNo: String
+    var entryMode : String
+    var rejectionReason: String
     var sessionDetails : [SessionDetail]
 
     init() {
-        self.sessionDetails = [SessionDetail]()
+        changeStatus = String()
+        date  = String()
+        day  = String()
+        dayNo = String()
+        entryMode  = String()
+        rejectionReason = String()
+        sessionDetails = [SessionDetail]()
     }
 }
+
+
+class TourPlanArr {
+    var Div: String
+    var SFCode: String
+    var SFName: String
+    var arrOfPlan : [SessionDetailsArr]
+    
+    init() {
+        Div = ""
+        SFCode = ""
+        SFName = ""
+        arrOfPlan = [SessionDetailsArr]()
+    }
+}
+
+
+

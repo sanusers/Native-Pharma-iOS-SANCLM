@@ -22,7 +22,7 @@ class WorkPlansInfoCVC: UICollectionViewCell {
         plansIVHolder.layer.cornerRadius  =  plansIVHolder.height / 2
         countsHolder.layer.cornerRadius =  countsHolder.height / 2
       
-        
+        countsLbl.setFont(font: .medium(size: .BODY))
     }
 
 }

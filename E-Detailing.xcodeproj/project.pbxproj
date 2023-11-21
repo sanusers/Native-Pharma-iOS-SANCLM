@@ -140,6 +140,9 @@
 		38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78E0B2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift */; };
 		38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E78E0D2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib */; };
 		38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */; };
+		38E8B5D62B0B3BB100C40042 /* Fonts and Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E8B5D52B0B3BB100C40042 /* Fonts and Colors.swift */; };
+		38E8B5D82B0B642D00C40042 /* SessionAPIResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E8B5D72B0B642D00C40042 /* SessionAPIResponseModel.swift */; };
+		38E8B5DA2B0B703000C40042 /*  SessionResponseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E8B5D92B0B703000C40042 /*  SessionResponseVM.swift */; };
 		38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EA3D0F2AFDE66300DA7018 /* MenuVC.swift */; };
 		38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EA3D112AFDE66E00DA7018 /* MenuVIew.swift */; };
 		38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EA3D142AFDED4C00DA7018 /* SessionInfoTVC.swift */; };
@@ -313,6 +316,9 @@
 		38E78E0B2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleEntryTableViewCell.swift; sourceTree = "<group>"; };
 		38E78E0D2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleEntryTableViewCell.xib; sourceTree = "<group>"; };
 		38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreCallVC.swift; sourceTree = "<group>"; };
+		38E8B5D52B0B3BB100C40042 /* Fonts and Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Fonts and Colors.swift"; sourceTree = "<group>"; };
+		38E8B5D72B0B642D00C40042 /* SessionAPIResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAPIResponseModel.swift; sourceTree = "<group>"; };
+		38E8B5D92B0B703000C40042 /*  SessionResponseVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " SessionResponseVM.swift"; sourceTree = "<group>"; };
 		38EA3D0F2AFDE66300DA7018 /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		38EA3D112AFDE66E00DA7018 /* MenuVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVIew.swift; sourceTree = "<group>"; };
 		38EA3D142AFDED4C00DA7018 /* SessionInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInfoTVC.swift; sourceTree = "<group>"; };
@@ -443,6 +449,7 @@
 				38E3C36A2AFA047400623C33 /* Codable.swift */,
 				385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */,
 				3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */,
+				38E8B5D52B0B3BB100C40042 /* Fonts and Colors.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -470,6 +477,7 @@
 			isa = PBXGroup;
 			children = (
 				38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */,
+				38E8B5D92B0B703000C40042 /*  SessionResponseVM.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -581,6 +589,7 @@
 			isa = PBXGroup;
 			children = (
 				38E220712B032DC900FBF6B0 /* SessionDetails.swift */,
+				38E8B5D72B0B642D00C40042 /* SessionAPIResponseModel.swift */,
 			);
 			path = TourPlan;
 			sourceTree = "<group>";
@@ -973,6 +982,7 @@
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
 				38C90ADC2A7785F5003CC0C8 /* DCRCallCell.swift in Sources */,
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,
+				38E8B5D82B0B642D00C40042 /* SessionAPIResponseModel.swift in Sources */,
 				38E3C36B2AFA047400623C33 /* Codable.swift in Sources */,
 				38CC72B32A75347E00BFDAF5 /* SideMenuCell.swift in Sources */,
 				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
@@ -1066,7 +1076,9 @@
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
 				38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */,
 				385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */,
+				38E8B5DA2B0B703000C40042 /*  SessionResponseVM.swift in Sources */,
 				38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */,
+				38E8B5D62B0B3BB100C40042 /* Fonts and Colors.swift in Sources */,
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
 				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,

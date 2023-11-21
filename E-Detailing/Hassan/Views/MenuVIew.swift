@@ -12,6 +12,113 @@ import UIKit
 import CoreData
 
 
+extension MenuView {
+    func toGetTourPlanResponse() {
+           
+        let param = [String: Any]()
+        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+        
+        self.sessionDetailsArr.changeStatus = "True"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        self.sessionDetailsArr.date = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
+        
+        dateFormatter.dateFormat = "EEEE"
+        self.sessionDetailsArr.day = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
+        
+        self.sessionDetailsArr.dayNo = "1"
+        self.sessionDetailsArr.entryMode = ""
+        self.sessionDetailsArr.rejectionReason = ""
+        
+
+        let aDaySessions = self.sessionDetailsArr
+        
+       // let planArr = [SessionDetailsArr]()
+        let tourPlanArr =  TourPlanArr()
+        tourPlanArr.Div = appdefaultSetup.divisionCode
+        tourPlanArr.SFCode = appdefaultSetup.sfCode
+        tourPlanArr.SFName = appdefaultSetup.sfName
+        if tourPlanArr.arrOfPlan.isEmpty {
+            tourPlanArr.arrOfPlan.append(aDaySessions)
+            let params =   self.toSetParams(tourPlanArr)
+        } else {
+            tourPlanArr.arrOfPlan.enumerated().forEach { index, dayPlan  in
+                if  dayPlan.date == aDaySessions.date {
+                    tourPlanArr.arrOfPlan.remove(at: index)
+                    tourPlanArr.arrOfPlan.append(aDaySessions)
+                  let params =   self.toSetParams(tourPlanArr)
+                } else {
+                    tourPlanArr.arrOfPlan.append(aDaySessions)
+                    let params = self.toSetParams(tourPlanArr)
+                }
+            }
+        }
+ 
+//        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
+//                    switch result {
+//                    case .success(let response):
+//                        print(response)
+//
+//                        do {
+//                            try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
+//
+//                            }
+//                        } catch {
+//                            print("Unable to save")
+//                        }
+//                    case .failure(let error):
+//                        print(error.localizedDescription)
+//                    }
+//                }
+            
+    }
+    
+    func toSetParams(_ tourPlanArr: TourPlanArr) -> [String: Any] {
+        
+        
+        
+        var param = [String: Any]()
+        param["Div"] = tourPlanArr.Div
+        param["SFCode"] = tourPlanArr.SFCode
+        param["SFName"] = tourPlanArr.SFName
+        param["tpData"] = [Any]()
+        var tpparam = [String: Any]()
+        tourPlanArr.arrOfPlan.enumerated().forEach { index, allDayPlans in
+            tpparam["changeStatus"] = allDayPlans.changeStatus
+            tpparam["date"] = allDayPlans.date
+            tpparam["day"] = allDayPlans.day
+            tpparam["dayNo"] = allDayPlans.dayNo
+            tpparam["entryMode"] = allDayPlans.entryMode
+            tpparam["rejectionReason"] = allDayPlans.rejectionReason
+            tpparam["sessions"] = [Any]()
+            var sessionArr = [Any]()
+            allDayPlans.sessionDetails.forEach { session in
+                var sessionParam = [String: Any]()
+                sessionParam["FWFlg"] = session.isForFieldWork == true ? "Y" : "N"
+                sessionParam["HQCodes"] = session.HQCodes
+                sessionParam["HQNames"] = session.HQNames
+                sessionParam["WTCode"] = session.WTCode
+                sessionParam["WTName"] = session.WTName
+                sessionParam["chemCode"] = session.chemCode
+                sessionParam["chemName"] = session.chemName
+                sessionParam["clusterCode"] = session.clusterCode
+                sessionParam["clusterName"] = session.clusterName
+                sessionParam["drCode"] = session.drCode
+                sessionParam["drName"] = session.drName
+                sessionParam["jwCode"] = session.jwCode
+                sessionParam["jwName"] = session.jwName
+                sessionArr.append(sessionParam)
+            }
+            tpparam["sessions"] = sessionArr
+            
+          
+        }
+        param["tpData"] = tpparam
+        return param
+    }
+}
+
 class MenuView : BaseView{
     
     
@@ -95,7 +202,7 @@ class MenuView : BaseView{
     var jointWorkArr : [JointWork]?
     var listedDocArr : [DoctorFencing]?
     var chemistArr : [Chemist]?
-    
+    var sessionResponseVM: SessionResponseVM?
     ///properties to hold session contents
     var sessionDetailsArr = SessionDetailsArr()
     var sessionDetail = SessionDetail()
@@ -133,6 +240,7 @@ class MenuView : BaseView{
     
     //MARK: - function to initialize view
     func initView(){
+        self.sessionResponseVM = SessionResponseVM()
         searchTF.delegate = self
         cellRegistration()
         loadrequiredDataFromDB()
@@ -299,8 +407,10 @@ class MenuView : BaseView{
             self.selectView.isHidden = false
             searchHolderView.isHidden = false
             self.countView.isHidden = true
-            selectAllView.isHidden = false
-            selectAllHeightConst.constant = selectAllHeight
+//            selectAllView.isHidden = false
+//            selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = self.clusterArr
         
@@ -318,8 +428,10 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
-            selectAllView.isHidden = false
-            selectAllHeightConst.constant = selectAllHeight
+//            selectAllView.isHidden = false
+//            selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
        
@@ -337,8 +449,10 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
-            selectAllView.isHidden = false
-            selectAllHeightConst.constant = selectAllHeight
+//            selectAllView.isHidden = false
+//            selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
      
@@ -356,8 +470,10 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
-            selectAllView.isHidden = false
-            selectAllHeightConst.constant = selectAllHeight
+//            selectAllView.isHidden = false
+//            selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
         
@@ -374,9 +490,12 @@ class MenuView : BaseView{
             searchHolderView.isHidden = false
             self.selectView.isHidden = false
             self.countView.isHidden = true
-            selectAllView.isHidden = false
+           // selectAllView.isHidden = false
+            //selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
             typesTitleview.isHidden = false
-            selectAllHeightConst.constant = selectAllHeight
+            
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
         }
@@ -418,7 +537,10 @@ class MenuView : BaseView{
             switch self.cellType {
                 
             case .session:
-                break
+                
+                
+                
+                self.toGetTourPlanResponse()
             case .workType:
 
                 if sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork {
@@ -844,29 +966,38 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             
             var clusterNameArr = [String]()
+            var clusterCodeArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
                 self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.forEach { key, value in
                         if key == cluster.code {
                             clusterNameArr.append(cluster.name ?? "")
+                            clusterCodeArr.append(key)
                         }
                     }
                 })
                 cell.lblCluster.text = clusterNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblCluster.text = "Select"
             }
             var headQuatersNameArr = [String]()
+            var headQuartersCodeArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
                 self.headQuatersArr?.forEach({ headQuaters in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
                         if key == headQuaters.id {
                             headQuatersNameArr.append(headQuaters.name ?? "")
+                            headQuartersCodeArr.append(key)
                         }
                     }
                 })
+                
                 cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblHeadquaters.text = "Select"
@@ -875,15 +1006,19 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
             var jointWorkNameArr = [String]()
+            var jointWorkCodeArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.isEmpty {
                 self.jointWorkArr?.forEach({ work in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.forEach { key, value in
                         if key == work.code {
                             jointWorkNameArr.append(work.name ?? "")
+                            jointWorkCodeArr.append(key)
                         }
                     }
                 })
                 cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblJointCall.text = "Select"
@@ -891,29 +1026,37 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
             var listedDoctorsNameArr = [String]()
+            var listedDoctorsCodeArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.isEmpty {
                 self.listedDocArr?.forEach({ doctors in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
                         if key == doctors.code {
                             listedDoctorsNameArr.append(doctors.name ?? "")
+                            listedDoctorsCodeArr.append(key)
                         }
                     }
                 })
                 cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblListedDoctor.text = "Select"
             }
             var chemistNameArr = [String]()
+            var chemistCodeArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
                 self.chemistArr?.forEach({ chemist in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.forEach { key, value in
                         if key == chemist.code {
                             chemistNameArr.append(chemist.name ?? "")
+                            chemistCodeArr.append(key)
                         }
                     }
                 })
                 cell.lblChemist.text = chemistNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].chemName =  cell.lblChemist.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblChemist.text = "Select"
@@ -1051,6 +1194,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     self.selectTitleLbl.text = selectedWorkTypeName
                 } else {
                     self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
+                    sessionDetailsArr.sessionDetails[selectedSession].WTCode = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].code ?? ""
+                    
+                    sessionDetailsArr.sessionDetails[selectedSession].WTName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
+                    
                     self.selectTitleLbl.text = selectedWorkTypeName
                 }
             }
@@ -1666,8 +1813,10 @@ extension MenuView : UITextFieldDelegate {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
@@ -1694,8 +1843,10 @@ extension MenuView : UITextFieldDelegate {
                 if newText.isEmpty {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = self.clusterArr
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     isSearched = true
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
@@ -1734,8 +1885,10 @@ extension MenuView : UITextFieldDelegate {
                 if newText.isEmpty {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     isSearched = false
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
@@ -1770,8 +1923,10 @@ extension MenuView : UITextFieldDelegate {
                 if newText.isEmpty {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     isSearched = false
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
@@ -1807,8 +1962,10 @@ extension MenuView : UITextFieldDelegate {
                 if newText.isEmpty {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     isSearched = false
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
@@ -1845,8 +2002,10 @@ extension MenuView : UITextFieldDelegate {
                 if newText.isEmpty {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
                     self.noresultsView.isHidden = true
-                    self.selectAllView.isHidden = false
-                    self.selectAllHeightConst.constant = selectAllHeight
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
                     isSearched = false
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
