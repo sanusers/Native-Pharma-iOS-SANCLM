@@ -6,10 +6,76 @@
 //
 
 import UIKit
+//import 
 
+extension SessionInfoTVC: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "Remarks"
+            textView.textColor = UIColor.lightGray
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+
+        // Combine the textView text and the replacement text to
+        // create the updated text string
+        let currentText:String = textView.text
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+
+        // If updated text view will be empty, add the placeholder
+        // and set the cursor to the beginning of the text view
+        if updatedText.isEmpty {
+
+            textView.text = "Remarks"
+            textView.textColor = UIColor.lightGray
+
+            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+        }
+
+        // Else if the text view's placeholder is showing and the
+        // length of the replacement string is greater than 0, set
+        // the text color to black then set its text to the
+        // replacement string
+         else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+            textView.textColor = UIColor.black
+            textView.text = text
+        }
+
+        // For every other case, the text should change with the usual
+        // behavior...
+        else {
+            return true
+        }
+
+        // ...otherwise return false since the updates have already
+        // been made
+        return false
+    }
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        if self.contentView.window != nil {
+            if textView.textColor == UIColor.lightGray {
+                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+            }
+        }
+    }
+}
 class SessionInfoTVC: UITableViewCell {
     
     
+    @IBOutlet var remarksHolderView: UIView!
+    @IBOutlet var remarksHeight: NSLayoutConstraint!
+    
+    @IBOutlet var remarksTFholder: UIView!
+    
+    @IBOutlet var remarksTV: UITextView!
     @IBOutlet var stackHeight: NSLayoutConstraint!
     
     @IBOutlet var overallContentsHolder: UIView!
@@ -74,15 +140,23 @@ class SessionInfoTVC: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
-        [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, overallContentsHolder].forEach { view in
-            view?.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
+       
+        //remarksTV.placeholder = "Remarks"
+        [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, overallContentsHolder, remarksTFholder].forEach { view in
+            view?.layer.borderColor = Themes.appTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
             view?.layer.borderWidth = view == overallContentsHolder ? 0 : 1.5
             view?.layer.cornerRadius = 5
             view?.elevate(1)
         }
+        configureTextField()
         
         
+    }
+    
+    func configureTextField() {
+        remarksTV.delegate = self
+        remarksTV.text = "Remarks"
+        remarksTV.textColor = UIColor.lightGray
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

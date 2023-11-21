@@ -11,11 +11,13 @@ import Foundation
 import UIKit
 import CoreData
 
+extension MenuView : UITextViewDelegate {
+    
+}
 
 extension MenuView {
     func toGetTourPlanResponse() {
-           
-        let param = [String: Any]()
+
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         
         self.sessionDetailsArr.changeStatus = "True"
@@ -33,28 +35,27 @@ extension MenuView {
         
 
         let aDaySessions = self.sessionDetailsArr
-        
-       // let planArr = [SessionDetailsArr]()
-        let tourPlanArr =  TourPlanArr()
+
+        let tourPlanArr =  AppDefaults.shared.tpArry
         tourPlanArr.Div = appdefaultSetup.divisionCode
         tourPlanArr.SFCode = appdefaultSetup.sfCode
         tourPlanArr.SFName = appdefaultSetup.sfName
         if tourPlanArr.arrOfPlan.isEmpty {
             tourPlanArr.arrOfPlan.append(aDaySessions)
-            let params =   self.toSetParams(tourPlanArr)
+            _ =   self.toSetParams(tourPlanArr)
         } else {
             tourPlanArr.arrOfPlan.enumerated().forEach { index, dayPlan  in
-                if  dayPlan.date == aDaySessions.date {
+                if  dayPlan.sessionDetails[index].sessionName  == aDaySessions.sessionDetails[index].sessionName  {
                     tourPlanArr.arrOfPlan.remove(at: index)
                     tourPlanArr.arrOfPlan.append(aDaySessions)
-                  let params =   self.toSetParams(tourPlanArr)
+                    _ =   self.toSetParams(tourPlanArr)
                 } else {
                     tourPlanArr.arrOfPlan.append(aDaySessions)
-                    let params = self.toSetParams(tourPlanArr)
+                    _ = self.toSetParams(tourPlanArr)
                 }
             }
         }
- 
+        AppDefaults.shared.tpArry = tourPlanArr
 //        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
 //                    switch result {
 //                    case .success(let response):
@@ -75,15 +76,13 @@ extension MenuView {
     }
     
     func toSetParams(_ tourPlanArr: TourPlanArr) -> [String: Any] {
-        
-        
-        
         var param = [String: Any]()
         param["Div"] = tourPlanArr.Div
         param["SFCode"] = tourPlanArr.SFCode
         param["SFName"] = tourPlanArr.SFName
         param["tpData"] = [Any]()
         var tpparam = [String: Any]()
+        var sessionArr = [Any]()
         tourPlanArr.arrOfPlan.enumerated().forEach { index, allDayPlans in
             tpparam["changeStatus"] = allDayPlans.changeStatus
             tpparam["date"] = allDayPlans.date
@@ -92,7 +91,7 @@ extension MenuView {
             tpparam["entryMode"] = allDayPlans.entryMode
             tpparam["rejectionReason"] = allDayPlans.rejectionReason
             tpparam["sessions"] = [Any]()
-            var sessionArr = [Any]()
+            
             allDayPlans.sessionDetails.forEach { session in
                 var sessionParam = [String: Any]()
                 sessionParam["FWFlg"] = session.isForFieldWork == true ? "Y" : "N"
@@ -111,10 +110,16 @@ extension MenuView {
                 sessionArr.append(sessionParam)
             }
             tpparam["sessions"] = sessionArr
-            
-          
+            var info = [String: Any]()
+            info["date"] = "\(Date())"
+            info["timezone"] = "3"
+            info["timezone_type"] = "\(TimeZone.current.identifier)"
+            tpparam["submittedTime"] = info
         }
         param["tpData"] = tpparam
+        
+        let stringJSON = param.toString()
+        print(stringJSON)
         return param
     }
 }
@@ -212,14 +217,14 @@ class MenuView : BaseView{
     var clusterIDArr : [String]?
     
     
-    ///constraint Constants
+    ///Height constraint constants
     let selectViewHeight: CGFloat = 50
     let searchVIewHeight: CGFloat = 50
     let typesTitleHeight: CGFloat = 35
     let cellStackHeightforFW : CGFloat = 450
     let cellStackHeightfOthers : CGFloat = 80
-    let cellHeightForFW :  CGFloat = 520
-    let cellHeightForOthers : CGFloat = 140
+    let cellHeightForFW :  CGFloat = 520 + 100
+    let cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
     override func willAppear(baseVC: BaseViewController) {
@@ -537,9 +542,7 @@ class MenuView : BaseView{
             switch self.cellType {
                 
             case .session:
-                
-                
-                
+
                 self.toGetTourPlanResponse()
             case .workType:
 
@@ -929,9 +932,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
             cell.selectionStyle = .none
             
-            
+            cell.remarksTV.delegate = self
             
             cell.lblName.text = "Session \(indexPath.row + 1)"
+            sessionDetailsArr.sessionDetails[indexPath.row].sessionName = cell.lblName.text ?? ""
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
             let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork

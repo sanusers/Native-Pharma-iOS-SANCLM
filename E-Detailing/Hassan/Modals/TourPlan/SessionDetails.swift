@@ -250,7 +250,7 @@ class Menuchemist: Codable {
 //}
 
 class SessionDetail {
-    
+    var sessionName : String
     var workType: [WorkType]?
     var selectedWorkTypeIndex: Int? = nil
     var searchedWorkTypeIndex: Int? = nil
@@ -292,22 +292,15 @@ class SessionDetail {
    var unListedDrCode : String
    var unListedDrName : String
     
-    //    var selectedClusterIndices : [Int]
-    //    var searchedClusterIndices : [Int]
-    //    var selectedHeadQuatersIndices : [Int]
-    //    var selectedJointWorkIndices : [Int]
-    //    var selectedDoctorsIndices : [Int]
-    //    var selectedChemistIndices : [Int]
-    
-    
     init() {
+        
+        sessionName = String()
         self.workType = [WorkType]()
         self.headQuates = [Subordinate]()
         self.cluster = [Territory]()
         self.jointWork = [JointWork]()
         self.listedDoctors = [DoctorFencing]()
         self.chemist = [Chemist]()
-        
         self.selectedClusterID = [String : Bool]()
         self.selectedHeadQuaterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
@@ -347,12 +340,13 @@ class SessionDetailsArr {
     var entryMode : String
     var rejectionReason: String
     var sessionDetails : [SessionDetail]
-
+  
     init() {
         changeStatus = String()
         date  = String()
         day  = String()
         dayNo = String()
+      
         entryMode  = String()
         rejectionReason = String()
         sessionDetails = [SessionDetail]()

@@ -199,6 +199,7 @@ enum keys : String {
     case slide = "Slides"
     case syncTime = "Sync Time"
     case tourPlan = "TourPlan"
+    case sessionDetails = "sessionDetails"
 }
 
 class AppDefaults {
@@ -213,7 +214,8 @@ class AppDefaults {
     var slideUrl : String  = ""
     var reportUrl : String = ""
     var sfCode : String = ""
-    var  sessionDetailsArr : SessionDetailsArr?
+    var sessionDetailsArr : SessionDetailsArr?
+    var tpArry = TourPlanArr()
     let userdefaults = UserDefaults.standard
     
     
@@ -336,8 +338,7 @@ class AppDefaults {
                     var tempSession = SessionDetail()
                     //Field Work Y or N:
                     tempSession.isForFieldWork = session.FWFlg == "N" ? false : true
-                    
-                    
+ 
                     //Work type
                     tempSession.workTypeCode = session.WTCode
                     

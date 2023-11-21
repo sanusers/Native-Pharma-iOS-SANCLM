@@ -15,4 +15,5 @@ pod 'ReachabilitySwift'
 pod 'GoogleMaps'
 pod 'SVProgressHUD'
 pod 'Toast-Swift'
+Pod 'IQKeyboardManagerSwift'
 end
