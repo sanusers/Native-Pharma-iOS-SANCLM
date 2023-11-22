@@ -20,7 +20,7 @@ extension MenuView {
 
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         
-        self.sessionDetailsArr.changeStatus = "True"
+      
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
@@ -35,7 +35,15 @@ extension MenuView {
         
 
         let aDaySessions = self.sessionDetailsArr
-
+        aDaySessions.sessionDetails.forEach { session in
+            session.workType = nil
+            session.headQuates = nil
+            session.cluster = nil
+            session.jointWork = nil
+            session.listedDoctors = nil
+            session.chemist = nil
+            
+        }
         let tourPlanArr =  AppDefaults.shared.tpArry
         tourPlanArr.Div = appdefaultSetup.divisionCode
         tourPlanArr.SFCode = appdefaultSetup.sfCode
@@ -81,21 +89,23 @@ extension MenuView {
             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
         } else {
             AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { eachDayindex,eachDaySessions in
-                eachDaySessions.arrOfPlan.enumerated().forEach { eachTPindex, eachTP in
-                    AppDefaults.shared.tpArry.arrOfPlan.enumerated().forEach({ addedTPindex, addedTP in
-                        if addedTP.date == eachTP.date {
-                           // eachDaySessions.arrOfPlan.remove(at: eachDayindex)
+                eachDaySessions.arrOfPlan.enumerated().forEach { eachSessionindex, eachSession in
+                    AppDefaults.shared.tpArry.arrOfPlan.enumerated().forEach({ addedeachSessionindex, addedeachSession in
+                        if addedeachSession.date == eachSession.date && eachSession.changeStatus == "true" {
+                          //  AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+                            eachDaySessions.arrOfPlan.remove(at: eachSessionindex)
                             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-
                         } else {
+                         
                             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-
+                          
                         }
                     })
                 }
             }
         }
         self.toCreateToast("Session added successfully")
+            self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
 //        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
 //                    switch result {
@@ -132,10 +142,10 @@ extension MenuView {
             tpparam["entryMode"] = allDayPlans.entryMode
             tpparam["rejectionReason"] = allDayPlans.rejectionReason
             tpparam["sessions"] = [Any]()
-            
+    
             allDayPlans.sessionDetails.forEach { session in
                 var sessionParam = [String: Any]()
-                sessionParam["FWFlg"] = session.isForFieldWork == true ? "Y" : "N"
+                sessionParam["FWFlg"] = session.FWFlg
                 sessionParam["HQCodes"] = session.HQCodes
                 sessionParam["HQNames"] = session.HQNames
                 sessionParam["WTCode"] = session.WTCode
@@ -148,6 +158,8 @@ extension MenuView {
                 sessionParam["drName"] = session.drName
                 sessionParam["jwCode"] = session.jwCode
                 sessionParam["jwName"] = session.jwName
+                sessionParam["remarks"] = session.remarks
+    
                 sessionArr.append(sessionParam)
             }
             tpparam["sessions"] = sessionArr
@@ -158,11 +170,13 @@ extension MenuView {
             tpparam["submittedTime"] = info
         }
         param["tpData"] = tpparam
-        
+    
         let stringJSON = param.toString()
         print(stringJSON)
+    
         return param
     }
+
 }
 
 class MenuView : BaseView{
@@ -350,11 +364,11 @@ class MenuView : BaseView{
        
         self.chemistArr = DBManager.shared.getChemist()
         
-        toGenerateNewSession()
+        toGenerateNewSession(self.menuVC.sessionDetailsArr != nil ? false : true)
 //isToAddSession: self.menuVC.sessionDetailsArr != nil ? false : true
     }
     
-    func toGenerateNewSession() {
+    func toGenerateNewSession(_ istoAddSession: Bool) {
         
 //        sessionDetail = SessionDetail()
 //        sessionDetail.workType = workTypeArr?.uniqued()
@@ -377,7 +391,13 @@ class MenuView : BaseView{
         if self.menuVC.sessionDetailsArr != nil  {
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
-            setPageType(.edit)
+            if  istoAddSession {
+                self.sessionDetailsArr.sessionDetails.append(sessionDetail)
+                setPageType(.session)
+            } else {
+                setPageType(.edit)
+            }
+          
         } else {
             sessionDetail = SessionDetail()
             self.sessionDetailsArr.sessionDetails.append(sessionDetail)
@@ -626,6 +646,7 @@ class MenuView : BaseView{
             case .edit:
               //  self.menuTable.reloadData()
               //  self.toGetTourPlanResponse()
+                self.sessionDetailsArr.changeStatus = "True"
                 self.setPageType(.session)
             case .session:
                 self.menuTable.reloadData()
@@ -697,7 +718,7 @@ class MenuView : BaseView{
                 }
             } else {
              
-                self.toGenerateNewSession()
+                self.toGenerateNewSession(true)
                 //isToAddSession: true
                 
             }
@@ -938,9 +959,7 @@ class MenuView : BaseView{
                         self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
                        }) { (val) in
             
-                           self.menuVC.dismiss(animated: true) {
-                               self.menuVC.menuDelegate?.callPlanAPI()
-                           }
+                           self.menuVC.dismiss(animated: true, completion: nil)
         }
         
         
@@ -977,15 +996,7 @@ class MenuView : BaseView{
     }
     
     
-    func toCreateToast(_ text: String) {
 
-            if #available(iOS 13.0, *) {
-                (UIApplication.shared.delegate as! AppDelegate).createToastMessage(text, isFromWishList: true)
-            } else {
-              print(text)
-            }
-        
-    }
 }
 extension MenuView : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -1167,9 +1178,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .session:
             let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
             cell.selectionStyle = .none
-            
+        
           //  cell.remarksTV.delegate = self
-            
+          //  cell.remarks =  sessionDetailsArr.sessionDetails[indexPath.row].remarks.isEmpty ? nil : sessionDetailsArr.sessionDetails[indexPath.row].remarks
             cell.keybordenabled = false
             cell.lblName.text = "Session \(indexPath.row + 1)"
             cell.selectedIndex = indexPath.row + 1
@@ -1411,9 +1422,13 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 self.toRemoveSession(at: indexPath.row)
                 tableView.reloadData()
             }
-            
          
-            sessionDetailsArr.sessionDetails[indexPath.row].remarks = cell.remarks ?? ""
+           
+//            sessionDetailsArr.sessionDetails[indexPath.row].remarks = cell.remarks ?? ""
+//            dump(sessionDetailsArr.sessionDetails[indexPath.row].remarks)
+//            cell.remarksTV.text = sessionDetailsArr.sessionDetails[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails[indexPath.row].remarks
+            sessionDetailsArr.sessionDetails[indexPath.row].remarks =  cell.remarks ?? ""
+            dump(sessionDetailsArr.sessionDetails[indexPath.row].remarks)
             return cell
             
         case .workType:

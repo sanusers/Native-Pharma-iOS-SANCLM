@@ -23,11 +23,12 @@ extension SessionInfoTVC: UITextViewDelegate {
             textView.text = "Remarks"
             textView.textColor = UIColor.lightGray
         }
-        self.remarks = textView.text
+    //    self.remarks = textView.text == "Remarks" ? "" : textView.text
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        self.remarks = textView.text
+        self.remarks = textView.text == "Remarks" ? "" : textView.text
+     
         // Combine the textView text and the replacement text to
         // create the updated text string
         let currentText:String = textView.text
@@ -209,8 +210,8 @@ class SessionInfoTVC: UITableViewCell {
     
     func configureTextField() {
         remarksTV.delegate = self
-        remarksTV.text = "Remarks"
-        remarksTV.textColor = UIColor.lightGray
+        //remarksTV.text == "" ? "Remarks" : remarksTV.text
+        remarksTV.textColor =  remarksTV.text == "Remarks" ? UIColor.lightGray : UIColor.black
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

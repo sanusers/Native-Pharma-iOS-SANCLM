@@ -73,3 +73,14 @@ extension UIColor {
         return nil
     }
 }
+
+extension DateComponentsFormatter {
+    func difference(from fromDate: Date, to toDate: Date) -> String? {
+        self.allowedUnits = [.year,.month,.weekOfMonth,.day]
+        self.maximumUnitCount = 1
+        self.unitsStyle = .full
+        return self.string(from: fromDate, to: toDate)
+    }
+}
+
+

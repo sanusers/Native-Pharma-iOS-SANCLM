@@ -15,28 +15,84 @@ import FSCalendar
 
 extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return arrOfPlan?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : worksPlanTVC = tableView.dequeueReusableCell(withIdentifier: "worksPlanTVC", for: indexPath) as! worksPlanTVC
-        
-        cell.toLOadData()
+        let modal =  self.arrOfPlan?[indexPath.row]
+        cell.toPopulateCell(modal ?? SessionDetailsArr())
+        cell.addTap {
+            self.moveToMenuVC(self.tourPlanCalander.currentPage)
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let modal =  self.arrOfPlan?[indexPath.row]
+        var detailsArr = [[String]]()
+        var jointCallstr = [String]()
+        var headQuartersstr = [String]()
+        var clusterstr  = [String]()
+        var jointcallstr  = [String]()
+        var doctorsstr  = [String]()
+        var chemiststr  = [String]()
+        modal?.sessionDetails.forEach({ session in
+              if  session.jwName != "" {
+                  jointCallstr.append(session.jwName)
+                }
+              if  session.HQCodes != "" {
+                  headQuartersstr.append(session.HQCodes)
+                }
+              if  session.clusterCode != "" {
+                  clusterstr.append(session.clusterCode)
+                }
+              if  session.jwCode != "" {
+                  jointcallstr.append(session.jwCode)
+                }
+              if  session.drCode != "" {
+                  doctorsstr.append(session.drCode)
+                }
+              if  session.chemCode != "" {
+                  chemiststr.append(session.chemCode)
+                }
+        })
+        
+        
+        if headQuartersstr.count > 0 {
+            detailsArr.append(headQuartersstr)
+        }
+        if clusterstr.count > 0 {
+            detailsArr.append(clusterstr)
+        }
+        
+        if jointcallstr.count > 0 {
+            detailsArr.append(jointcallstr)
+    
+        }
+        
+        if doctorsstr.count > 0 {
+            detailsArr.append(doctorsstr)
+
+        }
+        
+        if chemiststr.count > 0 {
+            detailsArr.append(chemiststr)
+        }
+       
         switch indexPath.row {
-            ///  cgfloat value 100 mentioned here belongs to a content view in cell which holds date, options image and other label
+            ///  cgfloat value 80 mentioned here belongs to a content view in cell which holds date, options image and other label
          
-            /// cgfloat value 100  mentioned here belongs to a collection view cell (if needed give10 points of paddin value)
-        case 0:
-   
-            return (2 * 75) + 80
-        case 1:
-            return 75 + 80
+            /// cgfloat value 80  mentioned here belongs to a collection view cell (if needed give10 points of paddin value)
+//
+//        case 0:
+//
+//             (2 * 75) + 80
+//        case 1:
+//            return 75 + 80
         default:
-           return 0
+           let size =  detailsArr.count > 5 ?  (2 * 75) + 80 : 75 + 80
+            return CGFloat(size)
         }
     }
     
@@ -91,10 +147,15 @@ class TourPlanView: BaseView {
     
     @IBOutlet var tableTitle: UILabel!
     
+    @IBOutlet var sessionTableHolderView: UIView!
     
     //MARK: - Properties
     var selectedDate: String = ""
     var tourplanVC : TourPlanVC!
+    var isNextMonth = false
+    var isPrevMonth = false
+    var isCurrentMonth = false
+    var arrOfPlan : [SessionDetailsArr]?
    // let appGraycolor = UIColor(hex: "#EEEEEE")
    // let cellSelectionColor = UIColor(hex: "#F2F2F7")
     private var currentPage: Date?
@@ -119,6 +180,18 @@ class TourPlanView: BaseView {
         initViews()
     }
     
+    func toLoadData() {
+        worksPlanTable.layoutIfNeeded()
+        AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
+            eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
+                self.arrOfPlan?.append(sessions)
+            }
+        }
+        worksPlanTable.delegate = self
+        worksPlanTable.dataSource = self
+        worksPlanTable.reloadData()
+    }
+    
     func initViews() {
         backHolder.addTap {
             self.tourplanVC.navigationController?.popViewController(animated: true)
@@ -134,40 +207,105 @@ class TourPlanView: BaseView {
         
         
     }
+    
+    func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
+        
+        if enableprevBtn && enablenextBtn {
+            calenderPrevIV.alpha = 1
+            calenderPrevIV.isUserInteractionEnabled = true
+            
+            calenderNextIV.alpha = 1
+            calenderNextIV.isUserInteractionEnabled = true
+        } else  if enableprevBtn {
+            calenderPrevIV.alpha = 1
+            calenderPrevIV.isUserInteractionEnabled = true
+            
+            calenderNextIV.alpha = 0.3
+            calenderNextIV.isUserInteractionEnabled = false
+            
+        } else if enablenextBtn {
+            calenderPrevIV.alpha = 0.3
+            calenderPrevIV.isUserInteractionEnabled = false
+            
+            calenderNextIV.alpha = 1
+            calenderNextIV.isUserInteractionEnabled = true
+        }
+        
+     
+    }
 
     private func moveCurrentPage(moveUp: Bool) {
-            
+     
         let calendar = Calendar.current
         var dateComponents = DateComponents()
         dateComponents.month = moveUp ? 1 : -1
-        
-        self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
-      //  let date = Calendar.current.date(from: dateComponents)
+
+      //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
+
       
-     
-        
-     
-        
+        if moveUp {
+            var isToMoveindex: Int? = nil
+            self.isNextMonth = true
+            if isPrevMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isNextMonth && isCurrentMonth {
+                isToMoveindex = 0
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                isCurrentMonth = false
+            } else {
+                isToMoveindex = 1
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+            }
+            
+            if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+                  print("Next Month:", nextMonth)
+                self.currentPage = nextMonth
+                self.isPrevMonth = false
+              }
+        } else if !moveUp{
+            // Calculate the previous month
+            var isToMoveindex: Int? = nil
+            self.isPrevMonth = true
+            if isNextMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isPrevMonth && isCurrentMonth {
+                isToMoveindex = 0
+                isCurrentMonth = false
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+            } else {
+                isToMoveindex = -1
+                toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+            }
+            if let previousMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+                print("Previous Month:", previousMonth)
+                self.currentPage = previousMonth
+                self.isNextMonth = false
+               
+            }
+        } else {
+            if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
+                print("Previous Month:", currentMonth)
+                self.currentPage = currentMonth
+            }
+        }
+
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
-        
-//        let values = Calendar.current.dateComponents([Calendar.Component.month, Calendar.Component.year], from: self.tourPlanCalander.currentPage)
-//       let year = values.year
-//        let month = values.month?.description
-     
-      //  mainDateLbl.text = "\(values.month!) \(values.year!)"
-        //toTrimDate(date: date ?? Date(), isForMainLabel: true)
     }
+    
+    /// Returns the amount of months from another date
+    func months(fromdate: Date, todate: Date) -> Int {
+         return Calendar.current.dateComponents([.month], from: fromdate, to: todate).month ?? 0
+     }
     
     func cellRegistration() {
         worksPlanTable.register(UINib(nibName: "worksPlanTVC", bundle: nil), forCellReuseIdentifier: "worksPlanTVC")
         //tourPlanCalander.collectionView.register(UINib(nibName: "FSCalendarCVC", bundle: nil), forCellWithReuseIdentifier: "FSCalendarCVC")
     }
     
-    func toLoadData() {
-        worksPlanTable.delegate = self
-        worksPlanTable.dataSource = self
-        worksPlanTable.reloadData()
-    }
     
     func toLoadCalenderData() {
         tourPlanCalander.delegate = self
@@ -179,7 +317,7 @@ class TourPlanView: BaseView {
         
 
        
-        
+        tourPlanCalander.scrollEnabled = false
         tourPlanCalander.calendarHeaderView.isHidden = true
         tourPlanCalander.headerHeight = 0 // this makes some extra spacing, but you can try 0 or 1
         //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
@@ -269,8 +407,8 @@ class TourPlanView: BaseView {
         bottomButtonsHolderView.layer.cornerRadius = 5
         generalButtonsHolder.layer.cornerRadius = 5
         
-        worksPlanTable.elevate(2)
-        worksPlanTable.layer.cornerRadius = 10
+        sessionTableHolderView.elevate(2)
+        sessionTableHolderView.layer.cornerRadius = 5
     }
     
     
@@ -278,6 +416,29 @@ class TourPlanView: BaseView {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = isForMainLabel == true ? "MMMM yyyy" : "dd"
         return dateFormatter.string(from: date)
+    }
+    
+    
+    func moveToMenuVC(_ date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        let toCompareDate = dateFormatter.string(from: date )
+          self.selectedDate =  self.toTrimDate(date: date)
+          self.tourPlanCalander.reloadData()
+          
+                  let menuvc = MenuVC.initWithStory(self, date)
+                  self.tourplanVC.modalPresentationStyle = .custom
+                  menuvc.menuDelegate = self
+          
+         // var isExist = Bool()
+          AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
+              eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
+                  if sessions.date == toCompareDate {
+                      menuvc.sessionDetailsArr = sessions
+                  }
+              }
+          }
+    self.tourplanVC.navigationController?.present(menuvc, animated: true)
     }
 }
 
@@ -333,33 +494,10 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             cell.contentHolderView.backgroundColor = .clear
         }
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMMM yyyy"
-        let toCompareDate = dateFormatter.string(from: date )
+
         cell.addTap {
-       
-          
-            
-            self.selectedDate =  self.toTrimDate(date: date)
-            
-            self.tourPlanCalander.reloadData()
-            
-                    let menuvc = MenuVC.initWithStory(self, date)
-                    self.tourplanVC.modalPresentationStyle = .custom
-                    menuvc.menuDelegate = self
-            
-           // var isExist = Bool()
-            AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
-                eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
-                    if sessions.date == toCompareDate {
-                        menuvc.sessionDetailsArr = sessions
-                    }
-                }
-            }
-            
-            
-            
-                    self.tourplanVC.navigationController?.present(menuvc, animated: true)
+            self.moveToMenuVC(date)
+
         }
         
         return cell
@@ -372,6 +510,13 @@ extension TourPlanView: MenuResponseProtocol {
     }
     
     func callPlanAPI() {
+        self.arrOfPlan = [SessionDetailsArr]()
+        AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
+            eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
+                self.arrOfPlan?.append(sessions)
+            }
+        }
+        
         self.worksPlanTable.reloadData()
         print("Called")
     }

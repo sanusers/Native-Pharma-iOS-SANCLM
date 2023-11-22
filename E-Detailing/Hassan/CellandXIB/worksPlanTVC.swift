@@ -9,11 +9,15 @@ import UIKit
 
 extension worksPlanTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return sessionImages?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: WorkPlansInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "WorkPlansInfoCVC", for: indexPath) as! WorkPlansInfoCVC
+       // cell.toPopulateCell(self.session?.sessionDetails[indexPath.item])
+        let model  = self.sessionImages?[indexPath.item]
+        cell.plansIV.image = model?.Image
+        cell.countsLbl.text = "\(model!.count)"
         return cell
     }
     
@@ -23,6 +27,12 @@ extension worksPlanTVC: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     
     
+}
+
+
+struct SessionImages {
+    let Image: UIImage
+    let count: Int
 }
 
 class worksPlanTVC: UITableViewCell {
@@ -39,6 +49,9 @@ class worksPlanTVC: UITableViewCell {
     
     @IBOutlet var workPlansInfoCollection: UICollectionView!
     
+    var detailsArr = [[String]]()
+    var session : SessionDetailsArr?
+    var sessionImages: [SessionImages]?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -63,6 +76,105 @@ class worksPlanTVC: UITableViewCell {
     
     func cellRegistration() {
         workPlansInfoCollection.register(UINib(nibName: "WorkPlansInfoCVC", bundle: nil), forCellWithReuseIdentifier: "WorkPlansInfoCVC")
+    }
+    
+    func toPopulateCell(_ session: SessionDetailsArr) {
+        self.session = session
+        var workTypestr = [String]()
+        var jointCallstr = [String]()
+        var headQuartersstr = [String]()
+        var clusterstr  = [String]()
+        var jointcallstr  = [String]()
+        var doctorsstr  = [String]()
+        var chemiststr  = [String]()
+        self.dateLbl.text = session.date
+      
+        sessionImages = [SessionImages]()
+        session.sessionDetails.forEach { session in
+          if  session.WTName != "" {
+                workTypestr.append(session.WTName)
+              
+            }
+            if  session.jwName != "" {
+                jointCallstr.append(session.jwName)
+              }
+            if  session.HQCodes != "" {
+                headQuartersstr.append(session.HQCodes)
+              }
+            if  session.clusterCode != "" {
+                clusterstr.append(session.clusterCode)
+              }
+            if  session.jwCode != "" {
+                jointcallstr.append(session.jwCode)
+              }
+            if  session.drCode != "" {
+                doctorsstr.append(session.drCode)
+              }
+            if  session.chemCode != "" {
+                chemiststr.append(session.chemCode)
+              }
+            
+        }
+        if headQuartersstr.count > 0 {
+            var count = 0
+            headQuartersstr.forEach { str in
+               let countstr = str.components(separatedBy: ",")
+                count = countstr.count
+            }
+            let sessionImage =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: count)
+            sessionImages?.append(sessionImage)
+        }
+        if clusterstr.count > 0 {
+            var count = 0
+            clusterstr.forEach { str in
+               let countstr = str.components(separatedBy: ",")
+                count = countstr.count
+            }
+            let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
+            sessionImages?.append(sessionImage)
+        }
+        
+        if jointcallstr.count > 0 {
+            var count = 0
+            jointcallstr.forEach { str in
+               let countstr = str.components(separatedBy: ",")
+                count = countstr.count
+            }
+            let sessionImage =  SessionImages(Image: UIImage(named: "JointWork") ?? UIImage(), count: count)
+            sessionImages?.append(sessionImage)
+        }
+        
+        if doctorsstr.count > 0 {
+            var count = 0
+            doctorsstr.forEach { str in
+               let countstr = str.components(separatedBy: ",")
+                count = countstr.count
+            }
+            let sessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: count)
+            sessionImages?.append(sessionImage)
+        }
+        
+        if chemiststr.count > 0 {
+            var count = 0
+            chemiststr.forEach { str in
+               let countstr = str.components(separatedBy: ",")
+                count = countstr.count
+            }
+            let sessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: count)
+            sessionImages?.append(sessionImage)
+        }
+        
+//        [headQuartersstr, clusterstr, jointcallstr, doctorsstr, chemiststr].forEach { elements in
+//            if elements.count > 0 {
+//                self.detailsArr.append(elements)
+//
+//            }
+//        }
+        dump(detailsArr)
+        self.workTitLbl.text = workTypestr.joined(separator: ", ")
+        self.nameLbl.text = jointCallstr.joined(separator: ", ")
+        
+        self.toLOadData()
     }
     
     func toLOadData() {

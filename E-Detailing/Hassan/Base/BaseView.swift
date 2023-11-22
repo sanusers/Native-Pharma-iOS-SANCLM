@@ -30,5 +30,13 @@ class BaseView: UIView{
     func didDisappear(baseVC : BaseViewController){}
     func didLayoutSubviews(baseVC: BaseViewController){}
 
-    
+    func toCreateToast(_ text: String) {
+
+            if #available(iOS 13.0, *) {
+                (UIApplication.shared.delegate as! AppDelegate).createToastMessage(text, isFromWishList: true)
+            } else {
+              print(text)
+            }
+        
+    }
 }

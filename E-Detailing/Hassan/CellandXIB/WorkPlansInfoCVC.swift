@@ -8,6 +8,11 @@
 import UIKit
 
 class WorkPlansInfoCVC: UICollectionViewCell {
+    
+    struct ImageDetail {
+        let image: UIImage
+        let count : Int
+    }
 
     @IBOutlet var plansIVHolder
     : UIView!
@@ -24,5 +29,22 @@ class WorkPlansInfoCVC: UICollectionViewCell {
       
         countsLbl.setFont(font: .medium(size: .BODY))
     }
-
+    
+    func toPopulateCell(_ session: SessionDetail) {
+     
+     
+//        var headQuartersstr = [String]()
+//        var clusterstr  = [String]()
+//        var jointcallstr  = [String]()
+//        var doctorsstr  = [String]()
+//        var chemiststr  = [String]()
+//
+//        session.sessionDetails.forEach { session in
+//            headQuartersstr.append(session.HQCodes)
+//            clusterstr.append(session.clusterCode)
+//            jointcallstr.append(session.jwCode)
+//            doctorsstr.append(session.drCode)
+//            chemiststr.append(session.chemCode)
+//        }
+    }
 }
