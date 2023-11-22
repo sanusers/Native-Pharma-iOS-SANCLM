@@ -150,6 +150,11 @@
 		38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */; };
 		38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EBB8902A6BD447008E007C /* QuickLinkCell.xib */; };
 		38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EDEA792A6A5F16000E857C /* MainVC.swift */; };
+		38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B12B0C8FC200045D4F /* NotificationEnum.swift */; };
+		38F289B42B0CA70200045D4F /* CustomCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */; };
+		38F289B72B0CB59A00045D4F /* EditSessionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B52B0CB59A00045D4F /* EditSessionTVC.swift */; };
+		38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */; };
+		38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B92B0CDFD800045D4F /* BackupCodes.swift */; };
 		38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F4B8142A49979100BD4FD2 /* WorkType + Extension.swift */; };
 		38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F4B8162A49C92400BD4FD2 /* MyDayPlan + Extension.swift */; };
 		38F515852AA33E090069FC6B /* RcpaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F515842AA33E090069FC6B /* RcpaViewModel.swift */; };
@@ -326,6 +331,11 @@
 		38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLinkCell.swift; sourceTree = "<group>"; };
 		38EBB8902A6BD447008E007C /* QuickLinkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickLinkCell.xib; sourceTree = "<group>"; };
 		38EDEA792A6A5F16000E857C /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		38F289B12B0C8FC200045D4F /* NotificationEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEnum.swift; sourceTree = "<group>"; };
+		38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalenderCell.swift; sourceTree = "<group>"; };
+		38F289B52B0CB59A00045D4F /* EditSessionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSessionTVC.swift; sourceTree = "<group>"; };
+		38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditSessionTVC.xib; sourceTree = "<group>"; };
+		38F289B92B0CDFD800045D4F /* BackupCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCodes.swift; sourceTree = "<group>"; };
 		38F4B8142A49979100BD4FD2 /* WorkType + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorkType + Extension.swift"; sourceTree = "<group>"; };
 		38F4B8162A49C92400BD4FD2 /* MyDayPlan + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyDayPlan + Extension.swift"; sourceTree = "<group>"; };
 		38F515842AA33E090069FC6B /* RcpaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaViewModel.swift; sourceTree = "<group>"; };
@@ -436,6 +446,7 @@
 				3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */,
 				3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */,
 				3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */,
+				38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -450,6 +461,8 @@
 				385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */,
 				3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */,
 				38E8B5D52B0B3BB100C40042 /* Fonts and Colors.swift */,
+				38F289B12B0C8FC200045D4F /* NotificationEnum.swift */,
+				38F289B92B0CDFD800045D4F /* BackupCodes.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -627,6 +640,8 @@
 				38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */,
 				38D2E0C12B04FC03002DD291 /* SelectAllTypesTVC.swift */,
 				38D2E0C22B04FC03002DD291 /* SelectAllTypesTVC.xib */,
+				38F289B52B0CB59A00045D4F /* EditSessionTVC.swift */,
+				38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */,
 			);
 			path = SessionCell;
 			sourceTree = "<group>";
@@ -864,6 +879,7 @@
 				B287E68029F2A20F0097974D /* Satoshi-BoldItalic.otf in Resources */,
 				38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */,
 				B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */,
+				38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */,
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
 				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
@@ -1039,6 +1055,7 @@
 				3865F8DD2AFD0555009AB984 /* FSCalendarCVC.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,
 				38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */,
+				38F289B42B0CA70200045D4F /* CustomCalenderCell.swift in Sources */,
 				38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */,
 				38C7F0DF2A5D630100363E24 /* LeaveType + Extension.swift in Sources */,
 				3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */,
@@ -1053,6 +1070,7 @@
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
+				38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */,
 				38CBA4D02A9F59B3001992C4 /* DcrTagTitleCell.swift in Sources */,
 				38E3C3692AFA033C00623C33 /* ConfigModel.swift in Sources */,
 				38C600D82A93331700C733AF /* InputSampleTableViewCell.swift in Sources */,
@@ -1070,6 +1088,7 @@
 				B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */,
 				38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */,
 				3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */,
+				38F289B72B0CB59A00045D4F /* EditSessionTVC.swift in Sources */,
 				38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
@@ -1080,6 +1099,7 @@
 				38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */,
 				38E8B5D62B0B3BB100C40042 /* Fonts and Colors.swift in Sources */,
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
+				38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */,
 				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,

@@ -10,9 +10,9 @@ import UIKit
 import Foundation
 //import SDWebImage
 
-protocol MenuResponseProtocol {
+protocol MenuResponseProtocol: AnyObject {
 func callPlanAPI()
-
+func sessionRemoved()
 }
   
 
@@ -31,8 +31,8 @@ class MenuVC: BaseViewController {
     
 //    @IBOutlet weak var menuHeaderHeight: NSLayoutConstraint!
     
-  
-    var menuDelegate : MenuResponseProtocol?
+    var sessionDetailsArr : SessionDetailsArr?
+    weak var menuDelegate : MenuResponseProtocol?
     var selectedDate : Date?
   //  var accountViewModel : AccountViewModel?
     var dictParms = [String: Any]()

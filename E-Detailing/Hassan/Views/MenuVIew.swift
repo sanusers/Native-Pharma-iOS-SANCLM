@@ -44,18 +44,59 @@ extension MenuView {
             tourPlanArr.arrOfPlan.append(aDaySessions)
             _ =   self.toSetParams(tourPlanArr)
         } else {
-            tourPlanArr.arrOfPlan.enumerated().forEach { index, dayPlan  in
-                if  dayPlan.sessionDetails[index].sessionName  == aDaySessions.sessionDetails[index].sessionName  {
-                    tourPlanArr.arrOfPlan.remove(at: index)
-                    tourPlanArr.arrOfPlan.append(aDaySessions)
-                    _ =   self.toSetParams(tourPlanArr)
-                } else {
-                    tourPlanArr.arrOfPlan.append(aDaySessions)
-                    _ = self.toSetParams(tourPlanArr)
+//            tourPlanArr.arrOfPlan.enumerated().forEach { index, dayPlan  in
+//                dayPlan.sessionDetails.enumerated().forEach { sessionIndex, session in
+//                    if session.sessionName  == aDaySessions.sessionDetails[index].sessionName  {
+//                        tourPlanArr.arrOfPlan.remove(at: index)
+//                        tourPlanArr.arrOfPlan.append(aDaySessions)
+//                        _ =   self.toSetParams(tourPlanArr)
+//                    } else {
+//                        tourPlanArr.arrOfPlan.append(aDaySessions)
+//                        _ = self.toSetParams(tourPlanArr)
+//                    }
+//                }
+//
+//
+//            }
+            
+            tourPlanArr.arrOfPlan.enumerated().forEach { tourPlanArrindex, sessionDetailsArr in
+                sessionDetailsArr.sessionDetails.enumerated().forEach { sessionDetailsArrindex, sessionDetails in
+                    aDaySessions.sessionDetails.enumerated().forEach { paramindex, paramSessionDetail in
+                        if sessionDetails.sessionName == paramSessionDetail.sessionName {
+                            tourPlanArr.arrOfPlan.remove(at: tourPlanArrindex)
+                            tourPlanArr.arrOfPlan.append(aDaySessions)
+                            _ =   self.toSetParams(tourPlanArr)
+                        } else {
+                            tourPlanArr.arrOfPlan.append(aDaySessions)
+                            _ = self.toSetParams(tourPlanArr)
+                        }
+                    }
+                    
+                }
+            }
+            
+        }
+        AppDefaults.shared.tpArry = tourPlanArr
+        if  AppDefaults.shared.eachDatePlan.tourPlanArr.isEmpty {
+            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+        } else {
+            AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { eachDayindex,eachDaySessions in
+                eachDaySessions.arrOfPlan.enumerated().forEach { eachTPindex, eachTP in
+                    AppDefaults.shared.tpArry.arrOfPlan.enumerated().forEach({ addedTPindex, addedTP in
+                        if addedTP.date == eachTP.date {
+                           // eachDaySessions.arrOfPlan.remove(at: eachDayindex)
+                            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+
+                        } else {
+                            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+
+                        }
+                    })
                 }
             }
         }
-        AppDefaults.shared.tpArry = tourPlanArr
+        self.toCreateToast("Session added successfully")
+        self.hideMenuAndDismiss()
 //        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
 //                    switch result {
 //                    case .success(let response):
@@ -129,6 +170,7 @@ class MenuView : BaseView{
     
     
     enum CellType {
+        case edit
         case session
         case workType
         case cluster
@@ -142,6 +184,8 @@ class MenuView : BaseView{
     
     var menuVC :  MenuVC!
     //MARK: Outlets
+    
+    @IBOutlet var lblAddPlan: UILabel!
     @IBOutlet weak var sideMenuHolderView : UIView!
  
     @IBOutlet weak var countLbl: UILabel!
@@ -161,6 +205,9 @@ class MenuView : BaseView{
     @IBOutlet weak var selectTitleLbl: UILabel!
     
     @IBOutlet weak var saveView: UIView!
+    
+    
+    @IBOutlet var lblSave: UILabel!
     
     @IBOutlet weak var clearview: UIView!
     @IBOutlet weak var addSessionView: UIView!
@@ -255,10 +302,8 @@ class MenuView : BaseView{
         self.countView.isHidden = true
         self.menuTable.delegate = self
         self.menuTable.dataSource = self
-        if self.cellType == .session {
-           
-        }
-        setPageType(.session)
+  
+       
         self.selectView.layer.borderWidth = 1
         self.selectView.layer.borderColor = UIColor.gray.cgColor
         self.selectView.layer.cornerRadius = 5
@@ -295,7 +340,6 @@ class MenuView : BaseView{
         
         self.workTypeArr = DBManager.shared.getWorkType()
       
-      
         self.headQuatersArr =  DBManager.shared.getSubordinate()
      
         self.clusterArr = DBManager.shared.getTerritory()
@@ -307,20 +351,38 @@ class MenuView : BaseView{
         self.chemistArr = DBManager.shared.getChemist()
         
         toGenerateNewSession()
-
+//isToAddSession: self.menuVC.sessionDetailsArr != nil ? false : true
     }
     
     func toGenerateNewSession() {
         
-        sessionDetail = SessionDetail()
+//        sessionDetail = SessionDetail()
+//        sessionDetail.workType = workTypeArr?.uniqued()
+//        sessionDetail.headQuates =  headQuatersArr?.uniqued()
+//        sessionDetail.cluster = clusterArr?.uniqued()
+//        sessionDetail.jointWork = jointWorkArr?.uniqued()
+//        sessionDetail.listedDoctors = listedDocArr?.uniqued()
+//        sessionDetail.chemist = chemistArr?.uniqued()
+//        self.sessionDetailsArr.sessionDetails.append(sessionDetail)
+//        setPageType(.session)
+        
+
         sessionDetail.workType = workTypeArr?.uniqued()
         sessionDetail.headQuates =  headQuatersArr?.uniqued()
         sessionDetail.cluster = clusterArr?.uniqued()
         sessionDetail.jointWork = jointWorkArr?.uniqued()
         sessionDetail.listedDoctors = listedDocArr?.uniqued()
         sessionDetail.chemist = chemistArr?.uniqued()
-        self.sessionDetailsArr.sessionDetails.append(sessionDetail)
-        
+
+        if self.menuVC.sessionDetailsArr != nil  {
+            self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
+            lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
+            setPageType(.edit)
+        } else {
+            sessionDetail = SessionDetail()
+            self.sessionDetailsArr.sessionDetails.append(sessionDetail)
+            setPageType(.session)
+        }
     }
     
     
@@ -344,7 +406,7 @@ class MenuView : BaseView{
         
         menuTable.register(UINib(nibName: "SelectAllTypesTVC", bundle: nil), forCellReuseIdentifier: "SelectAllTypesTVC")
         
-        
+        menuTable.register(UINib(nibName: "EditSessionTVC", bundle: nil), forCellReuseIdentifier: "EditSessionTVC")
         
     }
     
@@ -361,10 +423,30 @@ class MenuView : BaseView{
     
     func setPageType(_ pagetype: CellType, for session: Int? = nil) {
         switch pagetype {
+            
+        case .edit:
+            self.cellType = .edit
+            addSessionView.isHidden = true
+            self.lblSave.text = "Edit"
+            saveView.isHidden = false
+            clearview.isHidden = true
+            self.selectViewHeightCons.constant = 0
+            self.searchHolderHeight.constant = 0
+            typesTitleHeightConst.constant = 0
+            self.selectView.isHidden = true
+            searchHolderView.isHidden = true
+            typesTitleview.isHidden = true
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
+            typesTitle.text = ""
+            self.menuTable.separatorStyle = .none
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            
         case .session:
             self.cellType = .session
             addSessionView.isHidden = false
             saveView.isHidden = false
+            self.lblSave.text = "Save"
             clearview.isHidden = true
             self.selectViewHeightCons.constant = 0
             self.searchHolderHeight.constant = 0
@@ -503,6 +585,7 @@ class MenuView : BaseView{
             
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
+       
         }
    
         self.menuTable.isHidden = false
@@ -540,9 +623,12 @@ class MenuView : BaseView{
             self.endEditing(true)
             self.isSearched = false
             switch self.cellType {
-                
+            case .edit:
+              //  self.menuTable.reloadData()
+              //  self.toGetTourPlanResponse()
+                self.setPageType(.session)
             case .session:
-
+                self.menuTable.reloadData()
                 self.toGetTourPlanResponse()
             case .workType:
 
@@ -567,6 +653,7 @@ class MenuView : BaseView{
             case .chemist:
                 setPageType(.session, for: self.selectedSession)
 
+          
             }
         }
         
@@ -574,7 +661,8 @@ class MenuView : BaseView{
             self.endEditing(true)
             self.isSearched = false
             switch self.cellType {
-                
+            case .edit:
+                break
             case .session:
                 break
             case .workType:
@@ -594,6 +682,7 @@ class MenuView : BaseView{
             case .chemist:
                 setPageType(.session, for: self.selectedSession)
 
+          
             }
            
         }
@@ -607,9 +696,10 @@ class MenuView : BaseView{
                   print("Maximum plan added")
                 }
             } else {
+             
                 self.toGenerateNewSession()
+                //isToAddSession: true
                 
-                self.setPageType(.session, for: count)
             }
         }
         
@@ -635,6 +725,8 @@ class MenuView : BaseView{
             case .chemist:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeAll()
              
+            case .edit:
+                break
             }
             self.menuTable.reloadData()
         }
@@ -728,6 +820,8 @@ class MenuView : BaseView{
                     })
                   //  sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
                 }
+            case .edit:
+                break
             }
             self.menuTable.reloadData()
         }
@@ -785,6 +879,8 @@ class MenuView : BaseView{
             } else {
                 isToSelectAll = false
             }
+        case .edit:
+            break
         }
         if isToSelectAll {
             self.selectAllIV.image =  UIImage(named: "checkBoxSelected")
@@ -842,7 +938,9 @@ class MenuView : BaseView{
                         self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
                        }) { (val) in
             
-            self.menuVC.dismiss(animated: false, completion: nil)
+                           self.menuVC.dismiss(animated: true) {
+                               self.menuVC.menuDelegate?.callPlanAPI()
+                           }
         }
         
         
@@ -892,50 +990,191 @@ class MenuView : BaseView{
 extension MenuView : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.cellType {
+        case .edit:
+            return sessionDetailsArr.sessionDetails.count
+            
         case .session:
             return sessionDetailsArr.sessionDetails.count
-           // return sessionCount
+        
         case .workType:
             return sessionDetailsArr.sessionDetails[selectedSession].workType?.count ?? 0
-           // return workTypeArr?.count ?? 0
+           
         case .cluster:
             return sessionDetailsArr.sessionDetails[selectedSession].cluster?.count ?? 0
-          //  return self.clusterArr?.count ?? 0
+         
         case .headQuater:
             return sessionDetailsArr.sessionDetails[selectedSession].headQuates?.count ?? 0
-           // return self.headQuatersArr?.count ?? 0
+          
         case .jointCall:
             return sessionDetailsArr.sessionDetails[selectedSession].jointWork?.count ?? 0
-           // return self.jointWorkArr?.count ?? 0
+           
         case .listedDoctor:
             return sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.count ?? 0
-          //  return self.listedDocArr?.count ?? 0
+          
         case .chemist:
             return sessionDetailsArr.sessionDetails[selectedSession].chemist?.count ?? 0
-           // return self.chemistArr?.count ?? 0
-//        case .FieldWork:
-//            return sessionDetailsArr.sessionDetails.count
-//          //  return sessionCount
-//        case .others:
-//            return sessionDetailsArr.sessionDetails.count
-//         //   return  sessionCount
+
         }
        
-        //self.menuVC.menuItems.count
+     
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         switch self.cellType {
             
+        case .edit:
+            let cell : EditSessionTVC = tableView.dequeueReusableCell(withIdentifier:"EditSessionTVC" ) as! EditSessionTVC
+            cell.selectionStyle = .none
+
+            cell.lblName.text = "Plan \(indexPath.row + 1)"
+           
+            sessionDetailsArr.sessionDetails[indexPath.row].sessionName = cell.lblName.text ?? ""
+            
+            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
+            let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
+            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
+            
+            if  isForFieldWork  {
+                cell.stackHeight.constant = cellStackHeightforFW
+                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.workTypeView].forEach { view in
+                    view?.isHidden = false
+                    // cell.workselectionHolder,
+                }
+            }  else {
+                cell.stackHeight.constant = cellStackHeightfOthers
+                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView].forEach { view in
+                    view?.isHidden = true
+                    // cell.workselectionHolder,
+                }
+                
+            }
+            if isSearched {
+                if sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex != nil {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[searchedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblWorkType.text = "No info available"
+                }
+            } else {
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblWorkType.text = "No info available"
+                }
+                
+            }
+            
+            var clusterNameArr = [String]()
+            var clusterCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
+                self.clusterArr?.forEach({ cluster in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.forEach { key, value in
+                        if key == cluster.code {
+                            clusterNameArr.append(cluster.name ?? "")
+                            clusterCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblCluster.text = clusterNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblCluster.text = "No info available"
+            }
+            var headQuatersNameArr = [String]()
+            var headQuartersCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
+                self.headQuatersArr?.forEach({ headQuaters in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
+                        if key == headQuaters.id {
+                            headQuatersNameArr.append(headQuaters.name ?? "")
+                            headQuartersCodeArr.append(key)
+                        }
+                    }
+                })
+                
+                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblHeadquaters.text = "No info available"
+            }
+            
+            
+            
+            var jointWorkNameArr = [String]()
+            var jointWorkCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.isEmpty {
+                self.jointWorkArr?.forEach({ work in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.forEach { key, value in
+                        if key == work.code {
+                            jointWorkNameArr.append(work.name ?? "")
+                            jointWorkCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblJointCall.text = "No info available"
+            }
+            
+            
+            var listedDoctorsNameArr = [String]()
+            var listedDoctorsCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.isEmpty {
+                self.listedDocArr?.forEach({ doctors in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
+                        if key == doctors.code {
+                            listedDoctorsNameArr.append(doctors.name ?? "")
+                            listedDoctorsCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblListedDoctor.text = "No info available"
+            }
+            var chemistNameArr = [String]()
+            var chemistCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
+                self.chemistArr?.forEach({ chemist in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.forEach { key, value in
+                        if key == chemist.code {
+                            chemistNameArr.append(chemist.name ?? "")
+                            chemistCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblChemist.text = chemistNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].chemName =  cell.lblChemist.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblChemist.text = "No info available"
+            }
+            
+           return cell
+            
+
         case .session:
             let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
             cell.selectionStyle = .none
             
-            cell.remarksTV.delegate = self
+          //  cell.remarksTV.delegate = self
             
+            cell.keybordenabled = false
             cell.lblName.text = "Session \(indexPath.row + 1)"
+            cell.selectedIndex = indexPath.row + 1
             sessionDetailsArr.sessionDetails[indexPath.row].sessionName = cell.lblName.text ?? ""
+            
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
             let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
@@ -1173,6 +1412,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 tableView.reloadData()
             }
             
+         
+            sessionDetailsArr.sessionDetails[indexPath.row].remarks = cell.remarks ?? ""
             return cell
             
         case .workType:
@@ -1242,6 +1483,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                 } else {
                                     sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
                                 }
+                                sessionDetailsArr.sessionDetails[selectedSession].FWFlg = workType.terrslFlg ?? ""
+                                sessionDetailsArr.sessionDetails[selectedSession].WTCode = workType.code ?? ""
+                                
+                                sessionDetailsArr.sessionDetails[selectedSession].WTName = workType.name ?? ""
+                                
                             }
                         }
                     })
@@ -1256,6 +1502,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         } else {
                             sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
                         }
+                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg = item?.terrslFlg ?? ""
+                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = item?.code ?? ""
+                        
+                        sessionDetailsArr.sessionDetails[selectedSession].WTName = item?.name ?? ""
                     }
                 }
                 // tableView.reloadData()
@@ -1709,6 +1959,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             return cell
             
             
+       
         }
         
         
@@ -1736,6 +1987,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 return 50
             }
            
+        case .edit:
+            if sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork  {
+                return cellHeightForFW - 100
+            }  else {
+                return cellHeightForOthers - 100
+            }
         }
     }
     

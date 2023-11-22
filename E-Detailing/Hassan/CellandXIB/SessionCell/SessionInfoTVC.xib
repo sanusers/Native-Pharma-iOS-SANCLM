@@ -332,7 +332,7 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                             </textView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -405,7 +405,7 @@
                 <outlet property="workTypeView" destination="zpd-5w-ywF" id="Cr4-39-Cx7"/>
                 <outlet property="workselectionHolder" destination="ehL-td-QCw" id="6rW-rZ-5FX"/>
             </connections>
-            <point key="canvasLocation" x="162.80487804878049" y="36.610169491525426"/>
+            <point key="canvasLocation" x="256" y="32"/>
         </tableViewCell>
     </objects>
     <resources>

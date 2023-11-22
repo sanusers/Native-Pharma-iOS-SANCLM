@@ -333,80 +333,49 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             cell.contentHolderView.backgroundColor = .clear
         }
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        let toCompareDate = dateFormatter.string(from: date )
         cell.addTap {
+       
+          
+            
             self.selectedDate =  self.toTrimDate(date: date)
             
             self.tourPlanCalander.reloadData()
+            
                     let menuvc = MenuVC.initWithStory(self, date)
                     self.tourplanVC.modalPresentationStyle = .custom
                     menuvc.menuDelegate = self
+            
+           // var isExist = Bool()
+            AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
+                eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
+                    if sessions.date == toCompareDate {
+                        menuvc.sessionDetailsArr = sessions
+                    }
+                }
+            }
+            
+            
+            
                     self.tourplanVC.navigationController?.present(menuvc, animated: true)
         }
         
         return cell
     }
-
-    
-    
-    
-    
-    
-    
 }
 
-
 extension TourPlanView: MenuResponseProtocol {
+    func sessionRemoved() {
+        print("Yet to delete")
+    }
+    
     func callPlanAPI() {
+        self.worksPlanTable.reloadData()
         print("Called")
     }
     
 
 }
-class CustomCalendarCell: FSCalendarCell {
 
-    // Your custom label
-    var customLabel: UILabel!
-    var contentHolderView : UIView = {
-        let holder = UIView()
-        holder.clipsToBounds = true
-        holder.backgroundColor = .clear
-      //  holder.layer.borderColor = UIColor.gray.cgColor
-     //   holder.layer.borderWidth = 0.5
-        return holder
-    }()
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    required init!(coder aDecoder: NSCoder!) {
-        super.init(coder: aDecoder)
-        setupViews()
-    }
-
-    private func setupViews() {
-        // Initialize and configure your custom label
-        customLabel = UILabel()
-        customLabel.textAlignment = .right
-        addSubview(contentHolderView)
-        contentHolderView.addSubview(customLabel)
-      //  addSubview(customLabel)
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        // Adjust the position of the custom label
-        contentHolderView.frame = contentView.bounds
-        customLabel.frame = CGRect(x: contentHolderView.width - contentHolderView.height / 3 - 10, y: 10, width: contentHolderView.height / 3, height: contentHolderView.height / 3)
-       
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-
-        // Reset the state of the custom cell
-        customLabel.text = nil
-       // contentHolderView.backgroundColor = .clear
-    }
-}

@@ -14,6 +14,8 @@ extension SessionInfoTVC: UITextViewDelegate {
             textView.text = nil
             textView.textColor = UIColor.black
         }
+        
+
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -21,10 +23,11 @@ extension SessionInfoTVC: UITextViewDelegate {
             textView.text = "Remarks"
             textView.textColor = UIColor.lightGray
         }
+        self.remarks = textView.text
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-
+        self.remarks = textView.text
         // Combine the textView text and the replacement text to
         // create the updated text string
         let currentText:String = textView.text
@@ -57,6 +60,7 @@ extension SessionInfoTVC: UITextViewDelegate {
 
         // ...otherwise return false since the updates have already
         // been made
+      
         return false
     }
     func textViewDidChangeSelection(_ textView: UITextView) {
@@ -137,6 +141,10 @@ class SessionInfoTVC: UITableViewCell {
     
     @IBOutlet var lblChemist: UILabel!
     
+    
+    var remarks: String?
+    var keybordenabled = Bool()
+    var selectedIndex: Int = 1
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -149,8 +157,54 @@ class SessionInfoTVC: UITableViewCell {
             view?.elevate(1)
         }
         configureTextField()
+        initNotifications()
         
         
+    }
+    
+    override func prepareForReuse() {
+       /// deinit {
+            NotificationCenter.default.removeObserver(self)
+       /// }
+    }
+    
+    func initNotifications() {
+         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+         
+         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+  
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+          if(keybordenabled == false){
+        adjustInsetForKeyboardShow(show: true, notification: notification)
+              keybordenabled = true
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+         keybordenabled = false
+
+        adjustInsetForKeyboardShow(show: false, notification: notification)
+    }
+    
+    func adjustInsetForKeyboardShow(show: Bool, notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            if show {
+                if self.frame.origin.y == 0 {
+                    self.frame.origin.y -= keyboardSize.height
+                    //+ CGFloat((selectedIndex * 620))
+                }
+            } else {
+                if self.frame.origin.y != 0 {
+                          self.frame.origin.y = 0
+                      }
+            }
+            //  contentView.bottom += adjustment
+            //  contentView.scrollIndicatorInsets.bottom += adjustment
+            self.contentView.layoutIfNeeded()
+        }
     }
     
     func configureTextField() {

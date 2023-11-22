@@ -216,6 +216,7 @@ class AppDefaults {
     var sfCode : String = ""
     var sessionDetailsArr : SessionDetailsArr?
     var tpArry = TourPlanArr()
+    var eachDatePlan = EachDatePlan()
     let userdefaults = UserDefaults.standard
     
     

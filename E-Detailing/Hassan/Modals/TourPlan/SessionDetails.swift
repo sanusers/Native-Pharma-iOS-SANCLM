@@ -368,5 +368,12 @@ class TourPlanArr {
     }
 }
 
+class EachDatePlan {
+    var tourPlanArr : [TourPlanArr]
+    init() {
+        tourPlanArr = [TourPlanArr]()
+    }
+}
+
 
 
