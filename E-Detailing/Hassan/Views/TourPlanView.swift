@@ -22,8 +22,9 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         let cell : worksPlanTVC = tableView.dequeueReusableCell(withIdentifier: "worksPlanTVC", for: indexPath) as! worksPlanTVC
         let modal =  self.arrOfPlan?[indexPath.row]
         cell.toPopulateCell(modal ?? SessionDetailsArr())
+        
         cell.addTap {
-            self.moveToMenuVC(self.tourPlanCalander.currentPage)
+            self.moveToMenuVC(modal?.rawDate ?? Date())
         }
         return cell
     }
@@ -156,6 +157,7 @@ class TourPlanView: BaseView {
     var isPrevMonth = false
     var isCurrentMonth = false
     var arrOfPlan : [SessionDetailsArr]?
+    var tableSetupmodel: TableSetupModel?
    // let appGraycolor = UIColor(hex: "#EEEEEE")
    // let cellSelectionColor = UIColor(hex: "#F2F2F7")
     private var currentPage: Date?
@@ -175,21 +177,27 @@ class TourPlanView: BaseView {
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
         self.tourplanVC = baseVC as? TourPlanVC
+       // tourplanVC.togetTableSetup()
         toSetPagetype(ofType: .general)
         setupUI()
         initViews()
     }
     
     func toLoadData() {
-        worksPlanTable.layoutIfNeeded()
+        self.arrOfPlan = [SessionDetailsArr]()
+        var tpArray =  [TourPlanArr]()
+
         AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
-            eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
-                self.arrOfPlan?.append(sessions)
-            }
+            tpArray.append(eachDayPlan)
         }
+        AppDefaults.shared.eachDatePlan.tourPlanArr.forEach({ tpArr in
+            self.arrOfPlan = tpArr.arrOfPlan
+        })
+        self.tableSetupmodel = TableSetupModel()
         worksPlanTable.delegate = self
         worksPlanTable.dataSource = self
         worksPlanTable.reloadData()
+        self.tourPlanCalander.collectionView.reloadData()
     }
     
     func initViews() {
@@ -333,6 +341,7 @@ class TourPlanView: BaseView {
         tourPlanCalander.calendarWeekdayView.backgroundColor = .appSelectionColor
         self.tourPlanCalander.scrollDirection = .horizontal
         self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
+        tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
         tourPlanCalander.delegate = self
         tourPlanCalander.dataSource = self
         tourPlanCalander.reloadData()
@@ -424,7 +433,7 @@ class TourPlanView: BaseView {
         dateFormatter.dateFormat = "d MMMM yyyy"
         let toCompareDate = dateFormatter.string(from: date )
           self.selectedDate =  self.toTrimDate(date: date)
-          self.tourPlanCalander.reloadData()
+       //   self.tourPlanCalander.reloadData()
           
                   let menuvc = MenuVC.initWithStory(self, date)
                   self.tourplanVC.modalPresentationStyle = .custom
@@ -442,7 +451,7 @@ class TourPlanView: BaseView {
     }
 }
 
-extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance {
+extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance, UICollectionViewDelegateFlowLayout {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print("::>--Tapped-->::")
@@ -474,8 +483,17 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
     func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
         // let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
         let cell = calendar.dequeueReusableCell(withIdentifier: "CustomCalendarCell", for: date, at: position) as! CustomCalendarCell
-        
-        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        var isExist = Bool()
+        let toCompareDate = dateFormatter.string(from: date)
+        cell.addedIV.isHidden = true
+        self.arrOfPlan?.forEach({ arrPlan in
+            if arrPlan.date ==  toCompareDate {
+                isExist = true
+            }
+        })
+        cell.addedIV.isHidden = isExist ? false : true
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
         cell.customLabel.setFont(font: .medium(size: .BODY))
@@ -502,6 +520,27 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        if collectionView == tourPlanCalander.collectionView {
+            return 0
+        }
+    return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        if collectionView == tourPlanCalander.collectionView {
+            return 0
+        }
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == tourPlanCalander.collectionView {
+            return CGSize(width: collectionView.width / 7, height: collectionView.height / 5)
+        }
+      return CGSize()
+    }
 }
 
 extension TourPlanView: MenuResponseProtocol {
@@ -510,14 +549,7 @@ extension TourPlanView: MenuResponseProtocol {
     }
     
     func callPlanAPI() {
-        self.arrOfPlan = [SessionDetailsArr]()
-        AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
-            eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
-                self.arrOfPlan?.append(sessions)
-            }
-        }
-        
-        self.worksPlanTable.reloadData()
+        toLoadData()
         print("Called")
     }
     

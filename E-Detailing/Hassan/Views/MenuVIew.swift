@@ -17,163 +17,222 @@ extension MenuView : UITextViewDelegate {
 
 extension MenuView {
     func toGetTourPlanResponse() {
-
-        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-        
-      
-        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
         self.sessionDetailsArr.date = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
-        
+        self.sessionDetailsArr.rawDate = self.menuVC.selectedDate ?? Date()
         dateFormatter.dateFormat = "EEEE"
         self.sessionDetailsArr.day = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
         
-        self.sessionDetailsArr.dayNo = "1"
+        dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+        self.sessionDetailsArr.dayNo = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
         self.sessionDetailsArr.entryMode = ""
         self.sessionDetailsArr.rejectionReason = ""
         
 
         let aDaySessions = self.sessionDetailsArr
-        aDaySessions.sessionDetails.forEach { session in
-            session.workType = nil
-            session.headQuates = nil
-            session.cluster = nil
-            session.jointWork = nil
-            session.listedDoctors = nil
-            session.chemist = nil
-            
+
+        
+     let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
+            session.selectedWorkTypeIndex != nil || session.searchedWorkTypeIndex != nil
         }
+      
+        
+    
+        
+       
+        if  aDaySessions.sessionDetails.count != nonEmptySession.count {
+            self.toCreateToast("Please fill the required fields to save sessions")
+        } else {
+            
+            aDaySessions.sessionDetails.forEach { session in
+                session.workType = nil
+                session.headQuates = nil
+                session.cluster = nil
+                session.jointWork = nil
+                session.listedDoctors = nil
+                session.chemist = nil
+                
+            }
+            //aDaySessions.sessionDetails.removeAll()
+            //aDaySessions.sessionDetails = nonEmptySession
+            toAppendsessionDetails(aDaySessions: aDaySessions)
+        }
+        
+        //        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
+        //                    switch result {
+        //                    case .success(let response):
+        //                        print(response)
+        //
+        //                        do {
+        //                            try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
+        //
+        //                            }
+        //                        } catch {
+        //                            print("Unable to save")
+        //                        }
+        //                    case .failure(let error):
+        //                        print(error.localizedDescription)
+        //                    }
+        //                }
+        
+    }
+    
+    
+//    func toValidateData(aDaySessions : SessionDetailsArr) {
+//        aDaySessions.sessionDetails.filter { session in
+//            if session.
+//        }
+//    }
+    
+    func toAppendsessionDetails(aDaySessions : SessionDetailsArr) {
+        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         let tourPlanArr =  AppDefaults.shared.tpArry
+       // var arrOfPlan = tourPlanArr.arrOfPlan
         tourPlanArr.Div = appdefaultSetup.divisionCode
         tourPlanArr.SFCode = appdefaultSetup.sfCode
         tourPlanArr.SFName = appdefaultSetup.sfName
-        if tourPlanArr.arrOfPlan.isEmpty {
-            tourPlanArr.arrOfPlan.append(aDaySessions)
-            _ =   self.toSetParams(tourPlanArr)
-        } else {
-//            tourPlanArr.arrOfPlan.enumerated().forEach { index, dayPlan  in
-//                dayPlan.sessionDetails.enumerated().forEach { sessionIndex, session in
-//                    if session.sessionName  == aDaySessions.sessionDetails[index].sessionName  {
-//                        tourPlanArr.arrOfPlan.remove(at: index)
-//                        tourPlanArr.arrOfPlan.append(aDaySessions)
-//                        _ =   self.toSetParams(tourPlanArr)
-//                    } else {
-//                        tourPlanArr.arrOfPlan.append(aDaySessions)
-//                        _ = self.toSetParams(tourPlanArr)
-//                    }
-//                }
-//
-//
-//            }
-            
-            tourPlanArr.arrOfPlan.enumerated().forEach { tourPlanArrindex, sessionDetailsArr in
-                sessionDetailsArr.sessionDetails.enumerated().forEach { sessionDetailsArrindex, sessionDetails in
-                    aDaySessions.sessionDetails.enumerated().forEach { paramindex, paramSessionDetail in
-                        if sessionDetails.sessionName == paramSessionDetail.sessionName {
-                            tourPlanArr.arrOfPlan.remove(at: tourPlanArrindex)
-                            tourPlanArr.arrOfPlan.append(aDaySessions)
-                            _ =   self.toSetParams(tourPlanArr)
-                        } else {
-                            tourPlanArr.arrOfPlan.append(aDaySessions)
-                            _ = self.toSetParams(tourPlanArr)
-                        }
-                    }
-                    
+        
+        tourPlanArr.arrOfPlan.append(aDaySessions)
+   
+        
+        
+        var isRemoved = false
+        tourPlanArr.arrOfPlan.enumerated().forEach { index , sessionDetArr in
+            if tourPlanArr.arrOfPlan.count > index {
+                if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
+                    tourPlanArr.arrOfPlan.remove(at: index)
+                    isRemoved = true
+                } else {
+                  //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
                 }
             }
+     
             
         }
+        if isRemoved {
+         //   tourPlanArr.arrOfPlan.append(aDaySessions)
+        }
+      
+
+        _ = self.toSetParams(tourPlanArr)
+
+ 
         AppDefaults.shared.tpArry = tourPlanArr
-        if  AppDefaults.shared.eachDatePlan.tourPlanArr.isEmpty {
+        
+        var arrOfPlan = [SessionDetailsArr]()
+        
             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-        } else {
-            AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { eachDayindex,eachDaySessions in
-                eachDaySessions.arrOfPlan.enumerated().forEach { eachSessionindex, eachSession in
-                    AppDefaults.shared.tpArry.arrOfPlan.enumerated().forEach({ addedeachSessionindex, addedeachSession in
-                        if addedeachSession.date == eachSession.date && eachSession.changeStatus == "true" {
-                          //  AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-                            eachDaySessions.arrOfPlan.remove(at: eachSessionindex)
-                            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-                        } else {
-                         
-                            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-                          
-                        }
-                    })
+  
+            
+         arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan
+            
+            
+        var sessionDetails =  [SessionDetailsArr]()
+            
+        AppDefaults.shared.tpArry.arrOfPlan.forEach { plan in
+            sessionDetails.append(plan)
+        }
+        
+     //   AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+        
+        
+            var isEachDayRemoved = false
+  
+             
+        arrOfPlan.enumerated().forEach { EachDaysessionDetArrIndex, EachDaysessionDetArr  in
+            sessionDetails.enumerated().forEach { tpArrSessionIndex,  tpArrSessionDetArr in
+                if EachDaysessionDetArr.date == tpArrSessionDetArr.date && EachDaysessionDetArr.changeStatus == "True" {
+                    if arrOfPlan.count > EachDaysessionDetArrIndex {
+                        arrOfPlan.remove(at: EachDaysessionDetArrIndex)
+                        isEachDayRemoved = true
+                    }
+                } else {
+                  //  AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
                 }
             }
         }
-        self.toCreateToast("Session added successfully")
-            self.menuVC.menuDelegate?.callPlanAPI()
-        self.hideMenuAndDismiss()
-//        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
-//                    switch result {
-//                    case .success(let response):
-//                        print(response)
-//
-//                        do {
-//                            try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
-//
-//                            }
-//                        } catch {
-//                            print("Unable to save")
-//                        }
-//                    case .failure(let error):
-//                        print(error.localizedDescription)
-//                    }
-//                }
+        
+        if isEachDayRemoved {
+            arrOfPlan = sessionDetails
+        }
+           
+                AppDefaults.shared.eachDatePlan.tourPlanArr.forEach({ tpArr in
+                   // tpArr.arrOfPlan.removeAll()
+                   // tpArr.arrOfPlan = arrOfPlan
+                    tpArr.arrOfPlan = arrOfPlan
+                })
             
+            
+            
+
+        self.toCreateToast("Session added successfully")
+        self.menuVC.menuDelegate?.callPlanAPI()
+        self.hideMenuAndDismiss()
     }
     
     func toSetParams(_ tourPlanArr: TourPlanArr) -> [String: Any] {
+        _ = self.menuVC.selectedDate
+        let dateArr = self.sessionDetailsArr.date.components(separatedBy: " ") //"1 Nov 2023"
+        let anotherDateArr = self.sessionDetailsArr.dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
         var param = [String: Any]()
-        param["Div"] = tourPlanArr.Div
         param["SFCode"] = tourPlanArr.SFCode
         param["SFName"] = tourPlanArr.SFName
-        param["tpData"] = [Any]()
-        var tpparam = [String: Any]()
-        var sessionArr = [Any]()
+        param["Div"] = tourPlanArr.Div
+        param["Mnth"] = anotherDateArr[0]
+        param["Yr"] = dateArr[2]//2023
+        param["Day"] =  dateArr[0]//1
+        param["Tour_Month"] = anotherDateArr[0]// 11
+        param["Tour_Year"] = dateArr[2] // 2023
+        param["tpmonth"] = dateArr[1]// Nov
+        param["tpday"] = self.sessionDetailsArr.day// Wednesday
+        param["dayno"] = anotherDateArr[0] // 11
+        let tpDtDate = self.sessionDetailsArr.dayNo.replacingOccurrences(of: "/", with: "-")
+        param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
         tourPlanArr.arrOfPlan.enumerated().forEach { index, allDayPlans in
-            tpparam["changeStatus"] = allDayPlans.changeStatus
-            tpparam["date"] = allDayPlans.date
-            tpparam["day"] = allDayPlans.day
-            tpparam["dayNo"] = allDayPlans.dayNo
-            tpparam["entryMode"] = allDayPlans.entryMode
-            tpparam["rejectionReason"] = allDayPlans.rejectionReason
-            tpparam["sessions"] = [Any]()
-    
-            allDayPlans.sessionDetails.forEach { session in
-                var sessionParam = [String: Any]()
-                sessionParam["FWFlg"] = session.FWFlg
-                sessionParam["HQCodes"] = session.HQCodes
-                sessionParam["HQNames"] = session.HQNames
-                sessionParam["WTCode"] = session.WTCode
-                sessionParam["WTName"] = session.WTName
-                sessionParam["chemCode"] = session.chemCode
-                sessionParam["chemName"] = session.chemName
-                sessionParam["clusterCode"] = session.clusterCode
-                sessionParam["clusterName"] = session.clusterName
-                sessionParam["drCode"] = session.drCode
-                sessionParam["drName"] = session.drName
-                sessionParam["jwCode"] = session.jwCode
-                sessionParam["jwName"] = session.jwName
-                sessionParam["remarks"] = session.remarks
-    
-                sessionArr.append(sessionParam)
+            allDayPlans.sessionDetails.enumerated().forEach { sessionIndex, session in
+               // var sessionParam = [String: Any]()
+                var index = String()
+                if sessionIndex == 0 {
+                    index = ""
+                } else {
+                    index = "\(sessionIndex + 1)"
+                }
+                
+                var drIndex = String()
+                if sessionIndex == 0 {
+                    drIndex = "_"
+                } else if sessionIndex == 1{
+                    drIndex = "_two_"
+                } else if sessionIndex == 2 {
+                    drIndex = "_three_"
+                }
+                param["FWFlg\(index)"] = session.FWFlg
+                param["HQCodes\(index)"] = session.HQCodes
+                param["HQNames\(index)"] = session.HQNames
+                param["WTCode\(index)"] = session.WTCode
+                param["WTName\(index)"] = session.WTName
+                param["chem\(drIndex)Code"] = session.chemCode
+                param["chem\(drIndex)Name"] = session.chemName
+                param["clusterCode\(index)"] = session.clusterCode
+                param["clusterName\(index)"] = session.clusterName
+                param["Dr\(drIndex)Code"] = session.drCode
+                param["Dr\(drIndex)Name"] = session.drName
+                param["jwCodes\(index)"] = session.jwCode
+                param["jwNames\(index)"] = session.jwName
+                param["DayRemarks\(index)"] = session.remarks
             }
-            tpparam["sessions"] = sessionArr
-            var info = [String: Any]()
-            info["date"] = "\(Date())"
-            info["timezone"] = "3"
-            info["timezone_type"] = "\(TimeZone.current.identifier)"
-            tpparam["submittedTime"] = info
         }
-        param["tpData"] = tpparam
-    
+        param["submittedTime"] = "\(Date())"
+        param["Mode"] = "Android-App"
+        param["Entry_mode"] = "Apps"
+        param["Approve_mode"] = ""
+        param["Approved_time"] = ""
+        param["app_version"] = "N 1.6.9"
+
         let stringJSON = param.toString()
         print(stringJSON)
-    
+
         return param
     }
 
@@ -393,7 +452,7 @@ class MenuView : BaseView{
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
             if  istoAddSession {
                 self.sessionDetailsArr.sessionDetails.append(sessionDetail)
-                setPageType(.session)
+                setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
             } else {
                 setPageType(.edit)
             }
@@ -401,15 +460,30 @@ class MenuView : BaseView{
         } else {
             sessionDetail = SessionDetail()
             self.sessionDetailsArr.sessionDetails.append(sessionDetail)
-            setPageType(.session)
+            setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
         }
     }
     
     
     func toRemoveSession(at index: Int) {
-        self.sessionDetailsArr.sessionDetails.remove(at: index)
+        if isForEdit()  {
+            self.menuVC.sessionDetailsArr?.sessionDetails.remove(at: index)
+        } else {
+            self.sessionDetailsArr.sessionDetails.remove(at: index)
+        }
+        self.selectedSession = 0
+        setPageType(self.cellType)
+      
     }
     
+    
+    func isForEdit() -> Bool {
+        if self.menuVC.sessionDetailsArr != nil  {
+            return true
+        } else {
+            return false
+        }
+    }
 
     @objc func hideMenu() {
         self.hideMenuAndDismiss()
@@ -460,7 +534,22 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = 0
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            if isForEdit()  {
+                if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
+                     
+                } else {
+                    self.menuVC.sessionDetailsArr?.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                }
+                
+              //  self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            } else {
+                if self.sessionDetailsArr.sessionDetails.count == 0 {
+                     
+                } else {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                }
+            }
+          
             
         case .session:
             self.cellType = .session
@@ -478,7 +567,23 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = 0
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            
+            if isForEdit()  {
+               if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
+                    
+               } else {
+                   self.menuVC.sessionDetailsArr?.sessionDetails[self.selectedSession].workType = self.workTypeArr
+               }
+               
+              //  self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            } else {
+                if self.sessionDetailsArr.sessionDetails.count == 0 {
+                     
+                } else {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                }
+            }
+           
       
             
         case .workType:
@@ -498,7 +603,21 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = 0
             typesTitle.text = "Work Type"
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            if isForEdit()  {
+                if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
+                     
+                } else {
+                    self.menuVC.sessionDetailsArr?.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                }
+              //  self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+            } else {
+                if self.sessionDetailsArr.sessionDetails.count == 0 {
+                     
+                } else {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                }
+            }
+            
         
         case .cluster:
             self.cellType = .cluster
@@ -649,7 +768,7 @@ class MenuView : BaseView{
                 self.sessionDetailsArr.changeStatus = "True"
                 self.setPageType(.session)
             case .session:
-                self.menuTable.reloadData()
+               // self.menuTable.reloadData()
                 self.toGetTourPlanResponse()
             case .workType:
 
@@ -1181,6 +1300,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         
           //  cell.remarksTV.delegate = self
           //  cell.remarks =  sessionDetailsArr.sessionDetails[indexPath.row].remarks.isEmpty ? nil : sessionDetailsArr.sessionDetails[indexPath.row].remarks
+            if self.sessionDetailsArr.sessionDetails.count == 1 {
+                cell.deleteIcon.isHidden = true
+            } else  {
+                cell.deleteIcon.isHidden = false
+            }
+           
             cell.keybordenabled = false
             cell.lblName.text = "Session \(indexPath.row + 1)"
             cell.selectedIndex = indexPath.row + 1
@@ -1189,6 +1314,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
             let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
+            
+          
             
             if  isForFieldWork  {
                 cell.stackHeight.constant = cellStackHeightforFW
@@ -1218,10 +1345,31 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
             }
+            if isSearched {
+                let model = sessionDetailsArr.sessionDetails[indexPath.row]
+                if model.searchedWorkTypeIndex == nil {
+                    model.selectedClusterID =  [String : Bool]()
+                    model.selectedHeadQuaterID =  [String : Bool]()
+                    model.selectedjointWorkID = [String : Bool]()
+                    model.selectedlistedDoctorsID = [String : Bool]()
+                    model.selectedchemistID = [String : Bool]()
+                }
+            } else {
+                let model = sessionDetailsArr.sessionDetails[indexPath.row]
+                if model.selectedWorkTypeIndex == nil {
+                    model.selectedClusterID =  [String : Bool]()
+                    model.selectedHeadQuaterID =  [String : Bool]()
+                    model.selectedjointWorkID = [String : Bool]()
+                    model.selectedlistedDoctorsID = [String : Bool]()
+                    model.selectedchemistID = [String : Bool]()
+                }
+            }
+    
             
-            var clusterNameArr = [String]()
-            var clusterCodeArr = [String]()
+           
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
+                var clusterNameArr = [String]()
+                var clusterCodeArr = [String]()
                 self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.forEach { key, value in
                         if key == cluster.code {
@@ -1237,9 +1385,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cell.lblCluster.text = "Select"
             }
-            var headQuatersNameArr = [String]()
-            var headQuartersCodeArr = [String]()
+            
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
+                var headQuatersNameArr = [String]()
+                var headQuartersCodeArr = [String]()
                 self.headQuatersArr?.forEach({ headQuaters in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
                         if key == headQuaters.id {
@@ -1259,9 +1408,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
             
-            var jointWorkNameArr = [String]()
-            var jointWorkCodeArr = [String]()
+          
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.isEmpty {
+                var jointWorkNameArr = [String]()
+                var jointWorkCodeArr = [String]()
                 self.jointWorkArr?.forEach({ work in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.forEach { key, value in
                         if key == work.code {
@@ -1279,9 +1429,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             
             
-            var listedDoctorsNameArr = [String]()
-            var listedDoctorsCodeArr = [String]()
+           
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.isEmpty {
+                var listedDoctorsNameArr = [String]()
+                var listedDoctorsCodeArr = [String]()
                 self.listedDocArr?.forEach({ doctors in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
                         if key == doctors.code {
@@ -1297,9 +1448,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cell.lblListedDoctor.text = "Select"
             }
-            var chemistNameArr = [String]()
-            var chemistCodeArr = [String]()
+           
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
+                var chemistNameArr = [String]()
+                var chemistCodeArr = [String]()
                 self.chemistArr?.forEach({ chemist in
                     sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.forEach { key, value in
                         if key == chemist.code {
@@ -1341,7 +1493,6 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                
                     self.cellType = .workType
                     self.selectedSession = indexPath.row
-                    
                     self.setPageType(.workType)
            
                 
@@ -1414,7 +1565,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             
-            cell.deleteIcon.isHidden = false
+            //cell.deleteIcon.isHidden = false
             
             
             cell.deleteIcon.addTap {
@@ -1510,22 +1661,49 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 } else {
                     if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
                         sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
+                        self.menuTable.reloadData()
                     } else {
+                        let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
                         sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
-                        if item?.terrslFlg == "Y" {
-                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
-                        } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
+                
+                            var isExist = Bool()
+
+                            if sessionDetailsArr.sessionDetails.count > 1 {
+                               let asession = sessionDetailsArr.sessionDetails.enumerated().filter {sessionDetailIndex, sessionDetail in
+                                    sessionDetail.selectedWorkTypeIndex ==  sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
+                                }
+                                
+                                if asession.count > 1 {
+                                    isExist = true
+                                }
+                                
+                                if isExist {
+                                    self.toCreateToast("You have already choosen similar work type for another session")
+                              
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = cacheIndex
+                                } else {
+                                    toSetData()
+                                }
+                            } else {
+                                toSetData()
+                            }
+           
+                        func toSetData() {
+                            if item?.terrslFlg == "Y" {
+                                sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
+                            } else {
+                                sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
+                            }
+                            sessionDetailsArr.sessionDetails[selectedSession].FWFlg = item?.terrslFlg ?? ""
+                            sessionDetailsArr.sessionDetails[selectedSession].WTCode = item?.code ?? ""
+                            let terrFlg = item?.terrslFlg ?? ""
+                            sessionDetailsArr.sessionDetails[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
+                            sessionDetailsArr.sessionDetails[selectedSession].WTName = item?.name ?? ""
+                            setPageType(.session, for: self.selectedSession)
+                            self.endEditing(true)
                         }
-                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg = item?.terrslFlg ?? ""
-                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = item?.code ?? ""
-                        
-                        sessionDetailsArr.sessionDetails[selectedSession].WTName = item?.name ?? ""
                     }
                 }
-                // tableView.reloadData()
-                setPageType(.session, for: self.selectedSession)
-                self.endEditing(true)
             }
             
             

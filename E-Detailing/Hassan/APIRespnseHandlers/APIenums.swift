@@ -13,14 +13,15 @@ enum APIEnums : String{
     
     case none = ""
     case actionLogin = "action/login"
-    
+    case tableSetup = "table/setups"
+    //axn=
 }
 
 
 extension APIEnums{//Return method for API
     var method : HTTPMethod{
         switch self {
-        case .actionLogin:
+        case .actionLogin, .tableSetup:
             return .post
         default:
             return .get

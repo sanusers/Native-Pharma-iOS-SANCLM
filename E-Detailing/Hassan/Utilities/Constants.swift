@@ -51,12 +51,12 @@ var LicenceKey : String  {
     }
 }
 
-var appMainURL : String = ""
+var appMainURL : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?axn="
 
 //(infoPlist?.value(for: .App_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
  
- var APIUrl : String = ""
+ var APIUrl : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?axn="
  var licenseKey : String = ""
 //+ "api/"
 

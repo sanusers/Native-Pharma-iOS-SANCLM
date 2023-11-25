@@ -7,258 +7,103 @@
 
 import Foundation
 
-class MenuWorkType: Codable {
-    let code: String
-    let eTabs: String
-    let fwFlg: String
-    let index: Int
-    let name: String
-    let sfCode: String
-    let terrslFlg: String
-    let tpDCR: String
+
+class TableSetupModel: Codable {
+    let SF_code : String
+    let AddsessionNeed : String
+    let AddsessionCount : String
+    let DrNeed : String
+    let ChmNeed : String
+    let JWNeed : String
+    let ClusterNeed : String
+    let clustertype : String
+    let div : String
+    let StkNeed : String
+    let Cip_Need : String
+    let HospNeed : String
+    let FW_meetup_mandatory : String
+    let max_doc : String
+    let tp_objective : String
+    let Holiday_Editable : String
+    let Weeklyoff_Editable : String
+    let UnDrNeed : Int
+    
+    
+    enum CodingKeys: String, CodingKey {
+        case SF_code
+        case AddsessionNeed
+        case AddsessionCount
+        case DrNeed
+        case ChmNeed
+        case JWNeed
+        case ClusterNeed
+        case clustertype
+        case div
+        case StkNeed
+        case Cip_Need
+        case HospNeed
+        case FW_meetup_mandatory
+        case max_doc
+        case tp_objective
+        case Holiday_Editable
+        case Weeklyoff_Editable
+        case UnDrNeed
+    }
     
     required init(from decoder: Decoder) throws {
+        
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-        self.eTabs = try container.decode(String.self, forKey: .eTabs)
-        self.fwFlg = try container.decode(String.self, forKey: .fwFlg)
-        self.index = try container.decode(Int.self, forKey: .index)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.terrslFlg = try container.decode(String.self, forKey: .terrslFlg)
-        self.tpDCR = try container.decode(String.self, forKey: .tpDCR)
+        self.SF_code = container.safeDecodeValue(forKey: .SF_code)
+        self.AddsessionNeed = container.safeDecodeValue(forKey: .AddsessionNeed)
+        self.AddsessionCount = container.safeDecodeValue(forKey: .AddsessionCount)
+        self.DrNeed = container.safeDecodeValue(forKey: .DrNeed)
+        self.ChmNeed = container.safeDecodeValue(forKey: .ChmNeed)
+        self.JWNeed = container.safeDecodeValue(forKey: .JWNeed)
+        self.ClusterNeed = container.safeDecodeValue(forKey: .ClusterNeed)
+        self.clustertype = container.safeDecodeValue(forKey: .clustertype)
+        self.div = container.safeDecodeValue(forKey: .div)
+        self.StkNeed = container.safeDecodeValue(forKey: .StkNeed)
+        self.Cip_Need = container.safeDecodeValue(forKey: .Cip_Need)
+        self.HospNeed = container.safeDecodeValue(forKey: .HospNeed)
+        self.FW_meetup_mandatory = container.safeDecodeValue(forKey: .FW_meetup_mandatory)
+        self.max_doc = container.safeDecodeValue(forKey: .max_doc)
+        self.tp_objective = container.safeDecodeValue(forKey: .tp_objective)
+        self.Holiday_Editable = container.safeDecodeValue(forKey: .Holiday_Editable)
+        self.Weeklyoff_Editable = container.safeDecodeValue(forKey: .Weeklyoff_Editable)
+        self.UnDrNeed = container.safeDecodeValue(forKey: .UnDrNeed)
     }
     
     init() {
-        code = String()
-        eTabs = String()
-        fwFlg = String()
-        index = Int()
-        name = String()
-        sfCode = String()
-        terrslFlg = String()
-        tpDCR = String()
+        SF_code = ""
+         AddsessionNeed = "0"
+         AddsessionCount = "3"
+         DrNeed = "0"
+         ChmNeed = "0"
+         JWNeed = "0"
+         ClusterNeed = "1"
+         clustertype = "1"
+         div = "63"
+         StkNeed = "0"
+         Cip_Need = "0"
+         HospNeed = "1"
+         FW_meetup_mandatory = "1"
+         max_doc = "0"
+         tp_objective = "1"
+         Holiday_Editable = "0"
+         Weeklyoff_Editable = "0"
+         UnDrNeed = 0
     }
     
 }
-
-class MenuheadQuaters: Codable {
-    let code: String
-    let eTabs: String
-    let fwFlg: String
-    let index: Int
-    let name: String
-    let sfCode: String
-    let terrslFlg: String
-    let tpDCR: String
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-        self.eTabs = try container.decode(String.self, forKey: .eTabs)
-        self.fwFlg = try container.decode(String.self, forKey: .fwFlg)
-        self.index = try container.decode(Int.self, forKey: .index)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.terrslFlg = try container.decode(String.self, forKey: .terrslFlg)
-        self.tpDCR = try container.decode(String.self, forKey: .tpDCR)
-    }
-    
-    init() {
-        code = String()
-        eTabs = String()
-        fwFlg = String()
-        index = Int()
-        name = String()
-        sfCode = String()
-        terrslFlg = String()
-        tpDCR = String()
-    }
-    
-}
-
-class Menucluster: Codable {
-    let code: String
-    let eTabs: String
-    let fwFlg: String
-    let index: Int
-    let name: String
-    let sfCode: String
-    let terrslFlg: String
-    let tpDCR: String
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-        self.eTabs = try container.decode(String.self, forKey: .eTabs)
-        self.fwFlg = try container.decode(String.self, forKey: .fwFlg)
-        self.index = try container.decode(Int.self, forKey: .index)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.terrslFlg = try container.decode(String.self, forKey: .terrslFlg)
-        self.tpDCR = try container.decode(String.self, forKey: .tpDCR)
-    }
-    
-    init() {
-        code = String()
-        eTabs = String()
-        fwFlg = String()
-        index = Int()
-        name = String()
-        sfCode = String()
-        terrslFlg = String()
-        tpDCR = String()
-    }
-    
-}
-
-class MenujointWork: Codable {
-    let code: String
-    let eTabs: String
-    let fwFlg: String
-    let index: Int
-    let name: String
-    let sfCode: String
-    let terrslFlg: String
-    let tpDCR: String
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-        self.eTabs = try container.decode(String.self, forKey: .eTabs)
-        self.fwFlg = try container.decode(String.self, forKey: .fwFlg)
-        self.index = try container.decode(Int.self, forKey: .index)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.terrslFlg = try container.decode(String.self, forKey: .terrslFlg)
-        self.tpDCR = try container.decode(String.self, forKey: .tpDCR)
-    }
-    
-    init() {
-        code = String()
-        eTabs = String()
-        fwFlg = String()
-        index = Int()
-        name = String()
-        sfCode = String()
-        terrslFlg = String()
-        tpDCR = String()
-    }
-    
-}
-
-class MenulistedDoc: Codable {
-    let code: String
-    let eTabs: String
-    let fwFlg: String
-    let index: Int
-    let name: String
-    let sfCode: String
-    let terrslFlg: String
-    let tpDCR: String
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-        self.eTabs = try container.decode(String.self, forKey: .eTabs)
-        self.fwFlg = try container.decode(String.self, forKey: .fwFlg)
-        self.index = try container.decode(Int.self, forKey: .index)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.terrslFlg = try container.decode(String.self, forKey: .terrslFlg)
-        self.tpDCR = try container.decode(String.self, forKey: .tpDCR)
-    }
-    
-    init() {
-        code = String()
-        eTabs = String()
-        fwFlg = String()
-        index = Int()
-        name = String()
-        sfCode = String()
-        terrslFlg = String()
-        tpDCR = String()
-    }
-    
-}
-
-class Menuchemist: Codable {
-    let code: String
-    let eTabs: String
-    let fwFlg: String
-    let index: Int
-    let name: String
-    let sfCode: String
-    let terrslFlg: String
-    let tpDCR: String
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.code = try container.decode(String.self, forKey: .code)
-        self.eTabs = try container.decode(String.self, forKey: .eTabs)
-        self.fwFlg = try container.decode(String.self, forKey: .fwFlg)
-        self.index = try container.decode(Int.self, forKey: .index)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.sfCode = try container.decode(String.self, forKey: .sfCode)
-        self.terrslFlg = try container.decode(String.self, forKey: .terrslFlg)
-        self.tpDCR = try container.decode(String.self, forKey: .tpDCR)
-    }
-    
-    init() {
-        code = String()
-        eTabs = String()
-        fwFlg = String()
-        index = Int()
-        name = String()
-        sfCode = String()
-        terrslFlg = String()
-        tpDCR = String()
-    }
-    
-}
-
-
-//extension WorkType: Codable {
-//    public func encode(to encoder: Encoder) throws {
-//        <#code#>
-//    }
-//
-//
-//
-//}
-//
-//
-//extension Subordinate: Codable {
-//
-//}
-//
-//extension Territory: Codable {
-//
-//}
-//
-//
-//extension JointWork : Codable {
-//
-//}
-//
-//extension DoctorFencing : Codable {
-//
-//}
-//
-//extension chemist: Codable {
-//
-//}
 
 class SessionDetail {
     var sessionName : String
     var workType: [WorkType]?
     var selectedWorkTypeIndex: Int? = nil
     var searchedWorkTypeIndex: Int? = nil
-  
     var isForFieldWork: Bool = true
     var workTypeCode: String? = nil
     var selectedClusterID: [String : Bool]
-    //  var searchedClusterID: [String : Bool]
     var selectedHeadQuaterID: [String : Bool]
     var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
@@ -268,7 +113,7 @@ class SessionDetail {
     var jointWork: [JointWork]?
     var listedDoctors: [DoctorFencing]?
     var chemist: [Chemist]?
-
+    var isToshowTerritory: Bool
    var FWFlg : String
    var HQCodes : String
    var HQNames : String
@@ -293,7 +138,6 @@ class SessionDetail {
    var unListedDrName : String
     
     init() {
-        
         sessionName = String()
         self.workType = [WorkType]()
         self.headQuates = [Subordinate]()
@@ -301,6 +145,7 @@ class SessionDetail {
         self.jointWork = [JointWork]()
         self.listedDoctors = [DoctorFencing]()
         self.chemist = [Chemist]()
+        self.isToshowTerritory = false
         self.selectedClusterID = [String : Bool]()
         self.selectedHeadQuaterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
@@ -335,6 +180,7 @@ class SessionDetail {
 class SessionDetailsArr {
     var changeStatus : String
     var date : String
+    var rawDate : Date
     var day : String
     var dayNo: String
     var entryMode : String
@@ -346,7 +192,7 @@ class SessionDetailsArr {
         date  = String()
         day  = String()
         dayNo = String()
-      
+        rawDate = Date()
         entryMode  = String()
         rejectionReason = String()
         sessionDetails = [SessionDetail]()

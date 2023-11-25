@@ -48,3 +48,215 @@
 //    
 //    return param
 //}
+
+
+
+//class MenuWorkType: Codable {
+//    let code: String
+//    let eTabs: String
+//    let fwFlg: String
+//    let index: Int
+//    let name: String
+//    let sfCode: String
+//    let terrslFlg: String
+//    let tpDCR: String
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.code = container.safeDecodeValue(forKey: .code)
+//        self.eTabs = container.safeDecodeValue(forKey: .eTabs)
+//        self.fwFlg = container.safeDecodeValue(forKey: .fwFlg)
+//        self.index = container.safeDecodeValue(forKey: .index)
+//        self.name = container.safeDecodeValue(forKey: .name)
+//        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+//        self.terrslFlg = container.safeDecodeValue(forKey: .terrslFlg)
+//        self.tpDCR = container.safeDecodeValue(forKey: .tpDCR)
+//    }
+//    
+//    init() {
+//        code = String()
+//        eTabs = String()
+//        fwFlg = String()
+//        index = Int()
+//        name = String()
+//        sfCode = String()
+//        terrslFlg = String()
+//        tpDCR = String()
+//    }
+//    
+//}
+//
+//class MenuheadQuaters: Codable {
+//    let code: String
+//    let eTabs: String
+//    let fwFlg: String
+//    let index: Int
+//    let name: String
+//    let sfCode: String
+//    let terrslFlg: String
+//    let tpDCR: String
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.code = container.safeDecodeValue(forKey: .code)
+//        self.eTabs = container.safeDecodeValue(forKey: .eTabs)
+//        self.fwFlg = container.safeDecodeValue(forKey: .fwFlg)
+//        self.index = container.safeDecodeValue(forKey: .index)
+//        self.name = container.safeDecodeValue(forKey: .name)
+//        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+//        self.terrslFlg = container.safeDecodeValue(forKey: .terrslFlg)
+//        self.tpDCR = container.safeDecodeValue(forKey: .tpDCR)
+//    }
+//    
+//    init() {
+//        code = String()
+//        eTabs = String()
+//        fwFlg = String()
+//        index = Int()
+//        name = String()
+//        sfCode = String()
+//        terrslFlg = String()
+//        tpDCR = String()
+//    }
+//    
+//}
+//
+//class Menucluster: Codable {
+//    let code: String
+//    let eTabs: String
+//    let fwFlg: String
+//    let index: Int
+//    let name: String
+//    let sfCode: String
+//    let terrslFlg: String
+//    let tpDCR: String
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.code = container.safeDecodeValue(forKey: .code)
+//        self.eTabs = container.safeDecodeValue(forKey: .eTabs)
+//        self.fwFlg = container.safeDecodeValue(forKey: .fwFlg)
+//        self.index = container.safeDecodeValue(forKey: .index)
+//        self.name = container.safeDecodeValue(forKey: .name)
+//        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+//        self.terrslFlg = container.safeDecodeValue(forKey: .terrslFlg)
+//        self.tpDCR = container.safeDecodeValue(forKey: .tpDCR)
+//    }
+//    
+//    init() {
+//        code = String()
+//        eTabs = String()
+//        fwFlg = String()
+//        index = Int()
+//        name = String()
+//        sfCode = String()
+//        terrslFlg = String()
+//        tpDCR = String()
+//    }
+//    
+//}
+//
+//class MenujointWork: Codable {
+//    let code: String
+//    let eTabs: String
+//    let fwFlg: String
+//    let index: Int
+//    let name: String
+//    let sfCode: String
+//    let terrslFlg: String
+//    let tpDCR: String
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.code = container.safeDecodeValue(forKey: .code)
+//        self.eTabs = container.safeDecodeValue(forKey: .eTabs)
+//        self.fwFlg = container.safeDecodeValue(forKey: .fwFlg)
+//        self.index = container.safeDecodeValue(forKey: .index)
+//        self.name = container.safeDecodeValue(forKey: .name)
+//        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+//        self.terrslFlg = container.safeDecodeValue(forKey: .terrslFlg)
+//        self.tpDCR = container.safeDecodeValue(forKey: .tpDCR)
+//    }
+//    
+//    init() {
+//        code = String()
+//        eTabs = String()
+//        fwFlg = String()
+//        index = Int()
+//        name = String()
+//        sfCode = String()
+//        terrslFlg = String()
+//        tpDCR = String()
+//    }
+//    
+//}
+//
+//class MenulistedDoc: Codable {
+//    let code: String
+//    let eTabs: String
+//    let fwFlg: String
+//    let index: Int
+//    let name: String
+//    let sfCode: String
+//    let terrslFlg: String
+//    let tpDCR: String
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.code = container.safeDecodeValue(forKey: .code)
+//        self.eTabs = container.safeDecodeValue(forKey: .eTabs)
+//        self.fwFlg = container.safeDecodeValue(forKey: .fwFlg)
+//        self.index = container.safeDecodeValue(forKey: .index)
+//        self.name = container.safeDecodeValue(forKey: .name)
+//        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+//        self.terrslFlg = container.safeDecodeValue(forKey: .terrslFlg)
+//        self.tpDCR = container.safeDecodeValue(forKey: .tpDCR)
+//    }
+//    
+//    init() {
+//        code = String()
+//        eTabs = String()
+//        fwFlg = String()
+//        index = Int()
+//        name = String()
+//        sfCode = String()
+//        terrslFlg = String()
+//        tpDCR = String()
+//    }
+//    
+//}
+//
+//class Menuchemist: Codable {
+//    let code: String
+//    let eTabs: String
+//    let fwFlg: String
+//    let index: Int
+//    let name: String
+//    let sfCode: String
+//    let terrslFlg: String
+//    let tpDCR: String
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.code = container.safeDecodeValue(forKey: .code)
+//        self.eTabs = container.safeDecodeValue(forKey: .eTabs)
+//        self.fwFlg = container.safeDecodeValue(forKey: .fwFlg)
+//        self.index = container.safeDecodeValue(forKey: .index)
+//        self.name = container.safeDecodeValue(forKey: .name)
+//        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+//        self.terrslFlg = container.safeDecodeValue(forKey: .terrslFlg)
+//        self.tpDCR = container.safeDecodeValue(forKey: .tpDCR)
+//    }
+//    
+//    init() {
+//        code = String()
+//        eTabs = String()
+//        fwFlg = String()
+//        index = Int()
+//        name = String()
+//        sfCode = String()
+//        terrslFlg = String()
+//        tpDCR = String()
+//    }
+//    
+//}
