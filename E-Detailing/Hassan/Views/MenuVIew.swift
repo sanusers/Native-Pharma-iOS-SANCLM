@@ -29,8 +29,8 @@ extension MenuView {
         self.sessionDetailsArr.entryMode = ""
         self.sessionDetailsArr.rejectionReason = ""
         
-
-        let aDaySessions = self.sessionDetailsArr
+    
+     let aDaySessions = self.sessionDetailsArr
 
         
      let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
@@ -38,26 +38,57 @@ extension MenuView {
         }
       
         
-    
-        
-       
-        if  aDaySessions.sessionDetails.count != nonEmptySession.count {
-            self.toCreateToast("Please fill the required fields to save sessions")
-        } else {
-            
-            aDaySessions.sessionDetails.forEach { session in
-                session.workType = nil
-                session.headQuates = nil
-                session.cluster = nil
-                session.jointWork = nil
-                session.listedDoctors = nil
-                session.chemist = nil
-                
-            }
-            //aDaySessions.sessionDetails.removeAll()
-            //aDaySessions.sessionDetails = nonEmptySession
-            toAppendsessionDetails(aDaySessions: aDaySessions)
+        let territoryNeededSessions = aDaySessions.sessionDetails.filter { session in
+            session.isToshowTerritory == true
         }
+        
+       var territoryNotFilledSessions = territoryNeededSessions.filter{ session in
+              session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
+           
+        }
+        
+        if territoryNotFilledSessions.isEmpty {
+            
+        } else {
+            self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
+            return
+        }
+        
+        
+       let otherFieldMandatorySessions = nonEmptySession.filter { session in
+             session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
+        }
+        
+        var subActivitySeected : Bool = true
+        
+        otherFieldMandatorySessions.forEach { session in
+            if session.selectedjointWorkID.isEmpty && session.selectedlistedDoctorsID.isEmpty && session.selectedchemistID.isEmpty {
+                self.toCreateToast("Please fill any one of sub activity fields to save sessions")
+                subActivitySeected = false
+            } else {
+                subActivitySeected = true
+            }
+        }
+       
+        if subActivitySeected {
+            if  aDaySessions.sessionDetails.count != nonEmptySession.count {
+                self.toCreateToast("Please fill the required fields to save sessions")
+
+            } else {
+
+                aDaySessions.sessionDetails.forEach { session in
+                    session.workType = nil
+                    session.headQuates = nil
+                    session.cluster = nil
+                    session.jointWork = nil
+                    session.listedDoctors = nil
+                    session.chemist = nil
+                }
+                toAppendsessionDetails(aDaySessions: aDaySessions)
+            }
+        }
+        
+
         
         //        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
         //                    switch result {
@@ -84,6 +115,10 @@ extension MenuView {
 //            if session.
 //        }
 //    }
+    
+    func toValidateRequiredFields(_ sessions: SessionDetailsArr) -> Bool {
+        return false
+    }
     
     func toAppendsessionDetails(aDaySessions : SessionDetailsArr) {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
@@ -331,7 +366,7 @@ class MenuView : BaseView{
     ///properties to hold session contents
     var sessionDetailsArr = SessionDetailsArr()
     var sessionDetail = SessionDetail()
-    
+    let tableSetup = TableSetupModel()
     ///properties to handle selection:
     var selectedSession: Int = 0
     var clusterIDArr : [String]?
@@ -347,6 +382,11 @@ class MenuView : BaseView{
     let cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
+    var isDocNeeded = false
+    var isJointCallneeded = false
+    var isChemistNeeded = false
+    var isSockistNeeded = false
+    var isCIPneeded = false
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
         self.showMenu()
@@ -409,6 +449,26 @@ class MenuView : BaseView{
       //  NotificationCenter.default.addObserver(self, selector: #selector(hideMenu), name: Notification.Name("hideMenu"), object: nil)
     }
 
+    func toConfigureTableSetup() {
+        if tableSetup.DrNeed == "0" {
+            self.isDocNeeded = true
+        }
+        if  tableSetup.ChmNeed == "0" {
+            self.isChemistNeeded = true
+        }
+        if   tableSetup.JWNeed == "0" {
+            self.isJointCallneeded = true
+        }
+        
+        if tableSetup.StkNeed == "0" {
+            self.isSockistNeeded = true
+        }
+        
+        if tableSetup.Cip_Need == "0" {
+            self.isCIPneeded = true
+        }
+    }
+    
     func loadrequiredDataFromDB() {
         
         self.workTypeArr = DBManager.shared.getWorkType()
@@ -1659,6 +1719,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                 } else {
                                     sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
                                 }
+                                let terrFlg = item?.terrslFlg ?? ""
+                                sessionDetailsArr.sessionDetails[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
                                 sessionDetailsArr.sessionDetails[selectedSession].FWFlg = workType.terrslFlg ?? ""
                                 sessionDetailsArr.sessionDetails[selectedSession].WTCode = workType.code ?? ""
                                 
@@ -1695,6 +1757,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         if isToremove {
                             self.menuTable.reloadData()
                         } else {
+                        
                             setPageType(.session, for: self.selectedSession)
                             self.endEditing(true)
                         }

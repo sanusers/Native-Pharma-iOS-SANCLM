@@ -86,7 +86,7 @@ class TableSetupModel: Codable {
          StkNeed = "0"
          Cip_Need = "0"
          HospNeed = "1"
-         FW_meetup_mandatory = "1"
+         FW_meetup_mandatory = "0"
          max_doc = "0"
          tp_objective = "1"
          Holiday_Editable = "0"
