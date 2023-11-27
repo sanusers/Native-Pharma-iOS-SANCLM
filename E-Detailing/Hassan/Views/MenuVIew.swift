@@ -448,6 +448,14 @@ class MenuView : BaseView{
         sessionDetail.chemist = chemistArr?.uniqued()
 
         if self.menuVC.sessionDetailsArr != nil  {
+            self.menuVC.sessionDetailsArr?.sessionDetails.forEach({ eachsessiondetail in
+                eachsessiondetail.workType = workTypeArr?.uniqued()
+                eachsessiondetail.headQuates =  headQuatersArr?.uniqued()
+                eachsessiondetail.cluster = clusterArr?.uniqued()
+                eachsessiondetail.jointWork = jointWorkArr?.uniqued()
+                eachsessiondetail.listedDoctors = listedDocArr?.uniqued()
+                eachsessiondetail.chemist = chemistArr?.uniqued()
+            })
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
             if  istoAddSession {
@@ -1297,9 +1305,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .session:
             let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
             cell.selectionStyle = .none
-        
-          //  cell.remarksTV.delegate = self
-          //  cell.remarks =  sessionDetailsArr.sessionDetails[indexPath.row].remarks.isEmpty ? nil : sessionDetailsArr.sessionDetails[indexPath.row].remarks
+            cell.delegate = self
+            cell.remarksTV.text = sessionDetailsArr.sessionDetails[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails[indexPath.row].remarks
+            if  cell.remarksTV.text != "Remarks" {
+                cell.remarksTV.textColor = UIColor.black
+            }
             if self.sessionDetailsArr.sessionDetails.count == 1 {
                 cell.deleteIcon.isHidden = true
             } else  {
@@ -1574,12 +1584,6 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 tableView.reloadData()
             }
          
-           
-//            sessionDetailsArr.sessionDetails[indexPath.row].remarks = cell.remarks ?? ""
-//            dump(sessionDetailsArr.sessionDetails[indexPath.row].remarks)
-//            cell.remarksTV.text = sessionDetailsArr.sessionDetails[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails[indexPath.row].remarks
-            sessionDetailsArr.sessionDetails[indexPath.row].remarks =  cell.remarks ?? ""
-            dump(sessionDetailsArr.sessionDetails[indexPath.row].remarks)
             return cell
             
         case .workType:
@@ -1596,7 +1600,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     self.selectTitleLbl.text = selectedWorkTypeName
                 } else {
                     
-                    self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[searchedCacheIndex ?? 0].name ?? ""
+                    self.selectedWorkTypeName = self.workTypeArr?[searchedCacheIndex ?? 0].name ?? ""
                     self.selectTitleLbl.text = selectedWorkTypeName
                 }
             } else {
@@ -1616,7 +1620,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
             if isSearched {
-                if sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex == indexPath.row {
+                if sessionDetailsArr.sessionDetails[selectedSession].WTName == cell.workTypeLbl.text {
                     cell.workTypeLbl.textColor = .green
                 }
                 else {
@@ -1636,14 +1640,20 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             cell.addTap { [self] in
                 
                 if self.isSearched {
+                    var isToremove: Bool = false
+                    let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex
+                    let cacheCode = sessionDetailsArr.sessionDetails[selectedSession].WTCode
+                    let cacheName = sessionDetailsArr.sessionDetails[selectedSession].WTName
                     self.workTypeArr?.enumerated().forEach({ index, workType in
                         if workType.code  ==  item?.code {
                             if sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex == index {
                                 sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex  = nil
-                                
+                                sessionDetailsArr.sessionDetails[selectedSession].WTName = ""
+                                sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  ""
+                                sessionDetailsArr.sessionDetails[selectedSession].WTCode = ""
+                                isToremove = true
                             } else {
                                 sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = index
-                                
                                 if item?.terrslFlg == "Y" {
                                     sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
                                 } else {
@@ -1653,14 +1663,50 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                 sessionDetailsArr.sessionDetails[selectedSession].WTCode = workType.code ?? ""
                                 
                                 sessionDetailsArr.sessionDetails[selectedSession].WTName = workType.name ?? ""
-                                
                             }
                         }
                     })
-                    
+              
+                    var isExist = Bool()
+                
+                    if sessionDetailsArr.sessionDetails.count > 1 {
+                        let asession = sessionDetailsArr.sessionDetails.enumerated().filter {sessionDetailIndex, sessionDetail in
+                             sessionDetail.WTCode ==  sessionDetailsArr.sessionDetails[selectedSession].WTCode
+                         }
+                        if asession.count > 1 {
+                            isExist = true
+                        }
+                        if isExist {
+                            self.endEditing(true)
+                            self.toCreateToast("You have already choosen similar work type for another session")
+                            sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = cacheIndex
+                            sessionDetailsArr.sessionDetails[selectedSession].WTCode = cacheCode
+                            sessionDetailsArr.sessionDetails[selectedSession].WTName = cacheName
+                        } else {
+                            if isToremove {
+                                self.menuTable.reloadData()
+                            } else {
+                                setPageType(.session, for: self.selectedSession)
+                                self.endEditing(true)
+                            }
+                         
+                        }
+                    } else {
+                        if isToremove {
+                            self.menuTable.reloadData()
+                        } else {
+                            setPageType(.session, for: self.selectedSession)
+                            self.endEditing(true)
+                        }
+                     
+                    }
+           
                 } else {
                     if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
                         sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
+                        sessionDetailsArr.sessionDetails[selectedSession].WTName = ""
+                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  ""
+                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = ""
                         self.menuTable.reloadData()
                     } else {
                         let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
@@ -2490,3 +2536,12 @@ extension MenuView : UITextFieldDelegate {
 }
 
 
+extension MenuView: SessionInfoTVCDelegate {
+    func remarksAdded(remarksStr: String) {
+        sessionDetailsArr.sessionDetails[selectedSession].remarks =  remarksStr
+        dump(sessionDetailsArr.sessionDetails[selectedSession].remarks)
+        self.menuTable.reloadData()
+    }
+    
+    
+}

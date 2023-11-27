@@ -8,6 +8,10 @@
 import UIKit
 //import 
 
+protocol SessionInfoTVCDelegate: AnyObject {
+    func remarksAdded(remarksStr: String)
+}
+
 extension SessionInfoTVC: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {
@@ -23,6 +27,8 @@ extension SessionInfoTVC: UITextViewDelegate {
             textView.text = "Remarks"
             textView.textColor = UIColor.lightGray
         }
+        self.remarks = textView.text == "Remarks" ? "" : textView.text
+        delegate?.remarksAdded(remarksStr: self.remarks ?? "")
     //    self.remarks = textView.text == "Remarks" ? "" : textView.text
     }
     
@@ -142,7 +148,7 @@ class SessionInfoTVC: UITableViewCell {
     
     @IBOutlet var lblChemist: UILabel!
     
-    
+    weak var delegate : SessionInfoTVCDelegate?
     var remarks: String?
     var keybordenabled = Bool()
     var selectedIndex: Int = 1
