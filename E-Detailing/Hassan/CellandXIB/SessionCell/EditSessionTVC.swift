@@ -71,8 +71,25 @@ class EditSessionTVC: UITableViewCell {
     
     @IBOutlet var lblChemist: UILabel!
     
-    
+    ///Stockist type outlets
 
+    @IBOutlet var stockistView: UIView!
+    
+    @IBOutlet var chemistSectionHolder: UIView!
+    
+    @IBOutlet var lblstockist: UILabel!
+    
+    
+    
+    @IBOutlet var unlistedDocView: UIView!
+    
+    @IBOutlet var unlistedDocHolder: UIView!
+    
+    @IBOutlet var lblunlistedDoc: UILabel!
+    
+    
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

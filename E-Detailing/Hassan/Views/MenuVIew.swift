@@ -29,7 +29,7 @@ extension MenuView {
         self.sessionDetailsArr.entryMode = ""
         self.sessionDetailsArr.rejectionReason = ""
         
-    
+    //New func added
      let aDaySessions = self.sessionDetailsArr
 
         
@@ -70,6 +70,8 @@ extension MenuView {
             }
         }
        
+        
+        //New func added
         if subActivitySeected {
             if  aDaySessions.sessionDetails.count != nonEmptySession.count {
                 self.toCreateToast("Please fill the required fields to save sessions")
@@ -286,6 +288,8 @@ class MenuView : BaseView{
         case jointCall
         case listedDoctor
         case chemist
+        case stockist
+        case unlistedDoctor
       //  case FieldWork
        // case others
     }
@@ -362,6 +366,8 @@ class MenuView : BaseView{
     var jointWorkArr : [JointWork]?
     var listedDocArr : [DoctorFencing]?
     var chemistArr : [Chemist]?
+    var stockistArr : [Stockist]?
+    var unlisteedDocArr : [UnListedDoctor]?
     var sessionResponseVM: SessionResponseVM?
     ///properties to hold session contents
     var sessionDetailsArr = SessionDetailsArr()
@@ -370,15 +376,16 @@ class MenuView : BaseView{
     ///properties to handle selection:
     var selectedSession: Int = 0
     var clusterIDArr : [String]?
-    
+    var isToalartCell = Bool()
     
     ///Height constraint constants
     let selectViewHeight: CGFloat = 50
     let searchVIewHeight: CGFloat = 50
     let typesTitleHeight: CGFloat = 35
-    let cellStackHeightforFW : CGFloat = 450
+    //each field height 75
+    var cellStackHeightforFW : CGFloat = 450 + 75 + 75
     let cellStackHeightfOthers : CGFloat = 80
-    let cellHeightForFW :  CGFloat = 520 + 100
+    var cellHeightForFW :  CGFloat = 520 + 75 + 75 + 100
     let cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
@@ -386,7 +393,7 @@ class MenuView : BaseView{
     var isJointCallneeded = false
     var isChemistNeeded = false
     var isSockistNeeded = false
-    var isCIPneeded = false
+    var isnewCustomerNeeded = false
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
         self.showMenu()
@@ -406,6 +413,7 @@ class MenuView : BaseView{
     //MARK: - function to initialize view
     func initView(){
         self.sessionResponseVM = SessionResponseVM()
+        toConfigureTableSetup()
         searchTF.delegate = self
         cellRegistration()
         loadrequiredDataFromDB()
@@ -452,20 +460,43 @@ class MenuView : BaseView{
     func toConfigureTableSetup() {
         if tableSetup.DrNeed == "0" {
             self.isDocNeeded = true
+        } else {
+            self.isDocNeeded = false
+            cellStackHeightforFW =  cellStackHeightforFW - 75
+            cellHeightForFW =  cellHeightForFW - 75
         }
+        
+        
         if  tableSetup.ChmNeed == "0" {
             self.isChemistNeeded = true
+        } else {
+            self.isChemistNeeded = false
+            cellStackHeightforFW =  cellStackHeightforFW - 75
+            cellHeightForFW =  cellHeightForFW - 75
         }
+ 
         if   tableSetup.JWNeed == "0" {
             self.isJointCallneeded = true
+        } else {
+            self.isJointCallneeded = false
+            cellStackHeightforFW =  cellStackHeightforFW - 75
+            cellHeightForFW =  cellHeightForFW - 75
         }
         
         if tableSetup.StkNeed == "0" {
             self.isSockistNeeded = true
+        } else {
+            self.isSockistNeeded = false
+            cellStackHeightforFW =  cellStackHeightforFW - 75
+            cellHeightForFW =  cellHeightForFW - 75
         }
         
         if tableSetup.Cip_Need == "0" {
-            self.isCIPneeded = true
+            self.isnewCustomerNeeded = true
+        } else {
+            self.isnewCustomerNeeded = false
+            cellStackHeightforFW =  cellStackHeightforFW - 75
+            cellHeightForFW =  cellHeightForFW - 75
         }
     }
     
@@ -482,6 +513,10 @@ class MenuView : BaseView{
         self.listedDocArr = DBManager.shared.getDoctor()
        
         self.chemistArr = DBManager.shared.getChemist()
+         
+        self.stockistArr =  DBManager.shared.getStockist()
+        
+        self.unlisteedDocArr = DBManager.shared.getUnListedDoctor()
         
         toGenerateNewSession(self.menuVC.sessionDetailsArr != nil ? false : true)
 //isToAddSession: self.menuVC.sessionDetailsArr != nil ? false : true
@@ -506,7 +541,8 @@ class MenuView : BaseView{
         sessionDetail.jointWork = jointWorkArr?.uniqued()
         sessionDetail.listedDoctors = listedDocArr?.uniqued()
         sessionDetail.chemist = chemistArr?.uniqued()
-
+        sessionDetail.stockist = stockistArr?.uniqued()
+        sessionDetail.unlistedDoctors = unlisteedDocArr?.uniqued()
         if self.menuVC.sessionDetailsArr != nil  {
             self.menuVC.sessionDetailsArr?.sessionDetails.forEach({ eachsessiondetail in
                 eachsessiondetail.workType = workTypeArr?.uniqued()
@@ -515,6 +551,9 @@ class MenuView : BaseView{
                 eachsessiondetail.jointWork = jointWorkArr?.uniqued()
                 eachsessiondetail.listedDoctors = listedDocArr?.uniqued()
                 eachsessiondetail.chemist = chemistArr?.uniqued()
+                eachsessiondetail.stockist = stockistArr?.uniqued()
+                eachsessiondetail.unlistedDoctors = unlisteedDocArr?.uniqued()
+                
             })
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
@@ -792,8 +831,51 @@ class MenuView : BaseView{
             
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
-       
+        case .stockist:
+            self.cellType = .stockist
+            addSessionView.isHidden = true
+            saveView.isHidden = false
+            clearview.isHidden = false
+            self.countView.isHidden = false
+            self.selectViewHeightCons.constant = selectViewHeight
+            self.searchHolderHeight.constant = searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "Stockist"
+            searchHolderView.isHidden = false
+            self.selectView.isHidden = false
+            self.countView.isHidden = true
+           // selectAllView.isHidden = false
+            //selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
+            typesTitleview.isHidden = false
+            
+            self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].stockist = self.stockistArr
+        case .unlistedDoctor:
+            self.cellType = .unlistedDoctor
+            addSessionView.isHidden = true
+            saveView.isHidden = false
+            clearview.isHidden = false
+            self.countView.isHidden = false
+            self.selectViewHeightCons.constant = selectViewHeight
+            self.searchHolderHeight.constant = searchVIewHeight
+            typesTitleHeightConst.constant = typesTitleHeight
+            typesTitle.text = "New customers"
+            searchHolderView.isHidden = false
+            self.selectView.isHidden = false
+            self.countView.isHidden = true
+           // selectAllView.isHidden = false
+            //selectAllHeightConst.constant = selectAllHeight
+            selectAllView.isHidden = true
+            selectAllHeightConst.constant = 0
+            typesTitleview.isHidden = false
+            
+            self.menuTable.separatorStyle = .singleLine
+            self.sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
         }
+        
+        
    
         self.menuTable.isHidden = false
         self.searchTF.text = ""
@@ -839,7 +921,6 @@ class MenuView : BaseView{
                // self.menuTable.reloadData()
                 self.toGetTourPlanResponse()
             case .workType:
-
                 if sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork {
                     setPageType(.session, for: self.selectedSession)
                 } else {
@@ -862,6 +943,10 @@ class MenuView : BaseView{
                 setPageType(.session, for: self.selectedSession)
 
           
+            case .stockist:
+                setPageType(.session, for: self.selectedSession)
+            case .unlistedDoctor:
+                setPageType(.session, for: self.selectedSession)
             }
         }
         
@@ -889,27 +974,92 @@ class MenuView : BaseView{
                 setPageType(.session, for: self.selectedSession)
             case .chemist:
                 setPageType(.session, for: self.selectedSession)
-
-          
+            case .stockist:
+                setPageType(.session, for: self.selectedSession)
+            case .unlistedDoctor:
+                setPageType(.session, for: self.selectedSession)
             }
            
         }
         
         addSessionView.addTap {
             let count = self.sessionDetailsArr.sessionDetails.count
-            if  count > 2 {
+            if  count > 1 {
                 if #available(iOS 13.0, *) {
                     (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
                 } else {
                   print("Maximum plan added")
                 }
             } else {
-             
-                self.toGenerateNewSession(true)
+                if toCheckSessionInfo() {
+                    self.toGenerateNewSession(true)
+                    self.isToalartCell = false
+                } else {
+                    toAlertCell()
+                }
+                
                 //isToAddSession: true
                 
             }
         }
+        
+        
+        func toAlertCell() {
+            isToalartCell = true
+            setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
+        }
+        
+        func toCheckSessionInfo() -> Bool {
+            let aDaySessions = self.sessionDetailsArr
+            
+            
+            let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
+                session.selectedWorkTypeIndex != nil || session.searchedWorkTypeIndex != nil
+            }
+            
+
+                if  aDaySessions.sessionDetails.count != nonEmptySession.count {
+                    self.toCreateToast("Please fill the required fields to save sessions")
+                    return false
+                } else {
+                    let territoryNeededSessions = aDaySessions.sessionDetails.filter { session in
+                        session.isToshowTerritory == true
+                    }
+                    
+                    let territoryNotFilledSessions = territoryNeededSessions.filter{ session in
+                        session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
+                        
+                    }
+                    
+                    if territoryNotFilledSessions.isEmpty {
+                        return true
+                    } else {
+                        self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
+                        return false
+                    }
+                    
+                    
+                    let otherFieldMandatorySessions = nonEmptySession.filter { session in
+                        session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
+                    }
+                    
+                    var subActivitySeected : Bool = false
+                    
+                    otherFieldMandatorySessions.forEach { session in
+                        if session.selectedjointWorkID.isEmpty && session.selectedlistedDoctorsID.isEmpty && session.selectedchemistID.isEmpty {
+                            self.toCreateToast("Please fill any one of sub activity fields to save sessions")
+                            subActivitySeected = false
+                          
+                        } else {
+                            subActivitySeected = true
+                           
+                        }
+                    }
+                    return subActivitySeected
+                }
+        }
+        
+        
         
         clearview.addTap { [self] in
             switch self.cellType {
@@ -935,6 +1085,10 @@ class MenuView : BaseView{
              
             case .edit:
                 break
+            case .stockist:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeAll()
+            case .unlistedDoctor:
+                sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeAll()
             }
             self.menuTable.reloadData()
         }
@@ -1017,19 +1171,36 @@ class MenuView : BaseView{
                 }
             case .chemist:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                   // sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
                     self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[cluster.code ?? ""] = true
-                      //  sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.append(index)
                     })
                 } else {
                     self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
                         sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: cluster.code ?? "")
                     })
-                  //  sessionDetailsArr.sessionDetails[selectedSession].selectedChemistIndices.removeAll()
                 }
             case .edit:
                 break
+            case .stockist:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].stockist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[cluster.code ?? ""] = true
+                    })
+                } else {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].stockist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeValue(forKey: cluster.code ?? "")
+                    })
+                }
+            case .unlistedDoctor:
+                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[cluster.code ?? ""] = true
+                    })
+                } else {
+                    self.sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeValue(forKey: cluster.code ?? "")
+                    })
+                }
             }
             self.menuTable.reloadData()
         }
@@ -1089,6 +1260,18 @@ class MenuView : BaseView{
             }
         case .edit:
             break
+        case .stockist:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].stockist?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
+        case .unlistedDoctor:
+            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.count ?? 0 {
+                isToSelectAll = true
+            } else {
+                isToSelectAll = false
+            }
         }
         if isToSelectAll {
             self.selectAllIV.image =  UIImage(named: "checkBoxSelected")
@@ -1212,6 +1395,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .chemist:
             return sessionDetailsArr.sessionDetails[selectedSession].chemist?.count ?? 0
 
+        case .stockist:
+            return sessionDetailsArr.sessionDetails[selectedSession].stockist?.count ?? 0
+        case .unlistedDoctor:
+            return sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.count ?? 0
         }
        
      
@@ -1235,13 +1422,54 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             if  isForFieldWork  {
                 cell.stackHeight.constant = cellStackHeightforFW
-                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.workTypeView].forEach { view in
-                    view?.isHidden = false
-                    // cell.workselectionHolder,
+                
+                let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView]
+                
+                cellViewArr.forEach { view in
+                    switch view {
+                        
+                    case cell.jointCallView:
+                        if self.isJointCallneeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    case cell.listedDoctorView:
+                        if self.isDocNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+            
+                    case cell.chemistView:
+                        if self.isChemistNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    case cell.stockistView:
+                        if self.isSockistNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    case cell.unlistedDocView:
+                        if self.isnewCustomerNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    default:
+                        view.isHidden = false
+                    }
                 }
             }  else {
                 cell.stackHeight.constant = cellStackHeightfOthers
-                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView].forEach { view in
+                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView].forEach { view in
                     view?.isHidden = true
                     // cell.workselectionHolder,
                 }
@@ -1340,6 +1568,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cell.lblListedDoctor.text = "No info available"
             }
+            
+            
             var chemistNameArr = [String]()
             var chemistCodeArr = [String]()
             if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
@@ -1359,12 +1589,68 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.lblChemist.text = "No info available"
             }
             
+            
+            var stockistNameArr = [String]()
+            var stockistCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.isEmpty {
+                self.stockistArr?.forEach({ stockist in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.forEach { key, value in
+                        if key == stockist.code {
+                            stockistNameArr.append(stockist.name ?? "")
+                            stockistCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblstockist.text = stockistNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].stockistName =  cell.lblstockist.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblstockist.text = "No info available"
+            }
+            
+            
+            
+            var unlistedDocNameArr = [String]()
+            var unlistedDocCodeArr = [String]()
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.isEmpty {
+                self.unlisteedDocArr?.forEach({ unlistDoc in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.forEach { key, value in
+                        if key == unlistDoc.code {
+                            unlistedDocNameArr.append(unlistDoc.name ?? "")
+                            unlistedDocCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblunlistedDoc.text = unlistedDocNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrName =  cell.lblunlistedDoc.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblunlistedDoc.text = "No info available"
+            }
+            
+            
            return cell
             
 
         case .session:
             let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
             cell.selectionStyle = .none
+            if isToalartCell {
+                UIView.animate(withDuration: 1, delay: 0, animations: {
+                    cell.overallContentsHolder.backgroundColor =  .red.withAlphaComponent(0.5)
+                })
+               
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    UIView.animate(withDuration: 1, delay: 0, animations: {
+                        cell.overallContentsHolder.backgroundColor = .appSelectionColor
+                        self.isToalartCell = false
+                    })
+                }
+            }
+
+            
             cell.delegate = self
             cell.remarksTV.text = sessionDetailsArr.sessionDetails[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails[indexPath.row].remarks
             if  cell.remarksTV.text != "Remarks" {
@@ -1389,13 +1675,54 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             if  isForFieldWork  {
                 cell.stackHeight.constant = cellStackHeightforFW
-                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.workTypeView].forEach { view in
-                    view?.isHidden = false
-                    // cell.workselectionHolder,
+                
+                let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.newCustomersView]
+                
+                cellViewArr.forEach { view in
+                    switch view {
+                        
+                    case cell.jointCallView:
+                        if self.isJointCallneeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    case cell.listedDoctorView:
+                        if self.isDocNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+            
+                    case cell.chemistView:
+                        if self.isChemistNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    case cell.stockistView:
+                        if self.isSockistNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    case cell.newCustomersView:
+                        if self.isnewCustomerNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                    default:
+                        view.isHidden = false
+                    }
                 }
             }  else {
                 cell.stackHeight.constant = cellStackHeightfOthers
-                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView].forEach { view in
+                [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.newCustomersView].forEach { view in
                     view?.isHidden = true
                     // cell.workselectionHolder,
                 }
@@ -1423,6 +1750,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     model.selectedjointWorkID = [String : Bool]()
                     model.selectedlistedDoctorsID = [String : Bool]()
                     model.selectedchemistID = [String : Bool]()
+                    model.selectedStockistID = [String : Bool]()
+                    model.selectedUnlistedDoctorsID = [String : Bool]()
                 }
             } else {
                 let model = sessionDetailsArr.sessionDetails[indexPath.row]
@@ -1432,6 +1761,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     model.selectedjointWorkID = [String : Bool]()
                     model.selectedlistedDoctorsID = [String : Bool]()
                     model.selectedchemistID = [String : Bool]()
+                    model.selectedStockistID = [String : Bool]()
+                    model.selectedUnlistedDoctorsID = [String : Bool]()
                 }
             }
     
@@ -1538,6 +1869,50 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.lblChemist.text = "Select"
             }
             
+            //Set label for Stockists
+            
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.isEmpty {
+                var stockistNameArr = [String]()
+                var stockistCodeArr = [String]()
+                self.stockistArr?.forEach({ chemist in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.forEach { key, value in
+                        if key == chemist.code {
+                            stockistNameArr.append(chemist.name ?? "")
+                            stockistCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblStockist.text = stockistNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].stockistName =  cell.lblStockist.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblStockist.text = "Select"
+            }
+            
+            //Set label for new customers
+            
+            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.isEmpty {
+                var unlistedDocNameArr = [String]()
+                var unlistedDocCodeArr = [String]()
+                self.unlisteedDocArr?.forEach({ chemist in
+                    sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.forEach { key, value in
+                        if key == chemist.code {
+                            unlistedDocNameArr.append(chemist.name ?? "")
+                            unlistedDocCodeArr.append(key)
+                        }
+                    }
+                })
+                cell.lblNewCustomers.text = unlistedDocNameArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrName =  cell.lblNewCustomers.text ?? ""
+                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
+            } else {
+                
+                cell.lblNewCustomers.text = "Select"
+            }
+            
+            
+            
             var isToproceed = false
             
 
@@ -1633,6 +2008,35 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 
                 
+            }
+            
+            cell.stockistView.addTap { [self] in
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.count)
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                    isToproceed = true
+                }
+                if isToproceed {
+                    self.cellType = .stockist
+                    self.selectedSession = indexPath.row
+                    self.setPageType(.stockist)
+                } else {
+                    self.toCreateToast("Please select work type")
+                }
+            }
+            
+            
+            cell.newCustomersView.addTap { [self] in
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.count)
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                    isToproceed = true
+                }
+                if isToproceed {
+                    self.cellType = .unlistedDoctor
+                    self.selectedSession = indexPath.row
+                    self.setPageType(.unlistedDoctor)
+                } else {
+                    self.toCreateToast("Please select work type")
+                }
             }
             
             //cell.deleteIcon.isHidden = false
@@ -1820,7 +2224,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             return cell
             
             
-        case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist:
+        case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist, .stockist, .unlistedDoctor:
             
             // MARK: General note
             /**
@@ -2255,6 +2659,165 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     
                     tableView.reloadData()
                 }
+                
+                
+            case .stockist:
+                item = sessionDetailsArr.sessionDetails[selectedSession].stockist?[indexPath.row]
+                cell.lblName?.text = item?.name ?? ""
+                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                sessionDetailsArr.sessionDetails[selectedSession].stockist?.forEach({ stockist in
+                  
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.forEach { id, isSelected in
+                        if id == stockist.code {
+                            
+                            if isSelected  {
+                                
+                                if stockist.name ==  cell.lblName?.text {
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                }
+                                
+                                
+                            } else {
+                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            }
+                        } else {
+                       
+                        }
+                    }
+                })
+                
+                var count = 0
+                sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.forEach({ (code, isSelected) in
+                    if isSelected {
+                        count += 1
+                    }
+                })
+                
+                if count > 0 {
+                    self.selectTitleLbl.text = "Selected"
+                    self.countView.isHidden = false
+                    self.countLbl.text = "\(count)"
+                } else {
+                    self.selectTitleLbl.text = "Select"
+                    self.countView.isHidden = true
+                    
+                }
+                
+                cell.addTap { [self] in
+                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID
+                    
+                    if self.isSearched {
+                        self.chemistArr?.enumerated().forEach({ index, chemist in
+                            if chemist.code  ==  item?.code {
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == true ? false : true
+                                }
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeValue(forKey: chemist.code ?? "")
+                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                }
+                                
+                            }
+                            
+                        })
+                    } else {
+                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] {
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] == true ? false : true
+                            
+                            if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeValue(forKey: item?.code ?? "")
+                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                            }
+                            
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] = true
+                        }
+                    }
+
+                    tableView.reloadData()
+                }
+            case .unlistedDoctor:
+                item = sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?[indexPath.row]
+                cell.lblName?.text = item?.name ?? ""
+                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.forEach({ stockist in
+                  
+                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.forEach { id, isSelected in
+                        if id == stockist.code {
+                            
+                            if isSelected  {
+                                
+                                if stockist.name ==  cell.lblName?.text {
+                                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                                }
+                                
+                                
+                            } else {
+                                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                            }
+                        } else {
+                       
+                        }
+                    }
+                })
+                
+                var count = 0
+                sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.forEach({ (code, isSelected) in
+                    if isSelected {
+                        count += 1
+                    }
+                })
+                
+                if count > 0 {
+                    self.selectTitleLbl.text = "Selected"
+                    self.countView.isHidden = false
+                    self.countLbl.text = "\(count)"
+                } else {
+                    self.selectTitleLbl.text = "Select"
+                    self.countView.isHidden = true
+                    
+                }
+                
+                cell.addTap { [self] in
+                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID
+                    
+                    if self.isSearched {
+                        self.chemistArr?.enumerated().forEach({ index, chemist in
+                            if chemist.code  ==  item?.code {
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == true ? false : true
+                                }
+                                if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeValue(forKey: chemist.code ?? "")
+                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                }
+                                
+                            }
+                            
+                        })
+                    } else {
+                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] {
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] == true ? false : true
+                            
+                            if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeValue(forKey: item?.code ?? "")
+                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                            }
+                            
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] = true
+                        }
+                    }
+
+                    tableView.reloadData()
+                }
+                
             default:  return UITableViewCell()
             }
             cell.selectionStyle = .none
@@ -2262,6 +2825,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
        
+      
         }
         
         
@@ -2282,7 +2846,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
         case .workType:
             return 50
-        case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist:
+        case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist, .stockist, .unlistedDoctor:
             if indexPath.section == 0 {
                 return 50
             } else {

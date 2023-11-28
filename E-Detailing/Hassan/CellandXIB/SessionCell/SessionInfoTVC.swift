@@ -148,6 +148,25 @@ class SessionInfoTVC: UITableViewCell {
     
     @IBOutlet var lblChemist: UILabel!
     
+    
+    ///Stockists type outlets
+   
+    @IBOutlet var stockistView: UIView!
+    
+    @IBOutlet var stockistSectionHolder: UIView!
+    
+    @IBOutlet var lblStockist: UILabel!
+    
+    
+    ///New customers type outlets
+    
+    @IBOutlet var newCustomersView: UIView!
+    
+    @IBOutlet var newCustomersSectionHolder: UIView!
+    
+    @IBOutlet var lblNewCustomers: UILabel!
+    
+    
     weak var delegate : SessionInfoTVCDelegate?
     var remarks: String?
     var keybordenabled = Bool()
@@ -157,8 +176,8 @@ class SessionInfoTVC: UITableViewCell {
         // Initialization code
        
         //remarksTV.placeholder = "Remarks"
-        [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, overallContentsHolder, remarksTFholder].forEach { view in
-            view?.layer.borderColor = Themes.appTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
+        [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, stockistSectionHolder, newCustomersSectionHolder, overallContentsHolder, remarksTFholder].forEach { view in
+            view?.layer.borderColor = UIColor.appTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
             view?.layer.borderWidth = view == overallContentsHolder ? 0 : 1.5
             view?.layer.cornerRadius = 5
             view?.elevate(1)

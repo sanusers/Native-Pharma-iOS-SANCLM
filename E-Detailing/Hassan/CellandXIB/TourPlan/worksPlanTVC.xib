@@ -156,6 +156,7 @@
                 <outlet property="nameLbl" destination="kNI-yh-qA0" id="edS-HC-A2x"/>
                 <outlet property="optionsIV" destination="ycJ-VU-cMJ" id="cBH-gl-5fR"/>
                 <outlet property="overallContentsHolderView" destination="yBp-pc-d9g" id="goz-u2-aQZ"/>
+                <outlet property="seperatorView" destination="7wa-H8-xgm" id="dqc-Ys-0Pj"/>
                 <outlet property="workPlansInfoCollection" destination="p6x-MQ-CVI" id="y95-Fe-89b"/>
                 <outlet property="workTitLbl" destination="EUV-TH-qHn" id="4Bs-J2-6kY"/>
             </connections>

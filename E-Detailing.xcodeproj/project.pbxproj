@@ -26,8 +26,6 @@
 		3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */; };
 		3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */; };
 		3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */; };
-		3865F8DD2AFD0555009AB984 /* FSCalendarCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */; };
-		3865F8DE2AFD0555009AB984 /* FSCalendarCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */; };
@@ -208,8 +206,6 @@
 		3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = worksPlanTVC.xib; sourceTree = "<group>"; };
 		3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkPlansInfoCVC.swift; sourceTree = "<group>"; };
 		3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkPlansInfoCVC.xib; sourceTree = "<group>"; };
-		3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarCVC.swift; sourceTree = "<group>"; };
-		3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FSCalendarCVC.xib; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38BCA67A2A248838002C77F6 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extensions.swift"; sourceTree = "<group>"; };
@@ -441,14 +437,8 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38E48D332B14AA9A00878DA9 /* TourPlan */,
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
-				3865F8D32AFCE3BF009AB984 /* worksPlanTVC.swift */,
-				3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */,
-				3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */,
-				3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */,
-				3865F8DB2AFD0555009AB984 /* FSCalendarCVC.swift */,
-				3865F8DC2AFD0555009AB984 /* FSCalendarCVC.xib */,
-				38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -634,6 +624,18 @@
 				385A42532AFBB75300C0A58A /* AppSetupModel.swift */,
 			);
 			path = Cofiguration;
+			sourceTree = "<group>";
+		};
+		38E48D332B14AA9A00878DA9 /* TourPlan */ = {
+			isa = PBXGroup;
+			children = (
+				38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */,
+				3865F8D32AFCE3BF009AB984 /* worksPlanTVC.swift */,
+				3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */,
+				3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */,
+				3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */,
+			);
+			path = TourPlan;
 			sourceTree = "<group>";
 		};
 		38EA3D132AFDECFB00DA7018 /* SessionCell */ = {
@@ -886,7 +888,6 @@
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
 				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
-				3865F8DE2AFD0555009AB984 /* FSCalendarCVC.xib in Resources */,
 				B287E68429F2A20F0097974D /* Satoshi-Medium.otf in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
@@ -1055,7 +1056,6 @@
 				38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */,
 				38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */,
 				B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */,
-				3865F8DD2AFD0555009AB984 /* FSCalendarCVC.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,
 				38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */,
 				38F289B42B0CA70200045D4F /* CustomCalenderCell.swift in Sources */,

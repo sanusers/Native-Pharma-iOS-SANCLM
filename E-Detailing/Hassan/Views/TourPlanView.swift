@@ -15,12 +15,12 @@ import FSCalendar
 
 extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrOfPlan?.count ?? 0
+        return tempArrofPlan?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : worksPlanTVC = tableView.dequeueReusableCell(withIdentifier: "worksPlanTVC", for: indexPath) as! worksPlanTVC
-        let modal =  self.arrOfPlan?[indexPath.row]
+        let modal =  self.tempArrofPlan?[indexPath.row]
         cell.toPopulateCell(modal ?? SessionDetailsArr())
         
         cell.addTap {
@@ -30,7 +30,9 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let modal =  self.arrOfPlan?[indexPath.row]
+        var isForfieldWork = Bool()
+        var isFieldWorkExist = [Bool]()
+        let modal =  self.tempArrofPlan?[indexPath.row]
         var detailsArr = [[String]]()
         var jointCallstr = [String]()
         var headQuartersstr = [String]()
@@ -38,48 +40,80 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         var jointcallstr  = [String]()
         var doctorsstr  = [String]()
         var chemiststr  = [String]()
+        var stockiststr = [String]()
+        var unlistedDocstr = [String]()
         modal?.sessionDetails.forEach({ session in
-              if  session.jwName != "" {
-                  jointCallstr.append(session.jwName)
-                }
-              if  session.HQCodes != "" {
-                  headQuartersstr.append(session.HQCodes)
-                }
-              if  session.clusterCode != "" {
-                  clusterstr.append(session.clusterCode)
-                }
-              if  session.jwCode != "" {
-                  jointcallstr.append(session.jwCode)
-                }
-              if  session.drCode != "" {
-                  doctorsstr.append(session.drCode)
-                }
-              if  session.chemCode != "" {
-                  chemiststr.append(session.chemCode)
-                }
+            if session.isForFieldWork{
+                isFieldWorkExist.append(true)
+                if  session.jwName != "" {
+                    jointCallstr.append(session.jwName)
+                  }
+                if  session.HQCodes != "" {
+                    headQuartersstr.append(session.HQCodes)
+                  }
+                if  session.clusterCode != "" {
+                    clusterstr.append(session.clusterCode)
+                  }
+                if  session.jwCode != "" {
+                    jointcallstr.append(session.jwCode)
+                  }
+                if  session.drCode != "" {
+                    doctorsstr.append(session.drCode)
+                  }
+                if  session.chemCode != "" {
+                    chemiststr.append(session.chemCode)
+                  }
+              if session.stockistCode != "" {
+                  stockiststr.append(session.stockistCode)
+              }
+              if session.unListedDrCode != "" {
+                  unlistedDocstr.append(session.unListedDrCode)
+              }
+            } else {
+                isFieldWorkExist.append(false)
+            }
+   
+            
         })
         
-        
-        if headQuartersstr.count > 0 {
-            detailsArr.append(headQuartersstr)
-        }
-        if clusterstr.count > 0 {
-            detailsArr.append(clusterstr)
+        isFieldWorkExist.forEach { workexist in
+            if workexist {
+                isForfieldWork = workexist
+            }
         }
         
-        if jointcallstr.count > 0 {
-            detailsArr.append(jointcallstr)
-    
-        }
+        if isForfieldWork {
+            if headQuartersstr.count > 0 {
+                detailsArr.append(headQuartersstr)
+            }
+            if clusterstr.count > 0 {
+                detailsArr.append(clusterstr)
+            }
+            
+            if jointcallstr.count > 0 {
+                detailsArr.append(jointcallstr)
         
-        if doctorsstr.count > 0 {
-            detailsArr.append(doctorsstr)
+            }
+            
+            if doctorsstr.count > 0 {
+                detailsArr.append(doctorsstr)
 
+            }
+            
+            if chemiststr.count > 0 {
+                detailsArr.append(chemiststr)
+            }
+            
+            if stockiststr.count > 0 {
+                detailsArr.append(stockiststr)
+            }
+            
+            if unlistedDocstr.count > 0 {
+                detailsArr.append(unlistedDocstr)
+            }
         }
+
         
-        if chemiststr.count > 0 {
-            detailsArr.append(chemiststr)
-        }
        
         switch indexPath.row {
             ///  cgfloat value 80 mentioned here belongs to a content view in cell which holds date, options image and other label
@@ -92,8 +126,13 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
 //        case 1:
 //            return 75 + 80
         default:
-           let size =  detailsArr.count > 5 ?  (2 * 75) + 80 : 75 + 80
-            return CGFloat(size)
+            if isForfieldWork {
+                let size =  detailsArr.count > 5 ?  (2 * 75) + 80 : 75 + 80
+                 return CGFloat(size)
+            } else {
+                return 80
+            }
+          
         }
     }
     
@@ -157,6 +196,8 @@ class TourPlanView: BaseView {
     var isPrevMonth = false
     var isCurrentMonth = false
     var arrOfPlan : [SessionDetailsArr]?
+    var tempArrofPlan: [SessionDetailsArr]?
+  
     var tableSetupmodel: TableSetupModel?
    // let appGraycolor = UIColor(hex: "#EEEEEE")
    // let cellSelectionColor = UIColor(hex: "#F2F2F7")
@@ -183,6 +224,34 @@ class TourPlanView: BaseView {
         initViews()
     }
     
+    
+    func monthWiseSeperationofSessions(_ date: Date) {
+        let tocomparemonth = toGetMonth(date)
+        var thisMonthPaln = [SessionDetailsArr]()
+
+        arrOfPlan?.forEach({ plan in
+           let month = toGetMonth(plan.rawDate)
+            if month == tocomparemonth {
+                thisMonthPaln.append(plan)
+            }
+        })
+      
+            self.tempArrofPlan = thisMonthPaln
+        
+      
+        worksPlanTable.delegate = self
+        worksPlanTable.dataSource = self
+        worksPlanTable.reloadData()
+        self.tourPlanCalander.collectionView.reloadData()
+        
+    }
+    
+    func toGetMonth(_ date: Date)  -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        return dateFormatter.string(from: date )
+    }
+    
     func toLoadData() {
         self.arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
@@ -194,10 +263,8 @@ class TourPlanView: BaseView {
             self.arrOfPlan = tpArr.arrOfPlan
         })
         self.tableSetupmodel = TableSetupModel()
-        worksPlanTable.delegate = self
-        worksPlanTable.dataSource = self
-        worksPlanTable.reloadData()
-        self.tourPlanCalander.collectionView.reloadData()
+        
+        monthWiseSeperationofSessions(tourPlanCalander.currentPage)
     }
     
     func initViews() {
@@ -302,6 +369,7 @@ class TourPlanView: BaseView {
         }
 
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
+        monthWiseSeperationofSessions(self.currentPage ?? Date())
     }
     
     /// Returns the amount of months from another date

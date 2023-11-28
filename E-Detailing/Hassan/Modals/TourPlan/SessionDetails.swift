@@ -108,11 +108,15 @@ class SessionDetail {
     var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
     var selectedchemistID: [String : Bool]
+    var selectedStockistID: [String : Bool]
+    var selectedUnlistedDoctorsID: [String : Bool]
     var headQuates: [Subordinate]?
     var cluster: [Territory]?
     var jointWork: [JointWork]?
     var listedDoctors: [DoctorFencing]?
     var chemist: [Chemist]?
+    var stockist: [Stockist]?
+    var unlistedDoctors: [UnListedDoctor]?
     var isToshowTerritory: Bool
    var FWFlg : String
    var HQCodes : String
@@ -151,6 +155,8 @@ class SessionDetail {
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
+        self.selectedStockistID = [String : Bool]()
+        self.selectedUnlistedDoctorsID = [String : Bool]()
         self.workTypeCode = ""
         self.FWFlg = ""
         self.HQCodes = ""
