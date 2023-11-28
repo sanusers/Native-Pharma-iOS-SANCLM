@@ -141,7 +141,8 @@ extension MenuView {
                    return territoryNeededSessions
                 } else {
                     let territoryNotFilledSessions = territoryNeededSessions.filter{ session in
-                        session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
+                       // session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
+                        session.HQCodes.isEmpty  || session.selectedClusterID.isEmpty
                         
                     }
                     
@@ -1148,8 +1149,9 @@ class MenuView : BaseView{
                 sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeAll()
               
             case .headQuater:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeAll()
-               
+              //  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeAll()
+                break
+                
             case .jointCall:
                 sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeAll()
              
@@ -1201,23 +1203,23 @@ class MenuView : BaseView{
       
                 
             case .headQuater:
-                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    
-                } else {
-                    
-                }
-                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                 
-                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[cluster.id ?? ""] = true
-               
-                    })
-                } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: cluster.id ?? "")
-                    })
-                
-                }
+//                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+//
+//                } else {
+//
+//                }
+//                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
+//
+//                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
+//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[cluster.id ?? ""] = true
+//
+//                    })
+//                } else {
+//                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ (index, cluster) in
+//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: cluster.id ?? "")
+//                    })
+//
+//                }
                 break
             case .jointCall:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
@@ -1574,11 +1576,27 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 } else {
                     cell.lblWorkType.text = "No info available"
                 }
+                
+                if sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex != nil {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblHeadquaters.text = "No info available"
+                }
+                
+                
             } else {
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
                     cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
                 } else {
                     cell.lblWorkType.text = "No info available"
+                }
+                
+                
+                
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex != nil {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblHeadquaters.text = "No info available"
                 }
                 
             }
@@ -1601,25 +1619,25 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cell.lblCluster.text = "No info available"
             }
-            var headQuatersNameArr = [String]()
-            var headQuartersCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
-                self.headQuatersArr?.forEach({ headQuaters in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
-                        if key == headQuaters.id {
-                            headQuatersNameArr.append(headQuaters.name ?? "")
-                            headQuartersCodeArr.append(key)
-                        }
-                    }
-                })
-                
-                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
-            } else {
-                
-                cell.lblHeadquaters.text = "No info available"
-            }
+//            var headQuatersNameArr = [String]()
+//            var headQuartersCodeArr = [String]()
+//            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
+//                self.headQuatersArr?.forEach({ headQuaters in
+//                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
+//                        if key == headQuaters.id {
+//                            headQuatersNameArr.append(headQuaters.name ?? "")
+//                            headQuartersCodeArr.append(key)
+//                        }
+//                    }
+//                })
+//
+//                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
+//                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
+//                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
+//            } else {
+//
+//                cell.lblHeadquaters.text = "No info available"
+//            }
             
             
             
@@ -1833,6 +1851,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 } else {
                     cell.lblWorkType.text = "Select"
                 }
+                
+                if sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex != nil {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblHeadquaters.text = "No info available"
+                }
             } else {
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
                     cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
@@ -1840,12 +1864,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     cell.lblWorkType.text = "Select"
                 }
                 
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex != nil {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedWorkTypeIndex ?? 0].name
+                } else {
+                    cell.lblHeadquaters.text = "Select"
+                }
+                
             }
             if isSearched {
                 let model = sessionDetailsArr.sessionDetails[indexPath.row]
                 if model.searchedWorkTypeIndex == nil {
                     model.selectedClusterID =  [String : Bool]()
-                    model.selectedHeadQuaterID =  [String : Bool]()
+                  //  model.selectedHeadQuaterID =  [String : Bool]()
                     model.selectedjointWorkID = [String : Bool]()
                     model.selectedlistedDoctorsID = [String : Bool]()
                     model.selectedchemistID = [String : Bool]()
@@ -1856,7 +1886,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 let model = sessionDetailsArr.sessionDetails[indexPath.row]
                 if model.selectedWorkTypeIndex == nil {
                     model.selectedClusterID =  [String : Bool]()
-                    model.selectedHeadQuaterID =  [String : Bool]()
+                  //  model.selectedHeadQuaterID =  [String : Bool]()
                     model.selectedjointWorkID = [String : Bool]()
                     model.selectedlistedDoctorsID = [String : Bool]()
                     model.selectedchemistID = [String : Bool]()
@@ -1886,25 +1916,25 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cell.lblCluster.text = "Select"
             }
             
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
-                var headQuatersNameArr = [String]()
-                var headQuartersCodeArr = [String]()
-                self.headQuatersArr?.forEach({ headQuaters in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
-                        if key == headQuaters.id {
-                            headQuatersNameArr.append(headQuaters.name ?? "")
-                            headQuartersCodeArr.append(key)
-                        }
-                    }
-                })
-                
-                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
-            } else {
-                
-                cell.lblHeadquaters.text = "Select"
-            }
+//            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
+//                var headQuatersNameArr = [String]()
+//                var headQuartersCodeArr = [String]()
+//                self.headQuatersArr?.forEach({ headQuaters in
+//                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
+//                        if key == headQuaters.id {
+//                            headQuatersNameArr.append(headQuaters.name ?? "")
+//                            headQuartersCodeArr.append(key)
+//                        }
+//                    }
+//                })
+//
+//                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
+//                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
+//                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
+//            } else {
+//
+//                cell.lblHeadquaters.text = "Select"
+//            }
             
             
             
@@ -2043,21 +2073,24 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             
-            cell.headQuatersView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
-                    isToproceed = true
-                }
-                if isToproceed {
-                    self.cellType = .headQuater
-                    self.selectedSession = indexPath.row
-                    
-                    self.setPageType(.headQuater)
-                } else {
-                    self.toCreateToast("Please select work type")
-                }
+            cell.headQuatersView.addTap {
+//                [self] in
+//                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.count)
+//                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+//                    isToproceed = true
+//                }
+//                if isToproceed {
+//                    self.cellType = .headQuater
+//                    self.selectedSession = indexPath.row
+//
+//                    self.setPageType(.headQuater)
+//                } else {
+//                    self.toCreateToast("Please select work type")
+//                }
                 
-                
+                self.cellType = .headQuater
+                self.selectedSession = indexPath.row
+                self.setPageType(.headQuater)
             }
             cell.jointCallView.addTap { [self] in
                 toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.count)
@@ -2192,7 +2225,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     cell.workTypeLbl.textColor = .black
                 }
             } else {
-                if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
+                if sessionDetailsArr.sessionDetails[selectedSession].WTName == cell.workTypeLbl.text {
                     cell.workTypeLbl.textColor = .green
                 }
                 else {
@@ -2325,6 +2358,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             return cell
             
             
+            
+            
         case .cluster, .headQuater, .jointCall, .listedDoctor, .chemist, .stockist, .unlistedDoctor:
             
             // MARK: General note
@@ -2337,6 +2372,116 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let cell = tableView.dequeueReusableCell(withIdentifier:MenuTCell.identifier ) as! MenuTCell
             var item : AnyObject?
             switch self.cellType {
+                
+            case .headQuater:
+                item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
+                cell.lblName?.text = item?.name ?? ""
+                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                let cacheIndex =  sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex
+                let searchedCacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex
+                
+                
+                if isSearched {
+                    if searchedCacheIndex == nil {
+                        self.selectedWorkTypeName = "Select"
+                        self.selectTitleLbl.text = selectedWorkTypeName
+                    } else {
+                        
+                        self.selectedWorkTypeName = self.headQuatersArr?[searchedCacheIndex ?? 0].name ?? ""
+                        self.selectTitleLbl.text = selectedWorkTypeName
+                    }
+                } else {
+                    if cacheIndex == nil {
+                        self.selectedWorkTypeName = "Select"
+                        self.selectTitleLbl.text = selectedWorkTypeName
+                    } else {
+                        self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[cacheIndex ?? 0].name ?? ""
+                        sessionDetailsArr.sessionDetails[selectedSession].HQCodes = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[cacheIndex ?? 0].id ?? ""
+                        
+                        sessionDetailsArr.sessionDetails[selectedSession].HQNames = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[cacheIndex ?? 0].name ?? ""
+                        
+                        self.selectTitleLbl.text = selectedWorkTypeName
+                    }
+                }
+                
+                
+                
+                if isSearched {
+                    if sessionDetailsArr.sessionDetails[selectedSession].HQNames == cell.lblName.text {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    }
+                    else {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                    }
+                } else {
+                    if sessionDetailsArr.sessionDetails[selectedSession].HQNames == cell.lblName.text {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    }
+                    else {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                    }
+                }
+                
+                
+                
+                cell.addTap { [self] in
+                    
+                    if self.isSearched {
+                        var isToremove: Bool = false
+                        let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex
+                        let cacheCode = sessionDetailsArr.sessionDetails[selectedSession].HQCodes
+                        let cacheName = sessionDetailsArr.sessionDetails[selectedSession].HQNames
+                        self.headQuatersArr?.enumerated().forEach({ index, HQs in
+                            if HQs.id  ==  item?.id {
+                                if sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex == index {
+                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex  = nil
+                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
+                                    
+                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
+                                    isToremove = true
+                                } else {
+                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex = index
+                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = HQs.id ?? ""
+                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = HQs.name ?? ""
+                                }
+                            }
+                        })
+                        
+                        if isToremove {
+                            self.menuTable.reloadData()
+                        } else {
+                            setPageType(.session, for: self.selectedSession)
+                            self.endEditing(true)
+                        }
+                        
+                        
+                        
+                    } else {
+                        if sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex == indexPath.row {
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex  = nil
+                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
+                            
+                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
+                            self.menuTable.reloadData()
+                        } else {
+                            let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex = indexPath.row
+                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = item?.id ?? ""
+                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = item?.name ?? ""
+                            setPageType(.session, for: self.selectedSession)
+                            self.endEditing(true)
+                            
+                        }
+                    }
+                }
+                
+                
+                cell.selectionStyle = .none
+                return cell
+                
+
+                
+                
             case .cluster:
                 
                 let item = sessionDetailsArr.sessionDetails[selectedSession].cluster?[indexPath.row]
@@ -2446,89 +2591,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     
                 }
                 
-            case .headQuater:
-                item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
-                cell.lblName?.text = item?.name ?? ""
-                cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
 
-                    sessionDetailsArr.sessionDetails[selectedSession].headQuates?.forEach({ quaters in
-                        //  dump(cluster.code)
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach { id, isSelected in
-                            if id == quaters.id {
-                                
-                                if isSelected  {
-                                    
-             
-                                    if quaters.name ==  cell.lblName?.text {
-                                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                                    }
-                                    
-                                } else {
-                                    cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                                }
-                            } else {
-                             
-                            }
-                        }
-                    })
-                
-                
-
-                
-                var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.forEach({ (id, isSelected) in
-                    if isSelected {
-                        count += 1
-                    }
-                })
-                
-                if count > 0 {
-                    self.selectTitleLbl.text = "Selected"
-                    self.countView.isHidden = false
-                    self.countLbl.text = "\(count)"
-                } else {
-                    self.selectTitleLbl.text = "Select"
-                    self.countView.isHidden = true
-                    
-                }
-                
-                cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID
-                    
-                    if self.isSearched {
-                        self.headQuatersArr?.enumerated().forEach({ index, quarters in
-                            if quarters.id  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] = true
-                                } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] == true ? false : true
-                                }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[quarters.id ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: quarters.id ?? "")
-                                    self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
-                                }
-                                
-                            }
-                            
-                        })
-                    } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] {
-                            
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == true ? false : true
-                            
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: item?.id ?? "")
-                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
-                            }
-                            
-                        } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[item?.id ?? ""] = true
-                        }
-                    }
-  
-                    
-                    tableView.reloadData()
-                }
             case .jointCall:
                 item = sessionDetailsArr.sessionDetails[selectedSession].jointWork?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""

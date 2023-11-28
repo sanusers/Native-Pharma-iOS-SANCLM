@@ -101,10 +101,12 @@ class SessionDetail {
     var workType: [WorkType]?
     var selectedWorkTypeIndex: Int? = nil
     var searchedWorkTypeIndex: Int? = nil
+    var selectedHQIndex: Int? = nil
+    var searchedHQIndex: Int? = nil
     var isForFieldWork: Bool = true
     var workTypeCode: String? = nil
     var selectedClusterID: [String : Bool]
-    var selectedHeadQuaterID: [String : Bool]
+  //  var selectedHeadQuaterID: [String : Bool]
     var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
     var selectedchemistID: [String : Bool]
@@ -151,7 +153,7 @@ class SessionDetail {
         self.chemist = [Chemist]()
         self.isToshowTerritory = false
         self.selectedClusterID = [String : Bool]()
-        self.selectedHeadQuaterID = [String : Bool]()
+      //  self.selectedHeadQuaterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
