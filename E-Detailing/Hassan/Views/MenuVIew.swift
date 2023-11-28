@@ -458,10 +458,12 @@ class MenuView : BaseView{
     let selectViewHeight: CGFloat = 50
     let searchVIewHeight: CGFloat = 50
     let typesTitleHeight: CGFloat = 35
-    //each field height 75
-    var cellStackHeightforFW : CGFloat = 450 + 75 + 75
+    ///each field height 75
+    var cellEditStackHeightforFW : CGFloat = 600
+    var cellEditHeightForFW :  CGFloat = 670 + 100
+    var cellStackHeightforFW : CGFloat = 600
     let cellStackHeightfOthers : CGFloat = 80
-    var cellHeightForFW :  CGFloat = 520 + 75 + 75 + 100
+    var cellHeightForFW :  CGFloat = 670 + 100
     let cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
@@ -779,6 +781,13 @@ class MenuView : BaseView{
             selectAllHeightConst.constant = 0
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
+           if self.menuVC.sessionDetailsArr == nil {
+               let dateFormatter = DateFormatter()
+               dateFormatter.dateFormat = "d MMMM yyyy"
+               typesTitle.text = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
+               typesTitleview.isHidden = false
+               typesTitleHeightConst.constant = typesTitleHeight
+           }
             
             if isForEdit()  {
                if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
@@ -1491,47 +1500,58 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
             let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
-            
+            let modal = sessionDetailsArr.sessionDetails[indexPath.row]
             if  isForFieldWork  {
-                cell.stackHeight.constant = cellStackHeightforFW
                 
+               
+                // cellStackHeightforFW
                 let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView]
                 
                 cellViewArr.forEach { view in
                     switch view {
                         
                     case cell.jointCallView:
-                        if self.isJointCallneeded {
+                        if !modal.selectedjointWorkID.isEmpty {
                             view.isHidden = false
                         } else {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
                             view.isHidden = true
                         }
                         
                     case cell.listedDoctorView:
-                        if self.isDocNeeded {
+                        if !modal.selectedlistedDoctorsID.isEmpty {
                             view.isHidden = false
                         } else {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
                             view.isHidden = true
                         }
             
                     case cell.chemistView:
-                        if self.isChemistNeeded {
+                        if !modal.selectedchemistID.isEmpty {
                             view.isHidden = false
                         } else {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
                             view.isHidden = true
                         }
                         
                     case cell.stockistView:
-                        if self.isSockistNeeded {
+                        if !modal.selectedStockistID.isEmpty {
                             view.isHidden = false
                         } else {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
                             view.isHidden = true
                         }
                         
                     case cell.unlistedDocView:
-                        if self.isnewCustomerNeeded {
+                        if !modal.selectedUnlistedDoctorsID.isEmpty  {
                             view.isHidden = false
                         } else {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
                             view.isHidden = true
                         }
                         
@@ -1539,6 +1559,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         view.isHidden = false
                     }
                 }
+                cell.stackHeight.constant =  cellEditStackHeightforFW
             }  else {
                 cell.stackHeight.constant = cellStackHeightfOthers
                 [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView].forEach { view in
@@ -2936,7 +2957,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
            
         case .edit:
             if sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork  {
-                return cellHeightForFW - 100
+                return cellEditHeightForFW - 100
             }  else {
                 return cellHeightForOthers - 100
             }
