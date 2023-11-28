@@ -19,6 +19,7 @@ class EditSessionTVC: UITableViewCell {
 
     ///Worktype outlets
     
+    @IBOutlet var worktyprTitle: UILabel!
     @IBOutlet weak var workTypeView: UIView!
     
     @IBOutlet weak var workselectionHolder: UIView!
@@ -26,7 +27,7 @@ class EditSessionTVC: UITableViewCell {
     @IBOutlet var lblWorkType: UILabel!
     
     ///cluster type outlets
-    
+    @IBOutlet var clusterTitle: UILabel!
     @IBOutlet weak var clusterView: UIView!
     
   
@@ -37,7 +38,7 @@ class EditSessionTVC: UITableViewCell {
     @IBOutlet var lblCluster: UILabel!
     
     ///headQuaters type outlets
-
+    @IBOutlet var headQuartersTitle: UILabel!
     @IBOutlet var headQuatersView: UIView!
     
     @IBOutlet var headQuatersSelectionHolder: UIView!
@@ -46,7 +47,7 @@ class EditSessionTVC: UITableViewCell {
     
     
     ///jointCall type outlets
-    
+    @IBOutlet var jointCallTitle: UILabel!
     @IBOutlet var jointCallView: UIView!
     
     @IBOutlet var jointCallSelectionHolder: UIView!
@@ -55,7 +56,7 @@ class EditSessionTVC: UITableViewCell {
     @IBOutlet var lblJointCall: UILabel!
     
     ///listedDoctor type outlets
-    
+    @IBOutlet var listedDocTitle: UILabel!
     @IBOutlet var listedDoctorView: UIView!
     
     @IBOutlet var listedDoctorSelctionHolder: UIView!
@@ -64,7 +65,7 @@ class EditSessionTVC: UITableViewCell {
     
     
     ///chemist type outlets
-    
+    @IBOutlet var chemistTitle: UILabel!
     @IBOutlet var chemistView: UIView!
     
     @IBOutlet var chemistSelectionHolder: UIView!
@@ -72,7 +73,7 @@ class EditSessionTVC: UITableViewCell {
     @IBOutlet var lblChemist: UILabel!
     
     ///Stockist type outlets
-
+    @IBOutlet var stockistTitle: UILabel!
     @IBOutlet var stockistView: UIView!
     
     @IBOutlet var chemistSectionHolder: UIView!
@@ -80,7 +81,8 @@ class EditSessionTVC: UITableViewCell {
     @IBOutlet var lblstockist: UILabel!
     
     
-    
+    ///NewCustoers type outlet
+    @IBOutlet var newCustomersTitle: UILabel!
     @IBOutlet var unlistedDocView: UIView!
     
     @IBOutlet var unlistedDocHolder: UIView!
@@ -94,14 +96,35 @@ class EditSessionTVC: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
 
-//        [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, overallContentsHolder].forEach { view in
-//            view?.layer.borderColor = Themes.appTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
-//            view?.layer.borderWidth = view == overallContentsHolder ? 0 : 1.5
-//            view?.layer.cornerRadius = 5
-//            view?.elevate(1)
-//        }
-      
+        setupUI()
+       
+    }
+    
+    
+    func setupUI() {
+        
+        let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblstockist, lblunlistedDoc]
+        labels.forEach { label in
+            label.textColor = .appTextColor
+            label.setFont(font: .medium(size: .BODY))
+        }
+        
+        let titleLabels : [UILabel] = [worktyprTitle, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle]
+        titleLabels.forEach { label in
+            label.textColor = .appLightTextColor
+            label.setFont(font: .medium(size: .BODY))
+        }
+        
+        lblName.textColor = .appTextColor
+        lblName.setFont(font: .bold(size: .SUBHEADER))
+        
+        
+        overallContentsHolder.backgroundColor = .appSelectionColor
         overallContentsHolder.layer.cornerRadius = 5
+       // lblName.setFont(font: .bold(size: .SUBHEADER))
+        
+        
+       
     }
     
     override func prepareForReuse() {

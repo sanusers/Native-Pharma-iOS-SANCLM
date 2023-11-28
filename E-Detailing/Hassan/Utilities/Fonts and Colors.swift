@@ -11,7 +11,8 @@ class Themes: NSObject {
     static let externalBorderName = "externalBorder"
     static let appGreyColor = UIColor.init(red: 238, green: 238, blue: 238)
     static let appSelectionColor = UIColor.init(red: 40, green: 42, blue: 60).withAlphaComponent(0.1)
-    static let appTextColor = UIColor.init(red: 40, green: 42, blue: 60).withAlphaComponent(0.65)
+    static let appLightTextColor = UIColor.init(red: 40, green: 42, blue: 60).withAlphaComponent(0.65)
+    static let appTextColor = UIColor.init(red: 40, green: 42, blue: 60)
     static let appWhiteColor = UIColor.init(red: 255, green: 255, blue: 255)
     static let appDarkBlueColor = UIColor.init(red: 53, green: 57, blue: 77)
 }
@@ -20,6 +21,7 @@ class Themes: NSObject {
 extension UIColor {
   
     static var appGreyColor = Themes.appGreyColor
+    static var appLightTextColor  = Themes.appLightTextColor
     static var appSelectionColor = Themes.appSelectionColor
     static var appTextColor = Themes.appTextColor
     static var appWhiteColor = Themes.appWhiteColor
@@ -95,5 +97,8 @@ enum CustomFont {
 class Fonts:NSObject{
     static let SATOSHI_BOLD = "Satoshi-Bold"
     static let SATOSHI_LIGHT = "Satoshi-Light"
+    
+   // "Head_3_bold"
+   // "Head_1_bold"
     static let SATOSHI_MEDIUM = "Satoshi-Medium"
 }

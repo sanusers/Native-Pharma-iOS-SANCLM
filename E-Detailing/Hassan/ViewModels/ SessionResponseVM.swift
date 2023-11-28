@@ -20,4 +20,18 @@ class  SessionResponseVM {
             })
     }
     
+    func getZstoreData(params: JSON, api : APIEnums, _ result : @escaping (Result<ZstoreDataModel,Error>) -> Void) {
+        
+        ConnectionHandler.shared.getRequest(for: api, params: params)
+            .responseDecode(to: ZstoreDataModel.self, { (json) in
+                result(.success(json))
+                dump(json)
+            }).responseFailure({ (error) in
+                print(error.description)
+                
+            })
+    }
+    
+    
+    
 }

@@ -32,7 +32,7 @@ final class ConnectionHandler : NSObject {
         if api.method == .get {
             return self.getRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
                                    params: params,
-                                   CacheAttribute: api.cacheAttribute ? api : .none)
+                                   CacheAttribute: api.cacheAttribute ?  .none : api)
         } else {
             return self.postRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
                                     params: params, CacheAttribute: api)

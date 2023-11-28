@@ -74,8 +74,8 @@
                                                     <constraint firstAttribute="trailing" secondItem="a06-Rc-1W2" secondAttribute="trailing" constant="5" id="hS8-E8-E5K"/>
                                                 </constraints>
                                             </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mc7-CW-Yzi">
-                                                <rect key="frame" x="10" y="6.5" width="72" height="17"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mc7-CW-Yzi">
+                                                <rect key="frame" x="10" y="6.5" width="69" height="17"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                                 <color key="textColor" systemColor="systemGrayColor"/>
                                                 <nil key="highlightedColor"/>
@@ -209,8 +209,8 @@
                                                     <constraint firstItem="7Rh-GU-gHw" firstAttribute="height" secondItem="InY-KR-KKq" secondAttribute="height" multiplier="0.9" id="vdb-eS-T0E"/>
                                                 </constraints>
                                             </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Joint call" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d2N-Rq-GzR">
-                                                <rect key="frame" x="10" y="6.5" width="61" height="17"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Joint Call" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d2N-Rq-GzR">
+                                                <rect key="frame" x="10" y="6.5" width="63" height="17"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                                 <color key="textColor" systemColor="systemGrayColor"/>
                                                 <nil key="highlightedColor"/>
@@ -470,13 +470,17 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="chemistSelectionHolder" destination="YjL-Ma-bjg" id="5r2-UM-xmx"/>
+                <outlet property="chemistTitle" destination="bnJ-Y7-Bdd" id="MNl-bb-sR4"/>
                 <outlet property="chemistView" destination="Suz-72-oWw" id="eCA-c9-ruw"/>
+                <outlet property="clusterTitle" destination="3aK-uH-kuW" id="8XK-iN-VuU"/>
                 <outlet property="clusterView" destination="cJD-Eh-T9t" id="QGc-bY-TYC"/>
                 <outlet property="clusterselectionHolder" destination="QCu-zP-DgE" id="mR0-qu-y8W"/>
                 <outlet property="deleteIcon" destination="jWd-Fw-eLg" id="DqD-dT-Cmh"/>
+                <outlet property="headQuartersTitle" destination="mHE-Df-5gp" id="dcE-Xy-zAS"/>
                 <outlet property="headQuatersSelectionHolder" destination="T07-5R-JkC" id="S5B-Gk-hJ7"/>
                 <outlet property="headQuatersView" destination="7MY-P6-f4c" id="n7Z-71-r4S"/>
                 <outlet property="jointCallSelectionHolder" destination="InY-KR-KKq" id="wK8-8h-13Y"/>
+                <outlet property="jointCallTitle" destination="d2N-Rq-GzR" id="zWI-dv-PGv"/>
                 <outlet property="jointCallView" destination="zQp-zb-BFN" id="2FX-tA-inQ"/>
                 <outlet property="lblChemist" destination="2m5-EV-IF4" id="bqB-VD-r3t"/>
                 <outlet property="lblCluster" destination="zAU-ZS-qS6" id="WzU-cC-KgL"/>
@@ -487,9 +491,11 @@
                 <outlet property="lblNewCustomers" destination="b5a-bz-jsl" id="Ah0-Qb-Etu"/>
                 <outlet property="lblStockist" destination="xNH-to-6CA" id="MYM-pM-iua"/>
                 <outlet property="lblWorkType" destination="w9W-6G-xAp" id="fDv-a7-NHQ"/>
+                <outlet property="listedDocTitle" destination="qw2-sv-EUb" id="Z4x-ET-XLP"/>
                 <outlet property="listedDoctorSelctionHolder" destination="fwV-ZT-gxc" id="2xv-4h-spu"/>
                 <outlet property="listedDoctorView" destination="ESM-El-HNZ" id="Ag7-Ma-Ki2"/>
                 <outlet property="newCustomersSectionHolder" destination="SE1-6w-Aud" id="JJa-wf-t7S"/>
+                <outlet property="newCustomersTitle" destination="oDs-3w-jeV" id="CQA-y1-37W"/>
                 <outlet property="newCustomersView" destination="cMs-Wx-1mp" id="qyr-aF-SQJ"/>
                 <outlet property="overallContentsHolder" destination="zew-K0-JIa" id="ERr-M2-Ly4"/>
                 <outlet property="remarksHeight" destination="pPI-T9-G6R" id="rJ8-ha-4Sq"/>
@@ -498,9 +504,11 @@
                 <outlet property="remarksTV" destination="DQ2-PD-5ba" id="S3O-kq-wZw"/>
                 <outlet property="stackHeight" destination="V46-Oi-eHa" id="gyt-ym-2lX"/>
                 <outlet property="stockistSectionHolder" destination="ezd-gD-dXR" id="pEC-ab-uiP"/>
+                <outlet property="stockistTitle" destination="9vS-7q-8v0" id="65R-Yz-c5S"/>
                 <outlet property="stockistView" destination="swE-rh-PtY" id="nH6-4n-kfj"/>
                 <outlet property="workTypeView" destination="zpd-5w-ywF" id="Cr4-39-Cx7"/>
                 <outlet property="workselectionHolder" destination="ehL-td-QCw" id="6rW-rZ-5FX"/>
+                <outlet property="worktyprTitle" destination="Mc7-CW-Yzi" id="dbt-SD-niC"/>
             </connections>
             <point key="canvasLocation" x="-35" y="49"/>
         </tableViewCell>

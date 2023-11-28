@@ -197,7 +197,7 @@ class TourPlanView: BaseView {
     var isCurrentMonth = false
     var arrOfPlan : [SessionDetailsArr]?
     var tempArrofPlan: [SessionDetailsArr]?
-  
+    var sessionResponseVM: SessionResponseVM?
     var tableSetupmodel: TableSetupModel?
    // let appGraycolor = UIColor(hex: "#EEEEEE")
    // let cellSelectionColor = UIColor(hex: "#F2F2F7")

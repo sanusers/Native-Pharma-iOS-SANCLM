@@ -29,55 +29,14 @@ extension MenuView {
         self.sessionDetailsArr.entryMode = ""
         self.sessionDetailsArr.rejectionReason = ""
         
-    //New func added
-     let aDaySessions = self.sessionDetailsArr
-
         
-     let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
-            session.selectedWorkTypeIndex != nil || session.searchedWorkTypeIndex != nil
-        }
-      
+        let aDaySessions = self.sessionDetailsArr
         
-        let territoryNeededSessions = aDaySessions.sessionDetails.filter { session in
-            session.isToshowTerritory == true
-        }
-        
-       var territoryNotFilledSessions = territoryNeededSessions.filter{ session in
-              session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
-           
-        }
-        
-        if territoryNotFilledSessions.isEmpty {
-            
-        } else {
-            self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
-            return
-        }
-        
-        
-       let otherFieldMandatorySessions = nonEmptySession.filter { session in
-             session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
-        }
-        
-        var subActivitySeected : Bool = true
-        
-        otherFieldMandatorySessions.forEach { session in
-            if session.selectedjointWorkID.isEmpty && session.selectedlistedDoctorsID.isEmpty && session.selectedchemistID.isEmpty {
-                self.toCreateToast("Please fill any one of sub activity fields to save sessions")
-                subActivitySeected = false
-            } else {
-                subActivitySeected = true
-            }
-        }
-       
+        let subActivitySeected = toCheckSessionInfo()
         
         //New func added
         if subActivitySeected {
-            if  aDaySessions.sessionDetails.count != nonEmptySession.count {
-                self.toCreateToast("Please fill the required fields to save sessions")
-
-            } else {
-
+         
                 aDaySessions.sessionDetails.forEach { session in
                     session.workType = nil
                     session.headQuates = nil
@@ -87,36 +46,109 @@ extension MenuView {
                     session.chemist = nil
                 }
                 toAppendsessionDetails(aDaySessions: aDaySessions)
-            }
+            
+        } else {
+            toAlertCell()
+          //  toCreateToast("Please fill required info before saving plan")
         }
         
-
-        
-        //        sessionResponseVM!.getTourPlanData(params: param, api: .none) { result in
-        //                    switch result {
-        //                    case .success(let response):
-        //                        print(response)
-        //
-        //                        do {
-        //                            try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
-        //
-        //                            }
-        //                        } catch {
-        //                            print("Unable to save")
-        //                        }
-        //                    case .failure(let error):
-        //                        print(error.localizedDescription)
-        //                    }
-        //                }
+//
+//                 let param = [String: Any]()
+//
+//                sessionResponseVM!.getZstoreData(params: param, api: .zsotoreJSON) { result in
+//                            switch result {
+//                            case .success(let response):
+//                                print(response)
+//
+//                                do {
+//                                    try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
+//
+//                                    }
+//                                } catch {
+//                                    print("Unable to save")
+//                                }
+//                            case .failure(let error):
+//                                print(error.localizedDescription)
+//                            }
+//                        }
         
     }
     
+    struct NotfilledPlans {
+        let planindex: Int
+        let isValidated : Bool
+    }
     
-//    func toValidateData(aDaySessions : SessionDetailsArr) {
-//        aDaySessions.sessionDetails.filter { session in
-//            if session.
-//        }
-//    }
+    func toCheckSessionInfo() -> Bool {
+        let aDaySessions = self.sessionDetailsArr
+ 
+        let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
+            session.selectedWorkTypeIndex != nil || session.searchedWorkTypeIndex != nil
+        }
+        
+        var notFilledPlans = [NotfilledPlans]()
+        
+        aDaySessions.sessionDetails.enumerated().forEach { index, session in
+            if session.isForFieldWork == true {
+                if session.WTCode == "" {
+                   let notfilledplan = NotfilledPlans(planindex: index, isValidated: false)
+                    notFilledPlans.append(notfilledplan)
+                }
+            }
+        }
+
+            if  aDaySessions.sessionDetails.count != nonEmptySession.count {
+                self.toCreateToast("Please fill the required fields to save Plan")
+                return false
+            } else {
+                let territoryNeededSessions = aDaySessions.sessionDetails.filter { session in
+                    session.isToshowTerritory == true
+                }
+                
+                
+                if territoryNeededSessions.isEmpty {
+                    return true
+                } else {
+                    let territoryNotFilledSessions = territoryNeededSessions.filter{ session in
+                        session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
+                        
+                    }
+                    
+                    var subActivitySeected : Bool = true
+                    
+                    if territoryNotFilledSessions.isEmpty {
+                    
+                        let otherFieldMandatorySessions = nonEmptySession.filter { session in
+                            session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
+                        }
+                        
+                     
+                        
+                        otherFieldMandatorySessions.forEach { session in
+                            if session.selectedjointWorkID.isEmpty && session.selectedlistedDoctorsID.isEmpty && session.selectedchemistID.isEmpty {
+                                self.toCreateToast("Please fill any one of sub activity fields to save sessions")
+                                subActivitySeected = false
+                             
+                            } else {
+                                subActivitySeected = true
+                               
+                            }
+                        }
+                        
+                        return subActivitySeected
+                    } else {
+                        self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
+                        return false
+                    }
+                }
+                
+
+                
+                
+    
+              //  return subActivitySeected
+            }
+    }
     
     func toValidateRequiredFields(_ sessions: SessionDetailsArr) -> Bool {
         return false
@@ -203,7 +235,7 @@ extension MenuView {
             
             
 
-        self.toCreateToast("Session added successfully")
+        self.toCreateToast("Plan added successfully")
         self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
     }
@@ -318,6 +350,7 @@ class MenuView : BaseView{
     
     @IBOutlet weak var saveView: UIView!
     
+    @IBOutlet var lblCLear: UILabel!
     
     @IBOutlet var lblSave: UILabel!
     
@@ -407,8 +440,34 @@ class MenuView : BaseView{
         self.initView()
         self.initGestures()
         self.ThemeUpdate()
+        setTheme()
     }
     
+    func setTheme() {
+        searchTF.textColor = .appTextColor
+        
+      //  [, countLbl, selectTitleLbl, typesTitle]
+        
+        
+        countLbl.textColor = .systemGreen
+        countLbl.setFont(font: .medium(size: .BODY))
+        
+        selectTitleLbl.textColor = .appTextColor
+        selectTitleLbl.setFont(font: .medium(size: .BODY))
+        
+        lblAddPlan.textColor = .appTextColor
+        lblAddPlan.setFont(font: .bold(size: .SUBHEADER))
+        
+        typesTitle.textColor = .appLightTextColor
+        typesTitle.setFont(font: .medium(size: .SMALL))
+        
+       let bottomLbl = [lblAddPlan, lblCLear, lblSave]
+        bottomLbl.forEach { label in
+            
+            label?.textColor =  label == lblSave ? .appWhiteColor :  .appTextColor
+            label?.setFont(font: .bold(size: .BODY))
+        }
+    }
     
     //MARK: - function to initialize view
     func initView(){
@@ -560,6 +619,7 @@ class MenuView : BaseView{
             if  istoAddSession {
                 self.sessionDetailsArr.sessionDetails.append(sessionDetail)
                 setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
+                self.selectedSession =  self.sessionDetailsArr.sessionDetails.count - 1
             } else {
                 setPageType(.edit)
             }
@@ -568,6 +628,7 @@ class MenuView : BaseView{
             sessionDetail = SessionDetail()
             self.sessionDetailsArr.sessionDetails.append(sessionDetail)
             setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
+            self.selectedSession =  self.sessionDetailsArr.sessionDetails.count - 1
         }
     }
     
@@ -991,11 +1052,11 @@ class MenuView : BaseView{
                   print("Maximum plan added")
                 }
             } else {
-                if toCheckSessionInfo() {
+                if self.toCheckSessionInfo() {
                     self.toGenerateNewSession(true)
                     self.isToalartCell = false
                 } else {
-                    toAlertCell()
+                    self.toAlertCell(selectedSession)
                 }
                 
                 //isToAddSession: true
@@ -1004,63 +1065,8 @@ class MenuView : BaseView{
         }
         
         
-        func toAlertCell() {
-            isToalartCell = true
-            setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
-        }
-        
-        func toCheckSessionInfo() -> Bool {
-            let aDaySessions = self.sessionDetailsArr
-            
-            
-            let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
-                session.selectedWorkTypeIndex != nil || session.searchedWorkTypeIndex != nil
-            }
-            
-
-                if  aDaySessions.sessionDetails.count != nonEmptySession.count {
-                    self.toCreateToast("Please fill the required fields to save sessions")
-                    return false
-                } else {
-                    let territoryNeededSessions = aDaySessions.sessionDetails.filter { session in
-                        session.isToshowTerritory == true
-                    }
-                    
-                    let territoryNotFilledSessions = territoryNeededSessions.filter{ session in
-                        session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
-                        
-                    }
-                    
-                    if territoryNotFilledSessions.isEmpty {
-                        return true
-                    } else {
-                        self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
-                        return false
-                    }
-                    
-                    
-                    let otherFieldMandatorySessions = nonEmptySession.filter { session in
-                        session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
-                    }
-                    
-                    var subActivitySeected : Bool = false
-                    
-                    otherFieldMandatorySessions.forEach { session in
-                        if session.selectedjointWorkID.isEmpty && session.selectedlistedDoctorsID.isEmpty && session.selectedchemistID.isEmpty {
-                            self.toCreateToast("Please fill any one of sub activity fields to save sessions")
-                            subActivitySeected = false
-                          
-                        } else {
-                            subActivitySeected = true
-                           
-                        }
-                    }
-                    return subActivitySeected
-                }
-        }
-        
-        
-        
+    
+         
         clearview.addTap { [self] in
             switch self.cellType {
                 
@@ -1208,6 +1214,11 @@ class MenuView : BaseView{
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handleMenuPan(_:)))
         self.sideMenuHolderView.addGestureRecognizer(panGesture)
         self.sideMenuHolderView.isUserInteractionEnabled = true
+    }
+    
+    func toAlertCell(_ index: Int? = nil) {
+        isToalartCell = true
+        setPageType(.session, for: self.selectedSession)
     }
     
     func toSetSelectAllImage(selectedIndexCount : Int) {
@@ -1637,23 +1648,29 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         case .session:
             let cell : SessionInfoTVC = tableView.dequeueReusableCell(withIdentifier:"SessionInfoTVC" ) as! SessionInfoTVC
             cell.selectionStyle = .none
-            if isToalartCell {
-                UIView.animate(withDuration: 1, delay: 0, animations: {
-                    cell.overallContentsHolder.backgroundColor =  .red.withAlphaComponent(0.5)
-                })
-               
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if indexPath.row == selectedSession {
+                if isToalartCell {
                     UIView.animate(withDuration: 1, delay: 0, animations: {
-                        cell.overallContentsHolder.backgroundColor = .appSelectionColor
-                        self.isToalartCell = false
+                        cell.overallContentsHolder.backgroundColor =  .red.withAlphaComponent(0.5)
                     })
+                   
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        UIView.animate(withDuration: 1, delay: 0, animations: {
+                            cell.overallContentsHolder.backgroundColor = .appSelectionColor
+                            self.isToalartCell = false
+                        })
+                    }
                 }
             }
+
 
             
             cell.delegate = self
             cell.remarksTV.text = sessionDetailsArr.sessionDetails[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails[indexPath.row].remarks
-            if  cell.remarksTV.text != "Remarks" {
+           // sessionDetailsArr.sessionDetails[selectedSession].remarks
+            if  cell.remarksTV.text == "Remarks" {
+                cell.remarksTV.textColor =  UIColor.lightGray
+            } else {
                 cell.remarksTV.textColor = UIColor.black
             }
             if self.sessionDetailsArr.sessionDetails.count == 1 {
@@ -1663,7 +1680,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
            
             cell.keybordenabled = false
-            cell.lblName.text = "Session \(indexPath.row + 1)"
+            cell.lblName.text = "Plan \(indexPath.row + 1)"
             cell.selectedIndex = indexPath.row + 1
             sessionDetailsArr.sessionDetails[indexPath.row].sessionName = cell.lblName.text ?? ""
             
@@ -2052,6 +2069,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
         case .workType:
             let cell = tableView.dequeueReusableCell(withIdentifier:"WorkTypeCell" ) as! WorkTypeCell
+            cell.workTypeLbl.textColor = .appTextColor
+            cell.workTypeLbl.setFont(font: .medium(size: .SMALL))
             let item = sessionDetailsArr.sessionDetails[selectedSession].workType?[indexPath.row]
             cell.workTypeLbl.text = item?.name ?? ""
             let cacheIndex =  sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
@@ -2237,6 +2256,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             var item : AnyObject?
             switch self.cellType {
             case .cluster:
+                
                 let item = sessionDetailsArr.sessionDetails[selectedSession].cluster?[indexPath.row]
                 let _ = sessionDetailsArr.sessionDetails[selectedSession].cluster
                 cell.lblName?.text = item?.name ?? ""
@@ -2707,7 +2727,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID
                     
                     if self.isSearched {
-                        self.chemistArr?.enumerated().forEach({ index, chemist in
+                        self.stockistArr?.enumerated().forEach({ index, chemist in
                             if chemist.code  ==  item?.code {
                                 if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == nil {
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] = true
@@ -2785,7 +2805,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     _ = sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID
                     
                     if self.isSearched {
-                        self.chemistArr?.enumerated().forEach({ index, chemist in
+                        self.unlisteedDocArr?.enumerated().forEach({ index, chemist in
                             if chemist.code  ==  item?.code {
                                 if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == nil {
                                     sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] = true
@@ -2868,12 +2888,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 
 class MenuTCell: UITableViewCell
 {
-    @IBOutlet weak var lblName: UILabel?
-    @IBOutlet weak var menuIcon: UIImageView?
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var menuIcon: UIImageView!
     @IBOutlet weak var holderView: UIView!
     static let identifier = "MenuTCell"
-    var didSelected: Bool = false
-
+  
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        lblName.textColor = .appTextColor
+        lblName.setFont(font: .medium(size: .SMALL))
+    }
+    
 }
 
 
@@ -3138,6 +3164,85 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.reloadData()
                 } else if isMatched {
                     self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
+                    self.menuTable.isHidden = true
+                }
+                
+            case .stockist:
+                var filteredWorkType = [Stockist]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                sessionDetailsArr.sessionDetails[self.selectedSession].stockist?.forEach({ stockist in
+                    if stockist.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(stockist)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].stockist = self.stockistArr
+                    self.noresultsView.isHidden = true
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].stockist = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
+                    self.menuTable.isHidden = true
+                }
+                
+                
+            case .unlistedDoctor:
+                var filteredWorkType = [UnListedDoctor]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors?.forEach({ newDocs in
+                    if newDocs.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(newDocs)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
+                    self.noresultsView.isHidden = true
+//                    self.selectAllView.isHidden = false
+//                    self.selectAllHeightConst.constant = selectAllHeight
+                    self.selectAllView.isHidden = true
+                    self.selectAllHeightConst.constant = 0
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    self.sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true

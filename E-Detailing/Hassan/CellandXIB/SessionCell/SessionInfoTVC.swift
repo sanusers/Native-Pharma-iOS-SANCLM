@@ -95,6 +95,7 @@ class SessionInfoTVC: UITableViewCell {
     @IBOutlet weak var deleteIcon: UIImageView!
     
     ///Worktype outlets
+    @IBOutlet var worktyprTitle: UILabel!
     
     @IBOutlet weak var workTypeView: UIView!
     
@@ -104,6 +105,7 @@ class SessionInfoTVC: UITableViewCell {
     
     ///cluster type outlets
     
+    @IBOutlet var clusterTitle: UILabel!
     @IBOutlet weak var clusterView: UIView!
     
   
@@ -113,8 +115,10 @@ class SessionInfoTVC: UITableViewCell {
     
     @IBOutlet var lblCluster: UILabel!
     
+  
     ///headQuaters type outlets
 
+    @IBOutlet var headQuartersTitle: UILabel!
     @IBOutlet var headQuatersView: UIView!
     
     @IBOutlet var headQuatersSelectionHolder: UIView!
@@ -124,15 +128,17 @@ class SessionInfoTVC: UITableViewCell {
     
     ///jointCall type outlets
     
+    @IBOutlet var jointCallTitle: UILabel!
     @IBOutlet var jointCallView: UIView!
     
     @IBOutlet var jointCallSelectionHolder: UIView!
     
     
     @IBOutlet var lblJointCall: UILabel!
-    
+
     ///listedDoctor type outlets
     
+    @IBOutlet var listedDocTitle: UILabel!
     @IBOutlet var listedDoctorView: UIView!
     
     @IBOutlet var listedDoctorSelctionHolder: UIView!
@@ -142,6 +148,7 @@ class SessionInfoTVC: UITableViewCell {
     
     ///chemist type outlets
     
+    @IBOutlet var chemistTitle: UILabel!
     @IBOutlet var chemistView: UIView!
     
     @IBOutlet var chemistSelectionHolder: UIView!
@@ -151,21 +158,23 @@ class SessionInfoTVC: UITableViewCell {
     
     ///Stockists type outlets
    
+    @IBOutlet var stockistTitle: UILabel!
     @IBOutlet var stockistView: UIView!
     
     @IBOutlet var stockistSectionHolder: UIView!
     
     @IBOutlet var lblStockist: UILabel!
     
-    
+  
     ///New customers type outlets
     
+    @IBOutlet var newCustomersTitle: UILabel!
     @IBOutlet var newCustomersView: UIView!
     
     @IBOutlet var newCustomersSectionHolder: UIView!
     
     @IBOutlet var lblNewCustomers: UILabel!
-    
+   
     
     weak var delegate : SessionInfoTVCDelegate?
     var remarks: String?
@@ -177,15 +186,43 @@ class SessionInfoTVC: UITableViewCell {
        
         //remarksTV.placeholder = "Remarks"
         [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, stockistSectionHolder, newCustomersSectionHolder, overallContentsHolder, remarksTFholder].forEach { view in
-            view?.layer.borderColor = UIColor.appTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
-            view?.layer.borderWidth = view == overallContentsHolder ? 0 : 1.5
+            view?.layer.borderColor = UIColor.appLightTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
+            view?.layer.borderWidth = view == overallContentsHolder ? 0 : 0.5
             view?.layer.cornerRadius = 5
             view?.elevate(1)
         }
         configureTextField()
         initNotifications()
+        setupUI()
         
         
+    }
+    
+    func setupUI() {
+        
+        let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblStockist, lblNewCustomers]
+        labels.forEach { label in
+            label.textColor = .appTextColor
+            label.setFont(font: .medium(size: .BODY))
+        }
+        
+        let titleLabels : [UILabel] = [worktyprTitle, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle]
+        titleLabels.forEach { label in
+            label.textColor = .appLightTextColor
+            label.setFont(font: .medium(size: .BODY))
+        }
+        remarksTV.textColor = .appTextColor
+        remarksTV.font = UIFont(name: "Satoshi-Medium", size: 14)
+        
+        lblName.textColor = .appTextColor
+        lblName.setFont(font: .bold(size: .SUBHEADER))
+        
+        
+        overallContentsHolder.backgroundColor = .appSelectionColor
+       // lblName.setFont(font: .bold(size: .SUBHEADER))
+        
+        
+       
     }
     
     override func prepareForReuse() {

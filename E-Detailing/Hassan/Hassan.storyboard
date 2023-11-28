@@ -555,19 +555,19 @@
                                                         <rect key="frame" x="10.5" y="25" width="392" height="55"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b6j-fq-Ssf">
-                                                                <rect key="frame" x="295" y="8" width="38.5" height="38.5"/>
+                                                                <rect key="frame" x="303" y="12" width="30.5" height="30.5"/>
                                                                 <subviews>
                                                                     <visualEffectView opaque="NO" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p8p-7m-3oI">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="38.5" height="38.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="30.5" height="30.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Igx-l6-RqA">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="38" height="39"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="30" height="31"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemGreenColor"/>
                                                                         <blurEffect style="regular"/>
                                                                     </visualEffectView>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NlZ-qM-YNr">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="38.5" height="38.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="30.5" height="30.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <color key="textColor" systemColor="systemGreenColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -598,9 +598,9 @@
                                                         </subviews>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <constraints>
-                                                            <constraint firstItem="b6j-fq-Ssf" firstAttribute="width" secondItem="b4q-Ke-e4V" secondAttribute="width" id="1DU-A6-Ec7"/>
+                                                            <constraint firstItem="b6j-fq-Ssf" firstAttribute="width" secondItem="b4q-Ke-e4V" secondAttribute="width" multiplier="0.8" id="1DU-A6-Ec7"/>
                                                             <constraint firstItem="b4q-Ke-e4V" firstAttribute="leading" secondItem="b6j-fq-Ssf" secondAttribute="trailing" constant="5" id="64F-jx-dHA"/>
-                                                            <constraint firstItem="b6j-fq-Ssf" firstAttribute="height" secondItem="b4q-Ke-e4V" secondAttribute="height" id="8Nr-ZZ-Jy2"/>
+                                                            <constraint firstItem="b6j-fq-Ssf" firstAttribute="height" secondItem="b4q-Ke-e4V" secondAttribute="height" multiplier="0.8" id="8Nr-ZZ-Jy2"/>
                                                             <constraint firstItem="b4q-Ke-e4V" firstAttribute="height" secondItem="h5T-Ut-Ael" secondAttribute="height" multiplier="0.7" id="Bwf-6Q-8k5"/>
                                                             <constraint firstItem="x1W-bz-y0a" firstAttribute="leading" secondItem="h5T-Ut-Ael" secondAttribute="leading" constant="15" id="OE2-2V-YeN"/>
                                                             <constraint firstAttribute="height" constant="55" id="ONt-RG-GAy"/>
@@ -724,7 +724,7 @@
                                                                     <visualEffectView opaque="NO" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OYh-eI-a4p">
                                                                         <rect key="frame" x="1" y="1" width="163" height="41.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ZPg-te-AFp">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="163" height="41"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="163" height="41.5"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemGreenColor"/>
@@ -1139,6 +1139,7 @@
                             <outlet property="countLbl" destination="NlZ-qM-YNr" id="x4U-po-Ln1"/>
                             <outlet property="countView" destination="b6j-fq-Ssf" id="8ur-dy-kFw"/>
                             <outlet property="lblAddPlan" destination="lKY-QB-bUp" id="Qt4-dv-bTh"/>
+                            <outlet property="lblCLear" destination="lp3-ex-bcl" id="VsR-7B-PcJ"/>
                             <outlet property="lblSave" destination="qad-hj-VKB" id="dqi-vP-H6I"/>
                             <outlet property="menuTable" destination="BrM-Lj-ttu" id="pb6-3C-WRL"/>
                             <outlet property="noresultsView" destination="nJ6-6D-HWr" id="KBq-0u-bVC"/>

@@ -77,6 +77,7 @@
 		38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */; };
 		38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */; };
 		38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D82AC312E300DA554F /* MultiSelectionVC.swift */; };
+		38CAE7B32B15AB9600CB750A /* ZstoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE7B22B15AB9600CB750A /* ZstoreDataModel.swift */; };
 		38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4CD2A9F4512001992C4 /* TaggingViewModel.swift */; };
 		38CBA4D02A9F59B3001992C4 /* DcrTagTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4CF2A9F59B3001992C4 /* DcrTagTitleCell.swift */; };
 		38CBA4D22A9F80B3001992C4 /* TagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4D12A9F80B3001992C4 /* TagViewCell.swift */; };
@@ -257,6 +258,7 @@
 		38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCell.swift; sourceTree = "<group>"; };
 		38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCell.xib; sourceTree = "<group>"; };
 		38CAE5D82AC312E300DA554F /* MultiSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionVC.swift; sourceTree = "<group>"; };
+		38CAE7B22B15AB9600CB750A /* ZstoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZstoreDataModel.swift; sourceTree = "<group>"; };
 		38CBA4CD2A9F4512001992C4 /* TaggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewModel.swift; sourceTree = "<group>"; };
 		38CBA4CF2A9F59B3001992C4 /* DcrTagTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DcrTagTitleCell.swift; sourceTree = "<group>"; };
 		38CBA4D12A9F80B3001992C4 /* TagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewCell.swift; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 		38BFB7842AFB62DD005E141E /* Modals */ = {
 			isa = PBXGroup;
 			children = (
+				38CAE7B12B15AB6F00CB750A /* Zstore */,
 				38E220702B032DAE00FBF6B0 /* TourPlan */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
 			);
@@ -588,6 +591,14 @@
 				38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		38CAE7B12B15AB6F00CB750A /* Zstore */ = {
+			isa = PBXGroup;
+			children = (
+				38CAE7B22B15AB9600CB750A /* ZstoreDataModel.swift */,
+			);
+			path = Zstore;
 			sourceTree = "<group>";
 		};
 		38E220702B032DAE00FBF6B0 /* TourPlan */ = {
@@ -1094,6 +1105,7 @@
 				3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */,
 				38F289B72B0CB59A00045D4F /* EditSessionTVC.swift in Sources */,
 				38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */,
+				38CAE7B32B15AB9600CB750A /* ZstoreDataModel.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,

@@ -74,7 +74,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="507-vX-Ixc" firstAttribute="centerX" secondItem="tZG-Dx-3IS" secondAttribute="centerX" id="66j-uT-1Cq"/>
                                             <constraint firstItem="lrI-7E-n9c" firstAttribute="height" secondItem="tZG-Dx-3IS" secondAttribute="height" multiplier="0.55" id="Kha-3b-VAr"/>
@@ -121,7 +121,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="Sxn-D1-eF4" firstAttribute="leading" secondItem="K5B-iU-vKa" secondAttribute="leading" constant="10" id="0rN-px-J5s"/>
                                             <constraint firstItem="Sxn-D1-eF4" firstAttribute="centerY" secondItem="K5B-iU-vKa" secondAttribute="centerY" multiplier="0.4" id="1je-h0-jjo"/>
@@ -168,7 +168,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="bGn-bx-Krb" firstAttribute="width" secondItem="UuG-aC-Myr" secondAttribute="width" multiplier="0.949423" id="1aS-34-A7O"/>
                                             <constraint firstItem="bGn-bx-Krb" firstAttribute="centerX" secondItem="UuG-aC-Myr" secondAttribute="centerX" id="2Qi-Jl-bSy"/>
@@ -215,7 +215,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="8at-YD-5Cx" firstAttribute="height" secondItem="rR4-IM-fgP" secondAttribute="height" multiplier="0.55" id="3SJ-5J-XxN"/>
                                             <constraint firstItem="UrA-UQ-YDU" firstAttribute="centerX" secondItem="rR4-IM-fgP" secondAttribute="centerX" id="7qK-sI-xme"/>
@@ -262,7 +262,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="NPW-ou-mQX" firstAttribute="height" secondItem="13x-gw-pC5" secondAttribute="height" multiplier="0.55" id="IZ7-eM-C3d"/>
                                             <constraint firstAttribute="bottom" secondItem="bvF-Ar-9uW" secondAttribute="bottom" constant="1" id="Ux3-Tg-9yj"/>
@@ -309,7 +309,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="0aP-n5-8Fb" firstAttribute="leading" secondItem="3Vu-0D-ZZY" secondAttribute="leading" constant="10" id="EXU-xh-jtM"/>
                                             <constraint firstItem="GVz-XH-e5d" firstAttribute="height" secondItem="3Vu-0D-ZZY" secondAttribute="height" multiplier="0.55" id="GPq-1p-kka"/>
@@ -356,7 +356,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="y5V-Al-gBM" firstAttribute="top" secondItem="6d9-kv-fce" secondAttribute="bottom" constant="5" id="5gs-qh-0ZF"/>
                                             <constraint firstItem="NPP-q9-g2O" firstAttribute="width" secondItem="VpO-16-6C3" secondAttribute="width" multiplier="0.95" id="Cey-I7-cfY"/>
@@ -403,7 +403,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="RAo-Bg-ROs" firstAttribute="top" secondItem="Coq-FT-b41" secondAttribute="bottom" constant="5" id="5HU-nl-nLa"/>
                                             <constraint firstItem="Coq-FT-b41" firstAttribute="centerY" secondItem="myR-9g-YC8" secondAttribute="centerY" multiplier="0.4" id="6GP-25-n1h"/>
@@ -445,12 +445,16 @@
             <connections>
                 <outlet property="chemistSectionHolder" destination="y5V-Al-gBM" id="Fjh-xo-Ccc"/>
                 <outlet property="chemistSelectionHolder" destination="GVz-XH-e5d" id="937-XW-Mtc"/>
+                <outlet property="chemistTitle" destination="0aP-n5-8Fb" id="EOt-2t-8Gj"/>
                 <outlet property="chemistView" destination="3Vu-0D-ZZY" id="zkx-JS-xio"/>
+                <outlet property="clusterTitle" destination="bEx-eb-417" id="cZA-1J-QJT"/>
                 <outlet property="clusterView" destination="UuG-aC-Myr" id="2MM-ZF-C49"/>
                 <outlet property="clusterselectionHolder" destination="Y7m-NP-bys" id="qv0-p4-72F"/>
+                <outlet property="headQuartersTitle" destination="Sxn-D1-eF4" id="xru-9g-pul"/>
                 <outlet property="headQuatersSelectionHolder" destination="2Ig-hw-KoC" id="yBd-Ym-IJC"/>
                 <outlet property="headQuatersView" destination="K5B-iU-vKa" id="HL6-Q0-nkq"/>
                 <outlet property="jointCallSelectionHolder" destination="8at-YD-5Cx" id="kCn-VP-kWe"/>
+                <outlet property="jointCallTitle" destination="zCm-c8-KFq" id="w1O-4J-Zcv"/>
                 <outlet property="jointCallView" destination="rR4-IM-fgP" id="UsB-ee-71Z"/>
                 <outlet property="lblChemist" destination="cDI-rx-qet" id="ecD-nl-6rF"/>
                 <outlet property="lblCluster" destination="T78-Jx-IoW" id="2qF-2k-MSw"/>
@@ -461,15 +465,19 @@
                 <outlet property="lblWorkType" destination="adv-BO-GOy" id="g9L-Ha-sua"/>
                 <outlet property="lblstockist" destination="ROB-Jc-z6i" id="MIb-S4-26I"/>
                 <outlet property="lblunlistedDoc" destination="4wq-ZE-udL" id="A59-xp-iRh"/>
+                <outlet property="listedDocTitle" destination="vhO-qB-gYS" id="S1o-i4-Mf2"/>
                 <outlet property="listedDoctorSelctionHolder" destination="NPW-ou-mQX" id="nru-Oj-WeA"/>
                 <outlet property="listedDoctorView" destination="13x-gw-pC5" id="UEj-ne-CIZ"/>
+                <outlet property="newCustomersTitle" destination="Coq-FT-b41" id="2n8-N8-UB2"/>
                 <outlet property="overallContentsHolder" destination="lGn-Od-yQX" id="oUH-BV-OkZ"/>
                 <outlet property="stackHeight" destination="TLK-by-j54" id="fPK-gR-XXt"/>
+                <outlet property="stockistTitle" destination="6d9-kv-fce" id="Gwx-Gw-0JL"/>
                 <outlet property="stockistView" destination="VpO-16-6C3" id="LIH-FI-c9j"/>
                 <outlet property="unlistedDocHolder" destination="RAo-Bg-ROs" id="0o3-s8-CwI"/>
                 <outlet property="unlistedDocView" destination="myR-9g-YC8" id="Yfl-0e-7QC"/>
                 <outlet property="workTypeView" destination="tZG-Dx-3IS" id="UYW-Qy-uFQ"/>
                 <outlet property="workselectionHolder" destination="lrI-7E-n9c" id="l4A-XF-qft"/>
+                <outlet property="worktyprTitle" destination="1nm-Pn-vI4" id="eBf-2a-xaC"/>
             </connections>
             <point key="canvasLocation" x="177.07317073170731" y="139.06779661016949"/>
         </tableViewCell>
