@@ -32,6 +32,8 @@ extension MenuView {
         
         let aDaySessions = self.sessionDetailsArr
         
+        
+        // toCheckSessionInfo() returns unfilled sessions
         let filteredSessions = toCheckSessionInfo()
         
         //New func added
@@ -44,6 +46,9 @@ extension MenuView {
                 session.jointWork = nil
                 session.listedDoctors = nil
                 session.chemist = nil
+                if !session.isForFieldWork {
+                    session.toRemoveValues()
+                }
             }
             toAppendsessionDetails(aDaySessions: aDaySessions)
         } else {
@@ -1501,6 +1506,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
             let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
+            
+            let selectedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex
+            let searchedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex
+            
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
             let modal = sessionDetailsArr.sessionDetails[indexPath.row]
             if  isForFieldWork  {
@@ -1578,7 +1587,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 if sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedWorkTypeIndex ?? 0].name
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "No info available"
                 }
@@ -1594,7 +1603,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedWorkTypeIndex ?? 0].name
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "No info available"
                 }
@@ -1786,6 +1795,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
             let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
+            
+            let selectedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex
+            let searchedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex
+            
             let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
             
           
@@ -1853,7 +1866,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 if sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedWorkTypeIndex ?? 0].name
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "No info available"
                 }
@@ -1865,7 +1878,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 if sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedWorkTypeIndex ?? 0].name
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "Select"
                 }
@@ -2073,7 +2086,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             
-            cell.headQuatersView.addTap {
+            cell.headQuatersView.addTap { [self] in
 //                [self] in
 //                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.count)
 //                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
@@ -2087,10 +2100,16 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                } else {
 //                    self.toCreateToast("Please select work type")
 //                }
-                
-                self.cellType = .headQuater
-                self.selectedSession = indexPath.row
-                self.setPageType(.headQuater)
+                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                    isToproceed = true
+                }
+                if isToproceed {
+                    self.cellType = .headQuater
+                    self.selectedSession = indexPath.row
+                    self.setPageType(.headQuater)
+                } else {
+                    self.toCreateToast("Please select work type")
+                }
             }
             cell.jointCallView.addTap { [self] in
                 toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.count)
@@ -2245,11 +2264,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     self.workTypeArr?.enumerated().forEach({ index, workType in
                         if workType.code  ==  item?.code {
                             if sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex == index {
-                                sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex  = nil
-                                sessionDetailsArr.sessionDetails[selectedSession].WTName = ""
-                                sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  ""
-                                sessionDetailsArr.sessionDetails[selectedSession].WTCode = ""
-                                isToremove = true
+                                sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex  = index
+                                sessionDetailsArr.sessionDetails[selectedSession].WTName = workType.name ?? ""
+                                sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  workType.terrslFlg ?? ""
+                                sessionDetailsArr.sessionDetails[selectedSession].WTCode =  workType.code ?? ""
+                               // isToremove = true
+                                isToremove = false
                             } else {
                                 sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = index
                                 if item?.terrslFlg == "Y" {
@@ -2304,11 +2324,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
            
                 } else {
                     if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
-                        sessionDetailsArr.sessionDetails[selectedSession].WTName = ""
-                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  ""
-                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = ""
-                        self.menuTable.reloadData()
+//                        sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
+//                        sessionDetailsArr.sessionDetails[selectedSession].WTName = ""
+//                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  ""
+//                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = ""
+                      //  self.menuTable.reloadData()
+                        toSetData()
                     } else {
                         let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
                         sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
@@ -2335,20 +2356,21 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                 toSetData()
                             }
            
-                        func toSetData() {
-                            if item?.terrslFlg == "Y" {
-                                sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
-                            } else {
-                                sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
-                            }
-                            sessionDetailsArr.sessionDetails[selectedSession].FWFlg = item?.terrslFlg ?? ""
-                            sessionDetailsArr.sessionDetails[selectedSession].WTCode = item?.code ?? ""
-                            let terrFlg = item?.terrslFlg ?? ""
-                            sessionDetailsArr.sessionDetails[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
-                            sessionDetailsArr.sessionDetails[selectedSession].WTName = item?.name ?? ""
-                            setPageType(.session, for: self.selectedSession)
-                            self.endEditing(true)
+           
+                    }
+                    func toSetData() {
+                        if item?.terrslFlg == "Y" {
+                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
+                        } else {
+                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
                         }
+                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg = item?.terrslFlg ?? ""
+                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = item?.code ?? ""
+                        let terrFlg = item?.terrslFlg ?? ""
+                        sessionDetailsArr.sessionDetails[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
+                        sessionDetailsArr.sessionDetails[selectedSession].WTName = item?.name ?? ""
+                        setPageType(.session, for: self.selectedSession)
+                        self.endEditing(true)
                     }
                 }
             }
@@ -2434,11 +2456,13 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         self.headQuatersArr?.enumerated().forEach({ index, HQs in
                             if HQs.id  ==  item?.id {
                                 if sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex == index {
-                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex  = nil
-                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
-                                    
-                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
-                                    isToremove = true
+//                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex  = nil
+//                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
+//                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
+                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex = index
+                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = HQs.id ?? ""
+                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = HQs.name ?? ""
+                                    isToremove = false
                                 } else {
                                     sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex = index
                                     sessionDetailsArr.sessionDetails[selectedSession].HQCodes = HQs.id ?? ""
@@ -2458,11 +2482,15 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         
                     } else {
                         if sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex == indexPath.row {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex  = nil
-                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
-                            
-                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
-                            self.menuTable.reloadData()
+//                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex  = nil
+//                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
+//                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
+                         //   self.menuTable.reloadData()
+                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex = indexPath.row
+                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = item?.id ?? ""
+                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = item?.name ?? ""
+                            setPageType(.session, for: self.selectedSession)
+                            self.endEditing(true)
                         } else {
                             let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex
                             sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex = indexPath.row

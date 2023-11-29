@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Brand" representedClassName="Brand" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -234,6 +234,16 @@
         <attribute name="doctorQualificationName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="SessionDetailCDM" representedClassName="SessionDetailCDM" syncable="YES" codeGenerationType="class">
+        <attribute name="chemist" optional="YES" attributeType="Transformable"/>
+        <attribute name="cluster" optional="YES" attributeType="Transformable"/>
+        <attribute name="headQuates" optional="YES" attributeType="Transformable"/>
+        <attribute name="jointWork" optional="YES" attributeType="Transformable"/>
+        <attribute name="listedDoctors" optional="YES" attributeType="Transformable"/>
+        <attribute name="stockist" optional="YES" attributeType="Transformable"/>
+        <attribute name="unlistedDoctors" optional="YES" attributeType="Transformable"/>
+        <attribute name="workType" optional="YES" attributeType="Transformable"/>
     </entity>
     <entity name="SlideBrand" representedClassName="SlideBrand" syncable="YES" codeGenerationType="class">
         <attribute name="divisionCode" optional="YES" attributeType="String"/>

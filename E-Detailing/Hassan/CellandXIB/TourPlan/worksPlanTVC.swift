@@ -111,7 +111,7 @@ class worksPlanTVC: UITableViewCell {
                       headQuartersstr.append(session.HQCodes)
                     }
                   if  session.clusterCode != "" {
-                      clusterstr.append(session.clusterCode)
+                      clusterstr.append(session.clusterName)
                     }
                   if  session.jwCode != "" {
                       jointcallstr.append(session.jwCode)
@@ -145,7 +145,7 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 headQuartersstr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
@@ -154,7 +154,7 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 clusterstr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
@@ -164,7 +164,7 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 jointcallstr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "JointWork") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
@@ -174,7 +174,7 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 doctorsstr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
@@ -184,7 +184,7 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 chemiststr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
@@ -196,7 +196,7 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 stockiststr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
@@ -206,14 +206,14 @@ class worksPlanTVC: UITableViewCell {
                 var count = 0
                 unlistedDocstr.forEach { str in
                    let countstr = str.components(separatedBy: ",")
-                    count = countstr.count
+                    count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
             }
             dump(detailsArr)
             self.workTitLbl.text = workTypestr.joined(separator: ", ")
-            self.nameLbl.text = jointCallstr.joined(separator: ", ")
+            self.nameLbl.text = clusterstr.joined(separator: ", ")
             self.seperatorView.isHidden = false
             self.nameLbl.isHidden = false
             self.workPlansInfoCollection.isHidden = false

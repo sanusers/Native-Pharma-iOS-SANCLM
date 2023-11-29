@@ -344,32 +344,32 @@ class AppDefaults {
                     tempSession.workTypeCode = session.WTCode
                     
                     //HeadQuarters
-                    let headQuatersCodes =  session.HQCodes.components(separatedBy: ",")
-                    headQuatersCodes.forEach { code in
-                        tempSession.selectedHeadQuaterID[code] = true
-                    }
-                    
+//                    let headQuatersCodes =  session.HQCodes.components(separatedBy: ",")
+//                    headQuatersCodes.forEach { code in
+//                        tempSession.selectedHeadQuaterID[code] = true
+//                    }
+                    tempSession.HQCodes = session.HQCodes
                     //Chemist
                     let chemistCodes =  session.chemCode.components(separatedBy: ",")
-                    headQuatersCodes.forEach { code in
+                    chemistCodes.forEach { code in
                         tempSession.selectedchemistID[code] = true
                     }
                     
                     
                     //cluster
                     let clusterCodes =  session.clusterCode.components(separatedBy: ",")
-                    headQuatersCodes.forEach { code in
+                    clusterCodes.forEach { code in
                         tempSession.selectedClusterID[code] = true
                     }
                     
                     //Doctor
                     let doctorCode =  session.drCode.components(separatedBy: ",")
-                    headQuatersCodes.forEach { code in
+                    doctorCode.forEach { code in
                         tempSession.selectedlistedDoctorsID[code] = true
                     }
                     
                     let jwCode = session.jwCode.components(separatedBy: ",")
-                    headQuatersCodes.forEach { code in
+                    jwCode.forEach { code in
                         tempSession.selectedjointWorkID[code] = true
                     }
                     

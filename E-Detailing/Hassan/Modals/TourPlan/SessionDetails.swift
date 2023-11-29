@@ -106,7 +106,7 @@ class SessionDetail {
     var isForFieldWork: Bool = true
     var workTypeCode: String? = nil
     var selectedClusterID: [String : Bool]
-  //  var selectedHeadQuaterID: [String : Bool]
+    //  var selectedHeadQuaterID: [String : Bool]
     var selectedjointWorkID: [String : Bool]
     var selectedlistedDoctorsID: [String : Bool]
     var selectedchemistID: [String : Bool]
@@ -120,28 +120,28 @@ class SessionDetail {
     var stockist: [Stockist]?
     var unlistedDoctors: [UnListedDoctor]?
     var isToshowTerritory: Bool
-   var FWFlg : String
-   var HQCodes : String
-   var HQNames : String
-   var WTCode : String
-   var WTName : String
-   var chemCode : String
-   var chemName : String
-   var cipCode : String
-   var cipName : String
-   var clusterCode : String
-   var clusterName : String
-   var drCode : String
-   var drName : String
-   var hospCode : String
-   var hospName : String
-   var jwCode : String
-   var jwName : String
-   var remarks : String
-   var stockistCode : String
-   var stockistName : String
-   var unListedDrCode : String
-   var unListedDrName : String
+    var FWFlg : String
+    var HQCodes : String
+    var HQNames : String
+    var WTCode : String
+    var WTName : String
+    var chemCode : String
+    var chemName : String
+    var cipCode : String
+    var cipName : String
+    var clusterCode : String
+    var clusterName : String
+    var drCode : String
+    var drName : String
+    var hospCode : String
+    var hospName : String
+    var jwCode : String
+    var jwName : String
+    var remarks : String
+    var stockistCode : String
+    var stockistName : String
+    var unListedDrCode : String
+    var unListedDrName : String
     
     init() {
         sessionName = String()
@@ -153,7 +153,7 @@ class SessionDetail {
         self.chemist = [Chemist]()
         self.isToshowTerritory = false
         self.selectedClusterID = [String : Bool]()
-      //  self.selectedHeadQuaterID = [String : Bool]()
+        //  self.selectedHeadQuaterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
@@ -165,6 +165,37 @@ class SessionDetail {
         self.HQNames = ""
         self.WTCode = ""
         self.WTName = ""
+        self.chemCode = ""
+        self.chemName = ""
+        self.cipCode = ""
+        self.cipName = ""
+        self.clusterCode = ""
+        self.clusterName = ""
+        self.drCode = ""
+        self.drName = ""
+        self.hospCode = ""
+        self.hospName = ""
+        self.jwCode = ""
+        self.jwName = ""
+        self.remarks = ""
+        self.stockistCode = ""
+        self.stockistName = ""
+        self.unListedDrCode = ""
+        self.unListedDrName = ""
+    }
+    
+    func toRemoveValues() {
+        self.isToshowTerritory = false
+        self.selectedClusterID = [String : Bool]()
+        self.selectedjointWorkID = [String : Bool]()
+        self.selectedlistedDoctorsID = [String : Bool]()
+        self.selectedchemistID = [String : Bool]()
+        self.selectedStockistID = [String : Bool]()
+        self.selectedUnlistedDoctorsID = [String : Bool]()
+        self.selectedHQIndex = nil
+        self.searchedHQIndex = nil
+        self.HQCodes = ""
+        self.HQNames = ""
         self.chemCode = ""
         self.chemName = ""
         self.cipCode = ""

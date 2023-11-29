@@ -392,7 +392,7 @@ class TourPlanView: BaseView {
     private func updateCalender () {
         
 
-       
+        self.selectedDate = ""
         tourPlanCalander.scrollEnabled = false
         tourPlanCalander.calendarHeaderView.isHidden = true
         tourPlanCalander.headerHeight = 0 // this makes some extra spacing, but you can try 0 or 1
@@ -582,6 +582,9 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         
 
         cell.addTap {
+            
+            self.selectedDate =  self.toTrimDate(date: date)
+            self.tourPlanCalander.collectionView.reloadData()
             self.moveToMenuVC(date)
 
         }
@@ -589,26 +592,7 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if collectionView == tourPlanCalander.collectionView {
-            return 0
-        }
-    return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        if collectionView == tourPlanCalander.collectionView {
-            return 0
-        }
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView == tourPlanCalander.collectionView {
-            return CGSize(width: collectionView.width / 7, height: collectionView.height / 5)
-        }
-      return CGSize()
-    }
+
 }
 
 extension TourPlanView: MenuResponseProtocol {
