@@ -51,6 +51,8 @@
 		38C4D5AA2A84F92D00D7C5E0 /* ProductNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4D5A92A84F92D00D7C5E0 /* ProductNameTableViewCell.swift */; };
 		38C4D5AC2A84F94500D7C5E0 /* ProductNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4D5AB2A84F94500D7C5E0 /* ProductNameTableViewCell.xib */; };
 		38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C537FB2A2201C9007D68C5 /* ConfigVC.swift */; };
+		38C58F772B173C1400458722 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C58F762B173C1400458722 /* DataManager.swift */; };
+		38C58F7A2B173CE800458722 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C58F792B173CE800458722 /* BookModel.swift */; };
 		38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C5986D2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift */; };
 		38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C5986F2ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib */; };
 		38C5D35E2A835FB800513BC8 /* ProductVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C5D35D2A835FB800513BC8 /* ProductVC.swift */; };
@@ -232,6 +234,8 @@
 		38C4D5A92A84F92D00D7C5E0 /* ProductNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameTableViewCell.swift; sourceTree = "<group>"; };
 		38C4D5AB2A84F94500D7C5E0 /* ProductNameTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductNameTableViewCell.xib; sourceTree = "<group>"; };
 		38C537FB2A2201C9007D68C5 /* ConfigVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigVC.swift; sourceTree = "<group>"; };
+		38C58F762B173C1400458722 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		38C58F792B173CE800458722 /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		38C5986D2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleInputView.swift; sourceTree = "<group>"; };
 		38C5986F2ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleInputView.xib; sourceTree = "<group>"; };
 		38C5D35D2A835FB800513BC8 /* ProductVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVC.swift; sourceTree = "<group>"; };
@@ -593,6 +597,15 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		38C58F782B173CC500458722 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				38C58F762B173C1400458722 /* DataManager.swift */,
+				38C58F792B173CE800458722 /* BookModel.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		38CAE7B12B15AB6F00CB750A /* Zstore */ = {
 			isa = PBXGroup;
 			children = (
@@ -614,6 +627,7 @@
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
+				38C58F782B173CC500458722 /* CoreData */,
 				3865F8D22AFCE38E009AB984 /* CellandXIB */,
 				3865F8CD2AFCCE57009AB984 /* Views */,
 				3865F8CA2AFCCE3D009AB984 /* ViewControllers */,
@@ -1117,6 +1131,7 @@
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
 				38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */,
 				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
+				38C58F7A2B173CE800458722 /* BookModel.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
@@ -1125,6 +1140,7 @@
 				38C44CC42A404DB6009D7B68 /* DBManager.swift in Sources */,
 				385A424A2AFB840600C0A58A /* DispatchQueue+Extensions.swift in Sources */,
 				38C089122A431738001F628C /* SlideDownloaderCell.swift in Sources */,
+				38C58F772B173C1400458722 /* DataManager.swift in Sources */,
 				38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */,
 				B2A711F629FBE1D3003A25BF /* Model.swift in Sources */,
 				38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */,

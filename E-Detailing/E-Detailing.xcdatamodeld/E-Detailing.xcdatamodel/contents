@@ -235,15 +235,8 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="SessionDetailCDM" representedClassName="SessionDetailCDM" syncable="YES" codeGenerationType="class">
-        <attribute name="chemist" optional="YES" attributeType="Transformable"/>
-        <attribute name="cluster" optional="YES" attributeType="Transformable"/>
-        <attribute name="headQuates" optional="YES" attributeType="Transformable"/>
-        <attribute name="jointWork" optional="YES" attributeType="Transformable"/>
-        <attribute name="listedDoctors" optional="YES" attributeType="Transformable"/>
-        <attribute name="stockist" optional="YES" attributeType="Transformable"/>
-        <attribute name="unlistedDoctors" optional="YES" attributeType="Transformable"/>
-        <attribute name="workType" optional="YES" attributeType="Transformable"/>
+    <entity name="SessionDetailArrCDM" representedClassName="SessionDetailArrCDM" syncable="YES" codeGenerationType="class">
+        <attribute name="sessionDetailArr" optional="YES" attributeType="Transformable" customClassName="SessionDetailsArr"/>
     </entity>
     <entity name="SlideBrand" representedClassName="SlideBrand" syncable="YES" codeGenerationType="class">
         <attribute name="divisionCode" optional="YES" attributeType="String"/>

@@ -97,36 +97,36 @@ class worksPlanTVC: UITableViewCell {
         self.dateLbl.text = session.date
       
         sessionImages = [SessionImages]()
-        session.sessionDetails.forEach { session in
+        session.sessionDetails?.forEach { session in
             if  session.WTName != "" {
-                  workTypestr.append(session.WTName)
+                  workTypestr.append(session.WTName ?? "")
                 
               }
             if session.isForFieldWork {
                 isFieldWorkExist.append(true)
                   if  session.jwName != "" {
-                      jointCallstr.append(session.jwName)
+                      jointCallstr.append(session.jwName ?? "")
                     }
                   if  session.HQCodes != "" {
-                      headQuartersstr.append(session.HQCodes)
+                      headQuartersstr.append(session.HQCodes ?? "")
                     }
                   if  session.clusterCode != "" {
-                      clusterstr.append(session.clusterName)
+                      clusterstr.append(session.clusterName ?? "")
                     }
                   if  session.jwCode != "" {
-                      jointcallstr.append(session.jwCode)
+                      jointcallstr.append(session.jwCode ?? "")
                     }
                   if  session.drCode != "" {
-                      doctorsstr.append(session.drCode)
+                      doctorsstr.append(session.drCode ?? "")
                     }
                   if  session.chemCode != "" {
-                      chemiststr.append(session.chemCode)
+                      chemiststr.append(session.chemCode ?? "")
                     }
                   if session.stockistCode != "" {
-                      stockiststr.append(session.stockistCode)
+                      stockiststr.append(session.stockistCode ?? "")
                   }
                   if session.unListedDrCode != "" {
-                      unlistedDocstr.append(session.unListedDrCode)
+                      unlistedDocstr.append(session.unListedDrCode ?? "")
                   } else {
                       
                   }

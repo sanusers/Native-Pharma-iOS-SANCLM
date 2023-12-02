@@ -26,6 +26,13 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         cell.addTap {
             self.moveToMenuVC(modal?.rawDate ?? Date())
         }
+        
+        cell.optionsIV.addTap {
+            //Demo coreData
+            //DataManager.sharedInstance.createUser()
+ 
+          //  print("Core Data")
+        }
         return cell
     }
     
@@ -42,32 +49,32 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         var chemiststr  = [String]()
         var stockiststr = [String]()
         var unlistedDocstr = [String]()
-        modal?.sessionDetails.forEach({ session in
+        modal?.sessionDetails?.forEach({ session in
             if session.isForFieldWork{
                 isFieldWorkExist.append(true)
                 if  session.jwName != "" {
-                    jointCallstr.append(session.jwName)
+                    jointCallstr.append(session.jwName ?? "")
                   }
                 if  session.HQCodes != "" {
-                    headQuartersstr.append(session.HQCodes)
+                    headQuartersstr.append(session.HQCodes ?? "")
                   }
                 if  session.clusterCode != "" {
-                    clusterstr.append(session.clusterCode)
+                    clusterstr.append(session.clusterCode ?? "")
                   }
                 if  session.jwCode != "" {
-                    jointcallstr.append(session.jwCode)
+                    jointcallstr.append(session.jwCode ?? "")
                   }
                 if  session.drCode != "" {
-                    doctorsstr.append(session.drCode)
+                    doctorsstr.append(session.drCode ?? "")
                   }
                 if  session.chemCode != "" {
-                    chemiststr.append(session.chemCode)
+                    chemiststr.append(session.chemCode ?? "")
                   }
               if session.stockistCode != "" {
-                  stockiststr.append(session.stockistCode)
+                  stockiststr.append(session.stockistCode ?? "")
               }
               if session.unListedDrCode != "" {
-                  unlistedDocstr.append(session.unListedDrCode)
+                  unlistedDocstr.append(session.unListedDrCode ?? "")
               }
             } else {
                 isFieldWorkExist.append(false)
@@ -230,7 +237,7 @@ class TourPlanView: BaseView {
         var thisMonthPaln = [SessionDetailsArr]()
 
         arrOfPlan?.forEach({ plan in
-           let month = toGetMonth(plan.rawDate)
+            let month = toGetMonth(plan.rawDate ?? Date())
             if month == tocomparemonth {
                 thisMonthPaln.append(plan)
             }
@@ -252,14 +259,31 @@ class TourPlanView: BaseView {
         return dateFormatter.string(from: date )
     }
     
-    func toLoadData() {
+    func toLoadData()  {
+        
+
+        
         self.arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
 
-        AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
+        
+//                let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("EachDatePlan")
+//
+//                do {
+//                let data = try Data(contentsOf: path)
+//                if let books = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) {
+//                print(books)
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+//                }
+//                } catch {
+//                print("ERROR: \(error.localizedDescription)")
+//                }
+        
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
             tpArray.append(eachDayPlan)
         }
-        AppDefaults.shared.eachDatePlan.tourPlanArr.forEach({ tpArr in
+        tpArray.forEach({ tpArr in
             self.arrOfPlan = tpArr.arrOfPlan
         })
         self.tableSetupmodel = TableSetupModel()
@@ -508,8 +532,11 @@ class TourPlanView: BaseView {
                   menuvc.menuDelegate = self
           
          // var isExist = Bool()
-          AppDefaults.shared.eachDatePlan.tourPlanArr.enumerated().forEach { index, eachDayPlan in
-              eachDayPlan.arrOfPlan.enumerated().forEach { index, sessions in
+        
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+          AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+              eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
                   if sessions.date == toCompareDate {
                       menuvc.sessionDetailsArr = sessions
                   }

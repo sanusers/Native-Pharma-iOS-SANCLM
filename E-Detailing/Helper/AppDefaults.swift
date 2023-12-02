@@ -352,28 +352,28 @@ class AppDefaults {
                     //Chemist
                     let chemistCodes =  session.chemCode.components(separatedBy: ",")
                     chemistCodes.forEach { code in
-                        tempSession.selectedchemistID[code] = true
+                        tempSession.selectedchemistID?[code] = true
                     }
                     
                     
                     //cluster
                     let clusterCodes =  session.clusterCode.components(separatedBy: ",")
                     clusterCodes.forEach { code in
-                        tempSession.selectedClusterID[code] = true
+                        tempSession.selectedClusterID?[code] = true
                     }
                     
                     //Doctor
                     let doctorCode =  session.drCode.components(separatedBy: ",")
                     doctorCode.forEach { code in
-                        tempSession.selectedlistedDoctorsID[code] = true
+                        tempSession.selectedlistedDoctorsID?[code] = true
                     }
                     
                     let jwCode = session.jwCode.components(separatedBy: ",")
                     jwCode.forEach { code in
-                        tempSession.selectedjointWorkID[code] = true
+                        tempSession.selectedjointWorkID?[code] = true
                     }
                     
-                    tempSessionArr.sessionDetails.append(tempSession)
+                    tempSessionArr.sessionDetails?.append(tempSession)
                     tempSession = SessionDetail()
                     
                 }
@@ -383,7 +383,7 @@ class AppDefaults {
                 tempSessionArr.dayNo = tourplanData.dayNo
                 tempSessionArr.entryMode = tourplanData.entryMode
                 tempSessionArr.rejectionReason = tourplanData.rejectionReason
-                tourPlanArr.arrOfPlan.append(tempSessionArr)
+                tourPlanArr.arrOfPlan?.append(tempSessionArr)
                 tempSessionArr  = SessionDetailsArr()
             }
         } catch {

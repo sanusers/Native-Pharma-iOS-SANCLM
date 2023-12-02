@@ -6,7 +6,6 @@
 //
 
 
-
 import Foundation
 import UIKit
 import CoreData
@@ -39,13 +38,15 @@ extension MenuView {
         //New func added
         
         if filteredSessions.isEmpty {
-            aDaySessions.sessionDetails.forEach { session in
+            aDaySessions.sessionDetails?.forEach { session in
                 session.workType = nil
                 session.headQuates = nil
                 session.cluster = nil
                 session.jointWork = nil
                 session.listedDoctors = nil
                 session.chemist = nil
+                session.stockist = nil
+                session.unlistedDoctors = nil
                 if !session.isForFieldWork {
                     session.toRemoveValues()
                 }
@@ -54,7 +55,7 @@ extension MenuView {
         } else {
             var sessionIndex = [Int]()
             filteredSessions.forEach { filteredsessions in
-                aDaySessions.sessionDetails.enumerated().forEach { daySessionIndex ,daySessions in
+                aDaySessions.sessionDetails?.enumerated().forEach { daySessionIndex ,daySessions in
                     if filteredsessions.sessionName == daySessions.sessionName {
                         sessionIndex.append(daySessionIndex)
                     }
@@ -67,7 +68,7 @@ extension MenuView {
         
 //        if subActivitySeected {
 //
-//                aDaySessions.sessionDetails.forEach { session in
+//                aDaySessions.sessionDetails?.forEach { session in
 //                    session.workType = nil
 //                    session.headQuates = nil
 //                    session.cluster = nil
@@ -112,7 +113,7 @@ extension MenuView {
     func toCheckSessionInfo() -> [SessionDetail] {
         let aDaySessions = self.sessionDetailsArr
  
-        let nonEmptySession =  aDaySessions.sessionDetails.filter { session in
+        let nonEmptySession =  aDaySessions.sessionDetails?.filter { session in
             session.WTCode != ""
         }
         
@@ -120,7 +121,7 @@ extension MenuView {
         
 //        var notFilledPlans = [NotfilledPlans]()
 //
-//        aDaySessions.sessionDetails.enumerated().forEach { index, session in
+//        aDaySessions.sessionDetails?.enumerated().forEach { index, session in
 //            if session.isForFieldWork == true {
 //                if session.WTCode == "" {
 //                   let notfilledplan = NotfilledPlans(planindex: index, isValidated: false)
@@ -129,44 +130,44 @@ extension MenuView {
 //            }
 //        }
 
-            if  aDaySessions.sessionDetails.count != nonEmptySession.count {
+        if  aDaySessions.sessionDetails?.count != nonEmptySession?.count {
                 self.toCreateToast("Please fill the required fields to save Plan")
-                return  aDaySessions.sessionDetails.filter { session in
+                return  aDaySessions.sessionDetails?.filter { session in
                     session.WTCode == ""
                    
-                }
+                } ?? [SessionDetail]()
             } else {
-                let territoryNeededSessions = aDaySessions.sessionDetails.filter { session in
+                let territoryNeededSessions = aDaySessions.sessionDetails?.filter { session in
                     session.isToshowTerritory == true
                 }
                 
                 
-                if territoryNeededSessions.isEmpty {
+                if territoryNeededSessions?.count == 0 {
                  //   return true
-                   return territoryNeededSessions
+                    return territoryNeededSessions ?? [SessionDetail]()
                 } else {
-                    let territoryNotFilledSessions = territoryNeededSessions.filter{ session in
+                    let territoryNotFilledSessions = territoryNeededSessions?.filter{ session in
                        // session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
-                        session.HQCodes.isEmpty  || session.selectedClusterID.isEmpty
+                        session.HQCodes == "" || session.selectedClusterID!.isEmpty
                         
                     }
                     
                     var subActivitySeected : Bool = true
                     
-                    if territoryNotFilledSessions.isEmpty {
+                    if territoryNotFilledSessions?.count == 0 {
                     
-                        let otherFieldMandatorySessions = nonEmptySession.filter { session in
+                        let otherFieldMandatorySessions = nonEmptySession?.filter { session in
                             session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
                         }
 
-                        otherFieldMandatorySessions.forEach { session in
+                        otherFieldMandatorySessions?.forEach { session in
                             if self.isDocNeeded {
-                                if session.selectedlistedDoctorsID.isEmpty {
+                                if session.selectedlistedDoctorsID?.count == 0{
                                     self.toCreateToast("Please select doctor")
                                     subActivitySeected = false
                                 }
                             } else {
-                                if session.selectedjointWorkID.isEmpty && session.selectedlistedDoctorsID.isEmpty && session.selectedchemistID.isEmpty {
+                                if session.selectedjointWorkID?.count == 0 && session.selectedlistedDoctorsID?.count == 0 && session.selectedchemistID?.count == 0 {
                                     self.toCreateToast("Please fill any one of sub activity fields to save sessions")
                                     subActivitySeected = false
                                     
@@ -181,13 +182,13 @@ extension MenuView {
                         if subActivitySeected {
                             return [SessionDetail]()
                         } else {
-                            return otherFieldMandatorySessions
+                            return otherFieldMandatorySessions ?? [SessionDetail]()
                         }
                         
                         //subActivitySeected
                     } else {
                         self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
-                        return territoryNotFilledSessions
+                        return territoryNotFilledSessions ?? [SessionDetail]()
                     }
                 }
                 
@@ -211,15 +212,37 @@ extension MenuView {
         tourPlanArr.SFCode = appdefaultSetup.sfCode
         tourPlanArr.SFName = appdefaultSetup.sfName
         
-        tourPlanArr.arrOfPlan.append(aDaySessions)
+      //  tourPlanArr.arrOfPlan?.removeAll()
+        var wholeDatesSessionDetailsArr = [SessionDetailsArr]()
+        
+        //AppDefaults.shared.eachDatePlan holds data from local storage now
+        
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+        if  AppDefaults.shared.eachDatePlan.tourPlanArr.isEmpty {
+            
+        } else {
+            AppDefaults.shared.eachDatePlan.tourPlanArr.forEach { wholeMonthPlansArr in
+                wholeDatesSessionDetailsArr = wholeMonthPlansArr.arrOfPlan
+            }
+            wholeDatesSessionDetailsArr.forEach { savedSessionDetArr in
+                tourPlanArr.arrOfPlan?.append(savedSessionDetArr)
+            }
+        }
+        
+        tourPlanArr.arrOfPlan?.append(aDaySessions)
+   
+        
+        
+     
    
         
         
         var isRemoved = false
-        tourPlanArr.arrOfPlan.enumerated().forEach { index , sessionDetArr in
-            if tourPlanArr.arrOfPlan.count > index {
+        tourPlanArr.arrOfPlan?.enumerated().forEach { index , sessionDetArr in
+            if tourPlanArr.arrOfPlan?.count ?? 0 > index {
                 if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
-                    tourPlanArr.arrOfPlan.remove(at: index)
+                    tourPlanArr.arrOfPlan?.remove(at: index)
                     isRemoved = true
                 } else {
                   //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
@@ -238,77 +261,66 @@ extension MenuView {
  
         AppDefaults.shared.tpArry = tourPlanArr
         
-        var arrOfPlan = [SessionDetailsArr]()
+      var  arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan ?? [SessionDetailsArr]()
+      
         
-            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+
+        
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
+        
+        
+        AppDefaults.shared.tpArry.arrOfPlan = removeDuplicateElements(posts: arrOfPlan)
+        
+
+        
+
+        AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
   
-            
-         arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan
-            
-            
-        var sessionDetails =  [SessionDetailsArr]()
-            
-        AppDefaults.shared.tpArry.arrOfPlan.forEach { plan in
-            sessionDetails.append(plan)
-        }
-        
-     //   AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-        
-        
-            var isEachDayRemoved = false
-  
-             
-        arrOfPlan.enumerated().forEach { EachDaysessionDetArrIndex, EachDaysessionDetArr  in
-            sessionDetails.enumerated().forEach { tpArrSessionIndex,  tpArrSessionDetArr in
-                if EachDaysessionDetArr.date == tpArrSessionDetArr.date && EachDaysessionDetArr.changeStatus == "True" {
-                    if arrOfPlan.count > EachDaysessionDetArrIndex {
-                        arrOfPlan.remove(at: EachDaysessionDetArrIndex)
-                        isEachDayRemoved = true
-                    }
-                } else {
-                  //  AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-                }
-            }
-        }
-        
-        if isEachDayRemoved {
-            arrOfPlan = sessionDetails
-        }
-           
-                AppDefaults.shared.eachDatePlan.tourPlanArr.forEach({ tpArr in
-                   // tpArr.arrOfPlan.removeAll()
-                   // tpArr.arrOfPlan = arrOfPlan
-                    tpArr.arrOfPlan = arrOfPlan
-                })
-            
-            
             
 
+        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+             if !savefinish {
+                 print("Error")
+             }
+        
         self.toCreateToast("Plan added successfully")
         self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
     }
     
+    
+    func removeDuplicateElements(posts: [SessionDetailsArr]) -> [SessionDetailsArr] {
+        var uniquePosts = [SessionDetailsArr]()
+        for post in posts {
+            if !uniquePosts.contains(where: {$0.date == post.date }) {
+                uniquePosts.append(post)
+            }
+        }
+        return uniquePosts
+    }
+    
+    
     func toSetParams(_ tourPlanArr: TourPlanArr) -> [String: Any] {
         _ = self.menuVC.selectedDate
-        let dateArr = self.sessionDetailsArr.date.components(separatedBy: " ") //"1 Nov 2023"
-        let anotherDateArr = self.sessionDetailsArr.dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+        let dateArr = self.sessionDetailsArr.date?.components(separatedBy: " ") //"1 Nov 2023"
+        let anotherDateArr = self.sessionDetailsArr.dayNo?.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
         var param = [String: Any]()
         param["SFCode"] = tourPlanArr.SFCode
         param["SFName"] = tourPlanArr.SFName
         param["Div"] = tourPlanArr.Div
-        param["Mnth"] = anotherDateArr[0]
-        param["Yr"] = dateArr[2]//2023
-        param["Day"] =  dateArr[0]//1
-        param["Tour_Month"] = anotherDateArr[0]// 11
-        param["Tour_Year"] = dateArr[2] // 2023
-        param["tpmonth"] = dateArr[1]// Nov
+        param["Mnth"] = anotherDateArr?[0]
+        param["Yr"] = dateArr?[2]//2023
+        param["Day"] =  dateArr?[0]//1
+        param["Tour_Month"] = anotherDateArr?[0]// 11
+        param["Tour_Year"] = dateArr?[2] // 2023
+        param["tpmonth"] = dateArr?[1]// Nov
         param["tpday"] = self.sessionDetailsArr.day// Wednesday
-        param["dayno"] = anotherDateArr[0] // 11
-        let tpDtDate = self.sessionDetailsArr.dayNo.replacingOccurrences(of: "/", with: "-")
+        param["dayno"] = anotherDateArr?[0] // 11
+        let tpDtDate = self.sessionDetailsArr.dayNo?.replacingOccurrences(of: "/", with: "-")
         param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
-        tourPlanArr.arrOfPlan.enumerated().forEach { index, allDayPlans in
-            allDayPlans.sessionDetails.enumerated().forEach { sessionIndex, session in
+        tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+            allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
                // var sessionParam = [String: Any]()
                 var index = String()
                 if sessionIndex == 0 {
@@ -642,7 +654,7 @@ class MenuView : BaseView{
 //        sessionDetail.jointWork = jointWorkArr?.uniqued()
 //        sessionDetail.listedDoctors = listedDocArr?.uniqued()
 //        sessionDetail.chemist = chemistArr?.uniqued()
-//        self.sessionDetailsArr.sessionDetails.append(sessionDetail)
+//        self.sessionDetailsArr.sessionDetails?.append(sessionDetail)
 //        setPageType(.session)
         
 
@@ -655,7 +667,7 @@ class MenuView : BaseView{
         sessionDetail.stockist = stockistArr?.uniqued()
         sessionDetail.unlistedDoctors = unlisteedDocArr?.uniqued()
         if self.menuVC.sessionDetailsArr != nil  {
-            self.menuVC.sessionDetailsArr?.sessionDetails.forEach({ eachsessiondetail in
+            self.menuVC.sessionDetailsArr?.sessionDetails?.forEach({ eachsessiondetail in
                 eachsessiondetail.workType = workTypeArr?.uniqued()
                 eachsessiondetail.headQuates =  headQuatersArr?.uniqued()
                 eachsessiondetail.cluster = clusterArr?.uniqued()
@@ -669,27 +681,27 @@ class MenuView : BaseView{
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
             if  istoAddSession {
-                self.sessionDetailsArr.sessionDetails.append(sessionDetail)
-                setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
-                self.selectedSession =  self.sessionDetailsArr.sessionDetails.count - 1
+                self.sessionDetailsArr.sessionDetails?.append(sessionDetail)
+                setPageType(.session, for: (self.sessionDetailsArr.sessionDetails?.count ?? 0) - 1)
+                self.selectedSession =  self.sessionDetailsArr.sessionDetails?.count ?? 0 - 1
             } else {
                 setPageType(.edit)
             }
           
         } else {
             sessionDetail = SessionDetail()
-            self.sessionDetailsArr.sessionDetails.append(sessionDetail)
-            setPageType(.session, for: self.sessionDetailsArr.sessionDetails.count - 1)
-            self.selectedSession =  self.sessionDetailsArr.sessionDetails.count - 1
+            self.sessionDetailsArr.sessionDetails?.append(sessionDetail)
+            setPageType(.session, for: self.sessionDetailsArr.sessionDetails?.count ?? 0 - 1)
+            self.selectedSession =  self.sessionDetailsArr.sessionDetails?.count ?? 0 - 1
         }
     }
     
     
     func toRemoveSession(at index: Int) {
         if isForEdit()  {
-            self.menuVC.sessionDetailsArr?.sessionDetails.remove(at: index)
+            self.menuVC.sessionDetailsArr?.sessionDetails?.remove(at: index)
         } else {
-            self.sessionDetailsArr.sessionDetails.remove(at: index)
+            self.sessionDetailsArr.sessionDetails?.remove(at: index)
         }
         self.selectedSession = 0
         setPageType(self.cellType)
@@ -755,18 +767,18 @@ class MenuView : BaseView{
             typesTitle.text = ""
             self.menuTable.separatorStyle = .none
             if isForEdit()  {
-                if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
+                if self.menuVC.sessionDetailsArr?.sessionDetails?.count == 0 {
                      
                 } else {
-                    self.menuVC.sessionDetailsArr?.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                    self.menuVC.sessionDetailsArr?.sessionDetails?[self.selectedSession].workType = self.workTypeArr
                 }
                 
-              //  self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+              //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
             } else {
-                if self.sessionDetailsArr.sessionDetails.count == 0 {
+                if self.sessionDetailsArr.sessionDetails?.count == 0 {
                      
                 } else {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
                 }
             }
           
@@ -796,18 +808,30 @@ class MenuView : BaseView{
            }
             
             if isForEdit()  {
-               if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
+               if self.menuVC.sessionDetailsArr?.sessionDetails?.count == 0 {
                     
                } else {
-                   self.menuVC.sessionDetailsArr?.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                   let count = self.menuVC.sessionDetailsArr?.sessionDetails?.count ?? 0
+                   if count <= selectedSession {
+                     
+                   } else {
+                       self.menuVC.sessionDetailsArr?.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+                   }
+                
                }
                
-              //  self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+              //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
             } else {
-                if self.sessionDetailsArr.sessionDetails.count == 0 {
+                if self.sessionDetailsArr.sessionDetails?.count == 0 {
                      
                 } else {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                    let count = self.sessionDetailsArr.sessionDetails?.count ?? 0
+                    if count <= selectedSession {
+                     
+                    } else {
+                        self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+                    }
+                    
                 }
             }
            
@@ -831,17 +855,17 @@ class MenuView : BaseView{
             typesTitle.text = "Work Type"
             self.menuTable.separatorStyle = .singleLine
             if isForEdit()  {
-                if self.menuVC.sessionDetailsArr?.sessionDetails.count == 0 {
+                if self.menuVC.sessionDetailsArr?.sessionDetails?.count == 0 {
                      
                 } else {
-                    self.menuVC.sessionDetailsArr?.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                    self.menuVC.sessionDetailsArr?.sessionDetails?[self.selectedSession].workType = self.workTypeArr
                 }
-              //  self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+              //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
             } else {
-                if self.sessionDetailsArr.sessionDetails.count == 0 {
+                if self.sessionDetailsArr.sessionDetails?.count == 0 {
                      
                 } else {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
                 }
             }
             
@@ -865,7 +889,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = true
             selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = self.clusterArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].cluster = self.clusterArr
         
         case .headQuater:
             self.cellType = .headQuater
@@ -886,7 +910,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = true
             selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].headQuates = self.headQuatersArr
        
         case .jointCall:
             self.cellType = .jointCall
@@ -907,7 +931,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = true
             selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].jointWork = self.jointWorkArr
      
         case .listedDoctor:
             self.cellType = .listedDoctor
@@ -928,7 +952,7 @@ class MenuView : BaseView{
             selectAllView.isHidden = true
             selectAllHeightConst.constant = 0
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].listedDoctors = self.listedDocArr
         
         case .chemist:
             self.cellType = .chemist
@@ -950,7 +974,7 @@ class MenuView : BaseView{
             typesTitleview.isHidden = false
             
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].chemist = self.chemistArr
         case .stockist:
             self.cellType = .stockist
             addSessionView.isHidden = true
@@ -971,7 +995,7 @@ class MenuView : BaseView{
             typesTitleview.isHidden = false
             
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].stockist = self.stockistArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].stockist = self.stockistArr
         case .unlistedDoctor:
             self.cellType = .unlistedDoctor
             addSessionView.isHidden = true
@@ -992,7 +1016,7 @@ class MenuView : BaseView{
             typesTitleview.isHidden = false
             
             self.menuTable.separatorStyle = .singleLine
-            self.sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
+            self.sessionDetailsArr.sessionDetails?[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
         }
         
         
@@ -1055,7 +1079,7 @@ class MenuView : BaseView{
                // self.menuTable.reloadData()
                 self.toGetTourPlanResponse()
             case .workType:
-                if sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork {
+                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork {
                     setPageType(.session, for: self.selectedSession)
                 } else {
                     setPageType(.session, for: self.selectedSession)
@@ -1093,7 +1117,7 @@ class MenuView : BaseView{
             case .session:
                 break
             case .workType:
-                if sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork {
+                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork {
                     setPageType(.session, for: self.selectedSession)
                 } else {
                     setPageType(.session, for: self.selectedSession)
@@ -1117,8 +1141,8 @@ class MenuView : BaseView{
         }
         
         addSessionView.addTap {
-            let count = self.sessionDetailsArr.sessionDetails.count
-            if  count > 1 {
+            let count = self.sessionDetailsArr.sessionDetails?.count
+            if  count ?? 0 > 1 {
                 if #available(iOS 13.0, *) {
                     (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
                 } else {
@@ -1151,27 +1175,27 @@ class MenuView : BaseView{
             case .workType:
                 break
             case .cluster:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeAll()
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?.removeAll()
               
             case .headQuater:
-              //  sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeAll()
+              //  sessionDetailsArr.sessionDetails?[selectedSession].selectedHeadQuaterID.removeAll()
                 break
                 
             case .jointCall:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeAll()
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?.removeAll()
              
             case .listedDoctor:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeAll()
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?.removeAll()
                
             case .chemist:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeAll()
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?.removeAll()
              
             case .edit:
                 break
             case .stockist:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeAll()
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID?.removeAll()
             case .unlistedDoctor:
-                sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeAll()
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?.removeAll()
             }
             self.menuTable.reloadData()
         }
@@ -1190,16 +1214,16 @@ class MenuView : BaseView{
             case .cluster:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
                  
-                    self.sessionDetailsArr.sessionDetails[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = true
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?[cluster.code ?? ""] = true
                      
                         
               
                     })
                 } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].cluster?.enumerated().forEach({ (index, cluster) in
                    
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: cluster.code ?? "")
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?.removeValue(forKey: cluster.code ?? "")
                     })
                   
                     
@@ -1215,13 +1239,13 @@ class MenuView : BaseView{
 //                }
 //                if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
 //
-//                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
-//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID[cluster.id ?? ""] = true
+//                    self.sessionDetailsArr.sessionDetails?[selectedSession].headQuates?.enumerated().forEach({ index, cluster in
+//                        sessionDetailsArr.sessionDetails?[selectedSession].selectedHeadQuaterID[cluster.id ?? ""] = true
 //
 //                    })
 //                } else {
-//                    self.sessionDetailsArr.sessionDetails[selectedSession].headQuates?.enumerated().forEach({ (index, cluster) in
-//                        sessionDetailsArr.sessionDetails[selectedSession].selectedHeadQuaterID.removeValue(forKey: cluster.id ?? "")
+//                    self.sessionDetailsArr.sessionDetails?[selectedSession].headQuates?.enumerated().forEach({ (index, cluster) in
+//                        sessionDetailsArr.sessionDetails?[selectedSession].selectedHeadQuaterID.removeValue(forKey: cluster.id ?? "")
 //                    })
 //
 //                }
@@ -1229,59 +1253,59 @@ class MenuView : BaseView{
             case .jointCall:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
                   
-                    self.sessionDetailsArr.sessionDetails[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[cluster.code ?? ""] = true
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?[cluster.code ?? ""] = true
                     
                     })
                 } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: cluster.code ?? "")
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].jointWork?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?.removeValue(forKey: cluster.code ?? "")
                     })
                    
                 }
             case .listedDoctor:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                   // sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.removeAll()
-                    self.sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[cluster.code ?? ""] = true
-                      //  sessionDetailsArr.sessionDetails[selectedSession].selectedDoctorsIndices.append(index)
+                   // sessionDetailsArr.sessionDetails?[selectedSession].selectedDoctorsIndices.removeAll()
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?[cluster.code ?? ""] = true
+                      //  sessionDetailsArr.sessionDetails?[selectedSession].selectedDoctorsIndices.append(index)
                     })
                 } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: cluster.code ?? "")
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].listedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?.removeValue(forKey: cluster.code ?? "")
                     })
                 
                 }
             case .chemist:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[cluster.code ?? ""] = true
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?[cluster.code ?? ""] = true
                     })
                 } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: cluster.code ?? "")
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].chemist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?.removeValue(forKey: cluster.code ?? "")
                     })
                 }
             case .edit:
                 break
             case .stockist:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].stockist?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[cluster.code ?? ""] = true
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].stockist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID?[cluster.code ?? ""] = true
                     })
                 } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].stockist?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeValue(forKey: cluster.code ?? "")
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].stockist?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID?.removeValue(forKey: cluster.code ?? "")
                     })
                 }
             case .unlistedDoctor:
                 if  self.selectAllIV.image ==  UIImage(named: "checkBoxSelected") {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[cluster.code ?? ""] = true
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?[cluster.code ?? ""] = true
                     })
                 } else {
-                    self.sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.enumerated().forEach({ (index, cluster) in
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeValue(forKey: cluster.code ?? "")
+                    self.sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?.enumerated().forEach({ (index, cluster) in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?.removeValue(forKey: cluster.code ?? "")
                     })
                 }
             }
@@ -1308,7 +1332,7 @@ class MenuView : BaseView{
         case .cluster:
             
             if isSearched {
-                if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].cluster?.count ?? 0 {
+                if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].cluster?.count ?? 0 {
                     isToSelectAll = true
                 } else {
                     isToSelectAll = false
@@ -1323,25 +1347,25 @@ class MenuView : BaseView{
             
  
         case .headQuater:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].headQuates?.count ?? 0 {
+            if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].headQuates?.count ?? 0 {
                 isToSelectAll = true
             } else {
                 isToSelectAll = false
             }
         case .jointCall:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].jointWork?.count ?? 0 {
+            if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].jointWork?.count ?? 0 {
                 isToSelectAll = true
             } else {
                 isToSelectAll = false
             }
         case .listedDoctor:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.count ?? 0 {
+            if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].listedDoctors?.count ?? 0 {
                 isToSelectAll = true
             } else {
                 isToSelectAll = false
             }
         case .chemist:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].chemist?.count ?? 0 {
+            if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].chemist?.count ?? 0 {
                 isToSelectAll = true
             } else {
                 isToSelectAll = false
@@ -1349,13 +1373,13 @@ class MenuView : BaseView{
         case .edit:
             break
         case .stockist:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].stockist?.count ?? 0 {
+            if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].stockist?.count ?? 0 {
                 isToSelectAll = true
             } else {
                 isToSelectAll = false
             }
         case .unlistedDoctor:
-            if selectedIndexCount == sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.count ?? 0 {
+            if selectedIndexCount == sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?.count ?? 0 {
                 isToSelectAll = true
             } else {
                 isToSelectAll = false
@@ -1460,33 +1484,33 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.cellType {
         case .edit:
-            return sessionDetailsArr.sessionDetails.count
+            return sessionDetailsArr.sessionDetails?.count ?? 0
             
         case .session:
-            return sessionDetailsArr.sessionDetails.count
+            return sessionDetailsArr.sessionDetails?.count ?? 0
         
         case .workType:
-            return sessionDetailsArr.sessionDetails[selectedSession].workType?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].workType?.count ?? 0
            
         case .cluster:
-            return sessionDetailsArr.sessionDetails[selectedSession].cluster?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].cluster?.count ?? 0
          
         case .headQuater:
-            return sessionDetailsArr.sessionDetails[selectedSession].headQuates?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].headQuates?.count ?? 0
           
         case .jointCall:
-            return sessionDetailsArr.sessionDetails[selectedSession].jointWork?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].jointWork?.count ?? 0
            
         case .listedDoctor:
-            return sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].listedDoctors?.count ?? 0
           
         case .chemist:
-            return sessionDetailsArr.sessionDetails[selectedSession].chemist?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].chemist?.count ?? 0
 
         case .stockist:
-            return sessionDetailsArr.sessionDetails[selectedSession].stockist?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].stockist?.count ?? 0
         case .unlistedDoctor:
-            return sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.count ?? 0
+            return sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?.count ?? 0
         }
        
      
@@ -1502,17 +1526,17 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 
             cell.lblName.text = "Plan \(indexPath.row + 1)"
            
-            sessionDetailsArr.sessionDetails[indexPath.row].sessionName = cell.lblName.text ?? ""
+            sessionDetailsArr.sessionDetails?[indexPath.row].sessionName = cell.lblName.text ?? ""
             
-            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
-            let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
+//            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex
+//            let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails?[indexPath.row].searchedWorkTypeIndex
+//
+//            let selectedHQIndex = sessionDetailsArr.sessionDetails?[indexPath.row].selectedHQIndex
+//            let searchedHQIndex = sessionDetailsArr.sessionDetails?[indexPath.row].searchedHQIndex
             
-            let selectedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex
-            let searchedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex
-            
-            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
-            let modal = sessionDetailsArr.sessionDetails[indexPath.row]
-            if  isForFieldWork  {
+            let isForFieldWork = sessionDetailsArr.sessionDetails?[indexPath.row].isForFieldWork
+            let modal = sessionDetailsArr.sessionDetails![indexPath.row]
+            if  isForFieldWork ?? false  {
                 
                
                 // cellStackHeightforFW
@@ -1520,9 +1544,26 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cellViewArr.forEach { view in
                     switch view {
+                    case cell.headQuatersView:
+                        if modal.HQNames == "" {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
+                            view.isHidden = true
+                        } else {
+                            view.isHidden = false
+                        }
+                        
+                       case cell.clusterView:
+                        if !(modal.selectedClusterID?.isEmpty ?? true) {
+                            view.isHidden = false
+                        } else {
+                            cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
+                            cellEditHeightForFW =  cellEditHeightForFW - 75
+                            view.isHidden = true
+                        }
                         
                     case cell.jointCallView:
-                        if !modal.selectedjointWorkID.isEmpty {
+                        if !(modal.selectedjointWorkID?.isEmpty ?? true) {
                             view.isHidden = false
                         } else {
                             cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
@@ -1531,7 +1572,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         }
                         
                     case cell.listedDoctorView:
-                        if !modal.selectedlistedDoctorsID.isEmpty {
+                        if !(modal.selectedlistedDoctorsID?.isEmpty ?? true)  {
                             view.isHidden = false
                         } else {
                             cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
@@ -1540,7 +1581,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         }
             
                     case cell.chemistView:
-                        if !modal.selectedchemistID.isEmpty {
+                        if !(modal.selectedchemistID?.isEmpty ?? true) {
                             view.isHidden = false
                         } else {
                             cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
@@ -1549,7 +1590,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         }
                         
                     case cell.stockistView:
-                        if !modal.selectedStockistID.isEmpty {
+                        if !(modal.selectedStockistID?.isEmpty ?? true) {
                             view.isHidden = false
                         } else {
                             cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
@@ -1558,7 +1599,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         }
                         
                     case cell.unlistedDocView:
-                        if !modal.selectedUnlistedDoctorsID.isEmpty  {
+                        if !(modal.selectedUnlistedDoctorsID?.isEmpty ?? true)  {
                             view.isHidden = false
                         } else {
                             cellEditStackHeightforFW =  cellEditStackHeightforFW - 75
@@ -1580,30 +1621,34 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             if isSearched {
-                if sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex != nil {
-                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[searchedWorkTypeIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails?[indexPath.row].WTName
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].workType?[searchedWorkTypeIndex ?? 0].name
                 } else {
                     cell.lblWorkType.text = "No info available"
                 }
                 
-                if sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].HQNames != "" {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails?[indexPath.row].HQNames
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "No info available"
                 }
                 
                 
             } else {
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
-                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails?[indexPath.row].WTName
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
                 } else {
                     cell.lblWorkType.text = "No info available"
                 }
                 
                 
                 
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedHQIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes != "" {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails?[indexPath.row].HQNames
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].headQuates?[selectedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "No info available"
                 }
@@ -1612,9 +1657,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var clusterNameArr = [String]()
             var clusterCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.isEmpty ?? true) {
                 self.clusterArr?.forEach({ cluster in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.forEach { key, value in
                         if key == cluster.code {
                             clusterNameArr.append(cluster.name ?? "")
                             clusterCodeArr.append(key)
@@ -1622,17 +1667,17 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblCluster.text = clusterNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblCluster.text = "No info available"
             }
 //            var headQuatersNameArr = [String]()
 //            var headQuartersCodeArr = [String]()
-//            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
+//            if !sessionDetailsArr.sessionDetails?[indexPath.row].selectedHeadQuaterID.isEmpty {
 //                self.headQuatersArr?.forEach({ headQuaters in
-//                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
+//                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedHeadQuaterID.forEach { key, value in
 //                        if key == headQuaters.id {
 //                            headQuatersNameArr.append(headQuaters.name ?? "")
 //                            headQuartersCodeArr.append(key)
@@ -1641,8 +1686,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                })
 //
 //                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
-//                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
-//                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
+//                sessionDetailsArr.sessionDetails?[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
+//                sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
 //            } else {
 //
 //                cell.lblHeadquaters.text = "No info available"
@@ -1652,9 +1697,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var jointWorkNameArr = [String]()
             var jointWorkCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.isEmpty ?? true) {
                 self.jointWorkArr?.forEach({ work in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.forEach { key, value in
                         if key == work.code {
                             jointWorkNameArr.append(work.name ?? "")
                             jointWorkCodeArr.append(key)
@@ -1662,8 +1707,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblJointCall.text = "No info available"
@@ -1672,9 +1717,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var listedDoctorsNameArr = [String]()
             var listedDoctorsCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedlistedDoctorsID?.isEmpty ?? true)  {
                 self.listedDocArr?.forEach({ doctors in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedlistedDoctorsID?.forEach { key, value in
                         if key == doctors.code {
                             listedDoctorsNameArr.append(doctors.name ?? "")
                             listedDoctorsCodeArr.append(key)
@@ -1682,8 +1727,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblListedDoctor.text = "No info available"
@@ -1692,9 +1737,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var chemistNameArr = [String]()
             var chemistCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.isEmpty ?? true) {
                 self.chemistArr?.forEach({ chemist in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.forEach { key, value in
                         if key == chemist.code {
                             chemistNameArr.append(chemist.name ?? "")
                             chemistCodeArr.append(key)
@@ -1702,8 +1747,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblChemist.text = chemistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].chemName =  cell.lblChemist.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  cell.lblChemist.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblChemist.text = "No info available"
@@ -1712,9 +1757,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var stockistNameArr = [String]()
             var stockistCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.isEmpty ?? true) {
                 self.stockistArr?.forEach({ stockist in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.forEach { key, value in
                         if key == stockist.code {
                             stockistNameArr.append(stockist.name ?? "")
                             stockistCodeArr.append(key)
@@ -1722,8 +1767,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblstockist.text = stockistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].stockistName =  cell.lblstockist.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  cell.lblstockist.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblstockist.text = "No info available"
@@ -1733,9 +1778,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             var unlistedDocNameArr = [String]()
             var unlistedDocCodeArr = [String]()
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.isEmpty ?? true) {
                 self.unlisteedDocArr?.forEach({ unlistDoc in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.forEach { key, value in
                         if key == unlistDoc.code {
                             unlistedDocNameArr.append(unlistDoc.name ?? "")
                             unlistedDocCodeArr.append(key)
@@ -1743,8 +1788,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblunlistedDoc.text = unlistedDocNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrName =  cell.lblunlistedDoc.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  cell.lblunlistedDoc.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblunlistedDoc.text = "No info available"
@@ -1775,14 +1820,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 
             
             cell.delegate = self
-            cell.remarksTV.text = sessionDetailsArr.sessionDetails[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails[indexPath.row].remarks
-           // sessionDetailsArr.sessionDetails[selectedSession].remarks
+            cell.remarksTV.text = sessionDetailsArr.sessionDetails?[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails?[indexPath.row].remarks
+           // sessionDetailsArr.sessionDetails?[selectedSession].remarks
             if  cell.remarksTV.text == "Remarks" {
                 cell.remarksTV.textColor =  UIColor.lightGray
             } else {
                 cell.remarksTV.textColor = UIColor.black
             }
-            if self.sessionDetailsArr.sessionDetails.count == 1 {
+            if self.sessionDetailsArr.sessionDetails?.count == 1 {
                 cell.deleteIcon.isHidden = true
             } else  {
                 cell.deleteIcon.isHidden = false
@@ -1791,19 +1836,19 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             cell.keybordenabled = false
             cell.lblName.text = "Plan \(indexPath.row + 1)"
             cell.selectedIndex = indexPath.row + 1
-            sessionDetailsArr.sessionDetails[indexPath.row].sessionName = cell.lblName.text ?? ""
+            sessionDetailsArr.sessionDetails?[indexPath.row].sessionName = cell.lblName.text ?? ""
             
-            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex
-            let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex
+//            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex
+//            let searchedWorkTypeIndex = sessionDetailsArr.sessionDetails?[indexPath.row].searchedWorkTypeIndex
+//
+//            let selectedHQIndex = sessionDetailsArr.sessionDetails?[indexPath.row].selectedHQIndex
+//            let searchedHQIndex = sessionDetailsArr.sessionDetails?[indexPath.row].searchedHQIndex
             
-            let selectedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex
-            let searchedHQIndex = sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex
-            
-            let isForFieldWork = sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork
+            let isForFieldWork = sessionDetailsArr.sessionDetails?[indexPath.row].isForFieldWork
             
           
             
-            if  isForFieldWork  {
+            if  isForFieldWork ?? false  {
                 cell.stackHeight.constant = cellStackHeightforFW
                 
                 let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.newCustomersView]
@@ -1859,62 +1904,66 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             if isSearched {
-                if sessionDetailsArr.sessionDetails[indexPath.row].searchedWorkTypeIndex != nil {
-                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[searchedWorkTypeIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails?[indexPath.row].WTName
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].workType?[searchedWorkTypeIndex ?? 0].name
                 } else {
                     cell.lblWorkType.text = "Select"
                 }
                 
-                if sessionDetailsArr.sessionDetails[indexPath.row].searchedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].HQNames != "" {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails?[indexPath.row].HQNames
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "No info available"
                 }
             } else {
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil {
-                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
+                    cell.lblWorkType.text = sessionDetailsArr.sessionDetails?[indexPath.row].WTName
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].workType?[selectedWorkTypeIndex ?? 0].name
                 } else {
                     cell.lblWorkType.text = "Select"
                 }
                 
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedHQIndex != nil {
-                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails[indexPath.row].headQuates?[selectedHQIndex ?? 0].name
+                if sessionDetailsArr.sessionDetails?[indexPath.row].HQNames != "" {
+                    cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails?[indexPath.row].HQNames
+                    //sessionDetailsArr.sessionDetails?[indexPath.row].headQuates?[selectedHQIndex ?? 0].name
                 } else {
                     cell.lblHeadquaters.text = "Select"
                 }
                 
             }
-            if isSearched {
-                let model = sessionDetailsArr.sessionDetails[indexPath.row]
-                if model.searchedWorkTypeIndex == nil {
-                    model.selectedClusterID =  [String : Bool]()
-                  //  model.selectedHeadQuaterID =  [String : Bool]()
-                    model.selectedjointWorkID = [String : Bool]()
-                    model.selectedlistedDoctorsID = [String : Bool]()
-                    model.selectedchemistID = [String : Bool]()
-                    model.selectedStockistID = [String : Bool]()
-                    model.selectedUnlistedDoctorsID = [String : Bool]()
-                }
-            } else {
-                let model = sessionDetailsArr.sessionDetails[indexPath.row]
-                if model.selectedWorkTypeIndex == nil {
-                    model.selectedClusterID =  [String : Bool]()
-                  //  model.selectedHeadQuaterID =  [String : Bool]()
-                    model.selectedjointWorkID = [String : Bool]()
-                    model.selectedlistedDoctorsID = [String : Bool]()
-                    model.selectedchemistID = [String : Bool]()
-                    model.selectedStockistID = [String : Bool]()
-                    model.selectedUnlistedDoctorsID = [String : Bool]()
-                }
-            }
+//            if isSearched {
+//                let model = sessionDetailsArr.sessionDetails?[indexPath.row]
+//                if model?.searchedWorkTypeIndex == nil {
+//                    model?.selectedClusterID =  [String : Bool]()
+//                  //  mod?el.selectedHeadQuaterID =  [String : Bool]()
+//                    model?.selectedjointWorkID = [String : Bool]()
+//                    model?.selectedlistedDoctorsID = [String : Bool]()
+//                    model?.selectedchemistID = [String : Bool]()
+//                    model?.selectedStockistID = [String : Bool]()
+//                    model?.selectedUnlistedDoctorsID = [String : Bool]()
+//                }
+//            } else {
+//                let model = sessionDetailsArr.sessionDetails?[indexPath.row]
+//                 if model?.selectedWorkTypeIndex == nil {
+//                    model?.selectedClusterID =  [String : Bool]()
+//                  //  mod?el.selectedHeadQuaterID =  [String : Bool]()
+//                    model?.selectedjointWorkID = [String : Bool]()
+//                    model?.selectedlistedDoctorsID = [String : Bool]()
+//                    model?.selectedchemistID = [String : Bool]()
+//                    model?.selectedStockistID = [String : Bool]()
+//                    model?.selectedUnlistedDoctorsID = [String : Bool]()
+//                }
+//            }
     
             
            
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.isEmpty ?? true) {
                 var clusterNameArr = [String]()
                 var clusterCodeArr = [String]()
                 self.clusterArr?.forEach({ cluster in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.forEach { key, value in
                         if key == cluster.code {
                             clusterNameArr.append(cluster.name ?? "")
                             clusterCodeArr.append(key)
@@ -1922,18 +1971,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblCluster.text = clusterNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblCluster.text = "Select"
             }
             
-//            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.isEmpty {
+//            if !sessionDetailsArr.sessionDetails?[indexPath.row].selectedHeadQuaterID.isEmpty {
 //                var headQuatersNameArr = [String]()
 //                var headQuartersCodeArr = [String]()
 //                self.headQuatersArr?.forEach({ headQuaters in
-//                    sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.forEach { key, value in
+//                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedHeadQuaterID.forEach { key, value in
 //                        if key == headQuaters.id {
 //                            headQuatersNameArr.append(headQuaters.name ?? "")
 //                            headQuartersCodeArr.append(key)
@@ -1942,8 +1991,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                })
 //
 //                cell.lblHeadquaters.text = headQuatersNameArr.joined(separator:", ")
-//                sessionDetailsArr.sessionDetails[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
-//                sessionDetailsArr.sessionDetails[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
+//                sessionDetailsArr.sessionDetails?[indexPath.row].HQNames =  cell.lblHeadquaters.text ?? ""
+//                sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes = headQuartersCodeArr.joined(separator:", ")
 //            } else {
 //
 //                cell.lblHeadquaters.text = "Select"
@@ -1952,11 +2001,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
           
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.isEmpty ?? true) {
                 var jointWorkNameArr = [String]()
                 var jointWorkCodeArr = [String]()
                 self.jointWorkArr?.forEach({ work in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.forEach { key, value in
                         if key == work.code {
                             jointWorkNameArr.append(work.name ?? "")
                             jointWorkCodeArr.append(key)
@@ -1964,8 +2013,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblJointCall.text = "Select"
@@ -1973,11 +2022,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
            
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedlistedDoctorsID?.isEmpty ?? true) {
                 var listedDoctorsNameArr = [String]()
                 var listedDoctorsCodeArr = [String]()
                 self.listedDocArr?.forEach({ doctors in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedlistedDoctorsID?.forEach { key, value in
                         if key == doctors.code {
                             listedDoctorsNameArr.append(doctors.name ?? "")
                             listedDoctorsCodeArr.append(key)
@@ -1985,18 +2034,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblListedDoctor.text = "Select"
             }
            
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.isEmpty ?? true) {
                 var chemistNameArr = [String]()
                 var chemistCodeArr = [String]()
                 self.chemistArr?.forEach({ chemist in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.forEach { key, value in
                         if key == chemist.code {
                             chemistNameArr.append(chemist.name ?? "")
                             chemistCodeArr.append(key)
@@ -2004,8 +2053,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblChemist.text = chemistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].chemName =  cell.lblChemist.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  cell.lblChemist.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblChemist.text = "Select"
@@ -2013,11 +2062,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             //Set label for Stockists
             
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.isEmpty ?? true) {
                 var stockistNameArr = [String]()
                 var stockistCodeArr = [String]()
                 self.stockistArr?.forEach({ chemist in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.forEach { key, value in
                         if key == chemist.code {
                             stockistNameArr.append(chemist.name ?? "")
                             stockistCodeArr.append(key)
@@ -2025,8 +2074,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblStockist.text = stockistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].stockistName =  cell.lblStockist.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  cell.lblStockist.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblStockist.text = "Select"
@@ -2034,11 +2083,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             //Set label for new customers
             
-            if !sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.isEmpty {
+            if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.isEmpty ?? true) {
                 var unlistedDocNameArr = [String]()
                 var unlistedDocCodeArr = [String]()
                 self.unlisteedDocArr?.forEach({ chemist in
-                    sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.forEach { key, value in
+                    sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.forEach { key, value in
                         if key == chemist.code {
                             unlistedDocNameArr.append(chemist.name ?? "")
                             unlistedDocCodeArr.append(key)
@@ -2046,8 +2095,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblNewCustomers.text = unlistedDocNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrName =  cell.lblNewCustomers.text ?? ""
-                sessionDetailsArr.sessionDetails[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  cell.lblNewCustomers.text ?? ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
             } else {
                 
                 cell.lblNewCustomers.text = "Select"
@@ -2061,8 +2110,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.clusterView.addTap { [self] in
                
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedClusterID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2088,8 +2137,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.headQuatersView.addTap { [self] in
 //                [self] in
-//                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedHeadQuaterID.count)
-//                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+//                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedHeadQuaterID.count)
+//                if sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  {
 //                    isToproceed = true
 //                }
 //                if isToproceed {
@@ -2100,7 +2149,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                } else {
 //                    self.toCreateToast("Please select work type")
 //                }
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2112,8 +2161,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
             }
             cell.jointCallView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedjointWorkID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.count ?? 0)
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2128,8 +2177,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             cell.listedDoctorView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedlistedDoctorsID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedlistedDoctorsID?.count ?? 0)
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != "" {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2145,8 +2194,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             cell.chemistView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedchemistID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.count ?? 0)
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2162,8 +2211,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             
             cell.stockistView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedStockistID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.count ?? 0)
+                if sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2177,8 +2226,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
             cell.newCustomersView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails[indexPath.row].selectedUnlistedDoctorsID.count)
-                if sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails[indexPath.row].selectedWorkTypeIndex != nil  {
+                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.count ?? 0)
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
@@ -2205,46 +2254,49 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             let cell = tableView.dequeueReusableCell(withIdentifier:"WorkTypeCell" ) as! WorkTypeCell
             cell.workTypeLbl.textColor = .appTextColor
             cell.workTypeLbl.setFont(font: .medium(size: .SMALL))
-            let item = sessionDetailsArr.sessionDetails[selectedSession].workType?[indexPath.row]
+            let item = sessionDetailsArr.sessionDetails?[selectedSession].workType?[indexPath.row]
             cell.workTypeLbl.text = item?.name ?? ""
-            let cacheIndex =  sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
-            let searchedCacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex
+            let cacheIndex =  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
+            let searchedCacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex
             
             
             if isSearched {
-                if searchedCacheIndex == nil {
-                    self.selectedWorkTypeName = "Select"
-                    self.selectTitleLbl.text = selectedWorkTypeName
-                } else {
-                    
+                if searchedCacheIndex != nil {
                     self.selectedWorkTypeName = self.workTypeArr?[searchedCacheIndex ?? 0].name ?? ""
+                    self.selectTitleLbl.text = selectedWorkTypeName
+                    
+                 
+                } else {
+                    self.selectedWorkTypeName = "Select"
                     self.selectTitleLbl.text = selectedWorkTypeName
                 }
             } else {
-                if cacheIndex == nil {
-                    self.selectedWorkTypeName = "Select"
+                if cacheIndex != nil {
+                    self.selectedWorkTypeName = sessionDetailsArr.sessionDetails?[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
+                    sessionDetailsArr.sessionDetails?[selectedSession].WTCode = sessionDetailsArr.sessionDetails?[selectedSession].workType?[cacheIndex ?? 0].code ?? ""
+                    
+                    sessionDetailsArr.sessionDetails?[selectedSession].WTName = sessionDetailsArr.sessionDetails?[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
+                    
                     self.selectTitleLbl.text = selectedWorkTypeName
                 } else {
-                    self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
-                    sessionDetailsArr.sessionDetails[selectedSession].WTCode = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].code ?? ""
-                    
-                    sessionDetailsArr.sessionDetails[selectedSession].WTName = sessionDetailsArr.sessionDetails[selectedSession].workType?[cacheIndex ?? 0].name ?? ""
-                    
+                    self.selectedWorkTypeName = "Select"
                     self.selectTitleLbl.text = selectedWorkTypeName
+                    
+   
                 }
             }
             
             
             
             if isSearched {
-                if sessionDetailsArr.sessionDetails[selectedSession].WTName == cell.workTypeLbl.text {
+                if sessionDetailsArr.sessionDetails?[selectedSession].WTName == cell.workTypeLbl.text {
                     cell.workTypeLbl.textColor = .green
                 }
                 else {
                     cell.workTypeLbl.textColor = .black
                 }
             } else {
-                if sessionDetailsArr.sessionDetails[selectedSession].WTName == cell.workTypeLbl.text {
+                if sessionDetailsArr.sessionDetails?[selectedSession].WTName == cell.workTypeLbl.text {
                     cell.workTypeLbl.textColor = .green
                 }
                 else {
@@ -2258,50 +2310,50 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 if self.isSearched {
                     var isToremove: Bool = false
-                    let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex
-                    let cacheCode = sessionDetailsArr.sessionDetails[selectedSession].WTCode
-                    let cacheName = sessionDetailsArr.sessionDetails[selectedSession].WTName
+                    let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex
+                    let cacheCode = sessionDetailsArr.sessionDetails?[selectedSession].WTCode
+                    let cacheName = sessionDetailsArr.sessionDetails?[selectedSession].WTName
                     self.workTypeArr?.enumerated().forEach({ index, workType in
                         if workType.code  ==  item?.code {
-                            if sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex == index {
-                                sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex  = index
-                                sessionDetailsArr.sessionDetails[selectedSession].WTName = workType.name ?? ""
-                                sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  workType.terrslFlg ?? ""
-                                sessionDetailsArr.sessionDetails[selectedSession].WTCode =  workType.code ?? ""
+                            if sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex == index {
+                                sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex  = index
+                                sessionDetailsArr.sessionDetails?[selectedSession].WTName = workType.name ?? ""
+                                sessionDetailsArr.sessionDetails?[selectedSession].FWFlg =  workType.terrslFlg ?? ""
+                                sessionDetailsArr.sessionDetails?[selectedSession].WTCode =  workType.code ?? ""
                                // isToremove = true
                                 isToremove = false
                             } else {
-                                sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = index
+                                sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex = index
                                 if item?.terrslFlg == "Y" {
-                                    sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].isForFieldWork = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
+                                    sessionDetailsArr.sessionDetails?[selectedSession].isForFieldWork = false
                                 }
                                 let terrFlg = item?.terrslFlg ?? ""
-                                sessionDetailsArr.sessionDetails[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
-                                sessionDetailsArr.sessionDetails[selectedSession].FWFlg = workType.terrslFlg ?? ""
-                                sessionDetailsArr.sessionDetails[selectedSession].WTCode = workType.code ?? ""
+                                sessionDetailsArr.sessionDetails?[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
+                                sessionDetailsArr.sessionDetails?[selectedSession].FWFlg = workType.terrslFlg ?? ""
+                                sessionDetailsArr.sessionDetails?[selectedSession].WTCode = workType.code ?? ""
                                 
-                                sessionDetailsArr.sessionDetails[selectedSession].WTName = workType.name ?? ""
+                                sessionDetailsArr.sessionDetails?[selectedSession].WTName = workType.name ?? ""
                             }
                         }
                     })
               
                     var isExist = Bool()
                 
-                    if sessionDetailsArr.sessionDetails.count > 1 {
-                        let asession = sessionDetailsArr.sessionDetails.enumerated().filter {sessionDetailIndex, sessionDetail in
-                             sessionDetail.WTCode ==  sessionDetailsArr.sessionDetails[selectedSession].WTCode
+                    if sessionDetailsArr.sessionDetails?.count ?? 0 > 1 {
+                        let asession = sessionDetailsArr.sessionDetails?.enumerated().filter {sessionDetailIndex, sessionDetail in
+                             sessionDetail.WTCode ==  sessionDetailsArr.sessionDetails?[selectedSession].WTCode
                          }
-                        if asession.count > 1 {
+                        if asession?.count ?? 0 > 1 {
                             isExist = true
                         }
                         if isExist {
                             self.endEditing(true)
                             self.toCreateToast("You have already choosen similar work type for another session")
-                            sessionDetailsArr.sessionDetails[selectedSession].searchedWorkTypeIndex = cacheIndex
-                            sessionDetailsArr.sessionDetails[selectedSession].WTCode = cacheCode
-                            sessionDetailsArr.sessionDetails[selectedSession].WTName = cacheName
+                            sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex = cacheIndex
+                            sessionDetailsArr.sessionDetails?[selectedSession].WTCode = cacheCode
+                            sessionDetailsArr.sessionDetails?[selectedSession].WTName = cacheName
                         } else {
                             if isToremove {
                                 self.menuTable.reloadData()
@@ -2323,32 +2375,24 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
            
                 } else {
-                    if sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex == indexPath.row {
-//                        sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex  = nil
-//                        sessionDetailsArr.sessionDetails[selectedSession].WTName = ""
-//                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg =  ""
-//                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = ""
-                      //  self.menuTable.reloadData()
-                        toSetData()
-                    } else {
-                        let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = indexPath.row
-                
+                    let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
+                     sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = indexPath.row
+                        
                             var isExist = Bool()
 
-                            if sessionDetailsArr.sessionDetails.count > 1 {
-                               let asession = sessionDetailsArr.sessionDetails.enumerated().filter {sessionDetailIndex, sessionDetail in
-                                    sessionDetail.selectedWorkTypeIndex ==  sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex
+                        if sessionDetailsArr.sessionDetails?.count ?? 0 > 1 {
+                               let asession = sessionDetailsArr.sessionDetails?.enumerated().filter {sessionDetailIndex, sessionDetail in
+                                    sessionDetail.selectedWorkTypeIndex ==  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
                                 }
                                 
-                                if asession.count > 1 {
+                            if asession?.count ?? 0 > 1 {
                                     isExist = true
                                 }
                                 
                                 if isExist {
                                     self.toCreateToast("You have already choosen similar work type for another session")
                               
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedWorkTypeIndex = cacheIndex
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = cacheIndex
                                 } else {
                                     toSetData()
                                 }
@@ -2357,18 +2401,19 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             }
            
            
-                    }
+                    
                     func toSetData() {
+                      //  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = indexPath.row
                         if item?.terrslFlg == "Y" {
-                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].isForFieldWork = true
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].isForFieldWork = false
+                            sessionDetailsArr.sessionDetails?[selectedSession].isForFieldWork = false
                         }
-                        sessionDetailsArr.sessionDetails[selectedSession].FWFlg = item?.terrslFlg ?? ""
-                        sessionDetailsArr.sessionDetails[selectedSession].WTCode = item?.code ?? ""
+                        sessionDetailsArr.sessionDetails?[selectedSession].FWFlg = item?.terrslFlg ?? ""
+                        sessionDetailsArr.sessionDetails?[selectedSession].WTCode = item?.code ?? ""
                         let terrFlg = item?.terrslFlg ?? ""
-                        sessionDetailsArr.sessionDetails[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
-                        sessionDetailsArr.sessionDetails[selectedSession].WTName = item?.name ?? ""
+                        sessionDetailsArr.sessionDetails?[selectedSession].isToshowTerritory = terrFlg == "N" ? false : true
+                        sessionDetailsArr.sessionDetails?[selectedSession].WTName = item?.name ?? ""
                         setPageType(.session, for: self.selectedSession)
                         self.endEditing(true)
                     }
@@ -2396,11 +2441,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             switch self.cellType {
                 
             case .headQuater:
-                item = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[indexPath.row]
+                item = sessionDetailsArr.sessionDetails?[selectedSession].headQuates?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                let cacheIndex =  sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex
-                let searchedCacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex
+                let cacheIndex =  sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex
+                let searchedCacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex
                 
                 
                 if isSearched {
@@ -2417,10 +2462,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         self.selectedWorkTypeName = "Select"
                         self.selectTitleLbl.text = selectedWorkTypeName
                     } else {
-                        self.selectedWorkTypeName = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[cacheIndex ?? 0].name ?? ""
-                        sessionDetailsArr.sessionDetails[selectedSession].HQCodes = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[cacheIndex ?? 0].id ?? ""
+                        self.selectedWorkTypeName = sessionDetailsArr.sessionDetails?[selectedSession].headQuates?[cacheIndex ?? 0].name ?? ""
+                        sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = sessionDetailsArr.sessionDetails?[selectedSession].headQuates?[cacheIndex ?? 0].id ?? ""
                         
-                        sessionDetailsArr.sessionDetails[selectedSession].HQNames = sessionDetailsArr.sessionDetails[selectedSession].headQuates?[cacheIndex ?? 0].name ?? ""
+                        sessionDetailsArr.sessionDetails?[selectedSession].HQNames = sessionDetailsArr.sessionDetails?[selectedSession].headQuates?[cacheIndex ?? 0].name ?? ""
                         
                         self.selectTitleLbl.text = selectedWorkTypeName
                     }
@@ -2429,14 +2474,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 
                 if isSearched {
-                    if sessionDetailsArr.sessionDetails[selectedSession].HQNames == cell.lblName.text {
+                    if sessionDetailsArr.sessionDetails?[selectedSession].HQNames == cell.lblName.text {
                         cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                     }
                     else {
                         cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                     }
                 } else {
-                    if sessionDetailsArr.sessionDetails[selectedSession].HQNames == cell.lblName.text {
+                    if sessionDetailsArr.sessionDetails?[selectedSession].HQNames == cell.lblName.text {
                         cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                     }
                     else {
@@ -2450,23 +2495,23 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     
                     if self.isSearched {
                         var isToremove: Bool = false
-                        let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex
-                        let cacheCode = sessionDetailsArr.sessionDetails[selectedSession].HQCodes
-                        let cacheName = sessionDetailsArr.sessionDetails[selectedSession].HQNames
+                      //  let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex
+                       // let cacheCode = sessionDetailsArr.sessionDetails?[selectedSession].HQCodes
+                       // let cacheName = sessionDetailsArr.sessionDetails?[selectedSession].HQNames
                         self.headQuatersArr?.enumerated().forEach({ index, HQs in
                             if HQs.id  ==  item?.id {
-                                if sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex == index {
-//                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex  = nil
-//                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
-//                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
-                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex = index
-                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = HQs.id ?? ""
-                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = HQs.name ?? ""
+                                if sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex == index {
+//                                    sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex  = nil
+//                                    sessionDetailsArr.sessionDetails?[selectedSession].HQNames = ""
+//                                    sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = ""
+                                    sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex = index
+                                    sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = HQs.id ?? ""
+                                    sessionDetailsArr.sessionDetails?[selectedSession].HQNames = HQs.name ?? ""
                                     isToremove = false
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].searchedHQIndex = index
-                                    sessionDetailsArr.sessionDetails[selectedSession].HQCodes = HQs.id ?? ""
-                                    sessionDetailsArr.sessionDetails[selectedSession].HQNames = HQs.name ?? ""
+                                    sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex = index
+                                    sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = HQs.id ?? ""
+                                    sessionDetailsArr.sessionDetails?[selectedSession].HQNames = HQs.name ?? ""
                                 }
                             }
                         })
@@ -2481,21 +2526,21 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         
                         
                     } else {
-                        if sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex == indexPath.row {
-//                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex  = nil
-//                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = ""
-//                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = ""
+                        if sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex == indexPath.row {
+//                            sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex  = nil
+//                            sessionDetailsArr.sessionDetails?[selectedSession].HQNames = ""
+//                            sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = ""
                          //   self.menuTable.reloadData()
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex = indexPath.row
-                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = item?.id ?? ""
-                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = item?.name ?? ""
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex = indexPath.row
+                            sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = item?.id ?? ""
+                            sessionDetailsArr.sessionDetails?[selectedSession].HQNames = item?.name ?? ""
                             setPageType(.session, for: self.selectedSession)
                             self.endEditing(true)
                         } else {
-                            let cacheIndex = sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedHQIndex = indexPath.row
-                            sessionDetailsArr.sessionDetails[selectedSession].HQCodes = item?.id ?? ""
-                            sessionDetailsArr.sessionDetails[selectedSession].HQNames = item?.name ?? ""
+                          //  let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex = indexPath.row
+                            sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = item?.id ?? ""
+                            sessionDetailsArr.sessionDetails?[selectedSession].HQNames = item?.name ?? ""
                             setPageType(.session, for: self.selectedSession)
                             self.endEditing(true)
                             
@@ -2512,15 +2557,15 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             case .cluster:
                 
-                let item = sessionDetailsArr.sessionDetails[selectedSession].cluster?[indexPath.row]
-                let _ = sessionDetailsArr.sessionDetails[selectedSession].cluster
+                let item = sessionDetailsArr.sessionDetails?[selectedSession].cluster?[indexPath.row]
+                let _ = sessionDetailsArr.sessionDetails?[selectedSession].cluster
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                 
                 // MARK: - cells load action
                 /**
-                 here  sessionDetailsArr.sessionDetails[selectedSession].cluster is an array which has cluster,
-                 sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID id dictionary which has selected cluster code and appropriate boolean values captured from cell tap action.
+                 here  sessionDetailsArr.sessionDetails?[selectedSession].cluster is an array which has cluster,
+                 sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID id dictionary which has selected cluster code and appropriate boolean values captured from cell tap action.
                  
                  - note : iterating through cluster Array and selectedClusterID dictionary if code in selectedClusterID dictionary is equal to code in cluster array
                  - note : And furher if value for code in  selectedClusterID dictionary is true cell is modified accordingly
@@ -2528,7 +2573,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 
                     self.clusterArr?.forEach({ cluster in
                         //  dump(cluster.code)
-                        sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach { id, isSelected in
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?.forEach { id, isSelected in
                             if id == cluster.code {
 
                                 if isSelected  {
@@ -2546,13 +2591,13 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 
                 // MARK: - set count and selected label
                 /**
-                 here  sessionDetailsArr.sessionDetails[selectedSession].cluster is an array which has cluster,
-                 sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID id dictionary which has selected cluster code and appropriate boolean values captured from cell tap action.
+                 here  sessionDetailsArr.sessionDetails?[selectedSession].cluster is an array which has cluster,
+                 sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID id dictionary which has selected cluster code and appropriate boolean values captured from cell tap action.
                  - note : iterating through selectedClusterID dictionary if (code) value in selectedClusterID dictionary is is true count value is increamented
                  */
                 
                 var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.forEach({ (code, isSelected) in
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?.forEach({ (code, isSelected) in
                     if isSelected {
                         count += 1
                     }
@@ -2575,7 +2620,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cell.addTap { [self] in
                     self.endEditing(true)
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID
+                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID
                     
                     // MARK: - Append contents to selectedClusterID Dictionary
                     /**
@@ -2587,13 +2632,13 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     if self.isSearched {
                         self.clusterArr?.enumerated().forEach({ index, cluster in
                             if cluster.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] = true
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![cluster.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![cluster.code ?? ""] = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == true ? false : true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![cluster.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![cluster.code ?? ""] == true ? false : true
                                 }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[cluster.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: cluster.code ?? "")
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![cluster.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID!.removeValue(forKey: cluster.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
@@ -2602,17 +2647,17 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         })
                       
                     } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] {
+                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?[item?.code ?? ""] {
                             
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == true ? false : true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![item?.code ?? ""] == true ? false : true
                             
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID.removeValue(forKey: item?.code ?? "")
+                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                             }
                             
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedClusterID[item?.code ?? ""] = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?[item?.code ?? ""] = true
                         }
                     }
                     tableView.reloadData()
@@ -2621,12 +2666,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
 
             case .jointCall:
-                item = sessionDetailsArr.sessionDetails[selectedSession].jointWork?[indexPath.row]
+                item = sessionDetailsArr.sessionDetails?[selectedSession].jointWork?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].jointWork?.forEach({ work in
+                sessionDetailsArr.sessionDetails?[selectedSession].jointWork?.forEach({ work in
                     //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.forEach { id, isSelected in
+                    sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?.forEach { id, isSelected in
                         if id == work.code {
                             
                             if isSelected  {
@@ -2644,7 +2689,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.forEach({ (code, isSelected) in
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?.forEach({ (code, isSelected) in
                     if isSelected {
                         count += 1
                     }
@@ -2661,18 +2706,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID
+                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID
                     
                     if isSearched {
                         self.jointWorkArr?.enumerated().forEach({ index, work in
                             if work.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] = true
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![work.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![work.code ?? ""] = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] == true ? false : true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![work.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![work.code ?? ""] == true ? false : true
                                 }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[work.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: work.code ?? "")
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![work.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID!.removeValue(forKey: work.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
@@ -2680,29 +2725,29 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                         })
                     } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] {
+                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?[item?.code ?? ""] {
                             
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == true ? false : true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![item?.code ?? ""] == true ? false : true
                             
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID.removeValue(forKey: item?.code ?? "")
+                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID![item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                             }
                             
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedjointWorkID[item?.code ?? ""] = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?[item?.code ?? ""] = true
                         }
                     }
                     tableView.reloadData()
                 }
                 
             case .listedDoctor:
-                item = sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?[indexPath.row]
+                item = sessionDetailsArr.sessionDetails?[selectedSession].listedDoctors?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].listedDoctors?.forEach({ doctors in
+                sessionDetailsArr.sessionDetails?[selectedSession].listedDoctors?.forEach({ doctors in
                     //  dump(cluster.code)
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach { id, isSelected in
+                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?.forEach { id, isSelected in
                         if id == doctors.code {
                             
                             if isSelected  {
@@ -2720,7 +2765,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.forEach({ (code, isSelected) in
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?.forEach({ (code, isSelected) in
                     if isSelected {
                         count += 1
                     }
@@ -2737,18 +2782,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID
+                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID
                     
                     if self.isSearched {
                         self.listedDocArr?.enumerated().forEach({ index, doctors in
                             if doctors.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] = true
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] == true ? false : true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == true ? false : true
                                 }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[doctors.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: doctors.code ?? "")
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID!.removeValue(forKey: doctors.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
@@ -2756,29 +2801,29 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                         })
                     } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] {
+                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] {
                             
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == true ? false : true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?[item?.code ?? ""] == true ? false : true
                             
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID.removeValue(forKey: item?.code ?? "")
+                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                             }
                             
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedlistedDoctorsID[item?.code ?? ""] = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] = true
                         }
                     }
 
                     tableView.reloadData()
                 }
             case .chemist:
-                item = sessionDetailsArr.sessionDetails[selectedSession].chemist?[indexPath.row]
+                item = sessionDetailsArr.sessionDetails?[selectedSession].chemist?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].chemist?.forEach({ chemist in
+                sessionDetailsArr.sessionDetails?[selectedSession].chemist?.forEach({ chemist in
                   
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach { id, isSelected in
+                    sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?.forEach { id, isSelected in
                         if id == chemist.code {
                             
                             if isSelected  {
@@ -2798,7 +2843,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 })
                 
                 var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.forEach({ (code, isSelected) in
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?.forEach({ (code, isSelected) in
                     if isSelected {
                         count += 1
                     }
@@ -2815,18 +2860,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID
+                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID
                     
                     if self.isSearched {
                         self.chemistArr?.enumerated().forEach({ index, chemist in
                             if chemist.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] = true
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![chemist.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![chemist.code ?? ""] = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] == true ? false : true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![chemist.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![chemist.code ?? ""] == true ? false : true
                                 }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[chemist.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: chemist.code ?? "")
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![chemist.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID!.removeValue(forKey: chemist.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
@@ -2834,17 +2879,17 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                         })
                     } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] {
+                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?[item?.code ?? ""] {
                             
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == true ? false : true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![item?.code ?? ""] == true ? false : true
                             
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID.removeValue(forKey: item?.code ?? "")
+                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                             }
                             
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedchemistID[item?.code ?? ""] = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID![item?.code ?? ""] = true
                         }
                     }
                     
@@ -2855,12 +2900,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 
             case .stockist:
-                item = sessionDetailsArr.sessionDetails[selectedSession].stockist?[indexPath.row]
+                item = sessionDetailsArr.sessionDetails?[selectedSession].stockist?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].stockist?.forEach({ stockist in
+                sessionDetailsArr.sessionDetails?[selectedSession].stockist?.forEach({ stockist in
                   
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.forEach { id, isSelected in
+                    sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID?.forEach { id, isSelected in
                         if id == stockist.code {
                             
                             if isSelected  {
@@ -2880,7 +2925,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 })
                 
                 var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.forEach({ (code, isSelected) in
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID?.forEach({ (code, isSelected) in
                     if isSelected {
                         count += 1
                     }
@@ -2897,18 +2942,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID
+                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID
                     
                     if self.isSearched {
                         self.stockistArr?.enumerated().forEach({ index, chemist in
                             if chemist.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] = true
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![chemist.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![chemist.code ?? ""] = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == true ? false : true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![chemist.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![chemist.code ?? ""] == true ? false : true
                                 }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[chemist.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeValue(forKey: chemist.code ?? "")
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![chemist.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID!.removeValue(forKey: chemist.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
@@ -2916,29 +2961,29 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                         })
                     } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] {
+                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![item?.code ?? ""] {
                             
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] == true ? false : true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![item?.code ?? ""] == true ? false : true
                             
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID.removeValue(forKey: item?.code ?? "")
+                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                             }
                             
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedStockistID[item?.code ?? ""] = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID![item?.code ?? ""] = true
                         }
                     }
 
                     tableView.reloadData()
                 }
             case .unlistedDoctor:
-                item = sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?[indexPath.row]
+                item = sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?[indexPath.row]
                 cell.lblName?.text = item?.name ?? ""
                 cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                sessionDetailsArr.sessionDetails[selectedSession].unlistedDoctors?.forEach({ stockist in
+                sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?.forEach({ stockist in
                   
-                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.forEach { id, isSelected in
+                    sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?.forEach { id, isSelected in
                         if id == stockist.code {
                             
                             if isSelected  {
@@ -2958,7 +3003,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 })
                 
                 var count = 0
-                sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.forEach({ (code, isSelected) in
+                sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?.forEach({ (code, isSelected) in
                     if isSelected {
                         count += 1
                     }
@@ -2975,18 +3020,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID
+                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID
                     
                     if self.isSearched {
                         self.unlisteedDocArr?.enumerated().forEach({ index, chemist in
                             if chemist.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] = true
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![chemist.code ?? ""] == nil {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![chemist.code ?? ""] = true
                                 } else {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == true ? false : true
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![chemist.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![chemist.code ?? ""] == true ? false : true
                                 }
-                                if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[chemist.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeValue(forKey: chemist.code ?? "")
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![chemist.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID!.removeValue(forKey: chemist.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
@@ -2994,17 +3039,17 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             
                         })
                     } else {
-                        if let _ = sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] {
+                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![item?.code ?? ""] {
                             
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] =  sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] == true ? false : true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![item?.code ?? ""] == true ? false : true
                             
-                            if sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID.removeValue(forKey: item?.code ?? "")
+                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![item?.code ?? ""] == false {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                             }
                             
                         } else {
-                            sessionDetailsArr.sessionDetails[selectedSession].selectedUnlistedDoctorsID[item?.code ?? ""] = true
+                            sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID![item?.code ?? ""] = true
                         }
                     }
 
@@ -3032,7 +3077,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
         case .session:
  
-            if sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork  {
+            if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork  {
                 return cellHeightForFW
             }  else {
                 return cellHeightForOthers
@@ -3047,7 +3092,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
            
         case .edit:
-            if sessionDetailsArr.sessionDetails[indexPath.row].isForFieldWork  {
+            if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork  {
                 return cellEditHeightForFW - 100
             }  else {
                 return cellHeightForOthers - 100
@@ -3109,7 +3154,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [WorkType]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].workType?.forEach({ workType in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].workType?.forEach({ workType in
                     if workType.name!.lowercased().contains(newText) {
                         filteredWorkType.append(workType)
                         isMatched = true
@@ -3118,7 +3163,7 @@ extension MenuView : UITextFieldDelegate {
                 })
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = self.workTypeArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
                     self.selectAllHeightConst.constant = 0
@@ -3126,7 +3171,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].workType = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
@@ -3149,7 +3194,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [Territory]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].cluster?.forEach({ cluster in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].cluster?.forEach({ cluster in
                     if cluster.name!.lowercased().contains(newText) {
                         filteredWorkType.append(cluster)
                         
@@ -3157,7 +3202,7 @@ extension MenuView : UITextFieldDelegate {
                     }
                 })
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = self.clusterArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].cluster = self.clusterArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3168,7 +3213,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.reloadData()
                 } else {
                     if isMatched {
-                        self.sessionDetailsArr.sessionDetails[self.selectedSession].cluster = filteredWorkType
+                        self.sessionDetailsArr.sessionDetails?[self.selectedSession].cluster = filteredWorkType
                         isSearched = true
                         self.noresultsView.isHidden = true
                         self.selectAllView.isHidden = true
@@ -3189,7 +3234,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [Subordinate]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].headQuates?.forEach({ cluster in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].headQuates?.forEach({ cluster in
                     if cluster.name!.lowercased().contains(newText) {
                         filteredWorkType.append(cluster)
                         
@@ -3199,7 +3244,7 @@ extension MenuView : UITextFieldDelegate {
                 
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = self.headQuatersArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].headQuates = self.headQuatersArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3209,7 +3254,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].headQuates = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].headQuates = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
@@ -3228,7 +3273,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [JointWork]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].jointWork?.forEach({ cluster in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].jointWork?.forEach({ cluster in
                     if cluster.name!.lowercased().contains(newText) {
                         filteredWorkType.append(cluster)
                         
@@ -3237,7 +3282,7 @@ extension MenuView : UITextFieldDelegate {
                 })
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = self.jointWorkArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].jointWork = self.jointWorkArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3247,7 +3292,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].jointWork = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].jointWork = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
@@ -3267,7 +3312,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [DoctorFencing]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors?.forEach({ cluster in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].listedDoctors?.forEach({ cluster in
                     if cluster.name!.lowercased().contains(newText) {
                         filteredWorkType.append(cluster)
                         
@@ -3276,7 +3321,7 @@ extension MenuView : UITextFieldDelegate {
                 })
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = self.listedDocArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].listedDoctors = self.listedDocArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3286,7 +3331,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].listedDoctors = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].listedDoctors = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
@@ -3307,7 +3352,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [Chemist]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].chemist?.forEach({ cluster in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].chemist?.forEach({ cluster in
                     if cluster.name!.lowercased().contains(newText) {
                         filteredWorkType.append(cluster)
                         isMatched = true
@@ -3316,7 +3361,7 @@ extension MenuView : UITextFieldDelegate {
 
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = self.chemistArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].chemist = self.chemistArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3326,7 +3371,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].chemist = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].chemist = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
@@ -3346,7 +3391,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [Stockist]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].stockist?.forEach({ stockist in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].stockist?.forEach({ stockist in
                     if stockist.name!.lowercased().contains(newText) {
                         filteredWorkType.append(stockist)
                         isMatched = true
@@ -3355,7 +3400,7 @@ extension MenuView : UITextFieldDelegate {
 
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].stockist = self.stockistArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].stockist = self.stockistArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3365,7 +3410,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].stockist = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].stockist = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
@@ -3386,7 +3431,7 @@ extension MenuView : UITextFieldDelegate {
                 var filteredWorkType = [UnListedDoctor]()
                 filteredWorkType.removeAll()
                 var isMatched = false
-                sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors?.forEach({ newDocs in
+                sessionDetailsArr.sessionDetails?[self.selectedSession].unlistedDoctors?.forEach({ newDocs in
                     if newDocs.name!.lowercased().contains(newText) {
                         filteredWorkType.append(newDocs)
                         isMatched = true
@@ -3395,7 +3440,7 @@ extension MenuView : UITextFieldDelegate {
 
                 
                 if newText.isEmpty {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
                     self.noresultsView.isHidden = true
 //                    self.selectAllView.isHidden = false
 //                    self.selectAllHeightConst.constant = selectAllHeight
@@ -3405,7 +3450,7 @@ extension MenuView : UITextFieldDelegate {
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else if isMatched {
-                    self.sessionDetailsArr.sessionDetails[self.selectedSession].unlistedDoctors = filteredWorkType
+                    self.sessionDetailsArr.sessionDetails?[self.selectedSession].unlistedDoctors = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
                     self.selectAllView.isHidden = true
@@ -3433,10 +3478,11 @@ extension MenuView : UITextFieldDelegate {
 
 extension MenuView: SessionInfoTVCDelegate {
     func remarksAdded(remarksStr: String) {
-        sessionDetailsArr.sessionDetails[selectedSession].remarks =  remarksStr
-        dump(sessionDetailsArr.sessionDetails[selectedSession].remarks)
+        sessionDetailsArr.sessionDetails?[selectedSession].remarks =  remarksStr
+        dump(sessionDetailsArr.sessionDetails?[selectedSession].remarks)
         self.menuTable.reloadData()
     }
     
     
 }
+
