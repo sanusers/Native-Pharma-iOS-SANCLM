@@ -106,19 +106,19 @@ class SessionDetail : NSObject, NSCoding {
     
     var sessionName : String!
     var workType: [WorkType]?
-    var selectedWorkTypeIndex: Int!
-    var searchedWorkTypeIndex: Int!
-    var selectedHQIndex: Int!
-    var searchedHQIndex: Int!
-    var isForFieldWork: Bool = true
-    var workTypeCode: String!
-    var selectedClusterID: [String : Bool]!
-    //  var selectedHeadQuaterID: [String : Bool]!
-    var selectedjointWorkID: [String : Bool]!
-    var selectedlistedDoctorsID: [String : Bool]!
-    var selectedchemistID: [String : Bool]!
-    var selectedStockistID: [String : Bool]!
-    var selectedUnlistedDoctorsID: [String : Bool]!
+    var selectedWorkTypeIndex: Int? = nil
+    var searchedWorkTypeIndex: Int? = nil
+    var selectedHQIndex: Int? = nil
+    var searchedHQIndex: Int? = nil
+    var isForFieldWork : Bool? = false
+    var workTypeCode: String?
+    var selectedClusterID: [String : Bool]?
+    //  var selectedHeadQuaterID: [String : Bool]?
+    var selectedjointWorkID: [String : Bool]?
+    var selectedlistedDoctorsID: [String : Bool]?
+    var selectedchemistID: [String : Bool]?
+    var selectedStockistID: [String : Bool]?
+    var selectedUnlistedDoctorsID: [String : Bool]?
     var headQuates: [Subordinate]?
     var cluster: [Territory]?
     var jointWork: [JointWork]?
@@ -126,32 +126,33 @@ class SessionDetail : NSObject, NSCoding {
     var chemist: [Chemist]?
     var stockist: [Stockist]?
     var unlistedDoctors: [UnListedDoctor]?
-    var isToshowTerritory: Bool!
-    var FWFlg : String!
-    var HQCodes : String!
-    var HQNames : String!
-    var WTCode : String!
-    var WTName : String!
-    var chemCode : String!
-    var chemName : String!
-    var cipCode : String!
-    var cipName : String!
-    var clusterCode : String!
-    var clusterName : String!
-    var drCode : String!
-    var drName : String!
-    var hospCode : String!
-    var hospName : String!
-    var jwCode : String!
-    var jwName : String!
-    var remarks : String!
-    var stockistCode : String!
-    var stockistName : String!
-    var unListedDrCode : String!
-    var unListedDrName : String!
+    var isToshowTerritory: Bool?
+    var FWFlg : String?
+    var HQCodes : String?
+    var HQNames : String?
+    var WTCode : String?
+    var WTName : String?
+    var chemCode : String?
+    var chemName : String?
+    var cipCode : String?
+    var cipName : String?
+    var clusterCode : String?
+    var clusterName : String?
+    var drCode : String?
+    var drName : String?
+    var hospCode : String?
+    var hospName : String?
+    var jwCode : String?
+    var jwName : String?
+    var remarks : String?
+    var stockistCode : String?
+    var stockistName : String?
+    var unListedDrCode : String?
+    var unListedDrName : String?
     
     public func encode(with coder: NSCoder) {
         coder.encode(sessionName, forKey: Key.sessionName.rawValue)
+        coder.encode(isForFieldWork, forKey: Key.isForFieldWork.rawValue)
         coder.encode(isToshowTerritory, forKey: Key.isToshowTerritory.rawValue)
         coder.encode(selectedClusterID, forKey: Key.selectedClusterID.rawValue)
         coder.encode(selectedjointWorkID, forKey: Key.selectedjointWorkID.rawValue)
@@ -189,6 +190,7 @@ class SessionDetail : NSObject, NSCoding {
        
         let sessionName = decoder.decodeObject(forKey: Key.sessionName.rawValue) as! String
         let isToshowTerritory = decoder.decodeObject(forKey: Key.isToshowTerritory.rawValue) as! Bool
+        let isForFieldWork = decoder.decodeObject(forKey: Key.isForFieldWork.rawValue) as! Bool
         let selectedClusterID = decoder.decodeObject(forKey: Key.selectedClusterID.rawValue) as! [String: Bool]
         // Uncomment the line below if needed
         // let selectedHeadQuaterID = decoder.decodeObject(forKey: Key.selectedHeadQuaterID.rawValue) as! [String: Bool]
@@ -223,10 +225,11 @@ class SessionDetail : NSObject, NSCoding {
 
         // Use the decoded values to initialize the object
         self.init(
-            sessionName: sessionName,
-            isToshowTerritory: isToshowTerritory,
+            sessionName: sessionName, isToshowTerritory: isToshowTerritory, isForFieldWork: isForFieldWork,
             selectedClusterID: selectedClusterID,
+          
             // Uncomment the line below if needed
+            
             // selectedHeadQuaterID: selectedHeadQuaterID,
             selectedjointWorkID: selectedjointWorkID,
             selectedlistedDoctorsID: selectedlistedDoctorsID,
@@ -265,6 +268,8 @@ class SessionDetail : NSObject, NSCoding {
      case sessionName
      case isToshowTerritory
      case selectedClusterID
+        case isForFieldWork
+      //  case selectedWorkTypeIndex
      //case //selectedHeadQuaterID
      case selectedjointWorkID
      case selectedlistedDoctorsID
@@ -300,6 +305,7 @@ class SessionDetail : NSObject, NSCoding {
     init(
         sessionName: String = "",
         isToshowTerritory: Bool = false,
+        isForFieldWork: Bool = false,
         selectedClusterID: [String: Bool] = [:],
 
         selectedjointWorkID: [String: Bool] = [:],
@@ -334,6 +340,7 @@ class SessionDetail : NSObject, NSCoding {
         self.sessionName = sessionName
         self.isToshowTerritory = isToshowTerritory
         self.selectedClusterID = selectedClusterID
+        self.isForFieldWork = isForFieldWork
         // Uncomment the line below if needed
         // self.selectedHeadQuaterID = selectedHeadQuaterID
         self.selectedjointWorkID = selectedjointWorkID
@@ -371,6 +378,7 @@ class SessionDetail : NSObject, NSCoding {
         self.isToshowTerritory = false
         self.selectedClusterID = [String : Bool]()
         //  self.selectedHeadQuaterID = [String : Bool]()
+        self.isForFieldWork = false
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
         self.selectedchemistID = [String : Bool]()
@@ -403,6 +411,7 @@ class SessionDetail : NSObject, NSCoding {
     
     func toRemoveValues() {
         self.isToshowTerritory = false
+        self.isForFieldWork = false
         self.selectedClusterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
@@ -411,6 +420,7 @@ class SessionDetail : NSObject, NSCoding {
         self.selectedUnlistedDoctorsID = [String : Bool]()
         self.selectedHQIndex = nil
         self.searchedHQIndex = nil
+        self.selectedWorkTypeIndex = nil
         self.HQCodes = ""
         self.HQNames = ""
         self.chemCode = ""

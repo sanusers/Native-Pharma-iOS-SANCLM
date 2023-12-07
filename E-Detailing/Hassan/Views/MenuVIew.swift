@@ -47,7 +47,7 @@ extension MenuView {
                 session.chemist = nil
                 session.stockist = nil
                 session.unlistedDoctors = nil
-                if !session.isForFieldWork {
+                if !(session.isForFieldWork ?? false) {
                     session.toRemoveValues()
                 }
             }
@@ -223,7 +223,8 @@ extension MenuView {
             
         } else {
             AppDefaults.shared.eachDatePlan.tourPlanArr.forEach { wholeMonthPlansArr in
-                wholeDatesSessionDetailsArr = wholeMonthPlansArr.arrOfPlan
+                wholeDatesSessionDetailsArr.append(contentsOf: wholeMonthPlansArr.arrOfPlan)
+                //= wholeMonthPlansArr.arrOfPlan
             }
             wholeDatesSessionDetailsArr.forEach { savedSessionDetArr in
                 tourPlanArr.arrOfPlan?.append(savedSessionDetArr)
@@ -239,6 +240,7 @@ extension MenuView {
         
         
         var isRemoved = false
+        var indices = [Int]()
         tourPlanArr.arrOfPlan?.enumerated().forEach { index , sessionDetArr in
             if tourPlanArr.arrOfPlan?.count ?? 0 > index {
                 if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
@@ -248,10 +250,19 @@ extension MenuView {
                   //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
                 }
             }
-     
+          
             
         }
         if isRemoved {
+//            indices.removeLast()
+//            indices.enumerated().forEach { selfIndex, toRemoveIndex in
+//                if indices.count > 1 {
+//                    tourPlanArr.arrOfPlan?.remove(at: toRemoveIndex)
+//
+//                }
+//
+//            }
+           
          //   tourPlanArr.arrOfPlan.append(aDaySessions)
         }
       
@@ -1079,7 +1090,7 @@ class MenuView : BaseView{
                // self.menuTable.reloadData()
                 self.toGetTourPlanResponse()
             case .workType:
-                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork {
+                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork ?? false {
                     setPageType(.session, for: self.selectedSession)
                 } else {
                     setPageType(.session, for: self.selectedSession)
@@ -1117,7 +1128,7 @@ class MenuView : BaseView{
             case .session:
                 break
             case .workType:
-                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork {
+                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork ?? false {
                     setPageType(.session, for: self.selectedSession)
                 } else {
                     setPageType(.session, for: self.selectedSession)
@@ -2313,6 +2324,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex
                     let cacheCode = sessionDetailsArr.sessionDetails?[selectedSession].WTCode
                     let cacheName = sessionDetailsArr.sessionDetails?[selectedSession].WTName
+                    sessionDetailsArr.sessionDetails?[selectedSession].WTCode = item?.code ?? ""
+                    sessionDetailsArr.sessionDetails?[selectedSession].WTName = item?.name ?? ""
                     self.workTypeArr?.enumerated().forEach({ index, workType in
                         if workType.code  ==  item?.code {
                             if sessionDetailsArr.sessionDetails?[selectedSession].searchedWorkTypeIndex == index {
@@ -2376,23 +2389,34 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
            
                 } else {
                     let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
-                     sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = indexPath.row
-                        
+                    let cacheCode = sessionDetailsArr.sessionDetails?[selectedSession].WTCode
+                    let cacheName = sessionDetailsArr.sessionDetails?[selectedSession].WTName
+                   // sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = indexPath.row
+                    sessionDetailsArr.sessionDetails?[selectedSession].WTCode = item?.code ?? ""
+                    sessionDetailsArr.sessionDetails?[selectedSession].WTName = item?.name ?? ""
                             var isExist = Bool()
-
+                        var existCount = Int()
                         if sessionDetailsArr.sessionDetails?.count ?? 0 > 1 {
                                let asession = sessionDetailsArr.sessionDetails?.enumerated().filter {sessionDetailIndex, sessionDetail in
-                                    sessionDetail.selectedWorkTypeIndex ==  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
+                                   sessionDetail.WTCode ==  sessionDetailsArr.sessionDetails?[selectedSession].WTCode
+                                 //  sessionDetail.selectedWorkTypeIndex ==  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
                                 }
+//                            sessionDetailsArr.sessionDetails?.forEach({ sessionDetail in
+//                                if sessionDetailsArr.sessionDetails?[selectedSession].WTCode == sessionDetail.WTCode {
+//                                    existCount += 1
+//                                }
+//                            })
+                            
                                 
                             if asession?.count ?? 0 > 1 {
                                     isExist = true
                                 }
-                                
+                  
                                 if isExist {
                                     self.toCreateToast("You have already choosen similar work type for another session")
-                              
                                     sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = cacheIndex
+                                    sessionDetailsArr.sessionDetails?[selectedSession].WTCode = cacheCode
+                                    sessionDetailsArr.sessionDetails?[selectedSession].WTName = cacheName
                                 } else {
                                     toSetData()
                                 }
@@ -2403,7 +2427,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
            
                     
                     func toSetData() {
-                      //  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = indexPath.row
+                        sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = indexPath.row
                         if item?.terrslFlg == "Y" {
                             sessionDetailsArr.sessionDetails?[selectedSession].isForFieldWork = true
                         } else {
@@ -3077,7 +3101,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
         case .session:
  
-            if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork  {
+            if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork ?? false  {
                 return cellHeightForFW
             }  else {
                 return cellHeightForOthers
@@ -3092,7 +3116,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
            
         case .edit:
-            if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork  {
+            if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork ?? false  {
                 return cellEditHeightForFW - 100
             }  else {
                 return cellHeightForOthers - 100

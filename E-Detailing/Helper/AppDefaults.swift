@@ -322,78 +322,78 @@ class AppDefaults {
             }
         }
     
-    func getToutplanDetails() -> TourPlanArr {
-        let tourPlanArr = TourPlanArr()
-        let tourData = UserDefaults.standard.data(forKey: keys.tourPlan.rawValue)
-        let decoder = JSONDecoder()
-        var isDecoded: Bool = false
-        do {
-            let decodedData = try decoder.decode(SessionAPIResponseModel.self, from: tourData!)
-            isDecoded = true
-            
-            //self.appSetup = decodedData
-          
-            decodedData.tpData.forEach { tourplanData in
-                var tempSessionArr  = SessionDetailsArr()
-                tourplanData.sessions.forEach { session in
-                    var tempSession = SessionDetail()
-                    //Field Work Y or N:
-                    tempSession.isForFieldWork = session.FWFlg == "N" ? false : true
- 
-                    //Work type
-                    tempSession.workTypeCode = session.WTCode
-                    
-                    //HeadQuarters
-//                    let headQuatersCodes =  session.HQCodes.components(separatedBy: ",")
-//                    headQuatersCodes.forEach { code in
-//                        tempSession.selectedHeadQuaterID[code] = true
+//    func getToutplanDetails() -> TourPlanArr {
+//        let tourPlanArr = TourPlanArr()
+//        let tourData = UserDefaults.standard.data(forKey: keys.tourPlan.rawValue)
+//        let decoder = JSONDecoder()
+//        var isDecoded: Bool = false
+//        do {
+//            let decodedData = try decoder.decode(SessionAPIResponseModel.self, from: tourData!)
+//            isDecoded = true
+//            
+//            //self.appSetup = decodedData
+//          
+//            decodedData.tpData.forEach { tourplanData in
+//                var tempSessionArr  = SessionDetailsArr()
+//                tourplanData.sessions.forEach { session in
+//                    var tempSession = SessionDetail()
+//                    //Field Work Y or N:
+//                    tempSession.isForFieldWork = session.FWFlg == "N" ? false : true
+// 
+//                    //Work type
+//                    tempSession.workTypeCode = session.WTCode
+//                    
+//                    //HeadQuarters
+////                    let headQuatersCodes =  session.HQCodes.components(separatedBy: ",")
+////                    headQuatersCodes.forEach { code in
+////                        tempSession.selectedHeadQuaterID[code] = true
+////                    }
+//                    tempSession.HQCodes = session.HQCodes
+//                    //Chemist
+//                    let chemistCodes =  session.chemCode.components(separatedBy: ",")
+//                    chemistCodes.forEach { code in
+//                        tempSession.selectedchemistID?[code] = true
 //                    }
-                    tempSession.HQCodes = session.HQCodes
-                    //Chemist
-                    let chemistCodes =  session.chemCode.components(separatedBy: ",")
-                    chemistCodes.forEach { code in
-                        tempSession.selectedchemistID?[code] = true
-                    }
-                    
-                    
-                    //cluster
-                    let clusterCodes =  session.clusterCode.components(separatedBy: ",")
-                    clusterCodes.forEach { code in
-                        tempSession.selectedClusterID?[code] = true
-                    }
-                    
-                    //Doctor
-                    let doctorCode =  session.drCode.components(separatedBy: ",")
-                    doctorCode.forEach { code in
-                        tempSession.selectedlistedDoctorsID?[code] = true
-                    }
-                    
-                    let jwCode = session.jwCode.components(separatedBy: ",")
-                    jwCode.forEach { code in
-                        tempSession.selectedjointWorkID?[code] = true
-                    }
-                    
-                    tempSessionArr.sessionDetails?.append(tempSession)
-                    tempSession = SessionDetail()
-                    
-                }
-                tempSessionArr.changeStatus = tourplanData.changeStatus
-                tempSessionArr.date = tourplanData.date
-                tempSessionArr.day = tourplanData.day
-                tempSessionArr.dayNo = tourplanData.dayNo
-                tempSessionArr.entryMode = tourplanData.entryMode
-                tempSessionArr.rejectionReason = tourplanData.rejectionReason
-                tourPlanArr.arrOfPlan?.append(tempSessionArr)
-                tempSessionArr  = SessionDetailsArr()
-            }
-        } catch {
-            print("Unable to decode")
-        }
-        if isDecoded {
-            //return appSetup ?? AppSetUp()
-            return tourPlanArr
-        } else {
-            return TourPlanArr()
-        }
-    }
+//                    
+//                    
+//                    //cluster
+//                    let clusterCodes =  session.clusterCode.components(separatedBy: ",")
+//                    clusterCodes.forEach { code in
+//                        tempSession.selectedClusterID?[code] = true
+//                    }
+//                    
+//                    //Doctor
+//                    let doctorCode =  session.drCode.components(separatedBy: ",")
+//                    doctorCode.forEach { code in
+//                        tempSession.selectedlistedDoctorsID?[code] = true
+//                    }
+//                    
+//                    let jwCode = session.jwCode.components(separatedBy: ",")
+//                    jwCode.forEach { code in
+//                        tempSession.selectedjointWorkID?[code] = true
+//                    }
+//                    
+//                    tempSessionArr.sessionDetails?.append(tempSession)
+//                    tempSession = SessionDetail()
+//                    
+//                }
+//                tempSessionArr.changeStatus = tourplanData.changeStatus
+//                tempSessionArr.date = tourplanData.date
+//                tempSessionArr.day = tourplanData.day
+//                tempSessionArr.dayNo = tourplanData.dayNo
+//                tempSessionArr.entryMode = tourplanData.entryMode
+//                tempSessionArr.rejectionReason = tourplanData.rejectionReason
+//                tourPlanArr.arrOfPlan?.append(tempSessionArr)
+//                tempSessionArr  = SessionDetailsArr()
+//            }
+//        } catch {
+//            print("Unable to decode")
+//        }
+//        if isDecoded {
+//            //return appSetup ?? AppSetUp()
+//            return tourPlanArr
+//        } else {
+//            return TourPlanArr()
+//        }
+//    }
 }

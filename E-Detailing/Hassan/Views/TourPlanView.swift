@@ -50,7 +50,7 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         var stockiststr = [String]()
         var unlistedDocstr = [String]()
         modal?.sessionDetails?.forEach({ session in
-            if session.isForFieldWork{
+            if session.isForFieldWork ?? false{
                 isFieldWorkExist.append(true)
                 if  session.jwName != "" {
                     jointCallstr.append(session.jwName ?? "")

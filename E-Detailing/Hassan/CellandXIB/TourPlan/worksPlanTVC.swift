@@ -102,7 +102,7 @@ class worksPlanTVC: UITableViewCell {
                   workTypestr.append(session.WTName ?? "")
                 
               }
-            if session.isForFieldWork {
+            if session.isForFieldWork ?? false {
                 isFieldWorkExist.append(true)
                   if  session.jwName != "" {
                       jointCallstr.append(session.jwName ?? "")
