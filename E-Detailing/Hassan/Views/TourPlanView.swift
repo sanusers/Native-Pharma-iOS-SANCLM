@@ -28,10 +28,9 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.optionsIV.addTap {
-            //Demo coreData
-            //DataManager.sharedInstance.createUser()
- 
-          //  print("Core Data")
+            self.toRemoveSession(modal ?? SessionDetailsArr())
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+            self.toToggleApprovalState(false)
         }
         return cell
     }
@@ -206,8 +205,9 @@ class TourPlanView: BaseView {
     var tempArrofPlan: [SessionDetailsArr]?
     var sessionResponseVM: SessionResponseVM?
     var tableSetupmodel: TableSetupModel?
-   // let appGraycolor = UIColor(hex: "#EEEEEE")
-   // let cellSelectionColor = UIColor(hex: "#F2F2F7")
+    var totalDays = Int()
+    var filledDates = [Date]()
+    var months = [String]()
     private var currentPage: Date?
     private lazy var today: Date = {
         return Date()
@@ -251,6 +251,58 @@ class TourPlanView: BaseView {
         worksPlanTable.reloadData()
         self.tourPlanCalander.collectionView.reloadData()
         
+        
+        if filledDates.count == 3 {
+            toEnableApprovalBtn(totaldate: filledDates, filleddate: arrOfPlan?.count ?? 0)
+        } else {
+                if months.isEmpty {
+                    months.append(toGetMonth(date))
+                    filledDates.append(date)
+                } else {
+                    if months.contains(toGetMonth(date)) {
+                    } else {
+                        months.append(toGetMonth(date))
+                        filledDates.append(date)
+                    }
+                }
+        }
+    }
+    
+    func toEnableApprovalBtn(totaldate: [Date], filleddate: Int) {
+        totalDays = 0
+        filledDates.forEach { date in
+            let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: date)
+                totalDays = totalDays + (range?.count ?? 30)
+        }
+        print("Total days--->\(totalDays)----||")
+        
+        
+        if totalDays == filleddate {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: true)
+            toToggleApprovalState(true)
+        } else {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+            toToggleApprovalState(false)
+    
+        }
+        
+    }
+    
+    func toToggleApprovalState(_ isActive: Bool) {
+        if isActive {
+            generalButtonsHolder.backgroundColor = .green
+            generalButtonsHolder.isUserInteractionEnabled = true
+        } else {
+            generalButtonsHolder.backgroundColor = .appSelectionColor
+            generalButtonsHolder.isUserInteractionEnabled = false
+        }
+    }
+    
+    
+    func toRemoveSession(_ sessionDetArr:  SessionDetailsArr) {
+
+        
+        toRemoveElement(isToremove: true, toRemoveSessionDetArr: sessionDetArr)
     }
     
     func toGetMonth(_ date: Date)  -> String {
@@ -259,26 +311,42 @@ class TourPlanView: BaseView {
         return dateFormatter.string(from: date )
     }
     
-    func toLoadData()  {
-        
+    func toRemoveElement(isToremove: Bool?, toRemoveSessionDetArr:  SessionDetailsArr?) {
 
+            var  temptpArray =  [TourPlanArr]()
+            self.arrOfPlan?.enumerated().forEach({ sessionDetArrIndex ,sessionDetArr in
+                if sessionDetArr.date == toRemoveSessionDetArr?.date {
+                    self.arrOfPlan?.remove(at: sessionDetArrIndex)
+                }
+            })
+            AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
+                temptpArray.append(eachDayPlan)
+            }
+            
+            temptpArray.forEach({ tpArr in
+                tpArr.arrOfPlan =  self.arrOfPlan
+            })
         
+            AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+        
+                        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+                             if !savefinish {
+                                 print("Error")
+                             }
+            
+        toLoadData()
+        
+    }
+    
+    
+    func toLoadData()  {
+
         self.arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
 
         
-//                let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("EachDatePlan")
-//
-//                do {
-//                let data = try Data(contentsOf: path)
-//                if let books = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) {
-//                print(books)
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-//                }
-//                } catch {
-//                print("ERROR: \(error.localizedDescription)")
-//                }
-        
+
         
         AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
             tpArray.append(eachDayPlan)
@@ -332,6 +400,7 @@ class TourPlanView: BaseView {
         
      
     }
+    
 
     private func moveCurrentPage(moveUp: Bool) {
      
@@ -389,10 +458,13 @@ class TourPlanView: BaseView {
             if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
                 print("Previous Month:", currentMonth)
                 self.currentPage = currentMonth
+               
             }
         }
 
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
+  
+       
         monthWiseSeperationofSessions(self.currentPage ?? Date())
     }
     
@@ -437,6 +509,7 @@ class TourPlanView: BaseView {
         tourPlanCalander.delegate = self
         tourPlanCalander.dataSource = self
         tourPlanCalander.reloadData()
+        mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
     }
     
     //MARK: - Enum Page types
@@ -502,6 +575,11 @@ class TourPlanView: BaseView {
         updateCalender()
         toLoadData()
       
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoEnableApproveBtn) {
+            toToggleApprovalState(true)
+        } else {
+            toToggleApprovalState(false)
+        }
         calenderHolderView.elevate(2)
         calenderHolderView.layer.cornerRadius = 5
 
@@ -532,6 +610,16 @@ class TourPlanView: BaseView {
                   menuvc.menuDelegate = self
           
          // var isExist = Bool()
+//        do {
+//            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+//            if let yourObject = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: data) {
+//                // Use 'yourObject'
+//                AppDefaults.shared.eachDatePlan = yourObject
+//            }
+//        } catch {
+//            // Handle the error appropriately
+//            print("Error unarchiving data: \(error)")
+//        }
         
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
         

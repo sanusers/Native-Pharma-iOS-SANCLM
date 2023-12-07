@@ -51,8 +51,6 @@
 		38C4D5AA2A84F92D00D7C5E0 /* ProductNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4D5A92A84F92D00D7C5E0 /* ProductNameTableViewCell.swift */; };
 		38C4D5AC2A84F94500D7C5E0 /* ProductNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4D5AB2A84F94500D7C5E0 /* ProductNameTableViewCell.xib */; };
 		38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C537FB2A2201C9007D68C5 /* ConfigVC.swift */; };
-		38C58F772B173C1400458722 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C58F762B173C1400458722 /* DataManager.swift */; };
-		38C58F7A2B173CE800458722 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C58F792B173CE800458722 /* BookModel.swift */; };
 		38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C5986D2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift */; };
 		38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C5986F2ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib */; };
 		38C5D35E2A835FB800513BC8 /* ProductVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C5D35D2A835FB800513BC8 /* ProductVC.swift */; };
@@ -79,7 +77,6 @@
 		38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */; };
 		38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */; };
 		38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D82AC312E300DA554F /* MultiSelectionVC.swift */; };
-		38CAE7B32B15AB9600CB750A /* ZstoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE7B22B15AB9600CB750A /* ZstoreDataModel.swift */; };
 		38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4CD2A9F4512001992C4 /* TaggingViewModel.swift */; };
 		38CBA4D02A9F59B3001992C4 /* DcrTagTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4CF2A9F59B3001992C4 /* DcrTagTitleCell.swift */; };
 		38CBA4D22A9F80B3001992C4 /* TagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CBA4D12A9F80B3001992C4 /* TagViewCell.swift */; };
@@ -107,6 +104,7 @@
 		38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D528AD2A9A2B9B00AD3F78 /* DCRTaggingCell.swift */; };
 		38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D528AF2A9A2BA600AD3F78 /* DCRTaggingCell.xib */; };
 		38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D738222B120A6F00162548 /* TableSetupModel.swift */; };
+		38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D7F6E12B21D8830091B2CF /* LocalStorage.swift */; };
 		38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363A2A4C014B0032588D /* MasterSync.swift */; };
 		38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */; };
 		38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */; };
@@ -234,8 +232,6 @@
 		38C4D5A92A84F92D00D7C5E0 /* ProductNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameTableViewCell.swift; sourceTree = "<group>"; };
 		38C4D5AB2A84F94500D7C5E0 /* ProductNameTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductNameTableViewCell.xib; sourceTree = "<group>"; };
 		38C537FB2A2201C9007D68C5 /* ConfigVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigVC.swift; sourceTree = "<group>"; };
-		38C58F762B173C1400458722 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		38C58F792B173CE800458722 /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		38C5986D2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleInputView.swift; sourceTree = "<group>"; };
 		38C5986F2ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleInputView.xib; sourceTree = "<group>"; };
 		38C5D35D2A835FB800513BC8 /* ProductVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVC.swift; sourceTree = "<group>"; };
@@ -262,7 +258,6 @@
 		38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCell.swift; sourceTree = "<group>"; };
 		38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCell.xib; sourceTree = "<group>"; };
 		38CAE5D82AC312E300DA554F /* MultiSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionVC.swift; sourceTree = "<group>"; };
-		38CAE7B22B15AB9600CB750A /* ZstoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZstoreDataModel.swift; sourceTree = "<group>"; };
 		38CBA4CD2A9F4512001992C4 /* TaggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewModel.swift; sourceTree = "<group>"; };
 		38CBA4CF2A9F59B3001992C4 /* DcrTagTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DcrTagTitleCell.swift; sourceTree = "<group>"; };
 		38CBA4D12A9F80B3001992C4 /* TagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewCell.swift; sourceTree = "<group>"; };
@@ -290,6 +285,7 @@
 		38D528AD2A9A2B9B00AD3F78 /* DCRTaggingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRTaggingCell.swift; sourceTree = "<group>"; };
 		38D528AF2A9A2BA600AD3F78 /* DCRTaggingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRTaggingCell.xib; sourceTree = "<group>"; };
 		38D738222B120A6F00162548 /* TableSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSetupModel.swift; sourceTree = "<group>"; };
+		38D7F6E12B21D8830091B2CF /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 		38D8363A2A4C014B0032588D /* MasterSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSync.swift; sourceTree = "<group>"; };
 		38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncTbCell.swift; sourceTree = "<group>"; };
 		38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearMeViewModel.swift; sourceTree = "<group>"; };
@@ -461,6 +457,7 @@
 				38E8B5D52B0B3BB100C40042 /* Fonts and Colors.swift */,
 				38F289B12B0C8FC200045D4F /* NotificationEnum.swift */,
 				38F289B92B0CDFD800045D4F /* BackupCodes.swift */,
+				38D7F6E12B21D8830091B2CF /* LocalStorage.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -496,7 +493,6 @@
 		38BFB7842AFB62DD005E141E /* Modals */ = {
 			isa = PBXGroup;
 			children = (
-				38CAE7B12B15AB6F00CB750A /* Zstore */,
 				38E220702B032DAE00FBF6B0 /* TourPlan */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
 			);
@@ -597,23 +593,6 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		38C58F782B173CC500458722 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				38C58F762B173C1400458722 /* DataManager.swift */,
-				38C58F792B173CE800458722 /* BookModel.swift */,
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
-		38CAE7B12B15AB6F00CB750A /* Zstore */ = {
-			isa = PBXGroup;
-			children = (
-				38CAE7B22B15AB9600CB750A /* ZstoreDataModel.swift */,
-			);
-			path = Zstore;
-			sourceTree = "<group>";
-		};
 		38E220702B032DAE00FBF6B0 /* TourPlan */ = {
 			isa = PBXGroup;
 			children = (
@@ -627,7 +606,6 @@
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
-				38C58F782B173CC500458722 /* CoreData */,
 				3865F8D22AFCE38E009AB984 /* CellandXIB */,
 				3865F8CD2AFCCE57009AB984 /* Views */,
 				3865F8CA2AFCCE3D009AB984 /* ViewControllers */,
@@ -1066,6 +1044,7 @@
 				3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */,
 				38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */,
 				38C4D33C2A7BD9BB0029AC12 /* MainViewModel.swift in Sources */,
+				38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */,
 				38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */,
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
 				3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */,
@@ -1119,7 +1098,6 @@
 				3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */,
 				38F289B72B0CB59A00045D4F /* EditSessionTVC.swift in Sources */,
 				38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */,
-				38CAE7B32B15AB9600CB750A /* ZstoreDataModel.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
@@ -1131,7 +1109,6 @@
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
 				38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */,
 				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
-				38C58F7A2B173CE800458722 /* BookModel.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
@@ -1140,7 +1117,6 @@
 				38C44CC42A404DB6009D7B68 /* DBManager.swift in Sources */,
 				385A424A2AFB840600C0A58A /* DispatchQueue+Extensions.swift in Sources */,
 				38C089122A431738001F628C /* SlideDownloaderCell.swift in Sources */,
-				38C58F772B173C1400458722 /* DataManager.swift in Sources */,
 				38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */,
 				B2A711F629FBE1D3003A25BF /* Model.swift in Sources */,
 				38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */,

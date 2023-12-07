@@ -217,6 +217,19 @@ extension MenuView {
         
         //AppDefaults.shared.eachDatePlan holds data from local storage now
         
+//        do {
+//            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+//            if let yourObject = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: data) {
+//                // Use 'yourObject'
+//                AppDefaults.shared.eachDatePlan = yourObject
+//            }
+//        } catch {
+//            // Handle the error appropriately
+//            print("Error unarchiving data: \(error)")
+//        }
+        
+        
+        
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
         
         if  AppDefaults.shared.eachDatePlan.tourPlanArr.isEmpty {
@@ -244,7 +257,8 @@ extension MenuView {
         tourPlanArr.arrOfPlan?.enumerated().forEach { index , sessionDetArr in
             if tourPlanArr.arrOfPlan?.count ?? 0 > index {
                 if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
-                    tourPlanArr.arrOfPlan?.remove(at: index)
+                    //tourPlanArr.arrOfPlan?.remove(at: index)
+                    indices.append(index)
                     isRemoved = true
                 } else {
                   //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
@@ -272,7 +286,7 @@ extension MenuView {
  
         AppDefaults.shared.tpArry = tourPlanArr
         
-      var  arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan ?? [SessionDetailsArr]()
+        let  arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan ?? [SessionDetailsArr]()
       
         
 
@@ -290,6 +304,14 @@ extension MenuView {
   
             
 
+//        do {
+//            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+//            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+//        } catch {
+//            // Handle the error appropriately
+//            print("Error archiving data: \(error)")
+//        }
+        
         let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
              if !savefinish {
                  print("Error")
@@ -2223,7 +2245,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.stockistView.addTap { [self] in
                 toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.count ?? 0)
-                if sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  {
+                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode  != "" {
                     isToproceed = true
                 }
                 if isToproceed {

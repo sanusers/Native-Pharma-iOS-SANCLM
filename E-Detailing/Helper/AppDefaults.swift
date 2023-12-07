@@ -200,6 +200,7 @@ enum keys : String {
     case syncTime = "Sync Time"
     case tourPlan = "TourPlan"
     case sessionDetails = "sessionDetails"
+    case isAllDatesFilled =  "isAllDatesFilled"
 }
 
 class AppDefaults {
@@ -330,19 +331,19 @@ class AppDefaults {
 //        do {
 //            let decodedData = try decoder.decode(SessionAPIResponseModel.self, from: tourData!)
 //            isDecoded = true
-//            
+//
 //            //self.appSetup = decodedData
-//          
+//
 //            decodedData.tpData.forEach { tourplanData in
 //                var tempSessionArr  = SessionDetailsArr()
 //                tourplanData.sessions.forEach { session in
 //                    var tempSession = SessionDetail()
 //                    //Field Work Y or N:
 //                    tempSession.isForFieldWork = session.FWFlg == "N" ? false : true
-// 
+//
 //                    //Work type
 //                    tempSession.workTypeCode = session.WTCode
-//                    
+//
 //                    //HeadQuarters
 ////                    let headQuatersCodes =  session.HQCodes.components(separatedBy: ",")
 ////                    headQuatersCodes.forEach { code in
@@ -354,28 +355,28 @@ class AppDefaults {
 //                    chemistCodes.forEach { code in
 //                        tempSession.selectedchemistID?[code] = true
 //                    }
-//                    
-//                    
+//
+//
 //                    //cluster
 //                    let clusterCodes =  session.clusterCode.components(separatedBy: ",")
 //                    clusterCodes.forEach { code in
 //                        tempSession.selectedClusterID?[code] = true
 //                    }
-//                    
+//
 //                    //Doctor
 //                    let doctorCode =  session.drCode.components(separatedBy: ",")
 //                    doctorCode.forEach { code in
 //                        tempSession.selectedlistedDoctorsID?[code] = true
 //                    }
-//                    
+//
 //                    let jwCode = session.jwCode.components(separatedBy: ",")
 //                    jwCode.forEach { code in
 //                        tempSession.selectedjointWorkID?[code] = true
 //                    }
-//                    
+//
 //                    tempSessionArr.sessionDetails?.append(tempSession)
 //                    tempSession = SessionDetail()
-//                    
+//
 //                }
 //                tempSessionArr.changeStatus = tourplanData.changeStatus
 //                tempSessionArr.date = tourplanData.date
