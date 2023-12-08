@@ -243,14 +243,17 @@ class TourPlanView: BaseView {
             }
         })
       
-            self.tempArrofPlan = thisMonthPaln
+        thisMonthPaln = thisMonthPaln.sorted(by: { $0.rawDate.compare($1.rawDate) == .orderedAscending })
+        
+        self.tempArrofPlan = thisMonthPaln
         
       
         worksPlanTable.delegate = self
         worksPlanTable.dataSource = self
         worksPlanTable.reloadData()
         self.tourPlanCalander.collectionView.reloadData()
-        
+        let indexpath = IndexPath(row: 0, section: 0)
+        worksPlanTable.scrollToRow(at: indexpath, at: .top, animated: false)
         
         if filledDates.count == 3 {
             toEnableApprovalBtn(totaldate: filledDates, filleddate: arrOfPlan?.count ?? 0)
@@ -354,6 +357,9 @@ class TourPlanView: BaseView {
         tpArray.forEach({ tpArr in
             self.arrOfPlan = tpArr.arrOfPlan
         })
+        
+   
+        
         self.tableSetupmodel = TableSetupModel()
         
         monthWiseSeperationofSessions(tourPlanCalander.currentPage)
@@ -621,10 +627,14 @@ class TourPlanView: BaseView {
 //            print("Error unarchiving data: \(error)")
 //        }
         if isForWeekOff ?? false {
-            let aSession = SessionDetail(isForFieldWork: true, WTCode: "", WTName: "Week off")
+            let aSession = SessionDetail()
+            aSession.isForFieldWork = false
+            aSession.WTCode = ""
+            aSession.WTName = "Week off"
             let aSessionDetArr = SessionDetailsArr()
             aSessionDetArr.sessionDetails.append(aSession)
             menuvc.sessionDetailsArr = aSessionDetArr
+            menuvc.isWeekoffEditable = true
         } else {
             AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
             

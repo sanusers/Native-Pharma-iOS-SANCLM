@@ -787,7 +787,8 @@ class MenuView : BaseView{
             self.cellType = .edit
             addSessionView.isHidden = true
             self.lblSave.text = "Edit"
-            saveView.isHidden = false
+            saveView.isHidden = menuVC.isWeekoffEditable ? false : true
+            //false
             clearview.isHidden = true
             self.selectViewHeightCons.constant = 0
             self.searchHolderHeight.constant = 0
@@ -819,7 +820,7 @@ class MenuView : BaseView{
         case .session:
             self.cellType = .session
             addSessionView.isHidden = false
-            saveView.isHidden = false
+            saveView.isHidden = menuVC.isWeekoffEditable ? false : true
             self.lblSave.text = "Save"
             clearview.isHidden = true
             self.selectViewHeightCons.constant = 0
@@ -1108,6 +1109,12 @@ class MenuView : BaseView{
             case .edit:
               //  self.menuTable.reloadData()
               //  self.toGetTourPlanResponse()
+         
+                    lblAddPlan.text = "Edit (\(self.menuVC.sessionDetailsArr?.date ?? ""))"
+          
+                  //  lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
+                
+                
                 self.sessionDetailsArr.changeStatus = "True"
                 self.setPageType(.session)
             case .session:

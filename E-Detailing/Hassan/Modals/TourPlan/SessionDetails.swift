@@ -296,14 +296,6 @@ class SessionDetail : NSObject, NSCoding {
     }
     
     
-     init(isForFieldWork: Bool = false,
-                  WTCode: String = "",
-                  WTName: String = "") {
-        self.isForFieldWork = isForFieldWork
-        self.WTCode = WTCode
-        self.WTName = WTName
-    }
-    
     init(
         sessionName: String = "",
         isToshowTerritory: Bool = false,

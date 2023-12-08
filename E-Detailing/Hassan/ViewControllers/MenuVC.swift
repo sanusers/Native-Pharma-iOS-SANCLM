@@ -35,6 +35,7 @@ class MenuVC: BaseViewController {
     weak var menuDelegate : MenuResponseProtocol?
     var selectedDate : Date?
     var isForWeekoff = Bool()
+    var isWeekoffEditable : Bool = true
   //  var accountViewModel : AccountViewModel?
     var dictParms = [String: Any]()
     var imageURL = ""
