@@ -9,7 +9,7 @@ import UIKit
 //import 
 
 protocol SessionInfoTVCDelegate: AnyObject {
-    func remarksAdded(remarksStr: String)
+    func remarksAdded(remarksStr: String, index: Int)
 }
 
 extension SessionInfoTVC: UITextViewDelegate {
@@ -28,7 +28,7 @@ extension SessionInfoTVC: UITextViewDelegate {
             textView.textColor = UIColor.lightGray
         }
         self.remarks = textView.text == "Remarks" ? "" : textView.text
-        delegate?.remarksAdded(remarksStr: self.remarks ?? "")
+        delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: self.selectedIndex ?? 0)
     //    self.remarks = textView.text == "Remarks" ? "" : textView.text
     }
     
@@ -179,7 +179,7 @@ class SessionInfoTVC: UITableViewCell {
     weak var delegate : SessionInfoTVCDelegate?
     var remarks: String?
     var keybordenabled = Bool()
-    var selectedIndex: Int = 1
+    var selectedIndex: Int? = nil
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

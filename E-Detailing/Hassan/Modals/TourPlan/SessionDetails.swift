@@ -98,12 +98,6 @@ class TableSetupModel: Codable {
 
 class SessionDetail : NSObject, NSCoding {
 
-
-    
-    //
-    
-
-    
     var sessionName : String!
     var workType: [WorkType]?
     var selectedWorkTypeIndex: Int? = nil
@@ -302,6 +296,14 @@ class SessionDetail : NSObject, NSCoding {
     }
     
     
+     init(isForFieldWork: Bool = false,
+                  WTCode: String = "",
+                  WTName: String = "") {
+        self.isForFieldWork = isForFieldWork
+        self.WTCode = WTCode
+        self.WTName = WTName
+    }
+    
     init(
         sessionName: String = "",
         isToshowTerritory: Bool = false,
@@ -410,8 +412,8 @@ class SessionDetail : NSObject, NSCoding {
     }
     
     func toRemoveValues() {
-        self.isToshowTerritory = false
-        self.isForFieldWork = false
+//        self.isToshowTerritory = false
+//        self.isForFieldWork = false
         self.selectedClusterID = [String : Bool]()
         self.selectedjointWorkID = [String : Bool]()
         self.selectedlistedDoctorsID = [String : Bool]()
@@ -420,7 +422,7 @@ class SessionDetail : NSObject, NSCoding {
         self.selectedUnlistedDoctorsID = [String : Bool]()
         self.selectedHQIndex = nil
         self.searchedHQIndex = nil
-        self.selectedWorkTypeIndex = nil
+      //  self.selectedWorkTypeIndex = nil
         self.HQCodes = ""
         self.HQNames = ""
         self.chemCode = ""
@@ -435,7 +437,7 @@ class SessionDetail : NSObject, NSCoding {
         self.hospName = ""
         self.jwCode = ""
         self.jwName = ""
-        self.remarks = ""
+      //  self.remarks = ""
         self.stockistCode = ""
         self.stockistName = ""
         self.unListedDrCode = ""

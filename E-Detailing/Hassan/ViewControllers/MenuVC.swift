@@ -34,6 +34,7 @@ class MenuVC: BaseViewController {
     var sessionDetailsArr : SessionDetailsArr?
     weak var menuDelegate : MenuResponseProtocol?
     var selectedDate : Date?
+    var isForWeekoff = Bool()
   //  var accountViewModel : AccountViewModel?
     var dictParms = [String: Any]()
     var imageURL = ""
@@ -61,11 +62,12 @@ class MenuVC: BaseViewController {
     
     
     //MARK:- initWithStory
-    class func initWithStory(_ delegate : MenuResponseProtocol?, _ date: Date)-> MenuVC{
+    class func initWithStory(_ delegate : MenuResponseProtocol?, _ date: Date, isForWeekOff: Bool?)-> MenuVC{
         
         let view : MenuVC = UIStoryboard.Hassan.instantiateViewController()
         view.modalPresentationStyle = .overCurrentContext
         view.selectedDate = date
+        view.isForWeekoff = isForWeekOff ?? false
         view.menuDelegate = delegate
 
 

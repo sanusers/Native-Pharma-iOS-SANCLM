@@ -24,13 +24,13 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         cell.toPopulateCell(modal ?? SessionDetailsArr())
         
         cell.addTap {
-            self.moveToMenuVC(modal?.rawDate ?? Date())
+            self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: false)
         }
         
         cell.optionsIV.addTap {
-            self.toRemoveSession(modal ?? SessionDetailsArr())
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
-            self.toToggleApprovalState(false)
+          //  self.toRemoveSession(modal ?? SessionDetailsArr())
+           // LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+           // self.toToggleApprovalState(false)
         }
         return cell
     }
@@ -598,14 +598,14 @@ class TourPlanView: BaseView {
     }
     
     
-    func moveToMenuVC(_ date: Date) {
+    func moveToMenuVC(_ date: Date, isForWeekOff: Bool?) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
         let toCompareDate = dateFormatter.string(from: date )
           self.selectedDate =  self.toTrimDate(date: date)
        //   self.tourPlanCalander.reloadData()
           
-                  let menuvc = MenuVC.initWithStory(self, date)
+        let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff)
                   self.tourplanVC.modalPresentationStyle = .custom
                   menuvc.menuDelegate = self
           
@@ -620,16 +620,24 @@ class TourPlanView: BaseView {
 //            // Handle the error appropriately
 //            print("Error unarchiving data: \(error)")
 //        }
-        
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        
-          AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
-              eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
-                  if sessions.date == toCompareDate {
-                      menuvc.sessionDetailsArr = sessions
+        if isForWeekOff ?? false {
+            let aSession = SessionDetail(isForFieldWork: true, WTCode: "", WTName: "Week off")
+            let aSessionDetArr = SessionDetailsArr()
+            aSessionDetArr.sessionDetails.append(aSession)
+            menuvc.sessionDetailsArr = aSessionDetArr
+        } else {
+            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+            
+              AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+                  eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
+                      if sessions.date == toCompareDate {
+                          menuvc.sessionDetailsArr = sessions
+                      }
                   }
               }
-          }
+        }
+        
+
     self.tourplanVC.navigationController?.present(menuvc, animated: true)
     }
 }
@@ -700,7 +708,7 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             
             self.selectedDate =  self.toTrimDate(date: date)
             self.tourPlanCalander.collectionView.reloadData()
-            self.moveToMenuVC(date)
+            self.moveToMenuVC(date, isForWeekOff: false)
 
         }
         

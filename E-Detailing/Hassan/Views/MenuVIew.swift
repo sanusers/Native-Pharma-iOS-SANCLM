@@ -245,39 +245,31 @@ extension MenuView {
         }
         
         tourPlanArr.arrOfPlan?.append(aDaySessions)
-   
-        
-        
-     
-   
-        
-        
         var isRemoved = false
         var indices = [Int]()
         tourPlanArr.arrOfPlan?.enumerated().forEach { index , sessionDetArr in
-            if tourPlanArr.arrOfPlan?.count ?? 0 > index {
+           // if tourPlanArr.arrOfPlan?.count ?? 0 > index {
                 if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
-                    //tourPlanArr.arrOfPlan?.remove(at: index)
+                   // tourPlanArr.arrOfPlan?.remove(at: index)
                     indices.append(index)
                     isRemoved = true
                 } else {
                   //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
                 }
-            }
+          //  }
           
             
         }
         if isRemoved {
-//            indices.removeLast()
-//            indices.enumerated().forEach { selfIndex, toRemoveIndex in
-//                if indices.count > 1 {
-//                    tourPlanArr.arrOfPlan?.remove(at: toRemoveIndex)
-//
-//                }
-//
-//            }
+            indices = indices.reversed()
+            indices.forEach { toRemoveIndex in
+              
+                    tourPlanArr.arrOfPlan?.remove(at: toRemoveIndex)
+                
+
+            }
            
-         //   tourPlanArr.arrOfPlan.append(aDaySessions)
+            tourPlanArr.arrOfPlan.append(aDaySessions)
         }
       
 
@@ -749,6 +741,14 @@ class MenuView : BaseView{
             return false
         }
     }
+    
+    func isForWeekoff() -> Bool {
+        if self.menuVC.isForWeekoff != false  {
+            return true
+        } else {
+            return false
+        }
+    }
 
     @objc func hideMenu() {
         self.hideMenuAndDismiss()
@@ -854,6 +854,8 @@ class MenuView : BaseView{
                }
                
               //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+            } else if isForWeekoff(){
+                
             } else {
                 if self.sessionDetailsArr.sessionDetails?.count == 0 {
                      
@@ -1853,13 +1855,17 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 
             
             cell.delegate = self
-            cell.remarksTV.text = sessionDetailsArr.sessionDetails?[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails?[indexPath.row].remarks
-           // sessionDetailsArr.sessionDetails?[selectedSession].remarks
-            if  cell.remarksTV.text == "Remarks" {
-                cell.remarksTV.textColor =  UIColor.lightGray
-            } else {
-                cell.remarksTV.textColor = UIColor.black
+            cell.selectedIndex = indexPath.row
+            if cell.selectedIndex == indexPath.row {
+                cell.remarksTV.text = sessionDetailsArr.sessionDetails?[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails?[indexPath.row].remarks
+               // sessionDetailsArr.sessionDetails?[selectedSession].remarks
+                if  cell.remarksTV.text == "Remarks" {
+                    cell.remarksTV.textColor =  UIColor.lightGray
+                } else {
+                    cell.remarksTV.textColor = UIColor.black
+                }
             }
+
             if self.sessionDetailsArr.sessionDetails?.count == 1 {
                 cell.deleteIcon.isHidden = true
             } else  {
@@ -1868,7 +1874,6 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
            
             cell.keybordenabled = false
             cell.lblName.text = "Plan \(indexPath.row + 1)"
-            cell.selectedIndex = indexPath.row + 1
             sessionDetailsArr.sessionDetails?[indexPath.row].sessionName = cell.lblName.text ?? ""
             
 //            let selectedWorkTypeIndex = sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex
@@ -1948,7 +1953,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     cell.lblHeadquaters.text = sessionDetailsArr.sessionDetails?[indexPath.row].HQNames
                     //sessionDetailsArr.sessionDetails?[indexPath.row].headQuates?[searchedHQIndex ?? 0].name
                 } else {
-                    cell.lblHeadquaters.text = "No info available"
+                    cell.lblHeadquaters.text = "Select"
                 }
             } else {
                 if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
@@ -2007,7 +2012,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
             } else {
-                
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = ""
                 cell.lblCluster.text = "Select"
             }
             
@@ -2049,7 +2055,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
             } else {
-                
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = ""
                 cell.lblJointCall.text = "Select"
             }
             
@@ -2070,7 +2077,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails?[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
             } else {
-                
+                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = ""
                 cell.lblListedDoctor.text = "Select"
             }
            
@@ -2089,7 +2097,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  cell.lblChemist.text ?? ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
             } else {
-                
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = ""
                 cell.lblChemist.text = "Select"
             }
             
@@ -2110,7 +2119,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  cell.lblStockist.text ?? ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
             } else {
-                
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = ""
                 cell.lblStockist.text = "Select"
             }
             
@@ -2131,7 +2141,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  cell.lblNewCustomers.text ?? ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
             } else {
-                
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  ""
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = ""
                 cell.lblNewCustomers.text = "Select"
             }
             
@@ -3523,7 +3534,8 @@ extension MenuView : UITextFieldDelegate {
 
 
 extension MenuView: SessionInfoTVCDelegate {
-    func remarksAdded(remarksStr: String) {
+    func remarksAdded(remarksStr: String, index: Int) {
+        self.selectedSession = index
         sessionDetailsArr.sessionDetails?[selectedSession].remarks =  remarksStr
         dump(sessionDetailsArr.sessionDetails?[selectedSession].remarks)
         self.menuTable.reloadData()
