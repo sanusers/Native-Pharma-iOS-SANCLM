@@ -11,7 +11,602 @@ import FSCalendar
 
 
 
+extension TourPlanView {
+   
+        func toSetParams(_ arrOfPlan: [SessionDetailsArr])  {
+            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "d MMMM yyyy"
+            let date =  dateFormatter.string(from:  Date())
+            dateFormatter.dateFormat = "EEEE"
+            let day = dateFormatter.string(from: Date())
+            
+            dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+            let dayNo = dateFormatter.string(from: Date())
+            
+            
+            let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
+            let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+            var param = [String: Any]()
+            param["SFCode"] = appdefaultSetup.sfCode
+            param["SFName"] = appdefaultSetup.sfName
+            param["Div"] = appdefaultSetup.divisionCode
+            param["Mnth"] = anotherDateArr[0]
+            param["Yr"] = dateArr[2]//2023
+            param["Day"] =  dateArr[0]//1
+            param["Tour_Month"] = anotherDateArr[0]// 11
+            param["Tour_Year"] = dateArr[2] // 2023
+            param["tpmonth"] = dateArr[1]// Nov
+            param["tpday"] = day// Wednesday
+            param["dayno"] = anotherDateArr[0] // 11
+            let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
+            param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
+           // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+        
+            var sessions = [JSON]()
+            
+            arrOfPlan.enumerated().forEach { index, allDayPlans in
+                allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
+                    var sessionParam = [String: Any]()
+                    var index = String()
+                    if sessionIndex == 0 {
+                        index = ""
+                    } else {
+                        index = "\(sessionIndex + 1)"
+                    }
+        
+                    var drIndex = String()
+                    if sessionIndex == 0 {
+                        drIndex = "_"
+                    } else if sessionIndex == 1{
+                        drIndex = "_two_"
+                    } else if sessionIndex == 2 {
+                        drIndex = "_three_"
+                    }
+                    param["FWFlg\(index)"] = session.FWFlg
+                    param["HQCodes\(index)"] = session.HQCodes
+                    param["HQNames\(index)"] = session.HQNames
+                    param["WTCode\(index)"] = session.WTCode
+                    param["WTName\(index)"] = session.WTName
+                    param["chem\(drIndex)Code"] = session.chemCode
+                    param["chem\(drIndex)Name"] = session.chemName
+                    param["clusterCode\(index)"] = session.clusterCode
+                    param["clusterName\(index)"] = session.clusterName
+                    param["Dr\(drIndex)Code"] = session.drCode
+                    param["Dr\(drIndex)Name"] = session.drName
+                    param["jwCodes\(index)"] = session.jwCode
+                    param["jwNames\(index)"] = session.jwName
+                    param["DayRemarks\(index)"] = session.remarks
+                }
+                param["submittedTime"] = "\(Date())"
+                param["Mode"] = "Android-App"
+                param["Entry_mode"] = "Apps"
+                param["Approve_mode"] = ""
+                param["Approved_time"] = ""
+                param["app_version"] = "N 1.6.9"
+                sessions.append(param)
+            }
+            dump(sessions)
+        
+            sessions.forEach { json in
+                dump(json.toString())
+            }
+        
+    }
+    
+}
 
+class TourPlanView: BaseView {
+    
+
+    
+    //MARK: - Outlets
+    ///  common
+    @IBOutlet var overAllContentsHolder: UIView!
+    
+    @IBOutlet var calenderHolderView: UIView!
+    
+    @IBOutlet var tourPlanCalander: FSCalendar!
+    
+    @IBOutlet var tableElementsHolderView: UIView!
+    
+    @IBOutlet var bottomButtonsHolderView: UIView!
+    
+    @IBOutlet var worksPlanTable: UITableView!
+    
+    @IBOutlet var backHolder: UIView!
+    
+    @IBOutlet var planningLbl: UILabel!
+    /// General page type outlets
+    @IBOutlet var lblSendToApproval: UILabel!
+    @IBOutlet var generalButtonsHolder: UIView!
+    
+    //MARK: if inactive: #282A3C (alpha 0.1)
+    
+    @IBOutlet var titleHolder: UIView!
+    
+    /// SessionType outlets
+    @IBOutlet var sessionTypeButtonsHolderView: UIView!
+    @IBOutlet var addSessionTapView: UIView!
+    @IBOutlet var sessionTypeSaveTapView: UIView!
+    
+    
+    /// ClusterType outlets
+    @IBOutlet var clusterTypeButtonsHolder: UIView!
+    
+    @IBOutlet var clusterTypeSaveTapView: UIView!
+    @IBOutlet var clusterTypeClearTapView: UIView!
+    
+    @IBOutlet var calenderPrevIV: UIImageView!
+    
+    @IBOutlet var calenderNextIV: UIImageView!
+    
+    @IBOutlet var mainDateLbl: UILabel!
+    
+    @IBOutlet var titleLbl: UILabel!
+    
+    @IBOutlet var tableTitle: UILabel!
+    
+    @IBOutlet var sessionTableHolderView: UIView!
+    
+    //MARK: - Properties
+    var selectedDate: String = ""
+    var tourplanVC : TourPlanVC!
+    var isNextMonth = false
+    var isPrevMonth = false
+    var isCurrentMonth = false
+    var arrOfPlan : [SessionDetailsArr]?
+    var tempArrofPlan: [SessionDetailsArr]?
+    var sessionResponseVM: SessionResponseVM?
+    var  weeklyOff : Weeklyoff?
+   // var tableSetupmodel: TableSetupModel?
+    var totalDays = Int()
+    var filledDates = [Date]()
+    var months = [String]()
+    var weeklyOffDates = [Date]()
+    private var currentPage: Date?
+    private lazy var today: Date = {
+        return Date()
+    }()
+    //MARK: - View Lifecyle
+    
+    override func didLoad(baseVC: BaseViewController) {
+        super.didLoad(baseVC: baseVC)
+        self.tourplanVC = baseVC as? TourPlanVC
+       // toSetPagetype(ofType: .general)
+       // setupUI()
+    }
+    
+    
+    override func willAppear(baseVC: BaseViewController) {
+        super.willAppear(baseVC: baseVC)
+        self.tourplanVC = baseVC as? TourPlanVC
+       // tourplanVC.togetTableSetup()
+        toSetPagetype(ofType: .general)
+        setupUI()
+        initViews()
+    }
+    
+    
+    func monthWiseSeperationofSessions(_ date: Date) {
+        let tocomparemonth = toGetMonth(date)
+        var thisMonthPaln = [SessionDetailsArr]()
+
+        arrOfPlan?.forEach({ plan in
+            let month = toGetMonth(plan.rawDate ?? Date())
+            if month == tocomparemonth {
+                thisMonthPaln.append(plan)
+            }
+        })
+      
+        thisMonthPaln = thisMonthPaln.sorted(by: { $0.rawDate.compare($1.rawDate) == .orderedAscending })
+        
+        self.tempArrofPlan = thisMonthPaln
+        
+      
+        worksPlanTable.delegate = self
+        worksPlanTable.dataSource = self
+        worksPlanTable.reloadData()
+        self.tourPlanCalander.collectionView.reloadData()
+      //  let indexpath = IndexPath(row: 0, section: 0)
+      //  worksPlanTable.scrollToRow(at: indexpath, at: .top, animated: false)
+        
+        if filledDates.count == 3 {
+            toEnableApprovalBtn(totaldate: filledDates, filleddate: arrOfPlan?.count ?? 0)
+        } else {
+                if months.isEmpty {
+                    months.append(toGetMonth(date))
+                    filledDates.append(date)
+                } else {
+                    if months.contains(toGetMonth(date)) {
+                    } else {
+                        months.append(toGetMonth(date))
+                        filledDates.append(date)
+                    }
+                }
+        }
+    }
+    
+    func toEnableApprovalBtn(totaldate: [Date], filleddate: Int) {
+        totalDays = 0
+        filledDates.forEach { date in
+            let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: date)
+                totalDays = totalDays + (range?.count ?? 30)
+        }
+        print("Total days--->\(totalDays)----||")
+        
+        
+        if totalDays == filleddate {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: true)
+            self.planningLbl.text = "Planned"
+            toToggleApprovalState(true)
+        } else {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+            self.planningLbl.text = "Planning..."
+            toToggleApprovalState(false)
+    
+        }
+        
+    }
+    
+    func toToggleApprovalState(_ isActive: Bool) {
+        if isActive {
+            generalButtonsHolder.backgroundColor = .green
+            generalButtonsHolder.isUserInteractionEnabled = true
+        } else {
+            generalButtonsHolder.backgroundColor = .appSelectionColor
+            generalButtonsHolder.isUserInteractionEnabled = false
+        }
+    }
+    
+    
+    func toRemoveSession(_ sessionDetArr:  SessionDetailsArr) {
+
+        
+        toRemoveElement(isToremove: true, toRemoveSessionDetArr: sessionDetArr)
+    }
+    
+    func toGetMonth(_ date: Date)  -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        return dateFormatter.string(from: date)
+    }
+    
+    func toRemoveElement(isToremove: Bool?, toRemoveSessionDetArr:  SessionDetailsArr?) {
+
+            var  temptpArray =  [TourPlanArr]()
+            self.arrOfPlan?.enumerated().forEach({ sessionDetArrIndex ,sessionDetArr in
+                if sessionDetArr.date == toRemoveSessionDetArr?.date {
+                    self.arrOfPlan?.remove(at: sessionDetArrIndex)
+                }
+            })
+            AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
+                temptpArray.append(eachDayPlan)
+            }
+            
+            temptpArray.forEach({ tpArr in
+                tpArr.arrOfPlan =  self.arrOfPlan
+            })
+        
+            AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+        
+                        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+                             if !savefinish {
+                                 print("Error")
+                             }
+            
+        toLoadData()
+        
+    }
+    
+    
+    func toLoadData()  {
+
+        self.arrOfPlan = [SessionDetailsArr]()
+        var tpArray =  [TourPlanArr]()
+
+        
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+            tpArray.append(eachDayPlan)
+        }
+        tpArray.forEach({ tpArr in
+            self.arrOfPlan = tpArr.arrOfPlan
+        })
+        
+   
+        
+      //  self.tableSetupmodel = TableSetupModel()
+        
+        monthWiseSeperationofSessions(tourPlanCalander.currentPage)
+    }
+    
+    func initViews() {
+
+        backHolder.addTap {
+            self.tourplanVC.navigationController?.popViewController(animated: true)
+        }
+        
+        calenderPrevIV.addTap {
+            self.moveCurrentPage(moveUp: false)
+        }
+        
+        calenderNextIV.addTap {
+            self.moveCurrentPage(moveUp: true)
+            }
+        
+        generalButtonsHolder.addTap {
+            self.toSetParams(self.arrOfPlan ?? [SessionDetailsArr]())
+        }
+    }
+    
+    func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
+        
+        if enableprevBtn && enablenextBtn {
+            calenderPrevIV.alpha = 1
+            calenderPrevIV.isUserInteractionEnabled = true
+            
+            calenderNextIV.alpha = 1
+            calenderNextIV.isUserInteractionEnabled = true
+        } else  if enableprevBtn {
+            calenderPrevIV.alpha = 1
+            calenderPrevIV.isUserInteractionEnabled = true
+            
+            calenderNextIV.alpha = 0.3
+            calenderNextIV.isUserInteractionEnabled = false
+            
+        } else if enablenextBtn {
+            calenderPrevIV.alpha = 0.3
+            calenderPrevIV.isUserInteractionEnabled = false
+            
+            calenderNextIV.alpha = 1
+            calenderNextIV.isUserInteractionEnabled = true
+        }
+        
+     
+    }
+    
+
+    private func moveCurrentPage(moveUp: Bool) {
+     
+        let calendar = Calendar.current
+        var dateComponents = DateComponents()
+        dateComponents.month = moveUp ? 1 : -1
+
+      //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
+
+      
+        if moveUp {
+            var isToMoveindex: Int? = nil
+            self.isNextMonth = true
+            if isPrevMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isNextMonth && isCurrentMonth {
+                isToMoveindex = 0
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                isCurrentMonth = false
+            } else {
+                isToMoveindex = 1
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+            }
+            
+            if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+                  print("Next Month:", nextMonth)
+                self.currentPage = nextMonth
+                self.isPrevMonth = false
+              }
+        } else if !moveUp{
+            // Calculate the previous month
+            var isToMoveindex: Int? = nil
+            self.isPrevMonth = true
+            if isNextMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isPrevMonth && isCurrentMonth {
+                isToMoveindex = 0
+                isCurrentMonth = false
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+            } else {
+                isToMoveindex = -1
+                toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+            }
+            if let previousMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+                print("Previous Month:", previousMonth)
+                self.currentPage = previousMonth
+                self.isNextMonth = false
+               
+            }
+        } else {
+            if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
+                print("Previous Month:", currentMonth)
+                self.currentPage = currentMonth
+               
+            }
+        }
+
+        self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
+  
+       
+        monthWiseSeperationofSessions(self.currentPage ?? Date())
+    }
+    
+    /// Returns the amount of months from another date
+    func months(fromdate: Date, todate: Date) -> Int {
+         return Calendar.current.dateComponents([.month], from: fromdate, to: todate).month ?? 0
+     }
+    
+    func cellRegistration() {
+        worksPlanTable.register(UINib(nibName: "worksPlanTVC", bundle: nil), forCellReuseIdentifier: "worksPlanTVC")
+        //tourPlanCalander.collectionView.register(UINib(nibName: "FSCalendarCVC", bundle: nil), forCellWithReuseIdentifier: "FSCalendarCVC")
+    }
+    
+    
+    func toLoadCalenderData() {
+        tourPlanCalander.delegate = self
+        tourPlanCalander.dataSource = self
+        tourPlanCalander.reloadData()
+    }
+    
+    private func updateCalender () {
+        
+        let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
+        self.weeklyOff = weeklyoffSetupArr[0]
+        
+        self.selectedDate = ""
+        tourPlanCalander.scrollEnabled = false
+        tourPlanCalander.calendarHeaderView.isHidden = true
+        tourPlanCalander.headerHeight = 0 // this makes some extra spacing, but you can try 0 or 1
+        //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
+        tourPlanCalander.rowHeight =  tourPlanCalander.height / 5
+        tourPlanCalander.layer.borderColor = UIColor.appSelectionColor.cgColor
+        tourPlanCalander.calendarWeekdayView.weekdayLabels.forEach { label in
+            label.setFont(font: .bold(size: .BODY))
+        }
+        tourPlanCalander.layer.borderWidth = 1
+        tourPlanCalander.layer.cornerRadius = 5
+        tourPlanCalander.clipsToBounds = true
+        tourPlanCalander.placeholderType = .none
+        tourPlanCalander.calendarWeekdayView.backgroundColor = .appSelectionColor
+        self.tourPlanCalander.scrollDirection = .horizontal
+        self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
+        tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
+        tourPlanCalander.delegate = self
+        tourPlanCalander.dataSource = self
+        tourPlanCalander.reloadData()
+        mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
+    }
+    
+    //MARK: - Enum Page types
+    /**
+     Page types use enum to switch page types
+     - note : set the page type by use of toSetPagetype function
+     */
+       
+    enum pageTypes {
+        case general
+        case session
+        case workType
+        case cluster
+        case edit
+    }
+    
+
+    ///  Pagetypes use enum  to switch page types
+    /// - Parameter pageType: use appropriate pageTypes enums
+    func toSetPagetype(ofType pageType : pageTypes) {
+        switch pageType {
+            
+        case .general:
+            generalButtonsHolder.isHidden = false
+            sessionTypeButtonsHolderView.isHidden = true
+            clusterTypeButtonsHolder.isHidden = true
+            
+            
+        case .session:
+            generalButtonsHolder.isHidden = true
+            sessionTypeButtonsHolderView.isHidden = false
+            clusterTypeButtonsHolder.isHidden = true
+            
+            
+        case .workType:
+            generalButtonsHolder.isHidden = true
+            sessionTypeButtonsHolderView.isHidden = true
+            clusterTypeButtonsHolder.isHidden = true
+            
+            
+        case .cluster:
+            generalButtonsHolder.isHidden = true
+            sessionTypeButtonsHolderView.isHidden = true
+            clusterTypeButtonsHolder.isHidden = false
+            
+            
+        case .edit:
+            generalButtonsHolder.isHidden = true
+            sessionTypeButtonsHolderView.isHidden = true
+            clusterTypeButtonsHolder.isHidden = true
+        }
+    }
+    
+    func setupUI() {
+        titleLbl.setFont(font: .bold(size: .BODY))
+        mainDateLbl.setFont(font: .medium(size: .BODY))
+        tableTitle.setFont(font: .medium(size: .BODY))
+        planningLbl.setFont(font: .bold(size: .BODY))
+      
+        titleHolder.elevate(2)
+        titleHolder.backgroundColor = .appSelectionColor
+        titleHolder.layer.cornerRadius = 5
+        worksPlanTable.separatorStyle = .none
+        cellRegistration()
+        updateCalender()
+        toLoadData()
+      
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoEnableApproveBtn) {
+            planningLbl.isHidden = true
+            toToggleApprovalState(true)
+        } else {
+            toToggleApprovalState(false)
+            planningLbl.isHidden = false
+        }
+        calenderHolderView.elevate(2)
+        calenderHolderView.layer.cornerRadius = 5
+
+        bottomButtonsHolderView.layer.cornerRadius = 5
+        generalButtonsHolder.layer.cornerRadius = 5
+        
+        sessionTableHolderView.elevate(2)
+        sessionTableHolderView.layer.cornerRadius = 5
+    }
+    
+    
+    func toTrimDate(date : Date, isForMainLabel: Bool = false) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = isForMainLabel == true ? "MMMM yyyy" : "dd"
+        return dateFormatter.string(from: date)
+    }
+    
+    
+    func moveToMenuVC(_ date: Date, isForWeekOff: Bool?) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        let toCompareDate = dateFormatter.string(from: date )
+          self.selectedDate =  self.toTrimDate(date: date)
+       //   self.tourPlanCalander.reloadData()
+          
+        let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff)
+                  self.tourplanVC.modalPresentationStyle = .custom
+                  menuvc.menuDelegate = self
+        if isForWeekOff ?? false {
+            let aSession = SessionDetail()
+            aSession.isForFieldWork = false
+            aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+            aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+            
+            let aSessionDetArr = SessionDetailsArr()
+            aSessionDetArr.sessionDetails.append(aSession)
+            menuvc.sessionDetailsArr = aSessionDetArr
+           // menuvc.isWeekoffEditable =
+        } else {
+            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+            
+              AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+                  eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
+                      if sessions.date == toCompareDate {
+                          menuvc.sessionDetailsArr = sessions
+                      }
+                  }
+              }
+        }
+        
+
+    self.tourplanVC.navigationController?.present(menuvc, animated: true)
+    }
+}
 
 extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -143,515 +738,6 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-
-class TourPlanView: BaseView {
-    
-
-    
-    //MARK: - Outlets
-    ///  common
-    @IBOutlet var overAllContentsHolder: UIView!
-    
-    @IBOutlet var calenderHolderView: UIView!
-    
-    @IBOutlet var tourPlanCalander: FSCalendar!
-    
-    @IBOutlet var tableElementsHolderView: UIView!
-    
-    @IBOutlet var bottomButtonsHolderView: UIView!
-    
-    @IBOutlet var worksPlanTable: UITableView!
-    
-    @IBOutlet var backHolder: UIView!
-    /// General page type outlets
-    @IBOutlet var lblSendToApproval: UILabel!
-    @IBOutlet var generalButtonsHolder: UIView!
-    
-    //MARK: if inactive: #282A3C (alpha 0.1)
-    
-    @IBOutlet var titleHolder: UIView!
-    
-    /// SessionType outlets
-    @IBOutlet var sessionTypeButtonsHolderView: UIView!
-    @IBOutlet var addSessionTapView: UIView!
-    @IBOutlet var sessionTypeSaveTapView: UIView!
-    
-    
-    /// ClusterType outlets
-    @IBOutlet var clusterTypeButtonsHolder: UIView!
-    
-    @IBOutlet var clusterTypeSaveTapView: UIView!
-    @IBOutlet var clusterTypeClearTapView: UIView!
-    
-    @IBOutlet var calenderPrevIV: UIImageView!
-    
-    @IBOutlet var calenderNextIV: UIImageView!
-    
-    @IBOutlet var mainDateLbl: UILabel!
-    
-    @IBOutlet var titleLbl: UILabel!
-    
-    @IBOutlet var tableTitle: UILabel!
-    
-    @IBOutlet var sessionTableHolderView: UIView!
-    
-    //MARK: - Properties
-    var selectedDate: String = ""
-    var tourplanVC : TourPlanVC!
-    var isNextMonth = false
-    var isPrevMonth = false
-    var isCurrentMonth = false
-    var arrOfPlan : [SessionDetailsArr]?
-    var tempArrofPlan: [SessionDetailsArr]?
-    var sessionResponseVM: SessionResponseVM?
-    var tableSetupmodel: TableSetupModel?
-    var totalDays = Int()
-    var filledDates = [Date]()
-    var months = [String]()
-    private var currentPage: Date?
-    private lazy var today: Date = {
-        return Date()
-    }()
-    //MARK: - View Lifecyle
-    
-    override func didLoad(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
-        self.tourplanVC = baseVC as? TourPlanVC
-       // toSetPagetype(ofType: .general)
-       // setupUI()
-    }
-    
-    
-    override func willAppear(baseVC: BaseViewController) {
-        super.willAppear(baseVC: baseVC)
-        self.tourplanVC = baseVC as? TourPlanVC
-       // tourplanVC.togetTableSetup()
-        toSetPagetype(ofType: .general)
-        setupUI()
-        initViews()
-    }
-    
-    
-    func monthWiseSeperationofSessions(_ date: Date) {
-        let tocomparemonth = toGetMonth(date)
-        var thisMonthPaln = [SessionDetailsArr]()
-
-        arrOfPlan?.forEach({ plan in
-            let month = toGetMonth(plan.rawDate ?? Date())
-            if month == tocomparemonth {
-                thisMonthPaln.append(plan)
-            }
-        })
-      
-        thisMonthPaln = thisMonthPaln.sorted(by: { $0.rawDate.compare($1.rawDate) == .orderedAscending })
-        
-        self.tempArrofPlan = thisMonthPaln
-        
-      
-        worksPlanTable.delegate = self
-        worksPlanTable.dataSource = self
-        worksPlanTable.reloadData()
-        self.tourPlanCalander.collectionView.reloadData()
-        let indexpath = IndexPath(row: 0, section: 0)
-        worksPlanTable.scrollToRow(at: indexpath, at: .top, animated: false)
-        
-        if filledDates.count == 3 {
-            toEnableApprovalBtn(totaldate: filledDates, filleddate: arrOfPlan?.count ?? 0)
-        } else {
-                if months.isEmpty {
-                    months.append(toGetMonth(date))
-                    filledDates.append(date)
-                } else {
-                    if months.contains(toGetMonth(date)) {
-                    } else {
-                        months.append(toGetMonth(date))
-                        filledDates.append(date)
-                    }
-                }
-        }
-    }
-    
-    func toEnableApprovalBtn(totaldate: [Date], filleddate: Int) {
-        totalDays = 0
-        filledDates.forEach { date in
-            let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: date)
-                totalDays = totalDays + (range?.count ?? 30)
-        }
-        print("Total days--->\(totalDays)----||")
-        
-        
-        if totalDays == filleddate {
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: true)
-            toToggleApprovalState(true)
-        } else {
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
-            toToggleApprovalState(false)
-    
-        }
-        
-    }
-    
-    func toToggleApprovalState(_ isActive: Bool) {
-        if isActive {
-            generalButtonsHolder.backgroundColor = .green
-            generalButtonsHolder.isUserInteractionEnabled = true
-        } else {
-            generalButtonsHolder.backgroundColor = .appSelectionColor
-            generalButtonsHolder.isUserInteractionEnabled = false
-        }
-    }
-    
-    
-    func toRemoveSession(_ sessionDetArr:  SessionDetailsArr) {
-
-        
-        toRemoveElement(isToremove: true, toRemoveSessionDetArr: sessionDetArr)
-    }
-    
-    func toGetMonth(_ date: Date)  -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM"
-        return dateFormatter.string(from: date )
-    }
-    
-    func toRemoveElement(isToremove: Bool?, toRemoveSessionDetArr:  SessionDetailsArr?) {
-
-            var  temptpArray =  [TourPlanArr]()
-            self.arrOfPlan?.enumerated().forEach({ sessionDetArrIndex ,sessionDetArr in
-                if sessionDetArr.date == toRemoveSessionDetArr?.date {
-                    self.arrOfPlan?.remove(at: sessionDetArrIndex)
-                }
-            })
-            AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
-                temptpArray.append(eachDayPlan)
-            }
-            
-            temptpArray.forEach({ tpArr in
-                tpArr.arrOfPlan =  self.arrOfPlan
-            })
-        
-            AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
-        
-                        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-                             if !savefinish {
-                                 print("Error")
-                             }
-            
-        toLoadData()
-        
-    }
-    
-    
-    func toLoadData()  {
-
-        self.arrOfPlan = [SessionDetailsArr]()
-        var tpArray =  [TourPlanArr]()
-
-        
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-
-        
-        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
-            tpArray.append(eachDayPlan)
-        }
-        tpArray.forEach({ tpArr in
-            self.arrOfPlan = tpArr.arrOfPlan
-        })
-        
-   
-        
-        self.tableSetupmodel = TableSetupModel()
-        
-        monthWiseSeperationofSessions(tourPlanCalander.currentPage)
-    }
-    
-    func initViews() {
-        backHolder.addTap {
-            self.tourplanVC.navigationController?.popViewController(animated: true)
-        }
-        
-        calenderPrevIV.addTap {
-            self.moveCurrentPage(moveUp: false)
-        }
-        
-        calenderNextIV.addTap {
-            self.moveCurrentPage(moveUp: true)
-            }
-        
-        
-    }
-    
-    func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
-        
-        if enableprevBtn && enablenextBtn {
-            calenderPrevIV.alpha = 1
-            calenderPrevIV.isUserInteractionEnabled = true
-            
-            calenderNextIV.alpha = 1
-            calenderNextIV.isUserInteractionEnabled = true
-        } else  if enableprevBtn {
-            calenderPrevIV.alpha = 1
-            calenderPrevIV.isUserInteractionEnabled = true
-            
-            calenderNextIV.alpha = 0.3
-            calenderNextIV.isUserInteractionEnabled = false
-            
-        } else if enablenextBtn {
-            calenderPrevIV.alpha = 0.3
-            calenderPrevIV.isUserInteractionEnabled = false
-            
-            calenderNextIV.alpha = 1
-            calenderNextIV.isUserInteractionEnabled = true
-        }
-        
-     
-    }
-    
-
-    private func moveCurrentPage(moveUp: Bool) {
-     
-        let calendar = Calendar.current
-        var dateComponents = DateComponents()
-        dateComponents.month = moveUp ? 1 : -1
-
-      //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
-
-      
-        if moveUp {
-            var isToMoveindex: Int? = nil
-            self.isNextMonth = true
-            if isPrevMonth {
-                self.isCurrentMonth = true
-            }
-            
-            if isNextMonth && isCurrentMonth {
-                isToMoveindex = 0
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
-                isCurrentMonth = false
-            } else {
-                isToMoveindex = 1
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
-            }
-            
-            if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
-                  print("Next Month:", nextMonth)
-                self.currentPage = nextMonth
-                self.isPrevMonth = false
-              }
-        } else if !moveUp{
-            // Calculate the previous month
-            var isToMoveindex: Int? = nil
-            self.isPrevMonth = true
-            if isNextMonth {
-                self.isCurrentMonth = true
-            }
-            
-            if isPrevMonth && isCurrentMonth {
-                isToMoveindex = 0
-                isCurrentMonth = false
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
-            } else {
-                isToMoveindex = -1
-                toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
-            }
-            if let previousMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
-                print("Previous Month:", previousMonth)
-                self.currentPage = previousMonth
-                self.isNextMonth = false
-               
-            }
-        } else {
-            if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
-                print("Previous Month:", currentMonth)
-                self.currentPage = currentMonth
-               
-            }
-        }
-
-        self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
-  
-       
-        monthWiseSeperationofSessions(self.currentPage ?? Date())
-    }
-    
-    /// Returns the amount of months from another date
-    func months(fromdate: Date, todate: Date) -> Int {
-         return Calendar.current.dateComponents([.month], from: fromdate, to: todate).month ?? 0
-     }
-    
-    func cellRegistration() {
-        worksPlanTable.register(UINib(nibName: "worksPlanTVC", bundle: nil), forCellReuseIdentifier: "worksPlanTVC")
-        //tourPlanCalander.collectionView.register(UINib(nibName: "FSCalendarCVC", bundle: nil), forCellWithReuseIdentifier: "FSCalendarCVC")
-    }
-    
-    
-    func toLoadCalenderData() {
-        tourPlanCalander.delegate = self
-        tourPlanCalander.dataSource = self
-        tourPlanCalander.reloadData()
-    }
-    
-    private func updateCalender () {
-        
-
-        self.selectedDate = ""
-        tourPlanCalander.scrollEnabled = false
-        tourPlanCalander.calendarHeaderView.isHidden = true
-        tourPlanCalander.headerHeight = 0 // this makes some extra spacing, but you can try 0 or 1
-        //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
-        tourPlanCalander.rowHeight =  tourPlanCalander.height / 5
-        tourPlanCalander.layer.borderColor = UIColor.appSelectionColor.cgColor
-        tourPlanCalander.calendarWeekdayView.weekdayLabels.forEach { label in
-            label.setFont(font: .bold(size: .BODY))
-        }
-        tourPlanCalander.layer.borderWidth = 1
-        tourPlanCalander.layer.cornerRadius = 5
-        tourPlanCalander.clipsToBounds = true
-        tourPlanCalander.placeholderType = .none
-        tourPlanCalander.calendarWeekdayView.backgroundColor = .appSelectionColor
-        self.tourPlanCalander.scrollDirection = .horizontal
-        self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
-        tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
-        tourPlanCalander.delegate = self
-        tourPlanCalander.dataSource = self
-        tourPlanCalander.reloadData()
-        mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
-    }
-    
-    //MARK: - Enum Page types
-    /**
-     Page types use enum to switch page types
-     - note : set the page type by use of toSetPagetype function
-     */
-       
-    enum pageTypes {
-        case general
-        case session
-        case workType
-        case cluster
-        case edit
-    }
-    
-
-    ///  Pagetypes use enum  to switch page types
-    /// - Parameter pageType: use appropriate pageTypes enums
-    func toSetPagetype(ofType pageType : pageTypes) {
-        switch pageType {
-            
-        case .general:
-            generalButtonsHolder.isHidden = false
-            sessionTypeButtonsHolderView.isHidden = true
-            clusterTypeButtonsHolder.isHidden = true
-            
-            
-        case .session:
-            generalButtonsHolder.isHidden = true
-            sessionTypeButtonsHolderView.isHidden = false
-            clusterTypeButtonsHolder.isHidden = true
-            
-            
-        case .workType:
-            generalButtonsHolder.isHidden = true
-            sessionTypeButtonsHolderView.isHidden = true
-            clusterTypeButtonsHolder.isHidden = true
-            
-            
-        case .cluster:
-            generalButtonsHolder.isHidden = true
-            sessionTypeButtonsHolderView.isHidden = true
-            clusterTypeButtonsHolder.isHidden = false
-            
-            
-        case .edit:
-            generalButtonsHolder.isHidden = true
-            sessionTypeButtonsHolderView.isHidden = true
-            clusterTypeButtonsHolder.isHidden = true
-        }
-    }
-    
-    func setupUI() {
-        titleLbl.setFont(font: .bold(size: .BODY))
-        mainDateLbl.setFont(font: .medium(size: .BODY))
-        tableTitle.setFont(font: .medium(size: .BODY))
-        titleHolder.elevate(2)
-        titleHolder.backgroundColor = .appSelectionColor
-        titleHolder.layer.cornerRadius = 5
-        worksPlanTable.separatorStyle = .none
-        cellRegistration()
-        updateCalender()
-        toLoadData()
-      
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoEnableApproveBtn) {
-            toToggleApprovalState(true)
-        } else {
-            toToggleApprovalState(false)
-        }
-        calenderHolderView.elevate(2)
-        calenderHolderView.layer.cornerRadius = 5
-
-        bottomButtonsHolderView.layer.cornerRadius = 5
-        generalButtonsHolder.layer.cornerRadius = 5
-        
-        sessionTableHolderView.elevate(2)
-        sessionTableHolderView.layer.cornerRadius = 5
-    }
-    
-    
-    func toTrimDate(date : Date, isForMainLabel: Bool = false) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = isForMainLabel == true ? "MMMM yyyy" : "dd"
-        return dateFormatter.string(from: date)
-    }
-    
-    
-    func moveToMenuVC(_ date: Date, isForWeekOff: Bool?) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMMM yyyy"
-        let toCompareDate = dateFormatter.string(from: date )
-          self.selectedDate =  self.toTrimDate(date: date)
-       //   self.tourPlanCalander.reloadData()
-          
-        let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff)
-                  self.tourplanVC.modalPresentationStyle = .custom
-                  menuvc.menuDelegate = self
-          
-         // var isExist = Bool()
-//        do {
-//            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
-//            if let yourObject = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: data) {
-//                // Use 'yourObject'
-//                AppDefaults.shared.eachDatePlan = yourObject
-//            }
-//        } catch {
-//            // Handle the error appropriately
-//            print("Error unarchiving data: \(error)")
-//        }
-        if isForWeekOff ?? false {
-            let aSession = SessionDetail()
-            aSession.isForFieldWork = false
-            aSession.WTCode = ""
-            aSession.WTName = "Week off"
-            let aSessionDetArr = SessionDetailsArr()
-            aSessionDetArr.sessionDetails.append(aSession)
-            menuvc.sessionDetailsArr = aSessionDetArr
-            menuvc.isWeekoffEditable = true
-        } else {
-            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-            
-              AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
-                  eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
-                      if sessions.date == toCompareDate {
-                          menuvc.sessionDetailsArr = sessions
-                      }
-                  }
-              }
-        }
-        
-
-    self.tourplanVC.navigationController?.present(menuvc, animated: true)
-    }
-}
-
 extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance, UICollectionViewDelegateFlowLayout {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
@@ -694,7 +780,38 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
                 isExist = true
             }
         })
-        cell.addedIV.isHidden = isExist ? false : true
+        
+        var isWeeklyoff = Bool()
+        let currentDate = date  // Replace this with your desired date
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.weekday], from: currentDate)
+        if let weekday = components.weekday {
+            // The `weekday` property returns the day of the week as an integer (1 to 7, where Sunday is 1).
+            // To convert it to the range 0 to 6, you can use modulo arithmetic.
+            let dayIndex = (weekday - calendar.firstWeekday + 6) % 7
+            print("Day Index: \(dayIndex)")
+            if self.weeklyOff?.holiday_Mode   == "\(dayIndex)" {
+                isWeeklyoff = true
+                
+                if weeklyOffDates.isEmpty {
+                    self.weeklyOffDates.append(date)
+                } else {
+                    if weeklyOffDates.contains(date) {
+                        
+                    } else {
+                        self.weeklyOffDates.append(date)
+                    }
+                }
+                
+               
+            }
+        } else {
+            print("Failed to get the day of the week.")
+        }
+        
+        
+        
+        cell.addedIV.isHidden = isExist || isWeeklyoff ? false : true
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
         cell.customLabel.setFont(font: .medium(size: .BODY))
@@ -718,7 +835,8 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             
             self.selectedDate =  self.toTrimDate(date: date)
             self.tourPlanCalander.collectionView.reloadData()
-            self.moveToMenuVC(date, isForWeekOff: false)
+            
+            self.moveToMenuVC(date, isForWeekOff: isWeeklyoff)
 
         }
         

@@ -8,94 +8,6 @@
 import Foundation
 
 
-class TableSetupModel: Codable {
-    let SF_code : String
-    let AddsessionNeed : String
-    let AddsessionCount : String
-    let DrNeed : String
-    let ChmNeed : String
-    let JWNeed : String
-    let ClusterNeed : String
-    let clustertype : String
-    let div : String
-    let StkNeed : String
-    let Cip_Need : String
-    let HospNeed : String
-    let FW_meetup_mandatory : String
-    let max_doc : String
-    let tp_objective : String
-    let Holiday_Editable : String
-    let Weeklyoff_Editable : String
-    let UnDrNeed : Int
-    
-    
-    enum CodingKeys: String, CodingKey {
-        case SF_code
-        case AddsessionNeed
-        case AddsessionCount
-        case DrNeed
-        case ChmNeed
-        case JWNeed
-        case ClusterNeed
-        case clustertype
-        case div
-        case StkNeed
-        case Cip_Need
-        case HospNeed
-        case FW_meetup_mandatory
-        case max_doc
-        case tp_objective
-        case Holiday_Editable
-        case Weeklyoff_Editable
-        case UnDrNeed
-    }
-    
-    required init(from decoder: Decoder) throws {
-        
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.SF_code = container.safeDecodeValue(forKey: .SF_code)
-        self.AddsessionNeed = container.safeDecodeValue(forKey: .AddsessionNeed)
-        self.AddsessionCount = container.safeDecodeValue(forKey: .AddsessionCount)
-        self.DrNeed = container.safeDecodeValue(forKey: .DrNeed)
-        self.ChmNeed = container.safeDecodeValue(forKey: .ChmNeed)
-        self.JWNeed = container.safeDecodeValue(forKey: .JWNeed)
-        self.ClusterNeed = container.safeDecodeValue(forKey: .ClusterNeed)
-        self.clustertype = container.safeDecodeValue(forKey: .clustertype)
-        self.div = container.safeDecodeValue(forKey: .div)
-        self.StkNeed = container.safeDecodeValue(forKey: .StkNeed)
-        self.Cip_Need = container.safeDecodeValue(forKey: .Cip_Need)
-        self.HospNeed = container.safeDecodeValue(forKey: .HospNeed)
-        self.FW_meetup_mandatory = container.safeDecodeValue(forKey: .FW_meetup_mandatory)
-        self.max_doc = container.safeDecodeValue(forKey: .max_doc)
-        self.tp_objective = container.safeDecodeValue(forKey: .tp_objective)
-        self.Holiday_Editable = container.safeDecodeValue(forKey: .Holiday_Editable)
-        self.Weeklyoff_Editable = container.safeDecodeValue(forKey: .Weeklyoff_Editable)
-        self.UnDrNeed = container.safeDecodeValue(forKey: .UnDrNeed)
-    }
-    
-    init() {
-        SF_code = ""
-         AddsessionNeed = "0"
-         AddsessionCount = "3"
-         DrNeed = "0"
-         ChmNeed = "0"
-         JWNeed = "0"
-         ClusterNeed = "1"
-         clustertype = "1"
-         div = "63"
-         StkNeed = "0"
-         Cip_Need = "0"
-         HospNeed = "1"
-         FW_meetup_mandatory = "0"
-         max_doc = "0"
-         tp_objective = "1"
-         Holiday_Editable = "0"
-         Weeklyoff_Editable = "0"
-         UnDrNeed = 0
-    }
-    
-}
-
 class SessionDetail : NSObject, NSCoding {
 
     var sessionName : String!
@@ -452,6 +364,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         coder.encode(entryMode, forKey: Key.entryMode.rawValue)
         coder.encode(rejectionReason, forKey: Key.rejectionReason.rawValue)
         coder.encode(sessionDetails, forKey: Key.sessionDetails.rawValue)
+      //  coder.encode(isSucessfullySubmited, forKey: Key.isSucessfullySubmited.rawValue)
     }
     
 
@@ -466,8 +379,9 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         let mentryMode = decoder.decodeObject(forKey: Key.entryMode.rawValue) as! String
         let mrejectionReason = decoder.decodeObject(forKey: Key.rejectionReason.rawValue) as! String
         let msessionDetails = decoder.decodeObject(forKey: Key.sessionDetails.rawValue) as! [SessionDetail]
-        
+       // let misSucessfullySubmited = decoder.decodeObject(forKey: Key.isSucessfullySubmited.rawValue) as! Bool
         self.init(changeStatus: mchangeStatus, date: mdate, rawDate: mrawDate, day: mday, dayNo: mdayNo, entryMode: mentryMode, rejectionReason: mrejectionReason, sessionDetails: msessionDetails)
+            //, isSucessfullySubmited: misSucessfullySubmited
     }
     
 
@@ -479,10 +393,11 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     var dayNo: String!
     var entryMode : String!
     var rejectionReason: String!
+   // var isSucessfullySubmited: Bool?
     var sessionDetails : [SessionDetail]!
     
     init(changeStatus: String, date: String, rawDate: Date, day: String, dayNo: String, entryMode: String, rejectionReason: String, sessionDetails: [Any]) {
-     
+     //, isSucessfullySubmited: Bool
         self.changeStatus = changeStatus
         self.date = date
         self.rawDate = rawDate
@@ -491,6 +406,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         self.entryMode = entryMode
         self.rejectionReason = rejectionReason
         self.sessionDetails = sessionDetails as? [SessionDetail]
+      //  self.isSucessfullySubmited = isSucessfullySubmited
     }
     
     
@@ -503,6 +419,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         case entryMode
         case rejectionReason
         case sessionDetails
+      //  case isSucessfullySubmited
         
     }
 
@@ -515,6 +432,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         entryMode  = String()
         rejectionReason = String()
         sessionDetails = [SessionDetail]()
+       // isSucessfullySubmited = Bool()
     }
 }
 

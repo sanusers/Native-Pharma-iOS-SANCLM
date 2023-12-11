@@ -166,9 +166,11 @@
         <relationship name="stockist" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Stockist"/>
         <relationship name="subordinate" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subordinate"/>
         <relationship name="subordinateMgr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subordinate"/>
+        <relationship name="tableSetup" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TableSetup"/>
         <relationship name="territory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Territory"/>
         <relationship name="unListedDoc" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UnListedDoctor"/>
         <relationship name="visitControl" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="VisitControl"/>
+        <relationship name="weeklyoff" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Weeklyoff"/>
         <relationship name="workType" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkType"/>
     </entity>
     <entity name="MyDayPlan" representedClassName="MyDayPlan" syncable="YES" codeGenerationType="class">
@@ -303,6 +305,27 @@
         <relationship name="sfDob" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="sfDow" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
     </entity>
+    <entity name="TableSetup" representedClassName="TableSetup" syncable="YES" codeGenerationType="class">
+        <attribute name="addsessionCount" optional="YES" attributeType="String"/>
+        <attribute name="addsessionNeed" optional="YES" attributeType="String"/>
+        <attribute name="chmNeed" optional="YES" attributeType="String"/>
+        <attribute name="cip_Need" optional="YES" attributeType="String"/>
+        <attribute name="clusterNeed" optional="YES" attributeType="String"/>
+        <attribute name="clustertype" optional="YES" attributeType="String"/>
+        <attribute name="div" optional="YES" attributeType="String"/>
+        <attribute name="drNeed" optional="YES" attributeType="String"/>
+        <attribute name="fw_meetup_mandatory" optional="YES" attributeType="String"/>
+        <attribute name="holiday_Editable" optional="YES" attributeType="String"/>
+        <attribute name="hospNeed" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="jwNeed" optional="YES" attributeType="String"/>
+        <attribute name="max_doc" optional="YES" attributeType="String"/>
+        <attribute name="sf_code" optional="YES" attributeType="String"/>
+        <attribute name="stkNeed" optional="YES" attributeType="String"/>
+        <attribute name="tp_objective" optional="YES" attributeType="String"/>
+        <attribute name="unDrNeed" optional="YES" attributeType="String"/>
+        <attribute name="weeklyoff_Editable" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Territory" representedClassName="Territory" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -347,6 +370,15 @@
         <attribute name="townCode" optional="YES" attributeType="String"/>
         <attribute name="townName" optional="YES" attributeType="String"/>
         <attribute name="year" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Weeklyoff" representedClassName="Weeklyoff" syncable="YES" codeGenerationType="class">
+        <attribute name="division_Code" optional="YES" attributeType="String"/>
+        <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="holiday_Mode" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="state_Code" optional="YES" attributeType="String"/>
+        <attribute name="wtcode" optional="YES" attributeType="String"/>
+        <attribute name="wtname" optional="YES" attributeType="String"/>
     </entity>
     <entity name="WorkType" representedClassName="WorkType" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>

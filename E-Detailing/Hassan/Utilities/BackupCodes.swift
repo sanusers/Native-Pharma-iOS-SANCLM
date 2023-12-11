@@ -3786,3 +3786,74 @@
 //    
 //}
 //
+
+
+//func toSetParams(_ tourPlanArr: TourPlanArr) -> [String: Any] {
+//    _ = self.menuVC.selectedDate
+//    let dateArr = self.sessionDetailsArr.date?.components(separatedBy: " ") //"1 Nov 2023"
+//    let anotherDateArr = self.sessionDetailsArr.dayNo?.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+//    var param = [String: Any]()
+//    param["SFCode"] = tourPlanArr.SFCode
+//    param["SFName"] = tourPlanArr.SFName
+//    param["Div"] = tourPlanArr.Div
+//    param["Mnth"] = anotherDateArr?[0]
+//    param["Yr"] = dateArr?[2]//2023
+//    param["Day"] =  dateArr?[0]//1
+//    param["Tour_Month"] = anotherDateArr?[0]// 11
+//    param["Tour_Year"] = dateArr?[2] // 2023
+//    param["tpmonth"] = dateArr?[1]// Nov
+//    param["tpday"] = self.sessionDetailsArr.day// Wednesday
+//    param["dayno"] = anotherDateArr?[0] // 11
+//    let tpDtDate = self.sessionDetailsArr.dayNo?.replacingOccurrences(of: "/", with: "-")
+//    param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
+//   // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+//
+//    tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+//        allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
+//           // var sessionParam = [String: Any]()
+//            var index = String()
+//            if sessionIndex == 0 {
+//                index = ""
+//            } else {
+//                index = "\(sessionIndex + 1)"
+//            }
+//
+//            var drIndex = String()
+//            if sessionIndex == 0 {
+//                drIndex = "_"
+//            } else if sessionIndex == 1{
+//                drIndex = "_two_"
+//            } else if sessionIndex == 2 {
+//                drIndex = "_three_"
+//            }
+//            param["FWFlg\(index)"] = session.FWFlg
+//            param["HQCodes\(index)"] = session.HQCodes
+//            param["HQNames\(index)"] = session.HQNames
+//            param["WTCode\(index)"] = session.WTCode
+//            param["WTName\(index)"] = session.WTName
+//            param["chem\(drIndex)Code"] = session.chemCode
+//            param["chem\(drIndex)Name"] = session.chemName
+//            param["clusterCode\(index)"] = session.clusterCode
+//            param["clusterName\(index)"] = session.clusterName
+//            param["Dr\(drIndex)Code"] = session.drCode
+//            param["Dr\(drIndex)Name"] = session.drName
+//            param["jwCodes\(index)"] = session.jwCode
+//            param["jwNames\(index)"] = session.jwName
+//            param["DayRemarks\(index)"] = session.remarks
+//        }
+//    }
+//    param["submittedTime"] = "\(Date())"
+//    param["Mode"] = "Android-App"
+//    param["Entry_mode"] = "Apps"
+//    param["Approve_mode"] = ""
+//    param["Approved_time"] = ""
+//    param["app_version"] = "N 1.6.9"
+//
+//    let stringJSON = param.toString()
+//    print(stringJSON)
+//
+//    return param
+//}
+
+
+

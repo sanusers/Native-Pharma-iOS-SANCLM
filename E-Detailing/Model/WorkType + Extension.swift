@@ -9,6 +9,94 @@ import Foundation
 import CoreData
 
 
+extension Weeklyoff {
+    func setValues(fromDictionary dictionary: [String:Any])    {
+        
+        
+        if let codeValue = dictionary["State_Code"] as? Int{
+            state_Code = String(codeValue)
+        }
+        
+        if let codeValue = dictionary["Division_Code"] as? Int{
+            division_Code = String(codeValue)
+        }
+        if let eTabsValue = dictionary["Flag"] as? String{
+            flag = eTabsValue
+        }
+        if let fwFlgValue = dictionary["Holiday_Mode"] as? Int  {
+            holiday_Mode = String(fwFlgValue)
+        }
+        if let sfCodeValue = dictionary["WTcode"] as? String{
+            wtcode = sfCodeValue
+        }
+        if let tpDCRValue = dictionary["WTname"] as? String{
+            wtname = tpDCRValue
+        }
+
+    }
+}
+
+extension TableSetup {
+    
+    func setValues(fromDictionary dictionary: [String:Any])    {
+        if let codeValue = dictionary["AddsessionCount"] as? String{
+            addsessionCount = codeValue
+        }
+        if let eTabsValue = dictionary["AddsessionNeed"] as? String{
+            addsessionNeed = eTabsValue
+        }
+        if let fwFlgValue = dictionary["ChmNeed"] as? String{
+            chmNeed = fwFlgValue
+        }
+        if let nameValue = dictionary["Cip_Need"] as? String{
+            cip_Need = nameValue
+        }
+        if let sfCodeValue = dictionary["ClusterNeed"] as? String{
+            clusterNeed = sfCodeValue
+        }
+        if let tpDCRValue = dictionary["clustertype"] as? String{
+            clustertype = tpDCRValue
+        }
+        if let codeValue = dictionary["div"] as? String{
+            div = codeValue
+        }
+        if let terrslFlgValue = dictionary["FW_meetup_mandatory"] as? String{
+            fw_meetup_mandatory = terrslFlgValue
+        }
+        
+        if let terrslFlgValue = dictionary["Holiday_Editable"] as? String{
+            holiday_Editable = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["HospNeed"] as? String{
+            hospNeed = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["JWNeed"] as? String{
+            jwNeed = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["max_doc"] as? String{
+            max_doc = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["SF_code"] as? String{
+            sf_code = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["StkNeed"] as? String{
+            stkNeed = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["tp_objective"] as? String{
+            tp_objective = terrslFlgValue
+        }
+        if let terrslFlgValue = dictionary["UnDrNeed"] as? String{
+            unDrNeed = terrslFlgValue
+        }
+        
+        if let terrslFlgValue = dictionary["Weeklyoff_Editable"] as? String{
+            weeklyoff_Editable = terrslFlgValue
+        }
+        
+    }
+    
+}
+
 
 extension WorkType {
     

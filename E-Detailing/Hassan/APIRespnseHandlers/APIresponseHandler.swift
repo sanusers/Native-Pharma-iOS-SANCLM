@@ -20,6 +20,7 @@ class APIResponseHandler : APIResponseProtocol{
         
         let decoder = JSONDecoder()
         self.dataSeq =  decoder.decode(modal, result: result)
+        
         return self
     }
     

@@ -15,6 +15,43 @@ extension MenuView : UITextViewDelegate {
 }
 
 extension MenuView {
+//    func tableSetupAPI() {
+//        var tableSetupParams : [String : Any] {
+//            let appsetup = AppDefaults.shared.getAppSetUp()
+//
+//            let paramString = "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+//
+//            return ["data" : paramString]
+//        }
+//
+//
+//        sessionResponseVM!.getTableSetup(params: tableSetupParams, api: .tableSetup) { result in
+//            switch result {
+//            case .success(let response):
+//                print(response)
+//                let savefinish = NSKeyedArchiver.archiveRootObject(response, toFile: TableSetupModel.ArchiveURL.path)
+//                if !savefinish {
+//                    print("Error")
+//                }
+//
+////                do {
+////                    try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
+////
+////                    }
+////                } catch {
+////                    print("Unable to save")
+////                }
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
+//
+//    }
+    
+    
+}
+
+extension MenuView {
     func toGetTourPlanResponse() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
@@ -60,48 +97,11 @@ extension MenuView {
                         sessionIndex.append(daySessionIndex)
                     }
                 }
-              
+                
             }
             
             toAlertCell(sessionIndex)
         }
-        
-//        if subActivitySeected {
-//
-//                aDaySessions.sessionDetails?.forEach { session in
-//                    session.workType = nil
-//                    session.headQuates = nil
-//                    session.cluster = nil
-//                    session.jointWork = nil
-//                    session.listedDoctors = nil
-//                    session.chemist = nil
-//                }
-//                toAppendsessionDetails(aDaySessions: aDaySessions)
-//
-//        } else {
-//            toAlertCell()
-//          //  toCreateToast("Please fill required info before saving plan")
-//        }
-        
-//
-//                 let param = [String: Any]()
-//
-//                sessionResponseVM!.getZstoreData(params: param, api: .zsotoreJSON) { result in
-//                            switch result {
-//                            case .success(let response):
-//                                print(response)
-//
-//                                do {
-//                                    try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
-//
-//                                    }
-//                                } catch {
-//                                    print("Unable to save")
-//                                }
-//                            case .failure(let error):
-//                                print(error.localizedDescription)
-//                            }
-//                        }
         
     }
     
@@ -112,92 +112,74 @@ extension MenuView {
     
     func toCheckSessionInfo() -> [SessionDetail] {
         let aDaySessions = self.sessionDetailsArr
- 
+        
         let nonEmptySession =  aDaySessions.sessionDetails?.filter { session in
             session.WTCode != ""
         }
         
-        
-        
-//        var notFilledPlans = [NotfilledPlans]()
-//
-//        aDaySessions.sessionDetails?.enumerated().forEach { index, session in
-//            if session.isForFieldWork == true {
-//                if session.WTCode == "" {
-//                   let notfilledplan = NotfilledPlans(planindex: index, isValidated: false)
-//                    notFilledPlans.append(notfilledplan)
-//                }
-//            }
-//        }
-
         if  aDaySessions.sessionDetails?.count != nonEmptySession?.count {
-                self.toCreateToast("Please fill the required fields to save Plan")
-                return  aDaySessions.sessionDetails?.filter { session in
-                    session.WTCode == ""
-                   
-                } ?? [SessionDetail]()
-            } else {
-                let territoryNeededSessions = aDaySessions.sessionDetails?.filter { session in
-                    session.isToshowTerritory == true
-                }
+            self.toCreateToast("Please fill the required fields to save Plan")
+            return  aDaySessions.sessionDetails?.filter { session in
+                session.WTCode == ""
                 
-                
-                if territoryNeededSessions?.count == 0 {
-                 //   return true
-                    return territoryNeededSessions ?? [SessionDetail]()
-                } else {
-                    let territoryNotFilledSessions = territoryNeededSessions?.filter{ session in
-                       // session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
-                        session.HQCodes == "" || session.selectedClusterID!.isEmpty
-                        
-                    }
-                    
-                    var subActivitySeected : Bool = true
-                    
-                    if territoryNotFilledSessions?.count == 0 {
-                    
-                        let otherFieldMandatorySessions = nonEmptySession?.filter { session in
-                            session.isForFieldWork == true && tableSetup.FW_meetup_mandatory == "0"
-                        }
-
-                        otherFieldMandatorySessions?.forEach { session in
-                            if self.isDocNeeded {
-                                if session.selectedlistedDoctorsID?.count == 0{
-                                    self.toCreateToast("Please select doctor")
-                                    subActivitySeected = false
-                                }
-                            } else {
-                                if session.selectedjointWorkID?.count == 0 && session.selectedlistedDoctorsID?.count == 0 && session.selectedchemistID?.count == 0 {
-                                    self.toCreateToast("Please fill any one of sub activity fields to save sessions")
-                                    subActivitySeected = false
-                                    
-                                } else {
-                                    subActivitySeected = true
-                                    
-                                }
-                            }
-                            
-                            
-                        }
-                        if subActivitySeected {
-                            return [SessionDetail]()
-                        } else {
-                            return otherFieldMandatorySessions ?? [SessionDetail]()
-                        }
-                        
-                        //subActivitySeected
-                    } else {
-                        self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
-                        return territoryNotFilledSessions ?? [SessionDetail]()
-                    }
-                }
-                
-
-                
-                
-    
-              //  return subActivitySeected
+            } ?? [SessionDetail]()
+        } else {
+            let territoryNeededSessions = aDaySessions.sessionDetails?.filter { session in
+                session.isToshowTerritory == true
             }
+            
+            
+            if territoryNeededSessions?.count == 0 {
+                //   return true
+                return territoryNeededSessions ?? [SessionDetail]()
+            } else {
+                let territoryNotFilledSessions = territoryNeededSessions?.filter{ session in
+                    // session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
+                    session.HQCodes == "" || session.selectedClusterID!.isEmpty
+                    
+                }
+                
+                var subActivitySeected : Bool = true
+                
+                if territoryNotFilledSessions?.count == 0 {
+                    
+                    let otherFieldMandatorySessions = nonEmptySession?.filter { session in
+                        session.isForFieldWork == true && tableSetup?.fw_meetup_mandatory == "0"
+                    }
+                    
+                    otherFieldMandatorySessions?.forEach { session in
+                        if self.isDocNeeded {
+                            if session.selectedlistedDoctorsID?.count == 0{
+                                self.toCreateToast("Please select doctor")
+                                subActivitySeected = false
+                            }
+                        } else {
+                            if session.selectedjointWorkID?.count == 0 && session.selectedlistedDoctorsID?.count == 0 && session.selectedchemistID?.count == 0 {
+                                self.toCreateToast("Please fill any one of sub activity fields to save sessions")
+                                subActivitySeected = false
+                                
+                            } else {
+                                subActivitySeected = true
+                                
+                            }
+                        }
+                        
+                        
+                    }
+                    if subActivitySeected {
+                        return [SessionDetail]()
+                    } else {
+                        return otherFieldMandatorySessions ?? [SessionDetail]()
+                    }
+                    
+                    //subActivitySeected
+                } else {
+                    self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
+                    return territoryNotFilledSessions ?? [SessionDetail]()
+                }
+            }
+
+        }
     }
     
     func toValidateRequiredFields(_ sessions: SessionDetailsArr) -> Bool {
@@ -207,28 +189,12 @@ extension MenuView {
     func toAppendsessionDetails(aDaySessions : SessionDetailsArr) {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         let tourPlanArr =  AppDefaults.shared.tpArry
-       // var arrOfPlan = tourPlanArr.arrOfPlan
+        // var arrOfPlan = tourPlanArr.arrOfPlan
         tourPlanArr.Div = appdefaultSetup.divisionCode
         tourPlanArr.SFCode = appdefaultSetup.sfCode
         tourPlanArr.SFName = appdefaultSetup.sfName
         
-      //  tourPlanArr.arrOfPlan?.removeAll()
         var wholeDatesSessionDetailsArr = [SessionDetailsArr]()
-        
-        //AppDefaults.shared.eachDatePlan holds data from local storage now
-        
-//        do {
-//            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
-//            if let yourObject = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: data) {
-//                // Use 'yourObject'
-//                AppDefaults.shared.eachDatePlan = yourObject
-//            }
-//        } catch {
-//            // Handle the error appropriately
-//            print("Error unarchiving data: \(error)")
-//        }
-        
-        
         
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
         
@@ -248,72 +214,73 @@ extension MenuView {
         var isRemoved = false
         var indices = [Int]()
         tourPlanArr.arrOfPlan?.enumerated().forEach { index , sessionDetArr in
-           // if tourPlanArr.arrOfPlan?.count ?? 0 > index {
-                if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
-                   // tourPlanArr.arrOfPlan?.remove(at: index)
-                    indices.append(index)
-                    isRemoved = true
-                } else {
-                  //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
-                }
-          //  }
-          
+            // if tourPlanArr.arrOfPlan?.count ?? 0 > index {
+            if sessionDetArr.date == aDaySessions.date && aDaySessions.changeStatus == "True" {
+                // tourPlanArr.arrOfPlan?.remove(at: index)
+                indices.append(index)
+                isRemoved = true
+            } else {
+                //  tourPlanArr.arrOfPlan.append(sessionDetailsArr)
+            }
+            //  }
+            
             
         }
         if isRemoved {
             indices = indices.reversed()
             indices.forEach { toRemoveIndex in
-              
-                    tourPlanArr.arrOfPlan?.remove(at: toRemoveIndex)
                 
-
+                tourPlanArr.arrOfPlan?.remove(at: toRemoveIndex)
+                
+                
             }
-           
+            
             tourPlanArr.arrOfPlan.append(aDaySessions)
         }
-      
-
-        _ = self.toSetParams(tourPlanArr)
-
- 
+        
         AppDefaults.shared.tpArry = tourPlanArr
         
+        self.toSetParams(aDaySessions) { responseData in
+            switch responseData {
+                
+            case .success(let response):
+                if response.isSuccess ?? false {
+               
+                  //  aDaySessions.isSucessfullySubmited = true
+                    self.saveObjecttoDevice()
+                } else {
+                
+                  //  aDaySessions.isSucessfullySubmited = false
+                    self.saveObjecttoDevice()
+                }
+               
+            case .failure(let error):
+                print(error.localizedDescription)
+                self.saveObjecttoDevice()
+            }
+        }
+        
+    }
+    
+    
+    func saveObjecttoDevice() {
         let  arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan ?? [SessionDetailsArr]()
-      
-        
 
-        
-        
         AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
         
         
         AppDefaults.shared.tpArry.arrOfPlan = removeDuplicateElements(posts: arrOfPlan)
-        
-
-        
 
         AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-  
-            
-
-//        do {
-//            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
-//            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
-//        } catch {
-//            // Handle the error appropriately
-//            print("Error archiving data: \(error)")
-//        }
         
         let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-             if !savefinish {
-                 print("Error")
-             }
-        
-        self.toCreateToast("Plan added successfully")
+        if !savefinish {
+            print("Error")
+        }
+        self.toCreateToast("Plan saved successfully")
         self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
     }
-    
     
     func removeDuplicateElements(posts: [SessionDetailsArr]) -> [SessionDetailsArr] {
         var uniquePosts = [SessionDetailsArr]()
@@ -326,14 +293,17 @@ extension MenuView {
     }
     
     
-    func toSetParams(_ tourPlanArr: TourPlanArr) -> [String: Any] {
+    func toSetParams(_ tourPlanArr: SessionDetailsArr, completion: @escaping (Result<GeneralResponseModal, Error>) -> () ) {
+        
+        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+        
         _ = self.menuVC.selectedDate
         let dateArr = self.sessionDetailsArr.date?.components(separatedBy: " ") //"1 Nov 2023"
         let anotherDateArr = self.sessionDetailsArr.dayNo?.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
         var param = [String: Any]()
-        param["SFCode"] = tourPlanArr.SFCode
-        param["SFName"] = tourPlanArr.SFName
-        param["Div"] = tourPlanArr.Div
+        param["SFCode"] = appdefaultSetup.sfCode
+        param["SFName"] = appdefaultSetup.sfName
+        param["Div"] = appdefaultSetup.divisionCode
         param["Mnth"] = anotherDateArr?[0]
         param["Yr"] = dateArr?[2]//2023
         param["Day"] =  dateArr?[0]//1
@@ -344,53 +314,89 @@ extension MenuView {
         param["dayno"] = anotherDateArr?[0] // 11
         let tpDtDate = self.sessionDetailsArr.dayNo?.replacingOccurrences(of: "/", with: "-")
         param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
-        tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
-            allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
-               // var sessionParam = [String: Any]()
-                var index = String()
-                if sessionIndex == 0 {
-                    index = ""
-                } else {
-                    index = "\(sessionIndex + 1)"
-                }
-                
-                var drIndex = String()
-                if sessionIndex == 0 {
-                    drIndex = "_"
-                } else if sessionIndex == 1{
-                    drIndex = "_two_"
-                } else if sessionIndex == 2 {
-                    drIndex = "_three_"
-                }
-                param["FWFlg\(index)"] = session.FWFlg
-                param["HQCodes\(index)"] = session.HQCodes
-                param["HQNames\(index)"] = session.HQNames
-                param["WTCode\(index)"] = session.WTCode
-                param["WTName\(index)"] = session.WTName
-                param["chem\(drIndex)Code"] = session.chemCode
-                param["chem\(drIndex)Name"] = session.chemName
-                param["clusterCode\(index)"] = session.clusterCode
-                param["clusterName\(index)"] = session.clusterName
-                param["Dr\(drIndex)Code"] = session.drCode
-                param["Dr\(drIndex)Name"] = session.drName
-                param["jwCodes\(index)"] = session.jwCode
-                param["jwNames\(index)"] = session.jwName
-                param["DayRemarks\(index)"] = session.remarks
+        tourPlanArr.sessionDetails?.enumerated().forEach { sessionIndex, session in
+            // var sessionParam = [String: Any]()
+            var index = String()
+            if sessionIndex == 0 {
+                index = ""
+            } else {
+                index = "\(sessionIndex + 1)"
             }
+            
+            var drIndex = String()
+            if sessionIndex == 0 {
+                drIndex = "_"
+            } else if sessionIndex == 1{
+                drIndex = "_two_"
+            } else if sessionIndex == 2 {
+                drIndex = "_three_"
+            }
+            param["FWFlg\(index)"] = session.FWFlg
+            param["HQCodes\(index)"] = session.HQCodes
+            param["HQNames\(index)"] = session.HQNames
+            param["WTCode\(index)"] = session.WTCode
+            param["WTName\(index)"] = session.WTName
+            param["chem\(drIndex)Code"] = session.chemCode
+            param["chem\(drIndex)Name"] = session.chemName
+            param["clusterCode\(index)"] = session.clusterCode
+            param["clusterName\(index)"] = session.clusterName
+            param["Dr\(drIndex)Code"] = session.drCode
+            param["Dr\(drIndex)Name"] = session.drName
+            param["jwCodes\(index)"] = session.jwCode
+            param["jwNames\(index)"] = session.jwName
+            param["DayRemarks\(index)"] = session.remarks
         }
-        param["submittedTime"] = "\(Date())"
+        
+        
+        let dateString = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
+        let submittedtime = dateFormatter.string(from: dateString)
+        
+        param["submittedTime"] = submittedtime
         param["Mode"] = "Android-App"
         param["Entry_mode"] = "Apps"
         param["Approve_mode"] = ""
         param["Approved_time"] = ""
         param["app_version"] = "N 1.6.9"
-
-        let stringJSON = param.toString()
+        
+        
+        var valueParamArr = [Any]()
+        valueParamArr.append(param)
+        var tosendParam = [String: Any]()
+        tosendParam["data"] = valueParamArr
+        
+        let stringJSON = tosendParam.toString()
         print(stringJSON)
-
-        return param
+        
+        
+        
+        sessionResponseVM!.getTourPlanData(params: tosendParam, api: .saveTP) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                completion(.success(response))
+//                do {
+//                    try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
+//
+//                    }
+//                } catch {
+//                    print("Unable to save")
+//                }
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion(.failure(error))
+            }
+        }
+        
+     //   return param
+        
+        
+        
+        
+        
     }
-
+    
 }
 
 class MenuView : BaseView{
@@ -472,11 +478,7 @@ class MenuView : BaseView{
     var isSearched: Bool = false
     var isSearchedWorkTypeSelected: Bool = false
     ///properties to hold array elements
-    var selectedClusterIndices : [Int] = []
-    var selectedHeadQuatersIndices : [Int] = []
-    var selectedJointWorkIndices : [Int] = []
-    var selectedDoctorsIndices : [Int] = []
-    var selectedChemistIndices : [Int] = []
+
     var selectedWorkTypeName : String = ""
     var cellType : CellType = .session
     var workTypeArr : [WorkType]?
@@ -491,7 +493,7 @@ class MenuView : BaseView{
     ///properties to hold session contents
     var sessionDetailsArr = SessionDetailsArr()
     var sessionDetail = SessionDetail()
-    let tableSetup = TableSetupModel()
+    var tableSetup : TableSetup?
     ///properties to handle selection:
     var selectedSession: Int = 0
     var clusterIDArr : [String]?
@@ -561,7 +563,9 @@ class MenuView : BaseView{
     //MARK: - function to initialize view
     func initView(){
         self.sessionResponseVM = SessionResponseVM()
-        toConfigureTableSetup()
+      // tableSetupAPI()
+      //  self.tableSetup = NSKeyedUnarchiver.unarchiveObject(withFile: TableSetupModel.ArchiveURL.path) as? TableSetupModel ?? TableSetupModel()
+      
         searchTF.delegate = self
         cellRegistration()
         loadrequiredDataFromDB()
@@ -606,7 +610,7 @@ class MenuView : BaseView{
     }
 
     func toConfigureTableSetup() {
-        if tableSetup.DrNeed == "0" {
+        if tableSetup?.drNeed == "0" {
             self.isDocNeeded = true
         } else {
             self.isDocNeeded = false
@@ -615,7 +619,7 @@ class MenuView : BaseView{
         }
         
         
-        if  tableSetup.ChmNeed == "0" {
+        if  tableSetup?.chmNeed == "0" {
             self.isChemistNeeded = true
         } else {
             self.isChemistNeeded = false
@@ -623,7 +627,7 @@ class MenuView : BaseView{
             cellHeightForFW =  cellHeightForFW - 75
         }
  
-        if   tableSetup.JWNeed == "0" {
+        if   tableSetup?.jwNeed == "0" {
             self.isJointCallneeded = true
         } else {
             self.isJointCallneeded = false
@@ -631,7 +635,7 @@ class MenuView : BaseView{
             cellHeightForFW =  cellHeightForFW - 75
         }
         
-        if tableSetup.StkNeed == "0" {
+        if tableSetup?.stkNeed == "0" {
             self.isSockistNeeded = true
         } else {
             self.isSockistNeeded = false
@@ -639,7 +643,8 @@ class MenuView : BaseView{
             cellHeightForFW =  cellHeightForFW - 75
         }
         
-        if tableSetup.Cip_Need == "0" {
+        if tableSetup?.cip_Need == "0" {
+            //tableSetup.Cip_Need
             self.isnewCustomerNeeded = true
         } else {
             self.isnewCustomerNeeded = false
@@ -649,6 +654,14 @@ class MenuView : BaseView{
     }
     
     func loadrequiredDataFromDB() {
+        
+        let tableSetupArr = DBManager.shared.getTableSetUp()
+        
+        self.tableSetup = tableSetupArr[0]
+        
+        self.menuVC.isWeekoffEditable =  self.tableSetup?.weeklyoff_Editable == "0" ? true : false
+        
+        toConfigureTableSetup()
         
         self.workTypeArr = DBManager.shared.getWorkType()
       
@@ -667,21 +680,9 @@ class MenuView : BaseView{
         self.unlisteedDocArr = DBManager.shared.getUnListedDoctor()
         
         toGenerateNewSession(self.menuVC.sessionDetailsArr != nil ? false : true)
-//isToAddSession: self.menuVC.sessionDetailsArr != nil ? false : true
     }
     
     func toGenerateNewSession(_ istoAddSession: Bool) {
-        
-//        sessionDetail = SessionDetail()
-//        sessionDetail.workType = workTypeArr?.uniqued()
-//        sessionDetail.headQuates =  headQuatersArr?.uniqued()
-//        sessionDetail.cluster = clusterArr?.uniqued()
-//        sessionDetail.jointWork = jointWorkArr?.uniqued()
-//        sessionDetail.listedDoctors = listedDocArr?.uniqued()
-//        sessionDetail.chemist = chemistArr?.uniqued()
-//        self.sessionDetailsArr.sessionDetails?.append(sessionDetail)
-//        setPageType(.session)
-        
 
         sessionDetail.workType = workTypeArr?.uniqued()
         sessionDetail.headQuates =  headQuatersArr?.uniqued()
@@ -769,16 +770,6 @@ class MenuView : BaseView{
         
     }
     
-//    override func didLayoutSubviews(baseVC: BaseViewController) {
-//        super.didLayoutSubviews(baseVC: baseVC)
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//            if self.menuTable.contentSize.height + 10 >=  self.height - self.height * 0.07 * 0.1  + 35 - 10 {
-//                self.tableHeight.constant = self.height - self.height * 0.07 + 35 * 0.1
-//            } else {
-//                self.tableHeight.constant = self.menuTable.contentSize.height + 10
-//            }
-//        }
-//    }
     
     func setPageType(_ pagetype: CellType, for session: Int? = nil, andfor sessions: [Int]? = nil) {
         switch pagetype {
@@ -1185,11 +1176,12 @@ class MenuView : BaseView{
         addSessionView.addTap {
             let count = self.sessionDetailsArr.sessionDetails?.count
             if  count ?? 0 > 1 {
-                if #available(iOS 13.0, *) {
-                    (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
-                } else {
-                  print("Maximum plan added")
-                }
+//                if #available(iOS 13.0, *) {
+//                    (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
+//                } else {
+//                  print("Maximum plan added")
+//                }
+                self.toCreateToast("Maximum plan added")
             } else {
                 
                 let sessionArr = self.toCheckSessionInfo()
@@ -2398,6 +2390,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         let asession = sessionDetailsArr.sessionDetails?.enumerated().filter {sessionDetailIndex, sessionDetail in
                              sessionDetail.WTCode ==  sessionDetailsArr.sessionDetails?[selectedSession].WTCode
                          }
+                        
+                       // sessionDetailsArr.sessionDetails?[selectedSession].workType?[indexPath.row].tpDCR == ""
                         if asession?.count ?? 0 > 1 {
                             isExist = true
                         }
@@ -2435,10 +2429,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     sessionDetailsArr.sessionDetails?[selectedSession].WTCode = item?.code ?? ""
                     sessionDetailsArr.sessionDetails?[selectedSession].WTName = item?.name ?? ""
                             var isExist = Bool()
-                        var existCount = Int()
+                    _ = Int()
                         if sessionDetailsArr.sessionDetails?.count ?? 0 > 1 {
                                let asession = sessionDetailsArr.sessionDetails?.enumerated().filter {sessionDetailIndex, sessionDetail in
                                    sessionDetail.WTCode ==  sessionDetailsArr.sessionDetails?[selectedSession].WTCode
+                                   
                                  //  sessionDetail.selectedWorkTypeIndex ==  sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex
                                 }
 //                            sessionDetailsArr.sessionDetails?.forEach({ sessionDetail in

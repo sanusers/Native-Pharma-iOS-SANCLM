@@ -6,6 +6,33 @@
 //
 
 import Foundation
+
+class GeneralResponseModal : Codable {
+    let success : String?
+    let msg : String?
+    let isSuccess: Bool?
+    enum CodingKeys: String, CodingKey {
+        case success = "success"
+        case msg = "msg"
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.success =  container.safeDecodeValue(forKey: .success)
+        self.msg =  container.safeDecodeValue(forKey: .msg)
+        self.isSuccess = success ==  "false" ? false : true
+    }
+    
+    
+    init() {
+        success = ""
+        msg = ""
+        self.isSuccess = false
+    }
+}
+
+
+
 class SessionAPIResponseModel : Codable {
     let div: String
     let SFCode: String

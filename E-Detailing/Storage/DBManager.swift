@@ -70,7 +70,7 @@ class DBManager {
     func saveMasterData(type : MasterInfo, Values : [[String :Any]],id : String) {
         
         switch type {
-            
+        
         case .worktype:
             self.saveWorkTypeData(values: Values)
         case .headquartes:
@@ -153,6 +153,10 @@ class DBManager {
             self.saveMapCompDetData(values: Values)
         case .empty:
             break
+        case .tableSetup:
+            saveTableSetup(values: Values)
+        case .weeklyOff:
+            saveWeeklyoff(values: Values)
         }
     }
     
@@ -503,6 +507,68 @@ class DBManager {
         }
         self.saveContext()
     }
+    
+    func saveTableSetup(values : [[String : Any]]){
+        self.deleteTableSetupData()
+        let masterData = self.getMasterData()
+        var TableSetupArray = [TableSetup]()
+        for (index,workType) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let workTypeEntity = NSEntityDescription.entity(forEntityName: "TableSetup", in: contextNew)
+            let TableSetupItem = TableSetup(entity: workTypeEntity!, insertInto: contextNew)
+            TableSetupItem.setValues(fromDictionary: workType)
+            TableSetupItem.index = Int16(index)
+            TableSetupArray.append(TableSetupItem)
+        }
+        if let list = masterData.tableSetup?.allObjects as? [TableSetup]{
+            _ = list.map{masterData.removeFromTableSetup($0)}
+        }
+        TableSetupArray.forEach{ (type) in
+            masterData.addToTableSetup(type)
+        }
+        self.saveContext()
+    }
+    
+    func deleteTableSetupData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.tableSetup?.allObjects as? [WorkType] {
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func saveWeeklyoff(values : [[String : Any]]){
+        self.deleteWeeklyoff()
+        let masterData = self.getMasterData()
+        var WeeklyoffSetupArray = [Weeklyoff]()
+        for (index,workType) in values.enumerated() {
+            let contextNew = self.managedContext()
+            let workTypeEntity = NSEntityDescription.entity(forEntityName: "Weeklyoff", in: contextNew)
+            let WeeklyoffSetupItem = Weeklyoff(entity: workTypeEntity!, insertInto: contextNew)
+            WeeklyoffSetupItem.setValues(fromDictionary: workType)
+            WeeklyoffSetupItem.index = Int16(index)
+            WeeklyoffSetupArray.append(WeeklyoffSetupItem)
+        }
+        if let list = masterData.weeklyoff?.allObjects as? [WorkType]{
+            _ = list.map{masterData.removeFromWorkType($0)}
+        }
+        WeeklyoffSetupArray.forEach{ (type) in
+            masterData.addToWeeklyoff(type)
+        }
+        self.saveContext()
+    }
+    
+    
+    func deleteWeeklyoff() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.weeklyoff?.allObjects as? [WorkType] {
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+
+
     
     func saveTerritoryData(values : [[String : Any]],id : String) {
         self.deleteTerritoryData(id: id)
@@ -1100,6 +1166,28 @@ class DBManager {
             return [WorkType]()
         }
         let array = workTypeArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getTableSetUp() -> [TableSetup]{
+        let masterData = self.getMasterData()
+        guard let TableSetupArray = masterData.tableSetup?.allObjects as? [TableSetup] else{
+            return [TableSetup]()
+        }
+        let array = TableSetupArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getWeeklyOff() -> [Weeklyoff]{
+        let masterData = self.getMasterData()
+        guard let WeeklyoffSetupArray = masterData.weeklyoff?.allObjects as? [Weeklyoff] else{
+            return [Weeklyoff]()
+        }
+        let array = WeeklyoffSetupArray.sorted{(item1 , item2 ) -> Bool in
             return item1.index < item2.index
         }
         return array

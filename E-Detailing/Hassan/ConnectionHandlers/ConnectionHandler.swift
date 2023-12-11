@@ -96,8 +96,9 @@ final class ConnectionHandler : NSObject {
             case .success(let value):
                 var ArrJSONseq = Array<JSON>()
                 var jsonseq = JSON()
-                if CacheAttribute == .none {
+                if CacheAttribute == .none ||  CacheAttribute ==  .tableSetup {
                      ArrJSONseq = value as! Array<JSON>
+                    
                 } else {
                     jsonseq = value as! JSON
                 }
@@ -105,9 +106,16 @@ final class ConnectionHandler : NSObject {
                     //response.response.isSuccess
                     //|| !api.contains(APIUrl)
                    // ||
-                    if CacheAttribute == .none {
+                    if CacheAttribute == .none  {
+                     
                         responseHandler.handleArrSuccess(value: ArrJSONseq, data: response.data ?? Data())
-                    } else {
+                    } else if CacheAttribute == .tableSetup {
+                      
+                             jsonseq = ArrJSONseq[0]
+                       
+                        responseHandler.handleSuccess(value: jsonseq, data: response.data ?? Data())
+                    }
+                    else {
                         responseHandler.handleSuccess(value: jsonseq, data: response.data ?? Data())
                     }
                     //
@@ -166,7 +174,7 @@ final class ConnectionHandler : NSObject {
             case .success(let value):
                 var ArrJSONseq = Array<JSON>()
                 var jsonseq = JSON()
-                if CacheAttribute == .none {
+                if CacheAttribute == .none || CacheAttribute == .tableSetup{
                     ArrJSONseq = value as! Array<JSON>
                 } else {
                     jsonseq = value as! JSON
@@ -176,7 +184,7 @@ final class ConnectionHandler : NSObject {
 //                    json.isSuccess
 //                        || !api.contains(APIUrl)
 //                        ||
-                    if CacheAttribute == .none {
+                    if CacheAttribute == .none || CacheAttribute == .tableSetup {
                         responseHandler.handleArrSuccess(value: ArrJSONseq, data: response.data ?? Data())
                     } else {
                         responseHandler.handleSuccess(value: jsonseq, data: response.data ?? Data())

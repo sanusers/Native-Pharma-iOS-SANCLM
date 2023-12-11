@@ -93,7 +93,8 @@ enum MasterCellType : Int {
 //                   MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
 
 enum `MasterInfo` : String {
-    
+    case weeklyOff = "Weekly Off"
+    case tableSetup = "Table Setup"
     case worktype = "Work Types"
     case headquartes = "Headquarters"
     case competitors = "Competitors"
@@ -175,6 +176,12 @@ enum `MasterInfo` : String {
             return String(format: "%@table/subordinates", mainUrl)
         case .doctorFencing ,.chemists ,.stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.speciality,.departments,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
             return String(format: "%@table/dcrmasterdata", mainUrl)
+        case .tableSetup:
+            return String(format: "%@table/setups", mainUrl)
+            
+        case .weeklyOff:
+            return String(format: "%@table/dcrmasterdata", mainUrl)
+            
         default :
             return String(format: "%@table/slides", mainUrl) //
         }
@@ -266,6 +273,10 @@ enum `MasterInfo` : String {
             return MasterSyncParams.mapCompdetParams
         case .empty:
             return [String : Any]()
+        case .tableSetup:
+            return MasterSyncParams.tableSetupParams
+        case .weeklyOff:
+            return MasterSyncParams.weelyoffSetupParams
         }
     }
 }
@@ -523,6 +534,28 @@ struct MasterSyncParams {
         
         return ["data" : paramString]
     }
+    
+    static var tableSetupParams : [String : Any] {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        let paramString = "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        
+        return ["data" : paramString]
+    }
+    
+    
+    static var weelyoffSetupParams : [String : Any] {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date()).year
+        
+        let paramString = "{\"tableName\":\"getweeklyoff\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"year\":\"\(year!)\"}"
+        
+        return ["data" : paramString]
+        
+        
+      //  {"tableName":"getweeklyoff","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","year":"2023"}
+    }
+    
 }
 
 

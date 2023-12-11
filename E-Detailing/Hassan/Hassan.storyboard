@@ -452,6 +452,7 @@
                             <outlet property="lblSendToApproval" destination="Aju-gc-jLd" id="PK9-Z0-QaL"/>
                             <outlet property="mainDateLbl" destination="Sht-kJ-edG" id="Xah-QR-tRI"/>
                             <outlet property="overAllContentsHolder" destination="bPd-oh-FLn" id="jAh-ZE-sL0"/>
+                            <outlet property="planningLbl" destination="bbY-w2-ysV" id="U76-BF-bpu"/>
                             <outlet property="sessionTableHolderView" destination="hRU-Fz-6yr" id="9ZD-Wv-tUO"/>
                             <outlet property="sessionTypeButtonsHolderView" destination="eKH-Fr-BIL" id="ySd-zI-kth"/>
                             <outlet property="sessionTypeSaveTapView" destination="jDk-Di-Rel" id="2uV-ax-UM7"/>
