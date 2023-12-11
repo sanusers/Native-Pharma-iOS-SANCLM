@@ -9,6 +9,42 @@ import Foundation
 import CoreData
 
 
+extension Holidays {
+    func setValues(fromDictionary dictionary: [String:Any])    {
+        
+        
+        if let codeValue = dictionary["day_name"] as? String{
+            day_name = codeValue
+        }
+        
+        if let codeValue = dictionary["Flag"] as? String {
+            flag = codeValue
+        }
+        if let eTabsValue = dictionary["Hday"] as? String{
+            hday = eTabsValue
+        }
+        if let fwFlgValue = dictionary["Holiday_Date"] as? String  {
+            holiday_Date = fwFlgValue
+        }
+        if let sfCodeValue = dictionary["Holiday_month"] as? String{
+            holiday_month = sfCodeValue
+        }
+        if let tpDCRValue = dictionary["Holiday_Name"] as? String{
+            holiday_Name = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["month_name"] as? String{
+            month_name = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["WTcode"] as? String{
+            wtcode = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["WTname"] as? String{
+            wtname = tpDCRValue
+        }
+
+    }
+}
+
 extension Weeklyoff {
     func setValues(fromDictionary dictionary: [String:Any])    {
         

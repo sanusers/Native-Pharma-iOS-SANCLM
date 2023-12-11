@@ -750,6 +750,14 @@ class MenuView : BaseView{
             return false
         }
     }
+    
+    func isForHoliday() -> Bool {
+        if self.menuVC.isForHoliday != false  {
+            return true
+        } else {
+            return false
+        }
+    }
 
     @objc func hideMenu() {
         self.hideMenuAndDismiss()
@@ -799,6 +807,13 @@ class MenuView : BaseView{
                 }
                 
               //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+            } else if isForWeekoff() || isForHoliday() {
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "d MMMM yyyy"
+                typesTitle.text = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
+                typesTitleview.isHidden = false
+                typesTitleHeightConst.constant = typesTitleHeight
             } else {
                 if self.sessionDetailsArr.sessionDetails?.count == 0 {
                      
@@ -846,8 +861,12 @@ class MenuView : BaseView{
                }
                
               //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
-            } else if isForWeekoff(){
-                
+            } else if isForWeekoff() || isForHoliday() {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "d MMMM yyyy"
+                typesTitle.text = dateFormatter.string(from: self.menuVC.selectedDate ?? Date())
+                typesTitleview.isHidden = false
+                typesTitleHeightConst.constant = typesTitleHeight
             } else {
                 if self.sessionDetailsArr.sessionDetails?.count == 0 {
                      

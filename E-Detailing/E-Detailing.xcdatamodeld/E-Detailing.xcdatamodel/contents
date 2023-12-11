@@ -94,6 +94,18 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="Holidays" representedClassName="Holidays" syncable="YES" codeGenerationType="class">
+        <attribute name="day_name" optional="YES" attributeType="String"/>
+        <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="hday" optional="YES" attributeType="String"/>
+        <attribute name="holiday_Date" optional="YES" attributeType="String"/>
+        <attribute name="holiday_month" optional="YES" attributeType="String"/>
+        <attribute name="holiday_Name" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="month_name" optional="YES" attributeType="String"/>
+        <attribute name="wtcode" optional="YES" attributeType="String"/>
+        <attribute name="wtname" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Input" representedClassName="Input" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="divisionCode" optional="YES" attributeType="String"/>
@@ -151,6 +163,7 @@
         <relationship name="doctorClass" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorClass"/>
         <relationship name="doctorFencing" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorFencing"/>
         <relationship name="feedback" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Feedback"/>
+        <relationship name="holidays" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Holidays"/>
         <relationship name="input" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Input"/>
         <relationship name="jointWork" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="JointWork"/>
         <relationship name="leaveType" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LeaveType"/>

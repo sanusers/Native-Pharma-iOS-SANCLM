@@ -159,11 +159,12 @@ class TourPlanView: BaseView {
     var tempArrofPlan: [SessionDetailsArr]?
     var sessionResponseVM: SessionResponseVM?
     var  weeklyOff : Weeklyoff?
+    var  holidays : Holidays?
    // var tableSetupmodel: TableSetupModel?
     var totalDays = Int()
     var filledDates = [Date]()
     var months = [String]()
-    var weeklyOffDates = [Date]()
+    var weeklyOffDates = [String]()
     private var currentPage: Date?
     private lazy var today: Date = {
         return Date()
@@ -186,6 +187,8 @@ class TourPlanView: BaseView {
         setupUI()
         initViews()
     }
+    
+    
     
     
     func monthWiseSeperationofSessions(_ date: Date) {
@@ -214,6 +217,7 @@ class TourPlanView: BaseView {
         if filledDates.count == 3 {
             toEnableApprovalBtn(totaldate: filledDates, filleddate: arrOfPlan?.count ?? 0)
         } else {
+           
                 if months.isEmpty {
                     months.append(toGetMonth(date))
                     filledDates.append(date)
@@ -225,6 +229,7 @@ class TourPlanView: BaseView {
                     }
                 }
         }
+        toAppendWeeklyoffs(date: self.weeklyOffDates)
     }
     
     func toEnableApprovalBtn(totaldate: [Date], filleddate: Int) {
@@ -266,6 +271,64 @@ class TourPlanView: BaseView {
         toRemoveElement(isToremove: true, toRemoveSessionDetArr: sessionDetArr)
     }
     
+    
+    
+    func toAppendWeeklyoffs(date: [String]) {
+        var includedSessionArr = [SessionDetailsArr]()
+        var sessionDetail = SessionDetail()
+        
+        if includedSessionArr.count == 0 {
+            date.forEach { adate in
+                let aSession = SessionDetail()
+                let aSessionDetArr = SessionDetailsArr()
+                aSession.isForFieldWork = false
+                aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+                aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+                aSessionDetArr.date = adate
+                aSessionDetArr.sessionDetails.append(aSession)
+                includedSessionArr.append(aSessionDetArr)
+            }
+        } else {
+            includedSessionArr.forEach({ anSessionDetailsArr in
+                if anSessionDetailsArr.sessionDetails.contains(sessionDetail) {
+                    
+                } else {
+                    date.forEach { adate in
+                        let aSession = SessionDetail()
+                        let aSessionDetArr = SessionDetailsArr()
+                        aSession.isForFieldWork = false
+                        aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+                        aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+                        aSessionDetArr.date = adate
+                        aSessionDetArr.sessionDetails.append(aSession)
+                        includedSessionArr.append(aSessionDetArr)
+                    }
+                }
+           })
+        }
+        
+dump(includedSessionArr)
+
+        var  temptpArray =  TourPlanArr()
+        temptpArray.arrOfPlan = includedSessionArr
+        AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
+        
+      //  if !AppDefaults.shared.eachDatePlan.tourPlanArr.contains(AppDefaults.shared.tpArry) {
+            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+            let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+                 if !savefinish {
+                     print("Error")
+                 }
+         //   toLoadData()
+    //    }
+        
+        
+
+
+
+    }
+    
+    
     func toGetMonth(_ date: Date)  -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM"
@@ -294,11 +357,11 @@ class TourPlanView: BaseView {
                              if !savefinish {
                                  print("Error")
                              }
-            
         toLoadData()
         
     }
     
+
     
     func toLoadData()  {
 
@@ -430,8 +493,6 @@ class TourPlanView: BaseView {
         }
 
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
-  
-       
         monthWiseSeperationofSessions(self.currentPage ?? Date())
     }
     
@@ -456,6 +517,10 @@ class TourPlanView: BaseView {
         
         let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
         self.weeklyOff = weeklyoffSetupArr[0]
+         
+        let holidaysSetupArr = DBManager.shared.getHolidays()
+        self.holidays = holidaysSetupArr[0]
+        
         
         self.selectedDate = ""
         tourPlanCalander.scrollEnabled = false
@@ -571,14 +636,14 @@ class TourPlanView: BaseView {
     }
     
     
-    func moveToMenuVC(_ date: Date, isForWeekOff: Bool?) {
+    func moveToMenuVC(_ date: Date, isForWeekOff: Bool?, isforHoliday: Bool?) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
         let toCompareDate = dateFormatter.string(from: date )
           self.selectedDate =  self.toTrimDate(date: date)
        //   self.tourPlanCalander.reloadData()
           
-        let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff)
+        let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff, isForHoliday: isforHoliday)
                   self.tourplanVC.modalPresentationStyle = .custom
                   menuvc.menuDelegate = self
         if isForWeekOff ?? false {
@@ -589,7 +654,10 @@ class TourPlanView: BaseView {
             
             let aSessionDetArr = SessionDetailsArr()
             aSessionDetArr.sessionDetails.append(aSession)
+            aSessionDetArr.date = toCompareDate
+            aSessionDetArr.rawDate = date
             menuvc.sessionDetailsArr = aSessionDetArr
+            //menuvc.selectedDate = date
            // menuvc.isWeekoffEditable =
         } else {
             AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
@@ -619,7 +687,11 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         cell.toPopulateCell(modal ?? SessionDetailsArr())
         
         cell.addTap {
-            self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: false)
+            self.weeklyOffDates.forEach { aweeloffDate in
+                if modal?.date == aweeloffDate {
+                    self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: true, isforHoliday: false)
+                }
+            }
         }
         
         cell.optionsIV.addTap {
@@ -738,7 +810,9 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance, UICollectionViewDelegateFlowLayout {
+extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance {
+    
+
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print("::>--Tapped-->::")
@@ -781,6 +855,8 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             }
         })
         
+        
+        
         var isWeeklyoff = Bool()
         let currentDate = date  // Replace this with your desired date
         let calendar = Calendar.current
@@ -794,12 +870,12 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
                 isWeeklyoff = true
                 
                 if weeklyOffDates.isEmpty {
-                    self.weeklyOffDates.append(date)
+                    self.weeklyOffDates.append(toModifyDate(date: date))
                 } else {
-                    if weeklyOffDates.contains(date) {
+                    if weeklyOffDates.contains(toModifyDate(date: date)) {
                         
                     } else {
-                        self.weeklyOffDates.append(date)
+                        self.weeklyOffDates.append(toModifyDate(date: date))
                     }
                 }
                 
@@ -810,8 +886,15 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         }
         
         
+        var isForHoliday = Bool()
+        let responsedates =  self.holidays?.holiday_Date
         
-        cell.addedIV.isHidden = isExist || isWeeklyoff ? false : true
+        if toModifyDate(date: date, isForHoliday: true) == responsedates {
+            isForHoliday = true
+        }
+        
+        
+        cell.addedIV.isHidden = isExist || isWeeklyoff || isForHoliday ? false : true
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
         cell.customLabel.setFont(font: .medium(size: .BODY))
@@ -836,13 +919,18 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             self.selectedDate =  self.toTrimDate(date: date)
             self.tourPlanCalander.collectionView.reloadData()
             
-            self.moveToMenuVC(date, isForWeekOff: isWeeklyoff)
+            self.moveToMenuVC(date, isForWeekOff: isWeeklyoff, isforHoliday: isForHoliday)
 
         }
         
         return cell
     }
     
+    func toModifyDate(date: Date, isForHoliday: Bool? = false) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = (isForHoliday ?? false) ? "yyyy-MM-dd" : "d MMMM yyyy"
+        return dateFormatter.string(from: date )
+    }
 
 }
 

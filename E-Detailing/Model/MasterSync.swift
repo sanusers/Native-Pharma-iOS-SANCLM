@@ -93,6 +93,7 @@ enum MasterCellType : Int {
 //                   MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
 
 enum `MasterInfo` : String {
+    case holidays = "Holidays"
     case weeklyOff = "Weekly Off"
     case tableSetup = "Table Setup"
     case worktype = "Work Types"
@@ -182,6 +183,8 @@ enum `MasterInfo` : String {
         case .weeklyOff:
             return String(format: "%@table/dcrmasterdata", mainUrl)
             
+        case .holidays:
+            return String(format: "%@table/dcrmasterdata", mainUrl)
         default :
             return String(format: "%@table/slides", mainUrl) //
         }
@@ -277,7 +280,10 @@ enum `MasterInfo` : String {
             return MasterSyncParams.tableSetupParams
         case .weeklyOff:
             return MasterSyncParams.weelyoffSetupParams
+        case .holidays:
+            return MasterSyncParams.holidaySetupParams
         }
+ 
     }
 }
 
@@ -552,8 +558,19 @@ struct MasterSyncParams {
         
         return ["data" : paramString]
         
+
+    }
+    
+    static var holidaySetupParams : [String : Any] {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date()).year
         
-      //  {"tableName":"getweeklyoff","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","year":"2023"}
+        let paramString = "{\"tableName\":\"getholiday\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"year\":\"\(year!)\"}"
+        
+        return ["data" : paramString]
+        
+      //  {"tableName":"getholiday","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","year":"2023"}
+
     }
     
 }
