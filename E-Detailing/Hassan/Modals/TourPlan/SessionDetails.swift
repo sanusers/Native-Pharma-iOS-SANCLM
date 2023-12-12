@@ -356,6 +356,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     
     
     public func encode(with coder: NSCoder) {
+        coder.encode(isDataSentToApi, forKey: Key.isDataSentToApi.rawValue)
         coder.encode(changeStatus, forKey: Key.changeStatus.rawValue)
         coder.encode(date, forKey: Key.date.rawValue)
         coder.encode(rawDate, forKey: Key.rawDate.rawValue)
@@ -371,7 +372,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     
     public required convenience init?(coder decoder: NSCoder) {
         let mchangeStatus =   decoder.decodeObject(forKey: Key.changeStatus.rawValue) as! String
-      
+        let misDataSentToApi = decoder.decodeObject(forKey: Key.isDataSentToApi.rawValue) as! Bool
         let mdate = decoder.decodeObject(forKey: Key.date.rawValue) as! String
         let mrawDate = decoder.decodeObject(forKey: Key.rawDate.rawValue) as! Date
         let mday = decoder.decodeObject(forKey: Key.day.rawValue) as! String
@@ -380,12 +381,12 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         let mrejectionReason = decoder.decodeObject(forKey: Key.rejectionReason.rawValue) as! String
         let msessionDetails = decoder.decodeObject(forKey: Key.sessionDetails.rawValue) as! [SessionDetail]
        // let misSucessfullySubmited = decoder.decodeObject(forKey: Key.isSucessfullySubmited.rawValue) as! Bool
-        self.init(changeStatus: mchangeStatus, date: mdate, rawDate: mrawDate, day: mday, dayNo: mdayNo, entryMode: mentryMode, rejectionReason: mrejectionReason, sessionDetails: msessionDetails)
+        self.init(isDataSentToApi: misDataSentToApi, changeStatus: mchangeStatus, date: mdate, rawDate: mrawDate, day: mday, dayNo: mdayNo, entryMode: mentryMode, rejectionReason: mrejectionReason, sessionDetails: msessionDetails)
             //, isSucessfullySubmited: misSucessfullySubmited
     }
     
 
-    
+    var isDataSentToApi : Bool!
     var changeStatus : String!
     var date : String!
     var rawDate : Date!
@@ -396,8 +397,9 @@ public class SessionDetailsArr: NSObject, NSCoding  {
    // var isSucessfullySubmited: Bool?
     var sessionDetails : [SessionDetail]!
     
-    init(changeStatus: String, date: String, rawDate: Date, day: String, dayNo: String, entryMode: String, rejectionReason: String, sessionDetails: [Any]) {
+    init(isDataSentToApi: Bool, changeStatus: String, date: String, rawDate: Date, day: String, dayNo: String, entryMode: String, rejectionReason: String, sessionDetails: [Any]) {
      //, isSucessfullySubmited: Bool
+        self.isDataSentToApi = isDataSentToApi
         self.changeStatus = changeStatus
         self.date = date
         self.rawDate = rawDate
@@ -411,6 +413,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     
     
     enum Key: String, CodingKey {
+        case isDataSentToApi
         case changeStatus
         case date
         case rawDate
@@ -424,6 +427,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     }
 
     override init() {
+        isDataSentToApi  = Bool()
         changeStatus = String()
         date  = String()
         day  = String()
@@ -492,26 +496,31 @@ class EachDatePlan : NSObject, NSCoding{
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("EachDatePlan")
 
     var tourPlanArr : [TourPlanArr]!
-    
+    var weekoffsDates : [Date]!
     enum Key: String, CodingKey {
         case tourPlanArr
+        case weekoffsDates
     }
     
     public func encode(with coder: NSCoder) {
         coder.encode(tourPlanArr, forKey: Key.tourPlanArr.rawValue)
+        coder.encode(weekoffsDates, forKey: Key.weekoffsDates.rawValue)
     }
     
     public required convenience init?(coder decoder: NSCoder) {
         let mtourPlanArr =   decoder.decodeObject(forKey: Key.tourPlanArr.rawValue) as! [TourPlanArr]
-        self.init(tourPlanArr: mtourPlanArr)
+        let mWeekoffDates =   decoder.decodeObject(forKey: Key.weekoffsDates.rawValue) as! [Date]
+        self.init(tourPlanArr: mtourPlanArr,weekoffsDates: mWeekoffDates)
     }
     
-    init(tourPlanArr:  [TourPlanArr]) {
+    init(tourPlanArr:  [TourPlanArr], weekoffsDates: [Date]) {
         self.tourPlanArr = tourPlanArr
+        self.weekoffsDates = weekoffsDates
     }
     
     override init() {
         tourPlanArr = [TourPlanArr]()
+        weekoffsDates = [Date]()
     }
 }
 

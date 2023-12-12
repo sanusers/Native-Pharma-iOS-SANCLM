@@ -14,7 +14,7 @@ enum APIEnums : String{
     case none = ""
     case actionLogin = "action/login"
     case tableSetup = "table/setups"
-    case saveTP = "save/tp"
+    case saveTP = "savenew/tp"
 }
 
 

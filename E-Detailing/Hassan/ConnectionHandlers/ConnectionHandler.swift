@@ -209,6 +209,7 @@ final class ConnectionHandler : NSObject {
         
         return responseHandler
     }
+    
     func uploadRequest(for api : APIEnums,
                        params : Parameters,
                        data:Data, imageName:String = "image")-> APIResponseProtocol {
@@ -224,12 +225,25 @@ final class ConnectionHandler : NSObject {
         
         AF.upload(multipartFormData: { (multipartFormData) in
             for (key, value) in param {
-                multipartFormData.append("\(value)".data(using: String.Encoding.utf8)!, withName: key as String)
+                let multipartData = value as? Data ?? Data()
+               // "\(value)".data(using: String.Encoding.utf8) ?? Data()
+                
+//                if let tempjsonString = String(data: multipartData, encoding: .utf8) {
+//                    print(tempjsonString)
+//                    multipartFormData.append(Data(tempjsonString.utf8), withName: "Data")
+//                }
+                
+              
+                
+                multipartFormData.append(multipartData, withName: key as String)
+                let jsonStringWithoutEscapes = String(data: multipartData, encoding: .utf8)
             }
-            let fileName = String(Date().timeIntervalSince1970 * 1000) + "Image.jpg"
-            if data != Data(){
-                multipartFormData.append(data, withName: imageName, fileName: fileName, mimeType: "image/jpeg")
-            }
+            //"\(value)".data(using: String.Encoding.utf8)!
+            
+//            let fileName = String(Date().timeIntervalSince1970 * 1000) + "Image.jpg"
+//            if data != Data(){
+//                multipartFormData.append(data, withName: imageName, fileName: fileName, mimeType: "image/jpeg")
+//            }
         }, to: "\(APIUrl)\(api.rawValue)").response { results in
             
             let endTime = Date()
@@ -246,20 +260,59 @@ final class ConnectionHandler : NSObject {
                     //                                       self.appDelegate.createToastMessage(err.localizedDescription, bgColor: .black, textColor: .white)
                     return
                 }
+                
+                
+//                if let data = try? JSONSerialization.data(withJSONObject: anyData, options: []) {
+//                    if let jsonString = String(data: data, encoding: .utf8) {
+//                        print("JSON String: \(jsonString)")
+//                    } else {
+//                        print("Error converting data to JSON string")
+//                    }
+//                } else {
+//                    print("Error creating JSON data")
+//                }
+                
+                
+//                if let data = anyData {
+//                    if let responseString = String(data: data, encoding: .utf8) {
+//                        print("API Response String: \(responseString)")
+//                    } else {
+//                        print("Error converting data to string")
+//                    }
+//                } else {
+//                    print("Empty response data")
+//                }
+//
+//                do {
+//
+//                    let decoder = JSONDecoder()
+//                    let yourObject = try decoder.decode(SaveTPresponseModel.self, from: anyData ?? Data())
+//
+//                    // Now 'yourObject' contains the decoded data
+//                    print("Decoded Object: \(yourObject)")
+//                } catch {
+//                    print("Error decoding: \(error)")
+//                }
+                
                 if let data = anyData,
                    let json = JSON(data){
-                    if json.status_code == 1{
-                        
+                    if json.isSuccess {
+
                         responseHandler.handleSuccess(value: json, data: data)
-                        //
                     }else{
-                        //                                           self.appDelegate.createToastMessage(json.status_message,
-                        //                                                                               bgColor: .black,
-                        //                                                                               textColor: .white)
+
                         responseHandler.handleFailure(value: json.status_message)
                     }
                 }
+                
+
             case .failure(let error):
+                
+                var json = JSON()
+                
+                json["status_message"] = "An issue occured data will be saved to device"
+               
+                responseHandler.handleFailure(value: json.status_message)
                 print("Error in upload: \(error.localizedDescription)")
                 //                               self.appDelegate.createToastMessage(error.localizedDescription, bgColor: .black, textColor: .white)
                 if error._code == 13 {

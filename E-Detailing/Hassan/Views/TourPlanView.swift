@@ -13,85 +13,115 @@ import FSCalendar
 
 extension TourPlanView {
    
-        func toSetParams(_ arrOfPlan: [SessionDetailsArr])  {
-            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "d MMMM yyyy"
-            let date =  dateFormatter.string(from:  Date())
-            dateFormatter.dateFormat = "EEEE"
-            let day = dateFormatter.string(from: Date())
-            
-            dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
-            let dayNo = dateFormatter.string(from: Date())
-            
-            
-            let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
-            let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
-            var param = [String: Any]()
-            param["SFCode"] = appdefaultSetup.sfCode
-            param["SFName"] = appdefaultSetup.sfName
-            param["Div"] = appdefaultSetup.divisionCode
-            param["Mnth"] = anotherDateArr[0]
-            param["Yr"] = dateArr[2]//2023
-            param["Day"] =  dateArr[0]//1
-            param["Tour_Month"] = anotherDateArr[0]// 11
-            param["Tour_Year"] = dateArr[2] // 2023
-            param["tpmonth"] = dateArr[1]// Nov
-            param["tpday"] = day// Wednesday
-            param["dayno"] = anotherDateArr[0] // 11
-            let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
-            param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
-           // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+    func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, Error>) -> ())  {
+        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        let date =  dateFormatter.string(from:  Date())
+        dateFormatter.dateFormat = "EEEE"
+        let day = dateFormatter.string(from: Date())
         
-            var sessions = [JSON]()
-            
-            arrOfPlan.enumerated().forEach { index, allDayPlans in
-                allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
-                    var sessionParam = [String: Any]()
-                    var index = String()
-                    if sessionIndex == 0 {
-                        index = ""
-                    } else {
-                        index = "\(sessionIndex + 1)"
-                    }
+        dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+        let dayNo = dateFormatter.string(from: Date())
         
-                    var drIndex = String()
-                    if sessionIndex == 0 {
-                        drIndex = "_"
-                    } else if sessionIndex == 1{
-                        drIndex = "_two_"
-                    } else if sessionIndex == 2 {
-                        drIndex = "_three_"
-                    }
-                    param["FWFlg\(index)"] = session.FWFlg
-                    param["HQCodes\(index)"] = session.HQCodes
-                    param["HQNames\(index)"] = session.HQNames
-                    param["WTCode\(index)"] = session.WTCode
-                    param["WTName\(index)"] = session.WTName
-                    param["chem\(drIndex)Code"] = session.chemCode
-                    param["chem\(drIndex)Name"] = session.chemName
-                    param["clusterCode\(index)"] = session.clusterCode
-                    param["clusterName\(index)"] = session.clusterName
-                    param["Dr\(drIndex)Code"] = session.drCode
-                    param["Dr\(drIndex)Name"] = session.drName
-                    param["jwCodes\(index)"] = session.jwCode
-                    param["jwNames\(index)"] = session.jwName
-                    param["DayRemarks\(index)"] = session.remarks
+        
+        let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
+        let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+        var param = [String: Any]()
+        param["SFCode"] = appdefaultSetup.sfCode
+        param["SFName"] = appdefaultSetup.sfName
+        param["Div"] = appdefaultSetup.divisionCode
+        param["Mnth"] = anotherDateArr[0]
+        param["Yr"] = dateArr[2]//2023
+        param["Day"] =  dateArr[0]//1
+        param["Tour_Month"] = anotherDateArr[0]// 11
+        param["Tour_Year"] = dateArr[2] // 2023
+        param["tpmonth"] = dateArr[1]// Nov
+        param["tpday"] = day// Wednesday
+        param["dayno"] = anotherDateArr[0] // 11
+        let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
+        param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
+        // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+        
+        var sessions = [JSON]()
+        
+        arrOfPlan.enumerated().forEach { index, allDayPlans in
+            allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
+                var sessionParam = [String: Any]()
+                var index = String()
+                if sessionIndex == 0 {
+                    index = ""
+                } else {
+                    index = "\(sessionIndex + 1)"
                 }
-                param["submittedTime"] = "\(Date())"
-                param["Mode"] = "Android-App"
-                param["Entry_mode"] = "Apps"
-                param["Approve_mode"] = ""
-                param["Approved_time"] = ""
-                param["app_version"] = "N 1.6.9"
-                sessions.append(param)
+                
+                var drIndex = String()
+                if sessionIndex == 0 {
+                    drIndex = "_"
+                } else if sessionIndex == 1{
+                    drIndex = "_two_"
+                } else if sessionIndex == 2 {
+                    drIndex = "_three_"
+                }
+                param["FWFlg\(index)"] = session.FWFlg
+                param["HQCodes\(index)"] = session.HQCodes
+                param["HQNames\(index)"] = session.HQNames
+                param["WTCode\(index)"] = session.WTCode
+                param["WTName\(index)"] = session.WTName
+                param["chem\(drIndex)Code"] = session.chemCode
+                param["chem\(drIndex)Name"] = session.chemName
+                param["clusterCode\(index)"] = session.clusterCode
+                param["clusterName\(index)"] = session.clusterName
+                param["Dr\(drIndex)Code"] = session.drCode
+                param["Dr\(drIndex)Name"] = session.drName
+                param["jwCodes\(index)"] = session.jwCode
+                param["jwNames\(index)"] = session.jwName
+                param["DayRemarks\(index)"] = session.remarks
             }
-            dump(sessions)
+            param["submittedTime"] = "\(Date())"
+            param["Mode"] = "Android-App"
+            param["Entry_mode"] = "Apps"
+            param["Approve_mode"] = ""
+            param["Approved_time"] = ""
+            param["app_version"] = "N 1.6.9"
+            sessions.append(param)
+        }
+        dump(sessions)
         
-            sessions.forEach { json in
-                dump(json.toString())
+        
+        
+        
+        var jsonDatum = Data()
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: sessions, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+                
             }
+            
+            
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
         
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        self.sessionResponseVM = SessionResponseVM()
+        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: jsonDatum) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                completion(.success(response))
+                dump(response)
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion(.failure(error))
+            }
+        }
     }
     
 }
@@ -120,6 +150,8 @@ class TourPlanView: BaseView {
     /// General page type outlets
     @IBOutlet var lblSendToApproval: UILabel!
     @IBOutlet var generalButtonsHolder: UIView!
+    
+    @IBOutlet var btnSendFOrApproval: UIButton!
     
     //MARK: if inactive: #282A3C (alpha 0.1)
     
@@ -165,7 +197,9 @@ class TourPlanView: BaseView {
     var filledDates = [Date]()
     var months = [String]()
     var weeklyOffDates = [String]()
+    var weeklyOffRawDates = [Date]()
     private var currentPage: Date?
+    var isAppended = false
     private lazy var today: Date = {
         return Date()
     }()
@@ -229,7 +263,7 @@ class TourPlanView: BaseView {
                     }
                 }
         }
-        toAppendWeeklyoffs(date: self.weeklyOffDates)
+        toAppendWeeklyoffs(date: self.weeklyOffDates, rawDate:   self.weeklyOffRawDates)
     }
     
     func toEnableApprovalBtn(totaldate: [Date], filleddate: Int) {
@@ -257,10 +291,10 @@ class TourPlanView: BaseView {
     func toToggleApprovalState(_ isActive: Bool) {
         if isActive {
             generalButtonsHolder.backgroundColor = .green
-            generalButtonsHolder.isUserInteractionEnabled = true
+            btnSendFOrApproval.isUserInteractionEnabled = true
         } else {
             generalButtonsHolder.backgroundColor = .appSelectionColor
-            generalButtonsHolder.isUserInteractionEnabled = false
+            btnSendFOrApproval.isUserInteractionEnabled = true
         }
     }
     
@@ -273,61 +307,16 @@ class TourPlanView: BaseView {
     
     
     
-    func toAppendWeeklyoffs(date: [String]) {
-        var includedSessionArr = [SessionDetailsArr]()
-        var sessionDetail = SessionDetail()
+    func toAppendWeeklyoffs(date: [String], rawDate: [Date]) {
         
-        if includedSessionArr.count == 0 {
-            date.forEach { adate in
-                let aSession = SessionDetail()
-                let aSessionDetArr = SessionDetailsArr()
-                aSession.isForFieldWork = false
-                aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-                aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
-                aSessionDetArr.date = adate
-                aSessionDetArr.sessionDetails.append(aSession)
-                includedSessionArr.append(aSessionDetArr)
-            }
-        } else {
-            includedSessionArr.forEach({ anSessionDetailsArr in
-                if anSessionDetailsArr.sessionDetails.contains(sessionDetail) {
-                    
-                } else {
-                    date.forEach { adate in
-                        let aSession = SessionDetail()
-                        let aSessionDetArr = SessionDetailsArr()
-                        aSession.isForFieldWork = false
-                        aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-                        aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
-                        aSessionDetArr.date = adate
-                        aSessionDetArr.sessionDetails.append(aSession)
-                        includedSessionArr.append(aSessionDetArr)
-                    }
-                }
-           })
-        }
+        AppDefaults.shared.eachDatePlan.weekoffsDates = rawDate
         
-dump(includedSessionArr)
-
-        var  temptpArray =  TourPlanArr()
-        temptpArray.arrOfPlan = includedSessionArr
-        AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
-        
-      //  if !AppDefaults.shared.eachDatePlan.tourPlanArr.contains(AppDefaults.shared.tpArry) {
-            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
             let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-                 if !savefinish {
-                     print("Error")
-                 }
-         //   toLoadData()
-    //    }
-        
-        
-
-
+            if !savefinish {
+                print("Error")
+            }
 
     }
-    
     
     func toGetMonth(_ date: Date)  -> String {
         let dateFormatter = DateFormatter()
@@ -364,12 +353,68 @@ dump(includedSessionArr)
 
     
     func toLoadData()  {
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        //MARK: - Begins
+        
+//        if !self.isAppended {
+//            var includedSessionArr = [SessionDetailsArr]()
+//            var sessionDetail = SessionDetail()
+//
+//
+//            if includedSessionArr.count == 0 {
+//                AppDefaults.shared.eachDatePlan.weekoffsDates.forEach { adate in
+//                    let aSession = SessionDetail()
+//                    let aSessionDetArr = SessionDetailsArr()
+//                    aSession.isForFieldWork = false
+//                    aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+//                    aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+//                    aSessionDetArr.date = toModifyDate(date: adate)
+//                    aSessionDetArr.sessionDetails.append(aSession)
+//                    includedSessionArr.append(aSessionDetArr)
+//                }
+//            } else {
+//                includedSessionArr.forEach({ anSessionDetailsArr in
+//                    if anSessionDetailsArr.sessionDetails.contains(sessionDetail) {
+//
+//                    } else {
+//                        AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { dateIndex, adate in
+//                            let aSession = SessionDetail()
+//                            let aSessionDetArr = SessionDetailsArr()
+//                            aSession.isForFieldWork = false
+//                            aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+//                            aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+//                            aSessionDetArr.date = toModifyDate(date: adate)
+//                          //  aSessionDetArr.rawDate = rawDate[dateIndex]
+//                            aSessionDetArr.sessionDetails.append(aSession)
+//                            includedSessionArr.append(aSessionDetArr)
+//                        }
+//                    }
+//                })
+//            }
+//
+//            dump(includedSessionArr)
+//            var  temptpArray =  TourPlanArr()
+//            temptpArray.arrOfPlan = includedSessionArr
+//            AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
+//            self.isAppended = true
+//
+//            if !AppDefaults.shared.eachDatePlan.tourPlanArr.contains(AppDefaults.shared.tpArry)  {
+//                AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+//                self.isAppended = true
+//            }
+//        }
+//
+
+        
+        
+        
+        //MARK: - Ends
 
         self.arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
 
         
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+     //   AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
 
         
         AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
@@ -400,10 +445,57 @@ dump(includedSessionArr)
             self.moveCurrentPage(moveUp: true)
             }
         
-        generalButtonsHolder.addTap {
-            self.toSetParams(self.arrOfPlan ?? [SessionDetailsArr]())
-        }
+      
+
+        
     }
+    
+    @IBAction func didTApSendToApproval(_ sender: UIButton) {
+        
+        let unSavedPlans = self.arrOfPlan?.filter({ toFilterSessionsArr in
+            toFilterSessionsArr.isDataSentToApi == false
+        })
+        
+        
+       let unsentIndices = self.arrOfPlan?.indices.filter { self.arrOfPlan?[$0].isDataSentToApi == false } ?? [Int]()
+        
+        dump(unSavedPlans)
+        
+        if unSavedPlans?.count ?? 0 > 0 {
+            self.toSetParams(unSavedPlans ?? [SessionDetailsArr]()) {
+                responseResult in
+                switch responseResult {
+                case .success(let responseJSON):
+                    dump(responseJSON)
+                    
+                    unsentIndices.forEach { index in
+                        self.arrOfPlan?[index].isDataSentToApi = true
+                    }
+                    
+                    var temptpArray = [TourPlanArr]()
+                    
+                    AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
+                        temptpArray.append(eachDayPlan)
+                    }
+                    
+                    temptpArray.forEach({ tpArr in
+                        tpArr.arrOfPlan =  self.arrOfPlan
+                    })
+                
+                    AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+                                let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+                                     if !savefinish {
+                                         print("Error")
+                                     }
+                    self.toLoadData()
+                case .failure(let error):
+                    self.toCreateToast(error.localizedDescription)
+                }
+            }
+        }
+        
+    }
+    
     
     func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
         
@@ -602,7 +694,10 @@ dump(includedSessionArr)
         mainDateLbl.setFont(font: .medium(size: .BODY))
         tableTitle.setFont(font: .medium(size: .BODY))
         planningLbl.setFont(font: .bold(size: .BODY))
-      
+        btnSendFOrApproval.setTitle("Send to Approval", for: .normal)
+        btnSendFOrApproval.titleLabel?.font = UIFont(name: "Satoshi-Bold", size: 16)
+        btnSendFOrApproval.backgroundColor = .clear
+        btnSendFOrApproval.tintColor = .appWhiteColor
         titleHolder.elevate(2)
         titleHolder.backgroundColor = .appSelectionColor
         titleHolder.layer.cornerRadius = 5
@@ -661,7 +756,6 @@ dump(includedSessionArr)
            // menuvc.isWeekoffEditable =
         } else {
             AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-            
               AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
                   eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
                       if sessions.date == toCompareDate {
@@ -871,11 +965,13 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
                 
                 if weeklyOffDates.isEmpty {
                     self.weeklyOffDates.append(toModifyDate(date: date))
+                    self.weeklyOffRawDates.append(date)
                 } else {
                     if weeklyOffDates.contains(toModifyDate(date: date)) {
                         
                     } else {
                         self.weeklyOffDates.append(toModifyDate(date: date))
+                        self.weeklyOffRawDates.append(date)
                     }
                 }
                 

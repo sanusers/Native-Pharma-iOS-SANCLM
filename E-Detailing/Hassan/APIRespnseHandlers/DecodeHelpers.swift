@@ -8,11 +8,15 @@
 import Foundation
 typealias JSON = [String: Any]
 extension Dictionary where Dictionary == JSON {
-    var status_code : Int{
-        return Int(self["status_code"] as? String ?? String()) ?? Int()
+    var status_code : Bool {
+        return (self["success"]) as! Bool
     }
+    
+    
+    
     var isSuccess : Bool{
-        return status_code != 0
+        return status_code
+        //!= 0
     }
     init?(_ data : Data){
           if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]{
@@ -21,10 +25,10 @@ extension Dictionary where Dictionary == JSON {
               return nil
           }
       }
-    var status_message : String{
+    var status_message : String {
         
         let statusMessage = self.string("status_message")
-        let successMessage = self.string("success_message")
+        let successMessage = self.string("msg")
         return statusMessage.isEmpty ? successMessage : statusMessage
     }
 

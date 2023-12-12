@@ -205,3 +205,29 @@ import Foundation
 //    }
 //
 //}
+
+
+class SaveTPresponseModel: Codable {
+    
+        var success: Bool?
+        var sf_code: String?
+        var TPDt : String?
+    enum CodingKeys: String, CodingKey {
+        case success
+        case sf_code
+        case TPDt
+        
+    }
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.success = container.safeDecodeValue(forKey: .success)
+        self.sf_code = container.safeDecodeValue(forKey: .sf_code)
+        self.TPDt = container.safeDecodeValue(forKey: .TPDt)
+    }
+    init() {
+        success = false
+        sf_code = ""
+        TPDt = ""
+    }
+    
+}

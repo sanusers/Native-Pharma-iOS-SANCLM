@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
-
+import Alamofire
 extension MenuView : UITextViewDelegate {
     
 }
@@ -244,14 +244,18 @@ extension MenuView {
             switch responseData {
                 
             case .success(let response):
-                if response.isSuccess ?? false {
-               
+                if response.success ?? false {
+                    aDaySessions.isDataSentToApi = true
+                   // aDaySessions.changeStatus = "False"
                   //  aDaySessions.isSucessfullySubmited = true
                     self.saveObjecttoDevice()
+                    
                 } else {
                 
                   //  aDaySessions.isSucessfullySubmited = false
-                    self.saveObjecttoDevice()
+                  //  self.saveObjecttoDevice()
+                    
+                    self.toCreateToast("Error while uploading data please try again")
                 }
                
             case .failure(let error):
@@ -293,7 +297,7 @@ extension MenuView {
     }
     
     
-    func toSetParams(_ tourPlanArr: SessionDetailsArr, completion: @escaping (Result<GeneralResponseModal, Error>) -> () ) {
+    func toSetParams(_ tourPlanArr: SessionDetailsArr, completion: @escaping (Result<SaveTPresponseModel, Error>) -> () ) {
         
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         
@@ -360,40 +364,41 @@ extension MenuView {
         param["Approved_time"] = ""
         param["app_version"] = "N 1.6.9"
         
+
+ 
+        var jsonDatum = Data()
+
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: [param], options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+     
+            }
+            
+
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
         
-        var valueParamArr = [Any]()
-        valueParamArr.append(param)
-        var tosendParam = [String: Any]()
-        tosendParam["data"] = valueParamArr
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
         
-        let stringJSON = tosendParam.toString()
-        print(stringJSON)
-        
-        
-        
-        sessionResponseVM!.getTourPlanData(params: tosendParam, api: .saveTP) { result in
+        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: jsonDatum) { result in
             switch result {
             case .success(let response):
                 print(response)
                 completion(.success(response))
-//                do {
-//                    try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
-//
-//                    }
-//                } catch {
-//                    print("Unable to save")
-//                }
+                dump(response)
+
             case .failure(let error):
                 print(error.localizedDescription)
                 completion(.failure(error))
             }
         }
-        
-     //   return param
-        
-        
-        
-        
+   
+  
         
     }
     
@@ -702,12 +707,17 @@ class MenuView : BaseView{
                 eachsessiondetail.chemist = chemistArr?.uniqued()
                 eachsessiondetail.stockist = stockistArr?.uniqued()
                 eachsessiondetail.unlistedDoctors = unlisteedDocArr?.uniqued()
-                
+                if self.menuVC.sessionDetailsArr?.changeStatus == "True" {
+                    self.sessionDetailsArr.isDataSentToApi = false
+                } else {
+                    self.sessionDetailsArr.isDataSentToApi = true
+                }
             })
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
             if  istoAddSession {
                 self.sessionDetailsArr.sessionDetails?.append(sessionDetail)
+                self.sessionDetailsArr.isDataSentToApi = false
                 setPageType(.session, for: (self.sessionDetailsArr.sessionDetails?.count ?? 0) - 1)
                 self.selectedSession =  self.sessionDetailsArr.sessionDetails?.count ?? 0 - 1
             } else {

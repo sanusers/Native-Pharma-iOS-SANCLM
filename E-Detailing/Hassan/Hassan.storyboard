@@ -317,19 +317,21 @@
                                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3ub-ky-pZ5">
                                                                 <rect key="frame" x="0.0" y="0.0" width="389.5" height="55"/>
                                                                 <subviews>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send to approval" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aju-gc-jLd">
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FHc-AJ-gwK">
                                                                         <rect key="frame" x="0.0" y="0.0" width="389.5" height="55"/>
-                                                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                                                        <color key="textColor" systemColor="systemBackgroundColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                    </label>
+                                                                        <state key="normal" title="Button"/>
+                                                                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                                        <connections>
+                                                                            <action selector="didTApSendToApproval:" destination="5EZ-qb-Rvc" eventType="touchUpInside" id="7eZ-W7-4IK"/>
+                                                                        </connections>
+                                                                    </button>
                                                                 </subviews>
                                                                 <color key="backgroundColor" red="0.15686274509803921" green="0.16470588235294117" blue="0.23529411764705882" alpha="0.14856716804979253" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="bottom" secondItem="Aju-gc-jLd" secondAttribute="bottom" id="LNL-BP-5WO"/>
-                                                                    <constraint firstItem="Aju-gc-jLd" firstAttribute="top" secondItem="3ub-ky-pZ5" secondAttribute="top" id="au8-za-2CA"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="Aju-gc-jLd" secondAttribute="trailing" id="hbj-rh-ruN"/>
-                                                                    <constraint firstItem="Aju-gc-jLd" firstAttribute="leading" secondItem="3ub-ky-pZ5" secondAttribute="leading" id="zE4-yO-Phc"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="FHc-AJ-gwK" secondAttribute="trailing" id="3tA-aM-f71"/>
+                                                                    <constraint firstItem="FHc-AJ-gwK" firstAttribute="leading" secondItem="3ub-ky-pZ5" secondAttribute="leading" id="7FP-Us-rmX"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="FHc-AJ-gwK" secondAttribute="bottom" id="pWN-dP-07a"/>
+                                                                    <constraint firstItem="FHc-AJ-gwK" firstAttribute="top" secondItem="3ub-ky-pZ5" secondAttribute="top" id="tZI-tZ-7v2"/>
                                                                 </constraints>
                                                             </view>
                                                         </subviews>
@@ -442,6 +444,7 @@
                             <outlet property="addSessionTapView" destination="2TL-HO-BhM" id="mJr-jH-fHA"/>
                             <outlet property="backHolder" destination="hO6-Zp-z86" id="hE0-1e-C9d"/>
                             <outlet property="bottomButtonsHolderView" destination="9bW-qU-NaH" id="zJM-22-fgO"/>
+                            <outlet property="btnSendFOrApproval" destination="FHc-AJ-gwK" id="Tgg-6D-ygh"/>
                             <outlet property="calenderHolderView" destination="tHe-1J-WPB" id="9Fs-kQ-WpB"/>
                             <outlet property="calenderNextIV" destination="OHh-56-gcx" id="JL9-WH-dwb"/>
                             <outlet property="calenderPrevIV" destination="uwM-rt-QlQ" id="Qzt-TP-Fsa"/>
@@ -449,7 +452,6 @@
                             <outlet property="clusterTypeClearTapView" destination="fzp-aQ-8IR" id="wCl-bm-Dbr"/>
                             <outlet property="clusterTypeSaveTapView" destination="sYI-Yz-bII" id="EFh-fF-ZmS"/>
                             <outlet property="generalButtonsHolder" destination="ET0-4M-KYE" id="ZAv-yh-cof"/>
-                            <outlet property="lblSendToApproval" destination="Aju-gc-jLd" id="PK9-Z0-QaL"/>
                             <outlet property="mainDateLbl" destination="Sht-kJ-edG" id="Xah-QR-tRI"/>
                             <outlet property="overAllContentsHolder" destination="bPd-oh-FLn" id="jAh-ZE-sL0"/>
                             <outlet property="planningLbl" destination="bbY-w2-ysV" id="U76-BF-bpu"/>
