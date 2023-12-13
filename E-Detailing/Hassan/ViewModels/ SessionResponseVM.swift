@@ -20,6 +20,7 @@ class  SessionResponseVM {
                 result(.success(json))
                 dump(json)
             }).responseFailure({ (error) in
+                result(.failure(TPErrors.unableConnect))
                 print(error.description)
                 
             })

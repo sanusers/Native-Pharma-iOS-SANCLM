@@ -12,6 +12,8 @@ class LocalStorage {
     enum LocalValue:String {
 
         case istoEnableApproveBtn
+        case TPalldatesAppended
+        case TPisForFinalDate
     }
     
     func setSting(_ key:LocalValue,text:String = "" ){

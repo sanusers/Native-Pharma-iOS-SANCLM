@@ -1039,6 +1039,74 @@
             </objects>
             <point key="canvasLocation" x="983" y="-176"/>
         </scene>
+        <!--Pop OverVC-->
+        <scene sceneID="cH4-01-PLR">
+            <objects>
+                <viewController storyboardIdentifier="PopOverVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Akt-X5-Mqe" customClass="PopOverVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="iCw-km-4dN">
+                        <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="VBK-3y-siV">
+                                <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="InfoTVC" rowHeight="120" id="Ime-JZ-bxI" customClass="InfoTVC" customModule="Watchit" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="1180" height="120"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ime-JZ-bxI" id="dOw-Fa-ByE">
+                                            <rect key="frame" x="0.0" y="0.0" width="1180" height="120"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Ta-tt-7z9">
+                                                    <rect key="frame" x="29.5" y="3" width="1121" height="114"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BCi-A3-VPi">
+                                                            <rect key="frame" x="5" y="46" width="1111" height="22"/>
+                                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="16"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    <constraints>
+                                                        <constraint firstItem="BCi-A3-VPi" firstAttribute="centerY" secondItem="4Ta-tt-7z9" secondAttribute="centerY" id="51q-Ch-v4Q"/>
+                                                        <constraint firstItem="BCi-A3-VPi" firstAttribute="leading" secondItem="4Ta-tt-7z9" secondAttribute="leading" constant="5" id="DsU-6Y-VLd"/>
+                                                        <constraint firstAttribute="trailing" secondItem="BCi-A3-VPi" secondAttribute="trailing" constant="5" id="u8q-eu-nW2"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="4Ta-tt-7z9" firstAttribute="centerX" secondItem="dOw-Fa-ByE" secondAttribute="centerX" id="6Ik-1J-xUz"/>
+                                                <constraint firstItem="4Ta-tt-7z9" firstAttribute="centerY" secondItem="dOw-Fa-ByE" secondAttribute="centerY" id="JjL-vy-WMH"/>
+                                                <constraint firstItem="4Ta-tt-7z9" firstAttribute="height" secondItem="dOw-Fa-ByE" secondAttribute="height" multiplier="0.95" id="RbY-OS-rdY"/>
+                                                <constraint firstItem="4Ta-tt-7z9" firstAttribute="width" secondItem="dOw-Fa-ByE" secondAttribute="width" multiplier="0.95" id="ehB-DR-Fog"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="titleLbl" destination="BCi-A3-VPi" id="TB6-qA-fuy"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vAS-Ki-TDk"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="VBK-3y-siV" firstAttribute="height" secondItem="iCw-km-4dN" secondAttribute="height" id="ASX-vb-MJZ"/>
+                            <constraint firstItem="VBK-3y-siV" firstAttribute="centerY" secondItem="iCw-km-4dN" secondAttribute="centerY" id="KXk-GK-xGj"/>
+                            <constraint firstItem="VBK-3y-siV" firstAttribute="centerX" secondItem="iCw-km-4dN" secondAttribute="centerX" id="V9n-g7-wHi"/>
+                            <constraint firstItem="VBK-3y-siV" firstAttribute="width" secondItem="iCw-km-4dN" secondAttribute="width" id="Vm3-L9-bzQ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="contentTable" destination="VBK-3y-siV" id="thX-F6-5w8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="51S-gI-vf8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1815" y="-176"/>
+        </scene>
     </scenes>
     <resources>
         <image name="checkBoxEmpty" width="32" height="32"/>
