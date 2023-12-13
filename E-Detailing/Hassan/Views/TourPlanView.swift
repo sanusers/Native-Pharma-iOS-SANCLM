@@ -31,31 +31,30 @@ extension TourPlanView: PopOverVCDelegate {
 
 extension TourPlanView {
 
+    func toGetAllmonthData() {
+        
+    }
+    
+    
     func getDatesForDayIndex(_ dayIndex: Int) -> [Date] {
-        // Get the current calendar
         let calendar = Calendar.current
-
-        // Get the current date
         let currentDate = Date()
 
-        // Find the start of the current month
-        guard let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentDate)) else {
-            print("Error calculating the start of the month.")
+        guard let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentDate)),
+              let firstDayOfMonth = calendar.nextDate(after: startOfMonth, matching: DateComponents(weekday: dayIndex), matchingPolicy: .nextTime) else {
+            print("Error calculating start of the month or finding the first occurrence of the day.")
             return []
         }
 
-        // Find the first occurrence of the given day in the current month
-        guard let firstDayOfMonth = calendar.nextDate(after: startOfMonth, matching: DateComponents(weekday: dayIndex), matchingPolicy: .nextTime) else {
-            print("Error finding the first occurrence of the day in the month.")
-            return []
-        }
-
-        // Calculate the dates for the current, next, and previous months
         var dates: [Date] = []
+
         for monthOffset in [-1, 0, 1] {
-            let startOfDesiredMonth = calendar.date(byAdding: .month, value: monthOffset, to: firstDayOfMonth)!
-            let range = calendar.range(of: .day, in: .month, for: startOfDesiredMonth)!
-            
+            guard let startOfDesiredMonth = calendar.date(byAdding: .month, value: monthOffset, to: firstDayOfMonth),
+                  let range = calendar.range(of: .day, in: .month, for: startOfDesiredMonth) else {
+                print("Error calculating start of the desired month or getting the range of days.")
+                return []
+            }
+
             let datesForMonth: [Date] = (range.lowerBound..<range.upperBound)
                 .compactMap { calendar.date(bySetting: .day, value: $0, of: startOfDesiredMonth) }
                 .filter { calendar.component(.weekday, from: $0) == dayIndex }
@@ -292,55 +291,6 @@ class TourPlanView: BaseView {
     
     func monthWiseSeperationofSessions(_ date: Date) {
         
-     //
-        
-       // var aMonthinfo = MonthlyOffs()
-        
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "MMM"
-//        let idMonth = dateFormatter.string(from: date)
-//        let formattedcurrentMonth = dateFormatter.string(from: date)
-//
-//       let currentMonthoffs = self.weeklyOffRawDates.filter { adateIn in
-//            let amonth = dateFormatter.string(from: adateIn)
-//            if amonth == formattedcurrentMonth {
-//                return true
-//            }
-//           return false
-//        }
-//
-//
-//
-//        if !currentMonthoffs.isEmpty {
-//            var strDates = [String]()
-//
-//            currentMonthoffs.forEach { amonthRawDate in
-//                strDates.append(toModifyDate(date: amonthRawDate))
-//            }
-//           let aMonthinfo = MonthlyOffs(id: idMonth, month: idMonth, weekoffsDateArr: currentMonthoffs, weekoffStrArr: strDates)
-//            if monthlyOffs.isEmpty {
-//                self.monthlyOffs.append(aMonthinfo)
-//            } else {
-//              let uniquedArr =  self.removeDuplicateElements(posts: monthlyOffs)
-//                if uniquedArr.count != 3 {
-//                    uniquedArr.enumerated().forEach {amonthOffindex, aMonthoff in
-//                        if aMonthoff.id == aMonthinfo.id {
-//                          //  self.monthlyOffs.remove(at: amonthOffindex)
-//                        } else if aMonthoff.id != aMonthinfo.id {
-//                            self.monthlyOffs.append(aMonthinfo)
-//                        }
-//                    }
-//                    dump(self.monthlyOffs.count)
-//                } else {
-//                 //  LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
-//                   let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
-//                    if !isAlldatesAppended {
-//                        toAppendWeeklyoffs(date: self.weeklyOffDates, rawDate:   self.weeklyOffRawDates)
-//                    }
-//                }
-//            }
-//
-//        }
 
         let tocomparemonth = toGetMonth(date)
         var thisMonthPaln = [SessionDetailsArr]()
@@ -382,15 +332,6 @@ class TourPlanView: BaseView {
 
     }
     
-    func removeDuplicateElements(posts: [MonthlyOffs]) -> [MonthlyOffs] {
-        var uniquePosts = [MonthlyOffs]()
-        for post in posts {
-            if !uniquePosts.contains(where: {$0.id == post.id }) {
-                uniquePosts.append(post)
-            }
-        }
-        return uniquePosts
-    }
     
     func toEnableApprovalBtn(totaldate: [Date], filleddate: Int) {
         totalDays = 0
@@ -476,15 +417,6 @@ class TourPlanView: BaseView {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
             toLoadData()
         }
-        
-    
-    
-    
-        
-          
-      
-        
-        
     }
     
     
@@ -714,19 +646,48 @@ class TourPlanView: BaseView {
         tourPlanCalander.reloadData()
     }
     
+    func toCheckMonthVariations() -> Bool {
+        
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+        //MARK: - Added months
+        
+        var addedMonths = [String]()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        AppDefaults.shared.eachDatePlan.weekoffsDates.forEach { weeklyoffDates in
+            addedMonths.append(dateFormatter.string(from: weeklyoffDates))
+        }
+        let uniqueSet = Set(addedMonths)
+        addedMonths = Array(uniqueSet)
+        
+        //MARK: - Current months
+        
+        let currentMonths = getCurrentPreviousNextMonthStrings()
+        
+        
+        let containsAllElements = currentMonths.allSatisfy { addedMonths.contains($0) }
+
+        if containsAllElements {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     private func updateCalender () {
         
         let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
         self.weeklyOff = weeklyoffSetupArr[0]
+//        let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0")
+//        let weekoffDates = getDatesForDayIndex(weekoffIndex ?? 0, numberOfMonths: 3)
         
-
-        
-        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: toCheckMonthVariations())
 
         let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
         if !isAlldatesAppended {
-            let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0")
-            let weekoffDates = getDatesForDayIndex(weekoffIndex ?? 0)
+            let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0") ?? 0
+            let weekoffDates = getDatesForDayIndex(weekoffIndex + 1)
             self.weeklyOffRawDates.append(contentsOf: weekoffDates)
             weeklyOffDates.removeAll()
             self.weeklyOffRawDates.forEach { rawDate in
@@ -762,6 +723,40 @@ class TourPlanView: BaseView {
         tourPlanCalander.dataSource = self
         tourPlanCalander.reloadData()
         mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
+    }
+    
+    
+    
+
+    func getCurrentPreviousNextMonthStrings() -> [String] {
+        
+        var months = [String]()
+        
+        let calendar = Calendar.current
+        let currentDate = Date()
+
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "MMMM"
+
+        // Current month
+        let currentMonthString = monthFormatter.string(from: currentDate)
+        print("Current Month: \(currentMonthString)")
+        months.append(currentMonthString)
+        // Previous month
+        if let previousMonth = calendar.date(byAdding: .month, value: -1, to: currentDate) {
+            let previousMonthString = monthFormatter.string(from: previousMonth)
+            print("Previous Month: \(previousMonthString)")
+            months.append(previousMonthString)
+            
+        }
+
+        // Next month
+        if let nextMonth = calendar.date(byAdding: .month, value: 1, to: currentDate) {
+            let nextMonthString = monthFormatter.string(from: nextMonth)
+            print("Next Month: \(nextMonthString)")
+            months.append(nextMonthString)
+        }
+        return months
     }
     
     //MARK: - Enum Page types
