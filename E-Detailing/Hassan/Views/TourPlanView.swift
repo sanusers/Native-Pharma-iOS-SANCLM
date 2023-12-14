@@ -182,18 +182,14 @@ extension TourPlanView {
         }
     }
     
+
+
+    
 }
 
 class TourPlanView: BaseView {
     
-    struct MonthlyOffs {
-        var id : String
-        var month : String
-        var weekoffsDateArr : [Date]
-        var weekoffStrArr : [String]
-    }
-    
-    var monthlyOffs = [MonthlyOffs]()
+    var sessionResponse: SessionResponseModel?
     
     //MARK: - Outlets
     ///  common
@@ -281,12 +277,195 @@ class TourPlanView: BaseView {
         super.willAppear(baseVC: baseVC)
         self.tourplanVC = baseVC as? TourPlanVC
        // tourplanVC.togetTableSetup()
-        toSetPagetype(ofType: .general)
-        setupUI()
-        initViews()
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        var param = [String: Any]()
+        param["tableName"] = "getall_tp"
+        param["sfcode"] = "\(appsetup.sfCode!)"
+        param["division_code"] = "\(appsetup.divisionCode!)"
+        param["Rsf"] = "\(appsetup.sfCode!)"
+        param["sf_type"] = "\(appsetup.sfType!)"
+        param["Designation"] = "\(appsetup.dsName!)"
+        param["state_code"] = "\(appsetup.stateCode!)"
+        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+        param["tp_month"] = "12,"
+        param["tp_year"] = "2023,"
+        
+        
+        var jsonDatum = Data()
+
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: param, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+     
+            }
+            
+
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        
+       // {"tableName":"getall_tp","sfcode":"MR6028","division_code":"44,","Rsf":"MR6028","sf_type":"1","Designation":"MR","state_code":"41","subdivision_code":"170,","tp_month":"12,","tp_year":"2023,"}
+        
+        
+      //  "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        
+        self.tourplanVC.getAllPlansData(toSendData, paramData: jsonDatum) { result in
+            switch result{
+            case .success(let respnse):
+                self.sessionResponse = respnse
+                self.toMapAPIresponse { iscompleted in
+                   if iscompleted {
+                        self.toSetPagetype(ofType: .general)
+                        self.setupUI()
+                        self.initViews()
+                    }
+                }
+
+            case .failure(let error):
+                self.toCreateToast(error.localizedDescription)
+            }
+        }
     }
     
-    
+    func toMapAPIresponse(completion: @escaping (Bool) -> Void) {
+        
+        var apiArrofSessions = [SessionDetails]()
+        apiArrofSessions.append(contentsOf: (self.sessionResponse?.current ?? [SessionDetails]()))
+        apiArrofSessions.append(contentsOf: (self.sessionResponse?.previous ?? [SessionDetails]()))
+        apiArrofSessions.append(contentsOf: (self.sessionResponse?.next ?? [SessionDetails]()))
+
+        let toutplans = TourPlanArr()
+        var allDayPlans = [SessionDetailsArr]()
+       
+        apiArrofSessions.enumerated().forEach { ApisessionDetailsIndex, ApisessionDetails in
+            
+            if ApisessionDetails.mnth == "11" && ApisessionDetails.yr == "2023" && ApisessionDetails.dayno == "26" {
+                dump(ApisessionDetails)
+            }
+            
+            let sessiondetArr = SessionDetailsArr()
+            sessiondetArr.isForWeekoff = ApisessionDetails.fwFlg == "Y" ? true : false
+            sessiondetArr.isDataSentToApi = true
+            sessiondetArr.changeStatus = ApisessionDetails.changeStatus
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            if let date = dateFormatter.date(from: ApisessionDetails.tpDt.date) {
+                print(date)
+                sessiondetArr.rawDate =  date
+                dateFormatter.dateFormat = "d MMMM yyyy"
+                sessiondetArr.date = dateFormatter.string(from: date)
+                dateFormatter.dateFormat = "EEEE"
+                sessiondetArr.day = dateFormatter.string(from: date)
+                dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+                sessiondetArr.dayNo = dateFormatter.string(from: date)
+            } else {
+                print("Failed to convert string to date.")
+            }
+            
+            sessiondetArr.changeStatus = ApisessionDetails.changeStatus
+            sessiondetArr.entryMode = ApisessionDetails.entryMode
+ 
+            
+            if ApisessionDetails.wtCode != "" {
+                let sessionDetail = SessionDetail()
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "N" ? false : true
+                sessionDetail.WTCode = ApisessionDetails.wtCode
+                sessionDetail.WTName = ApisessionDetails.wtName
+                sessionDetail.clusterCode = ApisessionDetails.clusterCode == "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode
+                sessionDetail.clusterName = ApisessionDetails.clusterName == "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName
+                sessionDetail.drCode = ApisessionDetails.drCode
+                sessionDetail.drName = ApisessionDetails.drName
+                sessionDetail.HQCodes = ApisessionDetails.hqCodes
+                sessionDetail.HQNames = ApisessionDetails.hqNames
+               // sessionDetail.hospCode = ApisessionDetails.h
+              //  sessionDetail.hospName = ApisessionDetails.h
+                sessionDetail.jwCode = ApisessionDetails.jwCodes
+                sessionDetail.jwName = ApisessionDetails.jwNames
+                sessionDetail.remarks = ApisessionDetails.dayRemarks
+                sessionDetail.stockistCode = ApisessionDetails.stockistCode
+                sessionDetail.stockistName = ApisessionDetails.stockistName
+              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+                sessiondetArr.sessionDetails.append(sessionDetail)
+            }
+            if ApisessionDetails.wtCode2 != "" {
+                let sessionDetail = SessionDetail()
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "N" ? false : true
+                sessionDetail.WTCode = ApisessionDetails.wtCode2
+                sessionDetail.WTName = ApisessionDetails.wtName2
+                sessionDetail.clusterCode = ApisessionDetails.clusterCode2 == "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode2
+                sessionDetail.clusterName = ApisessionDetails.clusterName2 == "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName2
+                sessionDetail.drCode = ApisessionDetails.drTwoCode
+                sessionDetail.drName = ApisessionDetails.drTwoName
+                sessionDetail.HQCodes = ApisessionDetails.hqCodes2
+                sessionDetail.HQNames = ApisessionDetails.hqNames2
+               // sessionDetail.hospCode = ApisessionDetails.h
+              //  sessionDetail.hospName = ApisessionDetails.h
+                sessionDetail.jwCode = ApisessionDetails.jwCodes2
+                sessionDetail.jwName = ApisessionDetails.jwNames2
+                sessionDetail.remarks = ApisessionDetails.dayRemarks2
+                sessionDetail.stockistCode = ApisessionDetails.stockistTwoCode
+                sessionDetail.stockistName = ApisessionDetails.stockistTwoName
+              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+                sessiondetArr.sessionDetails.append(sessionDetail)
+           }
+            
+            if ApisessionDetails.wtCode3 != "" {
+                let sessionDetail = SessionDetail()
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "N" ? false : true
+                sessionDetail.WTCode = ApisessionDetails.wtCode3
+                sessionDetail.WTName = ApisessionDetails.wtName3
+                sessionDetail.clusterCode = ApisessionDetails.clusterCode3 == "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode3
+                sessionDetail.clusterName = ApisessionDetails.clusterName3 == "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName3
+                sessionDetail.drCode = ApisessionDetails.drThreeCode
+                sessionDetail.drName = ApisessionDetails.drThreeName
+               // sessionDetail.hospCode = ApisessionDetails.h
+              //  sessionDetail.hospName = ApisessionDetails.h
+                sessionDetail.HQCodes = ApisessionDetails.hqCodes3
+                sessionDetail.HQNames = ApisessionDetails.hqNames3
+                sessionDetail.jwCode = ApisessionDetails.jwCodes3
+                sessionDetail.jwName = ApisessionDetails.jwNames3
+                sessionDetail.remarks = ApisessionDetails.dayRemarks3
+                sessionDetail.stockistCode = ApisessionDetails.stockistThreeCode
+                sessionDetail.stockistName = ApisessionDetails.stockistThreeName
+              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+                sessiondetArr.sessionDetails.append(sessionDetail)
+           }
+            allDayPlans.append(sessiondetArr)
+            
+ 
+        }
+        toutplans.arrOfPlan = allDayPlans
+       // let eachDatePlan = EachDatePlan()
+       // eachDatePlan.tourPlanArr.append(toutplans)
+       // AppDefaults.shared.eachDatePlan = eachDatePlan
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+        AppDefaults.shared.tpArry.arrOfPlan = allDayPlans
+ 
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
+        
+        
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+        
+        
+        
+        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+        if !initialsavefinish {
+            print("Error")
+        }
+        completion(true)
+    }
     
     
     func monthWiseSeperationofSessions(_ date: Date) {
@@ -404,12 +583,15 @@ class TourPlanView: BaseView {
             }
 
             dump(includedSessionArr)
-            var  temptpArray =  TourPlanArr()
+            let  temptpArray =  TourPlanArr()
             temptpArray.arrOfPlan = includedSessionArr
             AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
-     
+        if AppDefaults.shared.eachDatePlan.tourPlanArr.count == 0 {
             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-        
+        } else {
+            AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.append(contentsOf: includedSessionArr)
+        }
+   
         let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
         if !savefinish {
             print("Error")
@@ -528,7 +710,7 @@ class TourPlanView: BaseView {
                                      if !savefinish {
                                          print("Error")
                                      }
-                    self.toLoadData()
+                   // self.toLoadData()
                 case .failure(let error):
                     self.toCreateToast("The operation couldn’t be completed. Try again later")
                 }

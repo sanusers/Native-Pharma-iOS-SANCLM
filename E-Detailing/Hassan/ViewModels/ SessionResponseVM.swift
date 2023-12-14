@@ -13,10 +13,11 @@ class  SessionResponseVM {
         case unableConnect = "An issue occured data will be saved to device"
     }
     
-    func getTourPlanData(params: JSON, api : APIEnums, _ result : @escaping (Result<GeneralResponseModal,Error>) -> Void) {
+    //getAllPlansData
+    func getTourPlanData(params: JSON, api : APIEnums, _ result : @escaping (Result<SessionResponseModel,Error>) -> Void) {
         
         ConnectionHandler.shared.getRequest(for: api, params: params)
-            .responseDecode(to: GeneralResponseModal.self, { (json) in
+            .responseDecode(to: SessionResponseModel.self, { (json) in
                 result(.success(json))
                 dump(json)
             }).responseFailure({ (error) in
@@ -25,6 +26,20 @@ class  SessionResponseVM {
                 
             })
     }
+    
+    
+    func getTourPlanData(params: JSON, api : APIEnums, paramData: Data, _ result : @escaping (Result<SessionResponseModel,TPErrors>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: SessionResponseModel.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(TPErrors.unableConnect))
+        })
+    }
+    
+    
     
     func uploadTPmultipartFormData(params: JSON, api : APIEnums, paramData: Data, _ result : @escaping (Result<SaveTPresponseModel,TPErrors>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)

@@ -27,34 +27,22 @@ class TourPlanVC: BaseViewController {
     }
     
     
-//    func togetTableSetup() {
-//        // {"tableName":"gettpsetup","sfcode":"MGR0941","division_code":"63,","Rsf":"MR5990","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,"}
-//      //  let appsetup = AppDefaults.shared.getAppSetUp()
-//        var customSetupParams = [String : Any]()
-//        var param = [String: Any]()
-//
-//        param["tableName"] = "gettpsetup"
-//        param["sfcode"] = "MGR0941"
-//        param["division_code"] = "63"
-//        param["Designation"] = "MGR"
-//        param["state_code"] = "13"
-//        param["subdivision_code"] = "86,"
-//        param["sf_type"] = "2"
-//        param["Rsf"] = "MR5990"
-//
-//        customSetupParams["data"] = param
-//        // return ["data" : paramString]
-//        homeVM!.togetTourPlanTable(params: customSetupParams, api: .tableSetup) { result in
-//            switch result {
-//            case .success(let response):
-//                print(response)
-//                self.tableSetupmodel = response
-//            case .failure(let error):
-//                print(error.localizedDescription)
-//            }
-//        }
-//
-//    }
+    func getAllPlansData(_ param: [String: Any], paramData: Data, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
+        let sessionResponseVM = SessionResponseVM()
+        sessionResponseVM.getTourPlanData(params: param, api: .getAllPlansData, paramData: paramData) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                completion(.success(response))
+                dump(response)
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+                completion(.failure(error))
+            }
+        }
+    }
 }
     
 

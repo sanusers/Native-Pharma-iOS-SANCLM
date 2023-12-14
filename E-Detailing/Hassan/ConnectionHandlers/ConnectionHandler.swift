@@ -296,13 +296,24 @@ final class ConnectionHandler : NSObject {
                 
                 if let data = anyData,
                    let json = JSON(data){
-                    if json.isSuccess {
+                    
+                    if api == .getAllPlansData {
+                       
+                        if json.isEmpty {
+                            responseHandler.handleFailure(value: json.status_message)
+                        } else {
+                            responseHandler.handleSuccess(value: json, data: data)
+                        }
+                    } else {
+                        if json.isSuccess {
 
-                        responseHandler.handleSuccess(value: json, data: data)
-                    }else{
+                            responseHandler.handleSuccess(value: json, data: data)
+                        }else{
 
-                        responseHandler.handleFailure(value: json.status_message)
+                            responseHandler.handleFailure(value: json.status_message)
+                        }
                     }
+                    
                 }
                 
 

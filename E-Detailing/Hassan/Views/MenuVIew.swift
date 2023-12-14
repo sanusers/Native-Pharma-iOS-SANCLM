@@ -311,14 +311,18 @@ extension MenuView {
         param["Div"] = appdefaultSetup.divisionCode
         param["Mnth"] = anotherDateArr?[0]
         param["Yr"] = dateArr?[2]//2023
-        param["Day"] =  dateArr?[0]//1
-        param["Tour_Month"] = anotherDateArr?[0]// 11
-        param["Tour_Year"] = dateArr?[2] // 2023
-        param["tpmonth"] = dateArr?[1]// Nov
-        param["tpday"] = self.sessionDetailsArr.day// Wednesday
-        param["dayno"] = anotherDateArr?[0] // 11
-        let tpDtDate = self.sessionDetailsArr.dayNo?.replacingOccurrences(of: "/", with: "-")
-        param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
+        //param["Day"] =  dateArr?[0]//1
+       // param["Tour_Month"] = anotherDateArr?[0]// 11
+       // param["Tour_Year"] = dateArr?[2] // 2023
+       // param["tpmonth"] = dateArr?[1]// Nov
+        //param["tpday"] = self.sessionDetailsArr.day// Wednesday
+        param["dayno"] = anotherDateArr?[1] // 11
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let tpDtDate = dateFormatter.string(from: self.sessionDetailsArr.rawDate ?? Date())
+            param["TPDt"] =  tpDtDate
+        //self.sessionDetailsArr.dayNo?.replacingOccurrences(of: "/", with: "-")
+       //2023-11-01 00:00:00
         tourPlanArr.sessionDetails?.enumerated().forEach { sessionIndex, session in
             // var sessionParam = [String: Any]()
             var index = String()
@@ -345,22 +349,21 @@ extension MenuView {
             param["chem\(drIndex)Name"] = session.chemName
             param["clusterCode\(index)"] = session.clusterCode
             param["clusterName\(index)"] = session.clusterName
-            param["Dr\(drIndex)Code"] = session.drCode
-            param["Dr\(drIndex)Name"] = session.drName
-            param["jwCodes\(index)"] = session.jwCode
-            param["jwNames\(index)"] = session.jwName
+            param["Dr\(drIndex)code"] = session.drCode
+            param["Dr\(drIndex)name"] = session.drName
+            param["JWCodes\(index)"] = session.jwCode
+            param["JWNames\(index)"] = session.jwName
             param["DayRemarks\(index)"] = session.remarks
         }
         
         
         let dateString = Date()
-        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
         let submittedtime = dateFormatter.string(from: dateString)
         
-        param["submittedTime"] = submittedtime
-        param["Mode"] = "Android-App"
-        param["Entry_mode"] = "Apps"
+        param["submitted_time"] = submittedtime
+        param["Mode"] = "Android-Edet"
+        param["Entry_mode"] = "0"
         param["Approve_mode"] = ""
         param["Approved_time"] = ""
         param["app_version"] = "N 1.6.9"
@@ -714,6 +717,7 @@ class MenuView : BaseView{
                     self.sessionDetailsArr.isDataSentToApi = true
                 }
             })
+            toAppendvaluestoSessions()
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
             if  istoAddSession {
@@ -731,6 +735,71 @@ class MenuView : BaseView{
             setPageType(.session, for: self.sessionDetailsArr.sessionDetails?.count ?? 0 - 1)
             self.selectedSession =  self.sessionDetailsArr.sessionDetails?.count ?? 0 - 1
         }
+    }
+    
+    
+    func toAppendvaluestoSessions() {
+        var clusterCodes = [String]()
+        var jointCallCodes = [String]()
+        var chemistCodes = [String]()
+        var stockistCodes = [String]()
+        
+
+        self.menuVC.sessionDetailsArr?.sessionDetails.enumerated().forEach({ sessionDetailIndex, sessionDetail in
+            
+            guard let sessionDetails = menuVC.sessionDetailsArr?.sessionDetails,
+                      sessionDetails.indices.contains(sessionDetailIndex) else {
+                    print("Index out of range: \(sessionDetailIndex)")
+                    return
+                }
+            clusterCodes.removeAll()
+            clusterCodes = sessionDetail.clusterCode?.components(separatedBy: ",") ?? [String]()
+            if !clusterCodes.isEmpty {
+                clusterCodes.forEach { code in
+                    // Use the code as the key and set the value to true
+                    var selectedClusterID = [String: Bool]()
+                    selectedClusterID[code] = true
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedClusterID = selectedClusterID
+                }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].clusterName = sessionDetail.clusterName?.replacingOccurrences(of: ",", with: ", ")
+                
+            }
+     
+            
+            
+            jointCallCodes = sessionDetail.jwCode?.components(separatedBy: ",") ?? [String]()
+            if !jointCallCodes.isEmpty {
+                jointCallCodes.forEach { codes in
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedjointWorkID?[codes]  = true
+                }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].jwName = sessionDetail.jwName?.replacingOccurrences(of: ",", with: ", ")
+                
+            }
+     
+            
+            chemistCodes = sessionDetail.chemCode?.components(separatedBy: ",") ?? [String]()
+            if !chemistCodes.isEmpty {
+                chemistCodes.forEach { codes in
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedchemistID?[codes]  = true
+                }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].chemName = sessionDetail.chemName?.replacingOccurrences(of: ",", with: ", ")
+            }
+
+            
+            
+            
+            stockistCodes = sessionDetail.stockistCode?.components(separatedBy: ",") ?? [String]()
+            if !stockistCodes.isEmpty {
+                stockistCodes.forEach { codes in
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedStockistID?[codes]  = true
+                }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].stockistName = sessionDetail.stockistName?.replacingOccurrences(of: ",", with: ", ")
+            }
+
+        })
+        
+
+
     }
     
     
@@ -814,7 +883,12 @@ class MenuView : BaseView{
                 if self.menuVC.sessionDetailsArr?.sessionDetails?.count == 0 {
                      
                 } else {
-                    self.menuVC.sessionDetailsArr?.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+                    
+                    for i in 0...(self.menuVC.sessionDetailsArr?.sessionDetails?.count ?? 0) - 1 {
+                        self.menuVC.sessionDetailsArr?.sessionDetails?[i].workType = self.workTypeArr
+                    }
+                    
+                    
                 }
                 
               //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
@@ -1731,8 +1805,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblCluster.text = clusterNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  clusterNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:",")
             } else {
                 
                 cell.lblCluster.text = "No info available"
@@ -1771,8 +1845,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  jointWorkNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:",")
             } else {
                 
                 cell.lblJointCall.text = "No info available"
@@ -1791,8 +1865,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  listedDoctorsNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:",")
             } else {
                 
                 cell.lblListedDoctor.text = "No info available"
@@ -1811,8 +1885,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblChemist.text = chemistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  cell.lblChemist.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  chemistNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:",")
             } else {
                 
                 cell.lblChemist.text = "No info available"
@@ -1831,8 +1905,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblstockist.text = stockistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  cell.lblstockist.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  stockistNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:",")
             } else {
                 
                 cell.lblstockist.text = "No info available"
@@ -1852,8 +1926,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblunlistedDoc.text = unlistedDocNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  cell.lblunlistedDoc.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  unlistedDocNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:",")
             } else {
                 
                 cell.lblunlistedDoc.text = "No info available"
@@ -2038,8 +2112,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblCluster.text = clusterNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  cell.lblCluster.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  clusterNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = clusterCodeArr.joined(separator:",")
             } else {
                 sessionDetailsArr.sessionDetails?[indexPath.row].clusterName =  ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].clusterCode = ""
@@ -2081,8 +2155,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblJointCall.text = jointWorkNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  cell.lblJointCall.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  jointWorkNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = jointWorkCodeArr.joined(separator:",")
             } else {
                 sessionDetailsArr.sessionDetails?[indexPath.row].jwName =  ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].jwCode = ""
@@ -2103,8 +2177,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblListedDoctor.text = listedDoctorsNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  cell.lblListedDoctor.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].drName =  listedDoctorsNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].drCode = listedDoctorsCodeArr.joined(separator:",")
             } else {
                 sessionDetailsArr.sessionDetails?[indexPath.row].drName =  ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].drCode = ""
@@ -2123,8 +2197,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblChemist.text = chemistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  cell.lblChemist.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  chemistNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:",")
             } else {
                 sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = ""
@@ -2145,8 +2219,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblStockist.text = stockistNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  cell.lblStockist.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistName = stockistNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = stockistCodeArr.joined(separator:",")
             } else {
                 sessionDetailsArr.sessionDetails?[indexPath.row].stockistName =  ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].stockistCode = ""
@@ -2167,8 +2241,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     }
                 })
                 cell.lblNewCustomers.text = unlistedDocNameArr.joined(separator:", ")
-                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  cell.lblNewCustomers.text ?? ""
-                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:", ")
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  unlistedDocNameArr.joined(separator:",")
+                sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = unlistedDocCodeArr.joined(separator:",")
             } else {
                 sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrName =  ""
                 sessionDetailsArr.sessionDetails?[indexPath.row].unListedDrCode = ""
