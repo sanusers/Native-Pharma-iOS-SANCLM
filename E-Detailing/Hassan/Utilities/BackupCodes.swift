@@ -4064,3 +4064,54 @@
 //    }
 //
 //}
+
+
+//func toUploadUndavedData(_ unSavedPlans: [SessionDetailsArr], _ unsentIndices: [Int], isFirstTimeLoad: Bool) {
+//    if unSavedPlans.count > 0 {
+//        self.toSetParams(unSavedPlans) {
+//            responseResult in
+//            switch responseResult {
+//            case .success(let responseJSON):
+//                dump(responseJSON)
+//                
+//                unsentIndices.forEach { index in
+//                    unSavedPlans[index].isDataSentToApi = true
+//                }
+//                
+//                var temptpArray = [TourPlanArr]()
+//                
+//                AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
+//                    temptpArray.append(eachDayPlan)
+//                }
+//                
+//                temptpArray.forEach({ tpArr in
+//                    tpArr.arrOfPlan =  unSavedPlans
+//                })
+//            
+//                AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+//                            let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//                                 if !savefinish {
+//                                     print("Error")
+//                                 }
+//                if isFirstTimeLoad {
+//                    self.fetchDataFromServer()
+//                }
+//                
+//               // self.toLoadData()
+//            case .failure(_):
+//                self.toCreateToast("The operation couldn’t be completed. Try again later")
+//                if isFirstTimeLoad {
+//                        self.initialSetups()
+//                    self.isHidden = false
+//                
+//                   
+//                }
+//              
+//            }
+//        }
+//    } else {
+//        self.toCreateToast("Already this month plans are submited for approval.")
+//    }
+//    
+//    
+//}

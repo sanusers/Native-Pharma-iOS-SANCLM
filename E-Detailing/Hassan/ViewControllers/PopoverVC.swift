@@ -19,7 +19,7 @@ class PopOverVC: UIViewController {
     var selectedIndex = Int()
     override func viewDidLoad() {
         super.viewDidLoad()
-        strArr = ["Edit", "Remove"]
+        strArr = ["Edit"]
         toLOadData()
     }
     

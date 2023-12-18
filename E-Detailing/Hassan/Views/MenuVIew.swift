@@ -248,18 +248,22 @@ extension MenuView {
                     aDaySessions.isDataSentToApi = true
                    // aDaySessions.changeStatus = "False"
                   //  aDaySessions.isSucessfullySubmited = true
+                    self.toCreateToast("Data uploaded to server successfully.")
                     self.saveObjecttoDevice()
                     
                 } else {
                 
                   //  aDaySessions.isSucessfullySubmited = false
                   //  self.saveObjecttoDevice()
-                    
-                    self.toCreateToast("Error while uploading data please try again")
+                    aDaySessions.isDataSentToApi = false
+                    self.toCreateToast("Error while uploading data to server please try again!")
+                    self.saveObjecttoDevice()
                 }
                
             case .failure(let error):
                 print(error.localizedDescription)
+                aDaySessions.isDataSentToApi = false
+                self.toCreateToast("Error while uploading data to server please try again!")
                 self.saveObjecttoDevice()
             }
         }
@@ -281,7 +285,7 @@ extension MenuView {
         if !savefinish {
             print("Error")
         }
-        self.toCreateToast("Plan saved successfully")
+       // self.toCreateToast("Plan saved successfully")
         self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
     }
@@ -345,14 +349,35 @@ extension MenuView {
             param["HQNames\(index)"] = session.HQNames
             param["WTCode\(index)"] = session.WTCode
             param["WTName\(index)"] = session.WTName
-            param["chem\(drIndex)Code"] = session.chemCode
-            param["chem\(drIndex)Name"] = session.chemName
-            param["clusterCode\(index)"] = session.clusterCode
-            param["clusterName\(index)"] = session.clusterName
+            
+            
+            param["ClusterCode\(index)"] = session.clusterCode
+            param["ClusterName\(index)"] = session.clusterName
             param["Dr\(drIndex)code"] = session.drCode
             param["Dr\(drIndex)name"] = session.drName
             param["JWCodes\(index)"] = session.jwCode
             param["JWNames\(index)"] = session.jwName
+            
+            
+            if sessionIndex == 0 {
+                param["Chem\(drIndex)Code"] = session.chemCode
+                param["Chem\(drIndex)Name"] = session.chemName
+                
+                param["Stockist\(drIndex)Name"] = session.stockistName
+                param["Stockist\(drIndex)Code"] = session.stockistCode
+            } else  {
+                param["Chem\(drIndex)code"] = session.chemCode
+                param["Chem\(drIndex)name"] = session.chemName
+                
+                param["Stockist\(drIndex)code"] = session.stockistCode
+                param["StockistName\(index)"] = session.stockistName
+            }
+            
+//             param["Stockist\(drIndex)name"] = session.stockistName
+//             param["Stockist\(drIndex)code"] = session.stockistCode
+//            param["cip_code\(index)"] = session.unListedDrCode
+//            param["cip_name\(index)"] = session.unListedDrName
+            
             param["DayRemarks\(index)"] = session.remarks
         }
         
@@ -743,8 +768,8 @@ class MenuView : BaseView{
         var jointCallCodes = [String]()
         var chemistCodes = [String]()
         var stockistCodes = [String]()
-        
-
+        var drCodes = [String]()
+        var unlistedDrCodes = [String]()
         self.menuVC.sessionDetailsArr?.sessionDetails.enumerated().forEach({ sessionDetailIndex, sessionDetail in
             
             guard let sessionDetails = menuVC.sessionDetailsArr?.sessionDetails,
@@ -752,48 +777,87 @@ class MenuView : BaseView{
                     print("Index out of range: \(sessionDetailIndex)")
                     return
                 }
-            clusterCodes.removeAll()
-            clusterCodes = sessionDetail.clusterCode?.components(separatedBy: ",") ?? [String]()
-            if !clusterCodes.isEmpty {
-                clusterCodes.forEach { code in
-                    // Use the code as the key and set the value to true
-                    var selectedClusterID = [String: Bool]()
-                    selectedClusterID[code] = true
-                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedClusterID = selectedClusterID
-                }
-                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].clusterName = sessionDetail.clusterName?.replacingOccurrences(of: ",", with: ", ")
+       
+            if !(sessionDetail.clusterCode?.isEmpty ?? false) {
+                clusterCodes = sessionDetail.clusterCode?.components(separatedBy: ",") ?? [String]()
+                var selectedClusterID = [String: Bool]()
+                    clusterCodes.forEach { code in
+                        // Use the code as the key and set the value to true
+                        selectedClusterID[code] = true
+                       
+                    }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedClusterID = selectedClusterID
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].clusterName = sessionDetail.clusterName?.replacingOccurrences(of: ",", with: ", ")
                 
             }
      
+            if   !(sessionDetail.jwCode?.isEmpty ?? false) {
+                jointCallCodes = sessionDetail.jwCode?.components(separatedBy: ",") ?? [String]()
+                var selectedjointCallCodeID = [String: Bool]()
+                    jointCallCodes.forEach { codes in
+                        selectedjointCallCodeID[codes] = true
+                       
+                    }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedjointWorkID  = selectedjointCallCodeID
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].jwName = sessionDetail.jwName?.replacingOccurrences(of: ",", with: ", ")
+                    
+            }
             
+
             
-            jointCallCodes = sessionDetail.jwCode?.components(separatedBy: ",") ?? [String]()
-            if !jointCallCodes.isEmpty {
-                jointCallCodes.forEach { codes in
-                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedjointWorkID?[codes]  = true
-                }
-                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].jwName = sessionDetail.jwName?.replacingOccurrences(of: ",", with: ", ")
+     
+            if !(sessionDetail.chemCode?.isEmpty ?? false) {
+                chemistCodes = sessionDetail.chemCode?.components(separatedBy: ",") ?? [String]()
+                var selectedjointCallCodeID = [String: Bool]()
+                    chemistCodes.forEach { codes in
+                        selectedjointCallCodeID[codes] = true
+                       
+                    }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedchemistID = selectedjointCallCodeID
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].chemName = sessionDetail.chemName?.replacingOccurrences(of: ",", with: ", ")
                 
             }
-     
-            
-            chemistCodes = sessionDetail.chemCode?.components(separatedBy: ",") ?? [String]()
-            if !chemistCodes.isEmpty {
-                chemistCodes.forEach { codes in
-                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedchemistID?[codes]  = true
-                }
-                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].chemName = sessionDetail.chemName?.replacingOccurrences(of: ",", with: ", ")
-            }
+
 
             
             
+            if !(sessionDetail.stockistCode?.isEmpty ?? false) {
+                
+                stockistCodes = sessionDetail.stockistCode?.components(separatedBy: ",") ?? [String]()
+                var selectedstockistCodeID = [String: Bool]()
+                    stockistCodes.forEach { codes in
+                        selectedstockistCodeID[codes] = true
+                       
+                    }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedStockistID  = selectedstockistCodeID
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].stockistName = sessionDetail.stockistName?.replacingOccurrences(of: ",", with: ", ")
+            }
             
-            stockistCodes = sessionDetail.stockistCode?.components(separatedBy: ",") ?? [String]()
-            if !stockistCodes.isEmpty {
-                stockistCodes.forEach { codes in
-                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedStockistID?[codes]  = true
-                }
-                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].stockistName = sessionDetail.stockistName?.replacingOccurrences(of: ",", with: ", ")
+            
+            if !(sessionDetail.drCode?.isEmpty ?? false) {
+                
+                drCodes = sessionDetail.stockistCode?.components(separatedBy: ",") ?? [String]()
+                var selectedDrCodeID = [String: Bool]()
+               // var selectedstockistCodeID = [String: Bool]()
+                drCodes.forEach { codes in
+                    selectedDrCodeID[codes] = true
+                       
+                    }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedlistedDoctorsID = selectedDrCodeID
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].drName = sessionDetail.drName?.replacingOccurrences(of: ",", with: ", ")
+            }
+
+            if !(sessionDetail.unListedDrCode?.isEmpty ?? false) {
+                
+                unlistedDrCodes = sessionDetail.unListedDrCode?.components(separatedBy: ",") ?? [String]()
+                var selectedunlistedDrCodeID = [String: Bool]()
+               // var selectedstockistCodeID = [String: Bool]()
+                unlistedDrCodes.forEach { codes in
+                    selectedunlistedDrCodeID[codes] = true
+                       
+                    }
+                menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].selectedUnlistedDoctorsID = selectedunlistedDrCodeID
+                    menuVC.sessionDetailsArr?.sessionDetails?[sessionDetailIndex].unListedDrName = sessionDetail.unListedDrName?.replacingOccurrences(of: ",", with: ", ")
             }
 
         })
@@ -1278,8 +1342,13 @@ class MenuView : BaseView{
         }
         
         addSessionView.addTap {
-            let count = self.sessionDetailsArr.sessionDetails?.count
-            if  count ?? 0 > 1 {
+            
+            let totalcount = Int(self.tableSetup?.addsessionCount ?? "2")
+            let sessionCount = self.sessionDetailsArr.sessionDetails?.count
+            let isAllowedToadd = totalcount ?? 2 > sessionCount ?? 0 ? true : false
+          //  let count = self.sessionDetailsArr.sessionDetails?.count
+          //  if  count ?? 0 > 1
+           if !isAllowedToadd  {
 //                if #available(iOS 13.0, *) {
 //                    (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
 //                } else {
@@ -2941,44 +3010,48 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 } else {
                     self.selectTitleLbl.text = "Select"
                     self.countView.isHidden = true
-                    
                 }
                 
                 cell.addTap { [self] in
-                    _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID
                     
-                    if self.isSearched {
-                        self.listedDocArr?.enumerated().forEach({ index, doctors in
-                            if doctors.code  ==  item?.code {
-                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == nil {
-                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] = true
-                                } else {
-                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == true ? false : true
+                   let exixtingIDs = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID
+                   
+                    if   Int(tableSetup?.max_doc ?? "0")  ==  exixtingIDs?.count {
+                        self.toCreateToast("Maximum doctors added")
+                    } else {
+                        if self.isSearched {
+                    
+                            self.listedDocArr?.enumerated().forEach({ index, doctors in
+                                if doctors.code  ==  item?.code {
+                                    if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == nil {
+                                        sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] = true
+                                    } else {
+                                        sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == true ? false : true
+                                    }
+                                    if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == false {
+                                        sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID!.removeValue(forKey: doctors.code ?? "")
+                                        self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                    }
+                                    
                                 }
-                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![doctors.code ?? ""] == false {
-                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID!.removeValue(forKey: doctors.code ?? "")
+                                
+                            })
+                        } else {
+                            if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] {
+                                
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?[item?.code ?? ""] == true ? false : true
+                                
+                                if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] == false {
+                                    sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID!.removeValue(forKey: item?.code ?? "")
                                     self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
                                 }
                                 
+                            } else {
+                                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] = true
                             }
-                            
-                        })
-                    } else {
-                        if let _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] {
-                            
-                            sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] =  sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?[item?.code ?? ""] == true ? false : true
-                            
-                            if sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] == false {
-                                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID!.removeValue(forKey: item?.code ?? "")
-                                self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
-                            }
-                            
-                        } else {
-                            sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID![item?.code ?? ""] = true
                         }
+                        tableView.reloadData()
                     }
-
-                    tableView.reloadData()
                 }
             case .chemist:
                 item = sessionDetailsArr.sessionDetails?[selectedSession].chemist?[indexPath.row]

@@ -7,79 +7,62 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EC915056-DF69-411D-9CAF-C41FDDC2D391"
+            uuid = "66F6933B-F15D-487E-B83D-C97C71F36EA6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "437"
-            endingLineNumber = "437"
-            landmarkName = "TourPlanView"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9C9241A1-01EF-4EC7-9C69-465D64A147C7"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "439"
-            endingLineNumber = "439"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "900441D1-F1EB-4089-AAC8-DDB8F565AD8D"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "443"
-            endingLineNumber = "443"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:)"
+            startingLineNumber = "381"
+            endingLineNumber = "381"
+            landmarkName = "fetchDataFromServer()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "900441D1-F1EB-4089-AAC8-DDB8F565AD8D - 1b6d70a521c8b5cf"
+                  uuid = "66F6933B-F15D-487E-B83D-C97C71F36EA6 - 48339dde1c61d8f0"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "E_Detailing.TourPlanView.toAppendWeeklyoffs(date: Swift.Array&lt;Swift.String&gt;, rawDate: Swift.Array&lt;Foundation.Date&gt;) -&gt; ()"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
                   moduleName = "E-Detailing"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "425"
-                  endingLineNumber = "425"
-                  offsetFromSymbolStart = "808">
+                  startingLineNumber = "377"
+                  endingLineNumber = "377"
+                  offsetFromSymbolStart = "120">
                </Location>
                <Location
-                  uuid = "900441D1-F1EB-4089-AAC8-DDB8F565AD8D - 1b6d70a521c8b5cf"
+                  uuid = "66F6933B-F15D-487E-B83D-C97C71F36EA6 - 48339dde1c61e516"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "E_Detailing.TourPlanView.toAppendWeeklyoffs(date: Swift.Array&lt;Swift.String&gt;, rawDate: Swift.Array&lt;Foundation.Date&gt;) -&gt; ()"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
                   moduleName = "E-Detailing"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "425"
-                  endingLineNumber = "425"
-                  offsetFromSymbolStart = "1148">
+                  startingLineNumber = "343"
+                  endingLineNumber = "343"
+                  offsetFromSymbolStart = "120">
+               </Location>
+               <Location
+                  uuid = "66F6933B-F15D-487E-B83D-C97C71F36EA6 - 48339dde1c61d87c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "381"
+                  endingLineNumber = "381"
+                  offsetFromSymbolStart = "120">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -87,175 +70,609 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A987A14A-257D-4170-9D9D-BB6B53D75ECE"
+            uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "465"
-            endingLineNumber = "465"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:)"
+            startingLineNumber = "382"
+            endingLineNumber = "382"
+            landmarkName = "fetchDataFromServer()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426 - 48339dde1c61d893"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "378"
+                  endingLineNumber = "378"
+                  offsetFromSymbolStart = "216">
+               </Location>
+               <Location
+                  uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426 - effe091c9612c122"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool) -&gt; () in closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "379"
+                  endingLineNumber = "379"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426 - 48339dde1c61e531"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "344"
+                  endingLineNumber = "344"
+                  offsetFromSymbolStart = "216">
+               </Location>
+               <Location
+                  uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426 - effe091c9612fd40"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool) -&gt; () in closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426 - 48339dde1c61d81f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "382"
+                  endingLineNumber = "382"
+                  offsetFromSymbolStart = "216">
+               </Location>
+               <Location
+                  uuid = "249B227F-E9D1-45D3-A10E-CA735AE4C426 - effe091c9612c1ae"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool) -&gt; () in closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "383"
+                  endingLineNumber = "383"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B04122EC-ACC3-4CC7-B65E-158F74ACDEC9"
+            uuid = "1476D442-F49E-4334-B74D-E81CE6E62B35"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "468"
-            endingLineNumber = "468"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:)"
+            startingLineNumber = "405"
+            endingLineNumber = "405"
+            landmarkName = "toMapAPIresponse(completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "1476D442-F49E-4334-B74D-E81CE6E62B35 - 398e2cd11be50ac"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "401"
+                  endingLineNumber = "401"
+                  offsetFromSymbolStart = "252">
+               </Location>
+               <Location
+                  uuid = "1476D442-F49E-4334-B74D-E81CE6E62B35 - 398e2cd11be570a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "367"
+                  endingLineNumber = "367"
+                  offsetFromSymbolStart = "252">
+               </Location>
+               <Location
+                  uuid = "1476D442-F49E-4334-B74D-E81CE6E62B35 - 398e2cd11be5030"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "405"
+                  endingLineNumber = "405"
+                  offsetFromSymbolStart = "252">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "790B1D4C-2914-408C-ABB3-A461BCF1410F"
+            uuid = "61134CA7-1F24-4D6C-A62E-FDE117664359"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "470"
-            endingLineNumber = "470"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:)"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
+            landmarkName = "toMapAPIresponse(completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "61134CA7-1F24-4D6C-A62E-FDE117664359 - 398e2cd11be506e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "403"
+                  endingLineNumber = "403"
+                  offsetFromSymbolStart = "528">
+               </Location>
+               <Location
+                  uuid = "61134CA7-1F24-4D6C-A62E-FDE117664359 - 398e2cd11be54cc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "369"
+                  endingLineNumber = "369"
+                  offsetFromSymbolStart = "528">
+               </Location>
+               <Location
+                  uuid = "61134CA7-1F24-4D6C-A62E-FDE117664359 - 398e2cd11be51f2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "407"
+                  endingLineNumber = "407"
+                  offsetFromSymbolStart = "528">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "AC0754AC-B641-4B43-958F-37088E61D4D3"
+            uuid = "9D7B8333-FA36-43E0-80A4-C7A30F5DF992"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "881"
-            endingLineNumber = "881"
-            landmarkName = "moveToMenuVC(_:isForWeekOff:isforHoliday:)"
+            startingLineNumber = "391"
+            endingLineNumber = "391"
+            landmarkName = "fetchDataFromServer()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9D7B8333-FA36-43E0-80A4-C7A30F5DF992 - 48339dde1c61dfba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "387"
+                  endingLineNumber = "387"
+                  offsetFromSymbolStart = "320">
+               </Location>
+               <Location
+                  uuid = "9D7B8333-FA36-43E0-80A4-C7A30F5DF992 - 48339dde1c61dbd8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "353"
+                  endingLineNumber = "353"
+                  offsetFromSymbolStart = "320">
+               </Location>
+               <Location
+                  uuid = "9D7B8333-FA36-43E0-80A4-C7A30F5DF992 - 48339dde1c61dec6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "391"
+                  endingLineNumber = "391"
+                  offsetFromSymbolStart = "320">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "06B067E8-82D0-4B8C-B640-6D93E376DE99"
+            uuid = "9A0C3782-DAD4-4723-B4D1-2A6925517BF5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "457"
-            endingLineNumber = "457"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:)"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
+            landmarkName = "fetchDataFromServer()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9A0C3782-DAD4-4723-B4D1-2A6925517BF5 - 48339dde1c61df65"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "388"
+                  endingLineNumber = "388"
+                  offsetFromSymbolStart = "364">
+               </Location>
+               <Location
+                  uuid = "9A0C3782-DAD4-4723-B4D1-2A6925517BF5 - 48339dde1c61dbfb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "354"
+                  endingLineNumber = "354"
+                  offsetFromSymbolStart = "364">
+               </Location>
+               <Location
+                  uuid = "9A0C3782-DAD4-4723-B4D1-2A6925517BF5 - 48339dde1c61dee1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.fetchDataFromServer() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "392"
+                  endingLineNumber = "392"
+                  offsetFromSymbolStart = "364">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D2A7F220-82A8-4ED5-9DD0-C379214F914E"
+            uuid = "095E5CE7-4944-47C9-BE9B-EA4217915EC2"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "866"
-            endingLineNumber = "866"
-            landmarkName = "moveToMenuVC(_:isForWeekOff:isforHoliday:)"
+            startingLineNumber = "543"
+            endingLineNumber = "543"
+            landmarkName = "toMapAPIresponse(completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "095E5CE7-4944-47C9-BE9B-EA4217915EC2 - 398e2cd11be4ef6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "539"
+                  endingLineNumber = "539"
+                  offsetFromSymbolStart = "1268">
+               </Location>
+               <Location
+                  uuid = "095E5CE7-4944-47C9-BE9B-EA4217915EC2 - 398e2cd11be4554"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "505"
+                  endingLineNumber = "505"
+                  offsetFromSymbolStart = "1268">
+               </Location>
+               <Location
+                  uuid = "095E5CE7-4944-47C9-BE9B-EA4217915EC2 - 398e2cd11be4e7a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "543"
+                  endingLineNumber = "543"
+                  offsetFromSymbolStart = "1268">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "74C91B85-A700-4040-B7FE-0DAD19068408"
+            uuid = "45244D52-B3FB-478B-8815-DD0436671258"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "378"
-            endingLineNumber = "378"
-            landmarkName = "monthWiseSeperationofSessions(_:)"
+            startingLineNumber = "547"
+            endingLineNumber = "547"
+            landmarkName = "toMapAPIresponse(completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "45244D52-B3FB-478B-8815-DD0436671258 - 398e2cd11be4e7a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "543"
+                  endingLineNumber = "543"
+                  offsetFromSymbolStart = "1320">
+               </Location>
+               <Location
+                  uuid = "45244D52-B3FB-478B-8815-DD0436671258 - 398e2cd11be4e7a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "543"
+                  endingLineNumber = "543"
+                  offsetFromSymbolStart = "1696">
+               </Location>
+               <Location
+                  uuid = "45244D52-B3FB-478B-8815-DD0436671258 - 398e2cd11be42d8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "509"
+                  endingLineNumber = "509"
+                  offsetFromSymbolStart = "1320">
+               </Location>
+               <Location
+                  uuid = "45244D52-B3FB-478B-8815-DD0436671258 - 398e2cd11be42d8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "509"
+                  endingLineNumber = "509"
+                  offsetFromSymbolStart = "1696">
+               </Location>
+               <Location
+                  uuid = "45244D52-B3FB-478B-8815-DD0436671258 - 398e2cd11be4ffe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "547"
+                  endingLineNumber = "547"
+                  offsetFromSymbolStart = "1320">
+               </Location>
+               <Location
+                  uuid = "45244D52-B3FB-478B-8815-DD0436671258 - 398e2cd11be4ffe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "547"
+                  endingLineNumber = "547"
+                  offsetFromSymbolStart = "1696">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F4B741AA-0F75-400C-B9BF-6397A073B5C6"
+            uuid = "CF43B573-63BD-4AB7-A1C3-737C865EFC02"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
-            landmarkName = "monthWiseSeperationofSessions(_:)"
+            startingLineNumber = "871"
+            endingLineNumber = "871"
+            landmarkName = "didTApSendToApproval(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CF43B573-63BD-4AB7-A1C3-737C865EFC02 - e37837f378fa00f4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "786"
+                  endingLineNumber = "786"
+                  offsetFromSymbolStart = "260">
+               </Location>
+               <Location
+                  uuid = "CF43B573-63BD-4AB7-A1C3-737C865EFC02 - cc7bb900b3ddec01"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "787"
+                  endingLineNumber = "787"
+                  offsetFromSymbolStart = "1620">
+               </Location>
+               <Location
+                  uuid = "CF43B573-63BD-4AB7-A1C3-737C865EFC02 - cc7bb900b3ddd6ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "871"
+                  endingLineNumber = "871"
+                  offsetFromSymbolStart = "1600">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9C6E5625-963F-4887-B4EB-0B194FC6FAF4"
+            uuid = "D926B04B-01E2-4040-A390-4C9F8F01EE24"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
-            landmarkName = "monthWiseSeperationofSessions(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "15B6FA66-828F-41B0-AF18-6CCD088F368D"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "372"
-            endingLineNumber = "372"
-            landmarkName = "monthWiseSeperationofSessions(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0255E521-72CB-4F5D-84BF-F8303BF11FF5"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
+            startingLineNumber = "422"
+            endingLineNumber = "422"
             landmarkName = "toSetParams(_:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -263,15 +680,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D1F1C347-493B-4085-B93D-7A998054A287"
+            uuid = "0F18EFC0-C1E4-4262-9D75-70D8CE2D7849"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "181"
-            endingLineNumber = "181"
+            startingLineNumber = "426"
+            endingLineNumber = "426"
             landmarkName = "toSetParams(_:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -279,32 +696,603 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "959496FF-A3BF-4CDC-9997-8D0C7EA49869"
+            uuid = "46F5AAA9-BC83-4025-939D-6E1290165720"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/ViewModels/ SessionResponseVM.swift"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "getTourPlanData(params:api:_:)"
+            startingLineNumber = "243"
+            endingLineNumber = "243"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "46F5AAA9-BC83-4025-939D-6E1290165720 - 45301335f3419c56"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.MenuView.toAppendsessionDetails(aDaySessions: E_Detailing.SessionDetailsArr) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "243"
+                  endingLineNumber = "243"
+                  offsetFromSymbolStart = "3008">
+               </Location>
+               <Location
+                  uuid = "46F5AAA9-BC83-4025-939D-6E1290165720 - 1585bffb53ad2ddf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #5 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.MenuView.toAppendsessionDetails(aDaySessions: E_Detailing.SessionDetailsArr) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "246"
+                  endingLineNumber = "246"
+                  offsetFromSymbolStart = "120">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "54487F7D-9F6B-4345-8BE4-B5347C19CFC3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "252"
+            endingLineNumber = "252"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "694C7D8D-908C-4655-976C-9A2B159659BC"
+            uuid = "A7E1A15F-293D-4A89-A5CB-95C307B20187"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "E-Detailing/Hassan/ViewModels/ SessionResponseVM.swift"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "uploadTPmultipartFormData(params:api:paramData:_:)"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "328CFBBA-C23A-4ED1-B16B-271EC1DA6D6E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "608F9660-E767-4845-B93E-C42E888B5603"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
+            landmarkName = "toSetParams(_:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E98AE21E-A172-48C3-B043-09B56ABA2E8B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "927F6128-0FF1-4E15-9534-7BEF92C1FF1B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "52D11136-A36F-4A9B-9D91-A624163ED53F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
+            landmarkName = "toAppendsessionDetails(aDaySessions:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1F92099D-6670-48DA-8D21-28CC0A41EE91"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "880"
+            endingLineNumber = "880"
+            landmarkName = "didTApSendToApproval(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "1F92099D-6670-48DA-8D21-28CC0A41EE91 - e37837f378fa0fcf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "793"
+                  endingLineNumber = "793"
+                  offsetFromSymbolStart = "640">
+               </Location>
+               <Location
+                  uuid = "1F92099D-6670-48DA-8D21-28CC0A41EE91 - 205798fd901f4adf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int) -&gt; () in closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "795"
+                  endingLineNumber = "795"
+                  offsetFromSymbolStart = "56">
+               </Location>
+               <Location
+                  uuid = "1F92099D-6670-48DA-8D21-28CC0A41EE91 - cc7bb900b3ddd389"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "907"
+                  endingLineNumber = "907"
+                  offsetFromSymbolStart = "1764">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AF2C97D1-46BE-406E-BD5D-5CDFFC494C80"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "890"
+            endingLineNumber = "890"
+            landmarkName = "didTApSendToApproval(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "AF2C97D1-46BE-406E-BD5D-5CDFFC494C80 - e37837f378fa0d05"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "803"
+                  endingLineNumber = "803"
+                  offsetFromSymbolStart = "1240">
+               </Location>
+               <Location
+                  uuid = "AF2C97D1-46BE-406E-BD5D-5CDFFC494C80 - 3537c7cb41b53ec1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #3 (E_Detailing.TourPlanArr) -&gt; () in closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "805"
+                  endingLineNumber = "805"
+                  offsetFromSymbolStart = "56">
+               </Location>
+               <Location
+                  uuid = "AF2C97D1-46BE-406E-BD5D-5CDFFC494C80 - cc7bb900b3ddd389"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "907"
+                  endingLineNumber = "907"
+                  offsetFromSymbolStart = "1764">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CF365BC9-E7C0-4F23-868E-78489EE6A802"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "429"
+            endingLineNumber = "429"
+            landmarkName = "toMapAPIresponse(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CF365BC9-E7C0-4F23-868E-78489EE6A802 - c2ca41e5f9ad9afc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int, E_Detailing.SessionDetails) -&gt; () in E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "391"
+                  endingLineNumber = "391"
+                  offsetFromSymbolStart = "860">
+               </Location>
+               <Location
+                  uuid = "CF365BC9-E7C0-4F23-868E-78489EE6A802 - c2ca41e5f9ad9aba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int, E_Detailing.SessionDetails) -&gt; () in E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "393"
+                  endingLineNumber = "393"
+                  offsetFromSymbolStart = "844">
+               </Location>
+               <Location
+                  uuid = "CF365BC9-E7C0-4F23-868E-78489EE6A802 - c2ca41e5f9ad95d4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int, E_Detailing.SessionDetails) -&gt; () in E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "431"
+                  endingLineNumber = "431"
+                  offsetFromSymbolStart = "844">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F7E0E669-C46A-448E-B426-059F5ABFE9BA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "432"
+            endingLineNumber = "432"
+            landmarkName = "toMapAPIresponse(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F7E0E669-C46A-448E-B426-059F5ABFE9BA - c2ca41e5f9ad9a99"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int, E_Detailing.SessionDetails) -&gt; () in E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "394"
+                  endingLineNumber = "394"
+                  offsetFromSymbolStart = "904">
+               </Location>
+               <Location
+                  uuid = "F7E0E669-C46A-448E-B426-059F5ABFE9BA - c2ca41e5f9ad9a78"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int, E_Detailing.SessionDetails) -&gt; () in E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "395"
+                  endingLineNumber = "395"
+                  offsetFromSymbolStart = "848">
+               </Location>
+               <Location
+                  uuid = "F7E0E669-C46A-448E-B426-059F5ABFE9BA - c2ca41e5f9ad9592"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int, E_Detailing.SessionDetails) -&gt; () in E_Detailing.TourPlanView.toMapAPIresponse(completion: (Swift.Bool) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "433"
+                  endingLineNumber = "433"
+                  offsetFromSymbolStart = "848">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A41DFAD3-30D3-4154-87B6-6507247DB780"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "883"
+            endingLineNumber = "883"
+            landmarkName = "didTApSendToApproval(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A41DFAD3-30D3-4154-87B6-6507247DB780 - b86bed04fd3b899a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (E_Detailing.TourPlanArr) -&gt; () in closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "796"
+                  endingLineNumber = "796"
+                  offsetFromSymbolStart = "52">
+               </Location>
+               <Location
+                  uuid = "A41DFAD3-30D3-4154-87B6-6507247DB780 - ffd51c4089a928f1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "function signature specialization &lt;Arg[1] = Value Promoted from Box&gt; of closure #3 (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; () in E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "798"
+                  endingLineNumber = "798"
+                  offsetFromSymbolStart = "780">
+               </Location>
+               <Location
+                  uuid = "A41DFAD3-30D3-4154-87B6-6507247DB780 - cc7bb900b3ddd389"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.TourPlanView.didTApSendToApproval(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/TourPlanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "907"
+                  endingLineNumber = "907"
+                  offsetFromSymbolStart = "1764">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D91F2617-1FE1-4B07-A732-8B1CBD753C88"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/MenuVIew.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1357"
+            endingLineNumber = "1357"
+            landmarkName = "initGestures()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D91F2617-1FE1-4B07-A732-8B1CBD753C88 - 72f0351f1ac96d16"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #4 () -&gt; () in E_Detailing.MenuView.initGestures() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1352"
+                  endingLineNumber = "1352"
+                  offsetFromSymbolStart = "396">
+               </Location>
+               <Location
+                  uuid = "D91F2617-1FE1-4B07-A732-8B1CBD753C88 - 72f0351f1ac96eb3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #4 () -&gt; () in E_Detailing.MenuView.initGestures() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1357"
+                  endingLineNumber = "1357"
+                  offsetFromSymbolStart = "1036">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "239585AB-9FC3-451C-A3C0-A61626AEBE83"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "842"
+            endingLineNumber = "842"
+            landmarkName = "toSendUnsavedObjects(unSavedPlans:unsentIndices:isFromFirstLoad:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E1B67198-DD7C-42D3-BCF0-A4D910CF1C08"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "837"
+            endingLineNumber = "837"
+            landmarkName = "toSendUnsavedObjects(unSavedPlans:unsentIndices:isFromFirstLoad:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "72DBC62F-C774-4CBE-A160-463E6FC938B4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
+            landmarkName = "toPostDataToserver()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FBD06127-9648-4DD7-A12A-0BDC3B9F904B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "333"
+            endingLineNumber = "333"
+            landmarkName = "toPostDataToserver()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0D73749F-012D-4A59-9E98-8F441204A8CF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/TourPlanView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "812"
+            endingLineNumber = "812"
+            landmarkName = "toSendUnsavedObjects(unSavedPlans:unsentIndices:isFromFirstLoad:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
