@@ -139,6 +139,7 @@ enum `MasterInfo` : String {
     case mapCompDet = "map Comp Det"
     case empty = "Empty"
     case syncAll = "Sync All"
+    case getTP = "Tour Plan"
  
     var getUrl : String {
         
@@ -185,6 +186,9 @@ enum `MasterInfo` : String {
             
         case .holidays:
             return String(format: "%@table/dcrmasterdata", mainUrl)
+            
+        case .getTP:
+            return String(format: "%@get/tp", mainUrl)
         default :
             return String(format: "%@table/slides", mainUrl) //
         }
@@ -282,6 +286,8 @@ enum `MasterInfo` : String {
             return MasterSyncParams.weelyoffSetupParams
         case .holidays:
             return MasterSyncParams.holidaySetupParams
+        case .getTP:
+            return MasterSyncParams.tourPlanSetupParams
         }
  
     }
@@ -573,6 +579,56 @@ struct MasterSyncParams {
 
     }
     
+    
+    static var tourPlanSetupParams : [String : Any] {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        var param = [String: Any]()
+        param["tableName"] = "getall_tp"
+        param["sfcode"] = "\(appsetup.sfCode!)"
+        param["division_code"] = "\(appsetup.divisionCode!)"
+        param["Rsf"] = "\(appsetup.sfCode!)"
+        param["sf_type"] = "\(appsetup.sfType!)"
+        param["Designation"] = "\(appsetup.dsName!)"
+        param["state_code"] = "\(appsetup.stateCode!)"
+        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+        
+        let currentDate = Date()
+        let calendar = Calendar.current
+
+        // Get the current month and year components
+        let month = calendar.component(.month, from: currentDate)
+        let year = calendar.component(.year, from: currentDate)
+
+        // Convert the components to strings and add them to your parameters
+        param["tp_month"] = "\(month),"
+        param["tp_year"] = "\(year),"
+        
+      //  param["tp_month"] = "12,"
+      //  param["tp_year"] = "2023,"
+        
+        
+        var jsonDatum = Data()
+
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: param, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+
+            }
+            
+
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+
+        
+        return toSendData
+    }
 }
 
 

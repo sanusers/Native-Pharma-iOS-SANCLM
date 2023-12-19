@@ -248,6 +248,7 @@ extension MenuView {
                     aDaySessions.isDataSentToApi = true
                    // aDaySessions.changeStatus = "False"
                   //  aDaySessions.isSucessfullySubmited = true
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
                     self.toCreateToast("Data uploaded to server successfully.")
                     self.saveObjecttoDevice()
                     
@@ -313,20 +314,7 @@ extension MenuView {
         param["SFCode"] = appdefaultSetup.sfCode
         param["SFName"] = appdefaultSetup.sfName
         param["Div"] = appdefaultSetup.divisionCode
-        param["Mnth"] = anotherDateArr?[0]
-        param["Yr"] = dateArr?[2]//2023
-        //param["Day"] =  dateArr?[0]//1
-       // param["Tour_Month"] = anotherDateArr?[0]// 11
-       // param["Tour_Year"] = dateArr?[2] // 2023
-       // param["tpmonth"] = dateArr?[1]// Nov
-        //param["tpday"] = self.sessionDetailsArr.day// Wednesday
-        param["dayno"] = anotherDateArr?[1] // 11
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let tpDtDate = dateFormatter.string(from: self.sessionDetailsArr.rawDate ?? Date())
-            param["TPDt"] =  tpDtDate
-        //self.sessionDetailsArr.dayNo?.replacingOccurrences(of: "/", with: "-")
-       //2023-11-01 00:00:00
         tourPlanArr.sessionDetails?.enumerated().forEach { sessionIndex, session in
             // var sessionParam = [String: Any]()
             var index = String()
@@ -344,6 +332,25 @@ extension MenuView {
             } else if sessionIndex == 2 {
                 drIndex = "_three_"
             }
+           
+            dateFormatter.dateFormat = "d MMMM yyyy"
+            let date =  dateFormatter.string(from:  tourPlanArr.rawDate)
+            let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
+            dateFormatter.dateFormat = "EEEE"
+            let day = dateFormatter.string(from: tourPlanArr.rawDate)
+            param["Yr"] = dateArr[2]//2023
+           // param["Day"] =  dateArr[0]//1
+           // param["Tour_Year"] = dateArr[2] // 2023
+           // param["tpmonth"] = dateArr[1]// Nov
+            param["tpday"] = day// Wednesday
+            dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+            let dayNo = dateFormatter.string(from: tourPlanArr.rawDate)
+            let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+            param["dayno"] = anotherDateArr[1] // 11
+          //  param["Tour_Month"] = anotherDateArr[0]// 11
+            param["Mnth"] = anotherDateArr[0]
+            let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
+            param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
             param["FWFlg\(index)"] = session.FWFlg
             param["HQCodes\(index)"] = session.HQCodes
             param["HQNames\(index)"] = session.HQNames
@@ -746,6 +753,7 @@ class MenuView : BaseView{
             self.sessionDetailsArr = self.menuVC.sessionDetailsArr ?? SessionDetailsArr()
             lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
             if  istoAddSession {
+                sessionDetail = SessionDetail()
                 self.sessionDetailsArr.sessionDetails?.append(sessionDetail)
                 self.sessionDetailsArr.isDataSentToApi = false
                 setPageType(.session, for: (self.sessionDetailsArr.sessionDetails?.count ?? 0) - 1)
@@ -1089,8 +1097,8 @@ class MenuView : BaseView{
         case .headQuater:
             self.cellType = .headQuater
             addSessionView.isHidden = true
-            saveView.isHidden = false
-            clearview.isHidden = false
+            saveView.isHidden = true
+            clearview.isHidden = true
             self.countView.isHidden = false
             self.selectViewHeightCons.constant =   selectViewHeight
             self.searchHolderHeight.constant =  searchVIewHeight
@@ -2506,17 +2514,22 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             if isSearched {
                 if sessionDetailsArr.sessionDetails?[selectedSession].WTName == cell.workTypeLbl.text {
-                    cell.workTypeLbl.textColor = .green
+                    cell.workTypeLbl.textColor = .black
+                    cell.workTypeLbl.setFont(font: .bold(size: .BODY))
                 }
                 else {
                     cell.workTypeLbl.textColor = .black
+                    cell.workTypeLbl.setFont(font: .medium(size: .SMALL))
+                    
                 }
             } else {
                 if sessionDetailsArr.sessionDetails?[selectedSession].WTName == cell.workTypeLbl.text {
-                    cell.workTypeLbl.textColor = .green
+                    cell.workTypeLbl.textColor = .black
+                    cell.workTypeLbl.setFont(font: .bold(size: .BODY))
                 }
                 else {
                     cell.workTypeLbl.textColor = .black
+                    cell.workTypeLbl.setFont(font: .medium(size: .SMALL))
                 }
             }
             

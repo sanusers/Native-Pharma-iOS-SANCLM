@@ -73,31 +73,17 @@ extension TourPlanView {
     func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, Error>) -> ())  {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMMM yyyy"
-        let date =  dateFormatter.string(from:  Date())
-        dateFormatter.dateFormat = "EEEE"
-        let day = dateFormatter.string(from: Date())
-        
-        dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
-        let dayNo = dateFormatter.string(from: Date())
-        
-        
-        let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
-        let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+      //  dateFormatter.dateFormat = "d MMMM yyyy"
+       // let date =  dateFormatter.string(from:  Date())
+       // dateFormatter.dateFormat = "EEEE"
+      // let day = dateFormatter.string(from: Date())
+      //  let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
         var param = [String: Any]()
         param["SFCode"] = appdefaultSetup.sfCode
         param["SFName"] = appdefaultSetup.sfName
         param["Div"] = appdefaultSetup.divisionCode
-        param["Mnth"] = anotherDateArr[0]
-        param["Yr"] = dateArr[2]//2023
-        param["Day"] =  dateArr[0]//1
-        param["Tour_Month"] = anotherDateArr[0]// 11
-        param["Tour_Year"] = dateArr[2] // 2023
-        param["tpmonth"] = dateArr[1]// Nov
-        param["tpday"] = day// Wednesday
-        param["dayno"] = anotherDateArr[0] // 11
-        let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
-        param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
+
+
         // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
         
         var sessions = [JSON]()
@@ -120,6 +106,25 @@ extension TourPlanView {
                 } else if sessionIndex == 2 {
                     drIndex = "_three_"
                 }
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "d MMMM yyyy"
+                let date =  dateFormatter.string(from:  allDayPlans.rawDate)
+                let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
+                dateFormatter.dateFormat = "EEEE"
+                let day = dateFormatter.string(from: allDayPlans.rawDate)
+                param["Yr"] = dateArr[2]//2023
+               // param["Day"] =  dateArr[0]//1
+               // param["Tour_Year"] = dateArr[2] // 2023
+               // param["tpmonth"] = dateArr[1]// Nov
+                param["tpday"] = day// Wednesday
+                dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+                let dayNo = dateFormatter.string(from: allDayPlans.rawDate)
+                let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+                param["dayno"] = anotherDateArr[1] // 11
+              //  param["Tour_Month"] = anotherDateArr[0]// 11
+                param["Mnth"] = anotherDateArr[0]
+                let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
+                param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
                 param["FWFlg\(index)"] = session.FWFlg
                 param["HQCodes\(index)"] = session.HQCodes
                 param["HQNames\(index)"] = session.HQNames
@@ -268,13 +273,14 @@ class TourPlanView: BaseView {
     var tempArrofPlan: [SessionDetailsArr]?
     var sessionResponseVM: SessionResponseVM?
     var  weeklyOff : Weeklyoff?
-    var  holidays : Holidays?
+    var  holidays : [Holidays]?
    // var tableSetupmodel: TableSetupModel?
     var totalDays = Int()
     var filledDates = [Date]()
     var months = [String]()
     var weeklyOffDates = [String]()
     var weeklyOffRawDates = [Date]()
+    var responseHolidaydates = [String]()
     private var currentPage: Date?
     private lazy var today: Date = {
         return Date()
@@ -293,47 +299,48 @@ class TourPlanView: BaseView {
         super.willAppear(baseVC: baseVC)
         self.tourplanVC = baseVC as? TourPlanVC
        // tourplanVC.togetTableSetup()
-        self.isHidden = true
-        toPostDataToserver()
+        initialSetups()
+        self.isHidden = false
+      //  toPostDataToserver()
        // fetchDataFromServer()
     }
     
-    func toPostDataToserver() {
-        
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-
-        var  arrOfPlan = [SessionDetailsArr]()
-        var tpArray =  [TourPlanArr]()
-
-        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
-            tpArray.append(eachDayPlan)
-        }
-        tpArray.forEach({ tpArr in
-            arrOfPlan = tpArr.arrOfPlan
-        })
-        
-        
-        let unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
-            toFilterSessionsArr.isDataSentToApi == false
-        })
-        
-        var unsentIndices = [Int]()
-        
-        dump(unSavedPlans)
-        if !(unSavedPlans.isEmpty ) {
-            unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false }
-        }
-      
-        
-        dump(unsentIndices)
-        
-        if unSavedPlans.count > 0 {
-            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
-        } else {
-            fetchDataFromServer()
-        }
-      
-    }
+//    func toPostDataToserver() {
+//
+//        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+//
+//        var  arrOfPlan = [SessionDetailsArr]()
+//        var tpArray =  [TourPlanArr]()
+//
+//        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+//            tpArray.append(eachDayPlan)
+//        }
+//        tpArray.forEach({ tpArr in
+//            arrOfPlan = tpArr.arrOfPlan
+//        })
+//
+//
+//        let unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+//            toFilterSessionsArr.isDataSentToApi == false
+//        })
+//
+//        var unsentIndices = [Int]()
+//
+//        dump(unSavedPlans)
+//        if !(unSavedPlans.isEmpty ) {
+//            unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false }
+//        }
+//
+//
+//        dump(unsentIndices)
+//
+//        if unSavedPlans.count > 0 {
+//            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
+//        } else {
+//            fetchDataFromServer()
+//        }
+//
+//    }
     
     
     func fetchDataFromServer() {
@@ -347,10 +354,22 @@ class TourPlanView: BaseView {
         param["Designation"] = "\(appsetup.dsName!)"
         param["state_code"] = "\(appsetup.stateCode!)"
         param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
-        param["tp_month"] = "12,"
-        param["tp_year"] = "2023,"
-        
-        
+
+        let currentDate = Date()
+        let calendar = Calendar.current
+
+        // Get the current month and year components
+        let month = calendar.component(.month, from: currentDate)
+        let year = calendar.component(.year, from: currentDate)
+
+        // Convert the components to strings and add them to your parameters
+        param["tp_month"] = "\(month),"
+        param["tp_year"] = "\(year),"
+
+      //  param["tp_month"] = "12,"
+      //  param["tp_year"] = "2023,"
+
+
         var jsonDatum = Data()
 
         do {
@@ -359,22 +378,22 @@ class TourPlanView: BaseView {
             // Convert JSON data to a string
             if let tempjsonString = String(data: jsonData, encoding: .utf8) {
                 print(tempjsonString)
-     
+
             }
-            
+
 
         } catch {
             print("Error converting parameter to JSON: \(error)")
         }
-        
+
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
-        
+
        // {"tableName":"getall_tp","sfcode":"MR6028","division_code":"44,","Rsf":"MR6028","sf_type":"1","Designation":"MR","state_code":"41","subdivision_code":"170,","tp_month":"12,","tp_year":"2023,"}
-        
-        
+
+
       //  "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
+
         self.tourplanVC.getAllPlansData(toSendData, paramData: jsonDatum) { result in
             switch result{
             case .success(let respnse):
@@ -401,7 +420,7 @@ class TourPlanView: BaseView {
     }
     
     func toMapAPIresponse(completion: @escaping (Bool) -> Void) {
-        
+
         var apiArrofSessions = [SessionDetails]()
         apiArrofSessions.append(contentsOf: (self.sessionResponse?.current ?? [SessionDetails]()))
         apiArrofSessions.append(contentsOf: (self.sessionResponse?.previous ?? [SessionDetails]()))
@@ -409,31 +428,31 @@ class TourPlanView: BaseView {
 
         let toutplans = TourPlanArr()
         var allDayPlans = [SessionDetailsArr]()
-       
-        
-        
+
+
+
         apiArrofSessions.enumerated().forEach { ApisessionDetailsIndex, ApisessionDetails in
-            
+
 //            if ApisessionDetails.mnth == "12" && ApisessionDetails.yr == "2023" && ApisessionDetails.dayno == "1" {
 //                dump(ApisessionDetails)
 //                dump(ApisessionDetails.rejectionReason)
 //            }
-            
-      
-            
+
+
+
             let sessiondetArr = SessionDetailsArr()
-          
+
             if ApisessionDetails.rejectionReason != "" {
                 dump(ApisessionDetails)
                 sessiondetArr.rejectionReason = ApisessionDetails.rejectionReason
                // sessiondetArr.isDataSentToApi = false
-                
+
             } else {
              //   sessiondetArr.isDataSentToApi = true
             }
             sessiondetArr.isDataSentToApi = true
             sessiondetArr.isForWeekoff = ApisessionDetails.fwFlg == "Y" ? true : false
-           
+
             sessiondetArr.changeStatus = ApisessionDetails.changeStatus
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -449,11 +468,11 @@ class TourPlanView: BaseView {
             } else {
                 print("Failed to convert string to date.")
             }
-            
+
             sessiondetArr.changeStatus = ApisessionDetails.changeStatus
             sessiondetArr.entryMode = ApisessionDetails.entryMode
- 
-            
+
+
             if ApisessionDetails.wtCode != "" {
                 let sessionDetail = SessionDetail()
                 sessionDetail.FWFlg = ApisessionDetails.fwFlg
@@ -508,7 +527,7 @@ class TourPlanView: BaseView {
                // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
                 sessiondetArr.sessionDetails.append(sessionDetail)
            }
-            
+
             if ApisessionDetails.wtCode3 != "" {
                 let sessionDetail = SessionDetail()
                 sessionDetail.FWFlg = ApisessionDetails.fwFlg3
@@ -537,26 +556,26 @@ class TourPlanView: BaseView {
                 sessiondetArr.sessionDetails.append(sessionDetail)
            }
             allDayPlans.append(sessiondetArr)
-            
- 
+
+
         }
         toutplans.arrOfPlan = allDayPlans
        // let eachDatePlan = EachDatePlan()
        // eachDatePlan.tourPlanArr.append(toutplans)
        // AppDefaults.shared.eachDatePlan = eachDatePlan
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        
+
         AppDefaults.shared.tpArry.arrOfPlan = allDayPlans
- 
-        
+
+
         AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
-        
-        
-        
+
+
+
         AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-        
-        
-        
+
+
+
         let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
         if !initialsavefinish {
             print("Error")
@@ -605,17 +624,26 @@ class TourPlanView: BaseView {
 //                    }
 //                }
 //        }
+        var isRejected = Bool()
         if !thisMonthPaln.isEmpty {
-            if !thisMonthPaln[0].rejectionReason.isEmpty {
-               // var isTodisableApproval = true
-                self.rejectionReason.text = thisMonthPaln[0].rejectionReason
-                self.rejectionVIew.isHidden = false
-                self.rejectionVIewHeightconst.constant = 70
-            } else {
-                self.rejectionVIew.isHidden = true
-                self.rejectionVIewHeightconst.constant = 0
+            thisMonthPaln.forEach { aSessionArr in
+                if aSessionArr.rejectionReason == "" {
+                    isRejected = false
+                } else {
+                    isRejected = true
+                }
             }
             
+        }
+        
+        if isRejected {
+           // var isTodisableApproval = true
+            self.rejectionReason.text = thisMonthPaln[0].rejectionReason
+            self.rejectionVIew.isHidden = false
+            self.rejectionVIewHeightconst.constant = 70
+        } else {
+            self.rejectionVIew.isHidden = true
+            self.rejectionVIewHeightconst.constant = 0
         }
        
         toEnableApprovalBtn(totaldate: date, filleddate: thisMonthPaln.count)
@@ -633,7 +661,7 @@ class TourPlanView: BaseView {
         
         if filleddate >= totalDays {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: true)
-            self.planningLbl.text = "Planned"
+            self.planningLbl.text = "TP Planning completed / Submission Pending"
             toToggleApprovalState(true)
         } else {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
@@ -684,7 +712,7 @@ class TourPlanView: BaseView {
     
     
     
-    func toAppendWeeklyoffs(date: [String], rawDate: [Date]) {
+    func toAppendWeeklyoffs(date: [String], rawDate: [Date], isHolidayDict: [String: Bool]) {
         
         AppDefaults.shared.eachDatePlan.weekoffsDates = rawDate
         
@@ -700,14 +728,72 @@ class TourPlanView: BaseView {
 
             if includedSessionArr.count == 0 {
                 AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
+                    
+                    
+                  //  let dateArray = [/* Your Date array */]
+                  //  let dateBoolDictionary = [Date: Bool](/* Your [Date: Bool] dictionary */)
+                    var isTrue = Bool()
+                    let dateStr = toModifyDate(date: adate)
+                    
+                    
+                    isHolidayDict.forEach { (key, value) in
+                        if key == dateStr && value == true {
+                            isTrue = true
+                        }
+                    }
+                
+
+                  
+                    
+                  // let isTrue = isHolidayDict[dateStr]
+
                     let aSession = SessionDetail()
                     let aSessionDetArr = SessionDetailsArr()
                     aSession.isForFieldWork = false
-                    aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-                    aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+              
+
+                    
+                    if isTrue {
+                        
+                        self.holidays?.forEach({ aholiday in
+                            var toCompareStr = ""
+                            let dateString = aholiday.holiday_Date
+
+                            let dateFormatter = DateFormatter()
+                            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+                            if let date = dateFormatter.date(from: dateString ?? "") {
+                                let outputFormatter = DateFormatter()
+                                outputFormatter.dateFormat = "d MMMM yyyy"
+                                
+                                let formattedString = outputFormatter.string(from: date)
+                                print(formattedString) // Output: "1 January 2023"
+                                toCompareStr = formattedString
+                            } else {
+                                print("Failed to convert string to Date.")
+                            }
+                            
+                            if toCompareStr == dateStr {
+                                aSession.WTCode = aholiday.wtcode
+                                //self.weeklyOff?.wtcode ?? ""
+                                aSession.WTName =  aholiday.wtname
+                            }
+                        })
+                        
+
+                        aSessionDetArr.isForWeekoff = false
+                        aSessionDetArr.isForHoliday = true
+                    } else {
+                        aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+                        aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+                        aSessionDetArr.isForWeekoff = true
+                        aSessionDetArr.isForHoliday = false
+                    }
+                    
+            
                     aSessionDetArr.date = toModifyDate(date: adate)
                     aSessionDetArr.rawDate = adate
-                    aSessionDetArr.isForWeekoff = true
+                    
                     aSessionDetArr.isDataSentToApi = false
                     aSessionDetArr.sessionDetails.append(aSession)
                     includedSessionArr.append(aSessionDetArr)
@@ -725,6 +811,15 @@ class TourPlanView: BaseView {
         }
    
         let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//        toSetParams(temptpArray.arrOfPlan) { result in
+//            switch result {
+//
+//            case .success(_):
+//                print("Uploaded")
+//            case .failure(_):
+//                print("Not uploaded")
+//            }
+//        }
         if !savefinish {
             print("Error")
         } else {
@@ -813,9 +908,9 @@ class TourPlanView: BaseView {
                 case .success(let responseJSON):
                     dump(responseJSON)
                     
-                    unsentIndices.forEach { index in
-                        unSavedPlans[index].isDataSentToApi = true
-                    }
+//                    unsentIndices.forEach { index in
+//                        unSavedPlans[index].isDataSentToApi = true
+//                    }
                     
                     var temptpArray = [TourPlanArr]()
                     
@@ -823,9 +918,31 @@ class TourPlanView: BaseView {
                         temptpArray.append(eachDayPlan)
                     }
                     
+                    var temparrOfplan = [SessionDetailsArr]()
+                    
                     temptpArray.forEach({ tpArr in
-                        tpArr.arrOfPlan =  unSavedPlans//self.arrOfPlan
+                        temparrOfplan = tpArr.arrOfPlan
+                        //unSavedPlans//self.arrOfPlan
                     })
+                    
+                    var apiSentPlans = temparrOfplan.filter { ASessionDetailsArr in
+                        ASessionDetailsArr.isDataSentToApi == true
+                     }
+                     
+                     apiSentPlans.append(contentsOf: unSavedPlans)
+                     
+                     temparrOfplan = apiSentPlans
+                     
+                     temparrOfplan.forEach { plans in
+                         plans.isDataSentToApi = true
+                     }
+                     
+                     temptpArray.forEach({ tpArr in
+                         tpArr.arrOfPlan = temparrOfplan
+                         //unSavedPlans//self.arrOfPlan
+                     })
+                    
+                    
                 
                     AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
                                 let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
@@ -835,12 +952,14 @@ class TourPlanView: BaseView {
                    // self.toLoadData()
                    if isFromFirstLoad {
                        self.fetchDataFromServer()
-                    }
+                   } else {
+                       
+                   }
                 case .failure(_):
                     self.toCreateToast("The operation couldn’t be completed. Try again later")
                    if isFromFirstLoad {
                        self.initialSetups()
-                       // self.isHidden = false
+                       self.isHidden = false
                     }
                 }
             }
@@ -852,57 +971,90 @@ class TourPlanView: BaseView {
     }
     
     
+    func sendToApproval() {
+        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+        let dateFormatter = DateFormatter()
+
+        var param = [String: Any]()
+        param["tableName"] = "tpsend_appr"
+        param["SF"] = appdefaultSetup.sfCode
+        param["SFName"] = appdefaultSetup.sfName
+        param["DivCode"] = appdefaultSetup.divisionCode
+        param["Rsf"] = appdefaultSetup.sfCode
+        param["Designation"] =  appdefaultSetup.dsName
+        param["state_code"] =  appdefaultSetup.stateCode
+        param["subdivision_code"] =  appdefaultSetup.subDivisionCode
+        let thisMonth = self.currentPage ?? Date()
+        dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+        let dayNo = dateFormatter.string(from: thisMonth)
+        let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+        param["TPYear"] = anotherDateArr[2] // 11
+      //  param["Tour_Month"] = anotherDateArr[0]// 11
+        param["TPMonth"] = anotherDateArr[0]
+        
+// {"tableName":"tpsend_appr","DivCode":"1","SFName":"SATHISH MR 2","SF":"MR1932","TPMonth":"07","TPYear":"2023"}
+        
+       // {"tableName":"gettpdetail","sfcode":"MR1932","Month":"7","Year":"2023","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
+        
+        dump(param)
+        
+        
+        
+        
+        var jsonDatum = Data()
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: param, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+                
+            }
+            
+            
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        self.sessionResponseVM = SessionResponseVM()
+        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .sendToApproval, paramData: jsonDatum) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                //completion(.success(response))
+                dump(response)
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+              // completion(.failure(error))
+            }
+        }
+    }
+    
     @IBAction func didTApSendToApproval(_ sender: UIButton) {
         
-        let unSavedPlans = self.tempArrofPlan?.filter({ toFilterSessionsArr in
-            toFilterSessionsArr.isDataSentToApi == false
-        })
-        
-        var unsentIndices = [Int]()
-        
-        dump(unSavedPlans)
-        if !(unSavedPlans?.isEmpty ?? true) {
-             unsentIndices = self.tempArrofPlan?.indices.filter { unSavedPlans?[$0].isDataSentToApi == false } ?? [Int]()
-        }
-      
-        
-        dump(unSavedPlans)
-      
-        toSendUnsavedObjects(unSavedPlans: unSavedPlans ?? [SessionDetailsArr](), unsentIndices: unsentIndices, isFromFirstLoad: false)
-//        if unSavedPlans?.count ?? 0 > 0 {
-//            self.toSetParams(unSavedPlans ?? [SessionDetailsArr]()) {
-//                responseResult in
-//                switch responseResult {
-//                case .success(let responseJSON):
-//                    dump(responseJSON)
+        sendToApproval()
+//        let unSavedPlans = self.tempArrofPlan?.filter({ toFilterSessionsArr in
+//            toFilterSessionsArr.isDataSentToApi == false
+//        })
 //
-//                    unsentIndices.forEach { index in
-//                        unSavedPlans?[index].isDataSentToApi = true
-//                    }
+//        var unsentIndices = [Int]()
 //
-//                    var temptpArray = [TourPlanArr]()
-//
-//                    AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
-//                        temptpArray.append(eachDayPlan)
-//                    }
-//
-//                    temptpArray.forEach({ tpArr in
-//                        tpArr.arrOfPlan =  unSavedPlans//self.arrOfPlan
-//                    })
-//
-//                    AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
-//                                let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-//                                     if !savefinish {
-//                                         print("Error")
-//                                     }
-//                   // self.toLoadData()
-//                case .failure(_):
-//                    self.toCreateToast("The operation couldn’t be completed. Try again later")
-//                }
-//            }
-//        } else {
-//            self.toCreateToast("Already this month plans are submited for approval.")
+//        dump(unSavedPlans)
+//        if !(unSavedPlans?.isEmpty ?? true) {
+//             unsentIndices = unSavedPlans?.indices.filter { unSavedPlans?[$0].isDataSentToApi == false } ?? [Int]()
 //        }
+//
+//
+//        dump(unSavedPlans)
+//
+//        toSendUnsavedObjects(unSavedPlans: unSavedPlans ?? [SessionDetailsArr](), unsentIndices: unsentIndices, isFromFirstLoad: false)
+        
+        
         
     }
     
@@ -1051,10 +1203,56 @@ class TourPlanView: BaseView {
 //        let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0")
 //        let weekoffDates = getDatesForDayIndex(weekoffIndex ?? 0, numberOfMonths: 3)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: toCheckMonthVariations())
+        let holidaysSetupArr = DBManager.shared.getHolidays()
+        self.holidays = holidaysSetupArr
+       
+        responseHolidaydates.removeAll()
+        
+
+        self.holidays?.forEach({ aholiday in
+            responseHolidaydates.append(aholiday.holiday_Date ?? "")
+           
+        })
+        
+     //   LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: toCheckMonthVariations())
 
         let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
+        //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
+      
+        
         if !isAlldatesAppended {
+            
+            let dateString = self.responseHolidaydates
+
+            var holidayDates = [Date]()
+            var holidayDateStr = [String]()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            holidayDates.removeAll()
+            dateString.forEach { aDate in
+                if let date = dateFormatter.date(from: aDate) {
+                    // Now 'date' contains the Date object
+                    print(date)
+                    holidayDates.append(date)
+                } else {
+                    print("Failed to convert string to Date.")
+                }
+            }
+            holidayDateStr.removeAll()
+            holidayDates.forEach { rawDate in
+                holidayDateStr.append(toModifyDate(date: rawDate))
+            }
+            var isHolidayDict = [String: Bool]()
+            holidayDates.forEach { aDate in
+                
+                let dateStr = toModifyDate(date: aDate)
+                
+                isHolidayDict[dateStr] = true
+            }
+            dump(isHolidayDict)
+            
+            
+            
             let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0") ?? 0
             let weekoffDates = getDatesForDayIndex(weekoffIndex + 1)
             self.weeklyOffRawDates.append(contentsOf: weekoffDates)
@@ -1062,13 +1260,29 @@ class TourPlanView: BaseView {
             self.weeklyOffRawDates.forEach { rawDate in
                 weeklyOffDates.append(toModifyDate(date: rawDate))
             }
-            toAppendWeeklyoffs(date: self.weeklyOffDates, rawDate:   self.weeklyOffRawDates)
+            weeklyOffRawDates.forEach { aWeekoffDate in
+                let aweekoffStrr = toModifyDate(date: aWeekoffDate)
+                isHolidayDict[aweekoffStrr] = false
+            }
+           
+            dump(isHolidayDict)
+            
+            holidayDates.forEach { aHoliday in
+                weeklyOffRawDates.append(aHoliday)
+            }
+            
+            holidayDateStr.forEach { aholidayStr in
+                weeklyOffDates.append(aholidayStr)
+            }
+            
+            
+            
+            toAppendWeeklyoffs(date: self.weeklyOffDates, rawDate: self.weeklyOffRawDates, isHolidayDict: isHolidayDict)
         } else {
             toLoadData()
         }
-        let holidaysSetupArr = DBManager.shared.getHolidays()
-        self.holidays = holidaysSetupArr[0]
-        
+       // toAppendWeeklyoffs(date: holidayDateStr, rawDate: holidayDates, isForHoliday: true)
+
         
         self.selectedDate = ""
         tourPlanCalander.scrollEnabled = false
@@ -1279,7 +1493,7 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         cell.toPopulateCell(modal ?? SessionDetailsArr())
         
         cell.addTap {
-            self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: modal?.isForWeekoff, isforHoliday: false)
+            self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: modal?.isForWeekoff, isforHoliday: modal?.isForHoliday)
         }
         
         cell.optionsIV.addTap {
@@ -1485,14 +1699,16 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         //dump(self.weeklyOffRawDates)
         //dump(self.weeklyOffDates)
         var isForHoliday = Bool()
-        let responsedates =  self.holidays?.holiday_Date
-
-        if toModifyDate(date: date, isForHoliday: true) == responsedates {
-            isForHoliday = true
-        }
+        
 
         
-        cell.addedIV.isHidden = isExist  ? false : true
+ 
+        
+
+
+        
+        cell.addedIV.isHidden = isExist || isForHoliday || isForHoliday  ? false : true
+        cell.addedIV.tintColor = isExist ? UIColor.green : UIColor.red
         //|| isWeeklyoff || isForHoliday
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
@@ -1513,8 +1729,14 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         }
         
 
-        cell.addTap {
-         
+        cell.addTap { [self] in
+            
+            responseHolidaydates.forEach { aHolisayDate in
+                if toModifyDate(date: date, isForHoliday: true) == aHolisayDate {
+                    isForHoliday = true
+
+                }
+            }
             self.selectedDate =  self.toTrimDate(date: date)
             self.tourPlanCalander.collectionView.reloadData()
             

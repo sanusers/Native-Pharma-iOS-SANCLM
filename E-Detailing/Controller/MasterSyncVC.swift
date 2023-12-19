@@ -236,6 +236,11 @@ class MasterSyncVC : UIViewController {
     
     func fetchmasterData(type : MasterInfo) {
         
+        if type == .getTP {
+            toPostDataToserver(type : type)
+
+        }
+        
         print(type.getUrl)
         print(type.getParams)
         
@@ -370,7 +375,7 @@ extension MasterSyncVC : tableViewProtocols {
     @objc func syncAllAction (_ sender : UIButton) {
         
         self.masterData = [MasterInfo.slides,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.myDayPlan,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-                           MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays]
+                           MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
       //  self.collectionView.reloadData()
@@ -468,6 +473,14 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text = String(DBManager.shared.getMapCompDet().count)
         case .docFeedback:
             cell.lblCount.text = String(DBManager.shared.getFeedback().count)
+        case .holidays:
+            cell.lblCount.text = String(DBManager.shared.getHolidays().count)
+        case .weeklyOff:
+            cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
+        case .tableSetup:
+            cell.lblCount.text = String(DBManager.shared.getTableSetUp().count)
+        case .getTP:
+            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
         default:
             cell.lblCount.text = "0"
         }
@@ -504,4 +517,284 @@ struct MasterCellData {
     
     var cellType : MasterCellType!
     var isSelected : Bool!
+}
+
+
+extension MasterSyncVC {
+    
+    func getAllPlansData(_ param: [String: Any], paramData: Data, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
+        let sessionResponseVM = SessionResponseVM()
+        sessionResponseVM.getTourPlanData(params: param, api: .getAllPlansData, paramData: paramData) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                completion(.success(response))
+                dump(response)
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    
+        func toPostDataToserver(type : MasterInfo) {
+    
+            
+            
+            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+    
+            var  arrOfPlan = [SessionDetailsArr]()
+            var tpArray =  [TourPlanArr]()
+    
+            AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+                tpArray.append(eachDayPlan)
+            }
+            tpArray.forEach({ tpArr in
+                arrOfPlan = tpArr.arrOfPlan
+            })
+    
+    
+            let unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+                toFilterSessionsArr.isDataSentToApi == false
+            })
+    
+            var unsentIndices = [Int]()
+    
+            dump(unSavedPlans)
+            if !(unSavedPlans.isEmpty ) {
+                unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false }
+            }
+    
+    
+            dump(unsentIndices)
+    
+            if unSavedPlans.count > 0 {
+                self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
+            } else {
+
+                let toSendData = type.getParams
+
+                 self.getAllPlansData(toSendData, paramData: Data()) { result in
+                     switch result{
+                     case .success(let respnse):
+                         dump(respnse)
+                         DBManager.shared.saveTPtoMasterData(modal: respnse) { isCompleted in
+                             if isCompleted {
+                                 let date = Date().toString(format: "dd MMM yyyy hh:mm a")
+                                 self.lblSyncStatus.text = "Last Sync: " + date
+                             }
+                         }
+                     case .failure( let error):
+                      dump(error)
+
+                      //  self.toCreateToast("Failed connecting to server!")
+                     }
+                 }
+            }
+    
+        }
+    
+    func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, Error>) -> ())  {
+        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+
+        
+
+        
+        
+        
+
+        
+        
+        var param = [String: Any]()
+        param["SFCode"] = appdefaultSetup.sfCode
+        param["SFName"] = appdefaultSetup.sfName
+        param["Div"] = appdefaultSetup.divisionCode
+
+
+        // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
+        
+        var sessions = [JSON]()
+        
+        arrOfPlan.enumerated().forEach { index, allDayPlans in
+            allDayPlans.sessionDetails?.enumerated().forEach { sessionIndex, session in
+                _ = [String: Any]()
+                var index = String()
+                if sessionIndex == 0 {
+                    index = ""
+                } else {
+                    index = "\(sessionIndex + 1)"
+                }
+                
+                var drIndex = String()
+                if sessionIndex == 0 {
+                    drIndex = "_"
+                } else if sessionIndex == 1{
+                    drIndex = "_two_"
+                } else if sessionIndex == 2 {
+                    drIndex = "_three_"
+                }
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "d MMMM yyyy"
+                let date =  dateFormatter.string(from:  allDayPlans.rawDate)
+                let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
+                dateFormatter.dateFormat = "EEEE"
+                let day = dateFormatter.string(from: allDayPlans.rawDate)
+                param["Yr"] = dateArr[2]//2023
+               // param["Day"] =  dateArr[0]//1
+               // param["Tour_Year"] = dateArr[2] // 2023
+               // param["tpmonth"] = dateArr[1]// Nov
+                param["tpday"] = day// Wednesday
+                
+                
+                dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+                let dayNo = dateFormatter.string(from: allDayPlans.rawDate)
+                let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+                param["dayno"] = anotherDateArr[1] // 11
+              //  param["Tour_Month"] = anotherDateArr[0]// 11
+                param["Mnth"] = anotherDateArr[0]
+                
+                let tpDtDate = dayNo.replacingOccurrences(of: "/", with: "-")
+                param["TPDt"] =  tpDtDate//2023-11-01 00:00:00
+                param["FWFlg\(index)"] = session.FWFlg
+                param["HQCodes\(index)"] = session.HQCodes
+                param["HQNames\(index)"] = session.HQNames
+                param["WTCode\(index)"] = session.WTCode
+                param["WTName\(index)"] = session.WTName
+                param["chem\(drIndex)code"] = session.chemCode
+                param["chem\(drIndex)name"] = session.chemName
+                param["ClusterCode\(index)"] = session.clusterCode
+                param["ClusterName\(index)"] = session.clusterName
+                param["Dr\(drIndex)Code"] = session.drCode
+                param["Dr\(drIndex)Name"] = session.drName
+                param["jwCodes\(index)"] = session.jwCode
+                param["jwNames\(index)"] = session.jwName
+                
+                if sessionIndex == 0 {
+                    param["Stockist\(drIndex)Name"] = session.stockistName
+                    param["Stockist\(drIndex)Code"] = session.stockistCode
+                } else  {
+                    param["Stockist\(drIndex)code"] = session.stockistCode
+                    param["StockistName\(index)"] = session.stockistName
+                }
+              
+                param["DayRemarks\(index)"] = session.remarks
+            }
+            param["submittedTime"] = "\(Date())"
+            param["Mode"] = "Android-App"
+            param["Entry_mode"] = "Apps"
+            param["Approve_mode"] = ""
+            param["Approved_time"] = ""
+            param["app_version"] = "N 1.6.9"
+            sessions.append(param)
+        }
+        dump(sessions)
+        
+        
+        
+        
+        var jsonDatum = Data()
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: sessions, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+                
+            }
+            
+            
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        let sessionResponseVM = SessionResponseVM()
+        sessionResponseVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: jsonDatum) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                completion(.success(response))
+                dump(response)
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool) {
+        if unSavedPlans.count > 0 {
+            self.toSetParams(unSavedPlans ) {
+                responseResult in
+                switch responseResult {
+                case .success(let responseJSON):
+                    dump(responseJSON)
+                    
+//                    unsentIndices.forEach { index in
+//                        unSavedPlans[index].isDataSentToApi = true
+//                    }
+                    
+                    var temptpArray = [TourPlanArr]()
+                    
+                    AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
+                        temptpArray.append(eachDayPlan)
+                    }
+                    
+                    var temparrOfplan = [SessionDetailsArr]()
+                    
+                    temptpArray.forEach({ tpArr in
+                        temparrOfplan = tpArr.arrOfPlan
+                        //unSavedPlans//self.arrOfPlan
+                    })
+                    
+                   var apiSentPlans = temparrOfplan.filter { ASessionDetailsArr in
+                       ASessionDetailsArr.isDataSentToApi == true
+                    }
+                    
+                    apiSentPlans.append(contentsOf: unSavedPlans)
+                    
+                    temparrOfplan = apiSentPlans
+                    
+                    temparrOfplan.forEach { plans in
+                        plans.isDataSentToApi = true
+                    }
+                    
+                    temptpArray.forEach({ tpArr in
+                        tpArr.arrOfPlan = temparrOfplan
+                        //unSavedPlans//self.arrOfPlan
+                    })
+                    
+                    
+                
+                    AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+                                let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+                                     if !savefinish {
+                                         print("Error")
+                                     }
+                   // self.toLoadData()
+                 //  if isFromFirstLoad {
+                  //     self.fetchDataFromServer()
+                //   } else {
+                       
+                 //  }
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        } else {
+          //  self.initialSetups()
+          //  self.toCreateToast("Already this month plans are submited for approval.")
+        }
+
+    }
+    
+
 }

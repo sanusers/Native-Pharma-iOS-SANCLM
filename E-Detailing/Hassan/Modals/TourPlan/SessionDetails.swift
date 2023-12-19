@@ -356,6 +356,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     
     
     public func encode(with coder: NSCoder) {
+        coder.encode(isForHoliday, forKey: Key.isForHoliday.rawValue)
         coder.encode(isForWeekoff, forKey: Key.isForWeekoff.rawValue)
         coder.encode(isDataSentToApi, forKey: Key.isDataSentToApi.rawValue)
         coder.encode(changeStatus, forKey: Key.changeStatus.rawValue)
@@ -372,7 +373,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
 
     
     public required convenience init?(coder decoder: NSCoder) {
-        
+        let misForHoliday =   decoder.decodeObject(forKey: Key.isForHoliday.rawValue) as! Bool
         let misForWeekoff =   decoder.decodeObject(forKey: Key.isForWeekoff.rawValue) as! Bool
         let mchangeStatus =   decoder.decodeObject(forKey: Key.changeStatus.rawValue) as! String
         let misDataSentToApi = decoder.decodeObject(forKey: Key.isDataSentToApi.rawValue) as! Bool
@@ -384,11 +385,11 @@ public class SessionDetailsArr: NSObject, NSCoding  {
         let mrejectionReason = decoder.decodeObject(forKey: Key.rejectionReason.rawValue) as! String
         let msessionDetails = decoder.decodeObject(forKey: Key.sessionDetails.rawValue) as! [SessionDetail]
        // let misSucessfullySubmited = decoder.decodeObject(forKey: Key.isSucessfullySubmited.rawValue) as! Bool
-        self.init(isForWeekoff: misForWeekoff, isDataSentToApi: misDataSentToApi, changeStatus: mchangeStatus, date: mdate, rawDate: mrawDate, day: mday, dayNo: mdayNo, entryMode: mentryMode, rejectionReason: mrejectionReason, sessionDetails: msessionDetails)
+        self.init(isForHoliday: misForHoliday, isForWeekoff: misForWeekoff, isDataSentToApi: misDataSentToApi, changeStatus: mchangeStatus, date: mdate, rawDate: mrawDate, day: mday, dayNo: mdayNo, entryMode: mentryMode, rejectionReason: mrejectionReason, sessionDetails: msessionDetails)
             //, isSucessfullySubmited: misSucessfullySubmited
     }
     
-    
+    var isForHoliday: Bool?
     var isForWeekoff : Bool!
     var isDataSentToApi : Bool!
     var changeStatus : String!
@@ -401,8 +402,9 @@ public class SessionDetailsArr: NSObject, NSCoding  {
    // var isSucessfullySubmited: Bool?
     var sessionDetails : [SessionDetail]!
     
-    init(isForWeekoff: Bool, isDataSentToApi: Bool, changeStatus: String, date: String, rawDate: Date, day: String, dayNo: String, entryMode: String, rejectionReason: String, sessionDetails: [Any]) {
+    init( isForHoliday : Bool,isForWeekoff: Bool, isDataSentToApi: Bool, changeStatus: String, date: String, rawDate: Date, day: String, dayNo: String, entryMode: String, rejectionReason: String, sessionDetails: [Any]) {
      //, isSucessfullySubmited: Bool
+        self.isForHoliday = isForHoliday
         self.isForWeekoff = isForWeekoff
         self.isDataSentToApi = isDataSentToApi
         self.changeStatus = changeStatus
@@ -418,6 +420,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     
     
     enum Key: String, CodingKey {
+        case isForHoliday
         case isForWeekoff
         case isDataSentToApi
         case changeStatus
@@ -433,6 +436,7 @@ public class SessionDetailsArr: NSObject, NSCoding  {
     }
 
     override init() {
+        isForHoliday = Bool()
         isForWeekoff = Bool()
         isDataSentToApi  = Bool()
         changeStatus = String()
