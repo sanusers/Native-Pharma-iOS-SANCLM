@@ -1115,7 +1115,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Ua-5J-o2l" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="983" y="-176"/>
+            <point key="canvasLocation" x="976" y="-121"/>
         </scene>
         <!--Pop OverVC-->
         <scene sceneID="cH4-01-PLR">
@@ -1183,7 +1183,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="51S-gI-vf8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1815" y="-176"/>
+            <point key="canvasLocation" x="1729" y="-121"/>
         </scene>
     </scenes>
     <resources>

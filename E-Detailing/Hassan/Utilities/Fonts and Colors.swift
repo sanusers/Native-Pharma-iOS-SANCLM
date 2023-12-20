@@ -17,6 +17,11 @@ class Themes: NSObject {
 
     static let appWhiteColor = UIColor.init(red: 255, green: 255, blue: 255)
     static let appDarkBlueColor = UIColor.init(red: 53, green: 57, blue: 77)
+    static let appLightPink  = UIColor.init(red: 241, green: 83, blue: 110)
+    
+    static let appGreen = UIColor.init(red: 0, green: 198, blue: 137)
+    static let blurredappGreen = UIColor.init(red: 0, green: 198, blue: 137).withAlphaComponent(0.85)
+  
 }
 
 
@@ -27,8 +32,10 @@ extension UIColor {
     static var appSelectionColor = Themes.appSelectionColor
     static var appTextColor = Themes.appTextColor
     static var appWhiteColor = Themes.appWhiteColor
-    
+    static var appLightPink = Themes.appLightPink
     static var calenderMarkerColor = Themes.calenderMarkerColor
+    static var appGreen = Themes.appGreen
+    static var blurredappGreen = Themes.blurredappGreen
 }
 
 extension UIColor {

@@ -1475,7 +1475,7 @@ class TourPlanView: BaseView {
         //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
       
         
-        if !isAlldatesAppended {
+        if isAlldatesAppended {
             
             let dateString = self.responseHolidaydates
 
