@@ -281,6 +281,7 @@ class TourPlanView: BaseView {
     var weeklyOffRawDates = [Date]()
     var responseHolidaydates = [String]()
     var existingDates = [String]()
+    var isRejected = Bool()
     private var currentPage: Date?
     private lazy var today: Date = {
         return Date()
@@ -335,7 +336,7 @@ class TourPlanView: BaseView {
         dump(unsentIndices)
 
         if unSavedPlans.count > 0 {
-            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
+            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true){_ in}
         } else {
             fetchDataFromServer()
         }
@@ -705,15 +706,20 @@ class TourPlanView: BaseView {
 //                    }
 //                }
 //        }
-        var isRejected = Bool()
+       
         if !thisMonthPaln.isEmpty {
-            thisMonthPaln.forEach { aSessionArr in
-                if aSessionArr.changeStatus == "2" {
-                    isRejected = true
-                } else {
-                    isRejected = false
-                }
+            if thisMonthPaln[0].changeStatus == "2" {
+                isRejected = true
+            } else {
+                isRejected = false
             }
+//            thisMonthPaln.forEach { aSessionArr in
+//                if aSessionArr.changeStatus == "2" {
+//
+//                } else {
+//
+//                }
+//            }
             
         }
         
@@ -813,7 +819,7 @@ class TourPlanView: BaseView {
             if sentToApprovalmodal.date ==  toModifyDateAsMonth(date: self.currentPage ?? Date()) {
                 
                 
-                if sentToApprovalmodal.approvalStatus != "0" || sentToApprovalmodal.approvalStatus != "" {
+                if sentToApprovalmodal.approvalStatus == "1" || sentToApprovalmodal.approvalStatus == "3"  {
                     isMonthSent = true
                    // approvalStr = sentToApprovalmodal.approvalStatus
                     sentToApprovalData = sentToApprovalmodal
@@ -830,6 +836,8 @@ class TourPlanView: BaseView {
             planningLbl.text =  sentToApprovalData?.approvalStatus == "1" ? ApprovalStatus.submitted.rawValue :  sentToApprovalData?.approvalStatus == "2" ? ApprovalStatus.rejected.rawValue  : sentToApprovalData?.approvalStatus == "3" ? ApprovalStatus.approved.rawValue : "Planning.."
             //"Waiting for approval"
            // btnSendFOrApproval.titleLabel?.text = "Waiting for approval"
+        } else {
+            
         }
         
         if isRejected &&  isActive {
@@ -839,6 +847,7 @@ class TourPlanView: BaseView {
             if isActive && !isMonthSent {
                 generalButtonsHolder.backgroundColor = .appTextColor
                 btnSendFOrApproval.isUserInteractionEnabled = true
+               
             } else {
                 generalButtonsHolder.backgroundColor = .appSelectionColor
                 btnSendFOrApproval.isUserInteractionEnabled = false
@@ -886,7 +895,7 @@ class TourPlanView: BaseView {
             var sessionDetail = SessionDetail()
 
 
-            if includedSessionArr.count > 0 {
+           
                 AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
                     
                     
@@ -963,7 +972,7 @@ class TourPlanView: BaseView {
                     
                    
                 }
-            }
+            
 
             dump(includedSessionArr)
            // let  temptpArray =  TourPlanArr()
@@ -989,6 +998,7 @@ class TourPlanView: BaseView {
 //        }
         if !savefinish {
             print("Error")
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
         } else {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
             toLoadData()
@@ -1067,7 +1077,7 @@ class TourPlanView: BaseView {
         
     }
     
-    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool) {
+    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool, completion: @escaping (Bool) -> Void) {
         if unSavedPlans.count > 0 {
             self.toSetParams(unSavedPlans ) {
                 responseResult in
@@ -1119,6 +1129,7 @@ class TourPlanView: BaseView {
                    // self.toLoadData()
                    if isFromFirstLoad {
                        self.fetchDataFromServer()
+                       completion(true)
                    } else {
                        
                    }
@@ -1128,6 +1139,7 @@ class TourPlanView: BaseView {
                        self.initialSetups()
                        self.isHidden = false
                     }
+                    completion(false)
                 }
             }
         } else {
@@ -1138,7 +1150,62 @@ class TourPlanView: BaseView {
     }
     
     
-    func sendToApproval() {
+    func toCheckWeatherWeeklyoffPosted(completion: @escaping (Bool) -> Void) {
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+        var  arrOfPlan = [SessionDetailsArr]()
+        var tpArray =  [TourPlanArr]()
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+            tpArray.append(eachDayPlan)
+        }
+        tpArray.forEach({ tpArr in
+            arrOfPlan = tpArr.arrOfPlan
+        })
+        
+        
+        let nonWeekoff = arrOfPlan.filter({ toFilterSessionsArr in
+            toFilterSessionsArr.isForWeekoff == false
+        })
+        
+        
+        var unSavedPlans = [SessionDetailsArr]()
+        
+        if nonWeekoff.isEmpty {
+            unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+                toFilterSessionsArr.isDataSentToApi == false &&  toFilterSessionsArr.isForWeekoff == false
+            })
+        } else {
+            unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+                toFilterSessionsArr.isDataSentToApi == false
+            })
+        }
+        
+        
+        
+        var unsentIndices = [Int]()
+        
+        dump(unSavedPlans)
+        if !(unSavedPlans.isEmpty ) {
+            unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false &&  !unSavedPlans[$0].isForWeekoff }
+        }
+        
+        
+        dump(unsentIndices)
+        
+        if unSavedPlans.count > 0 {
+            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true) {isCompleted in
+                if isCompleted {
+                    completion(true)
+                }
+            }
+        } else {
+            completion(true)
+        }
+    }
+    
+    
+    func callApprovalApi() {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         let dateFormatter = DateFormatter()
 
@@ -1211,6 +1278,16 @@ class TourPlanView: BaseView {
               // completion(.failure(error))
             }
         }
+    }
+    
+    
+    func sendToApproval() {
+        
+        toCheckWeatherWeeklyoffPosted() { isChecked in
+            self.callApprovalApi()
+        }
+        
+
     }
     
     @IBAction func didTApSendToApproval(_ sender: UIButton) {
@@ -1411,7 +1488,18 @@ class TourPlanView: BaseView {
                 if let date = dateFormatter.date(from: aDate) {
                     // Now 'date' contains the Date object
                     print(date)
-                    holidayDates.append(date)
+                    dateFormatter.dateFormat = "yyyy"
+                    let holidayYear = dateFormatter.string(from: date)
+                    let thisYear = dateFormatter.string(from: self.currentPage ?? Date())
+                    
+                    dateFormatter.dateFormat = "MMMM"
+                    
+                    let toRemoveMonth =  dateFormatter.string(from: date)
+                    
+                    if holidayYear == thisYear && toRemoveMonth != "January" {
+                        holidayDates.append(date)
+                    }
+                   
                 } else {
                     print("Failed to convert string to Date.")
                 }
@@ -1870,7 +1958,12 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         cell.addedIV.isHidden = true
 
         self.arrOfPlan?.forEach({ arrPlan in
+            dump(arrPlan.date)
+            if arrPlan.date == "1 January 2024" {
+                print("<---Newyear--->")
+            }
             if arrPlan.date ==  toCompareDate {
+              
                 isExist = true
                 
             }

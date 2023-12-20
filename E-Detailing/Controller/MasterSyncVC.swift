@@ -555,17 +555,32 @@ extension MasterSyncVC {
             tpArray.forEach({ tpArr in
                 arrOfPlan = tpArr.arrOfPlan
             })
-    
-    
-            let unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
-                toFilterSessionsArr.isDataSentToApi == false
+            
+            
+            let nonWeekoff = arrOfPlan.filter({ toFilterSessionsArr in
+                toFilterSessionsArr.isForWeekoff == false
             })
+            
+            
+            var unSavedPlans = [SessionDetailsArr]()
+            
+            if nonWeekoff.isEmpty {
+                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+                       toFilterSessionsArr.isDataSentToApi == false &&  toFilterSessionsArr.isForWeekoff == false
+                   })
+            } else {
+                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+                       toFilterSessionsArr.isDataSentToApi == false
+                   })
+            }
+    
+        
     
             var unsentIndices = [Int]()
     
             dump(unSavedPlans)
             if !(unSavedPlans.isEmpty ) {
-                unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false }
+                unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false &&  !unSavedPlans[$0].isForWeekoff }
             }
     
     
@@ -599,12 +614,6 @@ extension MasterSyncVC {
     
     func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, Error>) -> ())  {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-
-        
-
-        
-        
-        
 
         
         

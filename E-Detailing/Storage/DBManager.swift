@@ -13,7 +13,7 @@ class DBManager {
     
     static let shared = DBManager()
     
-    
+    var existingDates = [String]()
     
     
     // MARK: - Core Data stack
@@ -176,6 +176,8 @@ class DBManager {
        
         if !apiArrofSessions.isEmpty  {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+        } else {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
         }
         
         apiArrofSessions.enumerated().forEach { ApisessionDetailsIndex, ApisessionDetails in
@@ -327,9 +329,92 @@ class DBManager {
         if !initialsavefinish {
             print("Error")
         }
+        
+        
+        if !(modal.current.isEmpty) {
+            let sessionResponseArr = modal.current[0]
+
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+        
+        if !(modal.previous.isEmpty) {
+            let sessionResponseArr = modal.previous[0]
+
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+     
+        if !(modal.next.isEmpty) {
+            let sessionResponseArr = modal.next[0] 
+
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+        
+        
         completion(true)
     }
     
+    func toCinfigureApprovalState(_ sessionDetail: SessionDetails) {
+                // Handle Approval flow
+        
+        LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+        
+        let sentToApprovalModel =  SentToApprovalModel()
+        
+        var sessionDate = Date()
+        let dateString = sessionDetail.tpDt.date
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        if let date = dateFormatter.date(from: dateString) {
+            print(date)
+             sessionDate = date
+        } else {
+            print("Unable to convert the string to a Date.")
+        }
+        
+       
+          sentToApprovalModel.rawDate = sessionDate
+          sentToApprovalModel.date = self.toModifyDateAsMonth(date: sessionDate)
+          sentToApprovalModel.approvalStatus = sessionDetail.changeStatus
+        
+               
+        
+                if LocalStorage.shared.sentToApprovalModelArr.count == 0 {
+                    LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
+                } else {
+                    LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalinfo in
+                        existingDates.append(sentToApprovalinfo.date)
+                    })
+                }
+        
+        
+                if !existingDates.contains(self.toModifyDate(date: sessionDate)) {
+                    LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
+                } else {
+                  
+                }
+        
+        
+                let initialsavefinish = NSKeyedArchiver.archiveRootObject(LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
+                if !initialsavefinish {
+                    print("Error")
+                }
+     
+    }
+    
+    
+    func toModifyDateAsMonth(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        return dateFormatter.string(from: date )
+    }
+    
+    func toModifyDate(date: Date, isForHoliday: Bool? = false) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = (isForHoliday ?? false) ? "yyyy-MM-dd" : "d MMMM yyyy"
+        return dateFormatter.string(from: date )
+    }
 
     func getTP() -> EachDatePlan {
         return NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
