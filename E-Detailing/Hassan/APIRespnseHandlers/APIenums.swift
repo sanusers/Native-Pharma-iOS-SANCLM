@@ -15,7 +15,7 @@ enum APIEnums : String{
     case actionLogin = "action/login"
     case tableSetup = "table/setups"
     case saveTP = "savenew/tp"
-    case sendToApproval = "save/tourplannew"
+    case sendToApproval = "save/tp"
     case getAllPlansData = "get/tp"
     
 }

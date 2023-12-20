@@ -394,8 +394,8 @@ extension MenuView {
         let submittedtime = dateFormatter.string(from: dateString)
         
         param["submitted_time"] = submittedtime
-        param["Mode"] = "Android-Edet"
-        param["Entry_mode"] = "0"
+        param["Mode"] = "iOS-Edet"
+        param["Entry_mode"] = "iOS-Edet"
         param["Approve_mode"] = ""
         param["Approved_time"] = ""
         param["app_version"] = "N 1.6.9"
@@ -931,6 +931,16 @@ class MenuView : BaseView{
     }
     
     
+    func isToAllowEdit() -> Bool {
+        
+        if self.menuVC.isSentForApproval {
+            return true
+        } else if self.menuVC.isWeekoffEditable  {
+            return false
+        }
+        return false
+    }
+    
     func setPageType(_ pagetype: CellType, for session: Int? = nil, andfor sessions: [Int]? = nil) {
         switch pagetype {
             
@@ -938,7 +948,8 @@ class MenuView : BaseView{
             self.cellType = .edit
             addSessionView.isHidden = true
             self.lblSave.text = "Edit"
-            saveView.isHidden = menuVC.isWeekoffEditable ? false : true
+            saveView.isHidden = isToAllowEdit()
+                //menuVC.isWeekoffEditable ? false : true
             //false
             clearview.isHidden = true
             self.selectViewHeightCons.constant = 0

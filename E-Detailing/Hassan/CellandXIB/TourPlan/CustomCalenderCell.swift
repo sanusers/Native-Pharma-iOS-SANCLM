@@ -18,6 +18,7 @@ class CustomCalendarCell: FSCalendarCell {
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         image.image = UIImage(named: "selectIcon")
+        image.tintColor = .calenderMarkerColor
         return image
     }()
     
@@ -48,7 +49,9 @@ class CustomCalendarCell: FSCalendarCell {
         // Adjust the position of the custom label
         contentHolderView.frame = contentView.bounds
         customLabel.frame = CGRect(x: contentHolderView.width - contentHolderView.height / 3 - 10, y: 10, width: contentHolderView.height / 3, height: contentHolderView.height / 3)
-        addedIV.frame = CGRect(x: contentHolderView.width / 2, y: contentHolderView.bottom - contentHolderView.height / 2, width: contentHolderView.width / 2 + contentHolderView.width / 8, height: contentHolderView.height / 2)
+       // x: contentHolderView.width / 2
+        //y: contentHolderView.bottom - contentHolderView.height / 2
+        addedIV.frame = CGRect(x: 0, y: contentHolderView.height / 10, width: contentHolderView.width / 2 + contentHolderView.width / 8, height: contentHolderView.height / 2)
        
     }
 

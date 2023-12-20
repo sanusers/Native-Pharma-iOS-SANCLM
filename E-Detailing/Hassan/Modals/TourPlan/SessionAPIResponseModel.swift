@@ -7,6 +7,10 @@
 
 import Foundation
 
+
+
+
+
 class GeneralResponseModal : Codable {
     let success : String?
     let msg : String?
@@ -34,6 +38,93 @@ class GeneralResponseModal : Codable {
 //class SessionResponseModel: Codable {
 //
 //}
+
+
+enum ApprovalStatus: String {
+    case planning = "planning"
+    case notsubmitted = "not submitted"
+    case submitted = "Planning completed / waiting for approval."
+    case rejected = "Tour plan rejected"
+    case approved = "Tour plan approved"
+}
+
+
+class SentToApprovalModelArr : NSObject, NSCoding {
+    static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
+    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("SentToApprovalModelArr")
+    var sentToApprovalModelArr : [SentToApprovalModel]
+    
+    enum Key: String, CodingKey {
+        case sentToApprovalModelArr
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(sentToApprovalModelArr, forKey: Key.sentToApprovalModelArr.rawValue)
+        
+    }
+    public required convenience init?(coder decoder: NSCoder) {
+        let msentToApprovalModelArr =   decoder.decodeObject(forKey: Key.sentToApprovalModelArr.rawValue) as! [SentToApprovalModel]
+        self.init(sentToApprovalModelArr: msentToApprovalModelArr)
+    }
+    
+    init(sentToApprovalModelArr : [SentToApprovalModel]) {
+        self.sentToApprovalModelArr = sentToApprovalModelArr
+    }
+    override init() {
+        self.sentToApprovalModelArr = [SentToApprovalModel]()
+    }
+}
+
+class SentToApprovalModel: NSObject, NSCoding {
+    
+
+    
+    var date: String!
+    var rawDate: Date!
+    var approvalStatus: String!
+
+    
+    enum Key: String, CodingKey {
+        case date
+        case rawDate
+        case approvalStatus
+
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(date, forKey: Key.date.rawValue)
+        coder.encode(rawDate, forKey: Key.rawDate.rawValue)
+        coder.encode(approvalStatus, forKey: Key.approvalStatus.rawValue)
+
+    }
+    
+    public required convenience init?(coder decoder: NSCoder) {
+        let mdate =   decoder.decodeObject(forKey: Key.date.rawValue) as! String
+        let mrawDate =   decoder.decodeObject(forKey: Key.rawDate.rawValue) as! Date
+        let mapprovalStatus =   decoder.decodeObject(forKey: Key.approvalStatus.rawValue) as! String
+       
+ 
+        self.init(date: mdate, rawDate: mrawDate, approvalStatus: mapprovalStatus)
+    }
+    
+    init(date: String, rawDate: Date, approvalStatus: String) {
+        
+        self.date = date
+        self.rawDate = rawDate
+        self.approvalStatus = approvalStatus
+ 
+        
+    }
+    
+    override init() {
+        self.date = String()
+        self.rawDate = Date()
+        self.approvalStatus = String()
+
+        
+    }
+    
+}
 
 class SessionResponseModel: Codable {
     let previous, current, next: [SessionDetails]
@@ -235,6 +326,80 @@ class SessionDetails: Codable {
         self.submittedTimeDt = container.safeDecodeValue(forKey: .submittedTimeDt)
         self.submittedTime = try container.decode(TimeInfo.self, forKey: .submittedTime)
         self.entryMode = container.safeDecodeValue(forKey: .entryMode)
+    }
+    
+    init() {
+        self.sfCode = String()
+        self.sfName = String()
+        self.div =  String()
+        self.mnth =  String()
+        self.yr =  String()
+        self.dayno = String()
+        self.changeStatus = String()
+        self.rejectionReason = String()
+        self.clusterCode = String()
+        self.clusterCode2 = String()
+        self.clusterCode3 = String()
+        self.clusterName2 = String()
+        self.clusterName3 = String()
+        self.jwNames = String()
+        self.jwCodes2 = String()
+        self.jwNames2 = String()
+        self.jwNames3 = String()
+        self.drCode = String()
+        self.drName = String()
+        self.drTwoName = String()
+        self.drThreeCode = String()
+        self.drThreeName = String()
+        self.chemName = String()
+        self.chemTwoCode = String()
+        self.chemTwoName = String()
+        self.chemThreeName = String()
+        self.stockistCode = String()
+        self.stockistName = String()
+        self.stockistTwoName = String()
+        self.stockistThreeCode = String()
+        self.stockistThreeName = String()
+        self.wtCode2 = String()
+        self.wtCode3 = String()
+        self.access = String()
+        self.eFlag = String()
+        self.hqNames2 = String()
+        self.hqCodes3 = String()
+        self.hqNames3 = String()
+        self.dt = String()
+        self.tpDt  = TimeInfo()
+        self.wtCode = String()
+        self.wtName = String()
+        self.wtName2 = String()
+        self.wtName3 = String()
+        self.clusterName = String()
+        self.clusterSFS = String()
+        self.clusterSFNms = String()
+        self.jwCodes = String()
+        self.jwCodes3 = String()
+        self.drTwoCode = String()
+        self.chemCode = String()
+        self.chemThreeCode = String()
+        self.stockistTwoCode = String()
+        self.fwFlg2  = String()
+        self.tourMonth = Int()
+        self.tourYear = Int()
+        self.day = String()
+       
+        self.tpmonth = String()
+        self.tpday = String()
+        self.dayRemarks = String()
+        self.dayRemarks2 = String()
+        self.dayRemarks3 = String()
+        self.fwFlg = String()
+        self.fwFlg3 = String()
+        self.hqCodes = String()
+        self.hqNames = String()
+        self.hqCodes2 = String()
+        self.submittedTimeDt = String()
+        self.submittedTime = TimeInfo()
+        self.entryMode = String()
     }
 }
 

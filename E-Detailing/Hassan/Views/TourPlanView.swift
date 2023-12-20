@@ -19,12 +19,10 @@ extension TourPlanView: PopOverVCDelegate {
         else if index == 1 {
             let modal = self.tempArrofPlan?[SelectedArrIndex]
             self.toRemoveSession(modal ?? SessionDetailsArr())
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
-            self.toToggleApprovalState(false)
+           // LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+           // self.toToggleApprovalState(false)
         }
     }
-    
-
     
     
 }
@@ -150,11 +148,12 @@ extension TourPlanView {
                 param["DayRemarks\(index)"] = session.remarks
             }
             param["submittedTime"] = "\(Date())"
-            param["Mode"] = "Android-App"
-            param["Entry_mode"] = "Apps"
+            param["Mode"] = "iOS-Edet"
+            param["Entry_mode"] = "iOS-Edet"
             param["Approve_mode"] = ""
             param["Approved_time"] = ""
             param["app_version"] = "N 1.6.9"
+            
             sessions.append(param)
         }
         dump(sessions)
@@ -281,6 +280,7 @@ class TourPlanView: BaseView {
     var weeklyOffDates = [String]()
     var weeklyOffRawDates = [Date]()
     var responseHolidaydates = [String]()
+    var existingDates = [String]()
     private var currentPage: Date?
     private lazy var today: Date = {
         return Date()
@@ -305,42 +305,42 @@ class TourPlanView: BaseView {
        // fetchDataFromServer()
     }
     
-//    func toPostDataToserver() {
-//
-//        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-//
-//        var  arrOfPlan = [SessionDetailsArr]()
-//        var tpArray =  [TourPlanArr]()
-//
-//        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
-//            tpArray.append(eachDayPlan)
-//        }
-//        tpArray.forEach({ tpArr in
-//            arrOfPlan = tpArr.arrOfPlan
-//        })
-//
-//
-//        let unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
-//            toFilterSessionsArr.isDataSentToApi == false
-//        })
-//
-//        var unsentIndices = [Int]()
-//
-//        dump(unSavedPlans)
-//        if !(unSavedPlans.isEmpty ) {
-//            unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false }
-//        }
-//
-//
-//        dump(unsentIndices)
-//
-//        if unSavedPlans.count > 0 {
-//            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
-//        } else {
-//            fetchDataFromServer()
-//        }
-//
-//    }
+    func toPostDataToserver() {
+
+        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+
+        var  arrOfPlan = [SessionDetailsArr]()
+        var tpArray =  [TourPlanArr]()
+
+        AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+            tpArray.append(eachDayPlan)
+        }
+        tpArray.forEach({ tpArr in
+            arrOfPlan = tpArr.arrOfPlan
+        })
+
+
+        let unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+            toFilterSessionsArr.isDataSentToApi == false
+        })
+
+        var unsentIndices = [Int]()
+
+        dump(unSavedPlans)
+        if !(unSavedPlans.isEmpty ) {
+            unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false }
+        }
+
+
+        dump(unsentIndices)
+
+        if unSavedPlans.count > 0 {
+            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
+        } else {
+            fetchDataFromServer()
+        }
+
+    }
     
     
     func fetchDataFromServer() {
@@ -400,7 +400,9 @@ class TourPlanView: BaseView {
                 self.sessionResponse = respnse
                 self.toMapAPIresponse { iscompleted in
                    if iscompleted {
-                       self.initialSetups()
+                       
+                      self.initialSetups()
+                       self.setupBtnAfterSubmission()
                        self.isHidden = false
                     }
                 }
@@ -419,6 +421,69 @@ class TourPlanView: BaseView {
         self.initViews()
     }
     
+    
+    func toCinfigureApprovalState(_ sessionDetail: SessionDetails) {
+                // Handle Approval flow
+        
+        LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+        
+        let sentToApprovalModel =  SentToApprovalModel()
+        
+        var sessionDate = Date()
+        let dateString = sessionDetail.tpDt.date
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        if let date = dateFormatter.date(from: dateString) {
+            print(date)
+             sessionDate = date
+        } else {
+            print("Unable to convert the string to a Date.")
+        }
+        
+       
+          sentToApprovalModel.rawDate = sessionDate
+          sentToApprovalModel.date = self.toModifyDateAsMonth(date: sessionDate)
+          sentToApprovalModel.approvalStatus = sessionDetail.changeStatus
+        
+               
+        
+                if LocalStorage.shared.sentToApprovalModelArr.count == 0 {
+                    LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
+                } else {
+                    LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalinfo in
+                        existingDates.append(sentToApprovalinfo.date)
+                    })
+                }
+        
+        
+                if !existingDates.contains(self.toModifyDate(date: sessionDate)) {
+                    LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
+                } else {
+                  
+                }
+        
+        
+                let initialsavefinish = NSKeyedArchiver.archiveRootObject(LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
+                if !initialsavefinish {
+                    print("Error")
+                }
+     
+    }
+    
+    func setupBtnAfterSubmission() {
+        LocalStorage.shared.sentToApprovalModelArr.forEach { sentToApprovalModel in
+            if sentToApprovalModel.date == self.toModifyDateAsMonth(date: self.currentPage ?? Date()) {
+                if sentToApprovalModel.approvalStatus != "2" {
+                    self.toToggleApprovalState(true, isRejected: false)
+                } else {
+                  //self.toToggleApprovalState(true, isRejected: true)
+                }
+            }
+        }
+    }
+    
     func toMapAPIresponse(completion: @escaping (Bool) -> Void) {
 
         var apiArrofSessions = [SessionDetails]()
@@ -426,159 +491,175 @@ class TourPlanView: BaseView {
         apiArrofSessions.append(contentsOf: (self.sessionResponse?.previous ?? [SessionDetails]()))
         apiArrofSessions.append(contentsOf: (self.sessionResponse?.next ?? [SessionDetails]()))
 
-        let toutplans = TourPlanArr()
-        var allDayPlans = [SessionDetailsArr]()
-
-
-
-        apiArrofSessions.enumerated().forEach { ApisessionDetailsIndex, ApisessionDetails in
-
-//            if ApisessionDetails.mnth == "12" && ApisessionDetails.yr == "2023" && ApisessionDetails.dayno == "1" {
+//        let toutplans = TourPlanArr()
+//        var allDayPlans = [SessionDetailsArr]()
+//
+//
+//
+//
+//
+//
+//
+//
+//        apiArrofSessions.enumerated().forEach { ApisessionDetailsIndex, ApisessionDetails in
+//
+//            let sessiondetArr = SessionDetailsArr()
+//
+//            if ApisessionDetails.rejectionReason != "" {
 //                dump(ApisessionDetails)
-//                dump(ApisessionDetails.rejectionReason)
+//                sessiondetArr.rejectionReason = ApisessionDetails.rejectionReason
+//               // sessiondetArr.isDataSentToApi = false
+//
+//            } else {
+//             //   sessiondetArr.isDataSentToApi = true
 //            }
+//            sessiondetArr.isDataSentToApi = true
+//            sessiondetArr.isForWeekoff = ApisessionDetails.fwFlg == "Y" ? true : false
+//
+//            sessiondetArr.changeStatus = ApisessionDetails.changeStatus
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//            if let date = dateFormatter.date(from: ApisessionDetails.tpDt.date) {
+//                print(date)
+//                sessiondetArr.rawDate =  date
+//                dateFormatter.dateFormat = "d MMMM yyyy"
+//                sessiondetArr.date = dateFormatter.string(from: date)
+//                dateFormatter.dateFormat = "EEEE"
+//                sessiondetArr.day = dateFormatter.string(from: date)
+//                dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+//                sessiondetArr.dayNo = dateFormatter.string(from: date)
+//            } else {
+//                print("Failed to convert string to date.")
+//            }
+//
+//            sessiondetArr.changeStatus = ApisessionDetails.changeStatus
+//            sessiondetArr.entryMode = ApisessionDetails.entryMode
+//
+//
+//            if ApisessionDetails.wtCode != "" {
+//                let sessionDetail = SessionDetail()
+//                sessionDetail.FWFlg = ApisessionDetails.fwFlg
+//                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "Y" ? true : false
+//                sessionDetail.WTCode = ApisessionDetails.wtCode
+//                sessionDetail.WTName = ApisessionDetails.wtName
+//                sessionDetail.clusterCode = ApisessionDetails.clusterCode
+//                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode
+//                sessionDetail.clusterName = ApisessionDetails.clusterName
+//                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName
+//                sessionDetail.drCode = ApisessionDetails.drCode
+//                sessionDetail.drName = ApisessionDetails.drName
+//                sessionDetail.HQCodes = ApisessionDetails.hqCodes
+//                sessionDetail.HQNames = ApisessionDetails.hqNames
+//               // sessionDetail.hospCode = ApisessionDetails.h
+//              //  sessionDetail.hospName = ApisessionDetails.h
+//                sessionDetail.jwCode = ApisessionDetails.jwCodes
+//                sessionDetail.jwName = ApisessionDetails.jwNames
+//                sessionDetail.remarks = ApisessionDetails.dayRemarks
+//                sessionDetail.chemName = ApisessionDetails.chemName
+//                sessionDetail.chemCode = ApisessionDetails.chemCode
+//                sessionDetail.stockistCode = ApisessionDetails.stockistCode
+//                sessionDetail.stockistName = ApisessionDetails.stockistName
+//              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+//               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+//                sessiondetArr.sessionDetails.append(sessionDetail)
+//            }
+//            if ApisessionDetails.wtCode2 != "" {
+//                let sessionDetail = SessionDetail()
+//                sessionDetail.FWFlg = ApisessionDetails.fwFlg2
+//                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg2 == "Y" ? true : false
+//                sessionDetail.WTCode = ApisessionDetails.wtCode2
+//                sessionDetail.WTName = ApisessionDetails.wtName2
+//                sessionDetail.clusterCode = ApisessionDetails.clusterCode2
+//                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode2
+//                sessionDetail.clusterName = ApisessionDetails.clusterName2
+//                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName2
+//                sessionDetail.drCode = ApisessionDetails.drTwoCode
+//                sessionDetail.drName = ApisessionDetails.drTwoName
+//                sessionDetail.HQCodes = ApisessionDetails.hqCodes2
+//                sessionDetail.HQNames = ApisessionDetails.hqNames2
+//               // sessionDetail.hospCode = ApisessionDetails.h
+//              //  sessionDetail.hospName = ApisessionDetails.h
+//                sessionDetail.jwCode = ApisessionDetails.jwCodes2
+//                sessionDetail.jwName = ApisessionDetails.jwNames2
+//                sessionDetail.remarks = ApisessionDetails.dayRemarks2
+//                sessionDetail.stockistCode = ApisessionDetails.stockistTwoCode
+//                sessionDetail.stockistName = ApisessionDetails.stockistTwoName
+//                sessionDetail.chemName = ApisessionDetails.chemTwoName
+//                sessionDetail.chemCode = ApisessionDetails.chemTwoCode
+//              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+//               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+//                sessiondetArr.sessionDetails.append(sessionDetail)
+//           }
+//
+//            if ApisessionDetails.wtCode3 != "" {
+//                let sessionDetail = SessionDetail()
+//                sessionDetail.FWFlg = ApisessionDetails.fwFlg3
+//                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" ? true : false
+//                sessionDetail.WTCode = ApisessionDetails.wtCode3
+//                sessionDetail.WTName = ApisessionDetails.wtName3
+//                sessionDetail.clusterCode = ApisessionDetails.clusterCode3
+//                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode3
+//                sessionDetail.clusterName = ApisessionDetails.clusterName3
+//                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName3
+//                sessionDetail.drCode = ApisessionDetails.drThreeCode
+//                sessionDetail.drName = ApisessionDetails.drThreeName
+//               // sessionDetail.hospCode = ApisessionDetails.h
+//              //  sessionDetail.hospName = ApisessionDetails.h
+//                sessionDetail.HQCodes = ApisessionDetails.hqCodes3
+//                sessionDetail.HQNames = ApisessionDetails.hqNames3
+//                sessionDetail.jwCode = ApisessionDetails.jwCodes3
+//                sessionDetail.jwName = ApisessionDetails.jwNames3
+//                sessionDetail.remarks = ApisessionDetails.dayRemarks3
+//                sessionDetail.stockistCode = ApisessionDetails.stockistThreeCode
+//                sessionDetail.stockistName = ApisessionDetails.stockistThreeName
+//                sessionDetail.chemName = ApisessionDetails.chemThreeName
+//                sessionDetail.chemCode = ApisessionDetails.chemThreeCode
+//              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+//               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+//                sessiondetArr.sessionDetails.append(sessionDetail)
+//           }
+//            allDayPlans.append(sessiondetArr)
+//
+//
+//        }
+//        toutplans.arrOfPlan = allDayPlans
+//
+//        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+//
+//        AppDefaults.shared.tpArry.arrOfPlan = allDayPlans
+//
+//
+//        AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
+//
+//
+//
+//        AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+//
+//
+//
+//        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//        if !initialsavefinish {
+//            print("Error")
+//        }
+//
+        
+        
+        if !(sessionResponse?.current.isEmpty ?? true) {
+            let sessionResponseArr = sessionResponse?.current[0] ?? SessionDetails()
 
-
-
-            let sessiondetArr = SessionDetailsArr()
-
-            if ApisessionDetails.rejectionReason != "" {
-                dump(ApisessionDetails)
-                sessiondetArr.rejectionReason = ApisessionDetails.rejectionReason
-               // sessiondetArr.isDataSentToApi = false
-
-            } else {
-             //   sessiondetArr.isDataSentToApi = true
-            }
-            sessiondetArr.isDataSentToApi = true
-            sessiondetArr.isForWeekoff = ApisessionDetails.fwFlg == "Y" ? true : false
-
-            sessiondetArr.changeStatus = ApisessionDetails.changeStatus
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            if let date = dateFormatter.date(from: ApisessionDetails.tpDt.date) {
-                print(date)
-                sessiondetArr.rawDate =  date
-                dateFormatter.dateFormat = "d MMMM yyyy"
-                sessiondetArr.date = dateFormatter.string(from: date)
-                dateFormatter.dateFormat = "EEEE"
-                sessiondetArr.day = dateFormatter.string(from: date)
-                dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
-                sessiondetArr.dayNo = dateFormatter.string(from: date)
-            } else {
-                print("Failed to convert string to date.")
-            }
-
-            sessiondetArr.changeStatus = ApisessionDetails.changeStatus
-            sessiondetArr.entryMode = ApisessionDetails.entryMode
-
-
-            if ApisessionDetails.wtCode != "" {
-                let sessionDetail = SessionDetail()
-                sessionDetail.FWFlg = ApisessionDetails.fwFlg
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "Y" ? true : false
-                sessionDetail.WTCode = ApisessionDetails.wtCode
-                sessionDetail.WTName = ApisessionDetails.wtName
-                sessionDetail.clusterCode = ApisessionDetails.clusterCode
-                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode
-                sessionDetail.clusterName = ApisessionDetails.clusterName
-                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName
-                sessionDetail.drCode = ApisessionDetails.drCode
-                sessionDetail.drName = ApisessionDetails.drName
-                sessionDetail.HQCodes = ApisessionDetails.hqCodes
-                sessionDetail.HQNames = ApisessionDetails.hqNames
-               // sessionDetail.hospCode = ApisessionDetails.h
-              //  sessionDetail.hospName = ApisessionDetails.h
-                sessionDetail.jwCode = ApisessionDetails.jwCodes
-                sessionDetail.jwName = ApisessionDetails.jwNames
-                sessionDetail.remarks = ApisessionDetails.dayRemarks
-                sessionDetail.chemName = ApisessionDetails.chemName
-                sessionDetail.chemCode = ApisessionDetails.chemCode
-                sessionDetail.stockistCode = ApisessionDetails.stockistCode
-                sessionDetail.stockistName = ApisessionDetails.stockistName
-              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
-               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
-                sessiondetArr.sessionDetails.append(sessionDetail)
-            }
-            if ApisessionDetails.wtCode2 != "" {
-                let sessionDetail = SessionDetail()
-                sessionDetail.FWFlg = ApisessionDetails.fwFlg2
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg2 == "Y" ? true : false
-                sessionDetail.WTCode = ApisessionDetails.wtCode2
-                sessionDetail.WTName = ApisessionDetails.wtName2
-                sessionDetail.clusterCode = ApisessionDetails.clusterCode2
-                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode2
-                sessionDetail.clusterName = ApisessionDetails.clusterName2
-                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName2
-                sessionDetail.drCode = ApisessionDetails.drTwoCode
-                sessionDetail.drName = ApisessionDetails.drTwoName
-                sessionDetail.HQCodes = ApisessionDetails.hqCodes2
-                sessionDetail.HQNames = ApisessionDetails.hqNames2
-               // sessionDetail.hospCode = ApisessionDetails.h
-              //  sessionDetail.hospName = ApisessionDetails.h
-                sessionDetail.jwCode = ApisessionDetails.jwCodes2
-                sessionDetail.jwName = ApisessionDetails.jwNames2
-                sessionDetail.remarks = ApisessionDetails.dayRemarks2
-                sessionDetail.stockistCode = ApisessionDetails.stockistTwoCode
-                sessionDetail.stockistName = ApisessionDetails.stockistTwoName
-                sessionDetail.chemName = ApisessionDetails.chemTwoName
-                sessionDetail.chemCode = ApisessionDetails.chemTwoCode
-              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
-               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
-                sessiondetArr.sessionDetails.append(sessionDetail)
-           }
-
-            if ApisessionDetails.wtCode3 != "" {
-                let sessionDetail = SessionDetail()
-                sessionDetail.FWFlg = ApisessionDetails.fwFlg3
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" ? true : false
-                sessionDetail.WTCode = ApisessionDetails.wtCode3
-                sessionDetail.WTName = ApisessionDetails.wtName3
-                sessionDetail.clusterCode = ApisessionDetails.clusterCode3
-                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode3
-                sessionDetail.clusterName = ApisessionDetails.clusterName3
-                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName3
-                sessionDetail.drCode = ApisessionDetails.drThreeCode
-                sessionDetail.drName = ApisessionDetails.drThreeName
-               // sessionDetail.hospCode = ApisessionDetails.h
-              //  sessionDetail.hospName = ApisessionDetails.h
-                sessionDetail.HQCodes = ApisessionDetails.hqCodes3
-                sessionDetail.HQNames = ApisessionDetails.hqNames3
-                sessionDetail.jwCode = ApisessionDetails.jwCodes3
-                sessionDetail.jwName = ApisessionDetails.jwNames3
-                sessionDetail.remarks = ApisessionDetails.dayRemarks3
-                sessionDetail.stockistCode = ApisessionDetails.stockistThreeCode
-                sessionDetail.stockistName = ApisessionDetails.stockistThreeName
-                sessionDetail.chemName = ApisessionDetails.chemThreeName
-                sessionDetail.chemCode = ApisessionDetails.chemThreeCode
-              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
-               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
-                sessiondetArr.sessionDetails.append(sessionDetail)
-           }
-            allDayPlans.append(sessiondetArr)
-
-
+            toCinfigureApprovalState(sessionResponseArr)
         }
-        toutplans.arrOfPlan = allDayPlans
-       // let eachDatePlan = EachDatePlan()
-       // eachDatePlan.tourPlanArr.append(toutplans)
-       // AppDefaults.shared.eachDatePlan = eachDatePlan
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+        if !(sessionResponse?.previous.isEmpty ?? true) {
+            let sessionResponseArr = sessionResponse?.previous[0] ?? SessionDetails()
 
-        AppDefaults.shared.tpArry.arrOfPlan = allDayPlans
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+     
+        if !(sessionResponse?.next.isEmpty ?? true) {
+            let sessionResponseArr = sessionResponse?.next[0] ?? SessionDetails()
 
-
-        AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
-
-
-
-        AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-
-
-
-        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-        if !initialsavefinish {
-            print("Error")
+            toCinfigureApprovalState(sessionResponseArr)
         }
         completion(true)
     }
@@ -627,10 +708,10 @@ class TourPlanView: BaseView {
         var isRejected = Bool()
         if !thisMonthPaln.isEmpty {
             thisMonthPaln.forEach { aSessionArr in
-                if aSessionArr.rejectionReason == "" {
-                    isRejected = false
-                } else {
+                if aSessionArr.changeStatus == "2" {
                     isRejected = true
+                } else {
+                    isRejected = false
                 }
             }
             
@@ -640,17 +721,47 @@ class TourPlanView: BaseView {
            // var isTodisableApproval = true
             self.rejectionReason.text = thisMonthPaln[0].rejectionReason
             self.rejectionVIew.isHidden = false
-            self.rejectionVIewHeightconst.constant = 70
+            toConfigureDynamicHeader()
+            
         } else {
             self.rejectionVIew.isHidden = true
-            self.rejectionVIewHeightconst.constant = 0
+            self.rejectionVIew.frame.size.height = 0
+            worksPlanTable.reloadData()
         }
        
-        toEnableApprovalBtn(totaldate: date, filleddate: thisMonthPaln.count)
+      
+        LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+        
+        
+        LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalmodal in
+            if sentToApprovalmodal.date ==  toModifyDate(date: self.currentPage ?? Date()) {
+                
+                if thisMonthPaln[0].changeStatus == "1" {
+                    sentToApprovalmodal.approvalStatus = "1"
+                 
+                } else if thisMonthPaln[0].changeStatus == "2" {
+                    sentToApprovalmodal.approvalStatus =  "2"
+                   
+                } else   if  thisMonthPaln[0].changeStatus == "3" {
+                    sentToApprovalmodal.approvalStatus = "3"
+                   
+                }
+            }
+        })
+        
+        let initialsavefinish = NSKeyedArchiver.archiveRootObject( LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
+        if !initialsavefinish {
+            print("Error")
+        }
+        
+        toEnableApprovalBtn(totaldate: date, filleddate: thisMonthPaln.count, isRejected : isRejected)
 
     }
+
+ 
     
-    func toEnableApprovalBtn(totaldate: Date, filleddate: Int) {
+    
+    func toEnableApprovalBtn(totaldate: Date, filleddate: Int, isRejected: Bool) {
         totalDays = 0
        // filledDates.forEach { date in
             let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: totaldate)
@@ -659,14 +770,15 @@ class TourPlanView: BaseView {
         print("Total days--->\(totalDays)----||")
         
         
+        
         if filleddate >= totalDays {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: true)
             self.planningLbl.text = "TP Planning completed / Submission Pending"
-            toToggleApprovalState(true)
+            toToggleApprovalState(true, isRejected: isRejected)
         } else {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
             self.planningLbl.text = "Planning..."
-            toToggleApprovalState(false)
+            toToggleApprovalState(false, isRejected: isRejected)
         }
         
     }
@@ -693,14 +805,47 @@ class TourPlanView: BaseView {
 //
 //    }
     
-    func toToggleApprovalState(_ isActive: Bool) {
-        if isActive {
+    func toToggleApprovalState(_ isActive: Bool, isRejected: Bool) {
+        var isMonthSent = Bool()
+      
+        var sentToApprovalData : SentToApprovalModel?
+        LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalmodal in
+            if sentToApprovalmodal.date ==  toModifyDateAsMonth(date: self.currentPage ?? Date()) {
+                
+                
+                if sentToApprovalmodal.approvalStatus != "0" || sentToApprovalmodal.approvalStatus != "" {
+                    isMonthSent = true
+                   // approvalStr = sentToApprovalmodal.approvalStatus
+                    sentToApprovalData = sentToApprovalmodal
+                }
+            }
+            
+            
+        })
+        
+   
+        if  isRejected {
+            planningLbl.text =  ApprovalStatus.rejected.rawValue
+        } else if isMonthSent {
+            planningLbl.text =  sentToApprovalData?.approvalStatus == "1" ? ApprovalStatus.submitted.rawValue :  sentToApprovalData?.approvalStatus == "2" ? ApprovalStatus.rejected.rawValue  : sentToApprovalData?.approvalStatus == "3" ? ApprovalStatus.approved.rawValue : "Planning.."
+            //"Waiting for approval"
+           // btnSendFOrApproval.titleLabel?.text = "Waiting for approval"
+        }
+        
+        if isRejected &&  isActive {
             generalButtonsHolder.backgroundColor = .appTextColor
             btnSendFOrApproval.isUserInteractionEnabled = true
         } else {
-            generalButtonsHolder.backgroundColor = .appSelectionColor
-            btnSendFOrApproval.isUserInteractionEnabled = false
+            if isActive && !isMonthSent {
+                generalButtonsHolder.backgroundColor = .appTextColor
+                btnSendFOrApproval.isUserInteractionEnabled = true
+            } else {
+                generalButtonsHolder.backgroundColor = .appSelectionColor
+                btnSendFOrApproval.isUserInteractionEnabled = false
+            }
         }
+        
+
     }
     
     
@@ -722,11 +867,26 @@ class TourPlanView: BaseView {
             }
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
     
-            var includedSessionArr = [SessionDetailsArr]()
+        var includedSessionArr = [SessionDetailsArr]()
+        
+        if AppDefaults.shared.eachDatePlan.tourPlanArr.count > 0 {
+            
+            AppDefaults.shared.tpArry.arrOfPlan.removeAll()
+            
+            AppDefaults.shared.tpArry.arrOfPlan =  AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan
+            includedSessionArr = AppDefaults.shared.tpArry.arrOfPlan
+        }
+        
+        var  dates = [String]()
+        
+        includedSessionArr.forEach { SessionDetailsArr in
+            dates.append(SessionDetailsArr.date)
+        }
+        
             var sessionDetail = SessionDetail()
 
 
-            if includedSessionArr.count == 0 {
+            if includedSessionArr.count > 0 {
                 AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
                     
                     
@@ -796,17 +956,24 @@ class TourPlanView: BaseView {
                     
                     aSessionDetArr.isDataSentToApi = false
                     aSessionDetArr.sessionDetails.append(aSession)
-                    includedSessionArr.append(aSessionDetArr)
+                    
+                    if !dates.contains(aSessionDetArr.date) {
+                        includedSessionArr.append(aSessionDetArr)
+                    }
+                    
+                   
                 }
             }
 
             dump(includedSessionArr)
-            let  temptpArray =  TourPlanArr()
-            temptpArray.arrOfPlan = includedSessionArr
+           // let  temptpArray =  TourPlanArr()
+           // temptpArray.arrOfPlan = includedSessionArr
+        AppDefaults.shared.tpArry.arrOfPlan.removeAll()
             AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
         if AppDefaults.shared.eachDatePlan.tourPlanArr.count == 0 {
             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
         } else {
+            AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.removeAll()
             AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.append(contentsOf: includedSessionArr)
         }
    
@@ -977,20 +1144,25 @@ class TourPlanView: BaseView {
 
         var param = [String: Any]()
         param["tableName"] = "tpsend_appr"
-        param["SF"] = appdefaultSetup.sfCode
+        param["sfcode"] = appdefaultSetup.sfCode
         param["SFName"] = appdefaultSetup.sfName
-        param["DivCode"] = appdefaultSetup.divisionCode
+        param["division_code"] = appdefaultSetup.divisionCode
         param["Rsf"] = appdefaultSetup.sfCode
         param["Designation"] =  appdefaultSetup.dsName
         param["state_code"] =  appdefaultSetup.stateCode
-        param["subdivision_code"] =  appdefaultSetup.subDivisionCode
+        param["division_code"] =  appdefaultSetup.subDivisionCode
         let thisMonth = self.currentPage ?? Date()
-        dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+        dateFormatter.dateFormat = "MM/dd/yyyy"
         let dayNo = dateFormatter.string(from: thisMonth)
         let anotherDateArr = dayNo.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
-        param["TPYear"] = anotherDateArr[2] // 11
+        param["TPMonth"] = anotherDateArr[0] // 11
       //  param["Tour_Month"] = anotherDateArr[0]// 11
-        param["TPMonth"] = anotherDateArr[0]
+        param["TPYear"] = anotherDateArr[2]
+        
+        
+        
+        
+    //{"tableName":"tpsend_appr","division_code":"1","SFName":"SATHISH MR 2","sfcode":"MR1932","TPMonth":"07","TPYear":"2023"}
         
 // {"tableName":"tpsend_appr","DivCode":"1","SFName":"SATHISH MR 2","SF":"MR1932","TPMonth":"07","TPYear":"2023"}
         
@@ -1025,11 +1197,17 @@ class TourPlanView: BaseView {
             case .success(let response):
                 print(response)
                 //completion(.success(response))
+                if response.success ?? false {
+                    self.toCreateToast("Submitted successfully")
+
+                   // self.toPostDataToserver()
+                    self.fetchDataFromServer()
+                    
+                } else {}
                 dump(response)
-                
             case .failure(let error):
                 print(error.localizedDescription)
-                
+                self.toCreateToast("Please try again later!")
               // completion(.failure(error))
             }
         }
@@ -1404,8 +1582,9 @@ class TourPlanView: BaseView {
         rejectionReason.setFont(font: .bold(size: .BODY))
         rejectionVIew.layer.cornerRadius = 5
         btnSendFOrApproval.setTitle("Send to approval", for: .normal)
-        btnSendFOrApproval.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        //btnSendFOrApproval.titleLabel?.font = UIFont(name: "Satoshi-Bold", size: 16)
+        btnSendFOrApproval.titleLabel?.text = "Send to approval"
+        //btnSendFOrApproval.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        btnSendFOrApproval.titleLabel?.font = UIFont(name: "Satoshi-Bold", size: 16)
         
         btnSendFOrApproval.backgroundColor = .clear
         btnSendFOrApproval.tintColor = .appWhiteColor
@@ -1418,13 +1597,13 @@ class TourPlanView: BaseView {
         updateCalender()
       
       
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoEnableApproveBtn) {
-            planningLbl.isHidden = false
-            toToggleApprovalState(true)
-        } else {
-            toToggleApprovalState(false)
-            planningLbl.isHidden = false
-        }
+//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoEnableApproveBtn) {
+//            planningLbl.isHidden = false
+//            toToggleApprovalState(true, isRejected: <#Bool#>)
+//        } else {
+//            toToggleApprovalState(false, isRejected: <#Bool#>)
+//            planningLbl.isHidden = false
+//        }
         calenderHolderView.elevate(2)
         calenderHolderView.layer.cornerRadius = 5
 
@@ -1433,8 +1612,26 @@ class TourPlanView: BaseView {
         
         sessionTableHolderView.elevate(2)
         sessionTableHolderView.layer.cornerRadius = 5
+      
     }
     
+    
+    func toConfigureDynamicHeader() {
+        let tempHeader = self.getViewExactHeight(view: self.rejectionVIew)
+        self.rejectionVIew.frame.size.height = tempHeader.frame.height
+        worksPlanTable.reloadData()
+    }
+    
+    func getViewExactHeight(view:UIView)->UIView {
+       
+        let height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        var frame = view.frame
+        if height != frame.size.height {
+            frame.size.height = height
+            view.frame = frame
+        }
+        return view
+    }
     
     func toTrimDate(date : Date, isForMainLabel: Bool = false) -> String {
         let dateFormatter = DateFormatter()
@@ -1476,6 +1673,19 @@ class TourPlanView: BaseView {
                   }
               }
        // }
+        LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalmodal in
+            if sentToApprovalmodal.date ==  toModifyDateAsMonth(date: self.currentPage ?? Date()) {
+                
+                
+                if sentToApprovalmodal.approvalStatus == "1" || sentToApprovalmodal.approvalStatus == "3"  {
+                    menuvc.isSentForApproval = true
+                }
+            }
+            
+            
+        })
+        
+  
         
 
     self.tourplanVC.navigationController?.present(menuvc, animated: true)
@@ -1707,8 +1917,8 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
 
 
         
-        cell.addedIV.isHidden = isExist || isForHoliday || isForHoliday  ? false : true
-        cell.addedIV.tintColor = isExist ? UIColor.green : UIColor.red
+        cell.addedIV.isHidden = isExist || isForHoliday  ? false : true
+       // cell.addedIV.tintColor = isExist ? UIColor.green : UIColor.red
         //|| isWeeklyoff || isForHoliday
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
@@ -1745,6 +1955,12 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         }
         
         return cell
+    }
+    
+    func toModifyDateAsMonth(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        return dateFormatter.string(from: date )
     }
     
     func toModifyDate(date: Date, isForHoliday: Bool? = false) -> String {

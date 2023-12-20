@@ -37,6 +37,7 @@ class MenuVC: BaseViewController {
     var isForWeekoff = Bool()
     var isForHoliday = Bool()
     var isWeekoffEditable : Bool = true
+    var isSentForApproval: Bool = false
   //  var accountViewModel : AccountViewModel?
     var dictParms = [String: Any]()
     var imageURL = ""

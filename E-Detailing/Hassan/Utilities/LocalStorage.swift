@@ -9,6 +9,9 @@ import Foundation
 
 class LocalStorage {
     static var shared = LocalStorage()
+    
+    var sentToApprovalModelArr = [SentToApprovalModel]()
+    
     enum LocalValue:String {
 
         case istoEnableApproveBtn
