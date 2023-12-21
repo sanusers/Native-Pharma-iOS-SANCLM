@@ -1217,7 +1217,7 @@ class TourPlanView: BaseView {
         param["Rsf"] = appdefaultSetup.sfCode
         param["Designation"] =  appdefaultSetup.dsName
         param["state_code"] =  appdefaultSetup.stateCode
-        param["division_code"] =  appdefaultSetup.subDivisionCode
+        param["subdivision_code"] =  appdefaultSetup.subDivisionCode
         let thisMonth = self.currentPage ?? Date()
         dateFormatter.dateFormat = "MM/dd/yyyy"
         let dayNo = dateFormatter.string(from: thisMonth)

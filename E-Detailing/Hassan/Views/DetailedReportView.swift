@@ -11,17 +11,73 @@ import UIKit
 
 extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return reportsModel?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: BasicReportsInfoTVC = tableView.dequeueReusableCell(withIdentifier: "BasicReportsInfoTVC") as!  BasicReportsInfoTVC
         cell.selectionStyle = .none
+        let modal = reportsModel?[indexPath.row] ?? ReportsModel()
+        cell.populateCell(modal)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 300
+        
+        let model = reportsModel?[indexPath.row] ?? ReportsModel()
+        //
+        let isTohideCheckin = isTohideCheckin(model)
+        let isTohideCheckout = isTohideCheckout(model)
+        
+        if isTohideCheckin && isTohideCheckout  {
+            cellHeight = cellHeight - 90
+        }
+        
+        var count = Int()
+        if model.chm != 0 {
+            let ChemistsessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: model.chm)
+            count += 1
+        }
+        
+        if model.cip != 0 {
+            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.udr)
+            count += 1
+        }
+        
+        if model.drs != 0 {
+            let ListedDoctorsessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: model.drs)
+            count += 1
+        }
+        
+        
+        if model.stk != 0 {
+            let StockistsessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: model.stk)
+            count += 1
+        }
+     
+        
+        if model.udr != 0 {
+            let UnlistedDocsessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: model.udr)
+            count += 1
+        }
+        
+        if model.hos != 0 {
+            let HosspsessionImage =  SessionImages(Image: UIImage(named: "JointCall") ?? UIImage(), count:  model.hos)
+            count += 1
+        }
+       // remarksAndPlansView
+        let isTohideRemarks = isTohideRemarks(model)
+        let isTohideplanCollection = isTohideplanCollection(count:  count )
+        
+         
+        if isTohideRemarks && isTohideplanCollection {
+            cellHeight = cellHeight - 75
+        } else {
+         
+        }
+        
+        
+        return cellHeight
     }
     
     
@@ -44,19 +100,24 @@ class DetailedReportView: BaseView {
     
     @IBOutlet var reportsTable: UITableView!
     
+    var cellHeight: CGFloat = 300
+    
+    var reportsModel : [ReportsModel]?
+    
     var detailedreporsVC : DetailedReportVC!
     override func didLoad(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
+     
         self.detailedreporsVC = baseVC as? DetailedReportVC
   
     }
     
     override func willAppear(baseVC: BaseViewController) {
-        super.willAppear(baseVC: baseVC)
+    
         self.detailedreporsVC = baseVC as? DetailedReportVC
-      //  toLoadData()
-        setupUI()
-       // cellregistration()
+    
+       
+        detailedreporsVC.toSetParamsAndGetResponse()
+      
     }
     
     func cellRegistration() {
@@ -69,7 +130,12 @@ class DetailedReportView: BaseView {
         reportsTable.reloadData()
     }
     
+    func toConfigureCellHeight() {
+        
+    }
+    
     func setupUI() {
+        toConfigureCellHeight()
         cellRegistration()
         reportsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor

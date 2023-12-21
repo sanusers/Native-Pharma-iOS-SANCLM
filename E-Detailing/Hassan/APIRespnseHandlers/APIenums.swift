@@ -17,14 +17,14 @@ enum APIEnums : String{
     case saveTP = "savenew/tp"
     case sendToApproval = "save/tp"
     case getAllPlansData = "get/tp"
-    
+    case getReports = "get/reports"
 }
 
 
 extension APIEnums{//Return method for API
     var method : HTTPMethod{
         switch self {
-        case .actionLogin, .tableSetup, .saveTP, .getAllPlansData:
+        case .actionLogin, .tableSetup, .saveTP, .getAllPlansData, .getReports:
             return .post
         default:
             return .get

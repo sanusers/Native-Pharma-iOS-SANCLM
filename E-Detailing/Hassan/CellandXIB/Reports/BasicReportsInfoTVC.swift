@@ -34,23 +34,115 @@ extension BasicReportsInfoTVC : UICollectionViewDelegate, UICollectionViewDataSo
     
 }
 
+func isTohideCheckin(_ model: ReportsModel) -> Bool{
+    if model.inaddress == "" || model.intime == "" {
+        return true
+    }
+    return false
+}
+
+func isTohideCheckout(_ model: ReportsModel) -> Bool {
+    if model.outaddress == "" || model.outtime == "" {
+        return true
+    }
+    return false
+}
+
+func isTohideRemarks(_ model: ReportsModel) -> Bool {
+    if model.remarks == "" {
+        return true
+    }
+    return false
+}
+func isTohideplanCollection(count : Int) -> Bool {
+    if count == 0 {
+        return true
+    }
+    return false
+}
 
 class BasicReportsInfoTVC: UITableViewCell {
     
-    func populateCell() {
+    func populateCell(_ model: ReportsModel) {
+   
+        var sessionImagesArr = [SessionImages]()
         
-        let sessionImage1 =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: 1)
-        let sessionImage2 =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: 3)
-        let sessionImage3 =  SessionImages(Image: UIImage(named: "JointWork") ?? UIImage(), count: 1)
-        let sessionImage4 =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: 3)
-        let sessionImage5 =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: 3)
-        let sessionImage6 =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: 4)
-        let sessionImage7 =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: 5)
+        if model.chm != 0 {
+            let ChemistsessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: model.chm)
+            sessionImagesArr.append(ChemistsessionImage)
+        }
         
-        let sessionImagesArr : [SessionImages] = [sessionImage1, sessionImage2, sessionImage3, sessionImage4, sessionImage5, sessionImage6, sessionImage7]
+        if model.cip != 0 {
+            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.udr)
+            sessionImagesArr.append(cipsessionImage)
+        }
         
+        if model.drs != 0 {
+            let ListedDoctorsessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: model.drs)
+            sessionImagesArr.append(ListedDoctorsessionImage)
+        }
+        
+        
+        if model.stk != 0 {
+            let StockistsessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: model.stk)
+            sessionImagesArr.append(StockistsessionImage)
+        }
+     
+        
+        if model.udr != 0 {
+            let UnlistedDocsessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: model.udr)
+            sessionImagesArr.append(UnlistedDocsessionImage)
+        }
+        
+        if model.hos != 0 {
+            let HosspsessionImage =  SessionImages(Image: UIImage(named: "JointCall") ?? UIImage(), count:  model.hos)
+            sessionImagesArr.append(HosspsessionImage)
+        }
         self.sessionImages = sessionImagesArr
+        
+        userNameLbl.text = model.sfName
+        WTdescLbl.text = model.wtype
+        remarksDescLbl.text = model.remarks == "" ? "No remarks available" :  model.remarks
+        checkINinfoLbl.text = model.intime
+        checkOUTinfoLbl.text = model.outtime
+        checkINaddrLbl.text = model.inaddress
+        checkOUTaddrLbl.text = model.outaddress
+        dateInfoLbl.text = model.rptdate
+        
+        let isTohideCheckin = isTohideCheckin(model)
+        let isTohideCheckout = isTohideCheckout(model)
+        
+        if isTohideCheckin && isTohideCheckout  {
+            inAndoutInfoView.isHidden = true
+            inAndoutHeightConst.constant = 0
+            stackHeight = stackHeight - 90
+            holderStackHeightConst.constant = stackHeight
+        } else {
+            inAndoutInfoView.isHidden = false
+            inAndoutHeightConst.constant = 90
+        }
+        
+       // remarksAndPlansView
+        let isTohideRemarks = isTohideRemarks(model)
+        let isTohideplanCollection = isTohideplanCollection(count: self.sessionImages?.count ?? 0)
+        
+         
+        if isTohideRemarks && isTohideplanCollection {
+            remarksAndPlansView.isHidden = true
+            remarksAndPlansHeightConst.constant = 0
+            stackHeight = stackHeight -  75
+            holderStackHeightConst.constant = stackHeight
+        } else {
+            remarksAndPlansView.isHidden = false
+            remarksAndPlansHeightConst.constant = 75
+        }
+        
+        
+        toLoadData()
     }
+    
+    
+
     
     var sessionImages: [SessionImages]?
     
@@ -108,12 +200,27 @@ class BasicReportsInfoTVC: UITableViewCell {
     @IBOutlet var workPlansCollection: UICollectionView!
     
     
+    
+    //Views and height constraints
+
+    
+    @IBOutlet var inAndoutInfoView: UIView!
+    
+    @IBOutlet var inAndoutHeightConst: NSLayoutConstraint!
+    
+    @IBOutlet var holderStackHeightConst: NSLayoutConstraint!
+    
+    @IBOutlet var remarksAndPlansView: UIView!
+    
+    @IBOutlet var remarksAndPlansHeightConst: NSLayoutConstraint!
+    
+    var stackHeight: CGFloat = 290
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         setupUI()
-        populateCell()
-        toLoadData()
+       // populateCell()
+       
         
 
     }

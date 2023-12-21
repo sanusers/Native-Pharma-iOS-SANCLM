@@ -53,33 +53,15 @@ class  SessionResponseVM {
     }
     
     
-//    func getTableSetup(params: JSON, api : APIEnums, _ result : @escaping (Result<TableSetupModel,Error>) -> Void) {
-//        let responseHandler = APIResponseHandler()
-//        ConnectionHandler.shared.getRequest(for: api, params: params).responseJSON { json in
-//            print(json)
-//            // Convert the dictionary to JSON data
-//            do {
-//                let jsonData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
-//                // Use jsonData as needed
-//                print(String(data: jsonData, encoding: .utf8)!)
-//
-//                let decoder = JSONDecoder()
-//                  do {
-//                      let decodedObj = try decoder.decode(TableSetupModel.self, from: jsonData)
-//                      result(.success(decodedObj))
-//                  } catch {
-//                      print("Error")
-//                      result(.failure(error))
-//                  }
-//
-//
-//            } catch {
-//                print("Error converting JSON to data: \(error)")
-//                result(.failure(error))
-//            }
-//
-//        }
-//
-//    }
+    func getReportsData(params: JSON, api : APIEnums, paramData: Data, _ result : @escaping (Result<[ReportsModel],TPErrors>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [ReportsModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(TPErrors.unableConnect))
+        })
+    }
 
 }

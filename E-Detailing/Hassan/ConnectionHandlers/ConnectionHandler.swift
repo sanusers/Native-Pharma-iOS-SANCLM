@@ -261,60 +261,61 @@ final class ConnectionHandler : NSObject {
                     return
                 }
                 
-                
-//                if let data = try? JSONSerialization.data(withJSONObject: anyData, options: []) {
-//                    if let jsonString = String(data: data, encoding: .utf8) {
-//                        print("JSON String: \(jsonString)")
-//                    } else {
-//                        print("Error converting data to JSON string")
-//                    }
-//                } else {
-//                    print("Error creating JSON data")
-//                }
-                
-                
-//                if let data = anyData {
-//                    if let responseString = String(data: data, encoding: .utf8) {
-//                        print("API Response String: \(responseString)")
-//                    } else {
-//                        print("Error converting data to string")
-//                    }
-//                } else {
-//                    print("Empty response data")
-//                }
-//
-//                do {
-//
-//                    let decoder = JSONDecoder()
-//                    let yourObject = try decoder.decode(SaveTPresponseModel.self, from: anyData ?? Data())
-//
-//                    // Now 'yourObject' contains the decoded data
-//                    print("Decoded Object: \(yourObject)")
-//                } catch {
-//                    print("Error decoding: \(error)")
-//                }
-                
-                if let data = anyData,
-                   let json = JSON(data){
-                    
-                    if api == .getAllPlansData {
-                       
-                        if json.isEmpty {
-                            responseHandler.handleFailure(value: json.status_message)
-                        } else {
-                            responseHandler.handleSuccess(value: json, data: data)
-                        }
-                    } else {
-                        if json.isSuccess {
 
-                            responseHandler.handleSuccess(value: json, data: data)
-                        }else{
-
-                            responseHandler.handleFailure(value: json.status_message)
+                
+                if api == .getReports {
+    
+                    self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
+                        
+                        do {
+                            
+                         //   var data: Data?
+                          //  var jsons : JSON?
+                            // Convert Swift object to JSON data
+                            let jsonData = try JSONEncoder().encode(decodecObj)
+                            
+                            // Convert Swift object to JSON string
+                          
+                            responseHandler.handleSuccess(value: self.convertToDictionary(decodecObj) ?? JSON(), data: jsonData)
+                            print("JSON Data:")
+                            print(jsonData)
+                            
+                          //  print("\nJSON String:")
+                         //   print(jsonString )
+                        } catch {
+                            print("Error encoding JSON: \(error)")
                         }
+                        
+                        
+                        
+                        
+                      //
                     }
-                    
+                } else   {
+                    if let data = anyData,
+                       let json = JSON(data){
+                        
+                        if api == .getAllPlansData || api == .getReports {
+                           
+                            if json.isEmpty {
+                                responseHandler.handleFailure(value: json.status_message)
+                            } else {
+                                responseHandler.handleSuccess(value: json, data: data)
+                            }
+                        } else {
+                            if json.isSuccess {
+
+                                responseHandler.handleSuccess(value: json, data: data)
+                            }else{
+
+                                responseHandler.handleFailure(value: json.status_message)
+                            }
+                        }
+                        
+                    }
                 }
+                
+
                 
 
             case .failure(let error):
@@ -338,7 +339,28 @@ final class ConnectionHandler : NSObject {
         return responseHandler
     }
     
+    func convertToDictionary<T>(_ object: T) -> [String: Any]? where T: Encodable {
+        do {
+            let data = try JSONEncoder().encode(object)
+            let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            return dictionary
+        } catch {
+            print("Error converting to dictionary: \(error)")
+            return nil
+        }
+    }
     
+    func toConvertDataToObj<T: Decodable>(responseData: Data, to modal : T.Type,
+                                          _ result : @escaping Closure<T>) {
+        let decoder = JSONDecoder()
+           do {
+               let decodedObj = try decoder.decode(T.self, from: responseData )
+               dump(decodedObj)
+               result(decodedObj)
+           } catch {
+               print("Error")
+           }
+    }
     
     
 }
