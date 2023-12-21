@@ -567,12 +567,12 @@ class MenuView : BaseView{
     
     //MARK: - life cycle
     override func didLoad(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
         self.menuVC = baseVC as? MenuVC
         self.initView()
         self.initGestures()
         self.ThemeUpdate()
         setTheme()
+
     }
     
     func setTheme() {
@@ -1362,12 +1362,13 @@ class MenuView : BaseView{
         
         addSessionView.addTap {
             
-            let totalcount = Int(self.tableSetup?.addsessionCount ?? "2")
-            let sessionCount = self.sessionDetailsArr.sessionDetails?.count
-            let isAllowedToadd = totalcount ?? 2 > sessionCount ?? 0 ? true : false
-          //  let count = self.sessionDetailsArr.sessionDetails?.count
-          //  if  count ?? 0 > 1
-           if !isAllowedToadd  {
+           // let totalcount = Int(self.tableSetup?.addsessionCount ?? "2")
+           // let sessionCount = self.sessionDetailsArr.sessionDetails?.count
+           // let isAllowedToadd = totalcount ?? 2 > sessionCount ?? 0 ? true : false
+            let count = self.sessionDetailsArr.sessionDetails?.count
+            if  count ?? 0 > 1
+             {
+              //  if !isAllowedToadd
 //                if #available(iOS 13.0, *) {
 //                    (UIApplication.shared.delegate as! AppDelegate).createToastMessage("Maximum plans added", isFromWishList: true)
 //                } else {

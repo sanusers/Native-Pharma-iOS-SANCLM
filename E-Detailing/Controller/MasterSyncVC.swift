@@ -787,6 +787,9 @@ extension MasterSyncVC {
                                      if !savefinish {
                                          print("Error")
                                      }
+                    
+                
+                    
                    // self.toLoadData()
                  //  if isFromFirstLoad {
                   //     self.fetchDataFromServer()
@@ -794,6 +797,7 @@ extension MasterSyncVC {
                        
                  //  }
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+                    self.toPostDataToserver(type: .getTP)
                 case .failure(let error):
                     print(error)
                 }

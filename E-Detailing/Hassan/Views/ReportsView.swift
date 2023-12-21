@@ -42,6 +42,11 @@ class ReportsView : BaseView {
         let name: String
         let image: String
     }
+    
+    enum cellType {
+        
+    }
+    
     @IBOutlet var reportTitle: UILabel!
     
     @IBOutlet weak var topNavigationView: UIView!
@@ -71,7 +76,7 @@ class ReportsView : BaseView {
     
     func setupUI() {
         reportTitle.setFont(font: .bold(size: .SUBHEADER))
-        collectionHolderView.backgroundColor = .appGreyColor
+        collectionHolderView.backgroundColor = .appSelectionColor
         
         let dayReport = ReportInfo(name: "Day Report", image: "Day Report")
         let monthlyReport = ReportInfo(name: "Monthly Report", image: "Monthly")

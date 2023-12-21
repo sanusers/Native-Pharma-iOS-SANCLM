@@ -7,6 +7,27 @@
 
 import Foundation
 import UIKit
+
+
+extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: BasicReportsInfoTVC = tableView.dequeueReusableCell(withIdentifier: "BasicReportsInfoTVC") as!  BasicReportsInfoTVC
+        cell.selectionStyle = .none
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 300
+    }
+    
+    
+}
+
+
 class DetailedReportView: BaseView {
     
     
@@ -19,6 +40,9 @@ class DetailedReportView: BaseView {
     @IBOutlet var sortSearchView: UIView!
     
     @IBOutlet var sortFiltersView: UIView!
+    
+    
+    @IBOutlet var reportsTable: UITableView!
     
     var detailedreporsVC : DetailedReportVC!
     override func didLoad(baseVC: BaseViewController) {
@@ -35,7 +59,19 @@ class DetailedReportView: BaseView {
        // cellregistration()
     }
     
+    func cellRegistration() {
+        reportsTable.register(UINib(nibName: "BasicReportsInfoTVC", bundle: nil), forCellReuseIdentifier: "BasicReportsInfoTVC")
+    }
+    
+    func toLoadData() {
+        reportsTable.delegate = self
+        reportsTable.dataSource = self
+        reportsTable.reloadData()
+    }
+    
     func setupUI() {
+        cellRegistration()
+        reportsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         sortCalenderView.layer.borderColor = UIColor.appTextColor.cgColor
         sortCalenderView.layer.borderWidth = 0.5
@@ -51,5 +87,7 @@ class DetailedReportView: BaseView {
         
         sortFiltersView.elevate(2)
         sortFiltersView.layer.cornerRadius = 5
+        
+        toLoadData()
     }
 }
