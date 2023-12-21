@@ -1023,7 +1023,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             } else if menuList[indexPath.row] == "Tour Plan" {
                   let tourplanVC = TourPlanVC.initWithStory()
                 self.navigationController?.pushViewController(tourplanVC, animated: true)
-            }
+            } else if menuList[indexPath.row] == "Reports" {
+                let tourplanVC = ReportsVC.initWithStory()
+              self.navigationController?.pushViewController(tourplanVC, animated: true)
+          }
             
             default :
                 break
