@@ -102,24 +102,24 @@ class BasicReportsInfoTVC: UITableViewCell {
         
         userNameLbl.text = model.sfName
         WTdescLbl.text = model.wtype
-        remarksDescLbl.text = model.remarks == "" ? "No remarks available" :  model.remarks
-        checkINinfoLbl.text = model.intime
-        checkOUTinfoLbl.text = model.outtime
-        checkINaddrLbl.text = model.inaddress
-        checkOUTaddrLbl.text = model.outaddress
-        dateInfoLbl.text = model.rptdate
+        remarksDescLbl.text =  model.remarks == "" ? "No remarks available" :  model.remarks
+//        checkINinfoLbl.text =  model.intime
+//        checkOUTinfoLbl.text = model.outtime
+//        checkINaddrLbl.text =  model.inaddress
+//        checkOUTaddrLbl.text = model.outaddress
+//        dateInfoLbl.text =     model.rptdate
         
         let isTohideCheckin = isTohideCheckin(model)
         let isTohideCheckout = isTohideCheckout(model)
         
         if isTohideCheckin && isTohideCheckout  {
-            inAndoutInfoView.isHidden = true
-            inAndoutHeightConst.constant = 0
-            stackHeight = stackHeight - 90
-            holderStackHeightConst.constant = stackHeight
+//            inAndoutInfoView.isHidden = true
+//            inAndoutHeightConst.constant = 0
+//            stackHeight = stackHeight - 70
+//            holderStackHeightConst.constant = stackHeight
         } else {
             inAndoutInfoView.isHidden = false
-            inAndoutHeightConst.constant = 90
+            inAndoutHeightConst.constant = 70
         }
         
        // remarksAndPlansView
@@ -195,7 +195,7 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     @IBOutlet var remarksDescLbl: UILabel!
     
-    @IBOutlet var overAllContentsHolderView: UIStackView!
+    @IBOutlet var overAllContentsHolderView: UIView!
     
     @IBOutlet var workPlansCollection: UICollectionView!
     
@@ -214,7 +214,9 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     @IBOutlet var remarksAndPlansHeightConst: NSLayoutConstraint!
     
-    var stackHeight: CGFloat = 290
+    @IBOutlet var nextActionVIew: UIView!
+    @IBOutlet var seperatorView: UIView!
+    var stackHeight: CGFloat = 245
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -239,28 +241,38 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     func setupUI() {
         cellRegistration()
-        overAllContentsHolderView.elevate(2)
-        overAllContentsHolderView.layer.cornerRadius = 2
+      //  overAllContentsHolderView.elevate(2)
+        overAllContentsHolderView.layer.cornerRadius = 5
         overAllContentsHolderView.backgroundColor = .appWhiteColor
         
+        statisInfoView.layer.cornerRadius = 2
         statisInfoView.backgroundColor = .appSelectionColor
         
+        seperatorView.backgroundColor = .appSelectionColor
+        
         userNameLbl.textColor = .appLightPink
-        userNameLbl.setFont(font: .bold(size: .SUBHEADER))
+        userNameLbl.setFont(font: .bold(size: .BODY))
         
         let titLbls : [UILabel] = [WTtitleLbl, submittedDateLbl, statusLbl, checkINLbl, checkOUTlLbl, remarksLbl]
         
         titLbls.forEach { label in
             label.textColor = .appLightTextColor
-            label.setFont(font: .bold(size: .BODY))
+            label.setFont(font: .medium(size: .BODY))
         }
         
         let descLbls : [UILabel] = [WTdescLbl, dateInfoLbl, statusInfoLbl, checkINinfoLbl, checkOUTinfoLbl, checkINaddrLbl, checkOUTaddrLbl, remarksDescLbl, checkINviewLbl, checkOUTviewLbl]
         
         descLbls.forEach { label in
-            label.setFont(font: .bold(size: .BODY))
+            if label == statusInfoLbl {
+                label.setFont(font: .medium(size: .BODY))
+            } else {
+                label.setFont(font: .bold(size: .BODY))
+            }
+            
             if label == checkINviewLbl ||  label == checkOUTviewLbl {
                 label.textColor = .appLightPink
+            } else if label == statusInfoLbl {
+                label.textColor = .appGreen
             } else {
                 label.textColor = .appTextColor
             }

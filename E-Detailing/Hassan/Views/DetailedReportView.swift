@@ -19,6 +19,10 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         let modal = reportsModel?[indexPath.row] ?? ReportsModel()
         cell.populateCell(modal)
+        cell.nextActionVIew.addTap {
+            let vc = ViewDayReportVC.initWithStory()
+            self.detailedreporsVC.navigationController?.pushViewController(vc, animated: true)
+        }
         return cell
     }
     
@@ -30,39 +34,39 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let isTohideCheckout = isTohideCheckout(model)
         
         if isTohideCheckin && isTohideCheckout  {
-            cellHeight = cellHeight - 90
+          //  cellHeight = cellHeight - 70
         }
         
         var count = Int()
         if model.chm != 0 {
-            let ChemistsessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: model.chm)
+
             count += 1
         }
         
         if model.cip != 0 {
-            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.udr)
+
             count += 1
         }
         
         if model.drs != 0 {
-            let ListedDoctorsessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: model.drs)
+
             count += 1
         }
         
         
         if model.stk != 0 {
-            let StockistsessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: model.stk)
+
             count += 1
         }
      
         
         if model.udr != 0 {
-            let UnlistedDocsessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: model.udr)
+
             count += 1
         }
         
         if model.hos != 0 {
-            let HosspsessionImage =  SessionImages(Image: UIImage(named: "JointCall") ?? UIImage(), count:  model.hos)
+
             count += 1
         }
        // remarksAndPlansView
@@ -100,7 +104,7 @@ class DetailedReportView: BaseView {
     
     @IBOutlet var reportsTable: UITableView!
     
-    var cellHeight: CGFloat = 300
+    var cellHeight: CGFloat = 255
     
     var reportsModel : [ReportsModel]?
     
@@ -144,14 +148,14 @@ class DetailedReportView: BaseView {
         
         
         sortCalenderView.backgroundColor = .appWhiteColor
-        sortCalenderView.elevate(2)
+       // sortCalenderView.elevate(2)
         sortCalenderView.layer.cornerRadius = 5
         
         sortSearchView.backgroundColor = .appWhiteColor
-        sortSearchView.elevate(2)
+       // sortSearchView.elevate(2)
         sortSearchView.layer.cornerRadius = 5
         
-        sortFiltersView.elevate(2)
+       // sortFiltersView.elevate(2)
         sortFiltersView.layer.cornerRadius = 5
         
         toLoadData()
