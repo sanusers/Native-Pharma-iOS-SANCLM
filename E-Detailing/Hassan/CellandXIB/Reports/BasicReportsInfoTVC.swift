@@ -119,7 +119,7 @@ class BasicReportsInfoTVC: UITableViewCell {
 //            holderStackHeightConst.constant = stackHeight
         } else {
             inAndoutInfoView.isHidden = false
-            inAndoutHeightConst.constant = 70
+            inAndoutHeightConst.constant = 80
         }
         
        // remarksAndPlansView
@@ -143,6 +143,7 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     
 
+    @IBOutlet var blurVXview: UIVisualEffectView!
     
     var sessionImages: [SessionImages]?
     
@@ -216,7 +217,7 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     @IBOutlet var nextActionVIew: UIView!
     @IBOutlet var seperatorView: UIView!
-    var stackHeight: CGFloat = 245
+    var stackHeight: CGFloat = 255
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -241,9 +242,12 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     func setupUI() {
         cellRegistration()
+        blurVXview.backgroundColor = .systemGreen
+        blurVXview.alpha = 0.15
       //  overAllContentsHolderView.elevate(2)
         overAllContentsHolderView.layer.cornerRadius = 5
         overAllContentsHolderView.backgroundColor = .appWhiteColor
+        
         
         statisInfoView.layer.cornerRadius = 2
         statisInfoView.backgroundColor = .appSelectionColor

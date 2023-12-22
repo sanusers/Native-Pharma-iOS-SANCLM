@@ -34,7 +34,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let isTohideCheckout = isTohideCheckout(model)
         
         if isTohideCheckin && isTohideCheckout  {
-          //  cellHeight = cellHeight - 70
+          //  cellHeight = cellHeight - 80
         }
         
         var count = Int()
@@ -87,6 +87,15 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
+extension DetailedReportView: SortVIewDelegate {
+    func didSelected(index: Int) {
+        selectedSortIndex = index
+        isSortPresented =  isSortPresented ? false : true
+        addOrRemoveSort(isSortPresented)
+    }
+    
+    
+}
 
 class DetailedReportView: BaseView {
     
@@ -104,9 +113,21 @@ class DetailedReportView: BaseView {
     
     @IBOutlet var reportsTable: UITableView!
     
-    var cellHeight: CGFloat = 255
+    var selectedSortIndex: Int? = nil
+    
+    var isSortPresented = false
+    
+    var cellHeight: CGFloat = 265
     
     var reportsModel : [ReportsModel]?
+    
+    
+    private lazy var sortView: SortVIew = {
+        let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
+     
+        customView.delegate = self
+        return customView
+    }()
     
     var detailedreporsVC : DetailedReportVC!
     override func didLoad(baseVC: BaseViewController) {
@@ -138,6 +159,47 @@ class DetailedReportView: BaseView {
         
     }
     
+    func initTaps() {
+        
+        
+        
+        sortFiltersView.addTap {
+            self.isSortPresented =  self.isSortPresented ? false : true
+            UIView.animate(withDuration: 1.0,
+                           delay: 0.15,
+                           usingSpringWithDamping: 2.0,
+                           initialSpringVelocity: 5.0,
+                           options: [.curveEaseOut],
+                           animations: {
+
+                self.addOrRemoveSort(self.isSortPresented)
+
+                           }, completion: nil)
+        }
+        
+
+    }
+    
+    func addOrRemoveSort(_ isToAdd: Bool) {
+        let views: [UIView] = [self.reportsTable, self.sortCalenderView, self.sortSearchView]
+        if isToAdd {
+            views.forEach { aView in
+                aView.alpha = 1
+                aView.isUserInteractionEnabled = true
+                
+                self.sortView.removeFromSuperview()
+            }
+        } else {
+            views.forEach { aView in
+                aView.alpha = 0.3
+                aView.isUserInteractionEnabled = false
+                self.sortView.selectedIndex = selectedSortIndex
+                self.sortView.toLoadData()
+                self.addSubview(self.sortView)
+            }
+        }
+    }
+    
     func setupUI() {
         toConfigureCellHeight()
         cellRegistration()
@@ -159,5 +221,6 @@ class DetailedReportView: BaseView {
         sortFiltersView.layer.cornerRadius = 5
         
         toLoadData()
+        initTaps()
     }
 }

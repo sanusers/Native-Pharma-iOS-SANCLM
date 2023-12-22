@@ -117,6 +117,10 @@
 		38D569022B3564FD007CB86D /* DayReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D569012B3564FD007CB86D /* DayReportView.swift */; };
 		38D569052B3570E3007CB86D /* ListedWorkTypesTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D569032B3570E3007CB86D /* ListedWorkTypesTVC.swift */; };
 		38D569062B3570E3007CB86D /* ListedWorkTypesTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D569042B3570E3007CB86D /* ListedWorkTypesTVC.xib */; };
+		38D569082B35A785007CB86D /* SortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D569072B35A785007CB86D /* SortView.swift */; };
+		38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D569092B35AF5D007CB86D /* SortView.xib */; };
+		38D5690D2B35AFE3007CB86D /* RadioSelectionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D5690B2B35AFE3007CB86D /* RadioSelectionTVC.swift */; };
+		38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D5690C2B35AFE3007CB86D /* RadioSelectionTVC.xib */; };
 		38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */; };
 		38D6E88B2B34081B003CC4D8 /* BasicReportsInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */; };
 		38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D738222B120A6F00162548 /* TableSetupModel.swift */; };
@@ -320,6 +324,10 @@
 		38D569012B3564FD007CB86D /* DayReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayReportView.swift; sourceTree = "<group>"; };
 		38D569032B3570E3007CB86D /* ListedWorkTypesTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListedWorkTypesTVC.swift; sourceTree = "<group>"; };
 		38D569042B3570E3007CB86D /* ListedWorkTypesTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListedWorkTypesTVC.xib; sourceTree = "<group>"; };
+		38D569072B35A785007CB86D /* SortView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortView.swift; sourceTree = "<group>"; };
+		38D569092B35AF5D007CB86D /* SortView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SortView.xib; sourceTree = "<group>"; };
+		38D5690B2B35AFE3007CB86D /* RadioSelectionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioSelectionTVC.swift; sourceTree = "<group>"; };
+		38D5690C2B35AFE3007CB86D /* RadioSelectionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RadioSelectionTVC.xib; sourceTree = "<group>"; };
 		38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicReportsInfoTVC.swift; sourceTree = "<group>"; };
 		38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BasicReportsInfoTVC.xib; sourceTree = "<group>"; };
 		38D738222B120A6F00162548 /* TableSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSetupModel.swift; sourceTree = "<group>"; };
@@ -483,6 +491,7 @@
 				38E659872B33088200E7BF42 /* ReportsView.swift */,
 				38E6598B2B33195C00E7BF42 /* DetailedReportView.swift */,
 				38D569012B3564FD007CB86D /* DayReportView.swift */,
+				38D569072B35A785007CB86D /* SortView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -727,6 +736,9 @@
 				38D568FC2B3560C6007CB86D /* VisitsCountCVC.xib */,
 				38D569032B3570E3007CB86D /* ListedWorkTypesTVC.swift */,
 				38D569042B3570E3007CB86D /* ListedWorkTypesTVC.xib */,
+				38D569092B35AF5D007CB86D /* SortView.xib */,
+				38D5690B2B35AFE3007CB86D /* RadioSelectionTVC.swift */,
+				38D5690C2B35AFE3007CB86D /* RadioSelectionTVC.xib */,
 			);
 			path = Reports;
 			sourceTree = "<group>";
@@ -1016,12 +1028,14 @@
 				38CBA4D42A9F80C0001992C4 /* TagViewCell.xib in Resources */,
 				38CD60E12A866CFC006FFB39 /* ProductSampleTableViewCell.xib in Resources */,
 				B287E62A29F29C1B0097974D /* Main.storyboard in Resources */,
+				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
 				38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */,
 				38D569062B3570E3007CB86D /* ListedWorkTypesTVC.xib in Resources */,
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
+				38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */,
 				38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
@@ -1126,6 +1140,7 @@
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
 				38CD60DF2A866CEA006FFB39 /* ProductSampleTableViewCell.swift in Sources */,
+				38D5690D2B35AFE3007CB86D /* RadioSelectionTVC.swift in Sources */,
 				38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */,
 				38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */,
 				38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */,
@@ -1156,6 +1171,7 @@
 				38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */,
 				38E6598A2B33193F00E7BF42 /* DetailedReportVC.swift in Sources */,
 				38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */,
+				38D569082B35A785007CB86D /* SortView.swift in Sources */,
 				38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */,
 				38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */,
 				38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */,
