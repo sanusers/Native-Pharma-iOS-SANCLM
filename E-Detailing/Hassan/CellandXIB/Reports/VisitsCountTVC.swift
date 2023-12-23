@@ -9,13 +9,33 @@ import UIKit
 
 extension VisitsCountTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return type.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell: VisitsCountCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "VisitsCountCVC", for: indexPath) as! VisitsCountCVC
+        let model = self.type[indexPath.row]
+        cell.type = model
         cell.toPopulatecell()
+        cell.holderView.layer.borderWidth = 0
+        if indexPath.row == 0 {
+            cell.holderView.layer.borderColor = model.coclor.cgColor
+            cell.holderView.layer.borderWidth = 1
+        }
+//        if cell.selectedIndex == indexPath.row {
+//            cell.holderView.layer.borderColor = model.coclor.cgColor
+//            cell.holderView.layer.borderWidth = 1
+//        } else {
+//            cell.holderView.layer.borderColor = UIColor.clear.cgColor
+//            cell.holderView.layer.borderWidth = 0
+//        }
+        
+       // cell.addTap {
+          //  cell.selectedIndex = indexPath.row
+         //   self.toloadData()
+     //   }
+        
         return cell
     }
     
@@ -27,8 +47,13 @@ extension VisitsCountTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 }
 
 class VisitsCountTVC: UITableViewCell {
+    
+    
+    
 
     @IBOutlet var visitTypesCVC: UICollectionView!
+    
+    var type: [CellType] = [.All, .Doctor, .Chemist, .Stockist, .Hospital]
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

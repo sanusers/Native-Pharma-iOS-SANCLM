@@ -88,13 +88,12 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension DetailedReportView: SortVIewDelegate {
-    func didSelected(index: Int) {
+    func didSelected(index: Int?, isTosave: Bool) {
         selectedSortIndex = index
         isSortPresented =  isSortPresented ? false : true
         addOrRemoveSort(isSortPresented)
     }
-    
-    
+
 }
 
 class DetailedReportView: BaseView {
@@ -110,9 +109,11 @@ class DetailedReportView: BaseView {
     
     @IBOutlet var sortFiltersView: UIView!
     
+    @IBOutlet var filterDateTF: UITextField!
     
     @IBOutlet var reportsTable: UITableView!
     
+    @IBOutlet var searchTF: UITextField!
     var selectedSortIndex: Int? = nil
     
     var isSortPresented = false
@@ -120,7 +121,7 @@ class DetailedReportView: BaseView {
     var cellHeight: CGFloat = 265
     
     var reportsModel : [ReportsModel]?
-    
+    let datePicker = UIDatePicker()
     
     private lazy var sortView: SortVIew = {
         let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
@@ -160,8 +161,12 @@ class DetailedReportView: BaseView {
     }
     
     func initTaps() {
+
+ 
         
         
+        
+      
         
         sortFiltersView.addTap {
             self.isSortPresented =  self.isSortPresented ? false : true
@@ -179,7 +184,40 @@ class DetailedReportView: BaseView {
         
 
     }
+    func showDatePicker(){
+      //Formate Date
+      datePicker.datePickerMode = .date
+        datePicker.tintColor = .appTextColor
+   
+     //ToolBar
+     let toolbar = UIToolbar();
+     toolbar.sizeToFit()
+        
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(donedatePicker));
+       doneButton.tintColor = .appTextColor
+      //  let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(cancelDatePicker));
+        cancelButton.tintColor = .appLightPink
+        toolbar.setItems([doneButton,cancelButton], animated: true)
+//spaceButton,
+        filterDateTF.inputAccessoryView = toolbar
+        filterDateTF.inputView = datePicker
+
+   }
     
+    @objc func donedatePicker(){
+
+     let formatter = DateFormatter()
+     formatter.dateFormat = "dd MMM yyyy"
+     filterDateTF.text = formatter.string(from: datePicker.date)
+     self.endEditing(true)
+   }
+    
+    @objc func cancelDatePicker(){
+       self.endEditing(true)
+     }
+   
     func addOrRemoveSort(_ isToAdd: Bool) {
         let views: [UIView] = [self.reportsTable, self.sortCalenderView, self.sortSearchView]
         if isToAdd {
@@ -201,6 +239,14 @@ class DetailedReportView: BaseView {
     }
     
     func setupUI() {
+       //searchTF.placeholder = UIFont(name: "Satoshi-Bold", size: 14)
+        searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
+        titleLBL.setFont(font: .bold(size: .BODY))
+        filterDateTF.inputView = datePicker
+        filterDateTF.font = UIFont(name: "Satoshi-Bold", size: 14)
+     
+        filterDateTF.text = "Select Date"
+        showDatePicker()
         toConfigureCellHeight()
         cellRegistration()
         reportsTable.separatorStyle = .none

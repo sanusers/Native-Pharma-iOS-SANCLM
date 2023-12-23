@@ -137,10 +137,48 @@ class BasicReportsInfoTVC: UITableViewCell {
             remarksAndPlansHeightConst.constant = 75
         }
         
-        
+        switch model.typ {
+        case 0:
+            self.approvalType = .pending
+        case 1:
+            self.approvalType = .approved
+        case 2:
+            self.approvalType = .rejected
+        default:
+            self.approvalType = .pending
+        }
+
         toLoadData()
     }
     
+    
+    enum ApprovalType {
+        case approved
+        case pending
+        case rejected
+
+        var color: UIColor {
+            switch self {
+            case .approved:
+                return .appGreen
+            case .pending:
+                return .appGreyColor
+            case .rejected:
+                return .appLightPink
+            }
+        }
+
+        var text: String {
+            switch self {
+            case .approved:
+                return "Approved"
+            case .pending:
+                return "Pending"
+            case .rejected:
+                return "Rejected"
+            }
+        }
+    }
     
 
     @IBOutlet var blurVXview: UIVisualEffectView!
@@ -218,6 +256,12 @@ class BasicReportsInfoTVC: UITableViewCell {
     @IBOutlet var nextActionVIew: UIView!
     @IBOutlet var seperatorView: UIView!
     var stackHeight: CGFloat = 255
+    var approvalType: ApprovalType = .rejected {
+         didSet {
+             setArrovalView()
+           //  approvalLabel.text = "Approval Status: \(approvalType.rawValue)"
+         }
+     }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -275,8 +319,6 @@ class BasicReportsInfoTVC: UITableViewCell {
             
             if label == checkINviewLbl ||  label == checkOUTviewLbl {
                 label.textColor = .appLightPink
-            } else if label == statusInfoLbl {
-                label.textColor = .appGreen
             } else {
                 label.textColor = .appTextColor
             }
@@ -284,8 +326,27 @@ class BasicReportsInfoTVC: UITableViewCell {
           
             
         }
+        
+
     }
 
+    func setArrovalView() {
+        switch self.approvalType {
+            
+        case .approved:
+            statusInfoLbl.text = approvalType.text
+            statusInfoLbl.textColor = approvalType.color
+            blurVXview.backgroundColor = approvalType.color
+        case .pending:
+            statusInfoLbl.text = approvalType.text
+            statusInfoLbl.textColor = .black
+            blurVXview.backgroundColor = approvalType.color
+        case .rejected:
+            statusInfoLbl.text = approvalType.text
+            statusInfoLbl.textColor = approvalType.color
+            blurVXview.backgroundColor = approvalType.color
+        }
+    }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

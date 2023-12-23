@@ -59,6 +59,7 @@ class VisitInfoTVC: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
         setupUI()
     }
     
@@ -87,19 +88,19 @@ class VisitInfoTVC: UITableViewCell {
             lbl.setFont(font: .bold(size: .BODY))
             lbl.textColor = .appTextColor
         }
+
         
-        elevationView.elevate(5)
-       // elevationView.layer.cornerRadius = 5
-      //  elevationView.layer.cornerRadius = 5
-       // elevationView.elevate(5)
-     //   applyCornerRadiusAndElevation(to: elevationView, cornerRadius: 10, shadowColor: UIColor.black, shadowOffset: CGSize(width: 0, height: 3), shadowOpacity: 0.3, shadowRadius: 5)
- 
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    override class func awakeFromNib() {
+       
+        
     }
     
 }

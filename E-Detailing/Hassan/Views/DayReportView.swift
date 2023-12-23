@@ -8,6 +8,15 @@
 import Foundation
 import UIKit
 
+extension DayReportView : ViewAllInfoTVCDelegate {
+    func didLessTapped() {
+        self.isForViewmore = false
+        self.toLoadData()
+    }
+    
+    
+}
+
 extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     
     
@@ -22,7 +31,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         case 1:
             return 1
         case 2:
-            return 2
+            return 1
         default:
             return 0
         }
@@ -43,12 +52,38 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             cell.selectionStyle = .none
             return cell
         case 2:
-            let cell: VisitInfoTVC = tableView.dequeueReusableCell(withIdentifier: "VisitInfoTVC", for: indexPath) as! VisitInfoTVC
-            cell.selectionStyle = .none
-            return cell
+            
+            if !isForViewmore {
+                let cell: VisitInfoTVC = tableView.dequeueReusableCell(withIdentifier: "VisitInfoTVC", for: indexPath) as! VisitInfoTVC
+                cell.selectionStyle = .none
+                cell.elevationView.elevate(5)
+                cell.elevationView.layer.cornerRadius = 5
+                
+                cell.viewMoreDesc.addTap {
+                    print("Tapped")
+                    self.isForViewmore = true
+                    self.toLoadData()
+                }
+                return cell
+            } else {
+                let cell: ViewAllInfoTVC = tableView.dequeueReusableCell(withIdentifier: "ViewAllInfoTVC", for: indexPath) as! ViewAllInfoTVC
+                cell.delegate = self
+                
+                cell.selectionStyle = .none
+                return cell
+            }
+
+            
+
+            
         default:
             return UITableViewCell()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // this will turn on `masksToBounds` just before showing the cell
+        cell.contentView.layer.masksToBounds = true
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -58,8 +93,13 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         case 1:
             return tableView.height / 9
         default:
-            return tableView.height / 2.5
-            //tableView.height / 2.5
+            
+            if !isForViewmore {
+               return tableView.height / 2.5
+            } else {
+                return 585
+            }
+            
         }
     }
     
@@ -86,7 +126,7 @@ class DayReportView: BaseView {
     
     @IBOutlet var tableContentsHolder: UIView!
     @IBOutlet var sortView: UIView!
-    
+    var isForViewmore = false
     var rejectedHeight: CGFloat =  70
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
@@ -117,6 +157,9 @@ class DayReportView: BaseView {
       //  aDayReportsTable.register(UINib(nibName: "WTsheetTVC", bundle:nil), forCellReuseIdentifier: "WTsheetTVC")
         
         aDayReportsTable.register(UINib(nibName: "ListedWorkTypesTVC", bundle:nil), forCellReuseIdentifier: "ListedWorkTypesTVC")
+        
+        aDayReportsTable.register(UINib(nibName: "ViewAllInfoTVC", bundle:nil), forCellReuseIdentifier: "ViewAllInfoTVC")
+        
         
     }
     

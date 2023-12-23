@@ -28,8 +28,8 @@ class DetailedReportVC: BaseViewController {
     
 
     func toSetParamsAndGetResponse() {
-        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-        let dateFormatter = DateFormatter()
+       // let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+       // let dateFormatter = DateFormatter()
 
         var param = [String: Any]()
         param["tableName"] = "getdayrpt"

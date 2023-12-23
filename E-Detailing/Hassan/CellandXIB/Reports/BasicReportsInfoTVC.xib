@@ -111,7 +111,7 @@
                                                                             <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000298023199" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ciS-cR-74s">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="90.5" height="35.5"/>
                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Ufx-GM-rdg">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="90.5" height="35.5"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="91" height="35"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 </view>
                                                                                 <color key="backgroundColor" systemColor="systemGreenColor"/>
