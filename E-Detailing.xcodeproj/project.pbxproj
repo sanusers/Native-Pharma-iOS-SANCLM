@@ -206,6 +206,7 @@
 		38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */; };
 		38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */; };
 		38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */; };
+		38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */; };
 		B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24C29F6428900B90B61 /* CallCell.swift */; };
 		B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24E29F6630000B90B61 /* OutboxCell.swift */; };
 		B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED25029F6A24600B90B61 /* MenuCell.swift */; };
@@ -431,6 +432,7 @@
 		38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApplicationVC.swift; sourceTree = "<group>"; };
 		38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTypeCell.swift; sourceTree = "<group>"; };
 		38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkTypeCell.xib; sourceTree = "<group>"; };
+		38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionHeader.swift; sourceTree = "<group>"; };
 		9CE0B15EC24F1D8F6F887F26 /* Pods-E-Detailing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-Detailing.release.xcconfig"; path = "Target Support Files/Pods-E-Detailing/Pods-E-Detailing.release.xcconfig"; sourceTree = "<group>"; };
 		B27ED24C29F6428900B90B61 /* CallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCell.swift; sourceTree = "<group>"; };
 		B27ED24E29F6630000B90B61 /* OutboxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxCell.swift; sourceTree = "<group>"; };
@@ -491,6 +493,7 @@
 				38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */,
 				38107C652B37056600ACEDF3 /* ProductsDescriptionCVC.swift */,
 				38107C662B37056600ACEDF3 /* ProductsDescriptionCVC.xib */,
+				38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */,
 			);
 			path = ReportsViewMore;
 			sourceTree = "<group>";
@@ -1276,6 +1279,7 @@
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
+				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,
 				38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */,

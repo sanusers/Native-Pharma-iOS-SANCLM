@@ -20,6 +20,14 @@ class ProductSectionTitleCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        let titleLbls : [UILabel] = [rcpaLbl, rxQTYlbl, samplesLbl, promoterLbl, productLbl]
+        
+        titleLbls.forEach { label in
+            label.textColor = .appTextColor
+            label.setFont(font: .bold(size: .BODY))
+        }
+        holderVoew.setSpecificCornersForTop(cornerRadius: 5)
     }
 
 }

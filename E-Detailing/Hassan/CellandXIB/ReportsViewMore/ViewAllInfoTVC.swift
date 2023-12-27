@@ -72,7 +72,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 return CGSize(width: collectionView.width, height: 30)
                 
             case 3:
-                return CGSize(width: collectionView.width, height: 50)
+                return CGSize(width: collectionView.width, height: 60)
                 
                 //MARK: - rcpa cell (+1 section)
             case 4:
@@ -101,7 +101,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 return CGSize(width: collectionView.width, height: 30)
                 
             case 3:
-                return CGSize(width: collectionView.width, height: 50)
+                return CGSize(width: collectionView.width, height: 60)
             case 4:
                 return CGSize(width: collectionView.width, height: 75)
             case 5:
@@ -113,6 +113,29 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
     }
 
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        // Create and return the header view
+        if indexPath.section == 2 {
+            if kind == UICollectionView.elementKindSectionHeader {
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CustomHeaderView.identifier, for: indexPath) as! CustomHeaderView
+                headerView.titleLabel.text = "Product"
+                return headerView
+            }
+        }
+
+        return UICollectionReusableView()
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        // Return the size of your header
+        if section == 2 {
+            return CGSize(width: collectionView.frame.width, height: 50)
+        } else {
+            return CGSize()
+        }
+       
+    }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -258,6 +281,8 @@ class ViewAllInfoTVC: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        extendedInfoCollection.elevate(4)
+        extendedInfoCollection.layer.cornerRadius = 5
         extendedInfoCollection.isScrollEnabled = false
         cellRegistration()
         toLoadData()
@@ -279,6 +304,8 @@ class ViewAllInfoTVC: UITableViewCell {
         extendedInfoCollection.register(UINib(nibName: "ViewmoreCVC", bundle: nil), forCellWithReuseIdentifier: "ViewmoreCVC")
         
         extendedInfoCollection.register(UINib(nibName: "ProductsDescriptionCVC", bundle: nil), forCellWithReuseIdentifier: "ProductsDescriptionCVC")
+        
+        extendedInfoCollection.register(CustomHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CustomHeaderView.identifier)
         
     }
 

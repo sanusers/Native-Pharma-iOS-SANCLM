@@ -96,6 +96,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // this will turn on `masksToBounds` just before showing the cell
         cell.contentView.layer.masksToBounds = true
@@ -114,9 +115,10 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             }
             
             else if isForViewmore &&  !isForRCPA {
-                return 585
+               //10 elevation padding, 60 header height (product)
+                return 595 + 10 + 60
             } else if isForRCPA && isForViewmore {
-                return 585 + 100
+                return 595 + 100 + 10 + 60
             } else {
                 return CGFloat()
             }

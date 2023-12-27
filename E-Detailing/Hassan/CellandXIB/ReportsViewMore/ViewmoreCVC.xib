@@ -20,13 +20,6 @@
                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VFI-H8-l1Z">
                         <rect key="frame" x="0.0" y="0.0" width="437" height="63"/>
                         <subviews>
-                            <view clipsSubviews="YES" alpha="0.80000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jOW-Ox-ybc">
-                                <rect key="frame" x="0.0" y="1" width="437" height="1"/>
-                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="WGP-yB-QNE"/>
-                                </constraints>
-                            </view>
                             <stackView opaque="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qxz-nD-AE9">
                                 <rect key="frame" x="196.5" y="16" width="44" height="31.5"/>
                                 <subviews>
@@ -62,12 +55,9 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Qxz-nD-AE9" firstAttribute="height" secondItem="VFI-H8-l1Z" secondAttribute="height" multiplier="0.5" id="PiT-U3-Jc4"/>
-                            <constraint firstItem="jOW-Ox-ybc" firstAttribute="centerX" secondItem="VFI-H8-l1Z" secondAttribute="centerX" id="Ur8-so-URc"/>
                             <constraint firstItem="Qxz-nD-AE9" firstAttribute="centerY" secondItem="VFI-H8-l1Z" secondAttribute="centerY" id="VBG-Fq-Ph1"/>
                             <constraint firstItem="Qxz-nD-AE9" firstAttribute="width" secondItem="VFI-H8-l1Z" secondAttribute="width" multiplier="0.1" id="fqA-aT-agk"/>
                             <constraint firstItem="Qxz-nD-AE9" firstAttribute="centerX" secondItem="VFI-H8-l1Z" secondAttribute="centerX" id="j5D-nt-Su5"/>
-                            <constraint firstItem="jOW-Ox-ybc" firstAttribute="top" secondItem="VFI-H8-l1Z" secondAttribute="top" constant="1" id="u29-VW-M2J"/>
-                            <constraint firstItem="jOW-Ox-ybc" firstAttribute="width" secondItem="VFI-H8-l1Z" secondAttribute="width" id="vfK-dt-oW4"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -80,6 +70,9 @@
                 <constraint firstItem="VFI-H8-l1Z" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" id="rh6-w9-FPe"/>
             </constraints>
             <size key="customSize" width="437" height="63"/>
+            <connections>
+                <outlet property="viewLessLbl" destination="W5R-Qd-kDM" id="ref-yu-8dL"/>
+            </connections>
             <point key="canvasLocation" x="167.19512195121951" y="-29.745762711864408"/>
         </collectionViewCell>
     </objects>

@@ -8,10 +8,60 @@
 import UIKit
 
 class TimeInfoCVC: UICollectionViewCell {
-
+    @IBOutlet var checkINLbl: UILabel!
+    
+    
+    @IBOutlet var checkOUTlLbl: UILabel!
+    
+    
+    @IBOutlet var checkINinfoLbl: UILabel!
+    
+    
+    @IBOutlet var checkOUTinfoLbl: UILabel!
+    @IBOutlet var checkINaddrLbl: UILabel!
+    
+    @IBOutlet var checkOUTaddrLbl: UILabel!
+    
+    @IBOutlet var checkINviewLbl: UILabel!
+    
+    @IBOutlet var checkOUTviewLbl: UILabel!
+    
+    @IBOutlet var inandOutSeperator: UIView!
+    
+    @IBOutlet var seperatorView: UIView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        setupUI()
         // Initialization code
+    }
+    
+    func setupUI() {
+        inandOutSeperator.backgroundColor = .appSelectionColor
+        seperatorView.backgroundColor = .appSelectionColor
+        let titLbls : [UILabel] = [checkINLbl, checkOUTlLbl]
+        
+        titLbls.forEach { label in
+            label.textColor = .appLightTextColor
+            label.setFont(font: .medium(size: .BODY))
+        }
+        
+        let descLbls : [UILabel] = [ checkINinfoLbl, checkOUTinfoLbl, checkINaddrLbl, checkOUTaddrLbl, checkINviewLbl, checkOUTviewLbl]
+        
+        descLbls.forEach { label in
+        
+                label.setFont(font: .bold(size: .BODY))
+            
+            
+            if label == checkINviewLbl ||  label == checkOUTviewLbl {
+                label.textColor = .appLightPink
+            } else {
+                label.textColor = .appTextColor
+            }
+            
+          
+            
+        }
     }
 
 }

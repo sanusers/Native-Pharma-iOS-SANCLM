@@ -201,45 +201,45 @@ extension UIView {
         self.layer.shadowRadius = abs(elevation > 0 ? CGFloat(elevation) : -CGFloat(elevation))
         self.layer.shadowOpacity = opacity
     }
-//
-//    func setSpecificCornersForTop(cornerRadius : CGFloat)
-//    {
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = cornerRadius
-//        self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner] // Top right corner, Top left corner respectively
-//
-//    }
-//
-//
-//    //layerMinXMinYCorner    top left corner
-//    //layerMaxXMinYCorner    top right corner
-//    //layerMinXMaxYCorner    bottom left corner
-//    //layerMaxXMaxYCorner    bottom right corner
-//
-//    func setSpecificCornersForLeft(cornerRadius : CGFloat)
-//    {
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = cornerRadius
-//        self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-//    }
-//
-//    func setSpecificCornersForBottom(cornerRadius : CGFloat)
-//    {
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = cornerRadius
-//        self.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-//    }
-//    func setSpecificCorners()
-//    {
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = 12
-//        self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner] // Top right corner, Top left corner respectively
-//    }
-//    func removeSpecificCorner(){
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = 0
-//        self.layer.maskedCorners = [] //
-//    }
+
+    func setSpecificCornersForTop(cornerRadius : CGFloat)
+    {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = cornerRadius
+        self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner] // Top right corner, Top left corner respectively
+
+    }
+
+
+    //layerMinXMinYCorner    top left corner
+    //layerMaxXMinYCorner    top right corner
+    //layerMinXMaxYCorner    bottom left corner
+    //layerMaxXMaxYCorner    bottom right corner
+
+    func setSpecificCornersForLeft(cornerRadius : CGFloat)
+    {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = cornerRadius
+        self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+    }
+
+    func setSpecificCornersForBottom(cornerRadius : CGFloat)
+    {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = cornerRadius
+        self.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    }
+    func setSpecificCorners()
+    {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 12
+        self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner] // Top right corner, Top left corner respectively
+    }
+    func removeSpecificCorner(){
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 0
+        self.layer.maskedCorners = [] //
+    }
 }
 
 extension UIView {

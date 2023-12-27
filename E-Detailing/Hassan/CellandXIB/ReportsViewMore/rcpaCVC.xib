@@ -18,6 +18,13 @@
                 <rect key="frame" x="0.0" y="0.0" width="535" height="61"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PaK-71-ise">
+                        <rect key="frame" x="8" y="59" width="519" height="1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="U68-x5-btf"/>
+                        </constraints>
+                    </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cT0-SQ-Csc">
                         <rect key="frame" x="8" y="6" width="519" height="49"/>
                         <subviews>
@@ -58,14 +65,19 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
+                <constraint firstItem="PaK-71-ise" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="AQj-Mf-4DW"/>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="ARM-2Q-4eV"/>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" multiplier="0.8" id="JzM-KP-uy4"/>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="0.97" id="YDw-hu-LKI"/>
+                <constraint firstItem="PaK-71-ise" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="0.97" id="dxW-BA-hAr"/>
+                <constraint firstAttribute="bottom" secondItem="PaK-71-ise" secondAttribute="bottom" constant="1" id="ik9-VH-ebq"/>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="qpg-A6-6Up"/>
             </constraints>
             <size key="customSize" width="535" height="61"/>
             <connections>
                 <outlet property="elevationView" destination="cT0-SQ-Csc" id="odu-W4-aim"/>
+                <outlet property="lblRCPA" destination="hNQ-N2-kfk" id="ABK-Sk-l9i"/>
+                <outlet property="seperatorView" destination="PaK-71-ise" id="vVh-Qz-9fS"/>
             </connections>
             <point key="canvasLocation" x="225" y="-30.254237288135595"/>
         </collectionViewCell>

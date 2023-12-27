@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="jfp-bH-0NE">
-                        <rect key="frame" x="0.0" y="0.0" width="442" height="208"/>
+                        <rect key="frame" x="6.5" y="2" width="429" height="204"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="acd-H9-VR5">
                             <size key="itemSize" width="128" height="128"/>
@@ -30,9 +30,9 @@
                     </collectionView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="jfp-bH-0NE" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" id="EqH-L6-oNT"/>
+                    <constraint firstItem="jfp-bH-0NE" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.97" id="EqH-L6-oNT"/>
                     <constraint firstItem="jfp-bH-0NE" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="HZe-Ts-Mhv"/>
-                    <constraint firstItem="jfp-bH-0NE" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" id="PDx-LF-iax"/>
+                    <constraint firstItem="jfp-bH-0NE" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.98" id="PDx-LF-iax"/>
                     <constraint firstItem="jfp-bH-0NE" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Qhq-kP-PpH"/>
                 </constraints>
             </tableViewCellContentView>

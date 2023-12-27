@@ -84,6 +84,11 @@
                 <constraint firstItem="112-Yz-bSn" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" id="qe2-bE-AoW"/>
             </constraints>
             <size key="customSize" width="736" height="62"/>
+            <connections>
+                <outlet property="remarksDesc" destination="6Be-by-oSV" id="D0E-bO-fqA"/>
+                <outlet property="remarksTitle" destination="cEa-B2-utM" id="UpS-aB-nU3"/>
+                <outlet property="seperatorView" destination="OYN-ca-5bY" id="K53-8d-UQk"/>
+            </connections>
             <point key="canvasLocation" x="338.78048780487802" y="-30"/>
         </collectionViewCell>
     </objects>
