@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -22,7 +22,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gyE-dv-puG">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bf-hF-Xrg">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dD4-0j-ZnZ">
@@ -112,37 +112,31 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="0aV-Wi-Nbw" firstAttribute="leading" secondItem="q4h-Ic-qqr" secondAttribute="trailing" constant="15" id="1f9-CN-6eb"/>
-                            <constraint firstItem="q4h-Ic-qqr" firstAttribute="width" secondItem="gyE-dv-puG" secondAttribute="width" multiplier="0.3" id="Eft-zu-UMy"/>
-                            <constraint firstItem="q4h-Ic-qqr" firstAttribute="leading" secondItem="gyE-dv-puG" secondAttribute="leading" constant="50" id="IhK-xj-pwD"/>
-                            <constraint firstItem="0aV-Wi-Nbw" firstAttribute="centerY" secondItem="gyE-dv-puG" secondAttribute="centerY" constant="-8" id="JCf-vt-Rw1"/>
-                            <constraint firstItem="0aV-Wi-Nbw" firstAttribute="width" secondItem="gyE-dv-puG" secondAttribute="width" multiplier="0.2" id="JR9-BX-SMh"/>
-                            <constraint firstItem="Wcm-wB-aAL" firstAttribute="leading" secondItem="gyE-dv-puG" secondAttribute="leading" constant="20" id="XNi-W5-HdB"/>
-                            <constraint firstAttribute="bottom" secondItem="Wcm-wB-aAL" secondAttribute="bottom" constant="10" id="ZyT-Oq-0TI"/>
-                            <constraint firstItem="q4h-Ic-qqr" firstAttribute="centerY" secondItem="gyE-dv-puG" secondAttribute="centerY" constant="-8" id="jt0-nk-Q9e"/>
-                            <constraint firstAttribute="trailing" secondItem="fsb-pm-TNr" secondAttribute="trailing" constant="30" id="sPo-4b-5th"/>
-                            <constraint firstItem="fsb-pm-TNr" firstAttribute="centerY" secondItem="gyE-dv-puG" secondAttribute="centerY" constant="-8" id="tRy-cR-7fa"/>
-                            <constraint firstAttribute="trailing" secondItem="Wcm-wB-aAL" secondAttribute="trailing" constant="20" id="zXj-RS-UWj"/>
+                            <constraint firstAttribute="bottom" secondItem="dD4-0j-ZnZ" secondAttribute="bottom" id="IKs-mx-oUM"/>
+                            <constraint firstAttribute="trailing" secondItem="dD4-0j-ZnZ" secondAttribute="trailing" id="Kxk-jw-LF1"/>
+                            <constraint firstItem="dD4-0j-ZnZ" firstAttribute="top" secondItem="9bf-hF-Xrg" secondAttribute="top" id="Y2G-ZC-rUQ"/>
+                            <constraint firstItem="dD4-0j-ZnZ" firstAttribute="leading" secondItem="9bf-hF-Xrg" secondAttribute="leading" id="k8y-NV-qIg"/>
                         </constraints>
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="gyE-dv-puG" firstAttribute="top" secondItem="rVk-hn-zko" secondAttribute="top" id="Qq0-9L-vab"/>
-                    <constraint firstAttribute="trailing" secondItem="gyE-dv-puG" secondAttribute="trailing" id="d2Q-7A-YQF"/>
-                    <constraint firstItem="gyE-dv-puG" firstAttribute="leading" secondItem="rVk-hn-zko" secondAttribute="leading" id="joy-vX-7b9"/>
-                    <constraint firstAttribute="bottom" secondItem="gyE-dv-puG" secondAttribute="bottom" id="nwq-l8-vOe"/>
+                    <constraint firstItem="9bf-hF-Xrg" firstAttribute="top" secondItem="rVk-hn-zko" secondAttribute="top" id="1Bh-s6-wTd"/>
+                    <constraint firstItem="9bf-hF-Xrg" firstAttribute="leading" secondItem="rVk-hn-zko" secondAttribute="leading" id="31h-Rq-fBJ"/>
+                    <constraint firstAttribute="bottom" secondItem="9bf-hF-Xrg" secondAttribute="bottom" id="PhQ-XR-rcb"/>
+                    <constraint firstAttribute="trailing" secondItem="9bf-hF-Xrg" secondAttribute="trailing" id="cg5-yj-nuZ"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="btnDelete" destination="fsb-pm-TNr" id="MlM-vw-mmF"/>
-                <outlet property="lblName" destination="q4h-Ic-qqr" id="1nS-NI-eVF"/>
-                <outlet property="txtSampleQty" destination="0aV-Wi-Nbw" id="LiF-ih-j3U"/>
+                <outlet property="btnDelete" destination="Cjg-oh-fEh" id="zlw-zl-coR"/>
+                <outlet property="lblName" destination="HvP-5F-qQA" id="hWG-WD-Xsb"/>
+                <outlet property="txtInputCount" destination="4lN-OO-tRG" id="CXC-Y2-ixH"/>
+                <outlet property="txtSampleQty" destination="ohj-xM-ZPd" id="6wb-xU-Kwy"/>
             </connections>
             <point key="canvasLocation" x="-2.5609756097560976" y="-88.728813559322035"/>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="DeleteIcon" width="40" height="40"/>
+        <image name="DeleteBinIcon" width="24" height="24"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
