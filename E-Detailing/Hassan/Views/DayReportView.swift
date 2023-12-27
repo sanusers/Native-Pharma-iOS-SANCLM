@@ -9,10 +9,25 @@ import Foundation
 import UIKit
 
 extension DayReportView : ViewAllInfoTVCDelegate {
-    func didLessTapped() {
-        self.isForViewmore = false
-        self.toLoadData()
+    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool) {
+        
+        if islessTapped && !isrcpaTapped {
+            self.isForViewmore = false
+            self.toLoadData()
+        } else if !islessTapped && isrcpaTapped{
+            self.isForViewmore = true
+            self.isForRCPA = isrcpaTapped
+            self.toLoadData()
+        } else {
+            self.isForViewmore = true
+            self.isForRCPA = isrcpaTapped
+            self.toLoadData()
+        }
+        
+
     }
+    
+    
     
     
 }
@@ -95,9 +110,15 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         default:
             
             if !isForViewmore {
-               return tableView.height / 2.5
-            } else {
+               return  240
+            }
+            
+            else if isForViewmore &&  !isForRCPA {
                 return 585
+            } else if isForRCPA && isForViewmore {
+                return 585 + 100
+            } else {
+                return CGFloat()
             }
             
         }
@@ -127,6 +148,7 @@ class DayReportView: BaseView {
     @IBOutlet var tableContentsHolder: UIView!
     @IBOutlet var sortView: UIView!
     var isForViewmore = false
+    var isForRCPA = false
     var rejectedHeight: CGFloat =  70
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)

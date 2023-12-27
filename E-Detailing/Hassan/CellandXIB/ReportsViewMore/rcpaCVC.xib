@@ -19,19 +19,19 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cT0-SQ-Csc">
-                        <rect key="frame" x="8" y="1.5" width="519" height="58"/>
+                        <rect key="frame" x="8" y="6" width="519" height="49"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RCPA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hNQ-N2-kfk">
-                                <rect key="frame" x="10" y="20.5" width="36.5" height="17"/>
+                                <rect key="frame" x="10" y="16" width="36.5" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uhz-CY-YyR">
-                                <rect key="frame" x="475" y="14.5" width="29" height="29"/>
+                                <rect key="frame" x="479.5" y="12.5" width="24.5" height="24"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="75a-xU-ntt">
-                                        <rect key="frame" x="0.0" y="2" width="29" height="25.5"/>
+                                        <rect key="frame" x="0.0" y="2" width="24.5" height="20.5"/>
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                 </subviews>
@@ -59,7 +59,7 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="ARM-2Q-4eV"/>
-                <constraint firstItem="cT0-SQ-Csc" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" multiplier="0.95" id="JzM-KP-uy4"/>
+                <constraint firstItem="cT0-SQ-Csc" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" multiplier="0.8" id="JzM-KP-uy4"/>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="0.97" id="YDw-hu-LKI"/>
                 <constraint firstItem="cT0-SQ-Csc" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="qpg-A6-6Up"/>
             </constraints>

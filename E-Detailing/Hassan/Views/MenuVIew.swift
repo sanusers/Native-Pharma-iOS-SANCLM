@@ -928,6 +928,8 @@ class MenuView : BaseView{
         
         menuTable.register(UINib(nibName: "EditSessionTVC", bundle: nil), forCellReuseIdentifier: "EditSessionTVC")
         
+        menuTable.register(UINib(nibName: "WorkTypeCell", bundle: nil), forCellReuseIdentifier: "WorkTypeCell")
+        
     }
     
     
@@ -3385,9 +3387,6 @@ class MenuTCell: UITableViewCell
 
 
 
-class WorkTypeCell: UITableViewCell {
-    @IBOutlet weak var workTypeLbl: UILabel!
-}
 
 
 

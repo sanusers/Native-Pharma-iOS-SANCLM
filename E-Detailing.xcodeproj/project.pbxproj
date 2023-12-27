@@ -204,6 +204,8 @@
 		38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E512A55A4650051BFEA /* Speciality + Extension.swift */; };
 		38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38F8431D2A5E8493009018AB /* SideMenu.storyboard */; };
 		38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */; };
+		38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */; };
+		38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */; };
 		B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24C29F6428900B90B61 /* CallCell.swift */; };
 		B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24E29F6630000B90B61 /* OutboxCell.swift */; };
 		B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED25029F6A24600B90B61 /* MenuCell.swift */; };
@@ -427,6 +429,8 @@
 		38F72E512A55A4650051BFEA /* Speciality + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Speciality + Extension.swift"; sourceTree = "<group>"; };
 		38F8431D2A5E8493009018AB /* SideMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SideMenu.storyboard; sourceTree = "<group>"; };
 		38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApplicationVC.swift; sourceTree = "<group>"; };
+		38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTypeCell.swift; sourceTree = "<group>"; };
+		38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkTypeCell.xib; sourceTree = "<group>"; };
 		9CE0B15EC24F1D8F6F887F26 /* Pods-E-Detailing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-Detailing.release.xcconfig"; path = "Target Support Files/Pods-E-Detailing/Pods-E-Detailing.release.xcconfig"; sourceTree = "<group>"; };
 		B27ED24C29F6428900B90B61 /* CallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCell.swift; sourceTree = "<group>"; };
 		B27ED24E29F6630000B90B61 /* OutboxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxCell.swift; sourceTree = "<group>"; };
@@ -808,6 +812,8 @@
 				38D2E0C22B04FC03002DD291 /* SelectAllTypesTVC.xib */,
 				38F289B52B0CB59A00045D4F /* EditSessionTVC.swift */,
 				38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */,
+				38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */,
+				38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */,
 			);
 			path = SessionCell;
 			sourceTree = "<group>";
@@ -1091,6 +1097,7 @@
 				38CBA4D42A9F80C0001992C4 /* TagViewCell.xib in Resources */,
 				38CD60E12A866CFC006FFB39 /* ProductSampleTableViewCell.xib in Resources */,
 				B287E62A29F29C1B0097974D /* Main.storyboard in Resources */,
+				38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */,
 				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
@@ -1216,6 +1223,7 @@
 				38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */,
 				38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */,
 				38C4D5AA2A84F92D00D7C5E0 /* ProductNameTableViewCell.swift in Sources */,
+				38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */,
 				38107C672B37056600ACEDF3 /* ProductsDescriptionCVC.swift in Sources */,
 				385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */,
 				38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */,
