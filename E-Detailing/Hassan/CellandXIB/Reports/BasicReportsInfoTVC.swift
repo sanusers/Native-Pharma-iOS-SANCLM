@@ -67,37 +67,35 @@ class BasicReportsInfoTVC: UITableViewCell {
    
         var sessionImagesArr = [SessionImages]()
         
-        if model.chm != 0 {
+        // if model.drs != 0 {
+             let ListedDoctorsessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: model.drs)
+             sessionImagesArr.append(ListedDoctorsessionImage)
+        // }
+        
+       // if model.chm != 0 {
             let ChemistsessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: model.chm)
             sessionImagesArr.append(ChemistsessionImage)
-        }
+     //   }
         
-        if model.cip != 0 {
-            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.udr)
+        // if model.stk != 0 {
+             let StockistsessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: model.stk)
+             sessionImagesArr.append(StockistsessionImage)
+       //  }
+        
+        
+        let HospitalsessionImage =  SessionImages(Image: UIImage(named: "hospital") ?? UIImage(), count: model.hos)
+        sessionImagesArr.append(HospitalsessionImage)
+        
+       // if model.cip != 0 {
+            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.cip)
             sessionImagesArr.append(cipsessionImage)
-        }
+       // }
         
-        if model.drs != 0 {
-            let ListedDoctorsessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: model.drs)
-            sessionImagesArr.append(ListedDoctorsessionImage)
-        }
-        
-        
-        if model.stk != 0 {
-            let StockistsessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: model.stk)
-            sessionImagesArr.append(StockistsessionImage)
-        }
-     
-        
-        if model.udr != 0 {
+      //  if model.udr != 0 {
             let UnlistedDocsessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: model.udr)
             sessionImagesArr.append(UnlistedDocsessionImage)
-        }
-        
-        if model.hos != 0 {
-            let HosspsessionImage =  SessionImages(Image: UIImage(named: "JointCall") ?? UIImage(), count:  model.hos)
-            sessionImagesArr.append(HosspsessionImage)
-        }
+       // }
+    
         self.sessionImages = sessionImagesArr
         
         userNameLbl.text = model.sfName

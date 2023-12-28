@@ -220,8 +220,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.brands)
         self.masterData.append(MasterInfo.competitors)
         self.masterData.append(MasterInfo.slideSpeciality)
-        
-        
+        self.masterData.append(MasterInfo.getTP)
       //  self.tableView.reloadData()
      //   self.collectionView.reloadData()
     }

@@ -20,7 +20,13 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let modal = reportsModel?[indexPath.row] ?? ReportsModel()
         cell.populateCell(modal)
         cell.nextActionVIew.addTap {
-            let vc = ViewDayReportVC.initWithStory()
+            let vc = ViewDayReportVC.initWithStory(model: modal)
+            
+            if isTohideCheckin(modal) && isTohideCheckout(modal) {
+                vc.isToReduceLocationHeight = true
+            }
+            
+         
             self.detailedreporsVC.navigationController?.pushViewController(vc, animated: true)
         }
         return cell

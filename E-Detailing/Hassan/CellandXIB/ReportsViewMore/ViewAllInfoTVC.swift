@@ -24,92 +24,88 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        switch self.cellType {
-            
-        case .showRCPA:
-            switch section {
-
-            case 2:
-                return 3
-            case 3:
-                return 1
-                
-                //MARK: - rcpa cell (+1 section)
-            case 4:
-                return 3
-                
-            default:
+        
+        switch section {
+        case 1:
+            if self.isTohideLocationInfo {
+                return 0
+            } else {
                 return 1
             }
-        case .hideRCPA:
-            switch section {
-
-            case 2:
-                return 3
-            case 3:
-                return 1
-            default:
-                return 1
+        case 2:
+            return  productStrArr.count
+        case 3:
+            return 1
+        default:
+            switch self.cellType {
+                
+            case .showRCPA:
+                switch section {
+                    //MARK: - rcpa cell (+1 section)
+                case 4:
+                    return 3
+                default:
+                    return 1
+                }
+            case .hideRCPA:
+                switch section {
+                default:
+                    return 1
+                }
             }
         }
+        
+
     }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        switch self.cellType {
+        switch indexPath.section {
+        case 0:
+            return CGSize(width: collectionView.width, height: 190)
             
-        case .showRCPA:
-            switch indexPath.section {
-            case 0:
-                return CGSize(width: collectionView.width, height: 190)
+            
+        case 1:
+            return CGSize(width: collectionView.width, height: 100)
+      
+        case 2:
+            return CGSize(width: collectionView.width, height: 30)
+            
+        case 3:
+            return CGSize(width: collectionView.width, height: 60)
+        default:
+            switch self.cellType {
                 
-                
-            case 1:
-                return CGSize(width: collectionView.width, height: 100)
-          
-            case 2:
-                return CGSize(width: collectionView.width, height: 30)
-                
-            case 3:
-                return CGSize(width: collectionView.width, height: 60)
-                
-                //MARK: - rcpa cell (+1 section)
-            case 4:
-                return CGSize(width: collectionView.width, height: 30)
-                
-            case 5:
-                return CGSize(width: collectionView.width, height: 75)
-                
+            case .showRCPA:
+                switch indexPath.section {
 
-                
-            case 6:
-                return CGSize(width: collectionView.width, height: 50)
-            default:
-                return CGSize()
-            }
-        case .hideRCPA:
-            switch indexPath.section {
-            case 0:
-                return CGSize(width: collectionView.width, height: 190)
-                
-                
-            case 1:
-                return CGSize(width: collectionView.width, height: 100)
-          
-            case 2:
-                return CGSize(width: collectionView.width, height: 30)
-                
-            case 3:
-                return CGSize(width: collectionView.width, height: 60)
-            case 4:
-                return CGSize(width: collectionView.width, height: 75)
-            case 5:
-                return CGSize(width: collectionView.width, height: 50)
-            default:
-                return CGSize()
+                    
+                    //MARK: - rcpa cell (+1 section)
+                case 4:
+                    return CGSize(width: collectionView.width, height: 30)
+                    
+                case 5:
+                    return CGSize(width: collectionView.width, height: 75)
+                case 6:
+                    return CGSize(width: collectionView.width, height: 50)
+                default:
+                    return CGSize()
+                }
+            case .hideRCPA:
+                switch indexPath.section {
+                case 4:
+                    return CGSize(width: collectionView.width, height: 75)
+                case 5:
+                    return CGSize(width: collectionView.width, height: 50)
+                default:
+                    return CGSize()
+                }
             }
         }
+        
+        
+
 
     }
 
@@ -139,115 +135,93 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        switch self.cellType {
+        switch indexPath.section {
+        case 0:
+            let cell: VisitInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "VisitInfoCVC", for: indexPath) as! VisitInfoCVC
+            cell.typeIV.image = self.typeImage ?? UIImage()
+            cell.toPopulateCell(model: self.detailedReportModel ?? DetailedReportsModel())
+            return cell
             
-        case .showRCPA:
-            switch indexPath.section {
+        case 1:
+            let cell: TimeInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeInfoCVC", for: indexPath) as! TimeInfoCVC
+            cell.toPopulateCell(model: self.reportModel ?? ReportsModel())
+            return cell
+        case 2:
+            
+            
+            switch indexPath.row {
             case 0:
-                let cell: VisitInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "VisitInfoCVC", for: indexPath) as! VisitInfoCVC
+                let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
+                cell.holderVoew.backgroundColor = .appGreyColor
                 return cell
-                
-            case 1:
-                let cell: TimeInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeInfoCVC", for: indexPath) as! TimeInfoCVC
-                return cell
-            case 2:
-                
-           
-                switch indexPath.row {
-                case 0:
-                    let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
-                    cell.holderVoew.backgroundColor = .appGreyColor
-                    return cell
-                default:
-                    let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-                    return cell
-                }
-            case 3:
-                let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
-                cell.addTap {
-                    self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-                    self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped:  false)
-                    //self.cellType == .showRCPA ? true : false
-                    self.extendedInfoCollection.reloadData()
-                }
-                return cell
-                //MARK: - rcpa cell (+1 section)
-            case 4:
-                
-                
-                switch indexPath.row {
-                case 0:
-                    let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
-                    cell.holderVoew.backgroundColor = .appGreyColor
-                    return cell
-                default:
-                    let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-                    return cell
-                }
-            case 5:
-                let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
-                return cell
-                
-                
-            case 6:
-                let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
-                cell.addTap {
-                   
-                    self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false)
-                }
-                return cell
-                
             default:
-                return UICollectionViewCell()
+                let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
+                let modelStr = self.productStrArr[indexPath.row]
+                cell.topopulateCell(modelStr: modelStr)
+                
+                return cell
             }
-        case .hideRCPA:
-            switch indexPath.section {
-            case 0:
-                let cell: VisitInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "VisitInfoCVC", for: indexPath) as! VisitInfoCVC
-                return cell
+        case 3:
+            let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
+            cell.addTap {
+                self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
+                self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped: self.cellType  == .hideRCPA ?  false : true )
+                //self.cellType == .showRCPA ? true : false
+                self.extendedInfoCollection.reloadData()
+            }
+            return cell
+        default:
+            switch self.cellType {
                 
-            case 1:
-                let cell: TimeInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeInfoCVC", for: indexPath) as! TimeInfoCVC
-                return cell
-            case 2:
-                
-           
-                switch indexPath.row {
-                case 0:
-                    let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
-                    cell.holderVoew.backgroundColor = .appGreyColor
+            case .showRCPA:
+                switch indexPath.section {
+                    //MARK: - rcpa cell (+1 section)
+                case 4:
+                    switch indexPath.row {
+                    case 0:
+                        let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
+                        cell.holderVoew.backgroundColor = .appGreyColor
+                        return cell
+                    default:
+                        let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
+                        return cell
+                    }
+                case 5:
+                    let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
                     return cell
-                default:
-                    let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-                    return cell
-                }
-           
-                
-                
-                
-            case 3:
-                let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
-                cell.addTap {
-                        self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-                        self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped:  true)
-                        self.extendedInfoCollection.reloadData()
-                }
-                return cell
-            case 4:
-                let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
-                return cell
-            case 5:
-                let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
-                cell.addTap {
                     
-                    self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false)
+                    
+                case 6:
+                    let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
+                    cell.addTap {
+                        
+                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false)
+                    }
+                    return cell
+                    
+                default:
+                    return UICollectionViewCell()
                 }
-                return cell
-                
-            default:
-                return UICollectionViewCell()
+            case .hideRCPA:
+                switch indexPath.section {
+                case 4:
+                    let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
+                    return cell
+                case 5:
+                    let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
+                    cell.addTap {
+                        
+                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false)
+                    }
+                    return cell
+                    
+                default:
+                    return UICollectionViewCell()
+                }
             }
         }
+        
+
         
     }
     
@@ -271,7 +245,13 @@ class ViewAllInfoTVC: UITableViewCell {
     @IBOutlet var extendedInfoCollection: UICollectionView!
     weak var delegate: ViewAllInfoTVCDelegate?
     var rcpaTapped: Bool = false
+    //var selectedType: CellType = .All
     var cellType: CellType = .hideRCPA
+    var reportModel: ReportsModel?
+    var detailedReportModel: DetailedReportsModel?
+    var productStrArr : [String] = []
+    var typeImage: UIImage?
+    var isTohideLocationInfo = false
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -279,7 +259,24 @@ class ViewAllInfoTVC: UITableViewCell {
         extendedInfoCollection.layer.cornerRadius = 5
         extendedInfoCollection.isScrollEnabled = false
         cellRegistration()
-        toLoadData()
+       // toLoadData()
+    }
+    
+    func hideLocationSection() {
+        if reportModel?.intime == "" &&  reportModel?.outtime == "" &&  reportModel?.inaddress == "" && reportModel?.outaddress == "" {
+            isTohideLocationInfo = true
+        }
+    }
+    
+    func toSetDataSourceForProducts() {
+        productStrArr.removeAll()
+        productStrArr.append("This is Title String")
+        productStrArr.append(contentsOf: detailedReportModel?.products.components(separatedBy: ",") ?? [])
+        if productStrArr.last ==  "  )" {
+            productStrArr.removeLast()
+        }
+        
+         
     }
     
     func toLoadData() {

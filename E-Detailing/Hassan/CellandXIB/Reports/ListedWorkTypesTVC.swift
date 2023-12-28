@@ -9,17 +9,31 @@ import UIKit
 
 extension ListedWorkTypesTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        
+      //  let count = self.wtModel?.wtype
+        
+        if self.wtModel?.halfDayFWType != "" {
+            return 2
+        } else {
+            return 1
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: WTsheetCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "WTsheetCVC", for: indexPath) as! WTsheetCVC
+       
         
-        if indexPath.row == 3 {
-            cell.seperatorView.isHidden = true
+        if self.wtModel?.halfDayFWType != "" {
+            if indexPath.row == 1 {
+                cell.isLastElement = true
+            } else {
+                cell.isLastElement = false
+            }
         } else {
-            cell.seperatorView.isHidden = false
+            cell.isLastElement = true
         }
+        cell.populateCell(model: self.wtModel ?? ReportsModel())
+
         
         return cell
     }
@@ -36,12 +50,13 @@ class ListedWorkTypesTVC: UITableViewCell {
     @IBOutlet var tableHolderView: UIView!
     
     @IBOutlet var worktypeCollection: UICollectionView!
+    var wtModel:  ReportsModel?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         setupUI()
         cellRegistration()
-        toloadData()
+        
     }
     
     func setupUI() {
@@ -61,6 +76,8 @@ class ListedWorkTypesTVC: UITableViewCell {
         worktypeCollection.register(UINib(nibName: "WTsheetCVC", bundle: nil), forCellWithReuseIdentifier: "WTsheetCVC")
         
     }
+    
+    
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

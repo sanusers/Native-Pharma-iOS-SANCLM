@@ -213,6 +213,7 @@
             </constraints>
             <size key="customSize" width="904" height="133"/>
             <connections>
+                <outlet property="chckinLocationStack" destination="hjn-cl-Zt0" id="kFC-Jl-7Y0"/>
                 <outlet property="checkINLbl" destination="wt1-nV-HHr" id="vSl-O3-uaE"/>
                 <outlet property="checkINaddrLbl" destination="isI-4y-dw6" id="xcf-y3-yfk"/>
                 <outlet property="checkINinfoLbl" destination="Hxm-ay-PuF" id="uwb-sn-ygb"/>
@@ -221,6 +222,7 @@
                 <outlet property="checkOUTinfoLbl" destination="lcj-5b-O8W" id="usx-x2-a8P"/>
                 <outlet property="checkOUTlLbl" destination="Qyo-CE-kRg" id="ZnI-5z-4MW"/>
                 <outlet property="checkOUTviewLbl" destination="zOZ-JG-7Wa" id="pUA-XP-5aV"/>
+                <outlet property="checkoutLocationStack" destination="xaU-Dd-KAD" id="Uu5-Ik-2Ds"/>
                 <outlet property="inandOutSeperator" destination="jdB-Ch-P7F" id="DWt-IN-5ks"/>
                 <outlet property="seperatorView" destination="vY5-QE-DKH" id="mzm-rg-cry"/>
             </connections>

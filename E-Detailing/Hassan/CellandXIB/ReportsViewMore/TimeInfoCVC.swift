@@ -27,13 +27,32 @@ class TimeInfoCVC: UICollectionViewCell {
     @IBOutlet var checkOUTviewLbl: UILabel!
     
     @IBOutlet var inandOutSeperator: UIView!
+    @IBOutlet var checkoutLocationStack: UIStackView!
     
+    @IBOutlet var chckinLocationStack: UIStackView!
     @IBOutlet var seperatorView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
         // Initialization code
+    }
+    
+    func toPopulateCell(model: ReportsModel) {
+        checkINinfoLbl.text =  model.intime == "" ? "-" :  model.intime
+       // checkINinfoLbl.textAlignment =  model.intime == "" ? .center :  .left
+        
+        checkOUTinfoLbl.text = model.outtime == "" ? "-" :  model.outtime
+      //  checkOUTinfoLbl.textAlignment =  model.outtime == "" ? .center :  .left
+        
+        checkINaddrLbl.text =  model.inaddress == "" ? "-" :  model.inaddress
+        checkINaddrLbl.textAlignment =  model.inaddress == "" ? .center :  .left
+        
+        checkOUTaddrLbl.text = model.outaddress == "" ? "-" :  model.outaddress
+        checkOUTaddrLbl.textAlignment =  model.outaddress == "" ? .center :  .left
+        
+        chckinLocationStack.isHidden = model.inaddress == "" ? true : false
+        checkoutLocationStack.isHidden = model.outaddress == "" ? true : false
     }
     
     func setupUI() {

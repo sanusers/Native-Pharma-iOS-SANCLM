@@ -9,7 +9,9 @@ import Foundation
 import UIKit
 class ViewDayReportVC: BaseViewController {
     var sessionResponseVM : SessionResponseVM?
-
+    var reportsModel : ReportsModel?
+    var isToReduceLocationHeight : Bool = false
+    var appdefaultSetup : AppSetUp? = nil
     @IBOutlet weak var dayReportView: DayReportView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,23 +19,33 @@ class ViewDayReportVC: BaseViewController {
         // Do any additional setup after loading the view.
     }
     
-    class func initWithStory() -> ViewDayReportVC {
+    class func initWithStory(model: ReportsModel) -> ViewDayReportVC {
         let tourPlanVC : ViewDayReportVC = UIStoryboard.Hassan.instantiateViewController()
       //  tourPlanVC.homeVM = HomeViewModal()
+        tourPlanVC.reportsModel = model
         tourPlanVC.sessionResponseVM = SessionResponseVM()
         return tourPlanVC
     }
     
-    func toSetParamsAndGetResponse() {
+    func toSetParamsAndGetResponse(_ type: Int) {
        // let appdefaultSetup = AppDefaults.shared.getAppSetUp()
        // let dateFormatter = DateFormatter()
 
+   //     {"tableName":"getvwvstdet","ACd":"SE74-2280","typ":"1","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
+        
+        if type == 0 {
+            self.dayReportView.initialSerups()
+        }
+        
         var param = [String: Any]()
         param["tableName"] = "getvwvstdet"
         param["ACd"] = "SE74-2280"
         param["sfcode"] = "MR2697"
         //appdefaultSetup.sfCode
-        param["typ"] = "1"
+        if type != 0 {
+            param["typ"] = type
+        }
+       
         param["sf_type"] = "1"
         //appdefaultSetup.sfType
        // param["SFName"] =
@@ -48,9 +60,9 @@ class ViewDayReportVC: BaseViewController {
         //appdefaultSetup.stateCode
         param["subdivision_code"] = "62"
         //appdefaultSetup.subDivisionCode
-        param["rptDt"] = "2023-12-8"
+       // param["rptDt"] = "2023-12-8"
         //"2023-12-8"
-        //{"tableName":"getvwvstdet","ACd":"SE74-2280","typ":"1","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
+
         
         
         dump(param)
@@ -76,7 +88,7 @@ class ViewDayReportVC: BaseViewController {
         
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
-        getReporsAPIResponse(param, paramData: param)
+        getReporsAPIResponse(toSendData, paramData: param)
     }
     
 
@@ -85,8 +97,9 @@ class ViewDayReportVC: BaseViewController {
         sessionResponseVM?.getDetailedReportsData(params: param, api: .getReports, paramData: paramData) { result in
             switch result {
             case .success(let response):
-                print(response)
-                self.dayReportView.reportsModel = response
+                dump(response)
+                self.dayReportView.detailedReportsModelArr = response
+                self.dayReportView.initialSerups()
                // self.reportsView.setupUI()
                 dump(response)
                 

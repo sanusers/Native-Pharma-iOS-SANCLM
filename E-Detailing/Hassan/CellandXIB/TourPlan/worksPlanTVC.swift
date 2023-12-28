@@ -150,15 +150,15 @@ class worksPlanTVC: UITableViewCell {
                 let sessionImage =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
             }
-            if clusterstr.count > 0 {
-                var count = 0
-                clusterstr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
-                    count += countstr.count
-                }
-                let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
-                sessionImages?.append(sessionImage)
-            }
+//            if clusterstr.count > 0 {
+//                var count = 0
+//                clusterstr.forEach { str in
+//                   let countstr = str.components(separatedBy: ",")
+//                    count += countstr.count
+//                }
+//                let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
+//                sessionImages?.append(sessionImage)
+//            }
             
             if jointcallstr.count > 0 {
                 var count = 0

@@ -17,6 +17,15 @@ class ProductsDescriptionCVC: UICollectionViewCell {
     @IBOutlet var samplesLbl: UILabel!
     @IBOutlet var promoterLbl: UILabel!
     @IBOutlet var productLbl: UILabel!
+    var productsArr : [String] = []
+    
+    func topopulateCell(modelStr: String){
+        //SECREMET 1 MG ( 0 ), )
+//        let productDescArr = modelStr.components(separatedBy: " ")
+//        self.productLbl.text = productDescArr[0]
+//        self.promoterLbl.text = "Yes"
+//        samplesLbl.text = 
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

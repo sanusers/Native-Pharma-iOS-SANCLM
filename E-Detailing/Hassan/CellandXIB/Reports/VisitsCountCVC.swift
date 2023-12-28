@@ -34,6 +34,24 @@ enum CellType: String {
         }
     }
     
+    var image: UIImage {
+        switch self {
+            
+        case .All:
+            return UIImage()
+        case .Doctor:
+            return UIImage(named: "ListedDoctor") ?? UIImage()
+        case .Chemist:
+            return UIImage(named: "Chemist") ?? UIImage()
+        case .Stockist:
+            return UIImage(named: "Stockist") ?? UIImage()
+        case .Hospital:
+            return UIImage(named: "hospital") ?? UIImage()
+        case .CIP:
+            return UIImage(named: "cip") ?? UIImage()
+        }
+    }
+    
     var text: String {
         switch self {
             
@@ -56,7 +74,7 @@ class VisitsCountCVC: UICollectionViewCell {
     @IBOutlet var countsLbl: UILabel!
     @IBOutlet var contsView: UIView!
     var type: CellType = .Doctor
-    var selectedIndex: Int? = nil
+    var selectedIndex: Int = 0
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -18,16 +18,25 @@ class WTsheetCVC: UICollectionViewCell {
     @IBOutlet var workTypeDesc: UILabel!
     @IBOutlet var HQdesc: UILabel!
     @IBOutlet var seperatorView: UIView!
-    
+    var isLastElement : Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
         setupUI()
     }
+    
+    func populateCell(model: ReportsModel) {
+        seperatorView.backgroundColor = isLastElement ? .clear : .appSelectionColor
+        workTypeDesc.text = model.wtype
+        clusterDesc.text = model.terrWrk
+        HQdesc.text = "-"
+        //model.
+    }
 
     func setupUI() {
-        seperatorView.backgroundColor = .appSelectionColor
+       
+       // seperatorView.backgroundColor =
         
         let titleLbl : [UILabel] = [HQ, cluster, workType ]
         titleLbl.forEach { lbl in

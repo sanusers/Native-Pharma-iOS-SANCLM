@@ -29,5 +29,7 @@ class ProductSectionTitleCVC: UICollectionViewCell {
         }
         holderVoew.setSpecificCornersForTop(cornerRadius: 5)
     }
+    
+
 
 }

@@ -56,6 +56,35 @@ class VisitInfoCVC: UICollectionViewCell {
         // Initialization code
         setupUI()
     }
+    
+    func toPopulateCell(model: DetailedReportsModel) {
+        // self.userTypeIV.image = UIImage(named: "")
+         self.typeName.text = model.name
+         self.visitTimeDesc.text = model.visitTime == "" ? "-" :  model.visitTime
+
+        
+        
+         self.modifiedTimeDesc.text = model.modTime == "" ? "-" :  model.modTime
+   
+        
+         self.clusterDesc.text = model.territory == "" ? "-" : model.territory
+      
+        
+        
+         self.pobDesc.text = model.pobValue == 0 ? "-" : "\(model.pobValue)"
+       
+        
+         self.feedBaxkDesc.text = model.callFdback == "" ? "-" : model.callFdback
+       
+        
+         self.jointWorkDesc.text = model.wWith == "" ? "-" : model.wWith
+       
+        
+         self.remarksDesc.text = model.remarks == "" ? "-" : model.remarks
+       
+        
+        
+    }
 
     func setupUI() {
         let seperators: [UIView] = [remarksSeperator, bottomSeperator, topSeperator, cellSeperatorView]

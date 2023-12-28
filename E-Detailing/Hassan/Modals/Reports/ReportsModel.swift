@@ -8,19 +8,19 @@
 import Foundation
 
 
-class ReportsModelArr: Codable {
-    let reportsModelArr : [ReportsModel]
-    
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.reportsModelArr = try container.decode([ReportsModel].self, forKey: .reportsModelArr)
-    }
-    
-    init() {
-        self.reportsModelArr = [ReportsModel]()
-    }
-}
+//class ReportsModelArr: Codable {
+//    let reportsModelArr : [ReportsModel]
+//
+//
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.reportsModelArr = try container.decode([ReportsModel].self, forKey: .reportsModelArr)
+//    }
+//
+//    init() {
+//        self.reportsModelArr = [ReportsModel]()
+//    }
+//}
 
 class ReportsModel: Codable {
     let aCode, adate, rptdate: String
