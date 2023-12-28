@@ -522,7 +522,7 @@ struct MasterCellData {
 
 extension MasterSyncVC {
     
-    func getAllPlansData(_ param: [String: Any], paramData: Data, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
+    func getAllPlansData(_ param: [String: Any], paramData: JSON, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
         let sessionResponseVM = SessionResponseVM()
         sessionResponseVM.getTourPlanData(params: param, api: .getAllPlansData, paramData: paramData) { result in
             switch result {
@@ -592,7 +592,7 @@ extension MasterSyncVC {
 
                 let toSendData = type.getParams
 
-                 self.getAllPlansData(toSendData, paramData: Data()) { result in
+                 self.getAllPlansData(toSendData, paramData: JSON()) { result in
                      switch result{
                      case .success(let respnse):
                          dump(respnse)
@@ -723,7 +723,7 @@ extension MasterSyncVC {
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
         let sessionResponseVM = SessionResponseVM()
-        sessionResponseVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: jsonDatum) { result in
+        sessionResponseVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -788,16 +788,8 @@ extension MasterSyncVC {
                                          print("Error")
                                      }
                     
-                
-                    
-                   // self.toLoadData()
-                 //  if isFromFirstLoad {
-                  //     self.fetchDataFromServer()
-                //   } else {
-                       
-                 //  }
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
-                    self.toPostDataToserver(type: .getTP)
+                  //  self.toPostDataToserver(type: .getTP)
                 case .failure(let error):
                     print(error)
                 }

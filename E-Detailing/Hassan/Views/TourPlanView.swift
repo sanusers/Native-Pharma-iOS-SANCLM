@@ -180,7 +180,7 @@ extension TourPlanView {
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
         self.sessionResponseVM = SessionResponseVM()
-        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: jsonDatum) { result in
+        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -262,6 +262,16 @@ class TourPlanView: BaseView {
     @IBOutlet var rejectionVIew: UIView!
     
     @IBOutlet var rejectionVIewHeightconst: NSLayoutConstraint!
+    
+    
+    @IBOutlet var syncView: UIView!
+    
+    @IBOutlet var syncIV: UIImageView!
+    
+    @IBOutlet var syncTitle: UILabel!
+    
+    @IBOutlet var syncVXview: UIVisualEffectView!
+    
     //MARK: - Properties
     var selectedDate: String = ""
     var tourplanVC : TourPlanVC!
@@ -395,7 +405,7 @@ class TourPlanView: BaseView {
 
       //  "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
 
-        self.tourplanVC.getAllPlansData(toSendData, paramData: jsonDatum) { result in
+        self.tourplanVC.getAllPlansData(toSendData, paramData: param) { result in
             switch result{
             case .success(let respnse):
                 self.sessionResponse = respnse
@@ -1060,6 +1070,10 @@ class TourPlanView: BaseView {
     
     func initViews() {
 
+        syncView.addTap {
+           // self.callApprovalApi()
+        }
+        
         backHolder.addTap {
             self.tourplanVC.navigationController?.popViewController(animated: true)
         }
@@ -1259,7 +1273,7 @@ class TourPlanView: BaseView {
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
         self.sessionResponseVM = SessionResponseVM()
-        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .sendToApproval, paramData: jsonDatum) { result in
+        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .sendToApproval, paramData: param) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -1660,7 +1674,11 @@ class TourPlanView: BaseView {
     }
     
     func setupUI() {
-  
+        syncTitle.setFont(font: .medium(size: .BODY))
+        syncTitle.textColor = .appLightPink
+        syncVXview.backgroundColor = .appLightPink
+        syncIV.tintColor = .appLightPink
+        syncView.layer.cornerRadius = 5
         titleLbl.setFont(font: .bold(size: .BODY))
         mainDateLbl.setFont(font: .medium(size: .BODY))
         tableTitle.textColor = .appLightTextColor

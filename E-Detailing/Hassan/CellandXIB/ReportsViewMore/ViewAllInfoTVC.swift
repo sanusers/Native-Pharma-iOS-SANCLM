@@ -162,15 +162,12 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                     return cell
                 }
-           
-                
-                
-                
             case 3:
                 let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
                 cell.addTap {
                     self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-                    self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped:  self.cellType == .showRCPA ? true : false)
+                    self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped:  false)
+                    //self.cellType == .showRCPA ? true : false
                     self.extendedInfoCollection.reloadData()
                 }
                 return cell
@@ -231,12 +228,9 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             case 3:
                 let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
                 cell.addTap {
-                    cell.addTap {
-                        
                         self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-                        self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped:  self.cellType == .showRCPA ? true : false)
+                        self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped:  true)
                         self.extendedInfoCollection.reloadData()
-                    }
                 }
                 return cell
             case 4:

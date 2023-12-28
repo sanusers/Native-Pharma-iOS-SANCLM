@@ -272,6 +272,22 @@ extension MenuView {
     }
     
     
+    
+    func toSaveObject(object: EachDatePlan) ->  EachDatePlan {
+        var savedobject: EachDatePlan?
+        do {
+            let archived = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: false)
+            
+            let record = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: archived)
+            print(record ?? EachDatePlan())
+           savedobject = record
+        } catch {
+            print(error)
+            
+        }
+        return savedobject ?? EachDatePlan()
+    }
+    
     func saveObjecttoDevice() {
         let  arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan ?? [SessionDetailsArr]()
 
@@ -286,6 +302,9 @@ extension MenuView {
         if !savefinish {
             print("Error")
         }
+        
+       // _ = toSaveObject(object: AppDefaults.shared.eachDatePlan)
+        
        // self.toCreateToast("Plan saved successfully")
         self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
@@ -421,7 +440,7 @@ extension MenuView {
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
         
-        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: jsonDatum) { result in
+        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -550,7 +569,7 @@ class MenuView : BaseView{
     var cellStackHeightforFW : CGFloat = 600
     let cellStackHeightfOthers : CGFloat = 80
     var cellHeightForFW :  CGFloat = 670 + 100
-    let cellHeightForOthers : CGFloat = 140 + 100
+    var cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
     var isDocNeeded = false
@@ -927,6 +946,8 @@ class MenuView : BaseView{
         menuTable.register(UINib(nibName: "SelectAllTypesTVC", bundle: nil), forCellReuseIdentifier: "SelectAllTypesTVC")
         
         menuTable.register(UINib(nibName: "EditSessionTVC", bundle: nil), forCellReuseIdentifier: "EditSessionTVC")
+        
+        menuTable.register(UINib(nibName: "RemarksEditSessionCell", bundle: nil), forCellReuseIdentifier: "RemarksEditSessionCell")
         
         menuTable.register(UINib(nibName: "WorkTypeCell", bundle: nil), forCellReuseIdentifier: "WorkTypeCell")
         
@@ -1765,11 +1786,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             let isForFieldWork = sessionDetailsArr.sessionDetails?[indexPath.row].isForFieldWork
             let modal = sessionDetailsArr.sessionDetails![indexPath.row]
+            
+     
+            
             if  isForFieldWork ?? false  {
                 
                
                 // cellStackHeightforFW
-                let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView]
+                let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView, cell.remarksView]
                 
                 cellViewArr.forEach { view in
                     switch view {
@@ -1836,6 +1860,19 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             view.isHidden = true
                         }
                         
+                    case cell.remarksView:
+                        if modal.remarks == "" ||  modal.remarks == nil {
+                          
+                            cell.remarksView.isHidden = true
+                            cell.remarksHeightConst.constant = 0
+                            cellEditHeightForFW =  cellEditHeightForFW - 100
+                        } else {
+                            cell.remarksDesc.text = modal.remarks
+                            cell.remarksView.isHidden = false
+                            cell.remarksHeightConst.constant = 100
+                            
+                        }
+                        
                     default:
                         view.isHidden = false
                     }
@@ -1847,7 +1884,16 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     view?.isHidden = true
                     // cell.workselectionHolder,
                 }
-                
+                if modal.remarks == "" ||  modal.remarks == nil {
+                    cell.remarksView.isHidden = true
+                    cell.remarksHeightConst.constant = 0
+                    cellHeightForOthers =  cellHeightForOthers - 100
+                } else {
+                    cell.remarksDesc.text = modal.remarks
+                    cell.remarksView.isHidden = false
+                    cell.remarksHeightConst.constant = 100
+                    
+                }
             }
             if isSearched {
                 if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
@@ -3356,9 +3402,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
            
         case .edit:
             if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork ?? false  {
-                return cellEditHeightForFW - 100
+                return cellEditHeightForFW
             }  else {
-                return cellHeightForOthers - 100
+                return cellHeightForOthers
             }
         }
     }

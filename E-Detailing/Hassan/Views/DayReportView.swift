@@ -10,19 +10,31 @@ import UIKit
 
 extension DayReportView : ViewAllInfoTVCDelegate {
     func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool) {
+        let model = self.detailedReportsModelArr[selectedIndex ?? 0]
         
-        if islessTapped && !isrcpaTapped {
-            self.isForViewmore = false
-            self.toLoadData()
-        } else if !islessTapped && isrcpaTapped{
-            self.isForViewmore = true
-            self.isForRCPA = isrcpaTapped
-            self.toLoadData()
+        if islessTapped {
+            model.isCellExtended = false
+            model.isRCPAExtended = false
         } else {
-            self.isForViewmore = true
-            self.isForRCPA = isrcpaTapped
-            self.toLoadData()
+            model.isCellExtended = !islessTapped
+            model.isRCPAExtended = isrcpaTapped
         }
+        
+    
+        self.toLoadData()
+        
+//        if islessTapped && !isrcpaTapped {
+//            self.isForViewmore = false
+//            self.toLoadData()
+//        } else if !islessTapped && isrcpaTapped{
+//            self.isForViewmore = true
+//            self.isForRCPA = isrcpaTapped
+//            self.toLoadData()
+//        } else {
+//            self.isForViewmore = true
+//            self.isForRCPA = isrcpaTapped
+//            self.toLoadData()
+//        }
         
 
     }
@@ -46,7 +58,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         case 1:
             return 1
         case 2:
-            return 1
+            return    self.detailedReportsModelArr.count
         default:
             return 0
         }
@@ -67,8 +79,8 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             cell.selectionStyle = .none
             return cell
         case 2:
-            
-            if !isForViewmore {
+            let model =    self.detailedReportsModelArr[indexPath.row]
+            if !(model.isCellExtended ?? false)  {
                 let cell: VisitInfoTVC = tableView.dequeueReusableCell(withIdentifier: "VisitInfoTVC", for: indexPath) as! VisitInfoTVC
                 cell.selectionStyle = .none
                 cell.elevationView.elevate(5)
@@ -76,7 +88,9 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 
                 cell.viewMoreDesc.addTap {
                     print("Tapped")
-                    self.isForViewmore = true
+                    model.isCellExtended = true
+                    self.selectedIndex = indexPath.row
+                   // self.isForViewmore = true
                     self.toLoadData()
                 }
                 return cell
@@ -109,15 +123,14 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         case 1:
             return tableView.height / 9
         default:
-            
-            if !isForViewmore {
+            let model =    self.detailedReportsModelArr[indexPath.row]
+            if !(model.isCellExtended ?? false ) {
                return  240
             }
-            
-            else if isForViewmore &&  !isForRCPA {
+            else if (model.isCellExtended ?? false) &&  !(model.isRCPAExtended ?? false)  {
                //10 elevation padding, 60 header height (product)
                 return 595 + 10 + 60
-            } else if isForRCPA && isForViewmore {
+            } else if (model.isRCPAExtended ?? false)  && (model.isCellExtended ?? false) {
                 return 595 + 100 + 10 + 60
             } else {
                 return CGFloat()
@@ -152,9 +165,14 @@ class DayReportView: BaseView {
     var isForViewmore = false
     var isForRCPA = false
     var rejectedHeight: CGFloat =  70
+    var detailedReportsModelArr = [DetailedReportsModel]()
+    var selectedIndex: Int? = nil
+    var reportsModel : [DetailedReportsModel]?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.viewDayReportVC = baseVC as? ViewDayReportVC
+        
+        self.viewDayReportVC.toSetParamsAndGetResponse()
   
     }
     
@@ -166,6 +184,8 @@ class DayReportView: BaseView {
         cellregistration()
     }
     func setupUI() {
+        initTaps()
+        mockData()
         sortView.layer.cornerRadius = 5
         tableContentsHolder.layer.cornerRadius = 5
         tableContentsHolder.backgroundColor = .appWhiteColor
@@ -173,6 +193,12 @@ class DayReportView: BaseView {
         searchHolderVIew.layer.cornerRadius = 5
         self.backgroundColor = .appGreyColor
         aDayReportsTable.separatorStyle = .none
+    }
+    
+    func initTaps() {
+        backHolderView.addTap {
+            self.viewDayReportVC.navigationController?.popViewController(animated: true)
+        }
     }
     
     func cellregistration() {
@@ -183,14 +209,25 @@ class DayReportView: BaseView {
         aDayReportsTable.register(UINib(nibName: "ListedWorkTypesTVC", bundle:nil), forCellReuseIdentifier: "ListedWorkTypesTVC")
         
         aDayReportsTable.register(UINib(nibName: "ViewAllInfoTVC", bundle:nil), forCellReuseIdentifier: "ViewAllInfoTVC")
-        
-        
     }
     
     func toLoadData() {
+       
         aDayReportsTable.delegate = self
         aDayReportsTable.dataSource = self
         aDayReportsTable.reloadData()
+    }
+    
+    func mockData() {
+        let count = 2
+        var detailedModelArr = [DetailedReportsModel]()
+        for _ in 0...count - 1 {
+            let anElement = DetailedReportsModel()
+            detailedModelArr.append(anElement)
+        }
+        
+        self.detailedReportsModelArr = detailedModelArr
+        
     }
     
     

@@ -8,7 +8,10 @@
 import Foundation
 
 
-class SessionDetail : NSObject, NSCoding {
+class SessionDetail : NSObject, NSCoding, NSSecureCoding{
+    static var supportsSecureCoding: Bool {
+          return true
+      }
 
     var sessionName : String!
     var workType: [WorkType]?
@@ -349,7 +352,10 @@ class SessionDetail : NSObject, NSCoding {
     }
 }
 
-public class SessionDetailsArr: NSObject, NSCoding  {
+public class SessionDetailsArr: NSObject, NSCoding, NSSecureCoding{
+    public static var supportsSecureCoding: Bool {
+          return true
+      }
     
 //    static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
 //    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("SessionDetailsArr")
@@ -460,7 +466,10 @@ public class SessionDetailsArr: NSObject, NSCoding  {
 }
 
 
-public class TourPlanArr : NSObject, NSCoding {
+public class TourPlanArr : NSObject, NSCoding, NSSecureCoding{
+    public static var supportsSecureCoding: Bool {
+          return true
+      }
 
     
     var Div: String!
@@ -508,7 +517,11 @@ public class TourPlanArr : NSObject, NSCoding {
     }
 }
 
-class EachDatePlan : NSObject, NSCoding{
+class EachDatePlan : NSObject, NSCoding, NSSecureCoding{
+    static var supportsSecureCoding: Bool {
+          return true
+      }
+    
     
     
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!

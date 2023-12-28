@@ -103,20 +103,20 @@ class BasicReportsInfoTVC: UITableViewCell {
         userNameLbl.text = model.sfName
         WTdescLbl.text = model.wtype
         remarksDescLbl.text =  model.remarks == "" ? "No remarks available" :  model.remarks
-//        checkINinfoLbl.text =  model.intime
-//        checkOUTinfoLbl.text = model.outtime
-//        checkINaddrLbl.text =  model.inaddress
-//        checkOUTaddrLbl.text = model.outaddress
-//        dateInfoLbl.text =     model.rptdate
+        checkINinfoLbl.text =  model.intime
+        checkOUTinfoLbl.text = model.outtime
+        checkINaddrLbl.text =  model.inaddress
+        checkOUTaddrLbl.text = model.outaddress
+        dateInfoLbl.text =     model.rptdate
         
         let isTohideCheckin = isTohideCheckin(model)
         let isTohideCheckout = isTohideCheckout(model)
         
         if isTohideCheckin && isTohideCheckout  {
-//            inAndoutInfoView.isHidden = true
-//            inAndoutHeightConst.constant = 0
-//            stackHeight = stackHeight - 70
-//            holderStackHeightConst.constant = stackHeight
+            inAndoutInfoView.isHidden = true
+            inAndoutHeightConst.constant = 0
+            stackHeight = stackHeight - 70
+            holderStackHeightConst.constant = stackHeight
         } else {
             inAndoutInfoView.isHidden = false
             inAndoutHeightConst.constant = 80

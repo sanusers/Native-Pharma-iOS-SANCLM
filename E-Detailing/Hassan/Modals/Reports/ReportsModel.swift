@@ -115,3 +115,93 @@ class ReportsModel: Codable {
         case terrWrk = "TerrWrk"
     }
 }
+
+
+class DetailedReportsModel: Codable {
+
+    let name: String
+    let code: String
+    let territory: String
+    let wWith: String
+    let dcrDt: String
+    let nextVstDate: String
+    let callFdback: String
+    let products: String
+    let gifts: String
+    let pobValue: Int
+    let remarks: String
+    let visitTime: String
+    let modTime: String
+    let transDetailSlno: String
+    let checkout: String
+    let checkin: String
+    let vstloc: String
+    let dcrAddr: String
+    var isRCPAExtended: Bool
+    var isCellExtended: Bool
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = container.safeDecodeValue(forKey: .name)
+        self.code = container.safeDecodeValue(forKey: .code)
+        self.territory = container.safeDecodeValue(forKey: .territory)
+        self.wWith = container.safeDecodeValue(forKey: .wWith)
+        self.dcrDt = container.safeDecodeValue(forKey: .dcrDt)
+        self.nextVstDate = container.safeDecodeValue(forKey: .nextVstDate)
+        self.callFdback = container.safeDecodeValue(forKey: .callFdback)
+        self.products = container.safeDecodeValue(forKey: .products)
+        self.gifts = container.safeDecodeValue(forKey: .gifts)
+        self.pobValue = container.safeDecodeValue(forKey: .pobValue)
+        self.remarks = container.safeDecodeValue(forKey: .remarks)
+        self.visitTime = container.safeDecodeValue(forKey: .visitTime)
+        self.modTime = container.safeDecodeValue(forKey: .modTime)
+        self.transDetailSlno = container.safeDecodeValue(forKey: .transDetailSlno)
+        self.checkout = container.safeDecodeValue(forKey: .checkout)
+        self.checkin = container.safeDecodeValue(forKey: .checkin)
+        self.vstloc = container.safeDecodeValue(forKey: .vstloc)
+        self.dcrAddr = container.safeDecodeValue(forKey: .dcrAddr)
+        isRCPAExtended = false
+        isCellExtended = false
+    }
+    
+
+        enum CodingKeys: String, CodingKey {
+            case name, code
+            case territory = "Territory"
+            case wWith = "WWith"
+            case dcrDt = "dcr_dt"
+            case nextVstDate = "NextVstDate"
+            case callFdback = "Call_Fdback"
+            case products, gifts
+            case pobValue = "pob_value"
+            case remarks, visitTime
+            case modTime = "ModTime"
+            case transDetailSlno = "Trans_Detail_Slno"
+            case checkout, checkin, vstloc
+            case dcrAddr = "Dcr_addr"
+        }
+    
+    init() {
+        self.isRCPAExtended = false
+        self.isCellExtended = false
+        self.name = String()
+        self.code = String()
+        self.territory = String()
+        self.wWith = String()
+        self.dcrDt = String()
+        self.nextVstDate = String()
+        self.callFdback = String()
+        self.products = String()
+        self.gifts = String()
+        self.pobValue = Int()
+        self.remarks = String()
+        self.visitTime = String()
+        self.modTime = String()
+        self.transDetailSlno = String()
+        self.checkout = String()
+        self.checkin = String()
+        self.vstloc = String()
+        self.dcrAddr = String()
+    }
+    
+}

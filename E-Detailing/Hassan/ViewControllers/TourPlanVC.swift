@@ -27,7 +27,7 @@ class TourPlanVC: BaseViewController {
     }
     
     
-    func getAllPlansData(_ param: [String: Any], paramData: Data, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
+    func getAllPlansData(_ param: [String: Any], paramData: JSON, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
         let sessionResponseVM = SessionResponseVM()
         sessionResponseVM.getTourPlanData(params: param, api: .getAllPlansData, paramData: paramData) { result in
             switch result {

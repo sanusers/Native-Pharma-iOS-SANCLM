@@ -207,6 +207,9 @@
 		38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */; };
 		38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */; };
 		38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */; };
+		38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */; };
+		38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */; };
+		38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */; };
 		B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24C29F6428900B90B61 /* CallCell.swift */; };
 		B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24E29F6630000B90B61 /* OutboxCell.swift */; };
 		B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED25029F6A24600B90B61 /* MenuCell.swift */; };
@@ -433,6 +436,9 @@
 		38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTypeCell.swift; sourceTree = "<group>"; };
 		38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkTypeCell.xib; sourceTree = "<group>"; };
 		38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionHeader.swift; sourceTree = "<group>"; };
+		38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarksEditSessionCell.swift; sourceTree = "<group>"; };
+		38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemarksEditSessionCell.xib; sourceTree = "<group>"; };
+		38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedReportsModel.swift; sourceTree = "<group>"; };
 		9CE0B15EC24F1D8F6F887F26 /* Pods-E-Detailing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-Detailing.release.xcconfig"; path = "Target Support Files/Pods-E-Detailing/Pods-E-Detailing.release.xcconfig"; sourceTree = "<group>"; };
 		B27ED24C29F6428900B90B61 /* CallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCell.swift; sourceTree = "<group>"; };
 		B27ED24E29F6630000B90B61 /* OutboxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxCell.swift; sourceTree = "<group>"; };
@@ -730,6 +736,7 @@
 			isa = PBXGroup;
 			children = (
 				38D1F1F22B3429DD00CE8F86 /* ReportsModel.swift */,
+				38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */,
 			);
 			path = Reports;
 			sourceTree = "<group>";
@@ -817,6 +824,8 @@
 				38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */,
 				38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */,
 				38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */,
+				38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */,
+				38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */,
 			);
 			path = SessionCell;
 			sourceTree = "<group>";
@@ -1050,6 +1059,7 @@
 			files = (
 				38E659842B33075200E7BF42 /* ReportTypesCVC.xib in Resources */,
 				38D568FE2B3560C6007CB86D /* VisitsCountCVC.xib in Resources */,
+				38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */,
 				38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */,
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
 				B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */,
@@ -1222,6 +1232,7 @@
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */,
 				38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */,
+				38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */,
 				38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */,
@@ -1257,6 +1268,7 @@
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
 				38E3C3592AF9F98C00623C33 /* ConnectionHandler.swift in Sources */,
 				38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */,
+				38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */,
 				38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */,
 				B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,

@@ -11,7 +11,9 @@ import UIKit
  
 class EditSessionTVC: UITableViewCell {
     
-
+    @IBOutlet var titleHolderView: UIView!
+    @IBOutlet var elevationStack: UIStackView!
+    
     @IBOutlet var stackHeight: NSLayoutConstraint!
     
     @IBOutlet var overallContentsHolder: UIView!
@@ -89,8 +91,15 @@ class EditSessionTVC: UITableViewCell {
     
     @IBOutlet var lblunlistedDoc: UILabel!
     
+    @IBOutlet var remarksContentHolder: UIView!
     
+    @IBOutlet var remarksView: UIView!
     
+    @IBOutlet var remarksHeightConst: NSLayoutConstraint!
+    
+    @IBOutlet var remarksTitle: UILabel!
+    
+    @IBOutlet var remarksDesc: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -103,13 +112,13 @@ class EditSessionTVC: UITableViewCell {
     
     func setupUI() {
         
-        let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblstockist, lblunlistedDoc]
+        let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblstockist, lblunlistedDoc, remarksDesc]
         labels.forEach { label in
             label.textColor = .appTextColor
             label.setFont(font: .medium(size: .BODY))
         }
         
-        let titleLabels : [UILabel] = [worktyprTitle, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle]
+        let titleLabels : [UILabel] = [worktyprTitle, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle, remarksTitle]
         titleLabels.forEach { label in
             label.textColor = .appLightTextColor
             label.setFont(font: .medium(size: .BODY))
@@ -118,9 +127,20 @@ class EditSessionTVC: UITableViewCell {
         lblName.textColor = .appTextColor
         lblName.setFont(font: .bold(size: .SUBHEADER))
         
+        elevationStack.backgroundColor = .appSelectionColor
         
-        overallContentsHolder.backgroundColor = .appSelectionColor
-        overallContentsHolder.layer.cornerRadius = 5
+        elevationStack.setSpecificCornersForBottom(cornerRadius: 5)
+        
+        overallContentsHolder.backgroundColor = .appWhiteColor
+       // overallContentsHolder.layer.cornerRadius = 5
+        
+        titleHolderView.backgroundColor = .appSelectionColor
+        titleHolderView.setSpecificCornersForTop(cornerRadius: 5)
+        
+        remarksView.backgroundColor = .appWhiteColor
+        
+        remarksContentHolder.backgroundColor = .appSelectionColor
+        remarksContentHolder.layer.cornerRadius = 5
        // lblName.setFont(font: .bold(size: .SUBHEADER))
         
         

@@ -21,8 +21,13 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
         cell.reportTypeLbl.text = modal?.name
         
         cell.addTap {
-            let vc = DetailedReportVC.initWithStory()
-            self.reporsVC.navigationController?.pushViewController(vc, animated: true)
+            
+            if indexPath.row == 0 {
+                let vc = DetailedReportVC.initWithStory()
+                self.reporsVC.navigationController?.pushViewController(vc, animated: true)
+            }
+            
+     
         }
         
         return cell
@@ -54,6 +59,8 @@ class ReportsView : BaseView {
     
     @IBOutlet weak var collectionHolderView: UIView!
     
+    @IBOutlet weak var backHolderView: UIView!
+    
     
     @IBOutlet weak var reportsCollection: UICollectionView!
     
@@ -74,7 +81,14 @@ class ReportsView : BaseView {
         cellregistration()
     }
     
+    func initTaps() {
+        backHolderView.addTap {
+            self.reporsVC.navigationController?.popViewController(animated: true)
+        }
+    }
+    
     func setupUI() {
+        initTaps()
         reportTitle.setFont(font: .bold(size: .SUBHEADER))
         collectionHolderView.backgroundColor = .appSelectionColor
         

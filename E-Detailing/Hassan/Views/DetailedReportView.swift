@@ -34,7 +34,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let isTohideCheckout = isTohideCheckout(model)
         
         if isTohideCheckin && isTohideCheckout  {
-          //  cellHeight = cellHeight - 80
+            cellHeight = cellHeight - 80
         }
         
         var count = Int()
@@ -131,9 +131,11 @@ class DetailedReportView: BaseView {
     }()
     
     var detailedreporsVC : DetailedReportVC!
+    
     override func didLoad(baseVC: BaseViewController) {
      
         self.detailedreporsVC = baseVC as? DetailedReportVC
+        detailedreporsVC.toSetParamsAndGetResponse()
   
     }
     
@@ -142,7 +144,7 @@ class DetailedReportView: BaseView {
         self.detailedreporsVC = baseVC as? DetailedReportVC
     
        
-        detailedreporsVC.toSetParamsAndGetResponse()
+       
       
     }
     
@@ -163,7 +165,9 @@ class DetailedReportView: BaseView {
     func initTaps() {
 
  
-        
+        backHolderView.addTap {
+            self.detailedreporsVC.navigationController?.popViewController(animated: true)
+        }
         
         
       
@@ -239,6 +243,7 @@ class DetailedReportView: BaseView {
     }
     
     func setupUI() {
+        initTaps()
        //searchTF.placeholder = UIFont(name: "Satoshi-Bold", size: 14)
         searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
         titleLBL.setFont(font: .bold(size: .BODY))

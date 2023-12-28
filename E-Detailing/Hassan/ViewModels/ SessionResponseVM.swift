@@ -28,7 +28,7 @@ class  SessionResponseVM {
     }
     
     
-    func getTourPlanData(params: JSON, api : APIEnums, paramData: Data, _ result : @escaping (Result<SessionResponseModel,TPErrors>) -> Void) {
+    func getTourPlanData(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<SessionResponseModel,TPErrors>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
             .responseDecode(to: SessionResponseModel.self, { (json) in
             result(.success(json))
@@ -41,7 +41,7 @@ class  SessionResponseVM {
     
     
     
-    func uploadTPmultipartFormData(params: JSON, api : APIEnums, paramData: Data, _ result : @escaping (Result<SaveTPresponseModel,TPErrors>) -> Void) {
+    func uploadTPmultipartFormData(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<SaveTPresponseModel,TPErrors>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
             .responseDecode(to: SaveTPresponseModel.self, { (json) in
             result(.success(json))
@@ -53,7 +53,7 @@ class  SessionResponseVM {
     }
     
     
-    func getReportsData(params: JSON, api : APIEnums, paramData: Data, _ result : @escaping (Result<[ReportsModel],TPErrors>) -> Void) {
+    func getReportsData(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[ReportsModel],TPErrors>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
             .responseDecode(to: [ReportsModel].self, { (json) in
             result(.success(json))
@@ -64,4 +64,15 @@ class  SessionResponseVM {
         })
     }
 
+    func getDetailedReportsData(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[DetailedReportsModel],TPErrors>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [DetailedReportsModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(TPErrors.unableConnect))
+        })
+    }
+    
 }

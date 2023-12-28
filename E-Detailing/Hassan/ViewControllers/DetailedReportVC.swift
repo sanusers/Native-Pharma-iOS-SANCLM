@@ -77,11 +77,11 @@ class DetailedReportVC: BaseViewController {
         
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
-        getReporsAPIResponse(toSendData, paramData: jsonDatum)
+        getReporsAPIResponse(toSendData, paramData: param)
     }
     
 
-    func getReporsAPIResponse(_ param: [String: Any], paramData: Data){
+    func getReporsAPIResponse(_ param: [String: Any], paramData: JSON){
        
         sessionResponseVM?.getReportsData(params: param, api: .getReports, paramData: paramData) { result in
             switch result {

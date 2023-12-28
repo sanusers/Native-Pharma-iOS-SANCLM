@@ -63,6 +63,10 @@ class VisitInfoTVC: UITableViewCell {
         setupUI()
     }
     
+    func populateCell(model:  DetailedReportsModel) {
+        
+    }
+    
     func setupUI() {
         
         let seperators: [UIView] = [remarksSeperator, bottomSeperator, seperatorView, topSeperator]
@@ -104,16 +108,4 @@ class VisitInfoTVC: UITableViewCell {
     }
     
 }
-func applyCornerRadiusAndElevation(to view: UIView, cornerRadius: CGFloat, shadowColor: UIColor, shadowOffset: CGSize, shadowOpacity: Float, shadowRadius: CGFloat) {
-    // Apply corner radius
-    view.layer.cornerRadius = cornerRadius
-    view.layer.masksToBounds = true
-    
-    // Apply elevation (shadow)
-    view.layer.shadowColor = shadowColor.cgColor
-    view.layer.shadowOffset = shadowOffset
-    view.layer.shadowOpacity = shadowOpacity
-    view.layer.shadowRadius = shadowRadius
-    view.layer.shouldRasterize = true
-    view.layer.rasterizationScale = UIScreen.main.scale
-}
+

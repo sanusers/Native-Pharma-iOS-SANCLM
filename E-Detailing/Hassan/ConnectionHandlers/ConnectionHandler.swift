@@ -211,14 +211,14 @@ final class ConnectionHandler : NSObject {
     }
     
     func uploadRequest(for api : APIEnums,
-                       params : Parameters,
-                       data:Data, imageName:String = "image")-> APIResponseProtocol {
+                       params : JSON,
+                       data:JSON, imageName:String = "image")-> APIResponseProtocol {
         let startTime = Date()
         let responseHandler = APIResponseHandler()
         var param = params
        // param["token"] = LocalStorage.shared.getString(key: .accessToken)
-        
-        
+        dump(param["tableName"])
+ 
         
         //uberSupport.showProgressInWindow(showAnimation: true)
         print(params)
@@ -264,33 +264,55 @@ final class ConnectionHandler : NSObject {
 
                 
                 if api == .getReports {
-    
-                    self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
-                        
-                        do {
+                    var encodedReportsModelData: [ReportsModel]?
+                    var encodedDetailedReportsModelData: [DetailedReportsModel]?
+                    if data["tableName"] as! String == "getdayrpt" {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
+                            encodedReportsModelData = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(encodedReportsModelData)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedReportsModelData) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                                
+                              //  print("\nJSON String:")
+                             //   print(jsonString )
+                            } catch {
+                                print("Error encoding JSON: \(error)")
+                            }
+                        }
+                    } else {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DetailedReportsModel].self) { decodecObj in
+                            encodedDetailedReportsModelData = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(encodedDetailedReportsModelData)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedDetailedReportsModelData) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                                
+                              //  print("\nJSON String:")
+                             //   print(jsonString )
+                            } catch {
+                                print("Error encoding JSON: \(error)")
+                            }
                             
-                         //   var data: Data?
-                          //  var jsons : JSON?
-                            // Convert Swift object to JSON data
-                            let jsonData = try JSONEncoder().encode(decodecObj)
                             
-                            // Convert Swift object to JSON string
-                          
-                            responseHandler.handleSuccess(value: self.convertToDictionary(decodecObj) ?? JSON(), data: jsonData)
-                            print("JSON Data:")
-                            print(jsonData)
                             
-                          //  print("\nJSON String:")
-                         //   print(jsonString )
-                        } catch {
-                            print("Error encoding JSON: \(error)")
                         }
                         
-                        
-                        
-                        
-                      //
+                 
                     }
+                    
+       
+                    
+
+                    
                 } else   {
                     if let data = anyData,
                        let json = JSON(data){
