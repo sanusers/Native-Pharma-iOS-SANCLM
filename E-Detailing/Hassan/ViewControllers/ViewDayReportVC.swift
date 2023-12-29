@@ -33,9 +33,10 @@ class ViewDayReportVC: BaseViewController {
 
    //     {"tableName":"getvwvstdet","ACd":"SE74-2280","typ":"1","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
         
-        if type == 0 {
-            self.dayReportView.initialSerups()
-        }
+       // if type == 1 {
+           // return
+           // self.dayReportView.initialSerups()
+       // }
         
         var param = [String: Any]()
         param["tableName"] = "getvwvstdet"
@@ -44,9 +45,9 @@ class ViewDayReportVC: BaseViewController {
         param["sfcode"] = appdefaultSetup?.sfCode
         //"MR2697"
         //appdefaultSetup.sfCode
-        if type != 0 {
+      //  if type != 0 {
             param["typ"] = type
-        }
+       // }
        
         param["sf_type"] = appdefaultSetup?.sfType
         //"1"
@@ -67,9 +68,7 @@ class ViewDayReportVC: BaseViewController {
         //appdefaultSetup.stateCode
         param["subdivision_code"] = appdefaultSetup?.subDivisionCode
         //"62"
-        //appdefaultSetup.subDivisionCode
-       // param["rptDt"] = "2023-12-8"
-        //"2023-12-8"
+  
 
         
         

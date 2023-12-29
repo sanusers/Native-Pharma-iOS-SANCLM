@@ -11,13 +11,13 @@ import UIKit
 
 extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return reportsModel?.count ?? 0
+        return isMatched ? filteredreportsModel?.count ?? 0 : reportsModel?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: BasicReportsInfoTVC = tableView.dequeueReusableCell(withIdentifier: "BasicReportsInfoTVC") as!  BasicReportsInfoTVC
         cell.selectionStyle = .none
-        let modal = reportsModel?[indexPath.row] ?? ReportsModel()
+        let modal =  isMatched ? filteredreportsModel?[indexPath.row] ?? ReportsModel() : reportsModel?[indexPath.row] ?? ReportsModel()
         cell.populateCell(modal)
         cell.nextActionVIew.addTap {
             let vc = ViewDayReportVC.initWithStory(model: modal)
@@ -34,13 +34,13 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        let model = reportsModel?[indexPath.row] ?? ReportsModel()
-        //
+        let model = isMatched ? filteredreportsModel?[indexPath.row] ?? ReportsModel() : reportsModel?[indexPath.row] ?? ReportsModel()
+        var tempCellHeight = cellHeight
         let isTohideCheckin = isTohideCheckin(model)
         let isTohideCheckout = isTohideCheckout(model)
         
         if isTohideCheckin && isTohideCheckout  {
-            cellHeight = cellHeight - 80
+            tempCellHeight = tempCellHeight - 80
         }
         
         var count = Int()
@@ -81,13 +81,13 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         
          
         if isTohideRemarks && isTohideplanCollection {
-            cellHeight = cellHeight - 75
+            tempCellHeight = tempCellHeight - 75
         } else {
          
         }
         
         
-        return cellHeight
+        return CGFloat(tempCellHeight)
     }
     
     
@@ -102,8 +102,138 @@ extension DetailedReportView: SortVIewDelegate {
 
 }
 
-class DetailedReportView: BaseView {
+extension DetailedReportView : UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Handle the text change
+        if let text = textField.text as NSString? {
+            let newText = text.replacingCharacters(in: range, with: string).lowercased()
+            print("New text: \(newText)")
+            
+            
+            toFilterResults(newText)
+            
+           
+        }
+        return true
+    }
+        
+        func toFilterResults(_ toSearchString: String) {
+            
+            let newText = toSearchString
+            self.filteredreportsModel = [ReportsModel]()
+            reportsModel?.forEach({ report in
+                if report.wtype.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                else if report.intime.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                else if report.outtime.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                else if report.inaddress.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                else if report.outaddress.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                else if report.remarks.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                else if report.rptdate.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                else if report.sfName.lowercased().contains(newText) {
+                    self.filteredreportsModel?.append(report)
+                }
+                
+                
+                else if containsOnlyApprovedCharacters(in: newText, toCheckString: "approved") {
+                    if report.typ == 1 {
+                        self.filteredreportsModel?.append(report)
+                    }
+                }
+                else if containsOnlyApprovedCharacters(in: newText, toCheckString: "pending") {
+                    if report.typ == 0 {
+                        self.filteredreportsModel?.append(report)
+                    }
+                }
+                else if containsOnlyApprovedCharacters(in: newText, toCheckString: "rejected") {
+                    if report.typ == 2 {
+                        self.filteredreportsModel?.append(report)
+                    }
+                }
+                
+//                else if newText.contains("approved") {
+//                    if report.typ == 1 {
+//                        self.filteredreportsModel?.append(report)
+//                    }
+//                }
+//
+//                else if newText.contains("pending") {
+//                    if report.typ == 0 {
+//                        self.filteredreportsModel?.append(report)
+//                    }
+//                }
+//
+//                else if newText.contains("rejected") {
+//                    if report.typ == 2 {
+//                        self.filteredreportsModel?.append(report)
+//                    }
+//                }
+              
+                
+                
+                
+            })
+            
+            if newText.isEmpty {
+                isMatched = false
+                self.noreportsView.isHidden = true
+                self.reportsTable.isHidden = false
+                self.toLoadData()
+            }
+            
+            else if filteredreportsModel?.count != 0 {
+                isMatched = true
+                self.noreportsView.isHidden = true
+                self.reportsTable.isHidden = false
+                self.toLoadData()
+                
+            } else if filteredreportsModel?.count == 0 && !newText.isEmpty  {
+                isMatched = false
+                self.reportsTable.isHidden = true
+                self.noreportsView.isHidden = false
+            }
+            dump(filteredreportsModel)
+        }
+        
+        
     
+    
+    }
+    
+
+    
+
+class DetailedReportView: BaseView {
+    func containsOnlyApprovedCharacters(in userText: String, toCheckString: String) -> Bool {
+        let approvedCharacters = Set(toCheckString)
+
+        for char in userText {
+            if !approvedCharacters.contains(char) {
+                return false
+            }
+        }
+
+        return true
+    }
     
     @IBOutlet var titleLBL: UILabel!
     
@@ -128,9 +258,10 @@ class DetailedReportView: BaseView {
     
     var isSortPresented = false
     
-    var cellHeight: CGFloat = 265
-    
+    let cellHeight = 275
+    var isMatched : Bool = false
     var reportsModel : [ReportsModel]?
+    var filteredreportsModel : [ReportsModel]?
     let datePicker = UIDatePicker()
     
     private lazy var sortView: SortVIew = {
@@ -165,6 +296,7 @@ class DetailedReportView: BaseView {
     }
     
     func toLoadData() {
+        
         reportsTable.delegate = self
         reportsTable.dataSource = self
         reportsTable.reloadData()
@@ -265,6 +397,7 @@ class DetailedReportView: BaseView {
     func setupUI() {
         self.noreportsView.isHidden = true
         self.noreportsLbl.setFont(font: .bold(size: .BODY))
+        searchTF.delegate = self
         initTaps()
        //searchTF.placeholder = UIFont(name: "Satoshi-Bold", size: 14)
         searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)

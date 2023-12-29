@@ -106,13 +106,22 @@ class DetailedReportVC: BaseViewController {
             case .success(let response):
                 print(response)
                 self.reportsView.reportsModel = response
+                
                 if response.isEmpty {
                     self.reportsView.noreportsView.isHidden = false
                 } else {
                     self.reportsView.noreportsView.isHidden = true
-                    self.reportsView.toLoadData()
+                   
                 }
-               
+                if self.reportsView.searchTF.text == "" {
+                    self.reportsView.isMatched = false
+                    self.reportsView.toLoadData()
+                } else {
+                    self.reportsView.isMatched = true
+                    self.reportsView.toLoadData()
+                    self.reportsView.toFilterResults(self.reportsView.searchTF.text ?? "")
+                }
+              
                 dump(response)
                 
             case .failure(let error):

@@ -109,12 +109,12 @@ class BasicReportsInfoTVC: UITableViewCell {
         
         let isTohideCheckin = isTohideCheckin(model)
         let isTohideCheckout = isTohideCheckout(model)
-        
+        var tempstackHeight = stackHeight
         if isTohideCheckin && isTohideCheckout  {
             inAndoutInfoView.isHidden = true
             inAndoutHeightConst.constant = 0
-            stackHeight = stackHeight - 70
-            holderStackHeightConst.constant = stackHeight
+            tempstackHeight = tempstackHeight - 70
+            holderStackHeightConst.constant = tempstackHeight
         } else {
             inAndoutInfoView.isHidden = false
             inAndoutHeightConst.constant = 80
@@ -128,8 +128,8 @@ class BasicReportsInfoTVC: UITableViewCell {
         if isTohideRemarks && isTohideplanCollection {
             remarksAndPlansView.isHidden = true
             remarksAndPlansHeightConst.constant = 0
-            stackHeight = stackHeight -  75
-            holderStackHeightConst.constant = stackHeight
+            tempstackHeight = tempstackHeight -  75
+            holderStackHeightConst.constant = tempstackHeight
         } else {
             remarksAndPlansView.isHidden = false
             remarksAndPlansHeightConst.constant = 75
@@ -253,7 +253,7 @@ class BasicReportsInfoTVC: UITableViewCell {
     
     @IBOutlet var nextActionVIew: UIView!
     @IBOutlet var seperatorView: UIView!
-    var stackHeight: CGFloat = 255
+    let stackHeight: CGFloat = 255
     var approvalType: ApprovalType = .rejected {
          didSet {
              setArrovalView()

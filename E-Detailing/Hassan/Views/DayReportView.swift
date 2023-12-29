@@ -11,8 +11,12 @@ import UIKit
 
 extension DayReportView: VisitsCountTVCDelegate {
     func typeChanged(index: Int, type: CellType) {
-        
-        self.viewDayReportVC.toSetParamsAndGetResponse(index)
+        if index != 0 {
+            self.viewDayReportVC.toSetParamsAndGetResponse(index)
+        }
+        self.isMatched = false
+        self.searchTF.text = ""
+        self.searchTF.placeholder = "Search"
         self.selectedType = type
     }
     
@@ -24,7 +28,7 @@ extension DayReportView : ViewAllInfoTVCDelegate {
     
     func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool,  index: Int) {
         self.selectedIndex = index
-        let model = self.detailedReportsModelArr?[index]
+        let model = self.isMatched ? self.filtereddetailedReportsModelArr?[index] : self.detailedReportsModelArr?[index]
         
         if islessTapped {
             model?.isCellExtended = false
@@ -64,7 +68,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        3
+       return 3
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -84,7 +88,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             }
            
         case 2:
-            return    self.detailedReportsModelArr?.count ?? 0
+            return   self.isMatched ? self.filtereddetailedReportsModelArr?.count ?? 0 : self.detailedReportsModelArr?.count ?? 0
         default:
             return 0
         }
@@ -105,12 +109,17 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         case 1:
             let cell: VisitsCountTVC = tableView.dequeueReusableCell(withIdentifier: "VisitsCountTVC", for: indexPath) as! VisitsCountTVC
             cell.delegate = self
+           
+//            var selectionDict = [CellType : Bool]()
+//            let celltype: CellType = .Doctor
+//            selectionDict[celltype] = true
+//            cell.selectedIndex = selectionDict
             cell.wtModel = self.reportsModel
             cell.topopulateCell(model: self.reportsModel ?? ReportsModel())
             cell.selectionStyle = .none
             return cell
         case 2:
-            let model =    self.detailedReportsModelArr?[indexPath.row]
+            let model =   self.isMatched ? self.filtereddetailedReportsModelArr?[indexPath.row] : self.detailedReportsModelArr?[indexPath.row]
          
             if model?.isCellExtended == false  {
                 let cell: VisitInfoTVC = tableView.dequeueReusableCell(withIdentifier: "VisitInfoTVC", for: indexPath) as! VisitInfoTVC
@@ -154,10 +163,10 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     }
     
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // this will turn on `masksToBounds` just before showing the cell
-        cell.contentView.layer.masksToBounds = true
-    }
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        // this will turn on `masksToBounds` just before showing the cell
+//        cell.contentView.layer.masksToBounds = true
+//    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
@@ -171,7 +180,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
            
             return tableView.height / 9
         default:
-            let model =    self.detailedReportsModelArr?[indexPath.row]
+            let model =  self.isMatched ? self.filtereddetailedReportsModelArr?[indexPath.row] : self.detailedReportsModelArr?[indexPath.row]
             
             if model?.isCellExtended == false {
                return  240
@@ -222,26 +231,121 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         if productStrArr.last ==  "  )" {
             productStrArr.removeLast()
         }
-        
-        return CGFloat(productStrArr.count * 30)
+        var eachCellSize = 30
+        if productStrArr.count > 4 {
+            eachCellSize = 40
+        } else if productStrArr.count > 2 {
+            eachCellSize = 35
+        }
+            
+        return CGFloat(productStrArr.count * eachCellSize)
         
       
     }
     
 }
 
-class DayReportView: BaseView {
+extension DayReportView: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Handle the text change
+        if let text = textField.text as NSString? {
+            let newText = text.replacingCharacters(in: range, with: string).lowercased()
+            print("New text: \(newText)")
+            
+            
+            toFilterResults(newText)
+            
+           
+        }
+        return true
+    }
     
-//    func toSetDataSourceForProducts() {
-//        productStrArr.removeAll()
-//        productStrArr.append("This is Title String")
-//        productStrArr.append(contentsOf: detailedReportModel?.products.components(separatedBy: ",") ?? [])
-//        if productStrArr.last ==  "  )" {
-//            productStrArr.removeLast()
-//        }
-//
-//
-//    }
+    func toFilterResults(_ toSearchString: String) {
+        
+        let newText = toSearchString
+        self.filtereddetailedReportsModelArr = [DetailedReportsModel]()
+        detailedReportsModelArr?.forEach({ report in
+            
+            if report.name.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            else if report.visitTime.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if report.modTime.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if report.territory.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if "\(report.pobValue)".lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if report.callFdback.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if report.wWith.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if report.remarks.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+            else if report.remarks.lowercased().contains(newText) {
+                self.filtereddetailedReportsModelArr?.append(report)
+            }
+            
+
+            
+        })
+        
+        if newText.isEmpty {
+            isMatched = false
+            resultinfoView.isHidden = true
+            resultInfoLbl.isHidden = true
+          //  self.noreportsView.isHidden = true
+            self.aDayReportsTable.isHidden = false
+            self.toLoadData()
+            
+        }
+     
+        else if filtereddetailedReportsModelArr?.count != 0 {
+            isMatched = true
+            resultinfoView.isHidden = false
+            resultInfoLbl.isHidden = false
+          //  self.noreportsView.isHidden = true
+            self.aDayReportsTable.isHidden = false
+            self.toLoadData()
+            
+        } else if filtereddetailedReportsModelArr?.count == 0 && !newText.isEmpty  {
+             isMatched = false
+            resultinfoView.isHidden = false
+            resultInfoLbl.isHidden = false
+            self.aDayReportsTable.isHidden = true
+           // self.noreportsView.isHidden = false
+        }
+
+        var resultCount = filtereddetailedReportsModelArr?.count ?? 0
+        var resultStr = ""
+        if resultCount == 0 {
+            resultStr = "No results found"
+        } else if resultCount == 1 {
+            resultStr = "found \(resultCount) result"
+        } else {
+            resultStr = "found \(resultCount) results"
+        }
+        resultInfoLbl.text = resultStr
+     //   dump(filteredreportsModel)
+    }
+}
+
+class DayReportView: BaseView {
     
     var viewDayReportVC : ViewDayReportVC!
     
@@ -259,22 +363,27 @@ class DayReportView: BaseView {
     @IBOutlet weak var rejectedTitLbl: UILabel!
     @IBOutlet weak var rejectedReasonLbl: UILabel!
     @IBOutlet weak var aDayReportsTable: UITableView!
-    var selectedType: CellType = .All
+    var selectedType: CellType = .Doctor
     @IBOutlet var tableHeader: UIView!
     @IBOutlet var tableContentsHolder: UIView!
     @IBOutlet var sortView: UIView!
+    @IBOutlet var resultInfoLbl: UILabel!
+    
+    @IBOutlet var resultinfoView: UIView!
     var isForViewmore = false
     var isForRCPA = false
     var rejectedHeight: CGFloat =  70
     var detailedReportsModelArr : [DetailedReportsModel]?
+    var filtereddetailedReportsModelArr : [DetailedReportsModel]?
     var selectedIndex: Int? = nil
     var reportsModel : ReportsModel?
     var isTohideCount : Bool = false
+    var isMatched: Bool = false
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.viewDayReportVC = baseVC as? ViewDayReportVC
         self.viewDayReportVC.appdefaultSetup = AppDefaults.shared.getAppSetUp()
-        self.viewDayReportVC.toSetParamsAndGetResponse(0)
+        self.viewDayReportVC.toSetParamsAndGetResponse(1)
         setupUI()
     }
     
@@ -288,11 +397,19 @@ class DayReportView: BaseView {
     }
     
     func initialSerups() {
+        resultinfoView.isHidden = true
+        resultInfoLbl.isHidden = true
         cellregistration()
         toLoadData()
     }
     
     func setupUI() {
+        resultinfoView.isHidden = isMatched ? false : true
+        resultInfoLbl.isHidden = isMatched ? false : true
+        resultInfoLbl.setFont(font: .medium(size: .BODY))
+        resultInfoLbl.textColor = .appLightTextColor
+        searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
+        searchTF.delegate = self
         self.aDayReportsTable.tableHeaderView = tableHeader
         seperatorView.backgroundColor = .appSelectionColor
         ussrNameLbl.setFont(font: .bold(size: .SUBHEADER))

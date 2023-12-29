@@ -39,7 +39,12 @@ extension VisitsCountTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             self.selectedIndex[model.type] = true
             cell.selectedIndex = indexPath.row
             self.visitTypesCVC.reloadData()
-            self.delegate?.typeChanged(index: indexPath.row, type: model.type)
+            if indexPath.row == 0 {
+                
+            } else {
+                self.delegate?.typeChanged(index: indexPath.row, type: model.type)
+            }
+         
         }
         
         return cell
