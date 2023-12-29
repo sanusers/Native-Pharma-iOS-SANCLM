@@ -165,7 +165,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
             cell.addTap {
                 self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-                self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped: self.cellType  == .hideRCPA ?  false : true )
+                self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped: self.cellType  == .hideRCPA ?  false : true, index: self.selectedIndex ?? 0)
                 //self.cellType == .showRCPA ? true : false
                 self.extendedInfoCollection.reloadData()
             }
@@ -195,7 +195,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
                     cell.addTap {
                         
-                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false)
+                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false, index: self.selectedIndex ?? 0)
                     }
                     return cell
                     
@@ -211,7 +211,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
                     cell.addTap {
                         
-                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false)
+                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false, index: self.selectedIndex ?? 0)
                     }
                     return cell
                     
@@ -229,7 +229,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 }
 
 protocol ViewAllInfoTVCDelegate: AnyObject {
-    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool)
+    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool, index: Int)
         
     
 }
@@ -252,6 +252,7 @@ class ViewAllInfoTVC: UITableViewCell {
     var productStrArr : [String] = []
     var typeImage: UIImage?
     var isTohideLocationInfo = false
+    var selectedIndex : Int? = nil
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -485,18 +485,23 @@
             <connections>
                 <outlet property="chemistSectionHolder" destination="y5V-Al-gBM" id="Fjh-xo-Ccc"/>
                 <outlet property="chemistSelectionHolder" destination="GVz-XH-e5d" id="937-XW-Mtc"/>
+                <outlet property="chemistSeperator" destination="yLb-Yo-b6M" id="k2L-JP-5Sv"/>
                 <outlet property="chemistTitle" destination="0aP-n5-8Fb" id="EOt-2t-8Gj"/>
                 <outlet property="chemistView" destination="3Vu-0D-ZZY" id="zkx-JS-xio"/>
+                <outlet property="clusterSerperator" destination="bGn-bx-Krb" id="hJc-Zj-Adb"/>
                 <outlet property="clusterTitle" destination="bEx-eb-417" id="cZA-1J-QJT"/>
                 <outlet property="clusterView" destination="UuG-aC-Myr" id="2MM-ZF-C49"/>
                 <outlet property="clusterselectionHolder" destination="Y7m-NP-bys" id="qv0-p4-72F"/>
+                <outlet property="docSeperator" destination="bvF-Ar-9uW" id="R4H-tL-Z5g"/>
                 <outlet property="elevationStack" destination="kgW-BK-WQc" id="CS3-QM-2Qh"/>
                 <outlet property="headQuartersTitle" destination="Sxn-D1-eF4" id="xru-9g-pul"/>
                 <outlet property="headQuatersSelectionHolder" destination="2Ig-hw-KoC" id="yBd-Ym-IJC"/>
                 <outlet property="headQuatersView" destination="K5B-iU-vKa" id="HL6-Q0-nkq"/>
+                <outlet property="hqSeperator" destination="Qfb-l5-ce2" id="CXZ-ab-jF1"/>
                 <outlet property="jointCallSelectionHolder" destination="8at-YD-5Cx" id="kCn-VP-kWe"/>
                 <outlet property="jointCallTitle" destination="zCm-c8-KFq" id="w1O-4J-Zcv"/>
                 <outlet property="jointCallView" destination="rR4-IM-fgP" id="UsB-ee-71Z"/>
+                <outlet property="jointcallSeperator" destination="UrA-UQ-YDU" id="7Hc-Sy-HXd"/>
                 <outlet property="lblChemist" destination="cDI-rx-qet" id="ecD-nl-6rF"/>
                 <outlet property="lblCluster" destination="T78-Jx-IoW" id="2qF-2k-MSw"/>
                 <outlet property="lblHeadquaters" destination="0Ph-Rb-8nm" id="wca-H1-hW1"/>
@@ -517,14 +522,17 @@
                 <outlet property="remarksTitle" destination="sz0-rW-LuP" id="zl7-OZ-fzI"/>
                 <outlet property="remarksView" destination="Haf-IE-DGI" id="nef-Gm-DWJ"/>
                 <outlet property="stackHeight" destination="TLK-by-j54" id="fPK-gR-XXt"/>
+                <outlet property="stockistSeperator" destination="NPP-q9-g2O" id="pKM-1b-n13"/>
                 <outlet property="stockistTitle" destination="6d9-kv-fce" id="Gwx-Gw-0JL"/>
                 <outlet property="stockistView" destination="VpO-16-6C3" id="LIH-FI-c9j"/>
                 <outlet property="titleHolderView" destination="zRI-lg-Ktz" id="eZJ-Ko-7cP"/>
                 <outlet property="unlistedDocHolder" destination="RAo-Bg-ROs" id="0o3-s8-CwI"/>
+                <outlet property="unlistedDocSeperator" destination="3dX-d8-NUZ" id="mpv-IL-jdA"/>
                 <outlet property="unlistedDocView" destination="myR-9g-YC8" id="Yfl-0e-7QC"/>
                 <outlet property="workTypeView" destination="tZG-Dx-3IS" id="UYW-Qy-uFQ"/>
                 <outlet property="workselectionHolder" destination="lrI-7E-n9c" id="l4A-XF-qft"/>
                 <outlet property="worktyprTitle" destination="1nm-Pn-vI4" id="eBf-2a-xaC"/>
+                <outlet property="wtSeperator" destination="507-vX-Ixc" id="GnY-ZT-pEb"/>
             </connections>
             <point key="canvasLocation" x="191.70731707317071" y="127.88135593220339"/>
         </tableViewCell>

@@ -20,8 +20,11 @@ extension DayReportView: VisitsCountTVCDelegate {
 }
 
 extension DayReportView : ViewAllInfoTVCDelegate {
-    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool) {
-        let model = self.detailedReportsModelArr?[selectedIndex ?? 0]
+
+    
+    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool,  index: Int) {
+        self.selectedIndex = index
+        let model = self.detailedReportsModelArr?[index]
         
         if islessTapped {
             model?.isCellExtended = false
@@ -33,7 +36,7 @@ extension DayReportView : ViewAllInfoTVCDelegate {
         
     
         self.toLoadData()
-        let indexpath = IndexPath(row: self.selectedIndex ?? 0, section: 2)
+        let indexpath = IndexPath(row: index, section: 2)
         aDayReportsTable.scrollToRow(at: indexpath, at: .top, animated: true)
         
 //        if islessTapped && !isrcpaTapped {
@@ -128,6 +131,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 return cell
             } else {
                 let cell: ViewAllInfoTVC = tableView.dequeueReusableCell(withIdentifier: "ViewAllInfoTVC", for: indexPath) as! ViewAllInfoTVC
+                cell.selectedIndex = self.selectedIndex
                 cell.delegate = self
                 cell.typeImage = self.selectedType.image
                //let model = self.detailedReportsModelArr?[indexPath.row]
@@ -176,7 +180,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                //25 elevation padding, 60 header height (product)
                 
                 
-               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 30 Each, RCPA - 60, Remarks - 75, show options - 50)
+               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 30 Each, RCPA Cell - 60, Remarks - 75, show options - 50)
                 
                 var timeinfoHeight = CGFloat()
                  if self.viewDayReportVC.isToReduceLocationHeight {
@@ -290,9 +294,10 @@ class DayReportView: BaseView {
     
     func setupUI() {
         self.aDayReportsTable.tableHeaderView = tableHeader
+        seperatorView.backgroundColor = .appSelectionColor
         ussrNameLbl.setFont(font: .bold(size: .SUBHEADER))
         ussrNameLbl.textColor = .appLightPink
-        self.ussrNameLbl.text = "\(viewDayReportVC.appdefaultSetup!.sfUserName!) - \(viewDayReportVC.appdefaultSetup!.desig!) - designation"
+        self.ussrNameLbl.text = "\(viewDayReportVC.appdefaultSetup!.sfName!) - \(viewDayReportVC.appdefaultSetup!.desig!) - designation"
         initTaps()
         mockData()
         sortView.layer.cornerRadius = 5

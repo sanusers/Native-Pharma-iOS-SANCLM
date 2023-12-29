@@ -101,6 +101,23 @@ class EditSessionTVC: UITableViewCell {
     
     @IBOutlet var remarksDesc: UILabel!
     
+    @IBOutlet var wtSeperator: UIView!
+    
+    @IBOutlet var hqSeperator: UIView!
+    
+    @IBOutlet var clusterSerperator: UIView!
+    
+    @IBOutlet var jointcallSeperator: UIView!
+    
+    @IBOutlet var docSeperator: UIView!
+    
+    @IBOutlet var chemistSeperator: UIView!
+    
+    @IBOutlet var stockistSeperator: UIView!
+    
+    @IBOutlet var unlistedDocSeperator: UIView!
+
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -112,6 +129,12 @@ class EditSessionTVC: UITableViewCell {
     
     func setupUI() {
         
+        let seperators : [UIView] =  [wtSeperator, hqSeperator, clusterSerperator, jointcallSeperator, docSeperator, chemistSeperator, stockistSeperator, unlistedDocSeperator]
+        
+        seperators.forEach { view in
+            view.backgroundColor = .appSelectionColor
+        }
+        
         let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblstockist, lblunlistedDoc, remarksDesc]
         labels.forEach { label in
             label.textColor = .appTextColor
@@ -121,25 +144,28 @@ class EditSessionTVC: UITableViewCell {
         let titleLabels : [UILabel] = [worktyprTitle, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle, remarksTitle]
         titleLabels.forEach { label in
             label.textColor = .appLightTextColor
-            label.setFont(font: .medium(size: .BODY))
+            label.setFont(font: .bold(size: .SMALL))
         }
         
         lblName.textColor = .appTextColor
-        lblName.setFont(font: .bold(size: .SUBHEADER))
+        lblName.setFont(font: .bold(size: .BODY))
         
-        elevationStack.backgroundColor = .appSelectionColor
+        elevationStack.backgroundColor = .appGreyColor.withAlphaComponent(0.5)
+            //.appSelectionColor
         
         elevationStack.setSpecificCornersForBottom(cornerRadius: 5)
         
         overallContentsHolder.backgroundColor = .appWhiteColor
        // overallContentsHolder.layer.cornerRadius = 5
         
-        titleHolderView.backgroundColor = .appSelectionColor
+        titleHolderView.backgroundColor = .appGreyColor.withAlphaComponent(0.5)
+            //.appSelectionColor
         titleHolderView.setSpecificCornersForTop(cornerRadius: 5)
         
         remarksView.backgroundColor = .appWhiteColor
         
-        remarksContentHolder.backgroundColor = .appSelectionColor
+        remarksContentHolder.backgroundColor = .appGreyColor.withAlphaComponent(0.5)
+            //.appSelectionColor
         remarksContentHolder.layer.cornerRadius = 5
        // lblName.setFont(font: .bold(size: .SUBHEADER))
         

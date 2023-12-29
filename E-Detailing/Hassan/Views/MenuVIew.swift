@@ -535,6 +535,9 @@ class MenuView : BaseView{
     
     @IBOutlet var noresultsView: UIView!
     
+    @IBOutlet var titleSeperator: UIView!
+    
+    
     var isSearched: Bool = false
     var isSearchedWorkTypeSelected: Bool = false
     ///properties to hold array elements
@@ -596,7 +599,7 @@ class MenuView : BaseView{
     
     func setTheme() {
         searchTF.textColor = .appTextColor
-        
+        titleSeperator.backgroundColor = .appSelectionColor
       //  [, countLbl, selectTitleLbl, typesTitle]
         
         

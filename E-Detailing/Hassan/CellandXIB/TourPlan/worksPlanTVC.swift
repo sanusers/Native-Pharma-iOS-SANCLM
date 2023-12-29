@@ -60,6 +60,7 @@ class worksPlanTVC: UITableViewCell {
         self.layer.cornerRadius = 5
         self.overallContentsHolderView.elevate(2)
         self.overallContentsHolderView.layer.cornerRadius = 5
+        overallContentsHolderView.backgroundColor = .appGreyColor.withAlphaComponent(0.3)
         dateLbl.setFont(font: .bold(size: .SUBHEADER))
         workTitLbl.setFont(font: .medium(size: .BODY))
         nameLbl.setFont(font: .medium(size: .BODY))

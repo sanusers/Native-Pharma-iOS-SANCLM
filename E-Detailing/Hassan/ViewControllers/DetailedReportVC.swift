@@ -12,6 +12,7 @@ class DetailedReportVC: BaseViewController {
     
     @IBOutlet var reportsView: DetailedReportView!
     var sessionResponseVM : SessionResponseVM?
+    var appdefaultSetup : AppSetUp? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,29 +28,46 @@ class DetailedReportVC: BaseViewController {
     }
     
 
-    func toSetParamsAndGetResponse() {
-       // let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-       // let dateFormatter = DateFormatter()
+    func toSetParamsAndGetResponse(_ selecteddate : Date) {
 
+
+        let date = selecteddate
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-d"
+
+    
+            let finalFormattedString = dateFormatter.string(from: date)
+        
         var param = [String: Any]()
         param["tableName"] = "getdayrpt"
-        param["sfcode"] = "MR2697"
+        param["sfcode"] = appdefaultSetup?.sfCode
+        //"MR2697"
         //appdefaultSetup.sfCode
-        param["sf_type"] = "1"
+        param["sf_type"] = appdefaultSetup?.sfType
+        //"1"
         //appdefaultSetup.sfType
        // param["SFName"] =
         //appdefaultSetup.sfName
-        param["divisionCode"] = "64"
+        param["divisionCode"] = appdefaultSetup?.divisionCode
+        //"64"
         //appdefaultSetup.divisionCode
-        param["Rsf"] = "MR2697"
+        param["Rsf"] = appdefaultSetup?.sfCode
+        //"MR2697"
         //appdefaultSetup.sfCode
-        param["Designation"] = "MR"
+        param["Designation"] = appdefaultSetup?.dsName
+        //"MR"
         //appdefaultSetup.dsName
-        param["state_code"] = "13"
+        param["state_code"] = appdefaultSetup?.stateCode
+        //"13"
         //appdefaultSetup.stateCode
-        param["subdivision_code"] = "93"
+        param["subdivision_code"] = appdefaultSetup?.subDivisionCode
+        //"93"
         //appdefaultSetup.subDivisionCode
-        param["rptDt"] = "2023-12-8"
+
+            print(finalFormattedString)
+      
+        param["rptDt"] = finalFormattedString
+        //"2023-12-8"
         //"2023-12-8"
        // {"tableName":"getdayrpt","sfcode":"MR2697","sf_type":"1","divisionCode":"64,","Rsf":"MR2697","Designation":"MR","state_code":"13","subdivision_code":"93,","rptDt":"2023-12-8"}
         
@@ -88,7 +106,13 @@ class DetailedReportVC: BaseViewController {
             case .success(let response):
                 print(response)
                 self.reportsView.reportsModel = response
-                self.reportsView.setupUI()
+                if response.isEmpty {
+                    self.reportsView.noreportsView.isHidden = false
+                } else {
+                    self.reportsView.noreportsView.isHidden = true
+                    self.reportsView.toLoadData()
+                }
+               
                 dump(response)
                 
             case .failure(let error):

@@ -272,6 +272,8 @@ class TourPlanView: BaseView {
     
     @IBOutlet var syncVXview: UIVisualEffectView!
     
+    
+    
     //MARK: - Properties
     var selectedDate: String = ""
     var tourplanVC : TourPlanVC!
@@ -1807,7 +1809,7 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         let cell : worksPlanTVC = tableView.dequeueReusableCell(withIdentifier: "worksPlanTVC", for: indexPath) as! worksPlanTVC
         let modal =  self.tempArrofPlan?[indexPath.row]
         cell.toPopulateCell(modal ?? SessionDetailsArr())
-        
+        cell.selectionStyle = .none
         cell.addTap {
             self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: modal?.isForWeekoff, isforHoliday: modal?.isForHoliday)
         }

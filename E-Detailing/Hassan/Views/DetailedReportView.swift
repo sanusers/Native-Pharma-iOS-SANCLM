@@ -119,6 +119,10 @@ class DetailedReportView: BaseView {
     
     @IBOutlet var reportsTable: UITableView!
     
+    @IBOutlet var noreportsView: UIView!
+    
+    @IBOutlet var noreportsLbl: UILabel!
+    
     @IBOutlet var searchTF: UITextField!
     var selectedSortIndex: Int? = nil
     
@@ -141,7 +145,9 @@ class DetailedReportView: BaseView {
     override func didLoad(baseVC: BaseViewController) {
      
         self.detailedreporsVC = baseVC as? DetailedReportVC
-        detailedreporsVC.toSetParamsAndGetResponse()
+        self.setupUI()
+        self.detailedreporsVC.appdefaultSetup = AppDefaults.shared.getAppSetUp()
+        detailedreporsVC.toSetParamsAndGetResponse(Date())
   
     }
     
@@ -218,11 +224,19 @@ class DetailedReportView: BaseView {
     
     @objc func donedatePicker(){
 
-     let formatter = DateFormatter()
-     formatter.dateFormat = "dd MMM yyyy"
-     filterDateTF.text = formatter.string(from: datePicker.date)
+  
+     filterDateTF.text = toConvertDate(date: datePicker.date)
+     self.detailedreporsVC.toSetParamsAndGetResponse(datePicker.date)
      self.endEditing(true)
    }
+    
+    func toConvertDate(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        return  formatter.string(from: date)
+       
+        
+    }
     
     @objc func cancelDatePicker(){
        self.endEditing(true)
@@ -249,6 +263,8 @@ class DetailedReportView: BaseView {
     }
     
     func setupUI() {
+        self.noreportsView.isHidden = true
+        self.noreportsLbl.setFont(font: .bold(size: .BODY))
         initTaps()
        //searchTF.placeholder = UIFont(name: "Satoshi-Bold", size: 14)
         searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
@@ -256,7 +272,7 @@ class DetailedReportView: BaseView {
         filterDateTF.inputView = datePicker
         filterDateTF.font = UIFont(name: "Satoshi-Bold", size: 14)
      
-        filterDateTF.text = "Select Date"
+        filterDateTF.text = toConvertDate(date: Date())
         showDatePicker()
         toConfigureCellHeight()
         cellRegistration()
@@ -277,7 +293,7 @@ class DetailedReportView: BaseView {
        // sortFiltersView.elevate(2)
         sortFiltersView.layer.cornerRadius = 5
         
-        toLoadData()
+        
         initTaps()
     }
 }

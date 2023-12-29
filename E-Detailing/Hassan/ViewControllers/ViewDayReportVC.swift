@@ -39,26 +39,34 @@ class ViewDayReportVC: BaseViewController {
         
         var param = [String: Any]()
         param["tableName"] = "getvwvstdet"
-        param["ACd"] = "SE74-2280"
-        param["sfcode"] = "MR2697"
+        param["ACd"] = reportsModel?.aCode
+        //"SE74-2280"
+        param["sfcode"] = appdefaultSetup?.sfCode
+        //"MR2697"
         //appdefaultSetup.sfCode
         if type != 0 {
             param["typ"] = type
         }
        
-        param["sf_type"] = "1"
+        param["sf_type"] = appdefaultSetup?.sfType
+        //"1"
         //appdefaultSetup.sfType
        // param["SFName"] =
         //appdefaultSetup.sfName
-        param["division_code"] = "8"
+        param["division_code"] = appdefaultSetup?.divisionCode
+        //"8"
         //appdefaultSetup.divisionCode
-        param["Rsf"] = "MR0026"
+        param["Rsf"] = appdefaultSetup?.sfCode
+        //"MR0026"
         //appdefaultSetup.sfCode
-        param["Designation"] = "TBM"
+        param["Designation"] = appdefaultSetup?.dsName
+        //"TBM"
         //appdefaultSetup.dsName
-        param["state_code"] = "28"
+        param["state_code"] = appdefaultSetup?.stateCode
+        //"28"
         //appdefaultSetup.stateCode
-        param["subdivision_code"] = "62"
+        param["subdivision_code"] = appdefaultSetup?.subDivisionCode
+        //"62"
         //appdefaultSetup.subDivisionCode
        // param["rptDt"] = "2023-12-8"
         //"2023-12-8"

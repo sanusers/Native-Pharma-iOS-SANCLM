@@ -186,7 +186,7 @@ class SessionInfoTVC: UITableViewCell {
        
         //remarksTV.placeholder = "Remarks"
         [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, stockistSectionHolder, newCustomersSectionHolder, overallContentsHolder, remarksTFholder].forEach { view in
-            view?.layer.borderColor = UIColor.appLightTextColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
+            view?.layer.borderColor = UIColor.appSelectionColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
             view?.layer.borderWidth = view == overallContentsHolder ? 0 : 0.5
             view?.layer.cornerRadius = 5
             view?.elevate(1)
@@ -209,7 +209,7 @@ class SessionInfoTVC: UITableViewCell {
         let titleLabels : [UILabel] = [worktyprTitle, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle]
         titleLabels.forEach { label in
             label.textColor = .appLightTextColor
-            label.setFont(font: .medium(size: .BODY))
+            label.setFont(font: .bold(size: .SMALL))
         }
         remarksTV.textColor = .appTextColor
         remarksTV.font = UIFont(name: "Satoshi-Medium", size: 14)
@@ -218,7 +218,8 @@ class SessionInfoTVC: UITableViewCell {
         lblName.setFont(font: .bold(size: .SUBHEADER))
         
         
-        overallContentsHolder.backgroundColor = .appSelectionColor
+        overallContentsHolder.backgroundColor = .appGreyColor.withAlphaComponent(0.5)
+            //.appSelectionColor
        // lblName.setFont(font: .bold(size: .SUBHEADER))
         
         
