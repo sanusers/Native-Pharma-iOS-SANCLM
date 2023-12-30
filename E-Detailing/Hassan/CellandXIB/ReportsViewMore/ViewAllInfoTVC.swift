@@ -70,7 +70,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             return CGSize(width: collectionView.width, height: 100)
       
         case 2:
-            return CGSize(width: collectionView.width, height: 30)
+            return CGSize(width: collectionView.width, height: 40)
             
         case 3:
             return CGSize(width: collectionView.width, height: 60)
@@ -83,7 +83,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     
                     //MARK: - rcpa cell (+1 section)
                 case 4:
-                    return CGSize(width: collectionView.width, height: 30)
+                    return CGSize(width: collectionView.width, height: 40)
                     
                 case 5:
                     return CGSize(width: collectionView.width, height: 75)
@@ -157,6 +157,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             default:
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                 let modelStr = self.productStrArr[indexPath.row]
+
                 cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
@@ -184,6 +185,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         return cell
                     default:
                         let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
+                        cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-"))
                         return cell
                     }
                 case 5:
@@ -234,6 +236,14 @@ protocol ViewAllInfoTVCDelegate: AnyObject {
     
 }
 
+struct SampleProduct {
+    let prodName: String
+    let isPromoted: Bool
+    let noOfSamples : String
+    let rxQTY: String
+    let rcpa: String
+}
+
 class ViewAllInfoTVC: UITableViewCell {
 
     enum CellType {
@@ -242,6 +252,8 @@ class ViewAllInfoTVC: UITableViewCell {
     }
     
     
+
+    
     @IBOutlet var extendedInfoCollection: UICollectionView!
     weak var delegate: ViewAllInfoTVCDelegate?
     var rcpaTapped: Bool = false
@@ -249,7 +261,7 @@ class ViewAllInfoTVC: UITableViewCell {
     var cellType: CellType = .hideRCPA
     var reportModel: ReportsModel?
     var detailedReportModel: DetailedReportsModel?
-    var productStrArr : [String] = []
+    var productStrArr : [SampleProduct] = []
     var typeImage: UIImage?
     var isTohideLocationInfo = false
     var selectedIndex : Int? = nil
@@ -271,11 +283,55 @@ class ViewAllInfoTVC: UITableViewCell {
     
     func toSetDataSourceForProducts() {
         productStrArr.removeAll()
-        productStrArr.append("This is Title String")
-        productStrArr.append(contentsOf: detailedReportModel?.products.components(separatedBy: ",") ?? [])
-        if productStrArr.last ==  "  )" {
-            productStrArr.removeLast()
-        }
+        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: ""))
+        
+       if detailedReportModel?.products != "" {
+           var prodArr =  detailedReportModel?.products.components(separatedBy: ",")
+           if prodArr?.last == "" {
+               prodArr?.removeLast()
+           }
+           prodArr?.forEach { prod in
+               var prodString : [String] = []
+               prodString.append(contentsOf: prod.components(separatedBy: "("))
+               prodString = prodString.map({ aprod in
+                   aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+               })
+               var name: String = ""
+               var isPromoted: String = ""
+               var noOfsamples: String = ""
+               var rxQty: String = ""
+               var rcpa: String  = ""
+               prodString.enumerated().forEach {prodindex, prod in
+             
+                  // let sampleProduct: SampleProduct
+                   switch prodindex {
+                   case 0 :
+                       name = prod
+                   case 1:
+                       isPromoted = prod
+                   case 2:
+                       noOfsamples = prod
+                   case 3:
+                       rxQty = prod
+                   case 4:
+                       rcpa = prod
+                   default:
+                       print("default")
+                   }
+               }
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted == "0" ? true : false, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa)
+               
+             //  let aProduct = SampleProduct(prodName: prodString[0].isEmpty ? "" : prodString[0] , isPromoted: prodString[1].isEmpty ? false : prodString[1].contains("0") ? true : false, noOfSamples:  prodString[2].isEmpty ? "" : prodString[2] , rxQTY:  prodString[3].isEmpty ? "" : prodString[3] , rcpa:  prodString[4].isEmpty ? "" : prodString[4])
+               productStrArr.append(aProduct)
+           }
+       } else {
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-"))
+       }
+
+        
+        //productStrArr.append(contentsOf: detailedReportModel?.products.components(separatedBy: ",") ?? [])
+  
+        
         
          
     }

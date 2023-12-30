@@ -94,10 +94,93 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension DetailedReportView: SortVIewDelegate {
+    
+    enum SortingType {
+        case orderAscending
+        case orderDescending
+        case orderByDate
+    }
+    
     func didSelected(index: Int?, isTosave: Bool) {
         selectedSortIndex = index
         isSortPresented =  isSortPresented ? false : true
         addOrRemoveSort(isSortPresented)
+        switch index {
+        case 0:
+            toReorderRepotes(type: .orderAscending)
+        case 1:
+            toReorderRepotes(type: .orderDescending)
+        case 2:
+            toReorderRepotes(type: .orderByDate)
+        case .none:
+            print("none")
+        case .some(_):
+            print("some")
+        }
+    }
+    
+    
+    func toReorderRepotes(type: SortingType) {
+        switch type {
+            
+        case .orderAscending:
+          
+            if isMatched {
+                self.filteredreportsModel = self.filteredreportsModel?.sorted { $0.sfName < $1.sfName }
+                
+            } else {
+                self.reportsModel = self.reportsModel?.sorted { $0.sfName < $1.sfName }
+            }
+            self.toLoadData()
+        case .orderDescending:
+            if isMatched {
+                self.filteredreportsModel = self.filteredreportsModel?.sorted { $0.sfName > $1.sfName }
+                
+            } else {
+                self.reportsModel = self.reportsModel?.sorted { $0.sfName > $1.sfName }
+            }
+            self.toLoadData()
+        case .orderByDate:
+            print("Yet to implement")
+            if isMatched {
+                self.filteredreportsModel = self.filteredreportsModel?.sorted {
+                    let date1 = toCOnvertTimeTodate($0.adate)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.adate) // Handle invalid time strings
+                    return date1 < date2
+                    
+                }
+                  
+            } else {
+             //   self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name < $1.name }
+                
+                
+                self.reportsModel = self.reportsModel?.sorted {
+                  let date1 = toCOnvertTimeTodate($0.adate)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.adate) // Handle invalid time strings
+                    return date1 < date2
+                    
+                }
+                
+            }
+            self.toLoadData()
+        }
+    }
+    
+    func toCOnvertTimeTodate(_ time: String) -> Date {
+        let timeString = time
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mma"
+
+        if let date = dateFormatter.date(from: timeString) {
+            print(date)
+            return date
+        } else {
+            print("Invalid time string format")
+        }
+        return Date()
     }
 
 }
@@ -254,6 +337,9 @@ class DetailedReportView: BaseView {
     @IBOutlet var noreportsLbl: UILabel!
     
     @IBOutlet var searchTF: UITextField!
+    
+    @IBOutlet var clearView: UIView!
+    
     var selectedSortIndex: Int? = nil
     
     var isSortPresented = false
@@ -313,7 +399,11 @@ class DetailedReportView: BaseView {
             self.detailedreporsVC.navigationController?.popViewController(animated: true)
         }
         
-        
+        clearView.addTap {
+            self.toFilterResults("")
+            self.searchTF.text = ""
+            self.searchTF.placeholder = "Search"
+        }
       
         
         sortFiltersView.addTap {

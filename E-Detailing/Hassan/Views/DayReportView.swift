@@ -11,6 +11,11 @@ import UIKit
 
 extension DayReportView: VisitsCountTVCDelegate {
     func typeChanged(index: Int, type: CellType) {
+        
+        guard self.selectedType != type else {
+            return
+        }
+        
         if index != 0 {
             self.viewDayReportVC.toSetParamsAndGetResponse(index)
         }
@@ -189,7 +194,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                //25 elevation padding, 60 header height (product)
                 
                 
-               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 30 Each, RCPA Cell - 60, Remarks - 75, show options - 50)
+               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40 Each, RCPA Cell - 60, Remarks - 75, show options - 50, 25 - cache)
                 
                 var timeinfoHeight = CGFloat()
                  if self.viewDayReportVC.isToReduceLocationHeight {
@@ -200,11 +205,12 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 
                 
                let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
-                return 170 + timeinfoHeight + 60 + 60 + 75 + 50 + productCellHeight + 25
+                return 170 + timeinfoHeight + 60 + productCellHeight + 60 + 75 + 50 + 20
+                //+ 25
                 //595 + 10 + 60
             } else if model?.isRCPAExtended == true  && model?.isCellExtended == true {
                 // 50 - elevation padding
-                // (170 - visit info, 100 - Time info, product title header - 60, products cell - 30 Each, RCPA - 60, Remarks - 75, show options - 50 )
+                // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40 Each, RCPA - 60, Remarks - 75, show options - 50 )
                var timeinfoHeight = CGFloat()
                 if self.viewDayReportVC.isToReduceLocationHeight {
                     timeinfoHeight = 0
@@ -212,7 +218,8 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                     timeinfoHeight = 100
                 }
                 let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
-                 return 170 + timeinfoHeight + 60 + 60 + 75 + 50 + productCellHeight + 100 + 50
+                 return 170 + timeinfoHeight + 60 + productCellHeight + 60 + 75 + 50  + 130 + 10
+                //+ 50
                 
                 
                // return 595 + 100 + 10 + 60
@@ -231,12 +238,13 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         if productStrArr.last ==  "  )" {
             productStrArr.removeLast()
         }
-        var eachCellSize = 30
-        if productStrArr.count > 4 {
-            eachCellSize = 40
-        } else if productStrArr.count > 2 {
-            eachCellSize = 35
-        }
+        var eachCellSize = 40
+//        if productStrArr.count >= 4 {
+//            eachCellSize = 40
+//        }
+//        else if productStrArr.count > 2 {
+//            eachCellSize = 30
+//        }
             
         return CGFloat(productStrArr.count * eachCellSize)
         
@@ -331,7 +339,7 @@ extension DayReportView: UITextFieldDelegate {
            // self.noreportsView.isHidden = false
         }
 
-        var resultCount = filtereddetailedReportsModelArr?.count ?? 0
+        let resultCount = filtereddetailedReportsModelArr?.count ?? 0
         var resultStr = ""
         if resultCount == 0 {
             resultStr = "No results found"
@@ -342,6 +350,120 @@ extension DayReportView: UITextFieldDelegate {
         }
         resultInfoLbl.text = resultStr
      //   dump(filteredreportsModel)
+    }
+}
+
+
+extension DayReportView: SortVIewDelegate {
+    
+    enum SortingType {
+        case orderAscending
+        case orderDescending
+        case orderByDate
+    }
+    
+    func didSelected(index: Int?, isTosave: Bool) {
+        selectedSortIndex = index
+        isSortPresented =  isSortPresented ? false : true
+        addOrRemoveSort(isSortPresented)
+        switch index {
+        case 0:
+            toReorderRepotes(type: .orderAscending)
+        case 1:
+            toReorderRepotes(type: .orderDescending)
+        case 2:
+            toReorderRepotes(type: .orderByDate)
+        case .none:
+            print("none")
+        case .some(_):
+            print("some")
+        }
+    }
+    
+    
+    func toReorderRepotes(type: SortingType) {
+        switch type {
+            
+        case .orderAscending:
+          
+            if isMatched {
+                self.filtereddetailedReportsModelArr = self.filtereddetailedReportsModelArr?.sorted { $0.name < $1.name }
+                
+            } else {
+                
+                self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name < $1.name }
+            }
+            self.toLoadData()
+        case .orderDescending:
+            if isMatched {
+                self.filtereddetailedReportsModelArr = self.filtereddetailedReportsModelArr?.sorted { $0.name > $1.name }
+                
+            } else {
+                self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name > $1.name }
+            }
+            self.toLoadData()
+        case .orderByDate:
+            print("Yet to implement")
+            if isMatched {
+                self.filtereddetailedReportsModelArr = self.filtereddetailedReportsModelArr?.sorted {
+                  let date1 = toCOnvertTimeTodate($0.visitTime)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.visitTime) // Handle invalid time strings
+                    return date1 < date2
+                    
+                }
+                  
+            } else {
+             //   self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name < $1.name }
+                
+                
+                self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted {
+                  let date1 = toCOnvertTimeTodate($0.visitTime)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.visitTime) // Handle invalid time strings
+                    return date1 < date2
+                    
+                }
+                
+            }
+            self.toLoadData()
+        }
+    }
+
+    func toCOnvertTimeTodate(_ time: String) -> Date {
+        let timeString = time
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mma"
+
+        if let date = dateFormatter.date(from: timeString) {
+            print(date)
+            return date
+        } else {
+            print("Invalid time string format")
+        }
+        return Date()
+    }
+    
+    func addOrRemoveSort(_ isToAdd: Bool) {
+        let views: [UIView] = [self.aDayReportsTable, self.searchHolderVIew, clearView]
+        if isToAdd {
+            views.forEach { aView in
+                aView.alpha = 1
+                aView.isUserInteractionEnabled = true
+                
+                self.sortPopupView.removeFromSuperview()
+            }
+        } else {
+            views.forEach { aView in
+                aView.alpha = 0.3
+                aView.isUserInteractionEnabled = false
+                self.sortPopupView.selectedIndex = selectedSortIndex
+                self.sortPopupView.isFromDayReport = true
+                self.sortPopupView.toLoadData()
+                self.addSubview(self.sortPopupView)
+            }
+        }
     }
 }
 
@@ -369,6 +491,9 @@ class DayReportView: BaseView {
     @IBOutlet var sortView: UIView!
     @IBOutlet var resultInfoLbl: UILabel!
     
+    @IBOutlet var clearView: UIView!
+    
+    @IBOutlet var clearIV: UIImageView!
     @IBOutlet var resultinfoView: UIView!
     var isForViewmore = false
     var isForRCPA = false
@@ -379,6 +504,16 @@ class DayReportView: BaseView {
     var reportsModel : ReportsModel?
     var isTohideCount : Bool = false
     var isMatched: Bool = false
+    var selectedSortIndex: Int? = nil
+    
+    var isSortPresented = false
+    private lazy var sortPopupView: SortVIew = {
+        let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
+        customView.isFromDayReport = true
+        customView.delegate = self
+        return customView
+    }()
+    
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.viewDayReportVC = baseVC as? ViewDayReportVC
@@ -404,6 +539,7 @@ class DayReportView: BaseView {
     }
     
     func setupUI() {
+        clearIV.tintColor = .appTextColor
         resultinfoView.isHidden = isMatched ? false : true
         resultInfoLbl.isHidden = isMatched ? false : true
         resultInfoLbl.setFont(font: .medium(size: .BODY))
@@ -429,6 +565,26 @@ class DayReportView: BaseView {
     func initTaps() {
         backHolderView.addTap {
             self.viewDayReportVC.navigationController?.popViewController(animated: true)
+        }
+        
+        sortView.addTap {
+            self.isSortPresented =  self.isSortPresented ? false : true
+            UIView.animate(withDuration: 1.0,
+                           delay: 0.15,
+                           usingSpringWithDamping: 2.0,
+                           initialSpringVelocity: 5.0,
+                           options: [.curveEaseOut],
+                           animations: {
+
+                self.addOrRemoveSort(self.isSortPresented)
+
+                           }, completion: nil)
+        }
+        
+        clearView.addTap {
+            self.toFilterResults("")
+            self.searchTF.text = ""
+            self.searchTF.placeholder = "Search"
         }
     }
     

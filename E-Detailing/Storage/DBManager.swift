@@ -201,6 +201,10 @@ class DBManager {
             }
             sessiondetArr.isDataSentToApi = true
             sessiondetArr.isForWeekoff = ApisessionDetails.fwFlg == "Y" ? true : false
+            if ApisessionDetails.tpDt.date.contains("2023-11-02")  {
+                print(ApisessionDetails.tpDt.date)
+                
+            }
            // sessiondetArr.isForHoliday = ApisessionDetails.fwFlg == "Y" ? true : false
             sessiondetArr.changeStatus = ApisessionDetails.changeStatus
             let dateFormatter = DateFormatter()
@@ -225,7 +229,7 @@ class DBManager {
             if ApisessionDetails.wtCode != "" {
                 let sessionDetail = SessionDetail()
                 sessionDetail.FWFlg = ApisessionDetails.fwFlg
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "Y" ? true : false
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg == "Y" || ApisessionDetails.fwFlg == "F" ? true : false
                 sessionDetail.WTCode = ApisessionDetails.wtCode
                 sessionDetail.WTName = ApisessionDetails.wtName
                 sessionDetail.clusterCode = ApisessionDetails.clusterCode
@@ -252,7 +256,7 @@ class DBManager {
             if ApisessionDetails.wtCode2 != "" {
                 let sessionDetail = SessionDetail()
                 sessionDetail.FWFlg = ApisessionDetails.fwFlg2
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg2 == "Y" ? true : false
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg2 == "Y" || ApisessionDetails.fwFlg == "F" ? true : false
                 sessionDetail.WTCode = ApisessionDetails.wtCode2
                 sessionDetail.WTName = ApisessionDetails.wtName2
                 sessionDetail.clusterCode = ApisessionDetails.clusterCode2
@@ -280,7 +284,7 @@ class DBManager {
             if ApisessionDetails.wtCode3 != "" {
                 let sessionDetail = SessionDetail()
                 sessionDetail.FWFlg = ApisessionDetails.fwFlg3
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" ? true : false
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" || ApisessionDetails.fwFlg == "F" ? true : false
                 sessionDetail.WTCode = ApisessionDetails.wtCode3
                 sessionDetail.WTName = ApisessionDetails.wtName3
                 sessionDetail.clusterCode = ApisessionDetails.clusterCode3

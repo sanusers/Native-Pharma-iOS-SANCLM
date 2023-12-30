@@ -17,14 +17,20 @@ class ProductsDescriptionCVC: UICollectionViewCell {
     @IBOutlet var samplesLbl: UILabel!
     @IBOutlet var promoterLbl: UILabel!
     @IBOutlet var productLbl: UILabel!
-    var productsArr : [String] = []
+    var productsArr : [SampleProduct] = []
     
-    func topopulateCell(modelStr: String){
+    func topopulateCell(modelStr: SampleProduct){
         //SECREMET 1 MG ( 0 ), )
 //        let productDescArr = modelStr.components(separatedBy: " ")
 //        self.productLbl.text = productDescArr[0]
 //        self.promoterLbl.text = "Yes"
-//        samplesLbl.text = 
+//        samplesLbl.text =
+        
+        self.productLbl.text = modelStr.prodName
+        self.promoterLbl.text = modelStr.isPromoted ? "Yes" : "No"
+        self.samplesLbl.text = modelStr.noOfSamples == "" ? "-" :  String(modelStr.noOfSamples.dropLast())
+        self.rxQTYlbl.text = modelStr.rxQTY == "" ? "-" :   String(modelStr.rxQTY.dropLast())
+        self.rcpaLbl.text = modelStr.rcpa == "" ? "-" :  String(modelStr.rcpa.dropLast()) 
     }
     
     override func awakeFromNib() {

@@ -22,7 +22,7 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
     var rowElements : [String]?
     
     var selectedIndex: Int? = nil
-    
+    var isFromDayReport: Bool = false
 
     let btnHolderView: UIStackView = {
         let holderStack = UIStackView()
@@ -34,6 +34,7 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
     let sotrTable: UITableView = {
         let aTable = UITableView()
         aTable.clipsToBounds = true
+        aTable.layer.cornerRadius = 5
         return aTable
     }()
     
@@ -43,7 +44,8 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
         aView.backgroundColor = .appWhiteColor
         aView.clipsToBounds = true
         aView.layer.cornerRadius = 5
-
+        aView.layer.borderColor = UIColor.appSelectionColor.cgColor
+        aView.elevate(2)
        return aView
     }()
     
@@ -69,7 +71,7 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
     
     let cancelBtn : UIButton = {
         let cancel = UIButton()
-        cancel.setTitle("Clear", for: .normal)
+        cancel.setTitle("Cancel", for: .normal)
         cancel.titleLabel?.setFont(font: .medium(size: .BODY))
         cancel.setTitleColor(.appTextColor, for: .normal)
         cancel.backgroundColor = .appWhiteColor
@@ -81,7 +83,7 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
     }()
     
     var delegate: SortVIewDelegate?
-    
+    var sreArr : [String] = []
     override func layoutSubviews() {
         
         aview.frame = CGRect(x: 5, y: 5, width: self.width - 10, height: self.height - 10)
@@ -120,10 +122,6 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
         aview.addSubview(sotrTable)
         aview.addSubview(btnHolderView)
         sotrTable.isScrollEnabled = false
-        var sreArr : [String] = ["by name A - Z", "by name Z - A", "by date"]
-        //let nameElement =
-       // sreArr.append(nameElement)
-        rowElements = sreArr
         self.layer.cornerRadius = 5
         saveBtn.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
         cancelBtn.addTarget(self, action: #selector(didTapCancel), for: .touchUpInside)
@@ -132,6 +130,8 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
 
     
     func toLoadData() {
+        sreArr = ["Ascending by name", "Descending by name", isFromDayReport ?  "by visit time" : "by submission date"]
+        rowElements = sreArr
         sotrTable.delegate = self
         sotrTable.dataSource = self
         sotrTable.reloadData()
@@ -149,8 +149,10 @@ class SortVIew: UIView, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .clear
-
+        headerView.clipsToBounds = true
         let headerLabel = UILabel()
+        headerLabel.backgroundColor = .clear
+        headerLabel.clipsToBounds = true
         headerLabel.text = "Sort"
         headerLabel.textColor = .appTextColor
         headerLabel.setFont(font: .bold(size: .BODY))
