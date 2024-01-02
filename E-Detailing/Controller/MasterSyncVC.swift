@@ -220,6 +220,8 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.brands)
         self.masterData.append(MasterInfo.competitors)
         self.masterData.append(MasterInfo.slideSpeciality)
+        self.masterData.append(MasterInfo.holidays)
+        self.masterData.append(MasterInfo.weeklyOff)
         self.masterData.append(MasterInfo.getTP)
       //  self.tableView.reloadData()
      //   self.collectionView.reloadData()
@@ -561,27 +563,35 @@ extension MasterSyncVC {
             })
             
             
+    
+            
             var unSavedPlans = [SessionDetailsArr]()
             
+//            if nonWeekoff.isEmpty {
+//                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+//                       toFilterSessionsArr.isDataSentToApi == false &&  toFilterSessionsArr.isForWeekoff == false
+//                   })
+//            } else {
+//                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+//                       toFilterSessionsArr.isDataSentToApi == false
+//                   })
+//            }
+    
             if nonWeekoff.isEmpty {
-                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
-                       toFilterSessionsArr.isDataSentToApi == false &&  toFilterSessionsArr.isForWeekoff == false
-                   })
+                return
             } else {
                 unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
                        toFilterSessionsArr.isDataSentToApi == false
                    })
             }
     
-        
-    
             var unsentIndices = [Int]()
     
             dump(unSavedPlans)
             if !(unSavedPlans.isEmpty ) {
-                unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false &&  !unSavedPlans[$0].isForWeekoff }
+                unsentIndices = unSavedPlans.indices.filter { unSavedPlans[$0].isDataSentToApi == false  }
             }
-    
+    //&&  !unSavedPlans[$0].isForWeekoff
     
             dump(unsentIndices)
     
@@ -725,9 +735,9 @@ extension MasterSyncVC {
         sessionResponseVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
             switch result {
             case .success(let response):
-                print(response)
-                completion(.success(response))
                 dump(response)
+                completion(.success(response))
+              
                 
             case .failure(let error):
                 print(error.localizedDescription)
@@ -788,7 +798,7 @@ extension MasterSyncVC {
                                      }
                     
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
-                  //  self.toPostDataToserver(type: .getTP)
+                    self.toPostDataToserver(type: .getTP)
                 case .failure(let error):
                     print(error)
                 }

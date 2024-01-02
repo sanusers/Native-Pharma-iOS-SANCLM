@@ -9,6 +9,171 @@ import Foundation
 import UIKit
 
 
+class DayReportView: BaseView {
+    
+    var viewDayReportVC : ViewDayReportVC!
+    
+    @IBOutlet weak var topNavigationView: UIView!
+    @IBOutlet weak var pageTitleLbl: UILabel!
+    @IBOutlet weak var backHolderView: UIView!
+    @IBOutlet weak var filtersHolderView: UIView!
+    @IBOutlet weak var searchHolderVIew: UIView!
+    @IBOutlet weak var searchTF: UITextField!
+    @IBOutlet weak var ussrNameLbl: UILabel!
+    @IBOutlet weak var seperatorView: UIView!
+    @IBOutlet weak var rejectedSeperatorView: UIView!
+    @IBOutlet weak var rejectedView: UIView!
+    @IBOutlet weak var rejectedViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var rejectedTitLbl: UILabel!
+    @IBOutlet weak var rejectedReasonLbl: UILabel!
+    @IBOutlet weak var aDayReportsTable: UITableView!
+    var selectedType: CellType = .Doctor
+    @IBOutlet var tableHeader: UIView!
+    @IBOutlet var tableContentsHolder: UIView!
+    @IBOutlet var sortView: UIView!
+    @IBOutlet var resultInfoLbl: UILabel!
+    
+    @IBOutlet var clearView: UIView!
+    
+    @IBOutlet var clearIV: UIImageView!
+    @IBOutlet var resultinfoView: UIView!
+    var isForViewmore = false
+    var isForRCPA = false
+    var rejectedHeight: CGFloat =  70
+    var detailedReportsModelArr : [DetailedReportsModel]?
+    var filtereddetailedReportsModelArr : [DetailedReportsModel]?
+    var filteredSelectedIndex: Int? = nil
+    var selectedIndex: Int? = nil
+    var reportsModel : ReportsModel?
+    var isTohideCount : Bool = false
+    var isMatched: Bool = false
+    var selectedSortIndex: Int? = nil
+    
+    var isSortPresented = false
+    private lazy var sortPopupView: SortVIew = {
+        let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
+        customView.isFromDayReport = true
+        customView.delegate = self
+        return customView
+    }()
+    
+    override func didLoad(baseVC: BaseViewController) {
+        super.didLoad(baseVC: baseVC)
+        self.viewDayReportVC = baseVC as? ViewDayReportVC
+        self.viewDayReportVC.appdefaultSetup = AppDefaults.shared.getAppSetUp()
+        self.viewDayReportVC.toSetParamsAndGetResponse(1)
+        setupUI()
+    }
+    
+    override func willAppear(baseVC: BaseViewController) {
+        super.willAppear(baseVC: baseVC)
+        self.viewDayReportVC = baseVC as? ViewDayReportVC
+        
+       
+       
+   
+    }
+    
+    func initialSerups() {
+        resultinfoView.isHidden = true
+        resultInfoLbl.isHidden = true
+        cellregistration()
+        toLoadData()
+    }
+    
+    func setupUI() {
+        clearIV.tintColor = .appTextColor
+        resultinfoView.isHidden = isMatched ? false : true
+        resultInfoLbl.isHidden = isMatched ? false : true
+        resultInfoLbl.setFont(font: .medium(size: .BODY))
+        resultInfoLbl.textColor = .appLightTextColor
+        searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
+        searchTF.delegate = self
+        self.aDayReportsTable.tableHeaderView = tableHeader
+        seperatorView.backgroundColor = .appSelectionColor
+        ussrNameLbl.setFont(font: .bold(size: .SUBHEADER))
+        ussrNameLbl.textColor = .appLightPink
+        self.ussrNameLbl.text = "\(viewDayReportVC.appdefaultSetup!.sfName!) - \(viewDayReportVC.appdefaultSetup!.desig!) - designation"
+        initTaps()
+        mockData()
+        sortView.layer.cornerRadius = 5
+        tableContentsHolder.layer.cornerRadius = 5
+        tableContentsHolder.backgroundColor = .appWhiteColor
+        searchHolderVIew.backgroundColor = .appWhiteColor
+        searchHolderVIew.layer.cornerRadius = 5
+        self.backgroundColor = .appGreyColor
+        aDayReportsTable.separatorStyle = .none
+    }
+    
+    func initTaps() {
+        backHolderView.addTap {
+            self.viewDayReportVC.navigationController?.popViewController(animated: true)
+        }
+        
+        sortView.addTap {
+            self.isSortPresented =  self.isSortPresented ? false : true
+            UIView.animate(withDuration: 1.0,
+                           delay: 0.15,
+                           usingSpringWithDamping: 2.0,
+                           initialSpringVelocity: 5.0,
+                           options: [.curveEaseOut],
+                           animations: {
+
+                self.addOrRemoveSort(self.isSortPresented)
+
+                           }, completion: nil)
+        }
+        
+        clearView.addTap {
+            self.toFilterResults("")
+            self.searchTF.text = ""
+            self.searchTF.placeholder = "Search"
+        }
+    }
+    
+    func cellregistration() {
+        aDayReportsTable.register(UINib(nibName: "VisitsCountTVC", bundle:nil), forCellReuseIdentifier: "VisitsCountTVC")
+        aDayReportsTable.register(UINib(nibName: "VisitInfoTVC", bundle:nil), forCellReuseIdentifier: "VisitInfoTVC")
+      //  aDayReportsTable.register(UINib(nibName: "WTsheetTVC", bundle:nil), forCellReuseIdentifier: "WTsheetTVC")
+        
+        aDayReportsTable.register(UINib(nibName: "ListedWorkTypesTVC", bundle:nil), forCellReuseIdentifier: "ListedWorkTypesTVC")
+        
+        aDayReportsTable.register(UINib(nibName: "ViewAllInfoTVC", bundle:nil), forCellReuseIdentifier: "ViewAllInfoTVC")
+    }
+    
+    func toLoadData() {
+      
+        aDayReportsTable.delegate = self
+        aDayReportsTable.dataSource = self
+        aDayReportsTable.reloadData()
+    }
+    
+    func mockData() {
+//        let count = 2
+//        var detailedModelArr = [DetailedReportsModel]()
+//        for _ in 0...count - 1 {
+//            let anElement = DetailedReportsModel()
+//            detailedModelArr.append(anElement)
+//        }
+        
+       // self.detailedReportsModelArr = viewDayReportVC.d
+        
+        self.rejectedView.isHidden = true
+        self.rejectedView.frame.size.height = 0
+        self.aDayReportsTable.tableHeaderView?.frame.size.height = 50
+        self.reportsModel = viewDayReportVC.reportsModel
+       
+        var  count : Int = 0
+        count =  self.reportsModel!.chm +  self.reportsModel!.hos + self.reportsModel!.stk + self.reportsModel!.drs + self.reportsModel!.udr + self.reportsModel!.cip
+        if count == 0 {
+            isTohideCount = true
+        }
+        
+    }
+    
+    
+}
+
 extension DayReportView: VisitsCountTVCDelegate {
     func typeChanged(index: Int, type: CellType) {
         
@@ -32,8 +197,17 @@ extension DayReportView : ViewAllInfoTVCDelegate {
 
     
     func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool,  index: Int) {
-        self.selectedIndex = index
-        let model = self.isMatched ? self.filtereddetailedReportsModelArr?[index] : self.detailedReportsModelArr?[index]
+        
+        if isMatched {
+            filteredSelectedIndex = index
+        } else {
+            self.selectedIndex = index
+        }
+        
+     
+        let model = self.isMatched ? self.filtereddetailedReportsModelArr?[filteredSelectedIndex ?? 0] : self.detailedReportsModelArr?[selectedIndex ?? 0]
+     
+   
         
         if islessTapped {
             model?.isCellExtended = false
@@ -68,7 +242,6 @@ extension DayReportView : ViewAllInfoTVCDelegate {
     
     
 }
-
 extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     
     
@@ -138,14 +311,19 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 cell.viewMoreDesc.addTap {
                     print("Tapped")
                     model?.isCellExtended = true
-                    self.selectedIndex = indexPath.row
+                    if self.isMatched {
+                        self.filteredSelectedIndex = indexPath.row
+                    } else {
+                        self.selectedIndex = indexPath.row
+                    }
+                   
                    // self.isForViewmore = true
                     self.toLoadData()
                 }
                 return cell
             } else {
                 let cell: ViewAllInfoTVC = tableView.dequeueReusableCell(withIdentifier: "ViewAllInfoTVC", for: indexPath) as! ViewAllInfoTVC
-                cell.selectedIndex = self.selectedIndex
+                cell.selectedIndex = self.isMatched ? self.filteredSelectedIndex : self.selectedIndex
                 cell.delegate = self
                 cell.typeImage = self.selectedType.image
                //let model = self.detailedReportsModelArr?[indexPath.row]
@@ -353,7 +531,6 @@ extension DayReportView: UITextFieldDelegate {
     }
 }
 
-
 extension DayReportView: SortVIewDelegate {
     
     enum SortingType {
@@ -465,168 +642,4 @@ extension DayReportView: SortVIewDelegate {
             }
         }
     }
-}
-
-class DayReportView: BaseView {
-    
-    var viewDayReportVC : ViewDayReportVC!
-    
-    @IBOutlet weak var topNavigationView: UIView!
-    @IBOutlet weak var pageTitleLbl: UILabel!
-    @IBOutlet weak var backHolderView: UIView!
-    @IBOutlet weak var filtersHolderView: UIView!
-    @IBOutlet weak var searchHolderVIew: UIView!
-    @IBOutlet weak var searchTF: UITextField!
-    @IBOutlet weak var ussrNameLbl: UILabel!
-    @IBOutlet weak var seperatorView: UIView!
-    @IBOutlet weak var rejectedSeperatorView: UIView!
-    @IBOutlet weak var rejectedView: UIView!
-    @IBOutlet weak var rejectedViewHeight: NSLayoutConstraint!
-    @IBOutlet weak var rejectedTitLbl: UILabel!
-    @IBOutlet weak var rejectedReasonLbl: UILabel!
-    @IBOutlet weak var aDayReportsTable: UITableView!
-    var selectedType: CellType = .Doctor
-    @IBOutlet var tableHeader: UIView!
-    @IBOutlet var tableContentsHolder: UIView!
-    @IBOutlet var sortView: UIView!
-    @IBOutlet var resultInfoLbl: UILabel!
-    
-    @IBOutlet var clearView: UIView!
-    
-    @IBOutlet var clearIV: UIImageView!
-    @IBOutlet var resultinfoView: UIView!
-    var isForViewmore = false
-    var isForRCPA = false
-    var rejectedHeight: CGFloat =  70
-    var detailedReportsModelArr : [DetailedReportsModel]?
-    var filtereddetailedReportsModelArr : [DetailedReportsModel]?
-    var selectedIndex: Int? = nil
-    var reportsModel : ReportsModel?
-    var isTohideCount : Bool = false
-    var isMatched: Bool = false
-    var selectedSortIndex: Int? = nil
-    
-    var isSortPresented = false
-    private lazy var sortPopupView: SortVIew = {
-        let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
-        customView.isFromDayReport = true
-        customView.delegate = self
-        return customView
-    }()
-    
-    override func didLoad(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
-        self.viewDayReportVC = baseVC as? ViewDayReportVC
-        self.viewDayReportVC.appdefaultSetup = AppDefaults.shared.getAppSetUp()
-        self.viewDayReportVC.toSetParamsAndGetResponse(1)
-        setupUI()
-    }
-    
-    override func willAppear(baseVC: BaseViewController) {
-        super.willAppear(baseVC: baseVC)
-        self.viewDayReportVC = baseVC as? ViewDayReportVC
-        
-       
-       
-   
-    }
-    
-    func initialSerups() {
-        resultinfoView.isHidden = true
-        resultInfoLbl.isHidden = true
-        cellregistration()
-        toLoadData()
-    }
-    
-    func setupUI() {
-        clearIV.tintColor = .appTextColor
-        resultinfoView.isHidden = isMatched ? false : true
-        resultInfoLbl.isHidden = isMatched ? false : true
-        resultInfoLbl.setFont(font: .medium(size: .BODY))
-        resultInfoLbl.textColor = .appLightTextColor
-        searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
-        searchTF.delegate = self
-        self.aDayReportsTable.tableHeaderView = tableHeader
-        seperatorView.backgroundColor = .appSelectionColor
-        ussrNameLbl.setFont(font: .bold(size: .SUBHEADER))
-        ussrNameLbl.textColor = .appLightPink
-        self.ussrNameLbl.text = "\(viewDayReportVC.appdefaultSetup!.sfName!) - \(viewDayReportVC.appdefaultSetup!.desig!) - designation"
-        initTaps()
-        mockData()
-        sortView.layer.cornerRadius = 5
-        tableContentsHolder.layer.cornerRadius = 5
-        tableContentsHolder.backgroundColor = .appWhiteColor
-        searchHolderVIew.backgroundColor = .appWhiteColor
-        searchHolderVIew.layer.cornerRadius = 5
-        self.backgroundColor = .appGreyColor
-        aDayReportsTable.separatorStyle = .none
-    }
-    
-    func initTaps() {
-        backHolderView.addTap {
-            self.viewDayReportVC.navigationController?.popViewController(animated: true)
-        }
-        
-        sortView.addTap {
-            self.isSortPresented =  self.isSortPresented ? false : true
-            UIView.animate(withDuration: 1.0,
-                           delay: 0.15,
-                           usingSpringWithDamping: 2.0,
-                           initialSpringVelocity: 5.0,
-                           options: [.curveEaseOut],
-                           animations: {
-
-                self.addOrRemoveSort(self.isSortPresented)
-
-                           }, completion: nil)
-        }
-        
-        clearView.addTap {
-            self.toFilterResults("")
-            self.searchTF.text = ""
-            self.searchTF.placeholder = "Search"
-        }
-    }
-    
-    func cellregistration() {
-        aDayReportsTable.register(UINib(nibName: "VisitsCountTVC", bundle:nil), forCellReuseIdentifier: "VisitsCountTVC")
-        aDayReportsTable.register(UINib(nibName: "VisitInfoTVC", bundle:nil), forCellReuseIdentifier: "VisitInfoTVC")
-      //  aDayReportsTable.register(UINib(nibName: "WTsheetTVC", bundle:nil), forCellReuseIdentifier: "WTsheetTVC")
-        
-        aDayReportsTable.register(UINib(nibName: "ListedWorkTypesTVC", bundle:nil), forCellReuseIdentifier: "ListedWorkTypesTVC")
-        
-        aDayReportsTable.register(UINib(nibName: "ViewAllInfoTVC", bundle:nil), forCellReuseIdentifier: "ViewAllInfoTVC")
-    }
-    
-    func toLoadData() {
-      
-        aDayReportsTable.delegate = self
-        aDayReportsTable.dataSource = self
-        aDayReportsTable.reloadData()
-    }
-    
-    func mockData() {
-//        let count = 2
-//        var detailedModelArr = [DetailedReportsModel]()
-//        for _ in 0...count - 1 {
-//            let anElement = DetailedReportsModel()
-//            detailedModelArr.append(anElement)
-//        }
-        
-       // self.detailedReportsModelArr = viewDayReportVC.d
-        
-        self.rejectedView.isHidden = true
-        self.rejectedView.frame.size.height = 0
-        self.aDayReportsTable.tableHeaderView?.frame.size.height = 50
-        self.reportsModel = viewDayReportVC.reportsModel
-       
-        var  count : Int = 0
-        count =  self.reportsModel!.chm +  self.reportsModel!.hos + self.reportsModel!.stk + self.reportsModel!.drs + self.reportsModel!.udr + self.reportsModel!.cip
-        if count == 0 {
-            isTohideCount = true
-        }
-        
-    }
-    
-    
 }

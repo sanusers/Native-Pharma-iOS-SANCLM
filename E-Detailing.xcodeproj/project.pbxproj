@@ -64,6 +64,8 @@
 		38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */; };
 		38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */; };
 		38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 38C485B02A2F45E9005D1533 /* E-Detailing.xcdatamodeld */; };
+		38C4992F2B402C0800551F9B /* LineChartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4992E2B402C0800551F9B /* LineChartVC.swift */; };
+		38C499312B402C1600551F9B /* LineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C499302B402C1600551F9B /* LineChartView.swift */; };
 		38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4B7A92A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift */; };
 		38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4B7AB2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib */; };
 		38C4B7AE2A6EA52D001C2FD5 /* AnalysisCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4B7AD2A6EA52D001C2FD5 /* AnalysisCell.swift */; };
@@ -293,6 +295,8 @@
 		38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionVC.swift; sourceTree = "<group>"; };
 		38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StockBalance + Extension.swift"; sourceTree = "<group>"; };
 		38C485B12A2F45E9005D1533 /* E-Detailing.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "E-Detailing.xcdatamodel"; sourceTree = "<group>"; };
+		38C4992E2B402C0800551F9B /* LineChartVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartVC.swift; sourceTree = "<group>"; };
+		38C499302B402C1600551F9B /* LineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartView.swift; sourceTree = "<group>"; };
 		38C4B7A92A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRCallAnalysisCell.swift; sourceTree = "<group>"; };
 		38C4B7AB2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRCallAnalysisCell.xib; sourceTree = "<group>"; };
 		38C4B7AD2A6EA52D001C2FD5 /* AnalysisCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisCell.swift; sourceTree = "<group>"; };
@@ -547,6 +551,7 @@
 				38E659852B33086C00E7BF42 /* ReportsVC.swift */,
 				38E659892B33193F00E7BF42 /* DetailedReportVC.swift */,
 				38D568FF2B356468007CB86D /* ViewDayReportVC.swift */,
+				38C4992E2B402C0800551F9B /* LineChartVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -560,6 +565,7 @@
 				38E6598B2B33195C00E7BF42 /* DetailedReportView.swift */,
 				38D569012B3564FD007CB86D /* DayReportView.swift */,
 				38D569072B35A785007CB86D /* SortView.swift */,
+				38C499302B402C1600551F9B /* LineChartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1289,6 +1295,7 @@
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
+				38C499312B402C1600551F9B /* LineChartView.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
@@ -1351,6 +1358,7 @@
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,
 				B291878629FA83B60033DE16 /* Class.swift in Sources */,
 				38C4B7AE2A6EA52D001C2FD5 /* AnalysisCell.swift in Sources */,
+				38C4992F2B402C0800551F9B /* LineChartVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

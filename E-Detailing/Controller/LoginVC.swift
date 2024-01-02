@@ -389,7 +389,7 @@ class LoginVC : UIViewController {
                             
                             if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                                 appDelegate.setupRootViewControllers()
-                                LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
+                              //  LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
                             }
                         }
                         
