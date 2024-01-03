@@ -1818,7 +1818,7 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
             
             
             print("Tapped -->")
-            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 50), on: cell.optionsIV, pagetype: .TP)
+            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 50), on: cell.optionsIV, onframe: CGRect(), pagetype: .TP)
             vc.delegate = self
             vc.selectedIndex = indexPath.row
             self.tourplanVC.navigationController?.present(vc, animated: true)

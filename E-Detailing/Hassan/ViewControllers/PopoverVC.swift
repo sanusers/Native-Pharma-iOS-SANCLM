@@ -67,14 +67,13 @@ class PopOverVC: UIViewController {
         
         infoLbls.forEach { lbl in
             
-            if lbl == callCountLbl || lbl == avgCllLbl {
+            if lbl == totalCallsLbl || lbl == avgCllLbl {
                 lbl?.setFont(font: .bold(size: .BODY))
             } else {
                 lbl?.setFont(font: .medium(size: .BODY))
             }
             
-          
-            lbl?.backgroundColor = .appWhiteColor
+            lbl?.textColor = .appWhiteColor
         }
     }
     
@@ -86,16 +85,23 @@ class PopOverVC: UIViewController {
     }
     
     //MARK:- initWithStory
-    class func initWithStory(preferredFrame size : CGSize,on host : UIView, pagetype: PageType) -> PopOverVC{
+    class func initWithStory(preferredFrame size : CGSize,on host : UIView, onframe hostframe: CGRect, pagetype: PageType) -> PopOverVC{
         let infoWindow: PopOverVC  = UIStoryboard(name: "Hassan", bundle: nil).instantiateViewController(withIdentifier: "PopOverVC") as! PopOverVC
         infoWindow.pageType = pagetype
         infoWindow.preferredContentSize = size
         infoWindow.modalPresentationStyle = .popover
         let popover: UIPopoverPresentationController = infoWindow.popoverPresentationController!
         popover.delegate = infoWindow
-        popover.sourceView = host
-       // popover.backgroundColor = UIColor(hex: "ECF2FB")
-        popover.permittedArrowDirections = UIPopoverArrowDirection.up
+        if pagetype == .HomeGraph {
+            //popover.sourceRect = hostframe
+            popover.sourceView = host
+        } else {
+            popover.sourceView = host
+        }
+    
+     
+        popover.backgroundColor = .appGreen
+        popover.permittedArrowDirections = UIPopoverArrowDirection.down
         
         
         return infoWindow
