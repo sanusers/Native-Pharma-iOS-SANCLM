@@ -77,7 +77,28 @@ class MainVC : UIViewController {
     
     @IBOutlet weak var viewSalesAnalysisStackView: UIStackView!
     
+    @IBOutlet var chartHolderView: UIView!
+    @IBOutlet var lineChatrtView: UIView!
     
+    @IBOutlet var monthHolderView: UIView!
+    
+    @IBOutlet var month2View: UIView!
+    
+    @IBOutlet var month1View: UIView!
+    
+    @IBOutlet var month1VXview: UIVisualEffectView!
+    
+    @IBOutlet var month2VXview: UIVisualEffectView!
+    
+    @IBOutlet var month3VXview: UIVisualEffectView!
+    
+    @IBOutlet var month3View: UIView!
+    
+    @IBOutlet var month1Lbl: UILabel!
+    
+    @IBOutlet var month2Lbl: UILabel!
+    
+    @IBOutlet var month3Lbl: UILabel!
     @IBOutlet weak var quickLinkCollectionView: UICollectionView!
     @IBOutlet weak var dcrCallsCollectionView: UICollectionView!
     @IBOutlet weak var analysisCollectionView: UICollectionView!
@@ -87,7 +108,7 @@ class MainVC : UIViewController {
     @IBOutlet weak var sideMenuTableView: UITableView!
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
-    
+    var homeLineChartView = HomeLineChartView()
     
     var selectedWorktype : WorkType? {
         didSet {
@@ -126,9 +147,33 @@ class MainVC : UIViewController {
     
     let menuList = ["Refresh","Tour Plan","Create Presentation","Leave Application","Reports","Activiy","Near Me","Quiz","Survey","Forms","Profiling"]
     
+    func setupUI() {
+        chartHolderView.layer.cornerRadius = 5
+        chartHolderView.backgroundColor = .appWhiteColor
+        self.toIntegrateChartView()
+        
+        month1View.layer.cornerRadius = 5
+        month2View.layer.cornerRadius = 5
+        month3View.layer.cornerRadius = 5
+        
+      //  month3View.isHidden = true
+      // month2View.isHidden = true
+        month1VXview.backgroundColor = .appSelectionColor
+        month2VXview.backgroundColor = .appSelectionColor
+        month3VXview.backgroundColor = .appSelectionColor
+        
+        month1Lbl.setFont(font: .bold(size: .BODY))
+        month2Lbl.setFont(font: .bold(size: .BODY))
+        month3Lbl.setFont(font: .bold(size: .BODY))
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
+      
         
+     
         LocationManager.shared.locationUpdate()
         
         outboxTableView.estimatedRowHeight = 80
@@ -205,6 +250,16 @@ class MainVC : UIViewController {
 //        self.fetch()
 //        self.fetch1()
         
+    }
+    
+    func toIntegrateChartView() {
+        self.homeLineChartView.viewController = self
+        self.lineChatrtView.addSubview(homeLineChartView)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.homeLineChartView.frame = lineChatrtView.bounds
     }
     
     deinit {
@@ -1026,10 +1081,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             } else if menuList[indexPath.row] == "Reports" {
                 let tourplanVC = ReportsVC.initWithStory()
               self.navigationController?.pushViewController(tourplanVC, animated: true)
-          }  else if menuList[indexPath.row] == "Activiy" {
-              let tourplanVC = LineChartVC.initWithStory()
-            self.navigationController?.pushViewController(tourplanVC, animated: true)
-        }
+          }
             
             default :
                 break

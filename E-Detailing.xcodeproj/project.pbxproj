@@ -48,6 +48,8 @@
 		3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */; };
+		38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */; };
+		38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */; };
 		38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */; };
@@ -64,8 +66,6 @@
 		38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */; };
 		38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */; };
 		38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 38C485B02A2F45E9005D1533 /* E-Detailing.xcdatamodeld */; };
-		38C4992F2B402C0800551F9B /* LineChartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4992E2B402C0800551F9B /* LineChartVC.swift */; };
-		38C499312B402C1600551F9B /* LineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C499302B402C1600551F9B /* LineChartView.swift */; };
 		38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4B7A92A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift */; };
 		38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4B7AB2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib */; };
 		38C4B7AE2A6EA52D001C2FD5 /* AnalysisCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4B7AD2A6EA52D001C2FD5 /* AnalysisCell.swift */; };
@@ -279,6 +279,8 @@
 		3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkPlansInfoCVC.xib; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverVC.swift; sourceTree = "<group>"; };
+		38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRGraphModel.swift; sourceTree = "<group>"; };
+		38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLineChartView.swift; sourceTree = "<group>"; };
 		38BCA67A2A248838002C77F6 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extensions.swift"; sourceTree = "<group>"; };
 		38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncVC.swift; sourceTree = "<group>"; };
@@ -295,8 +297,6 @@
 		38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionVC.swift; sourceTree = "<group>"; };
 		38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StockBalance + Extension.swift"; sourceTree = "<group>"; };
 		38C485B12A2F45E9005D1533 /* E-Detailing.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "E-Detailing.xcdatamodel"; sourceTree = "<group>"; };
-		38C4992E2B402C0800551F9B /* LineChartVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartVC.swift; sourceTree = "<group>"; };
-		38C499302B402C1600551F9B /* LineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartView.swift; sourceTree = "<group>"; };
 		38C4B7A92A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRCallAnalysisCell.swift; sourceTree = "<group>"; };
 		38C4B7AB2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRCallAnalysisCell.xib; sourceTree = "<group>"; };
 		38C4B7AD2A6EA52D001C2FD5 /* AnalysisCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisCell.swift; sourceTree = "<group>"; };
@@ -551,7 +551,6 @@
 				38E659852B33086C00E7BF42 /* ReportsVC.swift */,
 				38E659892B33193F00E7BF42 /* DetailedReportVC.swift */,
 				38D568FF2B356468007CB86D /* ViewDayReportVC.swift */,
-				38C4992E2B402C0800551F9B /* LineChartVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -565,7 +564,7 @@
 				38E6598B2B33195C00E7BF42 /* DetailedReportView.swift */,
 				38D569012B3564FD007CB86D /* DayReportView.swift */,
 				38D569072B35A785007CB86D /* SortView.swift */,
-				38C499302B402C1600551F9B /* LineChartView.swift */,
+				38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -587,6 +586,14 @@
 				38BFB7852AFB68F9005E141E /* Hassan.storyboard */,
 			);
 			path = StoryBoard;
+			sourceTree = "<group>";
+		};
+		38BA66862B4685A8008C6D2C /* DCR */ = {
+			isa = PBXGroup;
+			children = (
+				38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */,
+			);
+			path = DCR;
 			sourceTree = "<group>";
 		};
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
@@ -637,6 +644,7 @@
 		38BFB7842AFB62DD005E141E /* Modals */ = {
 			isa = PBXGroup;
 			children = (
+				38BA66862B4685A8008C6D2C /* DCR */,
 				38D1F1F12B3429A600CE8F86 /* Reports */,
 				38E220702B032DAE00FBF6B0 /* TourPlan */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
@@ -1227,6 +1235,7 @@
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
 				38D528AA2A9A0AE600AD3F78 /* NearMeVC.swift in Sources */,
 				38CCDE7B2A5442E5007AA5FF /* JointWork + Extension.swift in Sources */,
+				38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */,
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
 				38CD60DF2A866CEA006FFB39 /* ProductSampleTableViewCell.swift in Sources */,
@@ -1295,7 +1304,6 @@
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
-				38C499312B402C1600551F9B /* LineChartView.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
@@ -1306,6 +1314,7 @@
 				38E3C3692AFA033C00623C33 /* ConfigModel.swift in Sources */,
 				38C600D82A93331700C733AF /* InputSampleTableViewCell.swift in Sources */,
 				38C600DC2A93392100C733AF /* Color.swift in Sources */,
+				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */,
 				38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */,
 				38E6598C2B33195C00E7BF42 /* DetailedReportView.swift in Sources */,
@@ -1358,7 +1367,6 @@
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,
 				B291878629FA83B60033DE16 /* Class.swift in Sources */,
 				38C4B7AE2A6EA52D001C2FD5 /* AnalysisCell.swift in Sources */,
-				38C4992F2B402C0800551F9B /* LineChartVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

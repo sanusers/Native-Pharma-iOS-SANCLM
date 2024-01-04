@@ -1,18 +1,17 @@
 //
-//  LineChartView.swift
+//  HomeLineChartView.swift
 //  E-Detailing
 //
-//  Created by San eforce on 30/12/23.
+//  Created by San eforce on 04/01/24.
 //
 
 import Foundation
+import UIKit
 import Charts
 
 
-
-
 class CustomValueFormatter:  IndexAxisValueFormatter {
-    
+
     func numberOfDaysInMonth(for date: Date) -> Int? {
         let calendar = Calendar.current
         if let range = calendar.range(of: .day, in: .month, for: date) {
@@ -20,80 +19,90 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
         }
         return nil
     }
-    
-    
+
+
     var dateFormatter: DateFormatter
     var date: [Date]
- 
+    var valueArr : [Int]
     override init() {
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd"
         date = [Date]()
+        valueArr = [Int]()
         super.init()
     }
 
-    
+
     override func stringForValue(_ value: Double, axis: AxisBase?) -> String {
             // Convert the value to a Date if needed
-        
+        var returnStr = [String]()
+        var returnStrIndex = [Int]()
         var dayCountArr = [Int]()
-
-        date.forEach { dateElement in
-            let count = numberOfDaysInMonth(for: dateElement)
-            dayCountArr.append(count ?? 0)
+        var tempDate = date
+        var removedIndex = Int()
+        
+        
+        date.enumerated().forEach { dateElementIndex, dateElement in
+                returnStrIndex.append(dateElementIndex)
         }
         
-
-        
-       return calculateDayRange(totalDaysArray: dayCountArr, currentDaysArray: [Int(value)])
+        returnStrIndex.reversed().forEach { index in
+           let aDate = tempDate[index]
+           let count = numberOfDaysInMonth(for: aDate)
+           returnStr.append("01st - 15th    16th - \(count!)th")
+           // tempDate.remove(at: index)
+           // removedIndex = index
         }
-    
 
-    
+        guard let axis = axis else {
+            return ""
+        }
+
+        // Get the entries (values) for the labels
+        let entries = axis.entries
+
+        // Find the index of the current value in the entries array
+        if let currentIndex = entries.firstIndex(of: value) {
+            // Do something based on the current index
+            print("Current index: \(currentIndex)")
+            return returnStr[currentIndex]
+        }
+      return ""
+
+        }
+
+
+
 }
 
-
-
-
-class LineChartHolderView: BaseView, ChartViewDelegate {
+class HomeLineChartView: UIView, ChartViewDelegate {
     
-    
-    var lineChartVC : LineChartVC!
+    var viewController : UIViewController?
     let lineChartView = LineChartView()
     var values: [ChartDataEntry] = []
     var date = [Date]()
-    override func didLoad(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
-        self.lineChartVC = baseVC as? LineChartVC
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
-    }
-    
-    override func didLayoutSubviews(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
-        self.lineChartVC = baseVC as? LineChartVC
-        lineChartView.frame = CGRect(x: self.width / 2 - (self.width / 2) / 2 , y: self.width / 2 - (self.height / 2) / 2, width: self.width / 2, height: self.height / 2)
-    }
-    
-   func toAddCustomXaxis() {
-       let overlayView = UIView()
-       overlayView.backgroundColor = .appTextColor // Customize the overlay view's background color
-       overlayView.translatesAutoresizingMaskIntoConstraints = false
-       self.addSubview(overlayView)
-       NSLayoutConstraint.activate([
-        overlayView.topAnchor.constraint(equalTo: lineChartView.bottomAnchor, constant: -35), // Adjust this constraint based on your layout
-           overlayView.leadingAnchor.constraint(equalTo: lineChartView.leadingAnchor, constant: +25),
-           overlayView.trailingAnchor.constraint(equalTo: lineChartView.trailingAnchor, constant: -10),
-           overlayView.heightAnchor.constraint(equalToConstant: 1)
-       ])
-       
+       // self.addCustomView()
     }
 
-    func numberOfDaysInMonth(for date: Date) -> Int? {
-        let calendar = Calendar.current
-        if let range = calendar.range(of: .day, in: .month, for: date) {
-            return range.count
-        }
-        return nil
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        lineChartView.frame = self.bounds
+        //CGRect(x: 10, y: self.width / 2 - (self.height / 2) / 2, width: self.width - 20, height: self.height / 2)
+        
+    }
+    
+    func setupUI() {
+        self.addSubview(lineChartView)
+        setupLineChart()
+
     }
     
     func setupLineChart() {
@@ -144,7 +153,7 @@ class LineChartHolderView: BaseView, ChartViewDelegate {
             dayCountArr.append(count ?? 0)
         }
         
-        let month1TotalDays = dayCountArr[0]
+        _ = dayCountArr[0]
         let month2TotalDays = dayCountArr[1]
         let month3TotalDays = dayCountArr[2]
         
@@ -179,23 +188,48 @@ class LineChartHolderView: BaseView, ChartViewDelegate {
         // Customize X-axis
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
-        xAxis.setLabelCount(date.count * 2, force: true) // Set the number of labels
+        
+        xAxis.granularityEnabled = true
+        xAxis.granularity = 10
+       // xAxis.axisMinimum = 0
+        //xAxis.axisMaximum = 7
+        xAxis.centerAxisLabelsEnabled = true
+        lineChartView.autoScaleMinMaxEnabled = true
+        lineChartView.extraLeftOffset = 10.0
+        lineChartView.extraRightOffset = 10.0
+        xAxis.wordWrapEnabled = false
+        
+        
+        xAxis.setLabelCount(date.count, force: true) // Set the number of labels
 
         let xValuesNumberFormatter = CustomValueFormatter()
         xValuesNumberFormatter.date = date
+
+        var valueArr = [Int]()
+
+
+        month1Values.forEach { dataEntry in
+            valueArr.append(Int(dataEntry.x))
+        }
+
+        month2Values.forEach { dataEntry in
+            valueArr.append(Int(dataEntry.x))
+        }
+
+        month3Values.forEach { dataEntry in
+            valueArr.append(Int(dataEntry.x))
+        }
+
+
+
+        xValuesNumberFormatter.valueArr = valueArr
         xAxis.valueFormatter = xValuesNumberFormatter
+
+        
         lineChartView.xAxis.yOffset = 40
         // Customize the font
         xAxis.labelFont = UIFont(name: "Satoshi-Medium", size: 14) ?? UIFont.systemFont(ofSize: 14)
-        //xAxis.xOffset = 15.0
-        // Set the x values date formatter
-     
-       // xValuesNumberFormatter.dateFormatter = dayNumberAndShortNameFormatter // e.g. "wed 26"
-      
-        
-    
-        
-        
+
         // Customize Y-axis
         // Access the y-axis of your line chart view
         let yAxis = lineChartView.leftAxis // You can use `rightAxis` if needed
@@ -218,6 +252,9 @@ class LineChartHolderView: BaseView, ChartViewDelegate {
         dataSet.colors = [NSUIColor.appTextColor]
         // Customize other properties of the data set if needed
         dataSet.lineWidth = 1.0  // Set the width of the line
+        
+      
+        
         lineChartView.data = data
         
 
@@ -253,15 +290,6 @@ class LineChartHolderView: BaseView, ChartViewDelegate {
         lineChartView.notifyDataSetChanged()
         
     }
-    
-    func setupUI() {
-        self.addSubview(lineChartView)
-        setupLineChart()
-
-        
-
-    }
-    
     
     public func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight)
     {
@@ -351,57 +379,31 @@ class LineChartHolderView: BaseView, ChartViewDelegate {
     func toShoPopup(_ view: UIView) {
         
         print("Tapped -->")
-        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: lineChartView.width / 2.7 , height: lineChartView.height / 5), on: view, onframe: CGRect(), pagetype: .HomeGraph)
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: lineChartView.width / 3.5 , height: lineChartView.height / 3.7), on: view, onframe: CGRect(), pagetype: .HomeGraph)
                // vc.delegate = self
                // vc.selectedIndex = indexPath.row
-                self.lineChartVC.navigationController?.present(vc, animated: true)
+            self.viewController?.navigationController?.present(vc, animated: true)
     }
     
-}
+    func toAddCustomXaxis() {
+        let overlayView = UIView()
+        overlayView.backgroundColor = .appSelectionColor // Customize the overlay view's background color
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(overlayView)
+        NSLayoutConstraint.activate([
+         overlayView.topAnchor.constraint(equalTo: lineChartView.bottomAnchor, constant: -35), // Adjust this constraint based on your layout
+            overlayView.leadingAnchor.constraint(equalTo: lineChartView.leadingAnchor, constant: +40),
+            overlayView.trailingAnchor.constraint(equalTo: lineChartView.trailingAnchor, constant: -10),
+            overlayView.heightAnchor.constraint(equalToConstant: 2)
+        ])
+        
+     }
 
-
-extension Array  {
-
-    mutating func add(_ newElement: Element, at indexes: [Int]) {
-
-        for index in indexes {
-            insert(newElement, at: index)
-        }
-    }
-}
-
-
-
-func calculateDayRange(totalDaysArray: [Int], currentDaysArray: [Int]) -> String{
-    
-    var returnStr = ""
-    for (index, totalDays) in totalDaysArray.enumerated() {
-        guard index < currentDaysArray.count else {
-            // Handle the case where there are not enough elements in currentDaysArray
-            continue
-        }
-
-        let currentDay = currentDaysArray[index]
-
-        // Calculate the adjusted day for the current month
-        let adjustedDay = currentDay % totalDays
-
-        // Determine the end day of the range based on the total days in the month
-        let endDay = totalDays / 2
-
-        // Check if the adjusted day falls in the range of 01 to 15 or 16 to the end of the month
-        if adjustedDay >= 1 && adjustedDay <= 15 {
-            print("Month \(index + 1): Day is in the range 01 to 15")
-            returnStr = "01st - 15th"
-        } else if adjustedDay >= 16 && adjustedDay <= totalDays {
-            print("Month \(index + 1): Day is in the range 16 to \(totalDays)")
-            returnStr = "16th - \(totalDays)th"
-            
-        } else {
-            print("Month \(index + 1): Invalid day value")
-            returnStr = ""
-        }
-    }
-    
-    return returnStr
+     func numberOfDaysInMonth(for date: Date) -> Int? {
+         let calendar = Calendar.current
+         if let range = calendar.range(of: .day, in: .month, for: date) {
+             return range.count
+         }
+         return nil
+     }
 }

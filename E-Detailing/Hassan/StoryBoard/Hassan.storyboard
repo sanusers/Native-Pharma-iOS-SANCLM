@@ -711,24 +711,6 @@
             </objects>
             <point key="canvasLocation" x="310" y="690"/>
         </scene>
-        <!--Line ChartVC-->
-        <scene sceneID="SxW-cR-rYu">
-            <objects>
-                <viewController storyboardIdentifier="LineChartVC" id="QuE-7i-qEg" customClass="LineChartVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="iqC-JU-bh9" customClass="LineChartHolderView" customModule="E_Detailing" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="AKq-fh-9Pb"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <connections>
-                        <outlet property="lineChartView" destination="iqC-JU-bh9" id="rqX-TS-rBa"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="G3f-WC-Y7t" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="306" y="1407"/>
-        </scene>
         <!--MenuVC-->
         <scene sceneID="8G2-sb-PKh">
             <objects>
