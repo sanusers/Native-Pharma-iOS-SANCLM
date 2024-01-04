@@ -613,7 +613,7 @@
 		A662E5DA47EE0F301749FF9C8B801CB2 /* BarChartDataProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BarChartDataProvider.swift; path = Source/Charts/Interfaces/BarChartDataProvider.swift; sourceTree = "<group>"; };
 		A76D03F771C022E69313C1BC8DDFB1D1 /* ComponentBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ComponentBase.swift; path = Source/Charts/Components/ComponentBase.swift; sourceTree = "<group>"; };
 		A87E27BE5F50E19CA1FB26EB513651D5 /* IQKeyboardManagerSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IQKeyboardManagerSwift-umbrella.h"; sourceTree = "<group>"; };
-		A8E85F93AC18EECC38B3318305FECD2C /* Pods-E-Detailing */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-E-Detailing"; path = Pods_E_Detailing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8E85F93AC18EECC38B3318305FECD2C /* Pods_E_Detailing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_E_Detailing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8E950A16D00F649C54FFB30F81D7842 /* IQKeyboardManagerSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IQKeyboardManagerSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A92F438EBEEFCFA7E8562B6C0DD5AA53 /* Toast-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Toast-Swift.release.xcconfig"; sourceTree = "<group>"; };
 		A9BFBBCBB9544248CD1FF7664D7F7513 /* BarChartDataSet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BarChartDataSet.swift; path = Source/Charts/Data/Implementations/Standard/BarChartDataSet.swift; sourceTree = "<group>"; };
@@ -1181,7 +1181,7 @@
 				C745E83FE46A9B2F39776831451CEB37 /* ExpyTableView.framework */,
 				95209B8BB966524BC76543F99C75F5FE /* FSCalendar.framework */,
 				A8E950A16D00F649C54FFB30F81D7842 /* IQKeyboardManagerSwift.framework */,
-				A8E85F93AC18EECC38B3318305FECD2C /* Pods-E-Detailing */,
+				A8E85F93AC18EECC38B3318305FECD2C /* Pods_E_Detailing.framework */,
 				21B03CA622E690725A6626C088E1D09F /* Reachability.framework */,
 				E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD.framework */,
 				D6043471C96F93DC41F7DD1E0D7D8B35 /* Toast_Swift.framework */,
@@ -1687,7 +1687,7 @@
 			);
 			name = "Pods-E-Detailing";
 			productName = Pods_E_Detailing;
-			productReference = A8E85F93AC18EECC38B3318305FECD2C /* Pods-E-Detailing */;
+			productReference = A8E85F93AC18EECC38B3318305FECD2C /* Pods_E_Detailing.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		B990BD87169C76A3ED3FE8A9258D91A3 /* Toast-Swift */ = {
