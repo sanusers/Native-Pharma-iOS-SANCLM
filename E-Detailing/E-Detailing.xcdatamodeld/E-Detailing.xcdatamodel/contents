@@ -106,6 +106,23 @@
         <attribute name="wtcode" optional="YES" attributeType="String"/>
         <attribute name="wtname" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="HomeData" representedClassName="HomeData" syncable="YES" codeGenerationType="class">
+        <attribute name="anslNo" optional="YES" attributeType="String"/>
+        <attribute name="custCode" optional="YES" attributeType="String"/>
+        <attribute name="custName" optional="YES" attributeType="String"/>
+        <attribute name="custType" optional="YES" attributeType="String"/>
+        <attribute name="dcr_dt" optional="YES" attributeType="String"/>
+        <attribute name="dcr_flag" optional="YES" attributeType="String"/>
+        <attribute name="fw_Indicator" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="mnth" optional="YES" attributeType="String"/>
+        <attribute name="month_name" optional="YES" attributeType="String"/>
+        <attribute name="sf_Code" optional="YES" attributeType="String"/>
+        <attribute name="town_code" optional="YES" attributeType="String"/>
+        <attribute name="town_name" optional="YES" attributeType="String"/>
+        <attribute name="trans_SlNo" optional="YES" attributeType="String"/>
+        <attribute name="yr" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Input" representedClassName="Input" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="divisionCode" optional="YES" attributeType="String"/>
@@ -164,6 +181,7 @@
         <relationship name="doctorFencing" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorFencing"/>
         <relationship name="feedback" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Feedback"/>
         <relationship name="holidays" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Holidays"/>
+        <relationship name="homeData" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HomeData"/>
         <relationship name="input" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Input"/>
         <relationship name="jointWork" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="JointWork"/>
         <relationship name="leaveType" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LeaveType"/>

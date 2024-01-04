@@ -41,18 +41,6 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
         var tempDate = date
         var removedIndex = Int()
         
-        
-        date.enumerated().forEach { dateElementIndex, dateElement in
-                returnStrIndex.append(dateElementIndex)
-        }
-        
-        returnStrIndex.reversed().forEach { index in
-           let aDate = tempDate[index]
-           let count = numberOfDaysInMonth(for: aDate)
-           returnStr.append("01st - 15th    16th - \(count!)th")
-           // tempDate.remove(at: index)
-           // removedIndex = index
-        }
 
         guard let axis = axis else {
             return ""
@@ -63,9 +51,14 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
 
         // Find the index of the current value in the entries array
         if let currentIndex = entries.firstIndex(of: value) {
-            // Do something based on the current index
-            print("Current index: \(currentIndex)")
-            return returnStr[currentIndex]
+            if currentIndex % 2 == 0 {
+                return "01st - 15th"
+            } else {
+                let count = numberOfDaysInMonth(for: date[currentIndex / 2])
+                return "16th - \(count!)th"
+                
+            }
+
         }
       return ""
 
@@ -81,10 +74,10 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     let lineChartView = LineChartView()
     var values: [ChartDataEntry] = []
     var date = [Date]()
-
+    var dataSourceArr = [HomeData]()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupUI()
+        //setupUI()
        // self.addCustomView()
     }
 
@@ -105,7 +98,85 @@ class HomeLineChartView: UIView, ChartViewDelegate {
 
     }
     
+    func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
+        var result: [Int: [Date]] = [:]
+
+        let calendar = Calendar.current
+
+        for date in dates {
+            let month = calendar.component(.month, from: date)
+
+            if result[month] == nil {
+                result[month] = [date]
+            } else {
+                result[month]?.append(date)
+            }
+        }
+
+        return result
+    }
+    
+    func filterDatesInRange(_ dates: [Date]) -> [Date] {
+        let calendar = Calendar.current
+
+        return dates.filter { date in
+            let day = calendar.component(.day, from: date)
+
+            if day >= 1 && day <= 15 {
+                // Date is in the range 1st to 15th
+                return true
+            } else {
+                // Check if the date is in the range 16th to the end of the month
+                guard let lastDayOfMonth = calendar.range(of: .day, in: .month, for: date)?.upperBound else {
+                    return false
+                }
+                return day >= 16 && day <= lastDayOfMonth
+            }
+        }
+    }
+    
+    func toConVertStringToDate(_ yyyyMMdd : String ) -> Date {
+        let dateString = yyyyMMdd
+
+        // Create a DateFormatter
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        // Convert the string to a Date object
+        if let date = dateFormatter.date(from: dateString) {
+            print(date)
+            return date
+        } else {
+            print("Error: Unable to convert the string to a Date.")
+            return Date()
+        }
+    }
+    
+    
+    func toSetDataSource() {
+    let  fwArr =  dataSourceArr.filter { aHomeData in
+            aHomeData.fw_Indicator == "F"
+        }
+        
+        var dates = [Date]()
+        
+        fwArr.forEach { aHomeData in
+            dates.append(toConVertStringToDate(aHomeData.dcr_dt ?? ""))
+        }
+        
+       let datesFilteredByMonth = separateDatesByMonth(dates)
+        
+    var monthsArr = [Date]()
+        
+        for (key, value) in datesFilteredByMonth.enumerated() {
+          
+        }
+        
+    }
+    
     func setupLineChart() {
+        toSetDataSource()
+        
         toAddCustomXaxis()
        // toAddCustomXaxis()
         
@@ -187,16 +258,13 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         // Customize X-axis
         let xAxis = lineChartView.xAxis
-        xAxis.setLabelCount(date.count, force: true)
+        xAxis.setLabelCount(date.count * 2, force: true)
         xAxis.labelPosition = .bottom
         xAxis.granularityEnabled = true
         xAxis.granularity = 1.0
-       // lineChartView.autoScaleMinMaxEnabled = true
+        lineChartView.autoScaleMinMaxEnabled = true
         xAxis.wordWrapEnabled = false
-        
-        
-      
-
+        //xAxis.centerAxisLabelsEnabled = true
         let xValuesNumberFormatter = CustomValueFormatter()
         xValuesNumberFormatter.date = date
 

@@ -223,6 +223,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.holidays)
         self.masterData.append(MasterInfo.weeklyOff)
         self.masterData.append(MasterInfo.getTP)
+        self.masterData.append(MasterInfo.homeSetup)
       //  self.tableView.reloadData()
      //   self.collectionView.reloadData()
     }
@@ -376,7 +377,7 @@ extension MasterSyncVC : tableViewProtocols {
     @objc func syncAllAction (_ sender : UIButton) {
         
         self.masterData = [MasterInfo.slides,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.myDayPlan,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-                           MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP]
+                           MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
       //  self.collectionView.reloadData()

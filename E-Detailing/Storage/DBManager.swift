@@ -873,7 +873,7 @@ class DBManager {
     
     func deleteHomeData() {
         let masterData = self.getMasterData()
-        if let prevList = masterData.holidays?.allObjects as? [Holidays] {
+        if let prevList = masterData.homeData?.allObjects as? [HomeData] {
             _ = prevList.map{self.managedContext().delete($0)}
         }
         self.saveContext()
@@ -882,20 +882,20 @@ class DBManager {
     func saveHomeData(values : [[String : Any]]){
         self.deleteHomeData()
         let masterData = self.getMasterData()
-        var WeeklyoffSetupArray = [Holidays]()
-        for (index,workType) in values.enumerated() {
+        var HomeDataSetupArray = [HomeData]()
+        for (index,homeData) in values.enumerated() {
             let contextNew = self.managedContext()
-            let workTypeEntity = NSEntityDescription.entity(forEntityName: "Holidays", in: contextNew)
-            let WeeklyoffSetupItem = Holidays(entity: workTypeEntity!, insertInto: contextNew)
-            WeeklyoffSetupItem.setValues(fromDictionary: workType)
-            WeeklyoffSetupItem.index = Int16(index)
-            WeeklyoffSetupArray.append(WeeklyoffSetupItem)
+            let HomeDataEntity = NSEntityDescription.entity(forEntityName: "HomeData", in: contextNew)
+            let HomeDataSetupItem = HomeData(entity: HomeDataEntity!, insertInto: contextNew)
+            HomeDataSetupItem.setValues(fromDictionary: homeData)
+            HomeDataSetupItem.index = Int16(index)
+            HomeDataSetupArray.append(HomeDataSetupItem)
         }
-        if let list = masterData.holidays?.allObjects as? [Holidays]{
-            _ = list.map{masterData.removeFromHolidays($0)}
+        if let list = masterData.homeData?.allObjects as? [HomeData]{
+            _ = list.map{masterData.removeFromHomeData($0)}
         }
-        WeeklyoffSetupArray.forEach{ (type) in
-            masterData.addToHolidays(type)
+        HomeDataSetupArray.forEach{ (type) in
+            masterData.addToHomeData(type)
         }
         self.saveContext()
     }
@@ -1518,6 +1518,18 @@ class DBManager {
         let masterData = self.getMasterData()
         guard let WeeklyoffSetupArray = masterData.weeklyoff?.allObjects as? [Weeklyoff] else{
             return [Weeklyoff]()
+        }
+        let array = WeeklyoffSetupArray.sorted{(item1 , item2 ) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    
+    func getHomeData() -> [HomeData]{
+        let masterData = self.getMasterData()
+        guard let WeeklyoffSetupArray = masterData.homeData?.allObjects as? [HomeData] else{
+            return [HomeData]()
         }
         let array = WeeklyoffSetupArray.sorted{(item1 , item2 ) -> Bool in
             return item1.index < item2.index

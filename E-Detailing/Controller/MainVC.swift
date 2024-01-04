@@ -108,8 +108,12 @@ class MainVC : UIViewController {
     @IBOutlet weak var sideMenuTableView: UITableView!
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
-    var homeLineChartView = HomeLineChartView()
-    
+    var homeLineChartView : HomeLineChartView?
+    var chartType: ChartType = .doctor
+    var doctorArr = [HomeData]()
+    var chemistArr = [HomeData]()
+    var stockistArr = [HomeData]()
+    var unlistedDocArr = [HomeData]()
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -147,11 +151,54 @@ class MainVC : UIViewController {
     
     let menuList = ["Refresh","Tour Plan","Create Presentation","Leave Application","Reports","Activiy","Near Me","Quiz","Survey","Forms","Profiling"]
     
+    
+    enum ChartType {
+        case doctor
+        case chemist
+        case stockist
+        case unlistedDoctor
+    }
+    
+    
+    func toSetChartType(chartType: ChartType) {
+        switch chartType {
+            
+        default:
+            self.toIntegrateChartView(.doctor)
+        }
+    }
+    
+    
+    func toSeperateDCR() {
+        let homeDataArr = DBManager.shared.getHomeData()
+        dump(homeDataArr)
+        
+
+        
+        doctorArr =  homeDataArr.filter { aHomeData in
+            aHomeData.custType == "1"
+        }
+        
+        chemistArr =  homeDataArr.filter { aHomeData in
+            aHomeData.custType == "2"
+        }
+        
+        stockistArr =  homeDataArr.filter { aHomeData in
+            aHomeData.custType == "3"
+        }
+        
+        
+        unlistedDocArr =  homeDataArr.filter { aHomeData in
+            aHomeData.custType == "4"
+        }
+        
+    }
+    
     func setupUI() {
+        toSeperateDCR()
         chartHolderView.layer.cornerRadius = 5
         chartHolderView.backgroundColor = .appWhiteColor
-        self.toIntegrateChartView()
-        
+        self.toIntegrateChartView(.doctor)
         month1View.layer.cornerRadius = 5
         month2View.layer.cornerRadius = 5
         month3View.layer.cornerRadius = 5
@@ -252,14 +299,50 @@ class MainVC : UIViewController {
         
     }
     
-    func toIntegrateChartView() {
-        self.homeLineChartView.viewController = self
-        self.lineChatrtView.addSubview(homeLineChartView)
+    func toIntegrateChartView(_ type: ChartType) {
+      
+       let ahomeLineChartView = HomeLineChartView()
+        ahomeLineChartView.dataSourceArr = self.doctorArr
+        ahomeLineChartView.viewController = self
+        ahomeLineChartView.setupUI()
+        self.homeLineChartView = ahomeLineChartView
+        lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
+        
+//        if homeLineChartView?.superview != nil {
+//            self.homeLineChartView = HomeLineChartView()
+//            // View is currently added, so remove it
+//            self.homeLineChartView?.dataSourceArr = self.doctorArr
+//            homeLineChartView?.removeFromSuperview()
+//            lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
+//        } else {
+//            self.homeLineChartView = HomeLineChartView()
+//            // View is not added, so add it
+//            lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
+//        }
+//        self.homeLineChartView?.viewController = self
+//        switch type {
+//
+//        case .doctor:
+//            self.homeLineChartView?.dataSourceArr = self.doctorArr
+//        case .chemist:
+//            self.homeLineChartView?.dataSourceArr = self.chemistArr
+//        case .stockist:
+//            self.homeLineChartView?.dataSourceArr = self.stockistArr
+//        case .unlistedDoctor:
+//            self.homeLineChartView?.dataSourceArr = self.unlistedDocArr
+//        }
+        
+       
+        
+
+        
+        
+        //self.lineChatrtView.addSubview(homeLineChartView)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.homeLineChartView.frame = lineChatrtView.bounds
+        self.homeLineChartView?.frame = lineChatrtView.bounds
     }
     
     deinit {
@@ -770,7 +853,7 @@ class MainVC : UIViewController {
         let cipColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.8))
         
         let hospitalColor = UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.8))
-        
+     
         self.dcrCount.append(DcrCount(name: "Doctor",color: doctorColor,count: DBManager.shared.getDoctor().count.description))
         
         self.dcrCount.append(DcrCount(name: "Chemist",color: chemistColor,count: DBManager.shared.getChemist().count.description))
@@ -891,6 +974,21 @@ extension MainVC : collectionViewProtocols {
                 if indexPath.row != 0 {
                    cell.imgArrow.isHidden = true
                 }
+            cell.addTap {
+               // "Doctor" "Chemist" "Stockist" "UnListed Doctor"
+                let model = self.dcrCount[indexPath.row]
+                
+                if model.name == "Doctor" {
+                   // self.toIntegrateChartView(.doctor)
+                } else if model.name == "Chemist" {
+                  //  self.toIntegrateChartView(.chemist)
+                } else if model.name == "Stockist" {
+                   // self.toIntegrateChartView(.stockist)
+                } else if model.name == "UnListed Doctor" {
+                  //  self.toIntegrateChartView(.unlistedDoctor)
+                }
+                
+            }
                 return cell
             case self.analysisCollectionView:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AnalysisCell", for: indexPath) as! AnalysisCell
