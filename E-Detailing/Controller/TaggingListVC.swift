@@ -12,6 +12,7 @@ import UIKit
 class TaggingListVC : UIViewController {
     
     
+    @IBOutlet weak var lblCollection: UILabel!
     
     @IBOutlet weak var txtSearch: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -29,6 +30,8 @@ class TaggingListVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.lblCollection.text = self.type.name 
         
         self.collectionView.register(UINib(nibName: "DCRTaggingCell", bundle: nil), forCellWithReuseIdentifier: "DCRTaggingCell")
         

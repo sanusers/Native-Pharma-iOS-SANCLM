@@ -14,7 +14,6 @@ class DcrTagTitleCell : UICollectionViewCell {
     
     @IBOutlet weak var lblName: UILabel!
     
-    
     @IBOutlet weak var viewTitle: UIView!
     
     
@@ -24,15 +23,16 @@ class DcrTagTitleCell : UICollectionViewCell {
         }
     }
     
-    var nameWidth : CGFloat? = nil {
-        didSet {
-            guard nameWidth != nil else {
-                widthLblNameConstraint.isActive = true
-                widthLblNameConstraint.constant = nameWidth!
-                return
-            }
-        }
-    }
+    
+//    var nameWidth : CGFloat? = nil {
+//        didSet {
+//            guard nameWidth != nil else {
+//                widthLblNameConstraint.isActive = true
+//                widthLblNameConstraint.constant = nameWidth!
+//                return
+//            }
+//        }
+//    }
     
     
     var title : TagTitleViewModel! {

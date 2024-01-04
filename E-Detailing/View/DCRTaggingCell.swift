@@ -25,6 +25,9 @@ class DCRTaggingCell : UICollectionViewCell {
     @IBOutlet weak var btnView: UIButton!
     
     
+    @IBOutlet weak var btnCluster: ShadowButton!
+    
+    
     var customer : CustomerViewModel! {
         didSet {
             self.lblName.text = customer.name
@@ -32,6 +35,11 @@ class DCRTaggingCell : UICollectionViewCell {
             self.lblSpeciality.text = customer.speciality
             self.lblCluster.text = customer.townName
             self.lblTagCount.text = (customer.geoCount) + "/" + (customer.maxCount)
+            
+            
+            self.btnCluster.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+            
+            self.btnCluster.setTitle(customer.townName, for: .normal)
         }
     }
     

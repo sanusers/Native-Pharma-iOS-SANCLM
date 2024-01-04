@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Brand" representedClassName="Brand" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -30,6 +30,8 @@
         <attribute name="compProductSlNo" optional="YES" attributeType="String"/>
         <attribute name="compSlNo" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="ourProductCode" optional="YES" attributeType="String"/>
+        <attribute name="ourProductName" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Departs" representedClassName="Departs" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
@@ -73,6 +75,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
         <attribute name="plcyAcptFl" optional="YES" attributeType="String"/>
+        <attribute name="productCode" optional="YES" attributeType="String"/>
         <attribute name="resAddr" optional="YES" attributeType="String"/>
         <attribute name="sfCode" optional="YES" attributeType="String"/>
         <attribute name="speciality" optional="YES" attributeType="String"/>
@@ -99,6 +102,14 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="effF" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="effT" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
+    </entity>
+    <entity name="InputStockBalance" representedClassName="InputStockBalance" syncable="YES" codeGenerationType="class">
+        <attribute name="balanceStock" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="divisionCode" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="sfCode" optional="YES" attributeType="String"/>
     </entity>
     <entity name="JointWork" representedClassName="JointWork" syncable="YES" codeGenerationType="class">
         <attribute name="actFlg" optional="YES" attributeType="String"/>
@@ -151,6 +162,7 @@
         <relationship name="slides" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductSlides"/>
         <relationship name="slideSpeciality" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SlideSpeciality"/>
         <relationship name="speciality" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Speciality"/>
+        <relationship name="stockBalance" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StockBalance"/>
         <relationship name="stockist" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Stockist"/>
         <relationship name="subordinate" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subordinate"/>
         <relationship name="subordinateMgr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subordinate"/>
@@ -186,6 +198,7 @@
         <attribute name="mapId" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="noOfSamples" optional="YES" attributeType="String"/>
+        <attribute name="productMode" optional="YES" attributeType="String"/>
         <attribute name="pSlNo" optional="YES" attributeType="String"/>
     </entity>
     <entity name="ProductSlides" representedClassName="ProductSlides" syncable="YES" codeGenerationType="class">
@@ -205,6 +218,15 @@
         <attribute name="specialityCode" optional="YES" attributeType="String"/>
         <relationship name="effFrom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="effTo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
+    </entity>
+    <entity name="ProductStockBalance" representedClassName="ProductStockBalance" syncable="YES" codeGenerationType="class">
+        <attribute name="balanceStock" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="divisionCode" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="pack" optional="YES" attributeType="String"/>
+        <attribute name="sfCode" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Qualifications" representedClassName="Qualifications" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
@@ -240,6 +262,10 @@
         <attribute name="doctorSpecialName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="StockBalance" representedClassName="StockBalance" syncable="YES" codeGenerationType="class">
+        <relationship name="input" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InputStockBalance"/>
+        <relationship name="product" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductStockBalance"/>
     </entity>
     <entity name="Stockist" representedClassName="Stockist" syncable="YES" codeGenerationType="class">
         <attribute name="addr" optional="YES" attributeType="String"/>

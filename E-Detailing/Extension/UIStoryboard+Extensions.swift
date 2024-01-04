@@ -23,7 +23,6 @@ extension UIStoryboard {
     static var Tagging : UIStoryboard {
         return UIStoryboard(name: "Tagging", bundle: nil)
     }
-    
 }
 
 
@@ -107,6 +106,20 @@ extension UIStoryboard {
         return productVC
     }
     
+    static var multiSelectionVC : MultiSelectionVC {
+        guard let  multiSelectionVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "MultiSelectionVC") as? MultiSelectionVC else{
+            fatalError("MultiSelectionVC couldn't be found in Storyboard file")
+        }
+        return multiSelectionVC
+    }
+    
+    static var singleSelectionRightVC : SingleSelectionRightVC {
+        guard let  singleSelectionRightVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "SingleSelectionRightVC") as? SingleSelectionRightVC else{
+            fatalError("SingleSelectionRightVC couldn't be found in Storyboard file")
+        }
+        return singleSelectionRightVC
+    }
+    
     static var leaveVC : LeaveApplicationVC {
         guard let  leaveVC = UIStoryboard.sideMenu.instantiateViewController(withIdentifier: "LeaveApplicationVC") as? LeaveApplicationVC else{
             fatalError("LeaveApplicationVC couldn't be found in Storyboard file")
@@ -114,11 +127,11 @@ extension UIStoryboard {
         return leaveVC
     }
     
-    static var nearMe : NearMeVC {
-        guard let  nearMe = UIStoryboard.Tagging.instantiateViewController(withIdentifier: "NearMe") as? NearMeVC else{
-            fatalError("NearMe couldn't be found in Storyboard file")
+    static var nearMeVC : NearMeVC {
+        guard let  nearMeVC = UIStoryboard.Tagging.instantiateViewController(withIdentifier: "NearMe") as? NearMeVC else{
+            fatalError("nearMeVC couldn't be found in Storyboard file")
         }
-        return nearMe
+        return nearMeVC
     }
     
     static var taggingListVC : TaggingListVC {
@@ -159,11 +172,7 @@ extension Date{
         formatter.dateFormat = format
         return formatter.string(from: self)
     }
-    
-    
 }
-
-
 
 
 

@@ -149,7 +149,7 @@ class MasterSyncVC : UIViewController {
     @IBAction func syncAll(_ sender: UIButton) {
         
         animations = (0...(masterData.count - 1)).map{_ in true}
-        self.collectionView.reloadData()
+     //   self.collectionView.reloadData()
         _ = masterData.map{self.fetchmasterData(type: $0)}
     }
     
@@ -164,9 +164,7 @@ class MasterSyncVC : UIViewController {
         }
         
         self.dcrList.append(MasterCellData(cellType: MasterCellType.listedDoctor,isSelected: false))
-        if appsetup.docNeed == 0 {
-            self.dcrList.append(MasterCellData(cellType: MasterCellType.listedDoctor,isSelected: false))
-        }
+        
         if appsetup.chmNeed == 0 {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.chemist,isSelected: false))
         }
@@ -186,6 +184,8 @@ class MasterSyncVC : UIViewController {
         self.dcrList.append(MasterCellData(cellType: MasterCellType.Product,isSelected: false))
         self.dcrList.append(MasterCellData(cellType: MasterCellType.input,isSelected: false))
         self.dcrList.append(MasterCellData(cellType: MasterCellType.subordinate,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.cluster,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.stockBalance,isSelected: false))
         self.dcrList.append(MasterCellData(cellType: MasterCellType.syncAll,isSelected: false))
     
         self.masterData.append(MasterInfo.doctorFencing)
@@ -221,8 +221,9 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.competitors)
         self.masterData.append(MasterInfo.slideSpeciality)
         
+        
       //  self.tableView.reloadData()
-        self.collectionView.reloadData()
+     //   self.collectionView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -347,6 +348,10 @@ extension MasterSyncVC : tableViewProtocols {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         
@@ -368,7 +373,7 @@ extension MasterSyncVC : tableViewProtocols {
                            MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
-        self.collectionView.reloadData()
+      //  self.collectionView.reloadData()
         _ = masterData.map{self.fetchmasterData(type: $0)}
         
     }
@@ -468,19 +473,19 @@ extension MasterSyncVC : collectionViewProtocols{
         }
         
         if MasterInfo.syncAll.rawValue == self.masterData[indexPath.row].rawValue {
+            cell.isHidden = false
             cell.btnSync.isHidden = false
             cell.btnSync.setTitle("Sync \(self.masterData.first?.rawValue ?? "")", for: .normal)
+        }else if MasterInfo.empty.rawValue == self.masterData[indexPath.row].rawValue {
+            cell.isHidden = true
         }else{
+            cell.isHidden = false
             cell.btnSync.isHidden = true
         }
         return cell
     }
     
     @objc func groupSyncAll(_ sender : UIButton){
-//        let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.collectionView)
-//        guard let indexPath = self.collectionView.indexPathForItem(at: buttonPosition) else{
-//            return
-//        }
         
         animations = (0...(masterData.count - 1)).map{_ in true}
         self.collectionView.reloadData()
@@ -488,14 +493,11 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         animations[indexPath.row] = true
         self.collectionView.reloadData()
         self.fetchmasterData(type: self.masterData[indexPath.row])
     }
-    
 }
-
 
 
 struct MasterCellData {

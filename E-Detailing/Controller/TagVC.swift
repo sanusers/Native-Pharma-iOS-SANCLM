@@ -114,7 +114,7 @@ class TagVC : UIViewController {
                         print(apiResponse)
                         print("ssusus")
                         self.updateTagList()
-                        self.popToBack(UIStoryboard.nearMe)
+                        self.popToBack(UIStoryboard.nearMeVC)
                         
                       //  self.navigationController?.popViewController(animated: true)
                         
@@ -245,7 +245,6 @@ class TagVC : UIViewController {
     
     @IBAction func confirmAction(_ sender: UIButton) {
         self.tagging()
-        
     }
     
     
@@ -276,7 +275,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
     
     func uploadImagess(image: UIImage) {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
         
         let webUrlString = AppDefaults.shared.webUrl
         
@@ -318,7 +316,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
                       "subdivision_code" : appsetup.subDivisionCode ?? "",
         ] as [String : Any]
         
-
         
         let jsonData = try? JSONSerialization.data(withJSONObject: params)
         
@@ -329,7 +326,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         data.append(img!)
         data.append(jsonData!)
         data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-        
         
         
         var request = URLRequest(url: url)
@@ -346,7 +342,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
                             print ("error: \(error)")
                             return
                     }
-
 
                 guard let responseData = data else {
                         print("no response data")
@@ -380,10 +375,7 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
                 }
             }
         }.resume()
-        
     }
-    
-    
     
     
     private func mimeType(for path: String) -> String {

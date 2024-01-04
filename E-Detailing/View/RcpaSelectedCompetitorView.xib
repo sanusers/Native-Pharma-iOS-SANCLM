@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -24,39 +24,49 @@
                     <rect key="frame" x="0.0" y="0.0" width="820" height="50"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Competitor Company" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q5h-Te-Mgf">
-                            <rect key="frame" x="15" y="14.5" width="164" height="21"/>
+                            <rect key="frame" x="15" y="14" width="164" height="22.5"/>
                             <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Competitor Brand" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y0Q-mG-tVt">
-                            <rect key="frame" x="189" y="14.5" width="164" height="21"/>
+                            <rect key="frame" x="189" y="14" width="164" height="22.5"/>
                             <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Qty" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HEo-jB-Vct">
-                            <rect key="frame" x="363" y="14.5" width="82" height="21"/>
+                            <rect key="frame" x="363" y="14" width="82" height="22.5"/>
                             <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9M5-hB-dXh">
-                            <rect key="frame" x="455" y="14.5" width="82" height="21"/>
+                            <rect key="frame" x="455" y="14" width="82" height="22.5"/>
                             <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VIb-4G-syJ">
-                            <rect key="frame" x="547" y="14.5" width="82" height="21"/>
+                            <rect key="frame" x="547" y="14" width="82" height="22.5"/>
                             <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remarks" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U5r-9a-Dlm">
-                            <rect key="frame" x="641" y="14.5" width="164" height="21"/>
+                            <rect key="frame" x="641" y="14" width="164" height="22.5"/>
                             <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ymN-B2-NOr">
+                            <rect key="frame" x="5" y="49" width="810" height="1"/>
+                            <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="rDv-93-20p"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -67,8 +77,12 @@
                         <constraint firstItem="VIb-4G-syJ" firstAttribute="width" secondItem="Nfo-7E-MtQ" secondAttribute="width" multiplier="0.1" id="7JS-vf-xBS"/>
                         <constraint firstItem="U5r-9a-Dlm" firstAttribute="width" secondItem="Nfo-7E-MtQ" secondAttribute="width" multiplier="0.2" id="7rc-sZ-pbK"/>
                         <constraint firstItem="HEo-jB-Vct" firstAttribute="leading" secondItem="y0Q-mG-tVt" secondAttribute="trailing" constant="10" id="BUP-fb-LXv"/>
+                        <constraint firstAttribute="bottom" secondItem="ymN-B2-NOr" secondAttribute="bottom" id="GST-CI-dhG"/>
                         <constraint firstItem="9M5-hB-dXh" firstAttribute="width" secondItem="Nfo-7E-MtQ" secondAttribute="width" multiplier="0.1" id="I5b-yE-gMr"/>
+                        <constraint firstAttribute="trailing" secondItem="ymN-B2-NOr" secondAttribute="trailing" constant="5" id="Kbn-TK-df4"/>
                         <constraint firstItem="VIb-4G-syJ" firstAttribute="centerY" secondItem="Nfo-7E-MtQ" secondAttribute="centerY" id="LGM-q8-jTs"/>
+                        <constraint firstAttribute="height" constant="50" id="LS1-wc-W0b"/>
+                        <constraint firstItem="ymN-B2-NOr" firstAttribute="leading" secondItem="Nfo-7E-MtQ" secondAttribute="leading" constant="5" id="NBy-7X-cIM"/>
                         <constraint firstItem="y0Q-mG-tVt" firstAttribute="width" secondItem="Nfo-7E-MtQ" secondAttribute="width" multiplier="0.2" id="O1o-GS-XnE"/>
                         <constraint firstItem="y0Q-mG-tVt" firstAttribute="leading" secondItem="q5h-Te-Mgf" secondAttribute="trailing" constant="10" id="PUM-kq-WE7"/>
                         <constraint firstItem="VIb-4G-syJ" firstAttribute="leading" secondItem="9M5-hB-dXh" secondAttribute="trailing" constant="10" id="Qe7-oW-yDF"/>

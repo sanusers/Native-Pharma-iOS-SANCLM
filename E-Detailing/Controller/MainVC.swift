@@ -140,6 +140,8 @@ class MainVC : UIViewController {
             // Fallback on earlier versions
         }
         
+        self.lblDate.text = Date().toString(format: "dd MMMM yyyy")
+        
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
         
         [btnNotification,btnSync,btnProfile].forEach({$0?.Border_Radius(border_height: 0, isborder: true, radius: 25)})
@@ -204,7 +206,7 @@ class MainVC : UIViewController {
         
 //        self.fetch()
 //        self.fetch1()
-        
+        LocationManager.shared.getCurrentLocation()
     }
     
     deinit {
@@ -233,14 +235,14 @@ class MainVC : UIViewController {
     
     @IBAction func dateAction(_ sender: UIButton) {
        
-        if btnDate.isSelected == true {
-            UIView.animate(withDuration: 0.5) { [self] in
-                self.viewDayPlanStatus.alpha = 0
-                self.viewDayPlanStatus.isHidden = true
-            }
-            self.btnDate.isSelected = false
-            return
-        }
+//        if btnDate.isSelected == true {
+//            UIView.animate(withDuration: 0.5) { [self] in
+//                self.viewDayPlanStatus.alpha = 0
+//                self.viewDayPlanStatus.isHidden = true
+//            }
+//            self.btnDate.isSelected = false
+//            return
+//        }
         
         self.viewDayPlanStatus.isHidden = false
         self.viewDayPlanStatus.alpha = 0
@@ -306,8 +308,23 @@ class MainVC : UIViewController {
     
     @IBAction func notificationAction(_ sender: UIButton) {
         
-    }
+//        let vc = UIStoryboard.singleSelectionRightVC
+//        vc.transitioningDelegate = self
+//        vc.modalPresentationStyle = .custom
+////        vc.modalTransitionStyle = .crossDissolve
+//        self.navigationController?.pushViewController(vc, animated: true)
+//        
+//     //   self.present(vc, animated: true)
+        
+        
+        
+            let jointWorkVC = UIStoryboard.multiSelectionVC
+            jointWorkVC.modalPresentationStyle = .overCurrentContext
+            jointWorkVC.transitioningDelegate = self
     
+            self.present(jointWorkVC, animated: true)
+        
+    }
     
     
     @IBAction func masterSyncAction(_ sender: UIButton) {
@@ -335,6 +352,15 @@ class MainVC : UIViewController {
     @IBAction func profileCloseAction(_ sender: UIButton) {
         
         self.viewProfile.isHidden = true
+    }
+    
+    
+    @IBAction func logoutAction(_ sender: UIButton) {
+        
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            AppDefaults.shared.resetLogin()
+            appDelegate.setupRootViewControllers()
+        }
     }
     
     
@@ -401,11 +427,12 @@ class MainVC : UIViewController {
         let url = AppDefaults.shared.webUrl + AppDefaults.shared.iosUrl + "save/dayplan"
         
 
-        let paramString = "{\"tableName\":\"dayplan\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"town_code\":\"\(self.selectedCluster!.code ?? "")\",\"Town_name\":\"\(self.selectedCluster!.name ?? "")\",\"WT_code\":\"\(self.selectedWorktype!.code ?? "")\",\"WTName\":\"\(self.selectedWorktype!.name ?? "")\",\"FwFlg\":\"\(self.selectedWorktype!.fwFlg ?? "")\",\"Remarks\":\"\(self.txtViewRemarks.text!)\",\"location\":\"\",\"InsMode\":\"0\",\"Appver\":\"V2.0.7\",\"Mod\":\"iOS-Edet-New\",\"TPDt\":\"\(Date)\",\"TpVwFlg\":\"0\",\"TP_cluster\":\"\",\"TP_worktype\":\"\"}"
+        let paramString = "{\"tableName\":\"dayplan\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"town_code\":\"\(self.selectedCluster?.code ?? "")\",\"Town_name\":\"\(self.selectedCluster?.name ?? "")\",\"WT_code\":\"\(self.selectedWorktype!.code ?? "")\",\"WTName\":\"\(self.selectedWorktype!.name ?? "")\",\"FwFlg\":\"\(self.selectedWorktype!.fwFlg ?? "")\",\"Remarks\":\"\(self.txtViewRemarks.text!)\",\"location\":\"\",\"InsMode\":\"0\",\"Appver\":\"V2.0.7\",\"Mod\":\"iOS-Edet-New\",\"TPDt\":\"\(Date)\",\"TpVwFlg\":\"0\",\"TP_cluster\":\"\",\"TP_worktype\":\"\"}"
         
+        
+        print(paramString)
         
         let params = ["data" : paramString]
-        
         
         AF.request(url,method: .post,parameters: params).responseData(){ (response) in
             
@@ -516,9 +543,10 @@ class MainVC : UIViewController {
         
         let params = ["data" : paramString]
         
+        print(url)
+        print(paramString)
         
         AF.request(url,method: .post,parameters: params).responseData(){ (response) in
-            
             
             switch response.result {
                 
@@ -526,16 +554,13 @@ class MainVC : UIViewController {
                     do {
                         let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
                         
-                        
                         print("ssususnbjbo")
                         print(apiResponse)
                         print("ssusus")
                         
-                        
-                        if let response = apiResponse as? [[String : Any]] {
+                        if let response = apiResponse as? [[String : Any]]{
                             
                         }
-                        
                     }catch {
                         print(error)
                     }
@@ -604,7 +629,6 @@ class MainVC : UIViewController {
                 case .success(_):
                     do {
                         let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                        
                         
                         print("ssususnbjbo")
                         print(apiResponse)
@@ -803,7 +827,7 @@ extension MainVC : collectionViewProtocols {
                 return 4
             case self.eventCollectionView:
                 return eventArr.count
-            default :
+            default:
                 return 0
         }
     }
@@ -1005,7 +1029,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             case sideMenuTableView:
             if menuList[indexPath.row] == "Near Me" {
                 
-                let nearMe = UIStoryboard.nearMe
+                let nearMe = UIStoryboard.nearMeVC
                 self.navigationController?.pushViewController(nearMe, animated: true)
                 
             }else if menuList[indexPath.row] == "Leave Application" {
@@ -1025,7 +1049,23 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print(date)
         
+        self.lblDate.text = date.toString(format: "yyyy-MM-dd HH:mm:")
         
+        
+        
+        let dateformatter = DateFormatter()
+        let month = DateFormatter()
+        dateformatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM dd, yyyy", options: 0, locale: calendar.locale)
+        month.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM yyyy", options: 0, locale: calendar.locale)
+        
+        
+        self.lblDate.text = dateformatter.string(from: date)
+        
+        
+        UIView.animate(withDuration: 0.5) { [self] in
+            self.viewDayPlanStatus.alpha = 0
+            self.viewDayPlanStatus.isHidden = true
+        }
         
     }
     
@@ -1045,6 +1085,14 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         return cell
     }
     
+}
+
+extension MainVC : UIViewControllerTransitioningDelegate{
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let presenter = CustomPresentationController(presentedViewController: presented, presenting: presenting)
+        presenter.presentedViewFrame = presented.view.frame
+        return presenter
+    }
 }
 
 

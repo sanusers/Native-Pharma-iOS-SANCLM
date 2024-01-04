@@ -15,6 +15,25 @@ enum TaggingType : String {
     case chemist = "C"
     case stockist = "S"
     case unlistedDoctor = "U"
+    
+    
+    var name : String {
+        
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        switch self {
+            
+        case .doctor:
+            return appsetup.docCap
+        case .chemist:
+            return appsetup.chmCap
+        case .stockist:
+            return appsetup.stkCap
+        case .unlistedDoctor:
+            return appsetup.nlCap
+        }
+    }
+    
 }
 
 class NearMeVC : UIViewController {
@@ -47,7 +66,16 @@ class NearMeVC : UIViewController {
     
     var tagType : TaggingType = .doctor {
         didSet {
-            self.showAllTaggedList()
+            
+            LocationManager.shared.getCurrentLocation{ (coordinate) in
+                print("location == \(coordinate)")
+                let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
+                self.viewMapView.camera =  camera
+                self.currentLocation = coordinate
+                self.drawCircle()
+                self.showAllTaggedList()
+            }
+            // self.showAllTaggedList()
         }
     }
     
@@ -89,7 +117,7 @@ class NearMeVC : UIViewController {
          
         LocationManager.shared.getCurrentLocation{ (coordinate) in
             print("location == \(coordinate)")
-            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 17)
+            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
             self.viewMapView.camera =  camera
             self.currentLocation = coordinate
             self.drawCircle()
@@ -102,6 +130,21 @@ class NearMeVC : UIViewController {
         
         
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        LocationManager.shared.getCurrentLocation{ (coordinate) in
+            print("location == \(coordinate)")
+            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
+            self.viewMapView.camera =  camera
+            self.currentLocation = coordinate
+            self.drawCircle()
+            self.showAllTaggedList()
+        }
+        
+    }
+    
     
     deinit {
         print("NearMeVC deallocated")
@@ -198,7 +241,6 @@ class NearMeVC : UIViewController {
                             marker.icon = UIImage(named: "locationRed")
                             marker.title = doctor.name ?? ""
                             marker.snippet = doctor.addrs ?? ""
-                            
                             marker.addObserver(self, forKeyPath: "\(doctor.code ?? "")", context: nil)
                             
                             marker.map = viewMapView
@@ -209,9 +251,9 @@ class NearMeVC : UIViewController {
                             
                         //    self.visitTableView.addObserver(<#T##observer: NSObject##NSObject#>, forKeyPath: <#T##String#>, context: <#T##UnsafeMutableRawPointer?#>)
                             
+                            let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distance)")))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distanceRound)")))
                         }
                     }
                 }
@@ -240,7 +282,9 @@ class NearMeVC : UIViewController {
                             marker.snippet = chemist.addr ?? ""
                             marker.map = viewMapView
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distance)")))
+                            let distanceRound = Double(round(1000 * distance) / 1000)
+                            
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distanceRound)")))
                         }
                     }
                 }
@@ -268,7 +312,10 @@ class NearMeVC : UIViewController {
                             marker.title = stockist.name ?? ""
                             marker.snippet = stockist.addr ?? ""
                             marker.map = viewMapView
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distance)")))
+                            
+                            let distanceRound = Double(round(1000 * distance) / 1000)
+                            
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distanceRound)")))
                         }
                     }
                 }
@@ -298,8 +345,9 @@ class NearMeVC : UIViewController {
                             marker.snippet = unlistedDoctor.addrs ?? ""
                             marker.map = viewMapView
                             
+                            let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distance)")))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distanceRound)")))
                         }
                     }
                 }
@@ -345,7 +393,7 @@ class NearMeVC : UIViewController {
         
         LocationManager.shared.getCurrentLocation{ (coordinate) in
             print("location == \(coordinate)")
-            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 17)
+            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
             self.viewMapView.camera =  camera
             self.currentLocation = coordinate
             self.drawCircle()
@@ -359,7 +407,7 @@ class NearMeVC : UIViewController {
         
         LocationManager.shared.getCurrentLocation{ (coordinate) in
             print("location == \(coordinate)")
-            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 17)
+            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
             self.viewMapView.camera =  camera
             self.currentLocation = coordinate
             self.drawCircle()
@@ -404,6 +452,14 @@ extension NearMeVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DcrTagTitleCell", for: indexPath) as! DcrTagTitleCell
         cell.title = self.visitListViewModel.fetchTitleAtIndex(indexPath.row)
+        
+        if self.tagType.name == self.visitListViewModel.fetchTitleAtIndex(indexPath.row).name {
+            cell.viewTitle.backgroundColor = UIColor.lightGray
+        }else {
+            cell.viewTitle.backgroundColor = UIColor.clear
+        }
+        
+        
         return cell
     }
     

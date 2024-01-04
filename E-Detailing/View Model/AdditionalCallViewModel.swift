@@ -16,7 +16,6 @@ class AdditionalCallsListViewModel {
         additionalCallListViewModel.append(vm)
     }
     
-    
     func numberOfSelectedRows() -> Int {
         return additionalCallListViewModel.count
     }
@@ -34,20 +33,95 @@ class AdditionalCallsListViewModel {
     }
     
     func removeById(id : String) {
-        additionalCallListViewModel.removeAll{$0.code == id}
+        additionalCallListViewModel.removeAll{$0.docCode == id}
     }
         
-    func fetchAdditionalCallData(_ index : Int) -> Objects {
-        let additionalCall = DBManager.shared.getDoctor()
+    func fetchAdditionalCallData(_ index : Int , searchText : String) -> Objects {
+        let additionalCall = searchText == "" ? DBManager.shared.getDoctor() : DBManager.shared.getDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
         let value = self.getAdditionalCallData()
-        let isSelected = value.filter{$0.code.contains(additionalCall[index].code ?? "")}
-        return Objects(Object: additionalCall[index], isSelected:  isSelected.isEmpty ? false : true)
+        let isSelected = value.filter{$0.docCode.contains(additionalCall[index].code ?? "")}
+        return Objects(Object: additionalCall[index], isSelected:  isSelected.isEmpty ? false : true, priority: "")
+    }
+    
+    func numberofAdditionalCalls(searchText : String) -> Int {
+        let additionalCalls = searchText == "" ? DBManager.shared.getDoctor() : DBManager.shared.getDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        return additionalCalls.count
     }
     
     
-    func numberofAdditionalCalls() -> Int {
-        return DBManager.shared.getDoctor().count
+    func addProductAtIndex (_ section : Int, vm : ProductViewModel) {
+        additionalCallListViewModel[section].productSelectedListViewModel.addProductViewModel(vm)
+    }
+    
+    func updateProductAtSection(_ section : Int, index : Int, product : Product) {
+        additionalCallListViewModel[section].productSelectedListViewModel.setProductAtIndex(index, product: product)
+    }
+    
+    func updateProductQtyAtSection(_ section : Int, index : Int, qty : String) {
+        additionalCallListViewModel[section].productSelectedListViewModel.setSampleCountAtIndex(index, qty: qty)
+    }
+    
+    func updateProductAvailableCountAtSection(_ section : Int, index : Int, qty : String){
+        additionalCallListViewModel[section].productSelectedListViewModel.setAvailableCountAtIndex(index, qty: qty)
+    }
+    
+    func updateProductTotalCountAtSection(_ section : Int, index : Int, qty : String){
+        additionalCallListViewModel[section].productSelectedListViewModel.setTotalCountAtIndex(index, qty: qty)
+    }
+    
+    func addInputAtIndex(_ section : Int, vm : InputViewModel) {
+        additionalCallListViewModel[section].inputSelectedListViewModel.addInputViewModel(vm)
+    }
+    
+    func updateInCallSection(_ section : Int , isView : Bool) {
+        additionalCallListViewModel[section].isView = isView
+    }
+    
+    func updateInputAtSection(_ section : Int, index : Int, input : Input) {
+        additionalCallListViewModel[section].inputSelectedListViewModel.setInputAtIndex(index, input: input)
+    }
+    
+    func updateInputAtSection(_ section : Int, index : Int, qty : String){
+        additionalCallListViewModel[section].inputSelectedListViewModel.setInputCodeAtIndex(index, samQty: qty)
+    }
+    
+    func updateInputAtSectionAvailableCount(_ section : Int, index : Int, count : String){
+        additionalCallListViewModel[section].inputSelectedListViewModel.setAvailableCountAtIndex(index, count: count)
+    }
+    
+    func updateInputAtSectionTotalCount(_ section : Int, index : Int, count : String){
+        additionalCallListViewModel[section].inputSelectedListViewModel.setTotalCountAtIndex(index, count: count)
+    }
+    
+    func deleteProductAtIndex(_ section : Int,index: Int){
+        additionalCallListViewModel[section].productSelectedListViewModel.removeAtIndex(index)
+    }
+    
+    func deleteInputAtIndex (_ section : Int,index: Int){
+        additionalCallListViewModel[section].inputSelectedListViewModel.removeAtIndex(index)
+    }
+    
+    func fetchProductAtIndex(_ section : Int, index : Int) -> ProductViewModel {
+        additionalCallListViewModel[section].productSelectedListViewModel.fetchDataAtIndex(index)
+    }
+    
+    func fetchInputAtIndex(_ section : Int, index : Int) -> InputViewModel {
+        additionalCallListViewModel[section].inputSelectedListViewModel.fetchDataAtIndex(index)
+    }
+    
+    func numberOfProductsInSection(_ section : Int) -> Int{
+        if additionalCallListViewModel.isEmpty {
+            return 0
+        }
+        return additionalCallListViewModel[section].productSelectedListViewModel.numberOfRows()
+    }
+    
+    func numberOfInputsInSection(_ section : Int) -> Int {
+        if additionalCallListViewModel.isEmpty {
+            return 0
+        }
+        return additionalCallListViewModel[section].inputSelectedListViewModel.numberOfRows()
     }
     
 }
@@ -55,24 +129,36 @@ class AdditionalCallsListViewModel {
 class AdditionalCallViewModel {
     
     let additionalCall : DoctorFencing
+    var isView : Bool
     
-    init(additionalCall: DoctorFencing) {
+    var productSelectedListViewModel = ProductSelectedListViewModel()
+    var inputSelectedListViewModel = InputSelectedListViewModel()
+    
+    let products = [ProductViewModel]()
+    
+    let inputs  = [InputViewModel]()
+    
+    init(additionalCall: DoctorFencing, isView: Bool, productSelectedListViewModel: ProductSelectedListViewModel = ProductSelectedListViewModel(), inputSelectedListViewModel: InputSelectedListViewModel = InputSelectedListViewModel()) {
         self.additionalCall = additionalCall
+        self.isView = isView
+        self.productSelectedListViewModel = productSelectedListViewModel
+        self.inputSelectedListViewModel = inputSelectedListViewModel
     }
     
-    var name : String {
+    
+    var docName : String {
         return additionalCall.name ?? ""
     }
     
-    var code : String {
+    var docCode : String {
         return additionalCall.code ?? ""
     }
     
-    var townCode : String {
+    var docTownCode : String {
         return additionalCall.townCode ?? ""
     }
     
-    var townName : String {
+    var docTownName : String {
         return additionalCall.townName ?? ""
     }
     

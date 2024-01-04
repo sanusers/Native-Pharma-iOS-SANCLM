@@ -48,9 +48,9 @@ class ConfigVC : UIViewController {
         
         print(deviceid ?? "")
         
-        self.txtWebUrl.text = "crm.saneforce.in"
-        
-        self.txtLicenceKey.text = "PHP"
+//        self.txtWebUrl.text = "crm.saneforce.in"
+//        
+//        self.txtLicenceKey.text = "PHP"
         
         self.txtDeviceId.text = "\(uuid ?? "")"
         
@@ -100,9 +100,7 @@ class ConfigVC : UIViewController {
     
     
     @IBAction func saveSettingsAction(_ sender: UIButton) {
-        print("save")
         
-        let v = self.txtWebUrl.text
         if self.txtWebUrl.text!.isEmpty {
             self.showToast(controller: self, message: "Please Enter Web URL", seconds: 2.0)
             return

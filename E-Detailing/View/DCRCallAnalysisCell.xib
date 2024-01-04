@@ -35,12 +35,12 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vmG-Vh-vOm" customClass="UICircularProgressRing" customModule="UICircularProgressRing">
-                                        <rect key="frame" x="157" y="40" width="100" height="100"/>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vmG-Vh-vOm" customClass="UICircularProgressRing" customModule="UICircularProgressRing">
+                                        <rect key="frame" x="157" y="40" width="80" height="82.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EdU-MA-mab">
-                                        <rect key="frame" x="15" y="60" width="122" height="25"/>
+                                        <rect key="frame" x="15" y="60" width="132" height="25"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -50,10 +50,10 @@
                                 <constraints>
                                     <constraint firstItem="vYZ-5Y-koy" firstAttribute="leading" secondItem="5AC-j3-ifV" secondAttribute="leading" constant="15" id="25w-FW-xhF"/>
                                     <constraint firstAttribute="height" constant="150" id="ArB-6g-Pp1"/>
-                                    <constraint firstItem="vmG-Vh-vOm" firstAttribute="height" secondItem="5AC-j3-ifV" secondAttribute="height" multiplier="0.666667" id="HCk-Av-G2M"/>
-                                    <constraint firstItem="vmG-Vh-vOm" firstAttribute="width" secondItem="5AC-j3-ifV" secondAttribute="width" multiplier="0.374532" id="I1d-ma-QOp"/>
+                                    <constraint firstItem="vmG-Vh-vOm" firstAttribute="height" secondItem="5AC-j3-ifV" secondAttribute="height" multiplier="0.55" id="HCk-Av-G2M"/>
+                                    <constraint firstItem="vmG-Vh-vOm" firstAttribute="width" secondItem="5AC-j3-ifV" secondAttribute="width" multiplier="0.3" id="I1d-ma-QOp"/>
                                     <constraint firstAttribute="trailing" secondItem="vmG-Vh-vOm" secondAttribute="trailing" constant="10" id="KQl-CF-PLS"/>
-                                    <constraint firstItem="vmG-Vh-vOm" firstAttribute="leading" secondItem="EdU-MA-mab" secondAttribute="trailing" constant="20" id="Zid-qO-a0A"/>
+                                    <constraint firstItem="vmG-Vh-vOm" firstAttribute="leading" secondItem="EdU-MA-mab" secondAttribute="trailing" constant="30" id="Zid-qO-a0A"/>
                                     <constraint firstItem="EdU-MA-mab" firstAttribute="leading" secondItem="5AC-j3-ifV" secondAttribute="leading" constant="15" id="aEx-Kh-uej"/>
                                     <constraint firstAttribute="trailing" secondItem="vYZ-5Y-koy" secondAttribute="trailing" constant="15" id="g4G-Jm-HJk"/>
                                     <constraint firstItem="vYZ-5Y-koy" firstAttribute="top" secondItem="5AC-j3-ifV" secondAttribute="top" constant="15" id="gtW-O2-ODJ"/>

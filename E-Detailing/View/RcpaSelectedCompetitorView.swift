@@ -21,8 +21,26 @@ class RcpaSelectedCompetitorView : UIView {
     @IBOutlet weak var lblRemarks: UILabel!
     
     
+    
+    var rcpa : RcpaHeaderData! {
+        didSet {
+            self.lblCompetitorCompany.text = rcpa.competitorCompanyName
+            self.lblCompetitorBrand.text = rcpa.competitorBrandName
+            self.lblQty.text = rcpa.competitorQty
+            self.lblRate.text = rcpa.competitorRate
+            self.lblValue.text = rcpa.competitorTotal
+            self.lblRemarks.text = rcpa.remarks
+        }
+    }
+    
+       
     override func awakeFromNib() {
         super.awakeFromNib()
+    }
+    
+    
+    class func instanceFromNib() -> RcpaSelectedCompetitorView{
+        return Bundle.main.loadNibNamed("RcpaSelectedCompetitorView", owner: self, options: nil)?.first as! RcpaSelectedCompetitorView
     }
     
 }

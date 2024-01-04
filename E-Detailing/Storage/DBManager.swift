@@ -148,9 +148,11 @@ class DBManager {
         case .visitControl:
             self.saveVisitControlData(values: Values)
         case .stockBalance:
-            break
+            self.saveStockBalance(values: Values)
         case .mapCompDet:
             self.saveMapCompDetData(values: Values)
+        case .empty:
+            break
         }
     }
     
@@ -938,6 +940,30 @@ class DBManager {
         self.saveContext()
     }
     
+    
+    func saveStockBalance(values : [[String : Any]]) {
+        self.deleteStockBalance()
+        guard let stock = values.first else{
+            return
+        }
+
+        let masterData = self.getMasterData()
+        let mContextnew = self.managedContext()
+        let StockEntity = NSEntityDescription.entity(forEntityName: "StockBalance", in: mContextnew)
+        let stockItem = StockBalance(entity: StockEntity!, insertInto: mContextnew)
+        stockItem.setValues(fromDictionary: stock, context: mContextnew)
+        masterData.stockBalance = stockItem
+        self.saveContext()
+    }
+    
+    func deleteStockBalance() {
+        let masterData = self.getMasterData()
+        if let list = masterData.stockBalance {
+            self.managedContext().delete(list)
+        }
+        self.saveContext()
+    }
+    
     func saveMapCompDetData(values : [[String : Any]]){
         self.deleteMapCompDetData()
         let masterData = self.getMasterData()
@@ -1255,6 +1281,11 @@ class DBManager {
             return item1.index < item2.index
         }
         return array
+    }
+    
+    func getStockBalance() -> StockBalance? {
+        let masterData = self.getMasterData()
+        return masterData.stockBalance
     }
 }
 

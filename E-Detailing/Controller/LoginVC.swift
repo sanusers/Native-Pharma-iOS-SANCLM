@@ -30,7 +30,6 @@ class LoginVC : UIViewController {
         super.viewDidLoad()
         
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-     //   self.navigationController?.isNavigationBarHidden = true
         _ = AppDefaults.shared.getConfig()
         
         let storedImgData = AppDefaults.shared.getConfig()

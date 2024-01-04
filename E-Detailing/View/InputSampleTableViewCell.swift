@@ -13,20 +13,19 @@ class InputSampleTableViewCell : UITableViewCell {
     
     
     @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var txtInputCount: UITextField!
     @IBOutlet weak var txtSampleQty: UITextField!
     @IBOutlet weak var btnDelete: UIButton!
+    
+    
+    @IBOutlet weak var viewSampleQty: UIView!
     
     
     var inputSample : InputViewModel! {
         didSet {
             self.lblName.text = inputSample.name
             self.txtSampleQty.text = inputSample.inputCount
-        }
-    }
-    
-    var jointWorkSample : JointWorkViewModel! {
-        didSet {
-            self.lblName.text = jointWorkSample.name
+            self.txtInputCount.text = inputSample.availableCount
         }
     }
     

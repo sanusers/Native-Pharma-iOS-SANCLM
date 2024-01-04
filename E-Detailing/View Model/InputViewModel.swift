@@ -12,30 +12,30 @@ class InputSelectedListViewModel {
     private var inputViewModel = [InputViewModel]()
     
     
-    let input = [Input]()
-    
-    func fetchInputData(_ index : Int) -> Objects {
-        let input = DBManager.shared.getInput()
+    func fetchInputData(_ index : Int, searchText : String) -> Objects {
+        let input = searchText == "" ? DBManager.shared.getInput() : DBManager.shared.getInput().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        
         let value = self.inputData()
         
         let isSelected = value.filter{$0.code.contains(input[index].code ?? "")}
-        return Objects(Object:input[index], isSelected: isSelected.isEmpty ? false : true)
+        return Objects(Object:input[index], isSelected: isSelected.isEmpty ? false : true, priority: "")
     }
     
-    func numberOfInputs () -> Int{
-        return DBManager.shared.getInput().count
+    func numberOfInputs (searchText : String) -> Int{
+        let inputs = searchText == "" ? DBManager.shared.getInput() : DBManager.shared.getInput().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        return inputs.count
     }
     
     
-    func addInputViewModel(_ vm : InputViewModel) {
+    func addInputViewModel(_ vm : InputViewModel){
         inputViewModel.append(vm)
     }
     
-    func numberOfRows(_ section: Int) -> Int {
+    func numberOfRows() -> Int{
         return inputViewModel.count
     }
     
-    func inputData() -> [InputViewModel] {
+    func inputData() -> [InputViewModel]{
         return inputViewModel
     }
     
@@ -47,14 +47,25 @@ class InputSelectedListViewModel {
         inputViewModel.removeAll{$0.code == id}
     }
     
-    func fetchDataAtIndex(_ index : Int) -> InputViewModel {
+    func fetchDataAtIndex(_ index : Int) -> InputViewModel{
         return inputViewModel[index]
     }
     
-    func setInputCodeAtIndex(_ index : Int , samQty : String) {
+    func setInputCodeAtIndex(_ index : Int , samQty : String){
         inputViewModel[index].input.updateInputCount(samQty)
     }
     
+    func setAvailableCountAtIndex(_ index : Int , count : String){
+        inputViewModel[index].input.availableCount(count)
+    }
+    
+    func setTotalCountAtIndex(_ index : Int , count : String) {
+        inputViewModel[index].input.totalCount(count)
+    }
+    
+    func setInputAtIndex(_ index : Int , input : Input){
+        inputViewModel[index].input.updateInput(input)
+    }
     
 }
 
@@ -62,39 +73,62 @@ class InputViewModel {
     
     var input : InputData
     
-    init(input: InputData) {
+    init(input: InputData){
         self.input = input
     }
     
-    var name : String {
-        return input.input.name ?? ""
+    var name : String{
+        return input.input?.name ?? ""
     }
     
-    var code : String {
-        return input.input.code ?? ""
+    var code : String{
+        return input.input?.code ?? ""
     }
     
-    var inputCount : String {
+    var inputCount : String{
         return input.inputCount
+    }
+    
+    var availableCount : String {
+        return input.availableCount
+    }
+    
+    var totalCount : String {
+        return input.totalCount
     }
 }
 
 
 
 struct InputData {
-    var input : Input
+    var input : Input?
+    var availableCount : String
+    var totalCount : String
     var inputCount : String
     
-    mutating func updateInputCount(_ value : String) {
+    mutating func updateInput (_ selectedInput : Input){
+        input = selectedInput
+    }
+    
+    mutating func updateInputCount(_ value : String){
         inputCount = value
     }
     
+    mutating func availableCount(_ value : String) {
+        availableCount = value
+    }
+    
+    mutating func totalCount(_ value : String) {
+        totalCount = value
+    }
 }
 
 
- 
 struct Objects {
     var Object : AnyObject
     var isSelected : Bool
+    var priority : String
 }
- 
+
+
+

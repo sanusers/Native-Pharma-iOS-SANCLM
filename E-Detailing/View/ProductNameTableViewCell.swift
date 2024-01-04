@@ -18,6 +18,13 @@ class ProductNameTableViewCell : UITableViewCell {
     @IBOutlet weak var lblName: UILabel!
     
     
+    var product : Objects! {
+        didSet {
+            lblName.text = product.Object.name
+            btnSelected.isSelected = product.isSelected
+        }
+    }
+    
     var input : Objects! {
         didSet {
             lblName.text = input.Object.name

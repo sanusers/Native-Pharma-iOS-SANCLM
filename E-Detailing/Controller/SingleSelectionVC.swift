@@ -87,12 +87,11 @@ extension SingleSelectionVC : tableViewProtocols {
             
             if let index = self.originalList.firstIndex(where: { (list) -> Bool in
                 
-                
                 return list.code == lists.code
             }){
                 if let completion = self.completion {
                     completion(index)
-                }
+                }  
             }
             self.dismiss(animated: true)
             return 

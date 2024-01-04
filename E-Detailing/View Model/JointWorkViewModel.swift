@@ -43,13 +43,12 @@ class JointWorksListViewModel {
     
     func fetchJointWorkData(_ index : Int) -> Objects {
         
-        
         let jointWorks = DBManager.shared.getJointWork()
         
         let value = self.getJointWorkData()
         let isSelected = value.filter{$0.code.contains(jointWorks[index].code ?? "")}
         
-        return Objects(Object: jointWorks[index], isSelected: isSelected.isEmpty ? false : true)
+        return Objects(Object: jointWorks[index], isSelected: isSelected.isEmpty ? false : true, priority: "")
     }
     
     func numbersOfJointWorks() -> Int {
