@@ -13,6 +13,7 @@
 		3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */; };
 		3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3813B35E2A20E9AE006F3B78 /* Config.swift */; };
 		384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384ED2BC2A39F8B900285B02 /* AppDefaults.swift */; };
+		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */; };
 		38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */; };
