@@ -35,6 +35,9 @@ extension Product {
         if let pSlNoValue = dictionary["pSlNo"] as? String{
             pSlNo = pSlNoValue
         }
+        if let productModeValue = dictionary["Product_Mode"] as? String{
+            productMode = productModeValue
+        }
         mapId = id
     }
 }
@@ -94,6 +97,12 @@ extension Competitor {
         }
         if let compSlNoValue = dictionary["Comp_Sl_No"] as? String{
             compSlNo = compSlNoValue
+        }
+        if let ourProductCodeValue = dictionary["Our_prd_code"] as? String{
+            ourProductCode = ourProductCodeValue
+        }
+        if let ourProductNameValue = dictionary["Our_prd_name"] as? String{
+            ourProductName = ourProductNameValue
         }
     }
 }

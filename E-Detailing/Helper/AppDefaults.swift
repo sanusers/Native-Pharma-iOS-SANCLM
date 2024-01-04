@@ -110,6 +110,12 @@ class AppDefaults {
     }
     
     
+    func resetLogin() {
+        self.userdefaults.removeObject(forKey: keys.appSetUp.rawValue)
+        self.userdefaults.synchronize()
+    }
+    
+    
     func save<T>(key : keys,value : T) {
         self.userdefaults.set(value, forKey: key.rawValue)
         self.userdefaults.synchronize()

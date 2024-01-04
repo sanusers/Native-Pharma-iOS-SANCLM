@@ -246,7 +246,7 @@ struct AppSetUp {
     var sepRcpaNeed :Int!
     var sequentailDcr : Int!
     var srtNeed : Int!
-    var stateCode : String!
+    var stateCode : Int!
     var stkCap :String!
     var stkEventMdNeed : Int!
     var stkNeed :Int!
@@ -1459,7 +1459,14 @@ struct AppSetUp {
             srtNeed = Int(srtNd)
         }
         
-        stateCode = dictionary["State_Code"] as? String
+ //       stateCode = dictionary["State_Code"] as? String
+        
+        
+        if let stateCodeValue = dictionary["State_Code"] as? Int {
+            stateCode = stateCodeValue
+        }else if let stateCodeValue = dictionary["State_Code"] as? String {
+            stateCode = Int(stateCodeValue)
+        }
         
         stkCap = dictionary["StkCap"] as? String
         

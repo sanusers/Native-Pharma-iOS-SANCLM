@@ -67,6 +67,9 @@ extension DoctorFencing {
         if let plcyAcptFlValue = dictionary["PlcyAcptFl"] as? String{
             plcyAcptFl = plcyAcptFlValue
         }
+        if let productCodeValue = dictionary["Product_Code"] as? String{
+            productCode = productCodeValue
+        }
         if let resAddrValue = dictionary["ResAddr"] as? String{
             resAddr = resAddrValue
         }

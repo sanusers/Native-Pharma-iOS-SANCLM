@@ -106,10 +106,10 @@ extension UISegmentedControl{
         let lineWidth: CGFloat = self.bounds.size.width / CGFloat(self.numberOfSegments)
         let lineHeight: CGFloat = 1.6
         let lineXPosition = CGFloat(selectedSegmentIndex * Int(lineWidth))
-        let lineYPosition = self.bounds.size.height - 2.0
+        let lineYPosition = self.bounds.size.height  - 2.0
         let underlineFrame = CGRect(x: lineXPosition, y: lineYPosition, width: lineWidth, height: lineHeight)
         let underLine = UIView(frame: underlineFrame)
-        underLine.backgroundColor = UIColor(rgb: 2632252) // bottom line color
+        underLine.backgroundColor = AppColors.primaryColor // UIColor(rgb: 2632252) // bottom line color
         underLine.tag = 1
         self.addSubview(underLine)
     }

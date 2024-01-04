@@ -21,6 +21,8 @@ enum MasterCellType : Int {
     case slides = 8
     case Product = 9
     case input = 10
+    case cluster = 11
+    case stockBalance = 12
     
     var name : String {
         switch self {
@@ -47,6 +49,10 @@ enum MasterCellType : Int {
             return "Product"
         case .input:
             return "input"
+        case .cluster:
+            return "Cluster"
+        case .stockBalance:
+            return "Stock Balance"
         }
     }
     
@@ -56,25 +62,29 @@ enum MasterCellType : Int {
         case .syncAll:
             return [MasterInfo.slides,MasterInfo.worktype]
         case .listedDoctor:
-            return [MasterInfo.doctorFencing,MasterInfo.doctorClass,MasterInfo.category,MasterInfo.speciality,MasterInfo.qualifications,MasterInfo.competitors,MasterInfo.departments,MasterInfo.docFeedback,MasterInfo.syncAll]
+            return [MasterInfo.doctorFencing,MasterInfo.doctorClass,MasterInfo.category,MasterInfo.speciality,MasterInfo.qualifications,MasterInfo.competitors,MasterInfo.departments,MasterInfo.docFeedback,MasterInfo.empty,MasterInfo.syncAll]
         case .chemist:
-            return [MasterInfo.chemists,MasterInfo.syncAll]
+            return [MasterInfo.chemists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .stockist:
-            return [MasterInfo.stockists,MasterInfo.syncAll]
+            return [MasterInfo.stockists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .unLstDoctor:
-            return [MasterInfo.unlistedDoctors,MasterInfo.syncAll]
+            return [MasterInfo.unlistedDoctors,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .cip:
-            return [MasterInfo.subordinate,MasterInfo.syncAll]
+            return [MasterInfo.subordinate,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .hospital:
-            return [MasterInfo.subordinateMGR,MasterInfo.syncAll]
+            return [MasterInfo.subordinateMGR,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .subordinate:
             return [MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.syncAll]
         case .slides:
             return [MasterInfo.slides,MasterInfo.slideBrand,MasterInfo.slideSpeciality,MasterInfo.syncAll]
         case .Product:
-            return [MasterInfo.products,MasterInfo.syncAll]
+            return [MasterInfo.products,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .input:
-            return [MasterInfo.inputs,MasterInfo.syncAll]
+            return [MasterInfo.inputs,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+        case .cluster:
+            return [MasterInfo.clusters,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+        case .stockBalance:
+            return [MasterInfo.stockBalance,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         }
     }
 }
@@ -116,7 +126,7 @@ enum MasterInfo : String {
     case subordinate = "Subordinate"
     case subordinateMGR = "Subordinate MGR"
     
-    case doctorFencing = "Doctor Fencing"
+    case doctorFencing = "Listed Doctor"
     case docFeedback = "Doctor Feedback"
     case myDayPlan = "My Day Plan"
     case customSetup = "Custom Setup"
@@ -125,6 +135,7 @@ enum MasterInfo : String {
     case visitControl = "Visit Control"
     case stockBalance = "Stock Balance"
     case mapCompDet = "map Comp Det"
+    case empty = "Empty"
     case syncAll = "Sync All"
     
     var getUrl : String {
@@ -253,6 +264,8 @@ enum MasterInfo : String {
             return MasterSyncParams.stockBalanceParams
         case .mapCompDet:
             return MasterSyncParams.mapCompdetParams
+        case .empty:
+            return [String : Any]()
         }
     }
 }
@@ -377,10 +390,10 @@ struct MasterSyncParams {
     static var competitorParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getcompdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let paramString = "{\"tableName\":\"getmap_compdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
-    }
+    } // getmap_compdet getcompdet
     
     static var slideSpecialityParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
