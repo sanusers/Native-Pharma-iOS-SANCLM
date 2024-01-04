@@ -183,24 +183,19 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         values.append(contentsOf: month2Values)
         values.append(contentsOf: month3Values) // Add 62 to shift to the third month
 
-        
+     // Set the number of labels
         
         // Customize X-axis
         let xAxis = lineChartView.xAxis
+        xAxis.setLabelCount(date.count, force: true)
         xAxis.labelPosition = .bottom
-        
         xAxis.granularityEnabled = true
-        xAxis.granularity = 10
-       // xAxis.axisMinimum = 0
-        //xAxis.axisMaximum = 7
-        xAxis.centerAxisLabelsEnabled = true
-        lineChartView.autoScaleMinMaxEnabled = true
-        lineChartView.extraLeftOffset = 10.0
-        lineChartView.extraRightOffset = 10.0
+        xAxis.granularity = 1.0
+       // lineChartView.autoScaleMinMaxEnabled = true
         xAxis.wordWrapEnabled = false
         
         
-        xAxis.setLabelCount(date.count, force: true) // Set the number of labels
+      
 
         let xValuesNumberFormatter = CustomValueFormatter()
         xValuesNumberFormatter.date = date

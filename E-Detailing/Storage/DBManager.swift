@@ -159,8 +159,8 @@ class DBManager {
             saveWeeklyoff(values: Values)
         case .holidays:
             saveHolidays(values: Values)
-       // case .getHomeData:
-            
+        case .homeSetup:
+            saveHomeData(values: Values)
         default:
             return
         }
@@ -869,8 +869,18 @@ class DBManager {
     }
     
     
+    
+    
+    func deleteHomeData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.holidays?.allObjects as? [Holidays] {
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
     func saveHomeData(values : [[String : Any]]){
-        self.deleteHolidays()
+        self.deleteHomeData()
         let masterData = self.getMasterData()
         var WeeklyoffSetupArray = [Holidays]()
         for (index,workType) in values.enumerated() {

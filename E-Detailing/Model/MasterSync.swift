@@ -93,9 +93,7 @@ enum MasterCellType : Int {
 //                   MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
 
 enum `MasterInfo` : String {
-    case holidays = "Holidays"
-    case weeklyOff = "Weekly Off"
-    case tableSetup = "Table Setup"
+
     case worktype = "Work Types"
     case headquartes = "Headquarters"
     case competitors = "Competitors"
@@ -140,6 +138,10 @@ enum `MasterInfo` : String {
     case empty = "Empty"
     case syncAll = "Sync All"
     case getTP = "Tour Plan"
+    case holidays = "Holidays"
+    case weeklyOff = "Weekly Off"
+    case tableSetup = "Table Setup"
+    case homeSetup = "Charts"
  
     var getUrl : String {
         
@@ -189,6 +191,9 @@ enum `MasterInfo` : String {
             
         case .getTP:
             return String(format: "%@get/tp", mainUrl)
+            
+        case .homeSetup:
+            return String(format: "%@home", mainUrl)
         default :
             return String(format: "%@table/slides", mainUrl) //
         }
@@ -288,6 +293,8 @@ enum `MasterInfo` : String {
             return MasterSyncParams.holidaySetupParams
         case .getTP:
             return MasterSyncParams.tourPlanSetupParams
+        case .homeSetup:
+            return MasterSyncParams.homeDataSetupParams
         }
  
     }
@@ -564,6 +571,19 @@ struct MasterSyncParams {
         
         return ["data" : paramString]
         
+
+    }
+    
+    
+    static var homeDataSetupParams : [String : Any] {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date()).year
+        
+        let paramString = "{\"tableName\":\"gethome\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        
+        return ["data" : paramString]
+        
+        //{"tableName":"gethome","sfcode":"MGR0941","division_code":"63,","Rsf":"MR5990","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,"}
 
     }
     
