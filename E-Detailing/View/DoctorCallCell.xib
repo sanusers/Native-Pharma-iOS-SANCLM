@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,11 +26,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="243" height="188"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RfQ-kG-uP6">
-                        <rect key="frame" x="5" y="5" width="233" height="178"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RfQ-kG-uP6" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="243" height="188"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DDV-JO-jjV">
-                                <rect key="frame" x="10" y="0.0" width="213" height="3"/>
+                                <rect key="frame" x="10" y="0.0" width="223" height="3"/>
                                 <color key="backgroundColor" red="0.94509803921568625" green="0.32549019607843138" blue="0.43137254901960786" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="3" id="rug-b8-kXt"/>
@@ -39,31 +39,44 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cV-R7-acg">
-                                <rect key="frame" x="10" y="18" width="213" height="23.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cV-R7-acg">
+                                <rect key="frame" x="10" y="18" width="223" height="25"/>
                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wiK-cQ-VKY">
-                                <rect key="frame" x="10" y="56.5" width="213" height="21"/>
+                                <rect key="frame" x="10" y="58" width="223" height="22.5"/>
                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
-                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FdZ-5C-kIa">
-                                <rect key="frame" x="10" y="92.5" width="213" height="21"/>
+                                <rect key="frame" x="10" y="95.5" width="223" height="22.5"/>
                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
-                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MMg-Dg-SHr">
-                                <rect key="frame" x="10" y="128.5" width="39.5" height="19"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MMg-Dg-SHr">
+                                <rect key="frame" x="10" y="133" width="39" height="20"/>
                                 <color key="backgroundColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="16"/>
                                 <color key="textColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5cJ-qE-kbN" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                <rect key="frame" x="10" y="133" width="54" height="34"/>
+                                <color key="backgroundColor" red="0.94509803921568625" green="0.32549019607843138" blue="0.43137254901960786" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleColor" red="0.94509803921568625" green="0.32549019607843138" blue="0.43137254901960786" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -71,9 +84,12 @@
                             <constraint firstItem="wiK-cQ-VKY" firstAttribute="top" secondItem="6cV-R7-acg" secondAttribute="bottom" constant="15" id="13E-tv-UbT"/>
                             <constraint firstAttribute="trailing" secondItem="FdZ-5C-kIa" secondAttribute="trailing" constant="10" id="31u-k0-ae1"/>
                             <constraint firstItem="FdZ-5C-kIa" firstAttribute="top" secondItem="wiK-cQ-VKY" secondAttribute="bottom" constant="15" id="3W5-ro-NuE"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="5cJ-qE-kbN" secondAttribute="trailing" constant="15" id="4Px-La-Wre"/>
                             <constraint firstItem="6cV-R7-acg" firstAttribute="top" secondItem="DDV-JO-jjV" secondAttribute="bottom" constant="15" id="9eL-4o-V02"/>
                             <constraint firstItem="FdZ-5C-kIa" firstAttribute="leading" secondItem="RfQ-kG-uP6" secondAttribute="leading" constant="10" id="GhX-Ry-rL8"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="MMg-Dg-SHr" secondAttribute="trailing" constant="10" id="Pkn-vC-01x"/>
+                            <constraint firstItem="5cJ-qE-kbN" firstAttribute="leading" secondItem="RfQ-kG-uP6" secondAttribute="leading" constant="10" id="Q4b-uv-pMe"/>
+                            <constraint firstItem="5cJ-qE-kbN" firstAttribute="top" secondItem="FdZ-5C-kIa" secondAttribute="bottom" constant="15" id="Tdv-ap-QIs"/>
                             <constraint firstAttribute="trailing" secondItem="6cV-R7-acg" secondAttribute="trailing" constant="10" id="YTa-MA-Pf9"/>
                             <constraint firstItem="6cV-R7-acg" firstAttribute="leading" secondItem="RfQ-kG-uP6" secondAttribute="leading" constant="10" id="Yqk-KU-3sm"/>
                             <constraint firstItem="MMg-Dg-SHr" firstAttribute="top" secondItem="FdZ-5C-kIa" secondAttribute="bottom" constant="15" id="bnn-nZ-uXb"/>
@@ -83,17 +99,26 @@
                             <constraint firstItem="MMg-Dg-SHr" firstAttribute="leading" secondItem="RfQ-kG-uP6" secondAttribute="leading" constant="10" id="vTj-F6-jFd"/>
                             <constraint firstItem="DDV-JO-jjV" firstAttribute="leading" secondItem="RfQ-kG-uP6" secondAttribute="leading" constant="10" id="yfX-2g-Yl4"/>
                         </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="shadowColor">
+                                <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="8"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="RfQ-kG-uP6" secondAttribute="trailing" constant="5" id="31k-C0-jd1"/>
-                    <constraint firstItem="RfQ-kG-uP6" firstAttribute="leading" secondItem="njW-XC-fSa" secondAttribute="leading" constant="5" id="5T4-xq-2qI"/>
-                    <constraint firstItem="RfQ-kG-uP6" firstAttribute="top" secondItem="njW-XC-fSa" secondAttribute="top" constant="5" id="PWF-dN-V4b"/>
-                    <constraint firstAttribute="bottom" secondItem="RfQ-kG-uP6" secondAttribute="bottom" constant="5" id="z9V-Qf-CHQ"/>
+                    <constraint firstAttribute="trailing" secondItem="RfQ-kG-uP6" secondAttribute="trailing" id="31k-C0-jd1"/>
+                    <constraint firstItem="RfQ-kG-uP6" firstAttribute="leading" secondItem="njW-XC-fSa" secondAttribute="leading" id="5T4-xq-2qI"/>
+                    <constraint firstItem="RfQ-kG-uP6" firstAttribute="top" secondItem="njW-XC-fSa" secondAttribute="top" id="PWF-dN-V4b"/>
+                    <constraint firstAttribute="bottom" secondItem="RfQ-kG-uP6" secondAttribute="bottom" id="z9V-Qf-CHQ"/>
                 </constraints>
             </collectionViewCellContentView>
             <size key="customSize" width="243" height="188"/>
             <connections>
+                <outlet property="btnTownName" destination="5cJ-qE-kbN" id="blz-GQ-Sfy"/>
                 <outlet property="lblCategory" destination="wiK-cQ-VKY" id="wRb-8H-x4N"/>
                 <outlet property="lblName" destination="6cV-R7-acg" id="Rvi-MA-thz"/>
                 <outlet property="lblSpecialty" destination="FdZ-5C-kIa" id="EyI-ro-4KL"/>
