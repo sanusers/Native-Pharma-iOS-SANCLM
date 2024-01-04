@@ -25,6 +25,17 @@ class ConfigVC : UIViewController {
         super.viewDidLoad()
         
         
+        [txtWebUrl,txtLicenceKey,txtDeviceId,txtLanguage].forEach { textfield in
+            textfield?.layer.borderColor = AppColors.primaryColorWith_25per_alpha.cgColor
+            textfield?.layer.borderWidth = 1.5
+            textfield?.layer.cornerRadius = 5
+            
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
+            
+            textfield?.leftView = paddingView
+            textfield?.leftViewMode = .always
+        }
+        
 //        AF.request("http://crm.sanclm.info/Apps/ConfigiOS.json").responseJSON{ (responseFeed) in
 //            print(responseFeed)
 //            
@@ -103,51 +114,6 @@ class ConfigVC : UIViewController {
         }
         
         self.configUrl()
-        
-        self.saveConfig()
-//        let loginVC = UIStoryboard.loginVC
-//        self.navigationController?.pushViewController(loginVC, animated: true)
-    }
-    
-    
-    func saveConfig() {
-        
-        let webUrl = self.txtWebUrl.text ?? ""
-        
-        let licenseKey = self.txtLicenceKey.text ?? ""
-        
-        
-        let urlStr = "http://\(webUrl)/apps/ConfigiOSEdet.json"
-        
-        
-//        AF.request(urlStr,method: .get,encoding: URLEncoding.default).responseJSON{ (responseFeed) in
-//            print(responseFeed)
-//
-//
-//            switch responseFeed.result {
-//
-//            case .success():
-//                do {
-//
-//                }catch {
-//
-//                }
-//
-//            case .failure():
-//                self.showToast(controller: self, message: "Invalid Access Configuration Url / Connection Failed", seconds: 2.0)
-//
-//            }
-//
-//
-//            self.config = responseFeed.map{AppConfig(fromDictionary: $0)}
-//
-//            print(self.config)
-//
-//
-//        }
-        
-        
-        
     }
     
     
@@ -158,7 +124,7 @@ class ConfigVC : UIViewController {
         
         let licenseKey = self.txtLicenceKey.text ?? ""
         
-        let urlStr = "http://\(webUrl.replacingOccurrences(of: " ", with: ""))/apps/ConfigiOSEdet.json"
+        let urlStr = "http://\(webUrl.replacingOccurrences(of: " ", with: ""))/apps/ConfigiOS.json" // ConfigiOSEdet
         
         
         

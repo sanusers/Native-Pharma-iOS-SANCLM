@@ -60,7 +60,7 @@ class PreCallVC : UIViewController {
         
         lblUnderLine.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
         
-        lblUnderLine.topAnchor.constraint(equalTo: self.segmentControl.bottomAnchor, constant: 0).isActive = true
+        lblUnderLine.topAnchor.constraint(equalTo: self.segmentControl.bottomAnchor, constant: -6).isActive = true
         lblUnderLine.leadingAnchor.constraint(equalTo: self.viewSegmentControl.leadingAnchor, constant: 20).isActive = true
         lblUnderLine.trailingAnchor.constraint(equalTo: self.viewSegmentControl.trailingAnchor, constant: -20).isActive = true
         

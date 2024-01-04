@@ -49,17 +49,11 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="infoPrimary"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VYb-aw-eTt" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                <rect key="frame" x="10" y="90" width="75" height="34"/>
-                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cb-Af-oBf">
+                                <rect key="frame" x="15" y="95" width="373" height="24"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="UgE-fs-KOi"/>
+                                    <constraint firstAttribute="height" constant="24" id="6kG-xx-Ao0"/>
                                 </constraints>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="Visit"/>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cb-Af-oBf">
-                                <rect key="frame" x="145" y="96.5" width="243" height="22.5"/>
                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                                 <color key="textColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -73,14 +67,13 @@
                             <constraint firstItem="jVe-xu-vty" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="10" id="FAH-nN-kC6"/>
                             <constraint firstItem="FRf-Sq-BwW" firstAttribute="top" secondItem="dqd-ZE-RAq" secondAttribute="top" constant="15" id="KeM-4T-7jV"/>
                             <constraint firstAttribute="trailing" secondItem="6cb-Af-oBf" secondAttribute="trailing" constant="15" id="Lv6-Wm-3mU"/>
+                            <constraint firstItem="6cb-Af-oBf" firstAttribute="top" secondItem="jVe-xu-vty" secondAttribute="bottom" constant="20" id="QI9-4V-r1L"/>
                             <constraint firstItem="8XT-2q-VEC" firstAttribute="leading" secondItem="FRf-Sq-BwW" secondAttribute="trailing" constant="15" id="Sda-Y1-uq8"/>
                             <constraint firstAttribute="bottom" secondItem="6cb-Af-oBf" secondAttribute="bottom" constant="15" id="SnQ-3a-r5P"/>
-                            <constraint firstItem="VYb-aw-eTt" firstAttribute="top" secondItem="jVe-xu-vty" secondAttribute="bottom" constant="15" id="ceJ-Yy-jhF"/>
+                            <constraint firstItem="6cb-Af-oBf" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="15" id="St8-Sn-JPE"/>
+                            <constraint firstAttribute="bottom" secondItem="6cb-Af-oBf" secondAttribute="bottom" constant="15" id="cej-Mv-npQ"/>
                             <constraint firstItem="FRf-Sq-BwW" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="10" id="gjg-mx-UDl"/>
                             <constraint firstItem="jVe-xu-vty" firstAttribute="top" secondItem="FRf-Sq-BwW" secondAttribute="bottom" constant="15" id="iZQ-1Y-x1M"/>
-                            <constraint firstItem="6cb-Af-oBf" firstAttribute="leading" secondItem="VYb-aw-eTt" secondAttribute="trailing" constant="60" id="kvz-FM-e7T"/>
-                            <constraint firstAttribute="bottom" secondItem="VYb-aw-eTt" secondAttribute="bottom" constant="10" id="npz-KI-Gse"/>
-                            <constraint firstItem="VYb-aw-eTt" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="10" id="qFI-Cj-BOo"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -93,7 +86,6 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="btnInfo" destination="8XT-2q-VEC" id="8hN-Cr-u24"/>
-                <outlet property="btnVisit" destination="VYb-aw-eTt" id="IRv-xl-80O"/>
                 <outlet property="lblAddress" destination="jVe-xu-vty" id="d5C-IM-v1V"/>
                 <outlet property="lblMeter" destination="6cb-Af-oBf" id="9nk-qt-G3K"/>
                 <outlet property="lblName" destination="FRf-Sq-BwW" id="BQ6-DH-YHV"/>

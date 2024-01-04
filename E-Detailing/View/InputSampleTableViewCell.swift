@@ -32,11 +32,25 @@ class InputSampleTableViewCell : UITableViewCell {
     
     var additionalCallSample : AdditionalCallViewModel! {
         didSet {
-            self.lblName.text = additionalCallSample.name
+            self.lblName.text = additionalCallSample.docName
         }
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        [txtInputCount,txtSampleQty].forEach { textfield in
+            
+            textfield?.layer.borderColor = AppColors.primaryColorWith_25per_alpha.cgColor
+            textfield?.layer.borderWidth = 1.5
+            textfield?.layer.cornerRadius = 5
+            
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
+            
+            textfield?.leftView = paddingView
+            textfield?.leftViewMode = .always
+            
+        }
+        
     }
 }

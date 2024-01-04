@@ -27,7 +27,7 @@ class TagViewCell: UITableViewCell {
         didSet {
             self.lblName.text = visitDetail.name
             self.lblAddress.text = visitDetail.address
-            self.lblMeter.text = visitDetail.meter + "Meter"
+            self.lblMeter.text = visitDetail.meter + "  Meter"
         }
     }
     

@@ -17,6 +17,45 @@ enum DCRType : Int {
     case hospital = 4
     case cip = 5
     
+    
+    
+    var productNeed : Int {
+        let appSetup = AppDefaults.shared.getAppSetUp()
+        switch self {
+            case .doctor:
+                return appSetup.dpNeed
+            case .chemist:
+                return appSetup.cpNeed
+            case .stockist:
+                return appSetup.spNeed
+            case .unlistedDoctor:
+                return appSetup.npNeed
+            case .hospital:
+                return 1
+            case .cip:
+                return appSetup.cipPNeed
+        }
+    }
+    
+    var inputNeed : Int {
+        let appSetup = AppDefaults.shared.getAppSetUp()
+        switch self {
+        case .doctor:
+            return appSetup.diNeed
+        case .chemist:
+            return appSetup.ciNeed
+        case .stockist:
+            return appSetup.siNeed
+        case .unlistedDoctor:
+            return appSetup.niNeed
+        case .hospital:
+            return 1
+        case .cip:
+            return appSetup.cipINeed
+        }
+    }
+    
+    
 }
 
 
@@ -26,15 +65,22 @@ class CallVC : UIViewController {
     
     @IBOutlet weak var callCollectionView: UICollectionView!
     
+    
+    @IBOutlet weak var headerCollectionView: UICollectionView!
+    
     @IBOutlet weak var viewSegmentControl: UIView!
     
     
     private var dcrSegmentControl : UISegmentedControl!
     private var callListViewModel : CallListViewModel!
     
-    var doctor = [DoctorFencing]()
+    var dcrActivityType = [DcrActivityType]()
+    
+    var searchText : String = ""
     
     private var CallListArray = CallListViewModel()
+    
+    var type : DCRType!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,13 +91,19 @@ class CallVC : UIViewController {
         
         self.callCollectionView.collectionViewLayout = layout
         
-        self.doctor = DBManager.shared.getDoctor()
+        let headerLayout = UICollectionViewFlowLayout()
+        headerLayout.scrollDirection = .horizontal
+        self.headerCollectionView.collectionViewLayout = headerLayout
         
         self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
         
         self.txtSearch.addTarget(self, action: #selector(searchFilterAction(_:)), for: .editingChanged)
         
-        updateSegment()
+      //  updateSegment()
+        
+        updateDcrList()
+        
+        self.type = .doctor
     }
     
     deinit {
@@ -60,18 +112,39 @@ class CallVC : UIViewController {
     
     @objc func searchFilterAction (_ sender : UITextField) {
         print(sender.text!)
+        self.searchText = sender.text ?? ""
+        self.callCollectionView.reloadData()
+    }
+    
+    
+    private func updateDcrList (){
         
-        let text = sender.text ?? ""
+        let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let doctor = DBManager.shared.getDoctor()
+        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.docCap, type: .doctor)))
         
-        if !sender.text!.isEmpty {
-            self.doctor = doctor.filter{($0.name?.lowercased() ?? "").contains(text.lowercased())}
-            self.callCollectionView.reloadData()
-        }else {
-            self.doctor = DBManager.shared.getDoctor()
-            self.callCollectionView.reloadData()
+        if appsetup.chmNeed == 0 {
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.chmCap, type: .chemist)))
         }
+        
+        if appsetup.stkNeed == 0 {
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.stkCap, type: .stockist)))
+        }
+        
+        if appsetup.unlNeed == 0 {
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.nlCap, type: .unlistedDoctor)))
+        }
+        
+        if appsetup.hospNeed == 0 {
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption, type: .hospital)))
+        }
+        
+        if appsetup.cipNeed == 0 {
+            self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption, type: .cip)))
+        }
+        
+        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption, type: .hospital)))
+        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption, type: .cip)))
     }
     
     private func updateSegment() {
@@ -82,9 +155,6 @@ class CallVC : UIViewController {
         
             dcrList.append("Listed Doctor")
         
-            if appsetup.docNeed == 0 {
-                dcrList.append("Listed Doctor")
-            }
             if appsetup.chmNeed == 0 {
                 dcrList.append("Chemist")
             }
@@ -130,7 +200,7 @@ class CallVC : UIViewController {
         self.viewSegmentControl.addSubview(lblUnderLine)
         
         lblUnderLine.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
-        lblUnderLine.topAnchor.constraint(equalTo: self.dcrSegmentControl.bottomAnchor, constant: 0).isActive = true
+        lblUnderLine.topAnchor.constraint(equalTo: self.dcrSegmentControl.bottomAnchor, constant: -6).isActive = true
         lblUnderLine.leadingAnchor.constraint(equalTo: self.dcrSegmentControl.leadingAnchor, constant: 15).isActive = true
         lblUnderLine.trailingAnchor.constraint(equalTo: self.viewSegmentControl.trailingAnchor, constant: -15).isActive = true
         
@@ -151,28 +221,86 @@ class CallVC : UIViewController {
 
 extension CallVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.CallListArray.numberofDoctorsRows(DCRType(rawValue: self.dcrSegmentControl.selectedSegmentIndex)!)
+        
+        switch collectionView {
+            case self.callCollectionView:
+                return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+            case self.headerCollectionView:
+                return self.CallListArray.numberofDcrs()
+            default:
+                return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DoctorCallCell", for: indexPath) as! DoctorCallCell
-        cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: DCRType(rawValue: self.dcrSegmentControl.selectedSegmentIndex)!)
-        return cell
+        
+        switch collectionView {
+            case self.callCollectionView :
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DoctorCallCell", for: indexPath) as! DoctorCallCell
+                cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText)
+                return cell
+            case self.headerCollectionView :
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRSelectionTitleCell", for: indexPath) as! DCRSelectionTitleCell
+                cell.title = self.CallListArray.fetchAtIndex(indexPath.row)
+            
+                if self.type.rawValue == self.CallListArray.fetchAtIndex(indexPath.row).type.rawValue {
+                    cell.lblUnderLine.isHidden = false
+                }else {
+                    cell.lblUnderLine.isHidden = true
+                }
+                return cell
+            default:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRSelectionTitleCell", for: indexPath) as! DCRSelectionTitleCell
+                return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let precallvc = UIStoryboard.preCallVC
-        precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: DCRType(rawValue: 0)!)
-        self.navigationController?.pushViewController(precallvc, animated: true)
+        switch collectionView {
+            case self.callCollectionView:
+                let precallvc = UIStoryboard.preCallVC
+                precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText)
+                self.navigationController?.pushViewController(precallvc, animated: true)
+            case self.headerCollectionView:
+                self.type = self.CallListArray.fetchAtIndex(indexPath.row).type
+                self.headerCollectionView.reloadData()
+                self.callCollectionView.reloadData()
+            default:
+                break
+        }
     }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
-        let width = self.callCollectionView.frame.width / 4
-        let size = CGSize(width: width - 10, height: 200)
-        return size
+        
+        switch collectionView {
+            case self.callCollectionView :
+                let width = self.callCollectionView.frame.width / 4
+            
+                let size = CGSize(width: width - 10, height: 190)
+                return size
+            
+//                if self.dcrSegmentControl.selectedSegmentIndex == 0 {
+//                    let size = CGSize(width: width - 10, height: 190)
+//                    return size
+//                }else {
+//                    let size = CGSize(width: width - 10, height: 130)
+//                    return size
+//                }
+            case self.headerCollectionView:
+            
+                let label = UILabel()
+                label.font = UIFont(name: "Satoshi-Bold", size: 20)!
+                label.text = self.CallListArray.fetchAtIndex(indexPath.row).name
+                let sizeLabelFit = label.sizeThatFits(CGSize(width: self.headerCollectionView.frame.width-30, height: self.headerCollectionView.frame.height))
+            
+                let size = CGSize(width: sizeLabelFit.width + 40, height: self.headerCollectionView.frame.height)
+                return size
+            default :
+                let size = CGSize(width: 200, height: 130)
+                return size
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

@@ -159,6 +159,16 @@ class LeaveApplicationVC: UIViewController {
     }
     
     @IBAction func leaveTypeAction(_ sender: UIButton) {
+        
+        
+        let vc = UIStoryboard.singleSelectionRightVC
+        vc.modalPresentationStyle = .overCurrentContext
+    //    vc.modalTransitionStyle = .crossDissolve
+        vc.view.backgroundColor = .clear
+        vc.view.alpha = 0
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+        
         if self.fromDate == nil || self.toDate == nil {
             return
         }
