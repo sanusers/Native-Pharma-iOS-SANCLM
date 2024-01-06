@@ -24,6 +24,7 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
     var dateFormatter: DateFormatter
     var date: [Date]
     var valueArr : [Int]
+    
     override init() {
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd"
@@ -68,13 +69,31 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
 
 }
 
+protocol HomeLineChartViewDelegate: AnyObject {
+    func didSetValues(values: [String])
+        
+    
+}
+
+
 class HomeLineChartView: UIView, ChartViewDelegate {
     
     var viewController : UIViewController?
     let lineChartView = LineChartView()
     var values: [ChartDataEntry] = []
     var date = [Date]()
+    var allListArr = [HomeData]()
     var dataSourceArr = [HomeData]()
+    
+    var  totalCalls : Int = 0
+    var averageCalls: Int = 0
+    var yRangeMax: Int = 0
+    var yRangeMin: Int = 0
+    var passesAvgCall : Int = 0
+    weak var delegate: HomeLineChartViewDelegate?
+    var  callsCount: [[Int]] = [[], [], []]
+    var eacSectorCounrArr: [[Int]] = [[], [], [], [], [], []]
+    var dayNumbersArray: [[Int]] = [[]]
     override init(frame: CGRect) {
         super.init(frame: frame)
         //setupUI()
@@ -88,13 +107,25 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     override func layoutSubviews() {
         super.layoutSubviews()
         lineChartView.frame = self.bounds
-        //CGRect(x: 10, y: self.width / 2 - (self.height / 2) / 2, width: self.width - 20, height: self.height / 2)
+       
         
     }
     
-    func setupUI() {
-        self.addSubview(lineChartView)
-        setupLineChart()
+    func setupUI(_ dataSourceArr : [HomeData], avgCalls : Int) {
+        
+        if !dataSourceArr.isEmpty {
+            self.addSubview(lineChartView)
+            passesAvgCall = avgCalls
+            self.dataSourceArr = dataSourceArr
+            setupLineChart()
+            
+            
+            
+      
+        } else {
+            delegate?.didSetValues(values: [])
+        }
+ 
 
     }
     
@@ -115,6 +146,29 @@ class HomeLineChartView: UIView, ChartViewDelegate {
 
         return result
     }
+    
+//    func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
+//        var result: [Int: [Date]] = [:]
+//
+//        let calendar = Calendar.current
+//
+//        for date in dates {
+//            let month = calendar.component(.month, from: date)
+//
+//            if result[month] == nil {
+//                result[month] = [date]
+//            } else {
+//                // Use a Set to track unique dates for each month
+//                var uniqueDates = Set(result[month]!)
+//                uniqueDates.insert(date)
+//
+//                // Convert the Set back to an array and update the result
+//                result[month] = Array(uniqueDates)
+//            }
+//        }
+//
+//        return result
+//    }
     
     func filterDatesInRange(_ dates: [Date]) -> [Date] {
         let calendar = Calendar.current
@@ -152,26 +206,292 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         }
     }
     
+    struct MonthData {
+        let monthNumber: Int
+        let dates: [Date]
+    }
     
     func toSetDataSource() {
+
+
+        
     let  fwArr =  dataSourceArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F"
         }
-        
+
         var dates = [Date]()
-        
+
         fwArr.forEach { aHomeData in
             dates.append(toConVertStringToDate(aHomeData.dcr_dt ?? ""))
         }
-        
+
        let datesFilteredByMonth = separateDatesByMonth(dates)
+
+
+        var monthDataArray: [MonthData] = datesFilteredByMonth.map { (monthNumber, dates) in
+            return MonthData(monthNumber: monthNumber, dates: dates)
+        }
+ 
+        // Sort the monthDataArray based on monthNumber
+        monthDataArray.sort { (lhs, rhs) in
+            if lhs.monthNumber == 1 {
+                return false // January comes first
+            } else if rhs.monthNumber == 1 {
+                return true // January comes before other months
+            } else {
+                return lhs.monthNumber < rhs.monthNumber
+            }
+        }
+
+        // Extract day numbers from dates array for each MonthData
+         dayNumbersArray = monthDataArray.map { monthData in
+            return monthData.dates.map { day in
+                let components = Calendar.current.dateComponents([.day], from: day)
+                return components.day ?? 0
+            }
+        }
+
+        //to take out samples dates
+        // Use a Set to keep track of unique month numbers
+        var uniqueMonths = Set<Int>()
+
+        // Iterate over the array and add month numbers to the set
+        for monthData in monthDataArray {
+            uniqueMonths.insert(monthData.monthNumber)
+        }
+
+        // Create an array of Date objects for each unique month
+        var uniqueMonthsDates: [Date] = []
+
+        for uniqueMonth in uniqueMonths {
+            if let sampleDate = monthDataArray.first(where: { $0.monthNumber == uniqueMonth })?.dates.first {
+                uniqueMonthsDates.append(sampleDate)
+            }
+        }
+
+        uniqueMonthsDates = uniqueMonthsDates.sorted { $0 < $1 }
+
+        self.date = uniqueMonthsDates
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+
+        var monthStr : [String] = []
+
+        date.forEach { aDate in
+            monthStr.append(dateFormatter.string(from: aDate))
+        }
+
+
+
+
+        var dayCountArr = [Int]()
+
+        date.forEach { dateElement in
+            let count = numberOfDaysInMonth(for: dateElement)
+            dayCountArr.append(count ?? 0)
+        }
+
+        delegate?.didSetValues(values: monthStr)
+
+//        _ = dayCountArr[0]
+//        let month2TotalDays = dayCountArr[1]
+//        let month3TotalDays = dayCountArr[2]
+
         
-    var monthsArr = [Date]()
+ 
         
-        for (key, value) in datesFilteredByMonth.enumerated() {
-          
+    
+  
+         
+        var averageDayNumbersArray: [[Int]] = []
+
+        
+        dayNumbersArray.enumerated().forEach { dayNumbersIndex, dayNumbers in
+            var modifiedDayNumbers: [Int] = []
+
+            switch dayNumbersIndex {
+            case 0:
+                // Filter days in the range 0 to 15
+                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                if !daysInRange0to15.isEmpty {
+    
+                        callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    eacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    
+                   // callsCount.append(daysInRange0to15.count)
+                    modifiedDayNumbers.append(15)
+                   
+                    //daysInRange0to15.first ?? 0
+                } else {
+                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
+                   // callsCount.append(0)
+                    modifiedDayNumbers.append(15)
+                }
+
+                // Filter days in the range 16 to 31
+                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                if !daysInRange16to31.isEmpty {
+                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    eacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                  //  callsCount.append(daysInRange16to31.count)
+                    modifiedDayNumbers.append(30)
+                } else {
+                modifiedDayNumbers.append(30)
+                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[1].insert(contentsOf: [], at: 0)
+               // callsCount.append(0)
+                }
+               // callsCount.append(daysInRange0to15.count + daysInRange16to31.count)
+            case 1:
+                // Filter days in the range 0 to 15
+                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                if !daysInRange0to15.isEmpty {
+                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    //callsCount.append(daysInRange0to15.count)
+                    eacSectorCounrArr[2].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    modifiedDayNumbers.append(45)
+                    
+                } else {
+
+                   modifiedDayNumbers.append(45)
+                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[2].insert(contentsOf: [], at: 0)
+                  //  callsCount.append(0)
+                }
+
+                // Filter days in the range 16 to 31
+                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                if !daysInRange16to31.isEmpty {
+                  //  callsCount.append(daysInRange16to31.count)
+                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    eacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    modifiedDayNumbers.append(60)
+                } else {
+                    modifiedDayNumbers.append(60)
+                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[3].insert(contentsOf: [], at: 0)
+                    //callsCount.append(0)
+                }
+              //  callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
+                
+            case 2:
+                // Filter days in the range 0 to 15
+                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                if !daysInRange0to15.isEmpty {
+                   // callsCount.append(daysInRange0to15.count)
+                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    eacSectorCounrArr[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    modifiedDayNumbers.append(75)
+                } else {
+                   modifiedDayNumbers.append(75)
+                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[4].insert(contentsOf: [], at: 0)
+                   // callsCount.append(0)
+                }
+
+                // Filter days in the range 16 to 31
+                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                if !daysInRange16to31.isEmpty {
+                    //callsCount.append(daysInRange16to31.count)
+                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    eacSectorCounrArr[5].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    modifiedDayNumbers.append(90)
+                } else {
+                    modifiedDayNumbers.append(90)
+                    //callsCount.append(0)
+                    eacSectorCounrArr[5].insert(contentsOf: [], at: 0)
+                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                }
+               // callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
+            default:
+                print("default")
+            }
+            
+
+
+            // Add the modified array to the result
+            averageDayNumbersArray.append(modifiedDayNumbers)
+        }
+
+        
+        let cachedayNumbersArray = dayNumbersArray
+        dayNumbersArray = averageDayNumbersArray
+        
+        
+        
+
+
+        let counts: [Int] =  eacSectorCounrArr.map({ innerArray in
+            return innerArray.count
+        })
+        var aMonthValus = [ChartDataEntry]()
+        var count : Int = 0
+        dayNumbersArray.enumerated().forEach { aMonthDaysIndex, aMonthDays in
+         
+            switch aMonthDaysIndex {
+            case 0:
+                var entries1 = [ChartDataEntry]()
+               
+                dayNumbersArray[aMonthDaysIndex].enumerated().forEach {aDaynumberIndex, aDaynumber in
+                 
+                    let aEntry = ChartDataEntry(x: Double(aDaynumber), y: Double(counts[count]))
+                    count = count + 1
+                    //Double(modifiedDayNumbers[aMonthDaysIndex].count)
+                    entries1.append(aEntry)
+                }
+                aMonthValus.append(contentsOf: entries1)
+            case 1:
+                var entries2 = [ChartDataEntry]()
+                dayNumbersArray[aMonthDaysIndex].enumerated().forEach {aDaynumberIndex, aDaynumber in
+                    let aEntry = ChartDataEntry(x: Double(aDaynumber), y: Double(counts[count]))
+                    count = count + 1
+                    entries2.append(aEntry)
+                }
+                aMonthValus.append(contentsOf: entries2)
+            case 2:
+             var entries3 = [ChartDataEntry]()
+                dayNumbersArray[aMonthDaysIndex].enumerated().forEach {aDaynumberIndex, aDaynumber in
+                    let aEntry = ChartDataEntry(x: Double(aDaynumber), y: Double(counts[count]))
+                    count = count + 1
+                    entries3.append(aEntry)
+                }
+                aMonthValus.append(contentsOf: entries3)
+            default:
+            print("Default")
+            }
+           
         }
         
+        
+        
+//        var firstEntry = [ChartDataEntry]()
+//        let firstChartDataEntry = ChartDataEntry(x: 0, y: 1)
+//        firstEntry.append(firstChartDataEntry)
+//        aMonthValus.insert(contentsOf: firstEntry, at: 0)
+//
+//        var lastEntry = [ChartDataEntry]()
+//        let lastChartDataEntry = ChartDataEntry(x: 120, y: 1)
+//        lastEntry.append(lastChartDataEntry)
+//        aMonthValus.append(contentsOf: lastEntry)
+        
+        
+        let flattenedArray: [Int] = callsCount.flatMap { $0 }
+        
+                if let maxValue = flattenedArray.max(by: { $0 < $1 }) {
+                    print("The highest element is: \(maxValue)")
+                    self.yRangeMax = maxValue
+                } else {
+                    print("The array is empty.")
+                }
+        if let minValue = flattenedArray.max(by: { $0 > $1 }) {
+            print("The highest element is: \(minValue)")
+            self.yRangeMin = minValue
+        } else {
+            print("The array is empty.")
+        }
+        
+        self.values = aMonthValus
     }
     
     func setupLineChart() {
@@ -190,102 +510,120 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         lineChartView.dragXEnabled = false
         lineChartView.dragYEnabled = false
         
-        
-//       values = [
+//        var dayCountArr = [Int]()
+//
+//        let calendar = Calendar.current
+//
+//        let currentYear = calendar.component(.year, from: Date())
+//
+//        // January 1st of the current year
+//        let januaryDate = calendar.date(from: DateComponents(year: currentYear, month: 1, day: 1))!
+//
+//        // February 1st of the current year
+//        let februaryDate = calendar.date(from: DateComponents(year: currentYear, month: 2, day: 1))!
+//
+//        // March 1st of the current year
+//        let marchDate = calendar.date(from: DateComponents(year: currentYear, month: 3, day: 1))!
+//
+//
+//        date.append(januaryDate)
+//        date.append(februaryDate)
+//        date.append(marchDate)
+//
+//
+//        date.forEach { dateElement in
+//            let count = numberOfDaysInMonth(for: dateElement)
+//            dayCountArr.append(count ?? 0)
+//        }
+//
+//        _ = dayCountArr[0]
+//        let month2TotalDays = dayCountArr[1]
+//        let month3TotalDays = dayCountArr[2]
+//
+//        let month1Values = [
 //            ChartDataEntry(x: 5, y: 30),
 //            ChartDataEntry(x: 15, y: 45),
 //            ChartDataEntry(x: 25, y: 27),
 //            ChartDataEntry(x: 30, y: 37)
-//            // Add more data entries as needed
 //        ]
-
-        var dayCountArr = [Int]()
-        
-        let calendar = Calendar.current
-        let currentYear = calendar.component(.year, from: Date())
-
-        // January 1st of the current year
-        let januaryDate = calendar.date(from: DateComponents(year: currentYear, month: 1, day: 1))!
-
-        // February 1st of the current year
-        let februaryDate = calendar.date(from: DateComponents(year: currentYear, month: 2, day: 1))!
-
-        // March 1st of the current year
-        let marchDate = calendar.date(from: DateComponents(year: currentYear, month: 3, day: 1))!
-        
-        
-        date.append(januaryDate)
-        date.append(februaryDate)
-        date.append(marchDate)
-        
-        
-        date.forEach { dateElement in
-            let count = numberOfDaysInMonth(for: dateElement)
-            dayCountArr.append(count ?? 0)
-        }
-        
-        _ = dayCountArr[0]
-        let month2TotalDays = dayCountArr[1]
-        let month3TotalDays = dayCountArr[2]
-        
-        let month1Values = [
-            ChartDataEntry(x: 5, y: 30),
-            ChartDataEntry(x: 15, y: 45),
-            ChartDataEntry(x: 25, y: 27),
-            ChartDataEntry(x: 30, y: 37)
-        ]
-
-        let month2Values = [
-            ChartDataEntry(x: Double(5 + month2TotalDays), y: 30), // Increment x values by the total days in a month
-            ChartDataEntry(x: Double(15 + month2TotalDays), y: 45),
-            ChartDataEntry(x: Double(25 + month2TotalDays), y: 27),
-            ChartDataEntry(x: Double(30 + month2TotalDays), y: 37)
-        ]
-
-        let month3Values = [
-            ChartDataEntry(x: Double(5 + month3TotalDays + month2TotalDays), y: 30), // Increment x values for the third month
-            ChartDataEntry(x: Double(15 + month3TotalDays + month2TotalDays), y: 45),
-            ChartDataEntry(x: Double(25 + month3TotalDays + month2TotalDays), y: 27),
-            ChartDataEntry(x: Double(30 + month3TotalDays + month2TotalDays), y: 37)
-        ]
-        
-        
-        values.append(contentsOf: month1Values)
-        values.append(contentsOf: month2Values)
-        values.append(contentsOf: month3Values) // Add 62 to shift to the third month
+//
+//        let month2Values = [
+//            ChartDataEntry(x: Double(5 + month2TotalDays), y: 30), // Increment x values by the total days in a month
+//            ChartDataEntry(x: Double(15 + month2TotalDays), y: 45),
+//            ChartDataEntry(x: Double(25 + month2TotalDays), y: 27),
+//            ChartDataEntry(x: Double(30 + month2TotalDays), y: 37)
+//        ]
+//
+//        let month3Values = [
+//            ChartDataEntry(x: Double(5 + month3TotalDays + month2TotalDays), y: 30), // Increment x values for the third month
+//            ChartDataEntry(x: Double(15 + month3TotalDays + month2TotalDays), y: 45),
+//            ChartDataEntry(x: Double(25 + month3TotalDays + month2TotalDays), y: 27),
+//            ChartDataEntry(x: Double(30 + month3TotalDays + month2TotalDays), y: 37)
+//        ]
+//
+//
+//        values.append(contentsOf: month1Values)
+//        values.append(contentsOf: month2Values)
+//        values.append(contentsOf: month3Values) // Add 62 to shift to the third month
 
      // Set the number of labels
         
         // Customize X-axis
         let xAxis = lineChartView.xAxis
-        xAxis.setLabelCount(date.count * 2, force: true)
+        xAxis.setLabelCount(date.count * 2 + 1, force: true)
+        
+        switch dayNumbersArray.count {
+        case 1:
+            xAxis.axisMinimum = 15
+            xAxis.axisMaximum = 30
+        case 2:
+            xAxis.axisMinimum = 15
+            xAxis.axisMaximum = 60
+        case 3:
+            xAxis.axisMinimum = 15
+            xAxis.axisMaximum = 90
+        default:
+            xAxis.axisMinimum = 15
+            xAxis.axisMaximum = 90
+        }
+        
+    
         xAxis.labelPosition = .bottom
         xAxis.granularityEnabled = true
-        xAxis.granularity = 1.0
-        lineChartView.autoScaleMinMaxEnabled = true
+       // xAxis.axisMinimum = 1   // Move the starting point 5 points to the right
+       // xAxis.axisMaximum = 5.5  // Move the ending point 5 points to the right
+        lineChartView.autoScaleMinMaxEnabled = false
         xAxis.wordWrapEnabled = false
-        //xAxis.centerAxisLabelsEnabled = true
+        xAxis.centerAxisLabelsEnabled = true
+       xAxis.granularity = 1
         let xValuesNumberFormatter = CustomValueFormatter()
         xValuesNumberFormatter.date = date
-
-        var valueArr = [Int]()
-
-
-        month1Values.forEach { dataEntry in
-            valueArr.append(Int(dataEntry.x))
-        }
-
-        month2Values.forEach { dataEntry in
-            valueArr.append(Int(dataEntry.x))
-        }
-
-        month3Values.forEach { dataEntry in
-            valueArr.append(Int(dataEntry.x))
-        }
+        
 
 
 
-        xValuesNumberFormatter.valueArr = valueArr
+        // Optionally, you can set the granularity to ensure specific intervals between labels
+     
+        
+       // xAxis.axisMaximum = 20.0
+//        var valueArr = [Int]()
+//
+//
+//        month1Values.forEach { dataEntry in
+//            valueArr.append(Int(dataEntry.x))
+//        }
+//
+//        month2Values.forEach { dataEntry in
+//            valueArr.append(Int(dataEntry.x))
+//        }
+//
+//        month3Values.forEach { dataEntry in
+//            valueArr.append(Int(dataEntry.x))
+//        }
+//
+//
+//
+//        xValuesNumberFormatter.valueArr = valueArr
         xAxis.valueFormatter = xValuesNumberFormatter
 
         
@@ -297,9 +635,24 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         // Access the y-axis of your line chart view
         let yAxis = lineChartView.leftAxis // You can use `rightAxis` if needed
         
+        let subyRange = yRangeMax
+        let minimumPercentage: Double = 0.2 // 20% of the range
+
+        let minimumValue = Double(subyRange) * minimumPercentage
+        if yRangeMin < 10 {
+            yAxis.axisMinimum = 0
+           // yAxis.axisMinimum = Double(yRangeMin)
+        } else {
+            yAxis.axisMinimum = 0
+         //   yAxis.axisMinimum = Double(yRangeMin)
+        }
         yAxis.labelCount = 5 // Set the number of labels
-        yAxis.axisMinimum = 20 // Adjust minimum value
-        yAxis.axisMaximum = 100 // Adjust maximum value
+        yAxis.axisMaximum = Double(yRangeMax).rounded(.up) // Adjust maximum value
+
+        
+        //Double(yRangeMin).rounded(.down)
+        //minimumValue // Adjust minimum value
+      
         
         
         yAxis.labelFont = UIFont(name: "Satoshi-Medium", size: 14) ?? UIFont.systemFont(ofSize: 14)
@@ -362,10 +715,18 @@ class HomeLineChartView: UIView, ChartViewDelegate {
 //        set1.setCircleColor(NSUIColor.appGreen)
 //        set1.circleHoleColor = .appWhiteColor
         
+        print(highlight.dataIndex)
 
-        
         let index = values.firstIndex(where: {$0.x == highlight.x}) ?? 0  // search index
         
+        let counts: [Int] =  eacSectorCounrArr.map({ innerArray in
+            return innerArray.count
+        })
+
+        
+        self.totalCalls = counts[index]
+        //Int(passesAvgCall / Int(highlight.y))
+        self.averageCalls = 0
         
         let selectedChartDataEntry = [values[index]]
 
@@ -445,6 +806,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: lineChartView.width / 3.5 , height: lineChartView.height / 3.7), on: view, onframe: CGRect(), pagetype: .HomeGraph)
                // vc.delegate = self
                // vc.selectedIndex = indexPath.row
+            vc.totalCalls = self.totalCalls
+            vc.avgCalls = self.averageCalls
             self.viewController?.navigationController?.present(vc, animated: true)
     }
     

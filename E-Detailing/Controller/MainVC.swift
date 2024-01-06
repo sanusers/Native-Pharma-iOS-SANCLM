@@ -12,6 +12,139 @@ import UICircularProgressRing
 import Alamofire
 
 
+extension MainVC : HomeLineChartViewDelegate
+{
+    func didSetValues(values: [String]) {
+        
+     
+        
+        switch values.count {
+
+        case 0:
+            toHodeMonthStact(count: 0)
+        
+            
+        case 1:
+
+            toHodeMonthStact(count: 1)
+
+        case 2:
+            toHodeMonthStact(count: 2)
+
+            
+        case 3:
+     
+            toHodeMonthStact(count: 3)
+
+            
+        default:
+            print("Above / Below")
+        }
+        
+
+        
+        
+        func toHodeMonthStact(count: Int) {
+            
+            let views: [UIView] = [month1View, month2View, month3View]
+            let labels : [UILabel] = [month1Lbl, month2Lbl, month3Lbl]
+            switch count {
+            case 0:
+                views.enumerated().forEach { aViewIndex, aView in
+                    aView.isHidden = true
+                }
+                labels.forEach { aLabel in
+                    aLabel.isHidden = true
+                }
+            case 1:
+                
+                views.forEach { aView in
+                    switch aView {
+                    case month1View:
+                        aView.isHidden = false
+                    default:
+                        aView.isHidden = true
+                        
+                    }
+                }
+                labels.enumerated().forEach {aLabelIndex, aLabel in
+                    switch aLabel {
+                    case month1Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[0]
+                    default:
+                        aLabel.isHidden = true
+                        
+                    }
+                }
+                
+            case 2:
+                views.forEach { aView in
+                    switch aView {
+                    case month1View, month2View:
+                        aView.isHidden = false
+                    default:
+                        aView.isHidden = true
+                        
+                    }
+                }
+                labels.enumerated().forEach {aLabelIndex,  aLabel in
+                    switch aLabel {
+                    case month1Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[0]
+                        
+                    case month2Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[1]
+                    default:
+                        aLabel.isHidden = true
+                        
+                    }
+                }
+                
+                
+            case 3:
+                views.forEach { aView in
+                    switch aView {
+                    case month1View, month2View, month3View:
+                        aView.isHidden = false
+                    default:
+                        aView.isHidden = true
+                        
+                    }
+                }
+                labels.enumerated().forEach {aLabelIndex,  aLabel in
+                    switch aLabel {
+                    case month1Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[0]
+                        
+                    case month2Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[1]
+                        
+                    case month1Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[0]
+                        
+                    case month3Lbl:
+                        aLabel.isHidden = false
+                        aLabel.text = values[2]
+                    default:
+                        aLabel.isHidden = true
+                        
+                    }
+                }
+            default:
+                print("Out of range")
+            }
+        }
+        
+    }
+    
+
+}
 typealias collectionViewProtocols = UICollectionViewDelegate & UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
 typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 
@@ -114,6 +247,7 @@ class MainVC : UIViewController {
     var chemistArr = [HomeData]()
     var stockistArr = [HomeData]()
     var unlistedDocArr = [HomeData]()
+    var totalFWCount: Int = 0
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -173,7 +307,10 @@ class MainVC : UIViewController {
         let homeDataArr = DBManager.shared.getHomeData()
         dump(homeDataArr)
         
-
+        let totalFWs =  homeDataArr.filter { aHomeData in
+            aHomeData.fw_Indicator == "F" &&   aHomeData.custType == "0"
+        }
+        self.totalFWCount = totalFWs.count
         
         doctorArr =  homeDataArr.filter { aHomeData in
             aHomeData.custType == "1"
@@ -299,45 +436,41 @@ class MainVC : UIViewController {
         
     }
     
+
+    
     func toIntegrateChartView(_ type: ChartType) {
       
+        self.lineChatrtView.subviews.forEach { aAddedView in
+            aAddedView.removeFromSuperview()
+        }
+        
        let ahomeLineChartView = HomeLineChartView()
-        ahomeLineChartView.dataSourceArr = self.doctorArr
+        ahomeLineChartView.delegate = self
+        
+        switch type {
+
+        case .doctor:
+            ahomeLineChartView.setupUI(self.doctorArr, avgCalls: self.totalFWCount)
+          
+        case .chemist:
+            ahomeLineChartView.setupUI(self.chemistArr, avgCalls: self.totalFWCount)
+           
+        case .stockist:
+            ahomeLineChartView.setupUI(self.stockistArr, avgCalls: self.totalFWCount)
+           
+        case .unlistedDoctor:
+            ahomeLineChartView.setupUI(self.unlistedDocArr, avgCalls: self.totalFWCount)
+            
+        }
+        
+     
         ahomeLineChartView.viewController = self
-        ahomeLineChartView.setupUI()
-        self.homeLineChartView = ahomeLineChartView
-        lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
-        
-//        if homeLineChartView?.superview != nil {
-//            self.homeLineChartView = HomeLineChartView()
-//            // View is currently added, so remove it
-//            self.homeLineChartView?.dataSourceArr = self.doctorArr
-//            homeLineChartView?.removeFromSuperview()
-//            lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
-//        } else {
-//            self.homeLineChartView = HomeLineChartView()
-//            // View is not added, so add it
-//            lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
-//        }
-//        self.homeLineChartView?.viewController = self
-//        switch type {
-//
-//        case .doctor:
-//            self.homeLineChartView?.dataSourceArr = self.doctorArr
-//        case .chemist:
-//            self.homeLineChartView?.dataSourceArr = self.chemistArr
-//        case .stockist:
-//            self.homeLineChartView?.dataSourceArr = self.stockistArr
-//        case .unlistedDoctor:
-//            self.homeLineChartView?.dataSourceArr = self.unlistedDocArr
-//        }
-        
        
+        self.homeLineChartView = ahomeLineChartView
         
 
+        lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
         
-        
-        //self.lineChatrtView.addSubview(homeLineChartView)
     }
     
     override func viewDidLayoutSubviews() {
@@ -971,23 +1104,29 @@ extension MainVC : collectionViewProtocols {
                 cell.lblName.text = self.dcrCount[indexPath.row].name
                 cell.lblCount.text = "0/"+"\(self.dcrCount[indexPath.row].count!)"
                 cell.imgArrow.tintColor = self.dcrCount[indexPath.row].color
-                if indexPath.row != 0 {
-                   cell.imgArrow.isHidden = true
+            cell.imgArrow.isHidden = true
+            for (key, value) in cell.selectedIndex {
+                if key == indexPath.row && value == true {
+                    cell.imgArrow.isHidden = false
                 }
+            }
+              
             cell.addTap {
                // "Doctor" "Chemist" "Stockist" "UnListed Doctor"
+                cell.selectedIndex = [:]
+                cell.selectedIndex[indexPath.row] = true
                 let model = self.dcrCount[indexPath.row]
                 
                 if model.name == "Doctor" {
-                   // self.toIntegrateChartView(.doctor)
+                    self.toIntegrateChartView(.doctor)
                 } else if model.name == "Chemist" {
-                  //  self.toIntegrateChartView(.chemist)
+                    self.toIntegrateChartView(.chemist)
                 } else if model.name == "Stockist" {
-                   // self.toIntegrateChartView(.stockist)
+                    self.toIntegrateChartView(.stockist)
                 } else if model.name == "UnListed Doctor" {
-                  //  self.toIntegrateChartView(.unlistedDoctor)
+                    self.toIntegrateChartView(.unlistedDoctor)
                 }
-                
+                self.dcrCallsCollectionView.reloadData()
             }
                 return cell
             case self.analysisCollectionView:

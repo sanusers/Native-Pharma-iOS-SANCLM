@@ -48,13 +48,14 @@ class PopOverVC: UIViewController {
     var isFromHome = Bool()
     var selectedIndex = Int()
     var pageType: PageType = .TP
+    var totalCalls: Int = 0
+    var avgCalls: Int = 0
     override func viewDidLoad() {
         super.viewDidLoad()
        
         toSetPageType(self.pageType)
     }
-    
-    
+
     
     
     func setupUI() {
@@ -71,10 +72,14 @@ class PopOverVC: UIViewController {
                 lbl?.setFont(font: .bold(size: .BODY))
             } else {
                 lbl?.setFont(font: .medium(size: .BODY))
+                
             }
             
             lbl?.textColor = .appWhiteColor
+            
         }
+        callCountLbl.text = "\(self.avgCalls)"
+        avgCallCount.text =  "\(self.totalCalls)"
     }
     
     func toLOadData() {

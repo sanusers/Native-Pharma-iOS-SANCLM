@@ -583,7 +583,7 @@ struct MasterSyncParams {
         
         return ["data" : paramString]
         
-        //{"tableName":"gethome","sfcode":"MGR1247","division_code":"44,","Rsf":"MGR1247","sf_type":"2","Designation":"ASM","state_code":"12","subdivision_code":"170,"}
+        //{"tableName":"gethome","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"ASM","state_code":"13","subdivision_code":"86,"}
 
     }
     

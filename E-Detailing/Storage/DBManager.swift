@@ -258,7 +258,7 @@ class DBManager {
             if ApisessionDetails.wtCode2 != "" {
                 let sessionDetail = SessionDetail()
                 sessionDetail.FWFlg = ApisessionDetails.fwFlg2
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg2 == "Y" || ApisessionDetails.fwFlg == "F" ? true : false
+                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg2 == "Y" || ApisessionDetails.fwFlg2 == "F" ? true : false
                 sessionDetail.WTCode = ApisessionDetails.wtCode2
                 sessionDetail.WTName = ApisessionDetails.wtName2
                 sessionDetail.clusterCode = ApisessionDetails.clusterCode2
@@ -283,33 +283,33 @@ class DBManager {
                 sessiondetArr.sessionDetails.append(sessionDetail)
            }
             
-            if ApisessionDetails.wtCode3 != "" {
-                let sessionDetail = SessionDetail()
-                sessionDetail.FWFlg = ApisessionDetails.fwFlg3
-                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" || ApisessionDetails.fwFlg == "F" ? true : false
-                sessionDetail.WTCode = ApisessionDetails.wtCode3
-                sessionDetail.WTName = ApisessionDetails.wtName3
-                sessionDetail.clusterCode = ApisessionDetails.clusterCode3
-                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode3
-                sessionDetail.clusterName = ApisessionDetails.clusterName3
-                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName3
-                sessionDetail.drCode = ApisessionDetails.drThreeCode
-                sessionDetail.drName = ApisessionDetails.drThreeName
-               // sessionDetail.hospCode = ApisessionDetails.h
-              //  sessionDetail.hospName = ApisessionDetails.h
-                sessionDetail.HQCodes = ApisessionDetails.hqCodes3
-                sessionDetail.HQNames = ApisessionDetails.hqNames3
-                sessionDetail.jwCode = ApisessionDetails.jwCodes3
-                sessionDetail.jwName = ApisessionDetails.jwNames3
-                sessionDetail.remarks = ApisessionDetails.dayRemarks3
-                sessionDetail.stockistCode = ApisessionDetails.stockistThreeCode
-                sessionDetail.stockistName = ApisessionDetails.stockistThreeName
-                sessionDetail.chemName = ApisessionDetails.chemThreeName
-                sessionDetail.chemCode = ApisessionDetails.chemThreeCode
-              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
-               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
-                sessiondetArr.sessionDetails.append(sessionDetail)
-           }
+//            if ApisessionDetails.wtCode3 != "" {
+//                let sessionDetail = SessionDetail()
+//                sessionDetail.FWFlg = ApisessionDetails.fwFlg3
+//                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" || ApisessionDetails.fwFlg3 == "F" ? true : false
+//                sessionDetail.WTCode = ApisessionDetails.wtCode3
+//                sessionDetail.WTName = ApisessionDetails.wtName3
+//                sessionDetail.clusterCode = ApisessionDetails.clusterCode3
+//                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode3
+//                sessionDetail.clusterName = ApisessionDetails.clusterName3
+//                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName3
+//                sessionDetail.drCode = ApisessionDetails.drThreeCode
+//                sessionDetail.drName = ApisessionDetails.drThreeName
+//               // sessionDetail.hospCode = ApisessionDetails.h
+//              //  sessionDetail.hospName = ApisessionDetails.h
+//                sessionDetail.HQCodes = ApisessionDetails.hqCodes3
+//                sessionDetail.HQNames = ApisessionDetails.hqNames3
+//                sessionDetail.jwCode = ApisessionDetails.jwCodes3
+//                sessionDetail.jwName = ApisessionDetails.jwNames3
+//                sessionDetail.remarks = ApisessionDetails.dayRemarks3
+//                sessionDetail.stockistCode = ApisessionDetails.stockistThreeCode
+//                sessionDetail.stockistName = ApisessionDetails.stockistThreeName
+//                sessionDetail.chemName = ApisessionDetails.chemThreeName
+//                sessionDetail.chemCode = ApisessionDetails.chemThreeCode
+//              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
+//               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
+//                sessiondetArr.sessionDetails.append(sessionDetail)
+//           }
             allDayPlans.append(sessiondetArr)
             
  

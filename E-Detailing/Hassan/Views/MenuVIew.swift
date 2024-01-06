@@ -575,6 +575,10 @@ class MenuView : BaseView{
     var cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
+    var cellEditHeightForOthers : CGFloat = 140 + 100
+    let cellEditStackHeightfOthers : CGFloat = 80
+    
+    
     var isDocNeeded = false
     var isJointCallneeded = false
     var isChemistNeeded = false
@@ -1882,21 +1886,24 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 cell.stackHeight.constant =  cellEditStackHeightforFW
             }  else {
-                cell.stackHeight.constant = cellStackHeightfOthers
+                
                 [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView].forEach { view in
                     view?.isHidden = true
                     // cell.workselectionHolder,
                 }
+                
                 if modal.remarks == "" ||  modal.remarks == nil {
                     cell.remarksView.isHidden = true
                     cell.remarksHeightConst.constant = 0
-                    cellHeightForOthers =  cellHeightForOthers - 100
+                   // cellEditHeightForOthers =  cellEditHeightForOthers - 100
                 } else {
                     cell.remarksDesc.text = modal.remarks
                     cell.remarksView.isHidden = false
                     cell.remarksHeightConst.constant = 100
-                    
+                   // cellEditHeightForOthers =  cellEditHeightForOthers + 100
+                   // cellEditHeightForOthers =  cellEditHeightForOthers - 100
                 }
+                cell.stackHeight.constant = cellEditStackHeightfOthers
             }
             if isSearched {
                 if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
@@ -3407,7 +3414,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork ?? false  {
                 return cellEditHeightForFW
             }  else {
-                return cellHeightForOthers
+                return cellEditHeightForOthers
             }
         }
     }

@@ -123,12 +123,13 @@ class BasicReportsInfoTVC: UITableViewCell {
        // remarksAndPlansView
         let isTohideRemarks = isTohideRemarks(model)
         let isTohideplanCollection = isTohideplanCollection(count: self.sessionImages?.count ?? 0)
-        
+     
          
         if isTohideRemarks && isTohideplanCollection {
             remarksAndPlansView.isHidden = true
             remarksAndPlansHeightConst.constant = 0
             tempstackHeight = tempstackHeight -  75
+           
             holderStackHeightConst.constant = tempstackHeight
         } else {
             remarksAndPlansView.isHidden = false

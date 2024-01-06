@@ -20,7 +20,7 @@ class DCRCallAnalysisCell : UICollectionViewCell {
     
     
     @IBOutlet weak var imgArrow: UIImageView!
-    
+    var selectedIndex : [Int : Bool] = [:]
     override func awakeFromNib() {
         super.awakeFromNib()
         

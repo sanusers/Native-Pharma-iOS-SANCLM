@@ -81,7 +81,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         
          
         if isTohideRemarks && isTohideplanCollection {
-            tempCellHeight = tempCellHeight - 75
+          //  tempCellHeight = tempCellHeight - 75
         } else {
          
         }
