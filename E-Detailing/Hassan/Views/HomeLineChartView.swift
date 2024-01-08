@@ -36,13 +36,6 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
 
     override func stringForValue(_ value: Double, axis: AxisBase?) -> String {
             // Convert the value to a Date if needed
-        var returnStr = [String]()
-        var returnStrIndex = [Int]()
-        var dayCountArr = [Int]()
-        var tempDate = date
-        var removedIndex = Int()
-        
-
         guard let axis = axis else {
             return ""
         }
@@ -213,6 +206,15 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     
     func toSetDataSource() {
 
+        
+     
+        
+        
+        
+        
+        self.allListArr =  self.allListArr.filter { aHomeData in
+            aHomeData.fw_Indicator == "F" &&  aHomeData.custType == "0"
+        }
 
         
     let  fwArr =  dataSourceArr.filter { aHomeData in
@@ -510,61 +512,6 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         lineChartView.dragXEnabled = false
         lineChartView.dragYEnabled = false
         
-//        var dayCountArr = [Int]()
-//
-//        let calendar = Calendar.current
-//
-//        let currentYear = calendar.component(.year, from: Date())
-//
-//        // January 1st of the current year
-//        let januaryDate = calendar.date(from: DateComponents(year: currentYear, month: 1, day: 1))!
-//
-//        // February 1st of the current year
-//        let februaryDate = calendar.date(from: DateComponents(year: currentYear, month: 2, day: 1))!
-//
-//        // March 1st of the current year
-//        let marchDate = calendar.date(from: DateComponents(year: currentYear, month: 3, day: 1))!
-//
-//
-//        date.append(januaryDate)
-//        date.append(februaryDate)
-//        date.append(marchDate)
-//
-//
-//        date.forEach { dateElement in
-//            let count = numberOfDaysInMonth(for: dateElement)
-//            dayCountArr.append(count ?? 0)
-//        }
-//
-//        _ = dayCountArr[0]
-//        let month2TotalDays = dayCountArr[1]
-//        let month3TotalDays = dayCountArr[2]
-//
-//        let month1Values = [
-//            ChartDataEntry(x: 5, y: 30),
-//            ChartDataEntry(x: 15, y: 45),
-//            ChartDataEntry(x: 25, y: 27),
-//            ChartDataEntry(x: 30, y: 37)
-//        ]
-//
-//        let month2Values = [
-//            ChartDataEntry(x: Double(5 + month2TotalDays), y: 30), // Increment x values by the total days in a month
-//            ChartDataEntry(x: Double(15 + month2TotalDays), y: 45),
-//            ChartDataEntry(x: Double(25 + month2TotalDays), y: 27),
-//            ChartDataEntry(x: Double(30 + month2TotalDays), y: 37)
-//        ]
-//
-//        let month3Values = [
-//            ChartDataEntry(x: Double(5 + month3TotalDays + month2TotalDays), y: 30), // Increment x values for the third month
-//            ChartDataEntry(x: Double(15 + month3TotalDays + month2TotalDays), y: 45),
-//            ChartDataEntry(x: Double(25 + month3TotalDays + month2TotalDays), y: 27),
-//            ChartDataEntry(x: Double(30 + month3TotalDays + month2TotalDays), y: 37)
-//        ]
-//
-//
-//        values.append(contentsOf: month1Values)
-//        values.append(contentsOf: month2Values)
-//        values.append(contentsOf: month3Values) // Add 62 to shift to the third month
 
      // Set the number of labels
         
@@ -602,28 +549,6 @@ class HomeLineChartView: UIView, ChartViewDelegate {
 
 
 
-        // Optionally, you can set the granularity to ensure specific intervals between labels
-     
-        
-       // xAxis.axisMaximum = 20.0
-//        var valueArr = [Int]()
-//
-//
-//        month1Values.forEach { dataEntry in
-//            valueArr.append(Int(dataEntry.x))
-//        }
-//
-//        month2Values.forEach { dataEntry in
-//            valueArr.append(Int(dataEntry.x))
-//        }
-//
-//        month3Values.forEach { dataEntry in
-//            valueArr.append(Int(dataEntry.x))
-//        }
-//
-//
-//
-//        xValuesNumberFormatter.valueArr = valueArr
         xAxis.valueFormatter = xValuesNumberFormatter
 
         
@@ -644,14 +569,12 @@ class HomeLineChartView: UIView, ChartViewDelegate {
            // yAxis.axisMinimum = Double(yRangeMin)
         } else {
             yAxis.axisMinimum = 0
-         //   yAxis.axisMinimum = Double(yRangeMin)
+          //  yAxis.axisMinimum = Double(yRangeMin)
         }
-        yAxis.labelCount = 5 // Set the number of labels
-        yAxis.axisMaximum = Double(yRangeMax).rounded(.up) // Adjust maximum value
+        yAxis.axisMaximum = 25
+        //Double(yRangeMax).rounded(.up) // Adjust maximum value
+        yAxis.labelCount = 5
 
-        
-        //Double(yRangeMin).rounded(.down)
-        //minimumValue // Adjust minimum value
       
         
         
@@ -726,7 +649,10 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         self.totalCalls = counts[index]
         //Int(passesAvgCall / Int(highlight.y))
-        self.averageCalls = 0
+        
+        
+        
+        self.averageCalls =  counts[index] / self.allListArr.count
         
         let selectedChartDataEntry = [values[index]]
 

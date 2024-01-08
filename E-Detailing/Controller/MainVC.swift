@@ -247,6 +247,7 @@ class MainVC : UIViewController {
     var chemistArr = [HomeData]()
     var stockistArr = [HomeData]()
     var unlistedDocArr = [HomeData]()
+    var  homeDataArr = [HomeData]()
     var totalFWCount: Int = 0
     var selectedWorktype : WorkType? {
         didSet {
@@ -304,11 +305,11 @@ class MainVC : UIViewController {
     
     
     func toSeperateDCR() {
-        let homeDataArr = DBManager.shared.getHomeData()
+      homeDataArr = DBManager.shared.getHomeData()
         dump(homeDataArr)
         
         let totalFWs =  homeDataArr.filter { aHomeData in
-            aHomeData.fw_Indicator == "F" &&   aHomeData.custType == "0"
+            aHomeData.fw_Indicator == "F"  &&   aHomeData.custType == "0"
         }
         self.totalFWCount = totalFWs.count
         
@@ -446,12 +447,12 @@ class MainVC : UIViewController {
         
        let ahomeLineChartView = HomeLineChartView()
         ahomeLineChartView.delegate = self
-        
+        ahomeLineChartView.allListArr = homeDataArr
         switch type {
 
         case .doctor:
             ahomeLineChartView.setupUI(self.doctorArr, avgCalls: self.totalFWCount)
-          
+            
         case .chemist:
             ahomeLineChartView.setupUI(self.chemistArr, avgCalls: self.totalFWCount)
            
