@@ -387,6 +387,14 @@ class LoginVC : UIViewController {
                             
                             AppDefaults.shared.save(key: .appSetUp, value: status.info)
                             
+                            let appsetup = AppDefaults.shared.getAppSetUp()
+                            if appsetup.sfType == 2 {
+                                LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: false)
+                               
+                            } else {
+                                LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: true)
+                            }
+                            
                             if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                                 appDelegate.setupRootViewControllers()
                               //  LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)

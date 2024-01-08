@@ -63,7 +63,7 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
 }
 
 protocol HomeLineChartViewDelegate: AnyObject {
-    func didSetValues(values: [String])
+    func didSetValues(values: [String], valueStr: String)
         
     
 }
@@ -84,15 +84,19 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     var yRangeMin: Int = 0
     var passesAvgCall : Int = 0
     weak var delegate: HomeLineChartViewDelegate?
-    var  callsCount: [[Int]] = [[], [], []]
+    var monthDataArray = [MonthData]()
+    var callsCount: [[Int]] = [[], [], []]
     var eacSectorCounrArr: [[Int]] = [[], [], [], [], [], []]
+    var avgeacSectorCounrArr: [[Int]] = [[], [], [], [], [], []]
     var dayNumbersArray: [[Int]] = [[]]
+    var avgdayNumbersArray: [[Int]] = [[]]
+    var dcrCount : DcrCount!
     override init(frame: CGRect) {
         super.init(frame: frame)
         //setupUI()
-       // self.addCustomView()
+        // self.addCustomView()
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -100,7 +104,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     override func layoutSubviews() {
         super.layoutSubviews()
         lineChartView.frame = self.bounds
-       
+        
         
     }
     
@@ -114,61 +118,61 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             
             
             
-      
+            
         } else {
-            delegate?.didSetValues(values: [])
+            delegate?.didSetValues(values: [], valueStr: "")
         }
- 
-
+        
+        
     }
     
     func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
         var result: [Int: [Date]] = [:]
-
+        
         let calendar = Calendar.current
-
+        
         for date in dates {
             let month = calendar.component(.month, from: date)
-
+            
             if result[month] == nil {
                 result[month] = [date]
             } else {
                 result[month]?.append(date)
             }
         }
-
+        
         return result
     }
     
-//    func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
-//        var result: [Int: [Date]] = [:]
-//
-//        let calendar = Calendar.current
-//
-//        for date in dates {
-//            let month = calendar.component(.month, from: date)
-//
-//            if result[month] == nil {
-//                result[month] = [date]
-//            } else {
-//                // Use a Set to track unique dates for each month
-//                var uniqueDates = Set(result[month]!)
-//                uniqueDates.insert(date)
-//
-//                // Convert the Set back to an array and update the result
-//                result[month] = Array(uniqueDates)
-//            }
-//        }
-//
-//        return result
-//    }
+    //    func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
+    //        var result: [Int: [Date]] = [:]
+    //
+    //        let calendar = Calendar.current
+    //
+    //        for date in dates {
+    //            let month = calendar.component(.month, from: date)
+    //
+    //            if result[month] == nil {
+    //                result[month] = [date]
+    //            } else {
+    //                // Use a Set to track unique dates for each month
+    //                var uniqueDates = Set(result[month]!)
+    //                uniqueDates.insert(date)
+    //
+    //                // Convert the Set back to an array and update the result
+    //                result[month] = Array(uniqueDates)
+    //            }
+    //        }
+    //
+    //        return result
+    //    }
     
     func filterDatesInRange(_ dates: [Date]) -> [Date] {
         let calendar = Calendar.current
-
+        
         return dates.filter { date in
             let day = calendar.component(.day, from: date)
-
+            
             if day >= 1 && day <= 15 {
                 // Date is in the range 1st to 15th
                 return true
@@ -184,11 +188,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     
     func toConVertStringToDate(_ yyyyMMdd : String ) -> Date {
         let dateString = yyyyMMdd
-
+        
         // Create a DateFormatter
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-
+        
         // Convert the string to a Date object
         if let date = dateFormatter.date(from: dateString) {
             print(date)
@@ -204,36 +208,190 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         let dates: [Date]
     }
     
-    func toSetDataSource() {
-
-        
-     
-        
-        
-        
-        
+    
+    func toCalculateAvgDate() {
         self.allListArr =  self.allListArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F" &&  aHomeData.custType == "0"
         }
+        
+        var avgdates = [Date]()
+        
+        self.allListArr.forEach { aHomeData in
+            avgdates.append(toConVertStringToDate(aHomeData.dcr_dt ?? ""))
+        }
+        
+    
+        
+        
+        let avgdatesFilteredByMonth = separateDatesByMonth(avgdates)
+        
+        
+        
+        var avgmonthAvgDataArray: [MonthData] = avgdatesFilteredByMonth.map { (monthNumber, dates) in
+            return MonthData(monthNumber: monthNumber, dates: dates)
+        }
+        var targetMonthNumbers = [Int]()
+        
+        monthDataArray.forEach { aMonthData in
+            targetMonthNumbers.append(aMonthData.monthNumber)
+        }
+        
+       // Replace with the desired month numbers
+
+         avgmonthAvgDataArray = avgmonthAvgDataArray.filter { targetMonthNumbers.contains($0.monthNumber) }
+        
+        
+        
+        avgmonthAvgDataArray.sort { (lhs, rhs) in
+            if lhs.monthNumber == 1 {
+                return false // January comes first
+            } else if rhs.monthNumber == 1 {
+                return true // January comes before other months
+            } else {
+                return lhs.monthNumber < rhs.monthNumber
+            }
+        }
+        
+        
+        // Extract day numbers from dates array for each MonthData
+        avgdayNumbersArray = avgmonthAvgDataArray.map { monthData in
+            return monthData.dates.map { day in
+                let components = Calendar.current.dateComponents([.day], from: day)
+                return components.day ?? 0
+            }
+        }
+        
+        avgdayNumbersArray.enumerated().forEach { dayNumbersIndex, dayNumbers in
+            var modifiedDayNumbers: [Int] = []
+            
+            switch dayNumbersIndex {
+            case 0:
+                // Filter days in the range 0 to 15
+                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                if !daysInRange0to15.isEmpty {
+                    
+                  
+                    avgeacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    
+                 
+                    modifiedDayNumbers.append(15)
+                    
+                 
+                } else {
+                
+                    avgeacSectorCounrArr[0].insert(contentsOf: [], at: 0)
+                 
+                 
+                }
+                
+                // Filter days in the range 16 to 31
+                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                if !daysInRange16to31.isEmpty {
+                 
+                    avgeacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                   
+                 
+                } else {
+                 
+               
+                    avgeacSectorCounrArr[1].insert(contentsOf: [], at: 0)
+                 
+                }
+             
+            case 1:
+                // Filter days in the range 0 to 15
+                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                if !daysInRange0to15.isEmpty {
+                 
+                   
+                    avgeacSectorCounrArr[2].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                  
+                    
+                } else {
+                    
+                   
+                  
+                    avgeacSectorCounrArr[2].insert(contentsOf: [], at: 0)
+           
+                }
+                
+                // Filter days in the range 16 to 31
+                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                if !daysInRange16to31.isEmpty {
+                
+                    avgeacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                   
+                } else {
+                 
+                  
+                    avgeacSectorCounrArr[3].insert(contentsOf: [], at: 0)
+                    
+                }
+              
+                
+            case 2:
+                // Filter days in the range 0 to 15
+                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                if !daysInRange0to15.isEmpty {
+                
+                    avgeacSectorCounrArr[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                 
+                } else {
+                 
+                
+                    avgeacSectorCounrArr[4].insert(contentsOf: [], at: 0)
+                  
+                }
+                
+                // Filter days in the range 16 to 31
+                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                if !daysInRange16to31.isEmpty {
+                  
+                
+                    avgeacSectorCounrArr[5].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    
+                } else {
+              
+                 
+                    avgeacSectorCounrArr[5].insert(contentsOf: [], at: 0)
+                   
+                }
+             
+            default:
+                print("default")
+            }
+            
+            
+            
+            // Add the modified array to the result
+          //  averageDayNumbersArray.append(modifiedDayNumbers)
+        }
+        
+        dump(avgeacSectorCounrArr)
+    }
+    
+    func toSetDataSource() {
+        
+      
 
         
-    let  fwArr =  dataSourceArr.filter { aHomeData in
+        let  fwArr =  dataSourceArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F"
         }
-
+        
         var dates = [Date]()
-
+        
         fwArr.forEach { aHomeData in
             dates.append(toConVertStringToDate(aHomeData.dcr_dt ?? ""))
         }
-
-       let datesFilteredByMonth = separateDatesByMonth(dates)
-
-
-        var monthDataArray: [MonthData] = datesFilteredByMonth.map { (monthNumber, dates) in
+        
+        let datesFilteredByMonth = separateDatesByMonth(dates)
+        
+        
+         monthDataArray = datesFilteredByMonth.map { (monthNumber, dates) in
             return MonthData(monthNumber: monthNumber, dates: dates)
         }
- 
+        
         // Sort the monthDataArray based on monthNumber
         monthDataArray.sort { (lhs, rhs) in
             if lhs.monthNumber == 1 {
@@ -244,107 +402,122 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 return lhs.monthNumber < rhs.monthNumber
             }
         }
-
+        
         // Extract day numbers from dates array for each MonthData
-         dayNumbersArray = monthDataArray.map { monthData in
+        dayNumbersArray = monthDataArray.map { monthData in
             return monthData.dates.map { day in
                 let components = Calendar.current.dateComponents([.day], from: day)
                 return components.day ?? 0
             }
         }
-
+        
         //to take out samples dates
         // Use a Set to keep track of unique month numbers
         var uniqueMonths = Set<Int>()
-
+        
         // Iterate over the array and add month numbers to the set
         for monthData in monthDataArray {
             uniqueMonths.insert(monthData.monthNumber)
         }
-
+        
         // Create an array of Date objects for each unique month
         var uniqueMonthsDates: [Date] = []
-
+        
         for uniqueMonth in uniqueMonths {
             if let sampleDate = monthDataArray.first(where: { $0.monthNumber == uniqueMonth })?.dates.first {
                 uniqueMonthsDates.append(sampleDate)
             }
         }
-
+        
         uniqueMonthsDates = uniqueMonthsDates.sorted { $0 < $1 }
-
+        
         self.date = uniqueMonthsDates
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM"
-
+        
         var monthStr : [String] = []
-
+        
         date.forEach { aDate in
             monthStr.append(dateFormatter.string(from: aDate))
         }
-
-
-
-
+        
+        var dateMonthStr : [String] = []
+        
+        dateFormatter.dateFormat = "MMMM yyyy"
+        
+        date.forEach { aDate in
+            dateMonthStr.append(dateFormatter.string(from: aDate))
+        }
+        
+        var toDisplayDateString = ""
+        
+        dateMonthStr.enumerated().forEach { aDateIndex, dDatevalue in
+            switch aDateIndex{
+            case 0:
+                toDisplayDateString = dDatevalue
+            case 1:
+                toDisplayDateString = "\(dateMonthStr[0]) - \(dateMonthStr[0])"
+            case 2:
+                toDisplayDateString = "\(dateMonthStr[0]) - \(dateMonthStr[2])"
+            default:
+                toDisplayDateString = ""
+            }
+        }
+        
+        delegate?.didSetValues(values: monthStr, valueStr: toDisplayDateString)
+        
         var dayCountArr = [Int]()
-
+        
         date.forEach { dateElement in
             let count = numberOfDaysInMonth(for: dateElement)
             dayCountArr.append(count ?? 0)
         }
-
-        delegate?.didSetValues(values: monthStr)
-
-//        _ = dayCountArr[0]
-//        let month2TotalDays = dayCountArr[1]
-//        let month3TotalDays = dayCountArr[2]
-
         
- 
         
-    
-  
-         
+        
+       
+        
+        
         var averageDayNumbersArray: [[Int]] = []
-
+        
         
         dayNumbersArray.enumerated().forEach { dayNumbersIndex, dayNumbers in
             var modifiedDayNumbers: [Int] = []
-
+            
             switch dayNumbersIndex {
             case 0:
                 // Filter days in the range 0 to 15
                 let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
                 if !daysInRange0to15.isEmpty {
-    
-                        callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                    
+                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
                     
-                   // callsCount.append(daysInRange0to15.count)
+                    // callsCount.append(daysInRange0to15.count)
                     modifiedDayNumbers.append(15)
-                   
+                    
                     //daysInRange0to15.first ?? 0
                 } else {
                     callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
-                   // callsCount.append(0)
+                    // callsCount.append(0)
                     modifiedDayNumbers.append(15)
                 }
-
+                
                 // Filter days in the range 16 to 31
                 let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
                 if !daysInRange16to31.isEmpty {
                     callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
                     eacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                  //  callsCount.append(daysInRange16to31.count)
+                    //  callsCount.append(daysInRange16to31.count)
                     modifiedDayNumbers.append(30)
                 } else {
-                modifiedDayNumbers.append(30)
+                    modifiedDayNumbers.append(30)
                     callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[1].insert(contentsOf: [], at: 0)
-               // callsCount.append(0)
+                    // callsCount.append(0)
                 }
-               // callsCount.append(daysInRange0to15.count + daysInRange16to31.count)
+                // callsCount.append(daysInRange0to15.count + daysInRange16to31.count)
             case 1:
                 // Filter days in the range 0 to 15
                 let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
@@ -355,17 +528,17 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     modifiedDayNumbers.append(45)
                     
                 } else {
-
-                   modifiedDayNumbers.append(45)
+                    
+                    modifiedDayNumbers.append(45)
                     callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[2].insert(contentsOf: [], at: 0)
-                  //  callsCount.append(0)
+                    //  callsCount.append(0)
                 }
-
+                
                 // Filter days in the range 16 to 31
                 let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
                 if !daysInRange16to31.isEmpty {
-                  //  callsCount.append(daysInRange16to31.count)
+                    //  callsCount.append(daysInRange16to31.count)
                     callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
                     eacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
                     modifiedDayNumbers.append(60)
@@ -375,23 +548,23 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     eacSectorCounrArr[3].insert(contentsOf: [], at: 0)
                     //callsCount.append(0)
                 }
-              //  callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
+                //  callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
                 
             case 2:
                 // Filter days in the range 0 to 15
                 let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
                 if !daysInRange0to15.isEmpty {
-                   // callsCount.append(daysInRange0to15.count)
+                    // callsCount.append(daysInRange0to15.count)
                     callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
                     eacSectorCounrArr[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
                     modifiedDayNumbers.append(75)
                 } else {
-                   modifiedDayNumbers.append(75)
+                    modifiedDayNumbers.append(75)
                     callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[4].insert(contentsOf: [], at: 0)
-                   // callsCount.append(0)
+                    // callsCount.append(0)
                 }
-
+                
                 // Filter days in the range 16 to 31
                 let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
                 if !daysInRange16to31.isEmpty {
@@ -405,38 +578,38 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     eacSectorCounrArr[5].insert(contentsOf: [], at: 0)
                     callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
                 }
-               // callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
+                // callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
             default:
                 print("default")
             }
             
-
-
+            
+            
             // Add the modified array to the result
             averageDayNumbersArray.append(modifiedDayNumbers)
         }
-
         
-        let cachedayNumbersArray = dayNumbersArray
+        
+        _ = dayNumbersArray
         dayNumbersArray = averageDayNumbersArray
         
         
         
-
-
+        
+        
         let counts: [Int] =  eacSectorCounrArr.map({ innerArray in
             return innerArray.count
         })
         var aMonthValus = [ChartDataEntry]()
         var count : Int = 0
         dayNumbersArray.enumerated().forEach { aMonthDaysIndex, aMonthDays in
-         
+            
             switch aMonthDaysIndex {
             case 0:
                 var entries1 = [ChartDataEntry]()
-               
+                
                 dayNumbersArray[aMonthDaysIndex].enumerated().forEach {aDaynumberIndex, aDaynumber in
-                 
+                    
                     let aEntry = ChartDataEntry(x: Double(aDaynumber), y: Double(counts[count]))
                     count = count + 1
                     //Double(modifiedDayNumbers[aMonthDaysIndex].count)
@@ -452,7 +625,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 aMonthValus.append(contentsOf: entries2)
             case 2:
-             var entries3 = [ChartDataEntry]()
+                var entries3 = [ChartDataEntry]()
                 dayNumbersArray[aMonthDaysIndex].enumerated().forEach {aDaynumberIndex, aDaynumber in
                     let aEntry = ChartDataEntry(x: Double(aDaynumber), y: Double(counts[count]))
                     count = count + 1
@@ -460,32 +633,32 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 aMonthValus.append(contentsOf: entries3)
             default:
-            print("Default")
+                print("Default")
             }
-           
+            
         }
         
         
         
-//        var firstEntry = [ChartDataEntry]()
-//        let firstChartDataEntry = ChartDataEntry(x: 0, y: 1)
-//        firstEntry.append(firstChartDataEntry)
-//        aMonthValus.insert(contentsOf: firstEntry, at: 0)
-//
-//        var lastEntry = [ChartDataEntry]()
-//        let lastChartDataEntry = ChartDataEntry(x: 120, y: 1)
-//        lastEntry.append(lastChartDataEntry)
-//        aMonthValus.append(contentsOf: lastEntry)
+        //        var firstEntry = [ChartDataEntry]()
+        //        let firstChartDataEntry = ChartDataEntry(x: 0, y: 1)
+        //        firstEntry.append(firstChartDataEntry)
+        //        aMonthValus.insert(contentsOf: firstEntry, at: 0)
+        //
+        //        var lastEntry = [ChartDataEntry]()
+        //        let lastChartDataEntry = ChartDataEntry(x: 120, y: 1)
+        //        lastEntry.append(lastChartDataEntry)
+        //        aMonthValus.append(contentsOf: lastEntry)
         
         
         let flattenedArray: [Int] = callsCount.flatMap { $0 }
         
-                if let maxValue = flattenedArray.max(by: { $0 < $1 }) {
-                    print("The highest element is: \(maxValue)")
-                    self.yRangeMax = maxValue
-                } else {
-                    print("The array is empty.")
-                }
+        if let maxValue = flattenedArray.max(by: { $0 < $1 }) {
+            print("The highest element is: \(maxValue)")
+            self.yRangeMax = maxValue
+        } else {
+            print("The array is empty.")
+        }
         if let minValue = flattenedArray.max(by: { $0 > $1 }) {
             print("The highest element is: \(minValue)")
             self.yRangeMin = minValue
@@ -494,13 +667,15 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         }
         
         self.values = aMonthValus
+        
+        toCalculateAvgDate()
     }
     
     func setupLineChart() {
         toSetDataSource()
         
         toAddCustomXaxis()
-       // toAddCustomXaxis()
+        // toAddCustomXaxis()
         
         lineChartView.delegate = self
         lineChartView.legend.enabled = false
@@ -512,8 +687,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         lineChartView.dragXEnabled = false
         lineChartView.dragYEnabled = false
         
-
-     // Set the number of labels
+        
+        // Set the number of labels
         
         // Customize X-axis
         let xAxis = lineChartView.xAxis
@@ -534,52 +709,52 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             xAxis.axisMaximum = 90
         }
         
-    
+        
         xAxis.labelPosition = .bottom
         xAxis.granularityEnabled = true
-       // xAxis.axisMinimum = 1   // Move the starting point 5 points to the right
-       // xAxis.axisMaximum = 5.5  // Move the ending point 5 points to the right
+        // xAxis.axisMinimum = 1   // Move the starting point 5 points to the right
+        // xAxis.axisMaximum = 5.5  // Move the ending point 5 points to the right
         lineChartView.autoScaleMinMaxEnabled = false
         xAxis.wordWrapEnabled = false
         xAxis.centerAxisLabelsEnabled = true
-       xAxis.granularity = 1
+        xAxis.granularity = 1
         let xValuesNumberFormatter = CustomValueFormatter()
         xValuesNumberFormatter.date = date
         
-
-
-
+        
+        
+        
         xAxis.valueFormatter = xValuesNumberFormatter
-
+        
         
         lineChartView.xAxis.yOffset = 40
         // Customize the font
         xAxis.labelFont = UIFont(name: "Satoshi-Medium", size: 14) ?? UIFont.systemFont(ofSize: 14)
-
+        
         // Customize Y-axis
         // Access the y-axis of your line chart view
         let yAxis = lineChartView.leftAxis // You can use `rightAxis` if needed
         
         let subyRange = yRangeMax
         let minimumPercentage: Double = 0.2 // 20% of the range
-
-        let minimumValue = Double(subyRange) * minimumPercentage
+        
+       // let minimumValue = Double(subyRange) * minimumPercentage
         if yRangeMin < 10 {
             yAxis.axisMinimum = 0
-           // yAxis.axisMinimum = Double(yRangeMin)
+            // yAxis.axisMinimum = Double(yRangeMin)
         } else {
             yAxis.axisMinimum = 0
-          //  yAxis.axisMinimum = Double(yRangeMin)
+            //  yAxis.axisMinimum = Double(yRangeMin)
         }
         yAxis.axisMaximum = 25
         //Double(yRangeMax).rounded(.up) // Adjust maximum value
         yAxis.labelCount = 5
-
-      
+        
+        
         
         
         yAxis.labelFont = UIFont(name: "Satoshi-Medium", size: 14) ?? UIFont.systemFont(ofSize: 14)
-
+        
         let dataSet = LineChartDataSet(entries: values, label: "")
         let data = LineChartData(dataSet: dataSet)
         dataSet.setCircleColor(.appTextColor)
@@ -592,20 +767,20 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         // Customize other properties of the data set if needed
         dataSet.lineWidth = 1.0  // Set the width of the line
         
-      
+        
         
         lineChartView.data = data
         
-
+        
         //to hide x , y indicator axis - labels
         yAxis.drawLabelsEnabled = true
         xAxis.drawLabelsEnabled = true
-      
+        
         
         //to hide x , y indicator axis - lines
-          yAxis.drawAxisLineEnabled = false
-          xAxis.drawAxisLineEnabled = false
-          lineChartView.rightAxis.enabled = false
+        yAxis.drawAxisLineEnabled = false
+        xAxis.drawAxisLineEnabled = false
+        lineChartView.rightAxis.enabled = false
         
         //to hide x , y indicator axis - grid lines
         yAxis.drawGridLinesEnabled = true
@@ -616,15 +791,15 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         // Configure the grid lines to be dotted
         yAxis.gridLineDashLengths = [4, 4]  // Adjust the lengths as needed
         yAxis.gridLineDashPhase = 0  // Adjust the phase if needed
-     //   yAxis.axisLineColor = .appSelectionColor
+        //   yAxis.axisLineColor = .appSelectionColor
         yAxis.gridColor = .appGreyColor
-     
-      
+        
+        
         
         lineChartView.drawBordersEnabled = false
         lineChartView.drawMarkers = false
         lineChartView.drawGridBackgroundEnabled = false
-
+        
         // Apply the changes
         lineChartView.notifyDataSetChanged()
         
@@ -633,40 +808,49 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     public func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight)
     {
         print("chartValueSelected : x = \(highlight.x) y = \(highlight.y)")
-//        var set1 = LineChartDataSet()
-//        set1 = (chartView.data?.dataSets[0] as? LineChartDataSet)!
-//        set1.setCircleColor(NSUIColor.appGreen)
-//        set1.circleHoleColor = .appWhiteColor
+        //        var set1 = LineChartDataSet()
+        //        set1 = (chartView.data?.dataSets[0] as? LineChartDataSet)!
+        //        set1.setCircleColor(NSUIColor.appGreen)
+        //        set1.circleHoleColor = .appWhiteColor
         
         print(highlight.dataIndex)
-
+        
         let index = values.firstIndex(where: {$0.x == highlight.x}) ?? 0  // search index
         
         let counts: [Int] =  eacSectorCounrArr.map({ innerArray in
             return innerArray.count
         })
-
-        
-        self.totalCalls = counts[index]
-        //Int(passesAvgCall / Int(highlight.y))
         
         
+        let avgcounts: [Int] =  avgeacSectorCounrArr.map({ innerArray in
+            return innerArray.count
+        })
         
-        self.averageCalls =  counts[index] / self.allListArr.count
+        
+        
+        if avgcounts[index] == 0 {
+            self.totalCalls = counts[index]
+            self.averageCalls = 0
+        } else {
+            self.totalCalls = counts[index]
+            //Int(passesAvgCall / Int(highlight.y))
+            self.averageCalls =  counts[index] / avgcounts[index]
+        }
         
         let selectedChartDataEntry = [values[index]]
-
+        
         let selecteddataSet = LineChartDataSet(entries: selectedChartDataEntry, label: "")
         selecteddataSet.drawValuesEnabled = false
         selecteddataSet.drawVerticalHighlightIndicatorEnabled = false
         selecteddataSet.drawHorizontalHighlightIndicatorEnabled = false
-        selecteddataSet.setCircleColor(.appGreen)
+      //  let color = self.dcrCount.color
+        selecteddataSet.setCircleColor(dcrCount.color)
         selecteddataSet.circleHoleColor =  .appTextColor
         selecteddataSet.circleRadius = 10
         selecteddataSet.colors = [NSUIColor.appTextColor]
-       // let selecteddata = LineChartData(dataSet: selecteddataSet)
+        // let selecteddata = LineChartData(dataSet: selecteddataSet)
         
-      //  values.remove(at: index)
+        //  values.remove(at: index)
         let exsistingdataSet = LineChartDataSet(entries: values, label: "")
         exsistingdataSet.drawValuesEnabled = false
         exsistingdataSet.drawVerticalHighlightIndicatorEnabled = false
@@ -675,38 +859,35 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         exsistingdataSet.circleHoleColor =  .appTextColor
         exsistingdataSet.circleRadius = 5
         exsistingdataSet.colors = [NSUIColor.appTextColor]
-      //  let exsistingselected = LineChartData(dataSet: exsistingdataSet)
+        //  let exsistingselected = LineChartData(dataSet: exsistingdataSet)
         
-      //  values.add(selectedChartDataEntry, at: [index])
-
+        //  values.add(selectedChartDataEntry, at: [index])
+        
         
         
         // Create a LineChartData object and add datasets to it
         let data = LineChartData(dataSets:[selecteddataSet, exsistingdataSet])
-
+        
         chartView.data = data
-   
+        
         chartView.notifyDataSetChanged()
         
-      
         
-         let dataSetIndex = index
+        
+        _ = index
+        
 
-//        guard let dataSet = chartView.data?.dataSets[dataSetIndex] as? LineChartDataSet else {
-//            return
-//        }
-      
         if let lineChartView = chartView as? LineChartView {
             // Get the transformer for the left axis
             let transformer = lineChartView.getTransformer(forAxis: .left)
-
+            
             // Transform the entry coordinates to pixel coordinates
             let point = transformer.pixelForValues(x: entry.x, y: entry.y)
-
+            
             // Create a custom view or overlay at the pixel position
             let customView = UIView(frame: CGRect(x: point.x, y: point.y, width: 5, height: 5))
             customView.backgroundColor = UIColor.clear
-
+            
             lineChartView.subviews.forEach { $0.removeFromSuperview() }
             
             // Add the custom view to the chart view or its superview
@@ -716,13 +897,13 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         }
         
         
-          //  toShoPopup(rectOfSelectedDataPoint)
+        //  toShoPopup(rectOfSelectedDataPoint)
     }
     
     public func chartValueNothingSelected(_ chartView: ChartViewBase)
     {
         print("chartValueNothingSelected")
-
+        
     }
     
     
@@ -730,11 +911,12 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         print("Tapped -->")
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: lineChartView.width / 3.5 , height: lineChartView.height / 3.7), on: view, onframe: CGRect(), pagetype: .HomeGraph)
-               // vc.delegate = self
-               // vc.selectedIndex = indexPath.row
-            vc.totalCalls = self.totalCalls
-            vc.avgCalls = self.averageCalls
-            self.viewController?.navigationController?.present(vc, animated: true)
+        // vc.delegate = self
+        // vc.selectedIndex = indexPath.row
+        vc.color = self.dcrCount.color
+        vc.totalCalls = self.totalCalls
+        vc.avgCalls = self.averageCalls
+        self.viewController?.navigationController?.present(vc, animated: true)
     }
     
     func toAddCustomXaxis() {
@@ -743,19 +925,19 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(overlayView)
         NSLayoutConstraint.activate([
-         overlayView.topAnchor.constraint(equalTo: lineChartView.bottomAnchor, constant: -35), // Adjust this constraint based on your layout
+            overlayView.topAnchor.constraint(equalTo: lineChartView.bottomAnchor, constant: -35), // Adjust this constraint based on your layout
             overlayView.leadingAnchor.constraint(equalTo: lineChartView.leadingAnchor, constant: +40),
             overlayView.trailingAnchor.constraint(equalTo: lineChartView.trailingAnchor, constant: -10),
             overlayView.heightAnchor.constraint(equalToConstant: 2)
         ])
         
-     }
-
-     func numberOfDaysInMonth(for date: Date) -> Int? {
-         let calendar = Calendar.current
-         if let range = calendar.range(of: .day, in: .month, for: date) {
-             return range.count
-         }
-         return nil
-     }
+    }
+    
+    func numberOfDaysInMonth(for date: Date) -> Int? {
+        let calendar = Calendar.current
+        if let range = calendar.range(of: .day, in: .month, for: date) {
+            return range.count
+        }
+        return nil
+    }
 }

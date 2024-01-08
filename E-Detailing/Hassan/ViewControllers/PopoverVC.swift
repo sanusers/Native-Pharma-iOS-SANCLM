@@ -50,6 +50,7 @@ class PopOverVC: UIViewController {
     var pageType: PageType = .TP
     var totalCalls: Int = 0
     var avgCalls: Int = 0
+    var color : UIColor? = .appGreen
     override func viewDidLoad() {
         super.viewDidLoad()
        
@@ -60,7 +61,7 @@ class PopOverVC: UIViewController {
     
     func setupUI() {
         
-        graphInfoView.backgroundColor = .appGreen
+        graphInfoView.backgroundColor = color
         graphInfoView.layer.cornerRadius = 5
         
         

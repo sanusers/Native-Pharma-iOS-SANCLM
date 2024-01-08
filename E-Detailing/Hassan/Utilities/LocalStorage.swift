@@ -17,6 +17,7 @@ class LocalStorage {
         case istoEnableApproveBtn
         case TPalldatesAppended
         case TPisForFinalDate
+        case isMR
     }
     
     func setSting(_ key:LocalValue,text:String = "" ){

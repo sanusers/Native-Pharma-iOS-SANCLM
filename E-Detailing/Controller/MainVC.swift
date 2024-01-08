@@ -14,10 +14,12 @@ import Alamofire
 
 extension MainVC : HomeLineChartViewDelegate
 {
-    func didSetValues(values: [String]) {
+
+    
+    func didSetValues(values: [String], valueStr: String) {
         
      
-        
+        self.monthRangeLbl.text = valueStr
         switch values.count {
 
         case 0:
@@ -154,6 +156,8 @@ class MainVC : UIViewController {
     @IBOutlet weak var imgProfile: UIImageView!
     
     
+    @IBOutlet var monthRangeLbl: UILabel!
+    @IBOutlet var lblAverageDocCalls: UILabel!
     @IBOutlet weak var lblAnalysisName: UILabel!
     @IBOutlet weak var lblWorkType: UILabel!
     @IBOutlet weak var lblHeadquarter: UILabel!
@@ -247,8 +251,11 @@ class MainVC : UIViewController {
     var chemistArr = [HomeData]()
     var stockistArr = [HomeData]()
     var unlistedDocArr = [HomeData]()
+    var cipArr = [HomeData]()
+    var hospitalArr = [HomeData]()
     var  homeDataArr = [HomeData]()
     var totalFWCount: Int = 0
+    var cacheINdex: Int = 0
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -299,7 +306,7 @@ class MainVC : UIViewController {
         switch chartType {
             
         default:
-            self.toIntegrateChartView(.doctor)
+            self.toIntegrateChartView(.doctor, 0)
         }
     }
     
@@ -330,13 +337,24 @@ class MainVC : UIViewController {
             aHomeData.custType == "4"
         }
         
+        cipArr =  homeDataArr.filter { aHomeData in
+            aHomeData.custType == "5"
+        }
+        
+        hospitalArr =  homeDataArr.filter { aHomeData in
+            aHomeData.custType == "6"
+        }
+        
     }
     
     func setupUI() {
-        toSeperateDCR()
+        monthRangeLbl.setFont(font: .medium(size: .BODY))
+        lblAverageDocCalls.setFont(font: .bold(size: .SUBHEADER))
+        lblAnalysisName.setFont(font: .bold(size: .SUBHEADER))
+        //toSeperateDCR()
         chartHolderView.layer.cornerRadius = 5
         chartHolderView.backgroundColor = .appWhiteColor
-        self.toIntegrateChartView(.doctor)
+        self.toIntegrateChartView(.doctor, 0)
         month1View.layer.cornerRadius = 5
         month2View.layer.cornerRadius = 5
         month3View.layer.cornerRadius = 5
@@ -355,9 +373,11 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.toSeperateDCR()
+        self.updateLinks()
+        self.updateDcr()
+        self.updateSegmentForDcr()
         setupUI()
-      
-        
      
         LocationManager.shared.locationUpdate()
         
@@ -400,10 +420,7 @@ class MainVC : UIViewController {
         
         self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .left))
         self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .right))
-        
-        self.updateLinks()
-        self.updateDcr()
-        self.updateSegmentForDcr()
+
         
        // self.segmentControlForAnalysis.removeBorder()
         
@@ -435,11 +452,13 @@ class MainVC : UIViewController {
 //        self.fetch()
 //        self.fetch1()
         
+
+        
     }
     
 
     
-    func toIntegrateChartView(_ type: ChartType) {
+    func toIntegrateChartView(_ type: ChartType, _ index: Int) {
       
         self.lineChatrtView.subviews.forEach { aAddedView in
             aAddedView.removeFromSuperview()
@@ -448,6 +467,7 @@ class MainVC : UIViewController {
        let ahomeLineChartView = HomeLineChartView()
         ahomeLineChartView.delegate = self
         ahomeLineChartView.allListArr = homeDataArr
+        ahomeLineChartView.dcrCount = self.dcrCount[index]
         switch type {
 
         case .doctor:
@@ -988,17 +1008,19 @@ class MainVC : UIViewController {
         
         let hospitalColor = UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.8))
      
-        self.dcrCount.append(DcrCount(name: "Doctor",color: doctorColor,count: DBManager.shared.getDoctor().count.description))
+      
         
-        self.dcrCount.append(DcrCount(name: "Chemist",color: chemistColor,count: DBManager.shared.getChemist().count.description))
+        self.dcrCount.append(DcrCount(name: "Doctor Calls",color: doctorColor,count: DBManager.shared.getDoctor().count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:   self.doctorArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Stockist",color: stockistColor,count: DBManager.shared.getStockist().count.description))
+        self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist().count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: self.chemistArr.count))
         
-        self.dcrCount.append(DcrCount(name: "UnListed Doctor",color: unlistdColor,count: DBManager.shared.getUnListedDoctor().count.description))
+        self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist().count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: self.stockistArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Cip",color: cipColor,count: DBManager.shared.getUnListedDoctor().count.description))
+        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .darkGray,count: DBManager.shared.getUnListedDoctor().count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: self.unlistedDocArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Hospital",color: hospitalColor,count: DBManager.shared.getUnListedDoctor().count.description))
+        self.dcrCount.append(DcrCount(name: "Cip Calls",color: cipColor,count: DBManager.shared.getUnListedDoctor().count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipArr.count))
+        
+        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: hospitalColor,count: DBManager.shared.getUnListedDoctor().count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalArr.count))
         
     }
     
@@ -1101,33 +1123,48 @@ extension MainVC : collectionViewProtocols {
             case self.dcrCallsCollectionView:
             
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRCallAnalysisCell", for: indexPath) as! DCRCallAnalysisCell
-                cell.viewDoctor.backgroundColor = self.dcrCount[indexPath.row].color
-                cell.lblName.text = self.dcrCount[indexPath.row].name
-                cell.lblCount.text = "0/"+"\(self.dcrCount[indexPath.row].count!)"
-                cell.imgArrow.tintColor = self.dcrCount[indexPath.row].color
-            cell.imgArrow.isHidden = true
-            for (key, value) in cell.selectedIndex {
-                if key == indexPath.row && value == true {
-                    cell.imgArrow.isHidden = false
-                }
+            cell.dcrCount = self.dcrCount[indexPath.row]
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                cell.setCellType(cellType: .MR)
+            } else {
+                cell.setCellType(cellType: .Manager)
             }
+           
+               // cell.viewDoctor.backgroundColor = self.dcrCount[indexPath.row].color
+                //cell.lblName.text = self.dcrCount[indexPath.row].name
+                //cell.lblCount.text = "0/"+"\(self.dcrCount[indexPath.row].count!)"
+                //cell.imgArrow.tintColor = self.dcrCount[indexPath.row].color
+            
+            cell.imgArrow.isHidden = true
+//            for (key, value) in cell.selectedIndex {
+//                if key == indexPath.row && value == true {
+//                    cell.imgArrow.isHidden = false
+//                }
+//            }
               
             cell.addTap {
-               // "Doctor" "Chemist" "Stockist" "UnListed Doctor"
-                cell.selectedIndex = [:]
-                cell.selectedIndex[indexPath.row] = true
-                let model = self.dcrCount[indexPath.row]
-                
-                if model.name == "Doctor" {
-                    self.toIntegrateChartView(.doctor)
-                } else if model.name == "Chemist" {
-                    self.toIntegrateChartView(.chemist)
-                } else if model.name == "Stockist" {
-                    self.toIntegrateChartView(.stockist)
-                } else if model.name == "UnListed Doctor" {
-                    self.toIntegrateChartView(.unlistedDoctor)
-                }
-                self.dcrCallsCollectionView.reloadData()
+//                self.cacheINdex = indexPath.row
+//                if self.cacheINdex == cell.selectedIndex {
+//                  return
+//                } else {
+                    let model = self.dcrCount[indexPath.row]
+                    
+                    if model.name == "Doctor Calls" {
+                        self.toIntegrateChartView(.doctor, indexPath.row)
+                        self.lblAverageDocCalls.text = "Average Doctor Calls"
+                    } else if model.name == "Chemist Calls" {
+                        self.toIntegrateChartView(.chemist, indexPath.row)
+                        self.lblAverageDocCalls.text = "Average Chemist Calls"
+                    } else if model.name == "Stockist Calls" {
+                        self.toIntegrateChartView(.stockist, indexPath.row)
+                        self.lblAverageDocCalls.text = "Average Stockist Calls"
+                    } else if model.name == "UnListed Doctor Calls" {
+                        self.toIntegrateChartView(.unlistedDoctor, indexPath.row)
+                        self.lblAverageDocCalls.text = "Average UnListed Doctor Calls"
+                    }
+                    self.dcrCallsCollectionView.reloadData()
+                 //   cell.selectedIndex = indexPath.row
+               // }
             }
                 return cell
             case self.analysisCollectionView:
@@ -1395,9 +1432,11 @@ struct QuicKLink {
 
 struct DcrCount {
     
-    var name : String!
-    var color : UIColor!
-    var count : String!
+    var name : String
+    var color : UIColor
+    var count : String
+    var image: UIImage
+    var callsCount : Int
 }
 
 enum AppColorForBackground {

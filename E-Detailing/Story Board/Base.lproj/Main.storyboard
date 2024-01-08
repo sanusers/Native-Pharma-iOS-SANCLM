@@ -3584,9 +3584,9 @@ VmVyc2lvbiA6IDEuMAM
                                                         <rect key="frame" x="0.0" y="0.0" width="877" height="40"/>
                                                         <subviews>
                                                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="FJl-k7-BZ4">
-                                                                <rect key="frame" x="594" y="15" width="263" height="6"/>
+                                                                <rect key="frame" x="594" y="15" width="263" height="4"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="height" constant="5" id="5hy-M7-ryy"/>
+                                                                    <constraint firstAttribute="height" constant="3" id="5hy-M7-ryy"/>
                                                                 </constraints>
                                                                 <segments>
                                                                     <segment title=""/>
@@ -4055,7 +4055,13 @@ VmVyc2lvbiA6IDEuMAM
                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.26274509800000001" alpha="1" colorSpace="calibratedRGB"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
-                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CFo-Cj-kgy" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MuN-N8-W1d">
+                                                                                <rect key="frame" x="862" y="53.5" width="0.0" height="0.0"/>
+                                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                                <nil key="textColor"/>
+                                                                                <nil key="highlightedColor"/>
+                                                                            </label>
+                                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CFo-Cj-kgy" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
                                                                                 <rect key="frame" x="702.5" y="5" width="154.5" height="85.5"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2023" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NVz-vK-eHZ">
@@ -4105,9 +4111,11 @@ VmVyc2lvbiA6IDEuMAM
                                                                             <constraint firstItem="CFo-Cj-kgy" firstAttribute="top" secondItem="BlF-et-G2c" secondAttribute="top" constant="5" id="3iZ-vp-EVW"/>
                                                                             <constraint firstItem="CFo-Cj-kgy" firstAttribute="leading" secondItem="h4W-iy-avs" secondAttribute="trailing" constant="15" id="B9J-uW-roo"/>
                                                                             <constraint firstItem="h4W-iy-avs" firstAttribute="top" secondItem="BlF-et-G2c" secondAttribute="top" constant="12" id="HfP-zY-v6W"/>
+                                                                            <constraint firstItem="MuN-N8-W1d" firstAttribute="centerY" secondItem="BlF-et-G2c" secondAttribute="centerY" id="LX3-68-fgb"/>
                                                                             <constraint firstItem="CFo-Cj-kgy" firstAttribute="width" secondItem="BlF-et-G2c" secondAttribute="width" multiplier="0.176056" id="MIY-9K-Ev7"/>
                                                                             <constraint firstAttribute="bottom" secondItem="CFo-Cj-kgy" secondAttribute="bottom" constant="10" id="PLB-Mi-7Iz"/>
                                                                             <constraint firstAttribute="trailing" secondItem="CFo-Cj-kgy" secondAttribute="trailing" constant="20" id="Zq4-cC-aRl"/>
+                                                                            <constraint firstAttribute="trailing" secondItem="MuN-N8-W1d" secondAttribute="trailing" constant="15" id="fov-ep-Ywd"/>
                                                                         </constraints>
                                                                     </view>
                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cfL-cb-XYa">
@@ -4877,6 +4885,7 @@ VmVyc2lvbiA6IDEuMAM
                         <outlet property="eventCollectionView" destination="xVX-mP-exA" id="sah-gF-687"/>
                         <outlet property="imgProfile" destination="bNR-hE-4zY" id="4kH-Ue-DTK"/>
                         <outlet property="lblAnalysisName" destination="Zuz-vs-Ppi" id="TdZ-c3-vCe"/>
+                        <outlet property="lblAverageDocCalls" destination="h4W-iy-avs" id="jDU-1B-zUe"/>
                         <outlet property="lblCluster" destination="PDM-kA-qMd" id="34b-e8-6T3"/>
                         <outlet property="lblDate" destination="ZUp-fS-kZc" id="BGj-SL-5ys"/>
                         <outlet property="lblHeadquarter" destination="rWa-Hg-ef7" id="oUg-wY-hor"/>
@@ -4892,6 +4901,7 @@ VmVyc2lvbiA6IDEuMAM
                         <outlet property="month3VXview" destination="jhA-NZ-VeS" id="t0E-cZ-Xpg"/>
                         <outlet property="month3View" destination="OsP-RN-0dc" id="qLL-Lz-yVD"/>
                         <outlet property="monthHolderView" destination="E4n-BG-q4B" id="Y1o-xi-ZKm"/>
+                        <outlet property="monthRangeLbl" destination="MuN-N8-W1d" id="vTx-D6-tnU"/>
                         <outlet property="outboxTableView" destination="D5j-sf-QYl" id="5VV-eP-ce0"/>
                         <outlet property="quickLinkCollectionView" destination="dKs-s2-bNB" id="tFG-uc-ltr"/>
                         <outlet property="salesStackView" destination="9r7-rh-fnu" id="A0d-c3-4uT"/>
