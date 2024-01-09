@@ -85,7 +85,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     var passesAvgCall : Int = 0
     weak var delegate: HomeLineChartViewDelegate?
     var monthDataArray = [MonthData]()
-    var callsCount: [[Int]] = [[], [], []]
+    var callsCount: [[Int]] = [[], [], [], [], [], []]
     var eacSectorCounrArr: [[Int]] = [[], [], [], [], [], []]
     var avgeacSectorCounrArr: [[Int]] = [[], [], [], [], [], []]
     var dayNumbersArray: [[Int]] = [[]]
@@ -116,11 +116,30 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             self.dataSourceArr = dataSourceArr
             setupLineChart()
             
-            
-            
-            
         } else {
-            delegate?.didSetValues(values: [], valueStr: "")
+            self.addSubview(lineChartView)
+            setupLineChart()
+            var sampleCurrentMonthDate = Date()
+            let currentDate = Date()
+            let calendar = Calendar.current
+            let currentMonthNumber = calendar.component(.month, from: currentDate)
+            if let sampleDate = calendar.date(from: DateComponents(year: calendar.component(.year, from: currentDate), month: currentMonthNumber, day: 1)) {
+                print("Sample Date for the Current Month: \(sampleDate)")
+                sampleCurrentMonthDate = sampleDate
+            } else {
+                print("Error creating sample date.")
+            }
+            
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMMM"
+            
+            var toDisplayDateString = ""
+            
+            toDisplayDateString = dateFormatter.string(from: sampleCurrentMonthDate)
+            
+            
+            delegate?.didSetValues(values: [toDisplayDateString], valueStr: toDisplayDateString)
         }
         
         
@@ -388,9 +407,35 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         let datesFilteredByMonth = separateDatesByMonth(dates)
         
         
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let currentMonthNumber = calendar.component(.month, from: currentDate)
+        var sampleCurrentMonthDate = Date()
+        var isMonthAdded : Bool = false
+        print("Current Month Number: \(currentMonthNumber)")
+        
+        
+        if let sampleDate = calendar.date(from: DateComponents(year: calendar.component(.year, from: currentDate), month: currentMonthNumber, day: 1)) {
+            print("Sample Date for the Current Month: \(sampleDate)")
+            sampleCurrentMonthDate = sampleDate
+        } else {
+            print("Error creating sample date.")
+        }
+        
+        
          monthDataArray = datesFilteredByMonth.map { (monthNumber, dates) in
             return MonthData(monthNumber: monthNumber, dates: dates)
         }
+        
+        
+        if monthDataArray.contains(where: { $0.monthNumber == currentMonthNumber }) == false || monthDataArray.isEmpty {
+            // If not, add it to monthDataArray
+            isMonthAdded = true
+            let newMonthData = MonthData(monthNumber: currentMonthNumber, dates: [sampleCurrentMonthDate])
+            monthDataArray.append(newMonthData)
+        }
+
+        
         
         // Sort the monthDataArray based on monthNumber
         monthDataArray.sort { (lhs, rhs) in
@@ -411,6 +456,17 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             }
         }
         
+        let addedDaycomponent = calendar.component(.day, from: sampleCurrentMonthDate)
+        
+        var addedIndex: Int = 0
+        
+        for (monthIndex, monthDayNumbers) in dayNumbersArray.enumerated() {
+            if let dayIndex = monthDayNumbers.firstIndex(of: addedDaycomponent) {
+                // Found the day number in the current month, monthIndex is the month number
+                //print("Day \(dayNumber) found in Month \(monthIndex + 1) at index \(dayIndex)")
+                addedIndex = monthIndex
+            }
+        }
         //to take out samples dates
         // Use a Set to keep track of unique month numbers
         var uniqueMonths = Set<Int>()
@@ -456,7 +512,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             case 0:
                 toDisplayDateString = dDatevalue
             case 1:
-                toDisplayDateString = "\(dateMonthStr[0]) - \(dateMonthStr[0])"
+                toDisplayDateString = "\(dateMonthStr[0]) - \(dateMonthStr[1])"
             case 2:
                 toDisplayDateString = "\(dateMonthStr[0]) - \(dateMonthStr[2])"
             default:
@@ -486,99 +542,174 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             
             switch dayNumbersIndex {
             case 0:
-                // Filter days in the range 0 to 15
-                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
-                if !daysInRange0to15.isEmpty {
-                    
-                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    eacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    
-                    // callsCount.append(daysInRange0to15.count)
-                    modifiedDayNumbers.append(15)
-                    
-                    //daysInRange0to15.first ?? 0
-                } else {
-                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                if isMonthAdded && addedIndex == 0 {
+                    modifiedDayNumbers.append(22)
+                    callsCount[0].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
-                    // callsCount.append(0)
-                    modifiedDayNumbers.append(15)
+
+                    if date.count == 2 {
+                        modifiedDayNumbers.append(31)
+                    } else {
+                        modifiedDayNumbers.append(33)
+                    }
+                    callsCount[1].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[1].insert(contentsOf: [], at: 0)
+                } else {
+                    // Filter days in the range 0 to 15
+                    let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                    if !daysInRange0to15.isEmpty {
+                        
+                        callsCount[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                        eacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                        
+                        // callsCount.append(daysInRange0to15.count)
+                        modifiedDayNumbers.append(22)
+                        
+                        //daysInRange0to15.first ?? 0
+                    } else {
+                        callsCount[0].insert(contentsOf: [], at: 0)
+                        eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
+                        // callsCount.append(0)
+                        modifiedDayNumbers.append(22)
+                    }
+                    
+                    // Filter days in the range 16 to 31
+                    let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                    if !daysInRange16to31.isEmpty {
+                        callsCount[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                        eacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                        //  callsCount.append(daysInRange16to31.count)
+                        if date.count == 2 {
+                            modifiedDayNumbers.append(31)
+                        } else {
+                            modifiedDayNumbers.append(33)
+                        }
+                    } else {
+                        if date.count == 2 {
+                            modifiedDayNumbers.append(31)
+                        } else {
+                            modifiedDayNumbers.append(33)
+                        }
+                       
+                        callsCount[1].insert(contentsOf: [], at: 0)
+                        eacSectorCounrArr[1].insert(contentsOf: [], at: 0)
+                        // callsCount.append(0)
+                    }
                 }
                 
-                // Filter days in the range 16 to 31
-                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                if !daysInRange16to31.isEmpty {
-                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                    eacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                    //  callsCount.append(daysInRange16to31.count)
-                    modifiedDayNumbers.append(30)
-                } else {
-                    modifiedDayNumbers.append(30)
-                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
-                    eacSectorCounrArr[1].insert(contentsOf: [], at: 0)
-                    // callsCount.append(0)
-                }
+
                 // callsCount.append(daysInRange0to15.count + daysInRange16to31.count)
             case 1:
-                // Filter days in the range 0 to 15
-                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
-                if !daysInRange0to15.isEmpty {
-                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    //callsCount.append(daysInRange0to15.count)
-                    eacSectorCounrArr[2].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    modifiedDayNumbers.append(45)
-                    
-                } else {
-                    
-                    modifiedDayNumbers.append(45)
-                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+              
+                if isMonthAdded && addedIndex == 1 {
+                    if date.count == 2 {
+                        modifiedDayNumbers.append(43)
+                    } else {
+                        modifiedDayNumbers.append(45)
+                    }
+                   
+                    callsCount[2].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[2].insert(contentsOf: [], at: 0)
-                    //  callsCount.append(0)
-                }
-                
-                // Filter days in the range 16 to 31
-                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                if !daysInRange16to31.isEmpty {
-                    //  callsCount.append(daysInRange16to31.count)
-                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                    eacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                    modifiedDayNumbers.append(60)
-                } else {
-                    modifiedDayNumbers.append(60)
-                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+
+                   
+                    if date.count == 2 {
+                        modifiedDayNumbers.append(55)
+                    } else {
+                        modifiedDayNumbers.append(57)
+                    }
+                    
+                    callsCount[3].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[3].insert(contentsOf: [], at: 0)
-                    //callsCount.append(0)
+                } else {
+                    // Filter days in the range 0 to 15
+                    let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                    if !daysInRange0to15.isEmpty {
+                        callsCount[2].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                        //callsCount.append(daysInRange0to15.count)
+                        eacSectorCounrArr[2].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                        if date.count == 2 {
+                            modifiedDayNumbers.append(43)
+                        } else {
+                            modifiedDayNumbers.append(45)
+                        }
+                        
+                    } else {
+                        
+                        if date.count == 2 {
+                            modifiedDayNumbers.append(43)
+                        } else {
+                            modifiedDayNumbers.append(45)
+                        }
+                        callsCount[2].insert(contentsOf: [], at: 0)
+                        eacSectorCounrArr[2].insert(contentsOf: [], at: 0)
+                        //  callsCount.append(0)
+                    }
+                    
+                    // Filter days in the range 16 to 31
+                    let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                    if !daysInRange16to31.isEmpty {
+                        //  callsCount.append(daysInRange16to31.count)
+                        callsCount[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                        eacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                        if date.count == 2 {
+                            modifiedDayNumbers.append(55)
+                        } else {
+                            modifiedDayNumbers.append(57)
+                        }
+                    } else {
+                        if date.count == 2 {
+                            modifiedDayNumbers.append(55)
+                        } else {
+                            modifiedDayNumbers.append(57)
+                        }
+                        callsCount[3].insert(contentsOf: [], at: 0)
+                        eacSectorCounrArr[3].insert(contentsOf: [], at: 0)
+                        //callsCount.append(0)
+                    }
                 }
+
                 //  callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
                 
             case 2:
-                // Filter days in the range 0 to 15
-                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
-                if !daysInRange0to15.isEmpty {
-                    // callsCount.append(daysInRange0to15.count)
-                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    eacSectorCounrArr[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    modifiedDayNumbers.append(75)
-                } else {
-                    modifiedDayNumbers.append(75)
-                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
-                    eacSectorCounrArr[4].insert(contentsOf: [], at: 0)
-                    // callsCount.append(0)
-                }
                 
-                // Filter days in the range 16 to 31
-                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                if !daysInRange16to31.isEmpty {
-                    //callsCount.append(daysInRange16to31.count)
-                    callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                    eacSectorCounrArr[5].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                    modifiedDayNumbers.append(90)
-                } else {
-                    modifiedDayNumbers.append(90)
+                if isMonthAdded && addedIndex == 2 {
+                    modifiedDayNumbers.append(70)
+                    callsCount[4].insert(contentsOf: [], at: 0)
+                    eacSectorCounrArr[4].insert(contentsOf: [], at: 0)
+
+                    modifiedDayNumbers.append(85)
                     //callsCount.append(0)
                     eacSectorCounrArr[5].insert(contentsOf: [], at: 0)
-                    callsCount[dayNumbersIndex].insert(contentsOf: [], at: 0)
+                    callsCount[5].insert(contentsOf: [], at: 0)
+                } else {
+                    // Filter days in the range 0 to 15
+                    let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                    if !daysInRange0to15.isEmpty {
+                        // callsCount.append(daysInRange0to15.count)
+                        callsCount[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                        eacSectorCounrArr[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
+                        modifiedDayNumbers.append(70)
+                    } else {
+                        modifiedDayNumbers.append(70)
+                        callsCount[4].insert(contentsOf: [], at: 0)
+                        eacSectorCounrArr[4].insert(contentsOf: [], at: 0)
+                        // callsCount.append(0)
+                    }
+                    
+                    // Filter days in the range 16 to 31
+                    let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                    if !daysInRange16to31.isEmpty {
+                        //callsCount.append(daysInRange16to31.count)
+                        callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                        eacSectorCounrArr[5].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                        modifiedDayNumbers.append(85)
+                    } else {
+                        modifiedDayNumbers.append(85)
+                        //callsCount.append(0)
+                        eacSectorCounrArr[5].insert(contentsOf: [], at: 0)
+                        callsCount[5].insert(contentsOf: [], at: 0)
+                    }
                 }
-                // callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
             default:
                 print("default")
             }
@@ -639,19 +770,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         }
         
         
-        
-        //        var firstEntry = [ChartDataEntry]()
-        //        let firstChartDataEntry = ChartDataEntry(x: 0, y: 1)
-        //        firstEntry.append(firstChartDataEntry)
-        //        aMonthValus.insert(contentsOf: firstEntry, at: 0)
-        //
-        //        var lastEntry = [ChartDataEntry]()
-        //        let lastChartDataEntry = ChartDataEntry(x: 120, y: 1)
-        //        lastEntry.append(lastChartDataEntry)
-        //        aMonthValus.append(contentsOf: lastEntry)
-        
-        
-        let flattenedArray: [Int] = callsCount.flatMap { $0 }
+        let flattenedArray: [Int] = callsCount.compactMap { $0.count }
         
         if let maxValue = flattenedArray.max(by: { $0 < $1 }) {
             print("The highest element is: \(maxValue)")
@@ -712,8 +831,6 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         xAxis.labelPosition = .bottom
         xAxis.granularityEnabled = true
-        // xAxis.axisMinimum = 1   // Move the starting point 5 points to the right
-        // xAxis.axisMaximum = 5.5  // Move the ending point 5 points to the right
         lineChartView.autoScaleMinMaxEnabled = false
         xAxis.wordWrapEnabled = false
         xAxis.centerAxisLabelsEnabled = true
@@ -738,17 +855,16 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         let subyRange = yRangeMax
         let minimumPercentage: Double = 0.2 // 20% of the range
         
-       // let minimumValue = Double(subyRange) * minimumPercentage
-        if yRangeMin < 10 {
+        let minimumValue = Double(subyRange) * minimumPercentage
+        
             yAxis.axisMinimum = 0
-            // yAxis.axisMinimum = Double(yRangeMin)
-        } else {
-            yAxis.axisMinimum = 0
-            //  yAxis.axisMinimum = Double(yRangeMin)
-        }
-        yAxis.axisMaximum = 25
-        //Double(yRangeMax).rounded(.up) // Adjust maximum value
-        yAxis.labelCount = 5
+         
+       
+        yAxis.axisMaximum =  Double(yRangeMax) * 2
+        
+        
+
+            yAxis.labelCount = 5
         
         
         

@@ -371,6 +371,10 @@ class MainVC : UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.toSeperateDCR()
@@ -449,12 +453,9 @@ class MainVC : UIViewController {
         
         self.fetchHome()
         
-//        self.fetch()
-//        self.fetch1()
-        
-
-        
     }
+    
+    
     
 
     

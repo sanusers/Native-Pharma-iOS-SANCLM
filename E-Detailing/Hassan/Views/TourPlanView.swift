@@ -350,13 +350,13 @@ class TourPlanView: BaseView {
         if unSavedPlans.count > 0 {
             self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true){_ in}
         } else {
-            fetchDataFromServer()
+            fetchDataFromServer(false)
         }
 
     }
     
     
-    func fetchDataFromServer() {
+    func fetchDataFromServer(_ isfromSync: Bool) {
         let appsetup = AppDefaults.shared.getAppSetUp()
         var param = [String: Any]()
         param["tableName"] = "getall_tp"
@@ -417,6 +417,12 @@ class TourPlanView: BaseView {
                       self.initialSetups()
                        self.setupBtnAfterSubmission()
                        self.isHidden = false
+                       
+                       if isfromSync {
+                           DBManager.shared.saveTPtoMasterData(modal: respnse) {_ in}
+                           self.updateCalender()
+                       }
+                       
                     }
                 }
 
@@ -1073,7 +1079,9 @@ class TourPlanView: BaseView {
     func initViews() {
 
         syncView.addTap {
-           // self.callApprovalApi()
+           // NotificationCenter.default.post(name: Notification.Name("synced"), object: nil)
+            self.fetchDataFromServer(true)
+            
         }
         
         backHolder.addTap {
@@ -1144,7 +1152,7 @@ class TourPlanView: BaseView {
                                      }
                    // self.toLoadData()
                    if isFromFirstLoad {
-                       self.fetchDataFromServer()
+                       self.fetchDataFromServer(false)
                        completion(true)
                    } else {
                        
@@ -1284,7 +1292,7 @@ class TourPlanView: BaseView {
                     self.toCreateToast("Submitted successfully")
 
                    // self.toPostDataToserver()
-                    self.fetchDataFromServer()
+                    self.fetchDataFromServer(false)
                     
                 } else {}
                 dump(response)

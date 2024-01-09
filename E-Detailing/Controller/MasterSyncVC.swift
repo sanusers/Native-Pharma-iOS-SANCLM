@@ -90,7 +90,7 @@ class MasterSyncVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        addobservers()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         
         collectionView.register(UINib(nibName: "MasterSyncCell", bundle: nil), forCellWithReuseIdentifier: "MasterSyncCell")
@@ -131,6 +131,15 @@ class MasterSyncVC : UIViewController {
     @IBAction func backAction(_ sender: UIButton) {
         
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    func addobservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(syncTapped), name: Notification.Name("synced"), object: nil)
+    }
+    
+    @objc func syncTapped() {
+        print("Tapped")
+        self.fetchmasterData(type: .getTP)
     }
     
     
@@ -568,23 +577,23 @@ extension MasterSyncVC {
             
             var unSavedPlans = [SessionDetailsArr]()
             
-//            if nonWeekoff.isEmpty {
-//                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
-//                       toFilterSessionsArr.isDataSentToApi == false &&  toFilterSessionsArr.isForWeekoff == false
-//                   })
-//            } else {
-//                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
-//                       toFilterSessionsArr.isDataSentToApi == false
-//                   })
-//            }
-    
             if nonWeekoff.isEmpty {
-                return
+                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+                       toFilterSessionsArr.isDataSentToApi == false &&  toFilterSessionsArr.isForWeekoff == false
+                   })
             } else {
                 unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
                        toFilterSessionsArr.isDataSentToApi == false
                    })
             }
+    
+//            if nonWeekoff.isEmpty {
+//                return
+//            } else {
+//                unSavedPlans = arrOfPlan.filter({ toFilterSessionsArr in
+//                       toFilterSessionsArr.isDataSentToApi == false
+//                   })
+//            }
     
             var unsentIndices = [Int]()
     
