@@ -1873,7 +1873,7 @@ class TourPlanView: BaseView {
           
         let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff, isForHoliday: isforHoliday)
                   self.tourplanVC.modalPresentationStyle = .custom
-                  menuvc.menuDelegate = self
+                //  menuvc.menuDelegate = self
 //        if isForWeekOff ?? false {
 //            let aSession = SessionDetail()
 //            aSession.isForFieldWork = false

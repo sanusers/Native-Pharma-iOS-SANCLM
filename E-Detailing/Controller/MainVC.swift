@@ -522,6 +522,13 @@ class MainVC : UIViewController {
             self.viewSideMenu.alpha = 1
         }
         self.btnHome.isSelected = true
+        
+        
+//        let menuvc =   HomeSideMenuVC.initWithStory()
+//    
+//            self.modalPresentationStyle = .custom
+//     
+//        self.navigationController?.present(menuvc, animated: true)
     }
     
     
