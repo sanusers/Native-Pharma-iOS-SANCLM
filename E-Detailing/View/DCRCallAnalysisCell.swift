@@ -18,10 +18,7 @@ class DCRCallAnalysisCell : UICollectionViewCell {
     
     
     func setCellType(cellType: CellType) {
-        
-
-        
-
+       
         
         switch cellType {
             
@@ -103,7 +100,7 @@ class DCRCallAnalysisCell : UICollectionViewCell {
         self.viewChart.maxValue = CGFloat(truncating: 100)
         
         self.viewChart.startProgress(to: CGFloat(truncating: percentage as NSNumber), duration: 0)
-        
+        imgArrow.tintColor = self.dcrCount.color
         viewDoctor.backgroundColor = self.dcrCount.color
         lblName.setFont(font: .bold(size: .BODY))
         lblCount.setFont(font: .medium(size: .BODY))

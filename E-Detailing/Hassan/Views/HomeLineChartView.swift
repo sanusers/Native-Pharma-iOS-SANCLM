@@ -119,17 +119,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         } else {
             self.addSubview(lineChartView)
             setupLineChart()
-            var sampleCurrentMonthDate = Date()
-            let currentDate = Date()
-            let calendar = Calendar.current
-            let currentMonthNumber = calendar.component(.month, from: currentDate)
-            if let sampleDate = calendar.date(from: DateComponents(year: calendar.component(.year, from: currentDate), month: currentMonthNumber, day: 1)) {
-                print("Sample Date for the Current Month: \(sampleDate)")
-                sampleCurrentMonthDate = sampleDate
-            } else {
-                print("Error creating sample date.")
-            }
             
+            let cutterntMnthNoandDate = self.togetCurrentMonthNoDate()
+             
+            let (_, sampleCurrentMonthDate) = cutterntMnthNoandDate
+             
             
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMMM"
@@ -205,22 +199,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         }
     }
     
-    func toConVertStringToDate(_ yyyyMMdd : String ) -> Date {
-        let dateString = yyyyMMdd
-        
-        // Create a DateFormatter
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        // Convert the string to a Date object
-        if let date = dateFormatter.date(from: dateString) {
-            print(date)
-            return date
-        } else {
-            print("Error: Unable to convert the string to a Date.")
-            return Date()
-        }
-    }
+
     
     struct MonthData {
         let monthNumber: Int
@@ -236,7 +215,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         var avgdates = [Date]()
         
         self.allListArr.forEach { aHomeData in
-            avgdates.append(toConVertStringToDate(aHomeData.dcr_dt ?? ""))
+            avgdates.append(aHomeData.dcr_dt?.toConVertStringToDate() ?? Date())
         }
         
     
@@ -401,7 +380,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         var dates = [Date]()
         
         fwArr.forEach { aHomeData in
-            dates.append(toConVertStringToDate(aHomeData.dcr_dt ?? ""))
+            dates.append(aHomeData.dcr_dt?.toConVertStringToDate() ?? Date())
         }
         
         let datesFilteredByMonth = separateDatesByMonth(dates)
@@ -546,10 +525,12 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     modifiedDayNumbers.append(22)
                     callsCount[0].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
-
-                    if date.count == 2 {
+                    if date.count == 1 {
+                      //  modifiedDayNumbers.append(19)
+                    }
+                    else if date.count == 2 {
                         modifiedDayNumbers.append(31)
-                    } else {
+                    } else if date.count == 3 {
                         modifiedDayNumbers.append(33)
                     }
                     callsCount[1].insert(contentsOf: [], at: 0)
@@ -602,7 +583,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             case 1:
               
                 if isMonthAdded && addedIndex == 1 {
-                    if date.count == 2 {
+                    if date.count == 1 {
+                        
+                    }
+                    
+                    else if date.count == 2 {
                         modifiedDayNumbers.append(43)
                     } else {
                         modifiedDayNumbers.append(45)
@@ -611,7 +596,9 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     callsCount[2].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[2].insert(contentsOf: [], at: 0)
 
-                   
+                    if date.count == 1 {
+                        
+                    } else
                     if date.count == 2 {
                         modifiedDayNumbers.append(55)
                     } else {
@@ -853,14 +840,18 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         let yAxis = lineChartView.leftAxis // You can use `rightAxis` if needed
         
         let subyRange = yRangeMax
-        let minimumPercentage: Double = 0.2 // 20% of the range
+      //  let minimumPercentage: Double = 0.2 // 20% of the range
         
-        let minimumValue = Double(subyRange) * minimumPercentage
+       // let minimumValue = Double(subyRange) * minimumPercentage
         
             yAxis.axisMinimum = 0
          
-       
-        yAxis.axisMaximum =  Double(yRangeMax) * 2
+        if yRangeMax == 0 {
+            yAxis.axisMaximum =  20
+        } else {
+            yAxis.axisMaximum =  Double(yRangeMax) * 2
+        }
+          
         
         
 

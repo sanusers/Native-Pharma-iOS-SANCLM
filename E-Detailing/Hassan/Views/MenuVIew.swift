@@ -575,8 +575,8 @@ class MenuView : BaseView{
     var cellHeightForOthers : CGFloat = 140 + 100
     var selectAllHeight : CGFloat = 50
     
-    var cellEditHeightForOthers : CGFloat = 140 + 100
-    let cellEditStackHeightfOthers : CGFloat = 80
+    var cellEditHeightForOthers : CGFloat = 140
+    var cellEditStackHeightfOthers : CGFloat = 80
     
     
     var isDocNeeded = false
@@ -1895,15 +1895,20 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 if modal.remarks == "" ||  modal.remarks == nil {
                     cell.remarksView.isHidden = true
                     cell.remarksHeightConst.constant = 0
-                   // cellEditHeightForOthers =  cellEditHeightForOthers - 100
+                    cellEditHeightForOthers = 140
+                    let height =  cellEditHeightForOthers
+                    cellEditHeightForOthers = height
                 } else {
                     cell.remarksDesc.text = modal.remarks
                     cell.remarksView.isHidden = false
                     cell.remarksHeightConst.constant = 100
-                   // cellEditHeightForOthers =  cellEditHeightForOthers + 100
-                   // cellEditHeightForOthers =  cellEditHeightForOthers - 100
+                    cellEditHeightForOthers = 140
+                    let height =  cellEditHeightForOthers + 100
+                    cellEditHeightForOthers = height
                 }
-                cell.stackHeight.constant = cellEditStackHeightfOthers
+                cell.stackHeight.constant =  cellEditStackHeightfOthers
+                
+             
             }
             if isSearched {
                 if sessionDetailsArr.sessionDetails?[indexPath.row].WTName != "" {
@@ -3414,7 +3419,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             if sessionDetailsArr.sessionDetails![indexPath.row].isForFieldWork ?? false  {
                 return cellEditHeightForFW
             }  else {
-                return cellEditHeightForOthers
+                return  cellEditHeightForOthers
+                
             }
         }
     }

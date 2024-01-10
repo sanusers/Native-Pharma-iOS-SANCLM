@@ -34,33 +34,57 @@ extension TourPlanView {
     }
     
     
-    func getDatesForDayIndex(_ dayIndex: Int) -> [Date] {
+    enum Offsets {
+        case all
+        case current
+        case next
+        case previous
+        case nextAndPrevious
+        case currentAndNext
+        case currentAndPrevious
+    }
+    
+    
+    func getFirstDayOfCurrentMonth() -> Date? {
         let calendar = Calendar.current
         let currentDate = Date()
 
-        guard let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentDate)),
-              let firstDayOfMonth = calendar.nextDate(after: startOfMonth, matching: DateComponents(weekday: dayIndex), matchingPolicy: .nextTime) else {
-            print("Error calculating start of the month or finding the first occurrence of the day.")
-            return []
+        // Get the components (year, month, day) of the current date
+        let components = calendar.dateComponents([.year, .month], from: currentDate)
+
+        // Create a new date using the components for the first day of the current month
+        if let firstDayOfMonth = calendar.date(from: components) {
+            return firstDayOfMonth
+        } else {
+            return nil
         }
-
-        var dates: [Date] = []
-
-        for monthOffset in [-1, 0, 1] {
-            guard let startOfDesiredMonth = calendar.date(byAdding: .month, value: monthOffset, to: firstDayOfMonth),
-                  let range = calendar.range(of: .day, in: .month, for: startOfDesiredMonth) else {
-                print("Error calculating start of the desired month or getting the range of days.")
-                return []
+    }
+    
+    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
+        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
+        let calendar = Calendar.current
+        
+        var saturdays: [Date] = []
+        
+        for monthOffset in months {
+            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
+                continue
             }
-
-            let datesForMonth: [Date] = (range.lowerBound..<range.upperBound)
-                .compactMap { calendar.date(bySetting: .day, value: $0, of: startOfDesiredMonth) }
-                .filter { calendar.component(.weekday, from: $0) == dayIndex }
-
-            dates.append(contentsOf: datesForMonth)
+            
+            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
+            
+            for day in monthRange.lowerBound..<monthRange.upperBound {
+                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
+                    continue
+                }
+                
+                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+                    saturdays.append(date)
+                }
+            }
         }
-
-        return dates
+        
+        return saturdays
     }
 }
 
@@ -295,6 +319,7 @@ class TourPlanView: BaseView {
     var existingDates = [String]()
     var isRejected = Bool()
     private var currentPage: Date?
+    var offsets: LocalStorage.Offsets = .all
     private lazy var today: Date = {
         return Date()
     }()
@@ -314,8 +339,6 @@ class TourPlanView: BaseView {
        // tourplanVC.togetTableSetup()
         initialSetups()
         self.isHidden = false
-      //  toPostDataToserver()
-       // fetchDataFromServer()
     }
     
     func toPostDataToserver() {
@@ -661,27 +684,91 @@ class TourPlanView: BaseView {
 //            print("Error")
 //        }
 //
+        var apiMnths : [Int] = []
+      //  var currentMnths = [String]()
         
         
         if !(sessionResponse?.current.isEmpty ?? true) {
             let sessionResponseArr = sessionResponse?.current[0] ?? SessionDetails()
-
+            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
             toCinfigureApprovalState(sessionResponseArr)
         }
         
         if !(sessionResponse?.previous.isEmpty ?? true) {
             let sessionResponseArr = sessionResponse?.previous[0] ?? SessionDetails()
-
+            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
             toCinfigureApprovalState(sessionResponseArr)
         }
      
         if !(sessionResponse?.next.isEmpty ?? true) {
             let sessionResponseArr = sessionResponse?.next[0] ?? SessionDetails()
-
+            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
             toCinfigureApprovalState(sessionResponseArr)
         }
+  
+        
+       let currentMnthRange = toGetcurrentNextPrevMonthNumbers()
+        
+        // Check if currentMnths contains all elements of apiMnths
+        let containsAll = currentMnthRange.allSatisfy { apiMnths.contains(($0)) }
+
+        if containsAll {
+            print("currentMnths contains all elements of apiMnths.")
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+        } else {
+            print("currentMnths does not contain all elements of apiMnths.")
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
+           let missingIndices = findMissingMonths(apiMonths: apiMnths, currentMonthRange: currentMnthRange)
+            self.offsets =   getOffsetType(for: missingIndices)
+        }
+        
         completion(true)
     }
+    
+    func findMissingMonths(apiMonths: [Int], currentMonthRange: [Int]) -> [Int] {
+        let allMonths = Set(apiMonths)
+        let expectedMonths = Set(currentMonthRange)
+        let missingMonths = expectedMonths.subtracting(allMonths).sorted()
+
+        var missingIndices: [Int] = []
+        
+        for month in missingMonths {
+            if let index = currentMonthRange.firstIndex(of: month) {
+                missingIndices.append(index)
+            }
+        }
+        
+        
+        
+        return missingIndices
+       
+  
+    }
+
+    func getOffsetType(for missingIndices: [Int]) -> LocalStorage.Offsets {
+        if missingIndices.isEmpty {
+            return .all
+        } else if Set(missingIndices) == Set([1]) {
+            return .current
+        } else if missingIndices == [2] {
+            return .next
+        } else if missingIndices == [0] {
+            return .previous
+        } else if Set(missingIndices) == Set([0, 2]) {
+            return .nextAndPrevious
+        } else if Set(missingIndices) == Set([1, 2]) {
+            return .currentAndNext
+        } else if Set(missingIndices) == Set([0, 1]) {
+            return .currentAndPrevious
+        }
+        
+        else {
+            return .all
+        }
+            // Handle other cases if needed
+           
+        }
+    
     
     
     func monthWiseSeperationofSessions(_ date: Date) {
@@ -1016,9 +1103,9 @@ class TourPlanView: BaseView {
 //        }
         if !savefinish {
             print("Error")
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
+         
         } else {
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+           
             toLoadData()
         }
     }
@@ -1477,6 +1564,14 @@ class TourPlanView: BaseView {
     
     private func updateCalender () {
         
+        if let storedOffset = LocalStorage.shared.retrieveOffset() {
+            print("Stored offset:", storedOffset)
+            self.offsets = storedOffset
+        } else {
+            print("Offset not found.")
+        }
+        
+       // self.offsets = LocalStorage.shared.getOffset(key: LocalStorage.LocalValue.offsets)
         let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
         self.weeklyOff = weeklyoffSetupArr[0]
 //        let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0")
@@ -1492,13 +1587,9 @@ class TourPlanView: BaseView {
             responseHolidaydates.append(aholiday.holiday_Date ?? "")
            
         })
-        
-     //   LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: toCheckMonthVariations())
 
         let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
-        //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
-      
-        
+
         if !isAlldatesAppended {
             
             let dateString = self.responseHolidaydates
@@ -1544,7 +1635,33 @@ class TourPlanView: BaseView {
             
             
             let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0") ?? 0
-            let weekoffDates = getDatesForDayIndex(weekoffIndex + 1)
+            
+           var monthIndex : [Int] = []
+            
+            switch self.offsets {
+                
+            case .all:
+                monthIndex =  [-1, 0, 1]
+            case .current:
+                monthIndex =  [0]
+            case .next:
+                monthIndex =  [1]
+            case .previous:
+                monthIndex =  [-1]
+                
+            case .nextAndPrevious:
+                monthIndex =  [-1, 1]
+            case .currentAndNext:
+                monthIndex =  [0, 1]
+            case .currentAndPrevious:
+                monthIndex =  [-1, 0]
+            case .none:
+                monthIndex =  []
+            }
+            
+            let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex + 1)
+            
+           // let weekoffDates = getDatesForDayIndex(weekoffIndex + 1, self.offsets)
             self.weeklyOffRawDates.append(contentsOf: weekoffDates)
             weeklyOffDates.removeAll()
             self.weeklyOffRawDates.forEach { rawDate in
@@ -1711,15 +1828,6 @@ class TourPlanView: BaseView {
        
         cellRegistration()
         updateCalender()
-      
-      
-//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoEnableApproveBtn) {
-//            planningLbl.isHidden = false
-//            toToggleApprovalState(true, isRejected: <#Bool#>)
-//        } else {
-//            toToggleApprovalState(false, isRejected: <#Bool#>)
-//            planningLbl.isHidden = false
-//        }
         calenderHolderView.elevate(2)
         calenderHolderView.layer.cornerRadius = 5
 

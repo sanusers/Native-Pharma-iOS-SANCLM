@@ -258,6 +258,49 @@ extension UIView {
        }
 }
 
+extension UIView {
+    func togetCurrentMonthNoDate() -> (Int, Date) {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let currentMonthNumber = calendar.component(.month, from: currentDate)
+        var sampleCurrentMonthDate = Date()
+        if let sampleDate = calendar.date(from: DateComponents(year: calendar.component(.year, from: currentDate), month: currentMonthNumber, day: 1)) {
+            print("Sample Date for the Current Month: \(sampleDate)")
+            sampleCurrentMonthDate = sampleDate
+        } else {
+            print("Error creating sample date.")
+        }
+        
+        return (currentMonthNumber, sampleCurrentMonthDate)
+    }
+    
+    
+    func toGetcurrentNextPrevMonthNumbers() -> [Int] {
+        let currentDate = Date()
+
+        // Get the calendar
+        let calendar = Calendar.current
+
+        // Get the current month number
+        let currentMonthNumber = calendar.component(.month, from: currentDate)
+
+        // Calculate the previous month number
+        let previousMonthNumber = (currentMonthNumber - 2 + 12) % 12 + 1
+
+        // Calculate the next month number
+        let nextMonthNumber = (currentMonthNumber % 12) + 1
+
+        // Create an array with current, previous, and next month numbers
+        let monthNumbers = [previousMonthNumber, currentMonthNumber, nextMonthNumber]
+        
+      //  let formattedMonthNumbers = monthNumbers.map { String(format: "%02d", $0) }
+
+        print("Month Numbers: \(monthNumbers)")
+        return monthNumbers
+    }
+    
+}
+
 
 extension UIViewController {
     func presentInFullScreen(_ viewController: UIViewController,
@@ -560,6 +603,23 @@ extension String {
         let RegEx = "\\w{1,18}"
         let Test = NSPredicate(format:"SELF MATCHES %@", RegEx)
         return Test.evaluate(with: Input)
+    }
+    
+    func toConVertStringToDate() -> Date {
+       // let dateString = yyyyMMdd
+        
+        // Create a DateFormatter
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        // Convert the string to a Date object
+        if let date = dateFormatter.date(from: self) {
+            print(date)
+            return date
+        } else {
+            print("Error: Unable to convert the string to a Date.")
+            return Date()
+        }
     }
 
 }

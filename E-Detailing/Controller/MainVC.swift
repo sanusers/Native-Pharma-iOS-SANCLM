@@ -256,6 +256,7 @@ class MainVC : UIViewController {
     var  homeDataArr = [HomeData]()
     var totalFWCount: Int = 0
     var cacheINdex: Int = 0
+    var selectedCallIndex: Int = 0
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -1124,32 +1125,29 @@ extension MainVC : collectionViewProtocols {
             case self.dcrCallsCollectionView:
             
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRCallAnalysisCell", for: indexPath) as! DCRCallAnalysisCell
-            cell.dcrCount = self.dcrCount[indexPath.row]
+            cell.imgArrow.isHidden = true
+            let model =  self.dcrCount[indexPath.row]
+            cell.dcrCount = model
+           // cell.imgArrow.image = UIImage(named: "arrowtriangle.down.fill")?.withRenderingMode(.alwaysTemplate)
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                 cell.setCellType(cellType: .MR)
+               // lblName.text = self.dcrCount.name
+                if self.selectedCallIndex == indexPath.row {
+                    cell.imgArrow.isHidden = false
+                }
             } else {
                 cell.setCellType(cellType: .Manager)
+                if self.selectedCallIndex == indexPath.row {
+                    cell.imgArrow.isHidden = false
+                }
             }
            
-               // cell.viewDoctor.backgroundColor = self.dcrCount[indexPath.row].color
-                //cell.lblName.text = self.dcrCount[indexPath.row].name
-                //cell.lblCount.text = "0/"+"\(self.dcrCount[indexPath.row].count!)"
-                //cell.imgArrow.tintColor = self.dcrCount[indexPath.row].color
-            
-            cell.imgArrow.isHidden = true
-//            for (key, value) in cell.selectedIndex {
-//                if key == indexPath.row && value == true {
-//                    cell.imgArrow.isHidden = false
-//                }
-//            }
+
+
               
             cell.addTap {
-//                self.cacheINdex = indexPath.row
-//                if self.cacheINdex == cell.selectedIndex {
-//                  return
-//                } else {
                     let model = self.dcrCount[indexPath.row]
-                    
+                self.selectedCallIndex = indexPath.row
                     if model.name == "Doctor Calls" {
                         self.toIntegrateChartView(.doctor, indexPath.row)
                         self.lblAverageDocCalls.text = "Average Doctor Calls"
@@ -1164,7 +1162,7 @@ extension MainVC : collectionViewProtocols {
                         self.lblAverageDocCalls.text = "Average UnListed Doctor Calls"
                     }
                     self.dcrCallsCollectionView.reloadData()
-                 //   cell.selectedIndex = indexPath.row
+                 //
                // }
             }
                 return cell

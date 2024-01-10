@@ -176,11 +176,11 @@ class DBManager {
         let toutplans = TourPlanArr()
         var allDayPlans = [SessionDetailsArr]()
        
-        if !apiArrofSessions.isEmpty  {
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
-        } else {
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
-        }
+//        if !apiArrofSessions.isEmpty  {
+//            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+//        } else {
+//            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
+//        }
         
         apiArrofSessions.enumerated().forEach { ApisessionDetailsIndex, ApisessionDetails in
             
@@ -356,8 +356,129 @@ class DBManager {
         }
         
         
+        
+        
+        var apiMnths : [Int] = []
+      //  var currentMnths = [String]()
+        
+        
+        if !(modal.current.isEmpty) {
+            let sessionResponseArr = modal.current[0]
+            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+        
+        if !(modal.previous.isEmpty) {
+            let sessionResponseArr = modal.previous[0]
+           apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+     
+        if !(modal.next.isEmpty) {
+            let sessionResponseArr = modal.next[0]
+            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
+            toCinfigureApprovalState(sessionResponseArr)
+        }
+  
+        
+       let currentMnthRange = toGetcurrentNextPrevMonthNumbers()
+        
+        // Check if currentMnths contains all elements of apiMnths
+        let containsAll = currentMnthRange.allSatisfy { apiMnths.contains(($0)) }
+
+        if containsAll {
+            print("currentMnths contains all elements of apiMnths.")
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+            let missingIndices = findMissingMonths(apiMonths: apiMnths, currentMonthRange: currentMnthRange)
+          //  LocalStorage.shared.setOffset(LocalStorage.LocalValue.offsets, value: getOffsetType(for: missingIndices))
+            
+            LocalStorage.shared.storeOffset(getOffsetType(for: missingIndices))
+        } else {
+            print("currentMnths does not contain all elements of apiMnths.")
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
+           let missingIndices = findMissingMonths(apiMonths: apiMnths, currentMonthRange: currentMnthRange)
+            LocalStorage.shared.storeOffset(getOffsetType(for: missingIndices))
+        }
+        
+      //  LocalStorage
         completion(true)
+        
+        
+        
     }
+    
+    func findMissingMonths(apiMonths: [Int], currentMonthRange: [Int]) -> [Int] {
+        let allMonths = Set(apiMonths)
+        let expectedMonths = Set(currentMonthRange)
+        let missingMonths = expectedMonths.subtracting(allMonths).sorted()
+
+        var missingIndices: [Int] = []
+        
+        for month in missingMonths {
+            if let index = currentMonthRange.firstIndex(of: month) {
+                missingIndices.append(index)
+            }
+        }
+        
+        
+        
+        return missingIndices
+       
+  
+    }
+
+    func getOffsetType(for missingIndices: [Int]) -> LocalStorage.Offsets {
+        if missingIndices.isEmpty {
+            return .none
+        }    else if Set(missingIndices) == Set([0, 1, 2]) {
+            return .all
+        }
+        
+        else if Set(missingIndices) == Set([1]) {
+            return .current
+        } else if missingIndices == [2] {
+            return .next
+        } else if missingIndices == [0] {
+            return .previous
+        } else if Set(missingIndices) == Set([0, 2]) {
+            return .nextAndPrevious
+        } else if Set(missingIndices) == Set([1, 2]) {
+            return .currentAndNext
+        } else if Set(missingIndices) == Set([0, 1]) {
+            return .currentAndPrevious
+        }
+        
+        else {
+            return .all
+        }
+            // Handle other cases if needed
+           
+        }
+    
+    func toGetcurrentNextPrevMonthNumbers() -> [Int] {
+        let currentDate = Date()
+
+        // Get the calendar
+        let calendar = Calendar.current
+
+        // Get the current month number
+        let currentMonthNumber = calendar.component(.month, from: currentDate)
+
+        // Calculate the previous month number
+        let previousMonthNumber = (currentMonthNumber - 2 + 12) % 12 + 1
+
+        // Calculate the next month number
+        let nextMonthNumber = (currentMonthNumber % 12) + 1
+
+        // Create an array with current, previous, and next month numbers
+        let monthNumbers = [previousMonthNumber, currentMonthNumber, nextMonthNumber]
+        
+      //  let formattedMonthNumbers = monthNumbers.map { String(format: "%02d", $0) }
+
+        print("Month Numbers: \(monthNumbers)")
+        return monthNumbers
+    }
+    
     
     func toCinfigureApprovalState(_ sessionDetail: SessionDetails) {
                 // Handle Approval flow

@@ -18,7 +18,46 @@ class LocalStorage {
         case TPalldatesAppended
         case TPisForFinalDate
         case isMR
+        case offsets
     }
+    
+    enum Offsets: String {
+        case none
+        case all
+        case current
+        case next
+        case previous
+        case nextAndPrevious
+        case currentAndNext
+        case currentAndPrevious
+    }
+    
+    
+    func storeOffset(_ offset: Offsets) {
+        let defaults = UserDefaults.standard
+        defaults.set(offset.rawValue, forKey: "offsetKey")
+    }
+    
+    func retrieveOffset() -> Offsets? {
+        let defaults = UserDefaults.standard
+        if let rawValue = defaults.string(forKey: "offsetKey"),
+            let offset = Offsets(rawValue: rawValue) {
+            return offset
+        }
+        return nil
+    }
+    
+//    func setOffset(_ key :LocalValue,value: Offsets) {
+//        UserDefaults.standard.set(value, forKey: key.rawValue)
+//    }
+//    
+//    func getOffset(key:LocalValue)->Offsets {
+//        if UserDefaults.standard.object(forKey: key.rawValue) == nil {
+//            self.setOffset(key, value: .all)
+//        }
+//        let result = UserDefaults.standard.value(forKey: key.rawValue)
+//        return result as! LocalStorage.Offsets
+//    }
     
     func setSting(_ key:LocalValue,text:String = "" ){
         UserDefaults.standard.set(text, forKey: key.rawValue)
