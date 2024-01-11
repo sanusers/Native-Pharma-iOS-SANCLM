@@ -251,7 +251,7 @@ extension MenuView {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
                     self.toCreateToast("Data uploaded to server successfully.")
                     self.saveObjecttoDevice()
-                    
+                  
                 } else {
                 
                   //  aDaySessions.isSucessfullySubmited = false
@@ -259,13 +259,16 @@ extension MenuView {
                     aDaySessions.isDataSentToApi = false
                     self.toCreateToast("Error while uploading data to server please try again!")
                     self.saveObjecttoDevice()
+                 
                 }
-               
+                Shared.instance.removeLoader(in: self)
             case .failure(let error):
                 print(error.localizedDescription)
                 aDaySessions.isDataSentToApi = false
-                self.toCreateToast("Error while uploading data to server please try again!")
                 self.saveObjecttoDevice()
+                Shared.instance.removeLoader(in: self)
+                self.toCreateToast("Error while uploading data to server please try again!")
+             
             }
         }
         
@@ -322,7 +325,7 @@ extension MenuView {
     
     
     func toSetParams(_ tourPlanArr: SessionDetailsArr, completion: @escaping (Result<SaveTPresponseModel, Error>) -> () ) {
-        
+        Shared.instance.showLoader(in: self)
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         
 

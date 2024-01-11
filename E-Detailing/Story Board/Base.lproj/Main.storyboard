@@ -4873,7 +4873,7 @@ VmVyc2lvbiA6IDEuMAM
                         <outlet property="btnActivity" destination="eKB-Pm-ywQ" id="kXf-Og-LSo"/>
                         <outlet property="btnCall" destination="UtL-CK-UIc" id="oOK-xl-dP6"/>
                         <outlet property="btnDate" destination="Eab-u4-SQT" id="ieP-hz-a3d"/>
-                        <outlet property="btnHome" destination="ef1-Nt-pQr" id="cl0-OY-hGJ"/>
+                        <outlet property="btnHome" destination="ef1-Nt-pQr" id="8BY-mF-eRt"/>
                         <outlet property="btnNotification" destination="XIF-pd-PME" id="1Wd-hc-Z77"/>
                         <outlet property="btnProfile" destination="kes-ja-FrS" id="emj-vh-ahS"/>
                         <outlet property="btnSync" destination="tH7-Xb-HEa" id="6Tr-zV-5yW"/>
@@ -4883,6 +4883,7 @@ VmVyc2lvbiA6IDEuMAM
                         <outlet property="chartHolderView" destination="cfL-cb-XYa" id="gBQ-kj-kj2"/>
                         <outlet property="dcrCallsCollectionView" destination="5Nt-9w-YUP" id="bAw-Oc-PTQ"/>
                         <outlet property="eventCollectionView" destination="xVX-mP-exA" id="sah-gF-687"/>
+                        <outlet property="homeTitleLbl" destination="1Zt-cK-hFb" id="SzC-Pn-bFN"/>
                         <outlet property="imgProfile" destination="bNR-hE-4zY" id="4kH-Ue-DTK"/>
                         <outlet property="lblAnalysisName" destination="Zuz-vs-Ppi" id="TdZ-c3-vCe"/>
                         <outlet property="lblAverageDocCalls" destination="h4W-iy-avs" id="jDU-1B-zUe"/>
@@ -4904,6 +4905,7 @@ VmVyc2lvbiA6IDEuMAM
                         <outlet property="monthRangeLbl" destination="MuN-N8-W1d" id="vTx-D6-tnU"/>
                         <outlet property="outboxTableView" destination="D5j-sf-QYl" id="5VV-eP-ce0"/>
                         <outlet property="quickLinkCollectionView" destination="dKs-s2-bNB" id="tFG-uc-ltr"/>
+                        <outlet property="quickLinkTitle" destination="2qv-A8-rCx" id="ADh-bw-C8P"/>
                         <outlet property="salesStackView" destination="9r7-rh-fnu" id="A0d-c3-4uT"/>
                         <outlet property="segmentControlForAnalysis" destination="FJl-k7-BZ4" id="hwH-Pg-Uca"/>
                         <outlet property="segmentControlForDcr" destination="V31-xn-yiS" id="6wn-li-meD"/>

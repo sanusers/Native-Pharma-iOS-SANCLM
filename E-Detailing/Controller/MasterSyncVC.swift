@@ -90,7 +90,7 @@ class MasterSyncVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        addobservers()
+       // addobservers()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         
         collectionView.register(UINib(nibName: "MasterSyncCell", bundle: nil), forCellWithReuseIdentifier: "MasterSyncCell")
@@ -246,7 +246,7 @@ class MasterSyncVC : UIViewController {
     }
     
     func fetchmasterData(type : MasterInfo) {
-        
+        Shared.instance.showLoader(in: self.view)
         if type == .getTP {
             toPostDataToserver(type : type)
 
@@ -304,7 +304,9 @@ class MasterSyncVC : UIViewController {
                 AppDefaults.shared.save(key: .syncTime, value: Date())
                 let date = Date().toString(format: "dd MMM yyyy hh:mm a")
                 self.lblSyncStatus.text = "Last Sync: " + date
+                Shared.instance.removeLoader(in: self.view)
                 case .failure(let error):
+                    Shared.instance.removeLoader(in: self.view)
                     ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                     print(error)
                     return
@@ -621,9 +623,10 @@ extension MasterSyncVC {
                                  self.lblSyncStatus.text = "Last Sync: " + date
                              }
                          }
+                         Shared.instance.removeLoader(in: self.view)
                      case .failure( let error):
                       dump(error)
-
+                         Shared.instance.removeLoader(in: self.view)
                       //  self.toCreateToast("Failed connecting to server!")
                      }
                  }
@@ -747,12 +750,13 @@ extension MasterSyncVC {
             case .success(let response):
                 dump(response)
                 completion(.success(response))
-              
+                Shared.instance.removeLoader(in: self.view)
                 
             case .failure(let error):
                 print(error.localizedDescription)
                 
                 completion(.failure(error))
+                Shared.instance.removeLoader(in: self.view)
             }
         }
     }

@@ -12,6 +12,7 @@ import UIKit
 class QuickLinkCell: UICollectionViewCell {
     
     
+    @IBOutlet var vxView: UIVisualEffectView!
     
     @IBOutlet weak var imgLogo: UIImageView!
     @IBOutlet weak var lblName: UILabel!
@@ -21,14 +22,18 @@ class QuickLinkCell: UICollectionViewCell {
     
     var link : QuicKLink!{
         didSet{
-            self.imgLogo.image = link.image
+            vxView.backgroundColor = link.color
+            self.imgLogo.image = link.image.withRenderingMode(.alwaysTemplate)
+            self.imgLogo.tintColor = link.color
             self.lblName.text = link.name
-            self.viewCell.backgroundColor = link.color
         }
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        contentView.layer.cornerRadius = 5
+        viewCell.layer.cornerRadius = 5
+        lblName.setFont(font: .medium(size: .BODY))
     }
     
     

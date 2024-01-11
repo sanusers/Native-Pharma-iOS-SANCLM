@@ -100,7 +100,7 @@ class ViewDayReportVC: BaseViewController {
     
 
     func getReporsAPIResponse(_ param: [String: Any], paramData: JSON){
-       
+        Shared.instance.showLoader(in: dayReportView)
         sessionResponseVM?.getDetailedReportsData(params: param, api: .getReports, paramData: paramData) { result in
             switch result {
             case .success(let response):
@@ -109,9 +109,10 @@ class ViewDayReportVC: BaseViewController {
                 self.dayReportView.initialSerups()
                // self.reportsView.setupUI()
                 dump(response)
-                
+                Shared.instance.removeLoader(in: self.dayReportView)
             case .failure(let error):
                 print(error.localizedDescription)
+                Shared.instance.removeLoader(in: self.dayReportView)
                 self.dayReportView.toCreateToast("Error while fetching response from server.")
                 
             }

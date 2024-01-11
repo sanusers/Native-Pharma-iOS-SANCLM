@@ -147,6 +147,18 @@ extension MainVC : HomeLineChartViewDelegate
     
 
 }
+
+extension MainVC: MenuResponseProtocol {
+    func callPlanAPI() {
+        print("")
+    }
+    func routeToView(_ view : UIViewController) {
+        self.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(view, animated: true)
+    }
+    
+}
+
 typealias collectionViewProtocols = UICollectionViewDelegate & UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
 typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 
@@ -235,11 +247,16 @@ class MainVC : UIViewController {
     
     @IBOutlet var month2Lbl: UILabel!
     
+    @IBOutlet var quickLinkTitle: UILabel!
     @IBOutlet var month3Lbl: UILabel!
     @IBOutlet weak var quickLinkCollectionView: UICollectionView!
     @IBOutlet weak var dcrCallsCollectionView: UICollectionView!
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     @IBOutlet weak var eventCollectionView: UICollectionView!
+    
+    @IBOutlet var showMenuView: UIView!
+    
+    @IBOutlet var homeTitleLbl: UILabel!
     
     
     @IBOutlet weak var sideMenuTableView: UITableView!
@@ -349,6 +366,16 @@ class MainVC : UIViewController {
     }
     
     func setupUI() {
+        homeTitleLbl.setFont(font: .bold(size: .SUBHEADER))
+        homeTitleLbl.text = "SAN Media Pvt Ltd.,"
+        homeTitleLbl.textColor = .appWhiteColor
+//        showMenuView.addTap {
+//            print("Tapped")
+//            let menuvc =   HomeSideMenuVC.initWithStory(self)
+//            self.modalPresentationStyle = .custom
+//            self.navigationController?.present(menuvc, animated: false)
+//        }
+        quickLinkTitle.setFont(font: .bold(size: .SUBHEADER))
         monthRangeLbl.setFont(font: .medium(size: .BODY))
         lblAverageDocCalls.setFont(font: .bold(size: .SUBHEADER))
         lblAnalysisName.setFont(font: .bold(size: .SUBHEADER))
@@ -507,28 +534,27 @@ class MainVC : UIViewController {
     
     @IBAction func sideMenuAction(_ sender: UIButton) {
         
-        if btnHome.isSelected == true {
-            self.btnHome.isSelected = false
-            UIView.animate(withDuration: 0.5) { [self] in
-                self.viewSideMenu.alpha = 0
-                self.viewSideMenu.isHidden = true
-            }
-            return
-        }
+//        if btnHome.isSelected == true {
+//            self.btnHome.isSelected = false
+//            UIView.animate(withDuration: 0.5) { [self] in
+//                self.viewSideMenu.alpha = 0
+//                self.viewSideMenu.isHidden = true
+//            }
+//            return
+//        }
+//
+//        self.viewSideMenu.isHidden = false
+//        self.viewSideMenu.alpha = 0
+//        UIView.animate(withDuration: 0.5) {
+//            self.viewSideMenu.alpha = 1
+//        }
+//        self.btnHome.isSelected = true
         
-        self.viewSideMenu.isHidden = false
-        self.viewSideMenu.alpha = 0
-        UIView.animate(withDuration: 0.5) {
-            self.viewSideMenu.alpha = 1
-        }
-        self.btnHome.isSelected = true
-        
-        
-//        let menuvc =   HomeSideMenuVC.initWithStory()
-//    
-//            self.modalPresentationStyle = .custom
-//     
-//        self.navigationController?.present(menuvc, animated: true)
+                    print("Tapped")
+                    let menuvc =   HomeSideMenuVC.initWithStory(self)
+                    self.modalPresentationStyle = .custom
+                    self.navigationController?.present(menuvc, animated: false)
+
     }
     
     
@@ -985,21 +1011,24 @@ class MainVC : UIViewController {
     
     private func updateLinks () {
         
-        let presentationColor = UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.15))
-        let activityColor = UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.15))
-        let reportsColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.15))
+        let presentationColor = UIColor.appGreen
+        let activityColor = UIColor.appBrown
+        let reportsColor = UIColor.appLightPink
+        let previewColor = UIColor.appBlue
         
         
         let presentation = QuicKLink(color: presentationColor, name: "Presentaion", image: UIImage(imageLiteralResourceName: "presentationIcon"))
         let activity = QuicKLink(color: activityColor, name: "Activity", image: UIImage(imageLiteralResourceName: "activity"))
         let reports = QuicKLink(color: reportsColor, name: "Reports", image: UIImage(imageLiteralResourceName: "reportIcon"))
         
-        let slidePreview = QuicKLink(color: UIColor.white, name: "Slide Preview", image: UIImage(imageLiteralResourceName: "slidePreviewIcon"))
+        let slidePreview = QuicKLink(color: previewColor, name: "Slide Preview", image: UIImage(imageLiteralResourceName: "slidePreviewIcon"))
         
         self.links.append(presentation)
-        self.links.append(activity)
-        self.links.append(reports)
         self.links.append(slidePreview)
+        self.links.append(reports)
+        self.links.append(activity)
+        
+       
         
     }
     

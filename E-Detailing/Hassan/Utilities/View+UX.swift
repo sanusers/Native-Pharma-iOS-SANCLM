@@ -851,3 +851,12 @@ extension UITextView: UITextViewDelegate {
     
 }
 
+
+extension UIImage {
+    public class func gif(asset: String) -> UIImage? {
+        if let asset = NSDataAsset(name: asset) {
+            return UIImage.gifImageWithData(asset.data)
+        }
+        return nil
+    }
+}

@@ -12,7 +12,7 @@ import UIKit
 
 class HomeSideMenuVC: BaseViewController {
     @IBOutlet weak var menuView : HomeSideMenuView!
-    
+    var menuDelegate : MenuResponseProtocol?
     //MARK:- view life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,9 +31,17 @@ class HomeSideMenuVC: BaseViewController {
     }
     
     //MARK:- initWithStory
-    class func initWithStory()-> HomeSideMenuVC{
+
+ 
+    class func initWithStory(_ delegate : MenuResponseProtocol?)-> HomeSideMenuVC{
+        
         let view : HomeSideMenuVC = UIStoryboard.Hassan.instantiateViewController()
         view.modalPresentationStyle = .overCurrentContext
+
+        view.menuDelegate = delegate
+
+
+        
         return view
     }
     

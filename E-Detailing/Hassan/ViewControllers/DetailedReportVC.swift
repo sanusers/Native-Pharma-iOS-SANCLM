@@ -29,7 +29,7 @@ class DetailedReportVC: BaseViewController {
     
 
     func toSetParamsAndGetResponse(_ selecteddate : Date) {
-
+        
 
         let date = selecteddate
         let dateFormatter = DateFormatter()
@@ -100,7 +100,7 @@ class DetailedReportVC: BaseViewController {
     
 
     func getReporsAPIResponse(_ param: [String: Any], paramData: JSON){
-       
+        Shared.instance.showLoader(in: reportsView)
         sessionResponseVM?.getReportsData(params: param, api: .getReports, paramData: paramData) { result in
             switch result {
             case .success(let response):
@@ -121,10 +121,11 @@ class DetailedReportVC: BaseViewController {
                     self.reportsView.toLoadData()
                     self.reportsView.toFilterResults(self.reportsView.searchTF.text ?? "")
                 }
-              
+                Shared.instance.removeLoader(in: self.reportsView)
                 dump(response)
                 
             case .failure(let error):
+                Shared.instance.removeLoader(in: self.reportsView)
                 print(error.localizedDescription)
                 self.reportsView.toCreateToast("Error while fetching response from server.")
                 

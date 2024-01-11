@@ -341,7 +341,7 @@ class TourPlanView: BaseView {
         self.isHidden = false
     }
     
-    func toPostDataToserver() {
+    func toPostDataToserver(_ isfromSync : Bool) {
 
         AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
 
@@ -371,15 +371,16 @@ class TourPlanView: BaseView {
         dump(unsentIndices)
 
         if unSavedPlans.count > 0 {
-            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true){_ in}
+            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true, isFromSync: isfromSync){_ in}
         } else {
-            fetchDataFromServer(false)
+            fetchDataFromServer(isfromSync)
         }
 
     }
     
     
     func fetchDataFromServer(_ isfromSync: Bool) {
+        Shared.instance.showLoader(in: self)
         let appsetup = AppDefaults.shared.getAppSetUp()
         var param = [String: Any]()
         param["tableName"] = "getall_tp"
@@ -438,18 +439,21 @@ class TourPlanView: BaseView {
                    if iscompleted {
                        
                       self.initialSetups()
-                       self.setupBtnAfterSubmission()
+                      
                        self.isHidden = false
                        
                        if isfromSync {
                            DBManager.shared.saveTPtoMasterData(modal: respnse) {_ in}
                            self.updateCalender()
+                       } else {
+                           self.setupBtnAfterSubmission()
                        }
                        
                     }
                 }
-
+                Shared.instance.removeLoader(in: self)
             case .failure( _):
+                Shared.instance.removeLoader(in: self)
                 self.isHidden = false
                 self.initialSetups()
                 self.toCreateToast("Failed connecting to server!")
@@ -458,9 +462,14 @@ class TourPlanView: BaseView {
     }
     
     func initialSetups() {
+        Shared.instance.showLoader(in: self)
         self.toSetPagetype(ofType: .general)
         self.setupUI()
         self.initViews()
+        DispatchQueue.main.async {
+            Shared.instance.removeLoader(in: self)
+        }
+      
     }
     
     
@@ -517,9 +526,12 @@ class TourPlanView: BaseView {
     func setupBtnAfterSubmission() {
         LocalStorage.shared.sentToApprovalModelArr.forEach { sentToApprovalModel in
             if sentToApprovalModel.date == self.toModifyDateAsMonth(date: self.currentPage ?? Date()) {
+               
+                
                 if sentToApprovalModel.approvalStatus != "2" {
                     self.toToggleApprovalState(true, isRejected: false)
-                } else {
+                } else if sentToApprovalModel.approvalStatus == "0" {
+                    self.toToggleApprovalState(true, isRejected: false)
                   //self.toToggleApprovalState(true, isRejected: true)
                 }
             }
@@ -928,6 +940,12 @@ class TourPlanView: BaseView {
                     isMonthSent = true
                    // approvalStr = sentToApprovalmodal.approvalStatus
                     sentToApprovalData = sentToApprovalmodal
+                } else if sentToApprovalmodal.approvalStatus == "0" {
+                    isMonthSent = false
+                  //  planningLbl.text = "Planning.."
+                  //  generalButtonsHolder.backgroundColor = .appSelectionColor
+                   // btnSendFOrApproval.isUserInteractionEnabled = false
+                   // return
                 }
             }
             
@@ -940,6 +958,9 @@ class TourPlanView: BaseView {
         } else if isMonthSent {
             planningLbl.text =  sentToApprovalData?.approvalStatus == "1" ? ApprovalStatus.submitted.rawValue :  sentToApprovalData?.approvalStatus == "2" ? ApprovalStatus.rejected.rawValue  : sentToApprovalData?.approvalStatus == "3" ? ApprovalStatus.approved.rawValue : "Planning.."
             //"Waiting for approval"
+            
+            
+            
            // btnSendFOrApproval.titleLabel?.text = "Waiting for approval"
         } else {
             
@@ -1167,7 +1188,8 @@ class TourPlanView: BaseView {
 
         syncView.addTap {
            // NotificationCenter.default.post(name: Notification.Name("synced"), object: nil)
-            self.fetchDataFromServer(true)
+            self.toPostDataToserver(true)
+            //self.fetchDataFromServer(true)
             
         }
         
@@ -1188,7 +1210,7 @@ class TourPlanView: BaseView {
         
     }
     
-    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool, completion: @escaping (Bool) -> Void) {
+    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool, isFromSync: Bool, completion: @escaping (Bool) -> Void) {
         if unSavedPlans.count > 0 {
             self.toSetParams(unSavedPlans ) {
                 responseResult in
@@ -1239,7 +1261,7 @@ class TourPlanView: BaseView {
                                      }
                    // self.toLoadData()
                    if isFromFirstLoad {
-                       self.fetchDataFromServer(false)
+                       self.fetchDataFromServer(isFromSync)
                        completion(true)
                    } else {
                        
@@ -1305,7 +1327,7 @@ class TourPlanView: BaseView {
         dump(unsentIndices)
         
         if unSavedPlans.count > 0 {
-            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true) {isCompleted in
+            self.toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true, isFromSync: false) {isCompleted in
                 if isCompleted {
                     completion(true)
                 }
@@ -1317,6 +1339,7 @@ class TourPlanView: BaseView {
     
     
     func callApprovalApi() {
+        Shared.instance.showLoader(in: self)
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
         let dateFormatter = DateFormatter()
 
@@ -1373,6 +1396,7 @@ class TourPlanView: BaseView {
         sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .sendToApproval, paramData: param) { result in
             switch result {
             case .success(let response):
+                Shared.instance.removeLoader(in: self)
                 print(response)
                 //completion(.success(response))
                 if response.success ?? false {
@@ -1381,9 +1405,12 @@ class TourPlanView: BaseView {
                    // self.toPostDataToserver()
                     self.fetchDataFromServer(false)
                     
-                } else {}
+                } else {
+                    
+                }
                 dump(response)
             case .failure(let error):
+                Shared.instance.removeLoader(in: self)
                 print(error.localizedDescription)
                 self.toCreateToast("Please try again later!")
               // completion(.failure(error))
@@ -2201,10 +2228,11 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
 }
 
 extension TourPlanView: MenuResponseProtocol {
-    func sessionRemoved() {
-        print("Yet to delete")
+    func routeToView(_ view: UIViewController) {
+        print("")
     }
     
+
     func callPlanAPI() {
         toLoadData()
         print("Called")
