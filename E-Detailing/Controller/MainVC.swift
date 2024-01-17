@@ -226,6 +226,8 @@ class MainVC : UIViewController {
     
     @IBOutlet weak var viewSalesAnalysisStackView: UIStackView!
     
+    ///Mark: - charts
+    
     @IBOutlet var chartHolderView: UIView!
     @IBOutlet var lineChatrtView: UIView!
     
@@ -249,6 +251,11 @@ class MainVC : UIViewController {
     
     @IBOutlet var quickLinkTitle: UILabel!
     @IBOutlet var month3Lbl: UILabel!
+    
+    ///Mark: - Calls
+    
+    @IBOutlet var callsCountLbl: UILabel!
+    
     @IBOutlet weak var quickLinkCollectionView: UICollectionView!
     @IBOutlet weak var dcrCallsCollectionView: UICollectionView!
     @IBOutlet weak var analysisCollectionView: UICollectionView!
@@ -259,6 +266,7 @@ class MainVC : UIViewController {
     @IBOutlet var homeTitleLbl: UILabel!
     
     
+    @IBOutlet var segmentBorderLbl: UILabel!
     @IBOutlet weak var sideMenuTableView: UITableView!
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
@@ -274,6 +282,7 @@ class MainVC : UIViewController {
     var totalFWCount: Int = 0
     var cacheINdex: Int = 0
     var selectedCallIndex: Int = 0
+    var sessionResponseVM : SessionResponseVM?
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -311,7 +320,7 @@ class MainVC : UIViewController {
     
     let menuList = ["Refresh","Tour Plan","Create Presentation","Leave Application","Reports","Activiy","Near Me","Quiz","Survey","Forms","Profiling"]
     
-    
+    var todayCallsModel: [TodayCallsModel]?
     enum ChartType {
         case doctor
         case chemist
@@ -366,6 +375,23 @@ class MainVC : UIViewController {
     }
     
     func setupUI() {
+        viewCalls.layer.cornerRadius = 5
+        viewCalls.backgroundColor = .appWhiteColor
+        lblDate.setFont(font: .bold(size: .SUBHEADER))
+        btnCall.layer.borderColor = UIColor.appSelectionColor.cgColor
+        btnCall.layer.borderWidth = 0.5
+        btnCall.tintColor = .appTextColor
+        btnCall?.layer.cornerRadius = 5
+        btnCall.backgroundColor = .appGreyColor
+        btnActivity.layer.borderColor = UIColor.appSelectionColor.cgColor
+        btnActivity.layer.borderWidth = 0.5
+        btnActivity.tintColor = .appTextColor
+        btnActivity?.layer.cornerRadius = 5
+        btnActivity.backgroundColor = .appGreyColor
+        self.callTableView.contentInsetAdjustmentBehavior = .never
+        self.callTableView.contentInset = UIEdgeInsets(top: -20, left: 0, bottom: 0, right: 0);
+        callsCountLbl.setFont(font: .medium(size: .BODY))
+        callsCountLbl.textColor = .appTextColor
         homeTitleLbl.setFont(font: .bold(size: .SUBHEADER))
         homeTitleLbl.text = "SAN Media Pvt Ltd.,"
         homeTitleLbl.textColor = .appWhiteColor
@@ -405,6 +431,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.sessionResponseVM = SessionResponseVM()
         self.toSeperateDCR()
         self.updateLinks()
         self.updateDcr()
@@ -526,6 +553,8 @@ class MainVC : UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.homeLineChartView?.frame = lineChatrtView.bounds
+        let attr = NSDictionary(object: UIFont(name: "Satoshi-Bold", size: 16)!, forKey: NSAttributedString.Key.font as NSCopying)
+        segmentControlForDcr.setTitleTextAttributes(attr as? [NSAttributedString.Key : Any] , for: .normal)
     }
     
     deinit {
@@ -591,7 +620,7 @@ class MainVC : UIViewController {
                 self.viewWorkPlan.isHidden = true
                 self.viewCalls.isHidden = false
                 self.viewOutBox.isHidden = true
-                self.callTableView.reloadData()
+             //   self.callTableView.reloadData()
             case 2:
                 self.viewWorkPlan.isHidden = true
                 self.viewCalls.isHidden = true
@@ -779,6 +808,7 @@ class MainVC : UIViewController {
     
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
         
+        
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -788,45 +818,111 @@ class MainVC : UIViewController {
         
         // "crm.saneforce.in/iOSServer/db_module.php?axn=table/additionaldcrmasterdata"
         
-        let params : [String : Any] = ["tableName" : "gettodycalls",
-                                          "sfcode" : appsetup.sfCode ?? "",
-                                          "ReqDt" : date,
-                                          "division_code" : appsetup.divisionCode ?? "",
-                                          "Rsf" : appsetup.sfCode ?? "",
-                                          "sf_type" : appsetup.sfType ?? "",
-                                       "Designation" : appsetup.dsName ?? "",
-                                       "state_code" : appsetup.stateCode ?? "",
-                                       "subdivision_code" : appsetup.subDivisionCode ?? ""
-        ]
+//        let params : [String : Any] = ["tableName" : "gettodycalls",
+//                                          "sfcode" : appsetup.sfCode ?? "",
+//                                          "ReqDt" : date,
+//                                          "division_code" : appsetup.divisionCode ?? "",
+//                                          "Rsf" : appsetup.sfCode ?? "",
+//                                          "sf_type" : appsetup.sfType ?? "",
+//                                       "Designation" : appsetup.dsName ?? "",
+//                                       "state_code" : appsetup.stateCode ?? "",
+//                                       "subdivision_code" : appsetup.subDivisionCode ?? ""
+//        ]
+//
+//        let param = ["data" : params.toString()]
+//
+//        print(param)
+//        print(url)
         
-        let param = ["data" : params.toString()]
+        // {"tableName":"gettodycalls","sfcode":"MR6028","ReqDt":"2024-01-17 12:54:25""sf_type":"1","divisionCode":"44,","Rsf":"MR6028","Designation":"MR","state_code":"41","subdivision_code":"170,"}
+
+        var params = [String : Any]()
+        params["tableName"] = "gettodycalls"
+        params["sfcode"] =  appsetup.sfCode ?? ""
+        params["ReqDt"] = date
+        params["division_code"] = appsetup.divisionCode ?? ""
+        params["Rsf"] = appsetup.sfCode ?? ""
+        params["sf_type"] = appsetup.sfType ?? ""
+        params["Designation"] = appsetup.dsName ?? ""
+        params["state_code"] = appsetup.stateCode ?? ""
         
-        print(param)
-        print(url)
-        
-        AF.request(url,method: .post,parameters: param).responseData { responseFeed in
-            
-            switch responseFeed.result {
-                
-            case .success(_):
-                do {
-                    
-                    let apiResponse = try JSONSerialization.jsonObject(with: responseFeed.data!,options: JSONSerialization.ReadingOptions.allowFragments)
-                    
-                    print(apiResponse as Any)
-                }catch {
-                    print(error)
-                }
-                
-            case .failure(let error):
-                print(error)
-                return
+        var jsonDatum = Data()
+
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+
             }
+
+
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
         }
+
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+
+        print(params)
         
         
+        
+//        AF.request(url,method: .post,parameters: param).responseData { responseFeed in
+//
+//            switch responseFeed.result {
+//
+//            case .success(_):
+//                do {
+//
+//                    let apiResponse = try JSONSerialization.jsonObject(with: responseFeed.data!,options: JSONSerialization.ReadingOptions.allowFragments)
+//
+//                    print(apiResponse as Any)
+//                }catch {
+//                    print(error)
+//                }
+//
+//            case .failure(let error):
+//                print(error)
+//                return
+//            }
+//        }
+        
+        getTodayCalls(toSendData, paramData: params)
     }
     
+    func getTodayCalls(_ param: [String: Any], paramData: JSON) {
+       // Shared.instance.showLoader(in: self.view)
+        sessionResponseVM?.getTodayCallsData(params: param, api: .getTodayCalls, paramData: paramData) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                self.todayCallsModel = response
+               // Shared.instance.removeLoader(in: self.view)
+                self.setupCalls(response: response)
+                dump(response)
+                
+            case .failure(let error):
+              //  Shared.instance.removeLoader(in: self.view)
+                print(error.localizedDescription)
+                self.view.toCreateToast("Error while fetching response from server.")
+                
+            }
+        }
+    }
+    
+    
+    func setupCalls(response: [TodayCallsModel]) {
+        callsCountLbl.text = "Call Count: 0\(response.count)"
+        toloadCallsTable()
+    }
+    
+    func toloadCallsTable() {
+        callTableView.delegate = self
+        callTableView.dataSource = self
+        callTableView.reloadData()
+    }
     
     @IBAction func callAction(_ sender: UIButton) {
         
@@ -985,8 +1081,8 @@ class MainVC : UIViewController {
     
     private func updateSegmentForDcr() {
         
-        let font = UIFont(name: "Satoshi-Bold", size: 14)!
-        self.segmentControlForDcr.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
+      //  let font = UIFont(name: "Satoshi-Bold", size: 14)!
+      //  self.segmentControlForDcr.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
         self.segmentControlForDcr.highlightSelectedSegment()
         
     }
@@ -1290,7 +1386,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             case self.sideMenuTableView :
                 return menuList.count
             case self.callTableView:
-                return 10
+            return self.todayCallsModel?.count ?? 0
             case self.outboxTableView:
                 return 5
             default :
@@ -1307,7 +1403,17 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 return cell
             case self.callTableView:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "DCRCallCell", for: indexPath) as! DCRCallCell
-                cell.imgProfile.backgroundColor = UIColor.random()
+            cell.selectionStyle = .none
+              //  cell.imgProfile.backgroundColor = UIColor.random()
+            let model: TodayCallsModel = self.todayCallsModel?[indexPath.row] ?? TodayCallsModel()
+            cell.topopulateCell(model)
+            cell.optionsBtn.addTap {
+                print("Tapped -->")
+                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsBtn, onframe: CGRect(), pagetype: .calls)
+               // vc.delegate = self
+              //  vc.selectedIndex = indexPath.row
+                self.navigationController?.present(vc, animated: true)
+            }
                 return cell
             case self.outboxTableView:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "DCRCallCell", for: indexPath) as! DCRCallCell
@@ -1320,10 +1426,12 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+       // return UITableView.automaticDimension
         
         if tableView == self.outboxTableView {
             return UITableView.automaticDimension
+        } else if tableView == self.callTableView {
+            return 75
         } else {
             return 95
         }
@@ -1361,6 +1469,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             return view
         }
     }
+
     
     func toggleSection(_ header: CollapsibleTableViewHeader, section: Int) {
         
@@ -1389,7 +1498,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                   let tourplanVC = TourPlanVC.initWithStory()
                 self.navigationController?.pushViewController(tourplanVC, animated: true)
             } else if menuList[indexPath.row] == "Reports" {
-                let tourplanVC = ReportsVC.initWithStory()
+                let tourplanVC = ReportsVC.initWithStory(pageType: .reports)
               self.navigationController?.pushViewController(tourplanVC, animated: true)
           }
             

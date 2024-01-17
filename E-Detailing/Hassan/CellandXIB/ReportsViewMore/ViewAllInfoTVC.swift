@@ -185,7 +185,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         return cell
                     default:
                         let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-                        cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-"))
+                        cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
                         return cell
                     }
                 case 5:
@@ -242,6 +242,7 @@ struct SampleProduct {
     let noOfSamples : String
     let rxQTY: String
     let rcpa: String
+    let isDemoProductCell: Bool
 }
 
 class ViewAllInfoTVC: UITableViewCell {
@@ -283,7 +284,7 @@ class ViewAllInfoTVC: UITableViewCell {
     
     func toSetDataSourceForProducts() {
         productStrArr.removeAll()
-        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: ""))
+        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
         
        if detailedReportModel?.products != "" {
            var prodArr =  detailedReportModel?.products.components(separatedBy: ",")
@@ -319,13 +320,13 @@ class ViewAllInfoTVC: UITableViewCell {
                        print("default")
                    }
                }
-               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted.replacingOccurrences(of: " ", with: "") == "0" ? true : false, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa)
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted.replacingOccurrences(of: " ", with: "") == "0" ? true : false, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false)
                
              //  let aProduct = SampleProduct(prodName: prodString[0].isEmpty ? "" : prodString[0] , isPromoted: prodString[1].isEmpty ? false : prodString[1].contains("0") ? true : false, noOfSamples:  prodString[2].isEmpty ? "" : prodString[2] , rxQTY:  prodString[3].isEmpty ? "" : prodString[3] , rcpa:  prodString[4].isEmpty ? "" : prodString[4])
                productStrArr.append(aProduct)
            }
        } else {
-           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-"))
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
        }
 
         

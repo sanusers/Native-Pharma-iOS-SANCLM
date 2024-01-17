@@ -263,9 +263,10 @@ final class ConnectionHandler : NSObject {
                 
 
                 
-                if api == .getReports {
+                if api == .getReports || api == .getTodayCalls {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
+                    var encodedAdayCalls: [TodayCallsModel]?
                     if data["tableName"] as! String == "getdayrpt" {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
                             encodedReportsModelData = decodecObj
@@ -277,14 +278,30 @@ final class ConnectionHandler : NSObject {
                                 responseHandler.handleSuccess(value: self.convertToDictionary(encodedReportsModelData) ?? JSON(), data: jsonData)
                                 print("JSON Data:")
                                 print(jsonData)
-                                
-                              //  print("\nJSON String:")
-                             //   print(jsonString )
                             } catch {
                                 print("Error encoding JSON: \(error)")
                             }
                         }
-                    } else {
+                    } else if data["tableName"] as! String == "gettodycalls" {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TodayCallsModel].self) { decodecObj in
+                            encodedAdayCalls = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(encodedAdayCalls)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedAdayCalls) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                            } catch {
+                                print("Error encoding JSON: \(error)")
+                            }
+                            
+                            
+                            
+                        }
+                    }
+                    else {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DetailedReportsModel].self) { decodecObj in
                             encodedDetailedReportsModelData = decodecObj
                             do {
@@ -295,9 +312,6 @@ final class ConnectionHandler : NSObject {
                                 responseHandler.handleSuccess(value: self.convertToDictionary(encodedDetailedReportsModelData) ?? JSON(), data: jsonData)
                                 print("JSON Data:")
                                 print(jsonData)
-                                
-                              //  print("\nJSON String:")
-                             //   print(jsonString )
                             } catch {
                                 print("Error encoding JSON: \(error)")
                             }

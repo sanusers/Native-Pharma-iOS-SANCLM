@@ -2115,9 +2115,9 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             cell.delegate = self
             cell.selectedIndex = indexPath.row
             if cell.selectedIndex == indexPath.row {
-                cell.remarksTV.text = sessionDetailsArr.sessionDetails?[indexPath.row].remarks == "" ? "Remarks" : sessionDetailsArr.sessionDetails?[indexPath.row].remarks
+                cell.remarksTV.text = sessionDetailsArr.sessionDetails?[indexPath.row].remarks == "" ? "Type here.." : sessionDetailsArr.sessionDetails?[indexPath.row].remarks
                // sessionDetailsArr.sessionDetails?[selectedSession].remarks
-                if  cell.remarksTV.text == "Remarks" {
+                if  cell.remarksTV.text == "Type here.." {
                     cell.remarksTV.textColor =  UIColor.lightGray
                 } else {
                     cell.remarksTV.textColor = UIColor.black

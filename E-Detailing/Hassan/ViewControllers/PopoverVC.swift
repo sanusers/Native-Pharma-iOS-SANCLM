@@ -13,10 +13,13 @@ class PopOverVC: UIViewController {
     enum PageType {
         case TP
         case HomeGraph
+        case calls
     }
     
     
     func toSetPageType(_ pageType: PageType) {
+        contentTable.showsVerticalScrollIndicator = false
+        contentTable.showsHorizontalScrollIndicator = false
         switch pageType {
             
         case .TP:
@@ -28,6 +31,10 @@ class PopOverVC: UIViewController {
             graphInfoView.isHidden = false
             setupUI()
             
+        case .calls:
+            self.contentTable.isHidden = false
+            graphInfoView.isHidden = true
+            toLOadData()
         }
     }
     
@@ -84,7 +91,7 @@ class PopOverVC: UIViewController {
     }
     
     func toLOadData() {
-        strArr = ["Edit"]
+        strArr = pageType == .TP ? ["Edit"] : ["Edit", "Delete"]
         contentTable.delegate = self
         contentTable.dataSource = self
         contentTable.reloadData()
@@ -107,7 +114,7 @@ class PopOverVC: UIViewController {
     
      
         popover.backgroundColor = .appGreen
-        popover.permittedArrowDirections = UIPopoverArrowDirection.down
+        popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
         
         
         return infoWindow
@@ -145,6 +152,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: InfoTVC = tableView.dequeueReusableCell(withIdentifier: "InfoTVC", for: indexPath) as! InfoTVC
         cell.titleLbl.text = strArr[indexPath.row]
+        cell.titleLbl.textColor = .appTextColor
+        cell.titleLbl.setFont(font: .bold(size: .BODY))
         cell.selectionStyle = .none
         return cell
     }

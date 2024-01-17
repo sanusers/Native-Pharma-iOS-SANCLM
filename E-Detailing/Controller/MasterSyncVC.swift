@@ -286,6 +286,10 @@ class MasterSyncVC : UIViewController {
 ////                            }
 //                        }
                         
+                        if type == .homeSetup {
+                            print("Caught")
+                        }
+                        
                         if let response = apiResponse as? [[String : Any]] {
                             DBManager.shared.saveMasterData(type: type, Values: response,id: self.getSFCode)
                             
@@ -409,8 +413,13 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         let width = self.collectionView.frame.width / 3
+        
+        if self.masterData[indexPath.row].rawValue == "Holidays" || self.masterData[indexPath.row].rawValue == "Weekly Off" || self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
+            return CGSize(width: width - 10, height: 0)
+        }
+        
+     
         let size = CGSize(width: width - 10, height: 80)
         return size
     }

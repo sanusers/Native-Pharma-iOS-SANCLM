@@ -860,3 +860,11 @@ extension UIImage {
         return nil
     }
 }
+
+
+extension UISegmentedControl {
+    func font(name:String?, size:CGFloat?) {
+        let attributedSegmentFont = NSDictionary(object: UIFont(name: name!, size: size!)!, forKey: NSAttributedString.Key.font as NSCopying)
+        setTitleTextAttributes(attributedSegmentFont as [NSObject : AnyObject] as [NSObject : AnyObject] as? [NSAttributedString.Key : Any], for: .normal)
+    }
+}

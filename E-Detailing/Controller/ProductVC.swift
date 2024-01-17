@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Alamofire
 import Toast_Swift
+import CoreData
 
 class ProductVC : UIViewController {
     
@@ -630,8 +631,55 @@ class ProductVC : UIViewController {
         
         
         //      {"JointWork":[{"Code":"MGR1454","Name":"DEMO MD"}],"Inputs":[{"Code":"171","Name":"BELT","IQty":"4"}],"Products":[{"Code":"767","Name":"Paracetamal sale","Group":"0","ProdFeedbk":"","Rating":"","Timesline":{"sTm":"2023-10-12 00:00:00","eTm":"2023-10-12 00:00:00"},"Appver":"V2.0.10","Mod":"Android-Edet","SmpQty":"00","RxQty":"2","prdfeed":"","Type":"D","StockistName":"Stockist","StockistCode":"StockistCode","Slides":[]},{"Code":"768","Name":"Alegra sample","Group":"0","ProdFeedbk":"","Rating":"","Timesline":{"sTm":"2023-10-12 00:00:00","eTm":"2023-10-12 00:00:00"},"Appver":"V2.0.10","Mod":"Android-Edet","SmpQty":"3","RxQty":"00","prdfeed":"","Type":"D","StockistName":"Stockist","StockistCode":"StockistCode","Slides":[]}],"AdCuss":[],"CateCode":"1","CusType":"1","CustCode":"1384629","CustName":"CHIRIS","CustCategory":"A","Entry_location":"13.0299965:80.2414513","address":"No 4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035, India","sfcode":"MR5115","Rsf":"MR5115","sf_type":"1","Designation":"MR","state_code":"24","subdivision_code":"35,","division_code":"1","AppUserSF":"MR5115","SFName":"HELAN","SpecCode":"3","mappedProds":"","mode":"0","Appver":"V2.0.10","Mod":"Android-Edet","WT_code":"6","WTName":"Field Work","FWFlg":"F","town_code":"129569","town_name":"ANNANAGAR","ModTime":"2023-10-12 12:09:10","ReqDt":"2023-10-12 12:09:10","vstTime":"2023-10-12 12:09:10","Remarks":"test","amc":"","RCPAEntry":[{"Chemists":[{"Name":"AAA PHARMA","Code":"950840"}],"OPCode":"767","OPName":"Paracetamal sale","OPQty":"2","OPRate":"50.0","OPValue":"100.0","Competitors":[{"CPQty":"3","CPRate":"50.0","CPValue":"150.0","CompCode":"19176","CompName":"APPOLO","CompPCode":"3596","CompPName":"Para Feroon","Chemname":"AAA PHARMA,","Chemcode":"950840,","CPRemarks":"gud"},{"CPQty":"4","CPRate":"50.0","CPValue":"200.0","CompCode":"19221","CompName":"MOUNT","CompPCode":"3596","CompPName":"Para Helan","Chemname":"AAA PHARMA,","Chemcode":"950840,","CPRemarks":"gud"}]}],"ActivityDCR":[],"sample_validation":"0","input_validation":"0","sign_path":"","filepath":"","EventCapture":"false","EventImageName":"","SignImageName":"","DCSUPOB":"5","Drcallfeedbackcode":""}
+        var dbparam = [String: Any]()
+        dbparam["CustCode"] = dcrCall.cateCode
+        dbparam["CustType"] = cusType
+        dbparam["FW_Indicator"] = "F"
+        dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd")
+        dbparam["month_name"] = Date().toString(format: "MMMM")
+        dbparam["Mnth"] = Date().toString(format: "MM")
+        dbparam["Yr"] =  Date().toString(format: "YYYY")
+        dbparam["CustName"] = dcrCall.name
+        dbparam["town_code"] = ""
+        dbparam["town_name"] = ""
+        dbparam["Dcr_flag"] = ""
+        dbparam["SF_Code"] = appsetup.sfCode
+        dbparam["Trans_SlNo"] = ""
+        dbparam["AMSLNo"] = ""
         
-                
+        var dbparamArr = [[String: Any]]()
+        dbparamArr.append(dbparam)
+        
+        
+        
+        
+        let masterData = DBManager.shared.getMasterData()
+        var HomeDataSetupArray = [HomeData]()
+        for (index,homeData) in dbparamArr.enumerated() {
+            let contextNew = DBManager.shared.managedContext()
+            let HomeDataEntity = NSEntityDescription.entity(forEntityName: "HomeData", in: contextNew)
+            let HomeDataSetupItem = HomeData(entity: HomeDataEntity!, insertInto: contextNew)
+            HomeDataSetupItem.setValues(fromDictionary: homeData)
+            HomeDataSetupItem.index = Int16(index)
+            HomeDataSetupArray.append(HomeDataSetupItem)
+        }
+//        if let list = masterData.homeData?.allObjects as? [HomeData]{
+//            _ = list.map{masterData.removeFromHomeData($0)}
+//        }
+        HomeDataSetupArray.forEach{ (type) in
+            masterData.addToHomeData(type)
+        }
+        DBManager.shared.saveContext()
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         let params : [String : Any] = ["JointWork" : jointWorkData,
                       "Inputs": inputData,
                       "Products" : productData,

@@ -140,7 +140,7 @@ class HomeSideMenuView : BaseView{
         let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "application") ?? UIImage(), VC: nil)
         menuItemArr.append(leaveApplication)
         
-        let reportsVC = ReportsVC.initWithStory()
+        let reportsVC = ReportsVC.initWithStory(pageType: .reports)
         let report : MenuItems = MenuItems(menuName: "Report", menuIcon: UIImage(named: "report_black") ?? UIImage(), VC: reportsVC)
         menuItemArr.append(report)
         

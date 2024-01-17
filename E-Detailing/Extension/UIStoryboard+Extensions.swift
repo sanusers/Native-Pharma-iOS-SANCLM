@@ -190,19 +190,19 @@ class ShadowView: UIView {
         }
     }
     /// The shadow offset of the `ShadowView`, inspectable in Interface Builder
-    @IBInspectable var shadowOffset: CGSize = CGSize(width: 0.0, height: 2) {
+    @IBInspectable var shadowOffset: CGSize = CGSize(width: 0.0, height: 1) {
         didSet {
             self.updateProperties()
         }
     }
     /// The shadow radius of the `ShadowView`, inspectable in Interface Builder
-    @IBInspectable var shadowRadius: CGFloat = 4.0 {
+    @IBInspectable var shadowRadius: CGFloat = 0.5 {
         didSet {
             self.updateProperties()
         }
     }
     /// The shadow opacity of the `ShadowView`, inspectable in Interface Builder
-    @IBInspectable var shadowOpacity: Float = 0.5 {
+    @IBInspectable var shadowOpacity: Float = 0.3 {
         didSet {
             self.updateProperties()
         }

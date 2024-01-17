@@ -526,7 +526,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     callsCount[0].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
                     if date.count == 1 {
-                      //  modifiedDayNumbers.append(19)
+                     //   modifiedDayNumbers.append(15)
                     }
                     else if date.count == 2 {
                         modifiedDayNumbers.append(31)
@@ -544,14 +544,23 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                         eacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
                         
                         // callsCount.append(daysInRange0to15.count)
-                        modifiedDayNumbers.append(22)
+                        if date.count == 1 {
+                            modifiedDayNumbers.append(10)
+                        } else {
+                            modifiedDayNumbers.append(22)
+                        }
+                     
                         
                         //daysInRange0to15.first ?? 0
                     } else {
                         callsCount[0].insert(contentsOf: [], at: 0)
                         eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
                         // callsCount.append(0)
-                        modifiedDayNumbers.append(22)
+                        if date.count == 1 {
+                            modifiedDayNumbers.append(19)
+                        } else {
+                            modifiedDayNumbers.append(22)
+                        }
                     }
                     
                     // Filter days in the range 16 to 31
@@ -560,7 +569,12 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                         callsCount[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
                         eacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
                         //  callsCount.append(daysInRange16to31.count)
-                        if date.count == 2 {
+                        
+                        if date.count == 1 {
+                            modifiedDayNumbers.append(26)
+                        }
+                        
+                       else if date.count == 2 {
                             modifiedDayNumbers.append(31)
                         } else {
                             modifiedDayNumbers.append(33)
@@ -849,7 +863,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         if yRangeMax == 0 {
             yAxis.axisMaximum =  20
         } else {
-            yAxis.axisMaximum =  Double(yRangeMax) * 2
+            yAxis.axisMaximum =  Double(yRangeMax) * 1.5
         }
           
         

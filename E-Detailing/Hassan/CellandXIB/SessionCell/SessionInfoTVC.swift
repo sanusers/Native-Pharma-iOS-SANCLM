@@ -24,16 +24,16 @@ extension SessionInfoTVC: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Remarks"
+            textView.text = "Type here.."
             textView.textColor = UIColor.lightGray
         }
-        self.remarks = textView.text == "Remarks" ? "" : textView.text
+        self.remarks = textView.text == "Type here.." ? "" : textView.text
         delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: self.selectedIndex ?? 0)
-    //    self.remarks = textView.text == "Remarks" ? "" : textView.text
+    //    self.remarks = textView.text == "Type here.." ? "" : textView.text
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        self.remarks = textView.text == "Remarks" ? "" : textView.text
+        self.remarks = textView.text == "Type here.." ? "" : textView.text
      
         // Combine the textView text and the replacement text to
         // create the updated text string
@@ -44,7 +44,7 @@ extension SessionInfoTVC: UITextViewDelegate {
         // and set the cursor to the beginning of the text view
         if updatedText.isEmpty {
 
-            textView.text = "Remarks"
+            textView.text = "Type here.."
             textView.textColor = UIColor.lightGray
 
             textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
@@ -184,7 +184,7 @@ class SessionInfoTVC: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
        
-        //remarksTV.placeholder = "Remarks"
+        //remarksTV.placeholder = "Type here.."
         [chemistSelectionHolder,listedDoctorSelctionHolder,jointCallSelectionHolder,headQuatersSelectionHolder, clusterselectionHolder, workselectionHolder, stockistSectionHolder, newCustomersSectionHolder, overallContentsHolder, remarksTFholder].forEach { view in
             view?.layer.borderColor = UIColor.appSelectionColor.cgColor //AppColors.primaryColorWith_40per_alpha.cgColor
             view?.layer.borderWidth = view == overallContentsHolder ? 0 : 0.5
@@ -233,7 +233,7 @@ class SessionInfoTVC: UITableViewCell {
     }
     
     func initNotifications() {
-       //  NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+      //   NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
          
        //  NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -273,8 +273,8 @@ class SessionInfoTVC: UITableViewCell {
     
     func configureTextField() {
         remarksTV.delegate = self
-        //remarksTV.text == "" ? "Remarks" : remarksTV.text
-        remarksTV.textColor =  remarksTV.text == "Remarks" ? UIColor.lightGray : UIColor.black
+        //remarksTV.text == "" ? "Type here.." : remarksTV.text
+        remarksTV.textColor =  remarksTV.text == "Type here.." ? UIColor.lightGray : UIColor.black
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

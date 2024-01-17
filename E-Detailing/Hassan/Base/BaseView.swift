@@ -30,6 +30,11 @@ class BaseView: UIView{
     func didDisappear(baseVC : BaseViewController){}
     func didLayoutSubviews(baseVC: BaseViewController){}
 
+
+}
+
+
+extension UIView {
     func toCreateToast(_ text: String) {
 
             if #available(iOS 13.0, *) {

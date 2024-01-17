@@ -209,6 +209,7 @@
 		38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F4B8142A49979100BD4FD2 /* WorkType + Extension.swift */; };
 		38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F4B8162A49C92400BD4FD2 /* MyDayPlan + Extension.swift */; };
 		38F515852AA33E090069FC6B /* RcpaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F515842AA33E090069FC6B /* RcpaViewModel.swift */; };
+		38F5558F2B57B7BE000D9294 /* TodayCallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F5558E2B57B7BE000D9294 /* TodayCallsModel.swift */; };
 		38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E4F2A557D8F0051BFEA /* Product + Extension.swift */; };
 		38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E512A55A4650051BFEA /* Speciality + Extension.swift */; };
 		38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38F8431D2A5E8493009018AB /* SideMenu.storyboard */; };
@@ -447,6 +448,7 @@
 		38F4B8142A49979100BD4FD2 /* WorkType + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorkType + Extension.swift"; sourceTree = "<group>"; };
 		38F4B8162A49C92400BD4FD2 /* MyDayPlan + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyDayPlan + Extension.swift"; sourceTree = "<group>"; };
 		38F515842AA33E090069FC6B /* RcpaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaViewModel.swift; sourceTree = "<group>"; };
+		38F5558E2B57B7BE000D9294 /* TodayCallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayCallsModel.swift; sourceTree = "<group>"; };
 		38F72E4F2A557D8F0051BFEA /* Product + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product + Extension.swift"; sourceTree = "<group>"; };
 		38F72E512A55A4650051BFEA /* Speciality + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Speciality + Extension.swift"; sourceTree = "<group>"; };
 		38F8431D2A5E8493009018AB /* SideMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SideMenu.storyboard; sourceTree = "<group>"; };
@@ -661,15 +663,16 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		38BFB7842AFB62DD005E141E /* Modals */ = {
+		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				38F5558D2B57B776000D9294 /* Calls */,
 				38BA66862B4685A8008C6D2C /* DCR */,
 				38D1F1F12B3429A600CE8F86 /* Reports */,
 				38E220702B032DAE00FBF6B0 /* TourPlan */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
 			);
-			path = Modals;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		38C4245C2A2B4D1F004A89EF /* View */ = {
@@ -802,7 +805,7 @@
 				3865F8CD2AFCCE57009AB984 /* Views */,
 				3865F8CA2AFCCE3D009AB984 /* ViewControllers */,
 				385A424E2AFBABB000C0A58A /* Base */,
-				38BFB7842AFB62DD005E141E /* Modals */,
+				38BFB7842AFB62DD005E141E /* Models */,
 				38BFB7832AFB61CD005E141E /* ViewModels */,
 				38BFB7812AFB61AB005E141E /* ConnectionHandlers */,
 				38BFB7802AFB60BC005E141E /* APIRespnseHandlers */,
@@ -871,6 +874,14 @@
 				38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */,
 			);
 			path = SessionCell;
+			sourceTree = "<group>";
+		};
+		38F5558D2B57B776000D9294 /* Calls */ = {
+			isa = PBXGroup;
+			children = (
+				38F5558E2B57B7BE000D9294 /* TodayCallsModel.swift */,
+			);
+			path = Calls;
 			sourceTree = "<group>";
 		};
 		A8343534F7C81EDB68431942 /* Pods */ = {
@@ -1371,6 +1382,7 @@
 				3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */,
 				38F289B72B0CB59A00045D4F /* EditSessionTVC.swift in Sources */,
 				38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */,
+				38F5558F2B57B7BE000D9294 /* TodayCallsModel.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,

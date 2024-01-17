@@ -18,6 +18,7 @@ enum APIEnums : String{
     case sendToApproval = "save/tp"
     case getAllPlansData = "get/tp"
     case getReports = "get/reports"
+    case getTodayCalls = "table/additionaldcrmasterdata"
 }
 
 

@@ -27,7 +27,12 @@ class ProductsDescriptionCVC: UICollectionViewCell {
 //        samplesLbl.text =
         
         self.productLbl.text = modelStr.prodName
-        self.promoterLbl.text = modelStr.isPromoted ? "Yes" : "No"
+        if modelStr.isDemoProductCell {
+            self.promoterLbl.text = modelStr.isPromoted ? "Yes" : ""
+        } else {
+            self.promoterLbl.text = modelStr.isPromoted ? "Yes" : "No"
+        }
+        
         self.samplesLbl.text = modelStr.noOfSamples == "" ? "-" :  String(modelStr.noOfSamples.dropLast())
         self.rxQTYlbl.text = modelStr.rxQTY == "" ? "-" :   String(modelStr.rxQTY.dropLast())
         self.rcpaLbl.text = modelStr.rcpa == "" ? "-" :  String(modelStr.rcpa.dropLast()) 

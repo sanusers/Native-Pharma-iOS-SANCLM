@@ -10,8 +10,13 @@ import UIKit
 class ReportsVC: BaseViewController {
 
     
-    @IBOutlet var reportsView: ReportsView!
+    enum PageType {
+        case reports
+        case approvals
+    }
     
+    @IBOutlet var reportsView: ReportsView!
+    var pageType: PageType = .reports
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -19,10 +24,11 @@ class ReportsVC: BaseViewController {
     }
     
 
-    class func initWithStory() -> ReportsVC {
-        let tourPlanVC : ReportsVC = UIStoryboard.Hassan.instantiateViewController()
+    class func initWithStory(pageType: PageType) -> ReportsVC {
+        let reportsVC : ReportsVC = UIStoryboard.Hassan.instantiateViewController()
       //  tourPlanVC.homeVM = HomeViewModal()
-        return tourPlanVC
+        reportsVC.pageType = pageType
+        return reportsVC
     }
 
 }
