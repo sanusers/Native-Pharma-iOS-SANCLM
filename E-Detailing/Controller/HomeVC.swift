@@ -586,7 +586,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
             cell.pfp_image.Border_Radius(border_height: 0, isborder: false, radius: 25)
             cell.background_Cell.Border_Radius(border_height: 0, isborder: false, radius: 5)
             cell.pfp_image.backgroundColor = .random()
-            cell.lbl_name.text = obj_sections[indexPath.section].items[indexPath.row]
+       //     cell.lbl_name.text = obj_sections[indexPath.section].items[indexPath.row]
             
             cell.selectionStyle = .none
             return cell
@@ -688,7 +688,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
     }
     
     
-    func toggleSection(_ header: CollapsibleTableViewHeader, section: Int) {
+    func toggleSection(_ header: UITableViewHeaderFooterView, section: Int) {
         let collapsed = !obj_sections[section].collapsed
         obj_sections[section].collapsed = collapsed
         

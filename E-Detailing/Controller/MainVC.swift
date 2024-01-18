@@ -256,6 +256,12 @@ class MainVC : UIViewController {
     
     @IBOutlet var callsCountLbl: UILabel!
     
+    
+    @IBOutlet var clearCallsBtn: UIButton!
+    
+    @IBOutlet var outboxCallsCountLbl: UILabel!
+    
+    
     @IBOutlet weak var quickLinkCollectionView: UICollectionView!
     @IBOutlet weak var dcrCallsCollectionView: UICollectionView!
     @IBOutlet weak var analysisCollectionView: UICollectionView!
@@ -270,8 +276,10 @@ class MainVC : UIViewController {
     @IBOutlet weak var sideMenuTableView: UITableView!
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
+    var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
     var chartType: ChartType = .doctor
+    var cacheDCRindex: Int = 0
     var doctorArr = [HomeData]()
     var chemistArr = [HomeData]()
     var stockistArr = [HomeData]()
@@ -375,6 +383,14 @@ class MainVC : UIViewController {
     }
     
     func setupUI() {
+        clearCallsBtn.layer.cornerRadius = 5
+        clearCallsBtn.backgroundColor = .appTextColor
+        clearCallsBtn.titleLabel?.textColor = .appWhiteColor
+        
+        
+        outboxCallsCountLbl.setFont(font: .medium(size: .BODY))
+        outboxCallsCountLbl.textColor = .appTextColor
+        
         viewCalls.layer.cornerRadius = 5
         viewCalls.backgroundColor = .appWhiteColor
         lblDate.setFont(font: .bold(size: .SUBHEADER))
@@ -427,6 +443,9 @@ class MainVC : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.toSeperateDCR()
+        self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
+        toSetParams()
     }
     
     override func viewDidLoad() {
@@ -437,7 +456,6 @@ class MainVC : UIViewController {
         self.updateDcr()
         self.updateSegmentForDcr()
         setupUI()
-     
         LocationManager.shared.locationUpdate()
         
         outboxTableView.estimatedRowHeight = 80
@@ -464,6 +482,14 @@ class MainVC : UIViewController {
         self.callTableView.register(UINib(nibName: "DCRCallCell", bundle: nil), forCellReuseIdentifier: "DCRCallCell")
         
         self.outboxTableView.register(UINib(nibName: "DCRCallCell", bundle: nil), forCellReuseIdentifier: "DCRCallCell")
+        
+        self.outboxTableView.register(UINib(nibName: "outboxCollapseTVC", bundle: nil), forCellReuseIdentifier: "outboxCollapseTVC")
+        
+        
+        self.outboxTableView.register(UINib(nibName: "outboxCollapseTVC", bundle: nil), forHeaderFooterViewReuseIdentifier: "outboxCollapseTVC")
+        
+        self.outboxTableView.register(UINib(nibName: "OutboxDetailsTVC", bundle: nil), forCellReuseIdentifier: "OutboxDetailsTVC")
+        
         
         
         let layout = UICollectionViewFlowLayout()
@@ -808,12 +834,12 @@ class MainVC : UIViewController {
     
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
         
+        toSetParams()
+//        let appsetup = AppDefaults.shared.getAppSetUp()
+//
+//        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        
-        let url =  appMainURL + "table/additionaldcrmasterdata"
+     //   let url =  appMainURL + "table/additionaldcrmasterdata"
         
         
         // "crm.saneforce.in/iOSServer/db_module.php?axn=table/additionaldcrmasterdata"
@@ -836,6 +862,34 @@ class MainVC : UIViewController {
         
         // {"tableName":"gettodycalls","sfcode":"MR6028","ReqDt":"2024-01-17 12:54:25""sf_type":"1","divisionCode":"44,","Rsf":"MR6028","Designation":"MR","state_code":"41","subdivision_code":"170,"}
 
+        
+        
+        
+//        AF.request(url,method: .post,parameters: param).responseData { responseFeed in
+//
+//            switch responseFeed.result {
+//
+//            case .success(_):
+//                do {
+//
+//                    let apiResponse = try JSONSerialization.jsonObject(with: responseFeed.data!,options: JSONSerialization.ReadingOptions.allowFragments)
+//
+//                    print(apiResponse as Any)
+//                }catch {
+//                    print(error)
+//                }
+//
+//            case .failure(let error):
+//                print(error)
+//                return
+//            }
+//        }
+
+    }
+    
+    func toSetParams() {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         var params = [String : Any]()
         params["tableName"] = "gettodycalls"
         params["sfcode"] =  appsetup.sfCode ?? ""
@@ -866,31 +920,9 @@ class MainVC : UIViewController {
         toSendData["data"] = jsonDatum
 
         print(params)
-        
-        
-        
-//        AF.request(url,method: .post,parameters: param).responseData { responseFeed in
-//
-//            switch responseFeed.result {
-//
-//            case .success(_):
-//                do {
-//
-//                    let apiResponse = try JSONSerialization.jsonObject(with: responseFeed.data!,options: JSONSerialization.ReadingOptions.allowFragments)
-//
-//                    print(apiResponse as Any)
-//                }catch {
-//                    print(error)
-//                }
-//
-//            case .failure(let error):
-//                print(error)
-//                return
-//            }
-//        }
-        
         getTodayCalls(toSendData, paramData: params)
     }
+    
     
     func getTodayCalls(_ param: [String: Any], paramData: JSON) {
        // Shared.instance.showLoader(in: self.view)
@@ -1279,17 +1311,22 @@ extension MainVC : collectionViewProtocols {
               
             cell.addTap {
                     let model = self.dcrCount[indexPath.row]
+                    self.cacheDCRindex = indexPath.row
                 self.selectedCallIndex = indexPath.row
                     if model.name == "Doctor Calls" {
+                        self.chartType = .doctor
                         self.toIntegrateChartView(.doctor, indexPath.row)
                         self.lblAverageDocCalls.text = "Average Doctor Calls"
                     } else if model.name == "Chemist Calls" {
+                        self.chartType = .doctor
                         self.toIntegrateChartView(.chemist, indexPath.row)
                         self.lblAverageDocCalls.text = "Average Chemist Calls"
                     } else if model.name == "Stockist Calls" {
+                        self.chartType = .doctor
                         self.toIntegrateChartView(.stockist, indexPath.row)
                         self.lblAverageDocCalls.text = "Average Stockist Calls"
                     } else if model.name == "UnListed Doctor Calls" {
+                        self.chartType = .doctor
                         self.toIntegrateChartView(.unlistedDoctor, indexPath.row)
                         self.lblAverageDocCalls.text = "Average UnListed Doctor Calls"
                     }
@@ -1367,6 +1404,15 @@ extension MainVC : collectionViewProtocols {
 
 
 extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
+    func toggleSection(_ header: UITableViewHeaderFooterView, section: Int) {
+        
+        let collapsed = !obj_sections[section].collapsed
+        obj_sections[section].collapsed = collapsed
+        
+        // Reload the whole section
+        self.outboxTableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if tableView == self.outboxTableView {
@@ -1379,16 +1425,17 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == self.outboxTableView {
-            return obj_sections[section].collapsed ? 0 : obj_sections[section].items.count
-        }
+//        if tableView == self.outboxTableView {
+//            return obj_sections[section].collapsed ? 0 : obj_sections[section].items.count
+//        }
         switch tableView {
             case self.sideMenuTableView :
                 return menuList.count
             case self.callTableView:
             return self.todayCallsModel?.count ?? 0
             case self.outboxTableView:
-                return 5
+
+            return obj_sections[section].collapsed ? 0 : obj_sections[section].items.count
             default :
                 return 10
         }
@@ -1416,8 +1463,37 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
                 return cell
             case self.outboxTableView:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "DCRCallCell", for: indexPath) as! DCRCallCell
-                cell.imgProfile.backgroundColor = UIColor.random()
+                let cell = tableView.dequeueReusableCell(withIdentifier: "OutboxDetailsTVC", for: indexPath) as! OutboxDetailsTVC
+            
+            cell.callsCollapseIV.addTap {
+                cell.callsExpandState =  cell.callsExpandState == .callsNotExpanded ? .callsExpanded : .callsNotExpanded
+                cell.callsCollapseIV.image = cell.callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
+               
+             //   cell.setupHeight( cell.callsExpandState)
+
+                
+                
+                if cell.callsExpandState == .callsExpanded {
+                    cell.cellStackHeightConst.constant = 290 + 90 * 2
+                    cell.callSubDetailVIew.isHidden = false
+                    cell.callSubdetailHeightConst.constant = 90 * 2
+                    cell.callDetailHeightConst.constant = 50 + 90 * 2
+                 //   self.callsCellHeight = 320 + 90 * 2
+                    cell.callsViewSeperator.isHidden = false
+                } else {
+                    cell.cellStackHeightConst.constant = 290
+                    cell.callSubDetailVIew.isHidden = true
+                    cell.callSubdetailHeightConst.constant = 0 //90
+                    cell.callDetailHeightConst.constant = 50
+                  //  self.callsCellHeight = (320) - 90 * 2
+                    cell.callsViewSeperator.isHidden = true
+                }
+            
+                self.outboxTableView.reloadData()
+            }
+            
+               // cell.imgProfile.backgroundColor = UIColor.random()
+            cell.selectionStyle = .none
                 return cell
             default :
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SideMenuCell", for: indexPath) as! SideMenuCell
@@ -1429,7 +1505,15 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
        // return UITableView.automaticDimension
         
         if tableView == self.outboxTableView {
-            return UITableView.automaticDimension
+            
+           // return UITableView.automaticDimension
+            
+          //  stack height 60 + 60 + 140 ( 60 + 90 ) + 60 + 60 (+ 40 each view spacing inside stack)
+            
+            return 400 + 90  + 10 // + 10 padding
+            
+          
+            
         } else if tableView == self.callTableView {
             return 75
         } else {
@@ -1451,16 +1535,19 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         if tableView == outboxTableView {
             
-            let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "header")
-            header.titleLabel.text = obj_sections[section].name
-            header.section = section
-            header.delegate = self
+//            let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "header")
+//            header.titleLabel.text = obj_sections[section].name
+//            header.section = section
+//            header.delegate = self
             
+            
+            let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "outboxCollapseTVC") as? outboxCollapseTVC
+            header?.delegate = self
+            header?.section = section
             if obj_sections[section].collapsed {
-                
-                header.arrowLabel.text = "Expand"
+                header?.collapseIV.image = UIImage(named: "chevlon.expand")
             } else {
-                header.arrowLabel.text = "Collapse"
+                header?.collapseIV.image = UIImage(named: "chevlon.collapse")
             }
             return header
             

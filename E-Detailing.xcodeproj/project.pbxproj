@@ -148,6 +148,12 @@
 		38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363A2A4C014B0032588D /* MasterSync.swift */; };
 		38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */; };
 		38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */; };
+		38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */; };
+		38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */; };
+		38DAADE92B5916AC00966B33 /* OutboxDetailsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DAADE72B5916AC00966B33 /* OutboxDetailsTVC.swift */; };
+		38DAADEA2B5916AC00966B33 /* OutboxDetailsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADE82B5916AC00966B33 /* OutboxDetailsTVC.xib */; };
+		38DAADED2B59505C00966B33 /* CalldetailsCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DAADEB2B59505C00966B33 /* CalldetailsCVC.swift */; };
+		38DAADEE2B59505C00966B33 /* CalldetailsCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */; };
 		38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DB6CB32AC3F94400F3F930 /* EventCaptureViewModel.swift */; };
 		38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */; };
 		38DD14B12B4FBAA70036384F /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD14B02B4FBAA70036384F /* Shared.swift */; };
@@ -387,6 +393,12 @@
 		38D8363A2A4C014B0032588D /* MasterSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSync.swift; sourceTree = "<group>"; };
 		38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncTbCell.swift; sourceTree = "<group>"; };
 		38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearMeViewModel.swift; sourceTree = "<group>"; };
+		38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = outboxCollapseTVC.swift; sourceTree = "<group>"; };
+		38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = outboxCollapseTVC.xib; sourceTree = "<group>"; };
+		38DAADE72B5916AC00966B33 /* OutboxDetailsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxDetailsTVC.swift; sourceTree = "<group>"; };
+		38DAADE82B5916AC00966B33 /* OutboxDetailsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OutboxDetailsTVC.xib; sourceTree = "<group>"; };
+		38DAADEB2B59505C00966B33 /* CalldetailsCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalldetailsCVC.swift; sourceTree = "<group>"; };
+		38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalldetailsCVC.xib; sourceTree = "<group>"; };
 		38DB6CB32AC3F94400F3F930 /* EventCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureViewModel.swift; sourceTree = "<group>"; };
 		38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionRightVC.swift; sourceTree = "<group>"; };
 		38DD14B02B4FBAA70036384F /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
@@ -590,6 +602,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38DAADE22B58FF7C00966B33 /* outboxCallsCells */,
 				38DD14B42B4FEED70036384F /* HomeSIdeMenu */,
 				38107C4A2B36F18900ACEDF3 /* ReportsViewMore */,
 				38E659802B33072D00E7BF42 /* Reports */,
@@ -776,6 +789,19 @@
 				38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */,
 			);
 			path = Reports;
+			sourceTree = "<group>";
+		};
+		38DAADE22B58FF7C00966B33 /* outboxCallsCells */ = {
+			isa = PBXGroup;
+			children = (
+				38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */,
+				38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */,
+				38DAADE72B5916AC00966B33 /* OutboxDetailsTVC.swift */,
+				38DAADE82B5916AC00966B33 /* OutboxDetailsTVC.xib */,
+				38DAADEB2B59505C00966B33 /* CalldetailsCVC.swift */,
+				38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */,
+			);
+			path = outboxCallsCells;
 			sourceTree = "<group>";
 		};
 		38DD14B42B4FEED70036384F /* HomeSIdeMenu */ = {
@@ -1125,8 +1151,10 @@
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38107C632B36FA0400ACEDF3 /* ViewmoreCVC.xib in Resources */,
 				38107C5F2B36F97E00ACEDF3 /* ReportsCVC.xib in Resources */,
+				38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
 				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
+				38DAADEA2B5916AC00966B33 /* OutboxDetailsTVC.xib in Resources */,
 				B287E68429F2A20F0097974D /* Satoshi-Medium.otf in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
@@ -1139,6 +1167,7 @@
 				38DD14B32B4FBB6C0036384F /* Loaders in Resources */,
 				B287E68329F2A20F0097974D /* Satoshi-LightItalic.otf in Resources */,
 				38107C522B36F2A700ACEDF3 /* TimeInfoCVC.xib in Resources */,
+				38DAADEE2B59505C00966B33 /* CalldetailsCVC.xib in Resources */,
 				38107C682B37056600ACEDF3 /* ProductsDescriptionCVC.xib in Resources */,
 				38CCA2B72A656B92008D5B12 /* LeaveAvailablityCell.xib in Resources */,
 				38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */,
@@ -1251,6 +1280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				38F515852AA33E090069FC6B /* RcpaViewModel.swift in Sources */,
+				38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */,
 				38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */,
 				38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */,
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
@@ -1270,6 +1300,7 @@
 				38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */,
 				38CD60D92A86139D006FFB39 /* CallViewModel.swift in Sources */,
 				38C5D35E2A835FB800513BC8 /* ProductVC.swift in Sources */,
+				38DAADE92B5916AC00966B33 /* OutboxDetailsTVC.swift in Sources */,
 				38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */,
 				38E659832B33075200E7BF42 /* ReportTypesCVC.swift in Sources */,
 				B287E6C229F2BC9C0097974D /* TableCell.swift in Sources */,
@@ -1325,6 +1356,7 @@
 				38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */,
 				38145EC62B3459E100DD7B4E /* WTsheetCVC.swift in Sources */,
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
+				38DAADED2B59505C00966B33 /* CalldetailsCVC.swift in Sources */,
 				38E3C3592AF9F98C00623C33 /* ConnectionHandler.swift in Sources */,
 				38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */,
 				38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */,
