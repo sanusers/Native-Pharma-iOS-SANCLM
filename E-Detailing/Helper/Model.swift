@@ -1,17 +1,17 @@
 import Foundation
 
 struct Section {
-  var name: String
-    var items: [String : Bool]
-  var collapsed: Bool
+    var date: String
+    var items: [TodayCallsModel]
+    var isCallExpanded: Bool
+    var collapsed: Bool
     
-    init(name: String, items: [String : Bool], collapsed: Bool = true) {
-    self.name = name
-    self.items = items
+    init(items: [TodayCallsModel] , collapsed: Bool = true, isCallExpanded: Bool = false, date: String) {
+    self.items = [TodayCallsModel]()
     self.collapsed = collapsed
+    self.isCallExpanded = false
+    self.date = date
   }
 }
     
-var obj_sections = [
-    Section(name: "April 21, 2023", items: ["Jony Deeph" : false, "Michal Grud" : false]),
-]
+var obj_sections : [Section] = []

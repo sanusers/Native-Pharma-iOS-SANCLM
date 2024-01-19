@@ -19,6 +19,7 @@ class LocalStorage {
         case TPisForFinalDate
         case isMR
         case offsets
+        case outboxParams
     }
     
     enum Offsets: String {
@@ -59,6 +60,10 @@ class LocalStorage {
 //        return result as! LocalStorage.Offsets
 //    }
     
+    func setData(_ key:LocalValue,data:Data = Data()){
+        UserDefaults.standard.set(data, forKey: key.rawValue)
+    }
+    
     func setSting(_ key:LocalValue,text:String = "" ){
         UserDefaults.standard.set(text, forKey: key.rawValue)
     }
@@ -80,6 +85,17 @@ class LocalStorage {
         
     }
     
+    
+    func getData(key:LocalValue)->Data{
+        if UserDefaults.standard.object(forKey: key.rawValue) == nil {
+            self.setData(key)
+        }
+        if let result = UserDefaults.standard.value(forKey: key.rawValue) {
+            return result as! Data
+        }
+        return  Data()
+    }
+    
     func getString(key:LocalValue)->String{
         if UserDefaults.standard.object(forKey: key.rawValue) == nil {
             self.setSting(key)
@@ -98,3 +114,5 @@ class LocalStorage {
         return result
     }
 }
+
+// Thanks to the author @Hassan

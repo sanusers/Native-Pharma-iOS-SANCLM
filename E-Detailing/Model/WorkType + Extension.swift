@@ -71,6 +71,10 @@ extension HomeData {
             anslNo = tpDCRValue
         }
 
+        if let tpDCRValue = dictionary["isDataSentToAPI"] as? String {
+            isDataSentToAPI = tpDCRValue
+        }
+        
     }
 }
 

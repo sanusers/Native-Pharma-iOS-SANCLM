@@ -115,8 +115,10 @@
         <attribute name="dcr_flag" optional="YES" attributeType="String"/>
         <attribute name="fw_Indicator" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isDataSentToAPI" optional="YES" attributeType="String"/>
         <attribute name="mnth" optional="YES" attributeType="String"/>
         <attribute name="month_name" optional="YES" attributeType="String"/>
+        <attribute name="rejectionReason" optional="YES" attributeType="String"/>
         <attribute name="sf_Code" optional="YES" attributeType="String"/>
         <attribute name="town_code" optional="YES" attributeType="String"/>
         <attribute name="town_name" optional="YES" attributeType="String"/>

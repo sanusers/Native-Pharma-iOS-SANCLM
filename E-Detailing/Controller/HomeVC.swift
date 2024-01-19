@@ -667,7 +667,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
         if tableView == outBox_Table {
             
             let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "header")
-            header.titleLabel.text = obj_sections[section].name
+            header.titleLabel.text = obj_sections[section].date
             header.section = section
             header.delegate = self
             

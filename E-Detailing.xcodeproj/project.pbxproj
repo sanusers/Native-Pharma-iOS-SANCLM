@@ -14,6 +14,7 @@
 		3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1002A46FF790066AF15 /* Chemist + Extension.swift */; };
 		3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1022A470E5B0066AF15 /* Stockist + Extension.swift */; };
 		3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */; };
+		380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
 		38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */; };
 		38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */; };
@@ -259,6 +260,7 @@
 		3803E1002A46FF790066AF15 /* Chemist + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chemist + Extension.swift"; sourceTree = "<group>"; };
 		3803E1022A470E5B0066AF15 /* Stockist + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stockist + Extension.swift"; sourceTree = "<group>"; };
 		3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnListedDoctor + Extension.swift"; sourceTree = "<group>"; };
+		380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
 		38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAllInfoTVC.xib; sourceTree = "<group>"; };
 		38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoCVC.swift; sourceTree = "<group>"; };
@@ -644,6 +646,7 @@
 				38D7F6E12B21D8830091B2CF /* LocalStorage.swift */,
 				38DD14B02B4FBAA70036384F /* Shared.swift */,
 				38DD14B92B5002340036384F /* MenuResponseProtocol.swift */,
+				380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1279,6 +1282,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */,
 				38F515852AA33E090069FC6B /* RcpaViewModel.swift in Sources */,
 				38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */,
 				38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */,

@@ -26,7 +26,7 @@
                         </constraints>
                     </view>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="j6f-4U-yDC">
-                        <rect key="frame" x="9" y="30.5" width="333" height="380"/>
+                        <rect key="frame" x="9" y="75.5" width="333" height="290"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pkr-3h-bj0">
                                 <rect key="frame" x="0.0" y="0.0" width="333" height="50"/>
@@ -129,10 +129,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wgT-vw-i8S">
-                                <rect key="frame" x="0.0" y="120" width="333" height="140"/>
+                                <rect key="frame" x="0.0" y="120" width="333" height="50"/>
                                 <subviews>
                                     <stackView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="9sX-OF-wTM">
-                                        <rect key="frame" x="0.0" y="0.0" width="333" height="140"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="333" height="50"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DDv-kr-v8m">
                                                 <rect key="frame" x="0.0" y="0.0" width="333" height="50"/>
@@ -223,7 +223,7 @@
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <blurEffect style="regular"/>
                                                                     </visualEffectView>
-                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevlon.collapse" translatesAutoresizingMaskIntoConstraints="NO" id="icB-1L-zIy">
+                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevlon.expand" translatesAutoresizingMaskIntoConstraints="NO" id="icB-1L-zIy">
                                                                         <rect key="frame" x="10" y="5" width="20" height="20"/>
                                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="regular"/>
@@ -269,10 +269,10 @@
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SfM-su-Wzy">
-                                                <rect key="frame" x="0.0" y="50" width="333" height="90"/>
+                                                <rect key="frame" x="0.0" y="50" width="333" height="0.0"/>
                                                 <subviews>
                                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="g0e-Nv-WRI">
-                                                        <rect key="frame" x="0.0" y="0.0" width="333" height="90"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="333" height="0.0"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="vdO-1s-Ymk">
                                                             <size key="itemSize" width="128" height="128"/>
@@ -284,7 +284,7 @@
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="90" id="INz-3T-0BS"/>
+                                                    <constraint firstAttribute="height" id="INz-3T-0BS"/>
                                                     <constraint firstAttribute="trailing" secondItem="g0e-Nv-WRI" secondAttribute="trailing" id="R5g-er-IaH"/>
                                                     <constraint firstAttribute="bottom" secondItem="g0e-Nv-WRI" secondAttribute="bottom" id="RBb-72-Lyr"/>
                                                     <constraint firstItem="g0e-Nv-WRI" firstAttribute="leading" secondItem="SfM-su-Wzy" secondAttribute="leading" id="h9h-B1-Ab6"/>
@@ -294,7 +294,7 @@
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="140" id="4U5-Re-WmB"/>
+                                            <constraint firstAttribute="height" constant="50" id="4U5-Re-WmB"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
@@ -303,11 +303,11 @@
                                     <constraint firstItem="9sX-OF-wTM" firstAttribute="top" secondItem="wgT-vw-i8S" secondAttribute="top" id="SO9-UX-RzE"/>
                                     <constraint firstAttribute="trailing" secondItem="9sX-OF-wTM" secondAttribute="trailing" id="UDU-jW-FUU"/>
                                     <constraint firstItem="9sX-OF-wTM" firstAttribute="leading" secondItem="wgT-vw-i8S" secondAttribute="leading" id="d4V-2G-RHM"/>
-                                    <constraint firstAttribute="height" constant="140" id="rOQ-j9-FDY"/>
+                                    <constraint firstAttribute="height" constant="50" id="rOQ-j9-FDY"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IMi-21-ZSI">
-                                <rect key="frame" x="0.0" y="270" width="333" height="50"/>
+                                <rect key="frame" x="0.0" y="180" width="333" height="50"/>
                                 <subviews>
                                     <stackView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="cQV-k5-a2i">
                                         <rect key="frame" x="218" y="10" width="100" height="30"/>
@@ -431,7 +431,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uHP-hn-11d">
-                                <rect key="frame" x="0.0" y="330" width="333" height="50"/>
+                                <rect key="frame" x="0.0" y="240" width="333" height="50"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wIw-6y-eVp">
                                         <rect key="frame" x="288" y="10" width="30" height="30"/>
@@ -482,7 +482,7 @@
                             </view>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" constant="380" id="F25-6z-pfe"/>
+                            <constraint firstAttribute="height" constant="290" id="F25-6z-pfe"/>
                         </constraints>
                     </stackView>
                 </subviews>
@@ -499,7 +499,7 @@
             <connections>
                 <outlet property="callCountHolderView" destination="Xom-D2-5Jh" id="6de-2H-lEc"/>
                 <outlet property="callCountVXview" destination="HzB-Hh-uk3" id="U3U-XL-jbd"/>
-                <outlet property="callDetailHeightConst" destination="4U5-Re-WmB" id="4MF-5o-TTC"/>
+                <outlet property="callDetailStackHeightConst" destination="4U5-Re-WmB" id="d9K-Mh-jBS"/>
                 <outlet property="callDetailView" destination="wgT-vw-i8S" id="emT-QX-gS8"/>
                 <outlet property="callSubDetailVIew" destination="SfM-su-Wzy" id="o45-3c-jkj"/>
                 <outlet property="callSubdetailHeightConst" destination="INz-3T-0BS" id="qXf-go-n0E"/>
@@ -507,9 +507,11 @@
                 <outlet property="callsCollapseView" destination="oqK-eo-fy0" id="0au-Kg-dlW"/>
                 <outlet property="callsCountLbl" destination="wMm-3o-xGp" id="Oed-y2-whf"/>
                 <outlet property="callsHolderViewHeightConst" destination="rOQ-j9-FDY" id="Uth-KK-UJH"/>
+                <outlet property="callsOverallinfoVIewHeightConst" destination="Ycn-Wv-QwD" id="jbV-oj-jVd"/>
                 <outlet property="callsRefreshVIew" destination="Grq-lF-eD4" id="nuQ-yb-Msi"/>
                 <outlet property="callsTitLbl" destination="Zwf-zY-YAb" id="eh8-JC-6YO"/>
                 <outlet property="callsViewSeperator" destination="Tj9-8y-DH6" id="lVl-Ya-Poe"/>
+                <outlet property="callsoverallInfoVIew" destination="DDv-kr-v8m" id="Icb-pG-h6G"/>
                 <outlet property="cellStack" destination="j6f-4U-yDC" id="RWV-m4-WSf"/>
                 <outlet property="cellStackHeightConst" destination="F25-6z-pfe" id="ErA-0M-cN3"/>
                 <outlet property="checkinLbl" destination="H8C-cV-j1c" id="7OS-dp-Gj0"/>
@@ -536,7 +538,6 @@
     </objects>
     <resources>
         <image name="arrow.triangle.2.circlepath" catalog="system" width="128" height="104"/>
-        <image name="chevlon.collapse" width="30" height="30"/>
         <image name="chevlon.expand" width="30" height="30"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

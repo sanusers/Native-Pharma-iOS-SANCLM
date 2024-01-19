@@ -100,3 +100,5 @@ extension Shared{
         return false
     }
 }
+
+// Thanks to the author @Hassan

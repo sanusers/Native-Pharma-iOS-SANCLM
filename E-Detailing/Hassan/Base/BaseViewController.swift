@@ -25,7 +25,7 @@ class BaseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self._baseView?.didLoad(baseVC: self)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
 //        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
 //          let sceneDelegate = windowScene.delegate as? SceneDelegate
 //
@@ -35,6 +35,27 @@ class BaseViewController: UIViewController {
 //        self.sceneDelegate = sceneDelegate
 //
 //
+    }
+    
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+               if let status = dict["Type"] as? String{
+                   DispatchQueue.main.async {
+                       if status == "No Connection" {
+                        //   self.toSetPageType(.notconnected)
+                           self.toCreateToast("Please check your internet connection.")
+                       } else if  status == "WiFi" || status ==  "Cellular"   {
+                           
+                           self.toCreateToast("You are now connected.")
+                           
+                           
+                           
+                       }
+                   }
+               }
+           }
     }
     
 //    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

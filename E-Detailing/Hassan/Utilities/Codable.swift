@@ -161,3 +161,4 @@ extension Array : SafeDecodable{
        return T.init()
     }
 }
+// Thanks to the author @Hassan

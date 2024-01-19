@@ -631,45 +631,7 @@ class ProductVC : UIViewController {
         
         
         //      {"JointWork":[{"Code":"MGR1454","Name":"DEMO MD"}],"Inputs":[{"Code":"171","Name":"BELT","IQty":"4"}],"Products":[{"Code":"767","Name":"Paracetamal sale","Group":"0","ProdFeedbk":"","Rating":"","Timesline":{"sTm":"2023-10-12 00:00:00","eTm":"2023-10-12 00:00:00"},"Appver":"V2.0.10","Mod":"Android-Edet","SmpQty":"00","RxQty":"2","prdfeed":"","Type":"D","StockistName":"Stockist","StockistCode":"StockistCode","Slides":[]},{"Code":"768","Name":"Alegra sample","Group":"0","ProdFeedbk":"","Rating":"","Timesline":{"sTm":"2023-10-12 00:00:00","eTm":"2023-10-12 00:00:00"},"Appver":"V2.0.10","Mod":"Android-Edet","SmpQty":"3","RxQty":"00","prdfeed":"","Type":"D","StockistName":"Stockist","StockistCode":"StockistCode","Slides":[]}],"AdCuss":[],"CateCode":"1","CusType":"1","CustCode":"1384629","CustName":"CHIRIS","CustCategory":"A","Entry_location":"13.0299965:80.2414513","address":"No 4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035, India","sfcode":"MR5115","Rsf":"MR5115","sf_type":"1","Designation":"MR","state_code":"24","subdivision_code":"35,","division_code":"1","AppUserSF":"MR5115","SFName":"HELAN","SpecCode":"3","mappedProds":"","mode":"0","Appver":"V2.0.10","Mod":"Android-Edet","WT_code":"6","WTName":"Field Work","FWFlg":"F","town_code":"129569","town_name":"ANNANAGAR","ModTime":"2023-10-12 12:09:10","ReqDt":"2023-10-12 12:09:10","vstTime":"2023-10-12 12:09:10","Remarks":"test","amc":"","RCPAEntry":[{"Chemists":[{"Name":"AAA PHARMA","Code":"950840"}],"OPCode":"767","OPName":"Paracetamal sale","OPQty":"2","OPRate":"50.0","OPValue":"100.0","Competitors":[{"CPQty":"3","CPRate":"50.0","CPValue":"150.0","CompCode":"19176","CompName":"APPOLO","CompPCode":"3596","CompPName":"Para Feroon","Chemname":"AAA PHARMA,","Chemcode":"950840,","CPRemarks":"gud"},{"CPQty":"4","CPRate":"50.0","CPValue":"200.0","CompCode":"19221","CompName":"MOUNT","CompPCode":"3596","CompPName":"Para Helan","Chemname":"AAA PHARMA,","Chemcode":"950840,","CPRemarks":"gud"}]}],"ActivityDCR":[],"sample_validation":"0","input_validation":"0","sign_path":"","filepath":"","EventCapture":"false","EventImageName":"","SignImageName":"","DCSUPOB":"5","Drcallfeedbackcode":""}
-        var dbparam = [String: Any]()
-        dbparam["CustCode"] = dcrCall.cateCode
-        dbparam["CustType"] = cusType
-        dbparam["FW_Indicator"] = "F"
-        dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd")
-        dbparam["month_name"] = Date().toString(format: "MMMM")
-        dbparam["Mnth"] = Date().toString(format: "MM")
-        dbparam["Yr"] =  Date().toString(format: "YYYY")
-        dbparam["CustName"] = dcrCall.name
-        dbparam["town_code"] = ""
-        dbparam["town_name"] = ""
-        dbparam["Dcr_flag"] = ""
-        dbparam["SF_Code"] = appsetup.sfCode
-        dbparam["Trans_SlNo"] = ""
-        dbparam["AMSLNo"] = ""
-        
-        var dbparamArr = [[String: Any]]()
-        dbparamArr.append(dbparam)
-        
-        
-        
-        
-        let masterData = DBManager.shared.getMasterData()
-        var HomeDataSetupArray = [HomeData]()
-        for (index,homeData) in dbparamArr.enumerated() {
-            let contextNew = DBManager.shared.managedContext()
-            let HomeDataEntity = NSEntityDescription.entity(forEntityName: "HomeData", in: contextNew)
-            let HomeDataSetupItem = HomeData(entity: HomeDataEntity!, insertInto: contextNew)
-            HomeDataSetupItem.setValues(fromDictionary: homeData)
-            HomeDataSetupItem.index = Int16(index)
-            HomeDataSetupArray.append(HomeDataSetupItem)
-        }
-//        if let list = masterData.homeData?.allObjects as? [HomeData]{
-//            _ = list.map{masterData.removeFromHomeData($0)}
-//        }
-        HomeDataSetupArray.forEach{ (type) in
-            masterData.addToHomeData(type)
-        }
-        DBManager.shared.saveContext()
+
         
         
         
@@ -726,12 +688,34 @@ class ProductVC : UIViewController {
                       "input_validation" : "0"
         ]
         
+        
+        
         print(urlStr)
         print(params)
         
         let param = ["data" : params.toString()]
         
         print(param)
+        
+        var jsonDatum = Data()
+        var objParam = [String : Any]()
+        objParam["data"] = params
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: objParam, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+                
+            }
+            
+            
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        
         
         AF.request(urlStr,method: .post,parameters: param).responseData(){(response) in
             
@@ -749,6 +733,16 @@ class ProductVC : UIViewController {
                         print(apiResponse)
                         print("ssusus")
                         
+                        if let responseDict = apiResponse as? [String: Any] {
+                            if responseDict["msg"] as! String == "Call Already Exists" {
+                                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                                self.toCreateToast(responseDict["msg"] as! String)
+                            } else {
+                                self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                            }
+                        }
+                        
+                     
 //                        let status = self.getStatus(json: apiResponse)
 //
 //                        if status.isOk {
@@ -759,16 +753,19 @@ class ProductVC : UIViewController {
 //                                appDelegate.setupRootViewControllers()
 //                            }
 //                        }
-                        
+                     
                         self.popToBack(UIStoryboard.mainVC)
+                        
                     }catch {
                         print(error)
                     }
                 case .failure(let error):
+                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                  //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                 
-                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                self.toCreateToast("\(error)")
                     print(error)
-                    return
+                   self.popToBack(UIStoryboard.mainVC)
             }
             
             print("2")
@@ -776,31 +773,67 @@ class ProductVC : UIViewController {
             print("2")
         }
         
+    }
+    
+    
+    func saveParamoutboxParamtoDefaults(param: Data) {
+        // Retrieve data
+        LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: param)
         
-       
-//        {"JointWork":[{"Code":"MR1932","Name":"SATHISH MR 2"}],"Inputs":[{"Code":"170","Name":"PERFUME","IQty":"1"}],
-//        "Products":[{"Code":"1068","Name":"DOLO","Group":"1","ProdFeedbk":"okay","Rating":"3.0","Timesline":{"sTm":"2023-06-28 11:49:36","eTm":"2023-06-28 11:49:37"},
-//        "Appver":"V2.0.7","Mod":"Android-Edet","SmpQty":"","RxQty":"","prdfeed":"","Type":"D","StockistName":"StockistName","StockistCode":"StockistCode",
-//        "Slides":[{"Slide":"CC_VA_2021_20.jpg","SlidePath":"\/data\/user\/0\/saneforce.sanclm\/cache\/images\/CC_VA_2021_20.jpg","SlideRemarks":"","SlideType":"I",
-//        "SlideRating":"3.0","Times":[{"eTm":"2023-06-28 11:49:37","sTm":"2023-06-28 11:49:36"}]}]},{"Code":"1067","Name":"AMOXY","Group":"1","ProdFeedbk":"fine","Rating":"4.0",
-//        "Timesline":{"sTm":"2023-06-28 11:49:37","eTm":"2023-06-28 11:49:39"},"Appver":"V2.0.7","Mod":"Android-Edet","SmpQty":"","RxQty":"","prdfeed":"","Type":"D",
-//        "StockistName":"StockistName","StockistCode":"StockistCode","Slides":[{"Slide":"Pelvic_acetabula.pdf",
-//        "SlidePath":"\/storage\/emulated\/0\/Documents\/ProductsMGR057120230628114730\/Pelvic_acetabula.pdf","SlideRemarks":"","SlideType":"P",
-//        "SlideRating":"3.0","Times":[{"eTm":"2023-06-28 11:49:39","sTm":"2023-06-28 11:49:37"}]}]},{"Code":"767","Name":"Paracetamal sale","Group":"0",
-//        "ProdFeedbk":"","Rating":"","Timesline":{"sTm":"2023-06-28 00:00:00","eTm":"2023-06-28 00:00:00"},"Appver":"V2.0.7","Mod":"Android-Edet","SmpQty":"00","RxQty":"5",
-//        "prdfeed":"","Type":"D","StockistName":"StockistName","StockistCode":"StockistCode","Slides":[]},{"Code":"768","Name":"Alegra sample","Group":"0","ProdFeedbk":"","Rating":"",
-//        "Timesline":{"sTm":"2023-06-28 00:00:00","eTm":"2023-06-28 00:00:00"},"Appver":"V2.0.7","Mod":"Android-Edet","SmpQty":"52","RxQty":"00","prdfeed":"",
-//        "Type":"C","StockistName":"StockistName","StockistCode":"StockistCode","Slides":[]}],"AdCuss":[{"Code":"616454","Name":"D MOHADE","town_code":"57717","town_name":"VISHAG"},
-//        {"Code":"616515","Name":"R S MUTHAL","town_code":"57716","town_name":"CHITTOOR"}],"CateCode":"3","CusType":"1","CustCode":"616519",
-//        "CustName":"A KHARDE","Entry_location":"13.0300254:80.2414182",
-//        "address":"No 4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035, India",
-//        "sfcode":"MR0026","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","division_code":"1,","AppUserSF":"MR1932","SFName":"GOKUL ASM","SpecCode":"2",
-//        "mappedProds":"","mode":"0","Appver":"V2.0.7","Mod":"Android-Edet","WT_code":"6","WTName":"Field Work","FWFlg":"F","town_code":"57716","town_name":"CHITTOOR","ModTime":"2023-06-28 11:51:40",
-//        "ReqDt":"2023-06-28 11:51:40","vstTime":"2023-06-28 11:51:40","Remarks":"check data","amc":"","sign_path":"\/storage\/emulated\/0\/Documents\/Pictures\/paint_1687933287809.png",
-//        "filepath":"\/storage\/emulated\/0\/Android\/data\/saneforce.sanclm\/cache\/pickImageResult1687933264580.jpeg","EventCapture":"true",
-//        "DCSUPOB":"25","Drcallfeedbackcode":"","sample_validation":"0","input_validation":"0"}
+        let paramData =   LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
         
+        do {
+            let savedParams  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: Any]
+        } catch {
+            self.toCreateToast("unable to retrive")
+        }
         
+    }
+    
+    func saveCallsToDB(issussess: Bool, appsetup: AppSetUp, cusType : String, param: Data) {
+        var dbparam = [String: Any]()
+        dbparam["CustCode"] = dcrCall.code
+        dbparam["CustType"] = cusType
+        dbparam["FW_Indicator"] = "F"
+        dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd")
+        dbparam["month_name"] = Date().toString(format: "MMMM")
+        dbparam["Mnth"] = Date().toString(format: "MM")
+        dbparam["Yr"] =  Date().toString(format: "YYYY")
+        dbparam["CustName"] = dcrCall.name
+        dbparam["town_code"] = ""
+        dbparam["town_name"] = ""
+        dbparam["Dcr_flag"] = ""
+        dbparam["SF_Code"] = appsetup.sfCode
+        dbparam["Trans_SlNo"] = ""
+        dbparam["AMSLNo"] = ""
+        dbparam["isDataSentToAPI"] = issussess == true ?  "1" : "0"
+        var dbparamArr = [[String: Any]]()
+        dbparamArr.append(dbparam)
+        let masterData = DBManager.shared.getMasterData()
+        var HomeDataSetupArray = [HomeData]()
+        for (index,homeData) in dbparamArr.enumerated() {
+
+             let identifier = homeData["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
+             let existingHomeData = masterData.homeData?.first { ($0 as! HomeData).custCode == identifier }
+
+            if existingHomeData == nil {
+                let contextNew = DBManager.shared.managedContext()
+                let HomeDataEntity = NSEntityDescription.entity(forEntityName: "HomeData", in: contextNew)
+                let HomeDataSetupItem = HomeData(entity: HomeDataEntity!, insertInto: contextNew)
+                HomeDataSetupItem.setValues(fromDictionary: homeData)
+                HomeDataSetupItem.index = Int16(index)
+                HomeDataSetupArray.append(HomeDataSetupItem)
+                saveParamoutboxParamtoDefaults(param: param)
+            }
+            
+            
+
+        }
+
+        HomeDataSetupArray.forEach{ (type) in
+            masterData.addToHomeData(type)
+        }
+        DBManager.shared.saveContext()
     }
     
     private func popToBack<T>(_ VC : T) {

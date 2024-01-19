@@ -9,11 +9,13 @@ import UIKit
 
 extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return self.todayCallsModel?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: CalldetailsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CalldetailsCVC", for: indexPath) as! CalldetailsCVC
+        let model = self.todayCallsModel?[indexPath.row] ?? TodayCallsModel()
+        cell.topopulateCell(model)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -39,7 +41,7 @@ class OutboxDetailsTVC: UITableViewCell {
     
     var callsExpandState: cellState = .callsNotExpanded
     var eventExpandState: cellState = .eventNotExpanded
-    
+    var todayCallsModel: [TodayCallsModel]?
     
     @IBOutlet var dcrCallDetailsCollection: UICollectionView!
     
@@ -60,15 +62,18 @@ class OutboxDetailsTVC: UITableViewCell {
     
     @IBOutlet var workPlanTitLbl: UILabel!
     ///Calls
+    @IBOutlet var callsoverallInfoVIew: UIView!
     
-    @IBOutlet var callsHolderViewHeightConst: NSLayoutConstraint!
+    @IBOutlet var callsOverallinfoVIewHeightConst: NSLayoutConstraint! // 50 always
+    
+    @IBOutlet var callsHolderViewHeightConst: NSLayoutConstraint! //50 when collapsed, 50 + (90 * count) while expanded
     
     @IBOutlet var callCountVXview: UIVisualEffectView!
-    @IBOutlet var callDetailHeightConst: NSLayoutConstraint! // 140
+    @IBOutlet var callDetailStackHeightConst: NSLayoutConstraint! // //50 when collapsed, 50 + (90 * count) while expanded
     
     @IBOutlet var callSubDetailVIew: UIView!
     
-    @IBOutlet var callSubdetailHeightConst: NSLayoutConstraint! //90
+    @IBOutlet var callSubdetailHeightConst: NSLayoutConstraint! //0 when collapsed, 90 * count when expanded
     
     
     
@@ -118,7 +123,7 @@ class OutboxDetailsTVC: UITableViewCell {
         super.awakeFromNib()
         setupUI()
         cellRegistration()
-        toLoadData()
+        //toLoadData()
         // Initialization code
     }
     
@@ -127,26 +132,32 @@ class OutboxDetailsTVC: UITableViewCell {
     }
     
     
-//    func setupHeight(_ state: cellState) {
-//        self.callsExpandState = state
-//        //90 is each of collection cell height
-//        if self.callsExpandState == .callsExpanded {
-//            self.cellStackHeightConst.constant = 380 + (90)
-//            //self.callsHolderViewHeightConst.constant = 60 + (90 * 2)
-//            self.callSubdetailHeightConst.constant = 90 * 2
-//            self.callDetailHeightConst.constant = 60 + (90 * 2)
-//            self.callsViewSeperator.isHidden = false
-//            self.callSubDetailVIew.isHidden = false
-//        } else if self.callsExpandState == .callsNotExpanded {
-//            self.cellStackHeightConst.constant = 380 - (90 * 2)
-//            //self.callsHolderViewHeightConst.constant = 60
-//            self.callSubdetailHeightConst.constant = 0
-//            self.callDetailHeightConst.constant = 60
-//            self.callSubDetailVIew.isHidden = true
-//            self.callsViewSeperator.isHidden = true
-//        }
-//
-//    }
+    func toSetCellHeight(callsExpandState: cellState) {
+        let count = self.todayCallsModel?.count ?? 0
+        switch callsExpandState {
+        case .callsExpanded:
+            self.callsExpandState = callsExpandState
+            cellStackHeightConst.constant = CGFloat(290 + 90 * count)
+            callSubDetailVIew.isHidden = false
+            callSubdetailHeightConst.constant = 90 * 2
+            callDetailStackHeightConst.constant = CGFloat(50 + 90 * count)
+            callsHolderViewHeightConst.constant = CGFloat(50 + 90 * count)
+            callsViewSeperator.isHidden = false
+        case .callsNotExpanded:
+            self.callsExpandState = callsExpandState
+            cellStackHeightConst.constant = 290
+            callSubDetailVIew.isHidden = true
+            callSubdetailHeightConst.constant = 0 //90
+            callsHolderViewHeightConst.constant = 50
+            callDetailStackHeightConst.constant = 50
+            callsViewSeperator.isHidden = true
+        case .eventExpanded:
+            print("Yet to implement")
+        case .eventNotExpanded:
+            print("Yet to implement")
+        }
+        callsCollapseIV.image = callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
+    }
     
     func setupUI() {
      //   setupHeight(.callsNotExpanded)

@@ -42,3 +42,4 @@ enum NotificationEnum :String {
     
    
 }
+// Thanks to the author @Hassan

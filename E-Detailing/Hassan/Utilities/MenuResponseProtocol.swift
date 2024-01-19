@@ -37,3 +37,5 @@ extension MenuResponseProtocol where Self : UIViewController{
         //self.openChangeFontSheet()
     }
     }
+
+// Thanks to the author @Hassan

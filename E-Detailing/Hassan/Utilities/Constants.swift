@@ -60,4 +60,5 @@ var appMainURL : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?ax
  var licenseKey : String = ""
 //+ "api/"
 
-//let Global_UserType : String = "User" //(infoPlist?.value(for: .UserType) ?? "")
+
+// Thanks to the author @Hassan

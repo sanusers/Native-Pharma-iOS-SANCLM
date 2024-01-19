@@ -8,15 +8,16 @@
 import Foundation
 
 class TodayCallsModel: Codable {
-    let aDetSLNo: String
-    let custCode: String
-    let custName: String
-    let custType: Int
-    let synced: Int
-    let transSlNo: String
-    let vstTime: String
+    var aDetSLNo: String
+    var custCode: String
+    var custName: String
+    var custType: Int
+    var synced: Int
+    var transSlNo: String
+    var vstTime: String
     var name: String
     var designation: String
+    var submissionDate: String
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.aDetSLNo = container.safeDecodeValue(forKey: .aDetSLNo)
@@ -32,7 +33,7 @@ class TodayCallsModel: Codable {
         
          let components = custName.components(separatedBy: "[")
         designation = components.count > 1 ? components[1].replacingOccurrences(of: "]", with: "").replacingOccurrences(of: " ", with: "") : ""
-        
+        submissionDate = ""
     }
     
     
@@ -57,6 +58,7 @@ class TodayCallsModel: Codable {
         self.vstTime = String()
         self.name = String()
         self.designation = String()
+        self.submissionDate = String()
     }
     
 }

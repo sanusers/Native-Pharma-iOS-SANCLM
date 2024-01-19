@@ -868,3 +868,5 @@ extension UISegmentedControl {
         setTitleTextAttributes(attributedSegmentFont as [NSObject : AnyObject] as [NSObject : AnyObject] as? [NSAttributedString.Key : Any], for: .normal)
     }
 }
+
+// Thanks to the author @Hassan

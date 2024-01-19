@@ -254,8 +254,10 @@ class MainVC : UIViewController {
     
     ///Mark: - Calls
     
+    @IBOutlet var outboxCountVIew: UIView!
     @IBOutlet var callsCountLbl: UILabel!
     
+    @IBOutlet var outboxCallsCountLabel: UILabel!
     
     @IBOutlet var clearCallsBtn: UIButton!
     
@@ -276,6 +278,7 @@ class MainVC : UIViewController {
     @IBOutlet weak var sideMenuTableView: UITableView!
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
+    let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
     var chartType: ChartType = .doctor
@@ -287,6 +290,7 @@ class MainVC : UIViewController {
     var cipArr = [HomeData]()
     var hospitalArr = [HomeData]()
     var  homeDataArr = [HomeData]()
+    var outBoxDataArr : [TodayCallsModel]?
     var totalFWCount: Int = 0
     var cacheINdex: Int = 0
     var selectedCallIndex: Int = 0
@@ -382,7 +386,35 @@ class MainVC : UIViewController {
         
     }
     
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+               if let status = dict["Type"] as? String{
+                   DispatchQueue.main.async {
+                       if status == "No Connection" {
+                        //   self.toSetPageType(.notconnected)
+                           self.toCreateToast("Please check your internet connection.")
+                       } else if  status == "WiFi" || status ==  "Cellular"   {
+                           
+                           self.toCreateToast("You are now connected.")
+                           
+                           
+                           
+                       }
+                   }
+               }
+           }
+    }
+    
+    
     func setupUI() {
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+        outboxCountVIew.isHidden = true
+        outboxCallsCountLabel.setFont(font: .medium(size: .BODY))
+        outboxCallsCountLabel.textColor = .appWhiteColor
+        outboxCountVIew.layer.cornerRadius = outboxCountVIew.height / 2
+        outboxCountVIew.backgroundColor = .appTextColor
         clearCallsBtn.layer.cornerRadius = 5
         clearCallsBtn.backgroundColor = .appTextColor
         clearCallsBtn.titleLabel?.textColor = .appWhiteColor
@@ -424,7 +456,7 @@ class MainVC : UIViewController {
         //toSeperateDCR()
         chartHolderView.layer.cornerRadius = 5
         chartHolderView.backgroundColor = .appWhiteColor
-        self.toIntegrateChartView(.doctor, 0)
+       // self.toIntegrateChartView(.doctor, 0)
         month1View.layer.cornerRadius = 5
         month2View.layer.cornerRadius = 5
         month3View.layer.cornerRadius = 5
@@ -444,16 +476,26 @@ class MainVC : UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.toSeperateDCR()
+        self.updateDcr()
         self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
         toSetParams()
+        toLoadDcrCollection()
+        toLoadOutboxTable()
+    }
+    
+    func toLoadDcrCollection() {
+        dcrCallsCollectionView.delegate = self
+        dcrCallsCollectionView.dataSource = self
+        dcrCallsCollectionView.reloadData()
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.sessionResponseVM = SessionResponseVM()
-        self.toSeperateDCR()
+        //self.toSeperateDCR()
         self.updateLinks()
-        self.updateDcr()
+       
         self.updateSegmentForDcr()
         setupUI()
         LocationManager.shared.locationUpdate()
@@ -651,12 +693,89 @@ class MainVC : UIViewController {
                 self.viewWorkPlan.isHidden = true
                 self.viewCalls.isHidden = true
                 self.viewOutBox.isHidden = false
-                self.outboxTableView.reloadData()
+                //toLoadOutboxTable()
             default:
                 break
         }
     }
     
+    func toLoadOutboxTable() {
+        toSetupOutBoxDataSource()
+        outboxTableView.delegate = self
+        outboxTableView.dataSource = self
+        outboxTableView.reloadData()
+    }
+    
+    
+    
+    func toSetupOutBoxDataSource() {
+
+        self.outBoxDataArr?.removeAll()
+        
+        let outBoxDataArr =  self.homeDataArr.filter { aHomeData in
+          aHomeData.isDataSentToAPI == "0"
+        }
+        
+        if !outBoxDataArr.isEmpty {
+            outboxCountVIew.isHidden = false
+        
+            outboxCallsCountLabel.text = "\(outBoxDataArr.count)"
+        } else {
+            outboxCountVIew.isHidden = true
+        }
+            
+        
+        self.outBoxDataArr = [TodayCallsModel]()
+        
+        outBoxDataArr.forEach { aHomeData in
+          
+                let toDdayCall =  TodayCallsModel()
+                toDdayCall.aDetSLNo = aHomeData.anslNo ?? ""
+                toDdayCall.custCode = aHomeData.custCode ?? ""
+                toDdayCall.custName = aHomeData.custName ?? ""
+                let type =  Int(aHomeData.custType ?? "0")
+                toDdayCall.custType = type ?? 0
+                toDdayCall.transSlNo = aHomeData.trans_SlNo ?? ""
+                toDdayCall.name = aHomeData.custName ?? ""
+               toDdayCall.vstTime = aHomeData.dcr_dt ?? ""
+               toDdayCall.submissionDate = aHomeData.dcr_dt ?? ""
+                toDdayCall.designation = type == 1 ? "Doctor" : type == 2 ? "Chemist" : type == 3 ? "Stockist" : type == 4 ? "hospital" : type == 5 ? "cip" : type == 6 ? "UnlistedDr." : ""
+                self.outBoxDataArr?.append(toDdayCall)
+        }
+        toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]())
+    }
+    
+    
+    func toSeperateOutboxSections(outboxArr : [TodayCallsModel]) {
+        // Dictionary to store arrays of TodayCallsModel for each day
+        var callsByDay: [String: [TodayCallsModel]] = [:]
+
+        // Create a DateFormatter to parse the vstTime
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        // Iterate through the array and organize elements by day
+        for call in outboxArr {
+            if let date = dateFormatter.date(from: call.vstTime) {
+                let dayString = dateFormatter.string(from: date)
+
+                // Check if the day key exists in the dictionary
+                if callsByDay[dayString] == nil {
+                    callsByDay[dayString] = [call]
+                } else {
+                    callsByDay[dayString]?.append(call)
+                }
+            }
+        }
+        obj_sections.removeAll()
+        // Iterate through callsByDay and create Section objects
+        for (day, calls) in callsByDay {
+            let section = Section(items: calls, date: day)
+            obj_sections.append(section)
+        }
+        
+        
+    }
     
     @IBAction func segmentSwipeAction(_ sender: UISegmentedControl) {
         
@@ -888,6 +1007,7 @@ class MainVC : UIViewController {
     }
     
     func toSetParams() {
+        Shared.instance.showLoaderInWindow()
         let appsetup = AppDefaults.shared.getAppSetUp()
         let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         var params = [String : Any]()
@@ -934,11 +1054,13 @@ class MainVC : UIViewController {
                // Shared.instance.removeLoader(in: self.view)
                 self.setupCalls(response: response)
                 dump(response)
-                
+                Shared.instance.removeLoaderInWindow()
             case .failure(let error):
               //  Shared.instance.removeLoader(in: self.view)
+                
                 print(error.localizedDescription)
                 self.view.toCreateToast("Error while fetching response from server.")
+                Shared.instance.removeLoaderInWindow()
                 
             }
         }
@@ -948,6 +1070,11 @@ class MainVC : UIViewController {
     func setupCalls(response: [TodayCallsModel]) {
         callsCountLbl.text = "Call Count: 0\(response.count)"
         toloadCallsTable()
+    }
+    
+    
+    func setupDataFromDB() {
+        
     }
     
     func toloadCallsTable() {
@@ -1406,11 +1533,21 @@ extension MainVC : collectionViewProtocols {
 extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     func toggleSection(_ header: UITableViewHeaderFooterView, section: Int) {
         
-        let collapsed = !obj_sections[section].collapsed
-        obj_sections[section].collapsed = collapsed
+        for index in obj_sections.indices {
+            if index == section {
+                  let collapsed = !obj_sections[section].collapsed
+                  obj_sections[section].collapsed = collapsed
+            } else {
+                obj_sections[index].collapsed = true
+            }
+            obj_sections[index].isCallExpanded = false
+        }
+        
+
         
         // Reload the whole section
-        self.outboxTableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
+        self.outboxTableView.reloadData()
+            //.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
     }
     
     
@@ -1435,7 +1572,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             return self.todayCallsModel?.count ?? 0
             case self.outboxTableView:
 
-            return obj_sections[section].collapsed ? 0 : obj_sections[section].items.count
+            return obj_sections[section].collapsed ? 0 : 1
             default :
                 return 10
         }
@@ -1464,31 +1601,40 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 return cell
             case self.outboxTableView:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "OutboxDetailsTVC", for: indexPath) as! OutboxDetailsTVC
+            cell.todayCallsModel = self.outBoxDataArr
+            let count = self.outBoxDataArr?.count ?? 0
+            cell.callsCountLbl.text = "\(count)"
+            cell.toLoadData()
+            
+            if  !obj_sections[indexPath.section].isCallExpanded {
+                cell.toSetCellHeight(callsExpandState:  .callsNotExpanded)
+            }
+             
             
             cell.callsCollapseIV.addTap {
                 cell.callsExpandState =  cell.callsExpandState == .callsNotExpanded ? .callsExpanded : .callsNotExpanded
-                cell.callsCollapseIV.image = cell.callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
-               
-             //   cell.setupHeight( cell.callsExpandState)
+               // cell.callsCollapseIV.image = cell.callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
 
-                
-                
                 if cell.callsExpandState == .callsExpanded {
-                    cell.cellStackHeightConst.constant = 290 + 90 * 2
-                    cell.callSubDetailVIew.isHidden = false
-                    cell.callSubdetailHeightConst.constant = 90 * 2
-                    cell.callDetailHeightConst.constant = 50 + 90 * 2
-                 //   self.callsCellHeight = 320 + 90 * 2
-                    cell.callsViewSeperator.isHidden = false
+                    obj_sections[indexPath.section].isCallExpanded = true
+                  
+//                    cell.cellStackHeightConst.constant = CGFloat(290 + 90 * count)
+//                    cell.callSubDetailVIew.isHidden = false
+//                    cell.callSubdetailHeightConst.constant = 90 * 2
+//                    cell.callDetailStackHeightConst.constant = CGFloat(50 + 90 * count)
+//                    cell.callsHolderViewHeightConst.constant = CGFloat(50 + 90 * count)
+//                    cell.callsViewSeperator.isHidden = false
                 } else {
-                    cell.cellStackHeightConst.constant = 290
-                    cell.callSubDetailVIew.isHidden = true
-                    cell.callSubdetailHeightConst.constant = 0 //90
-                    cell.callDetailHeightConst.constant = 50
-                  //  self.callsCellHeight = (320) - 90 * 2
-                    cell.callsViewSeperator.isHidden = true
+                    obj_sections[indexPath.section].isCallExpanded = false
+                    
+//                    cell.cellStackHeightConst.constant = 290
+//                    cell.callSubDetailVIew.isHidden = true
+//                    cell.callSubdetailHeightConst.constant = 0 //90
+//                    cell.callsHolderViewHeightConst.constant = 50
+//                    cell.callDetailStackHeightConst.constant = 50
+//                    cell.callsViewSeperator.isHidden = true
                 }
-            
+                cell.toSetCellHeight(callsExpandState:  cell.callsExpandState)
                 self.outboxTableView.reloadData()
             }
             
@@ -1503,16 +1649,18 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
        // return UITableView.automaticDimension
-        
+       
         if tableView == self.outboxTableView {
-            
-           // return UITableView.automaticDimension
-            
-          //  stack height 60 + 60 + 140 ( 60 + 90 ) + 60 + 60 (+ 40 each view spacing inside stack)
-            
-            return 400 + 90  + 10 // + 10 padding
-            
-          
+            let count = self.outBoxDataArr?.count ?? 0
+            switch indexPath.section {
+            default:
+                if  obj_sections[indexPath.section].isCallExpanded == true {
+                    return CGFloat(290 + 10 + (90 * count))
+                } else {
+                    return 290 + 10
+                }
+            }
+
             
         } else if tableView == self.callTableView {
             return 75
@@ -1549,6 +1697,25 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             } else {
                 header?.collapseIV.image = UIImage(named: "chevlon.collapse")
             }
+            
+            
+            let dateString = obj_sections[section].date
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            if let date = dateFormatter.date(from: dateString) {
+                let outputFormatter = DateFormatter()
+                outputFormatter.dateFormat = "MMMM dd, yyyy"
+
+                let formattedDate = outputFormatter.string(from: date)
+                print(formattedDate)  // Output: January 19, 2024
+                header?.dateLbl.text = formattedDate
+            } else {
+                print("Error parsing date")
+            }
+            
+            
+            
             return header
             
         } else {
