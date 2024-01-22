@@ -46,8 +46,9 @@ class BaseViewController: UIViewController {
                        if status == "No Connection" {
                         //   self.toSetPageType(.notconnected)
                            self.toCreateToast("Please check your internet connection.")
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                        } else if  status == "WiFi" || status ==  "Cellular"   {
-                           
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
                            
                            

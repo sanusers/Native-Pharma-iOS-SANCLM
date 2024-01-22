@@ -301,7 +301,7 @@ final class ConnectionHandler : NSObject {
                             
                         }
                     }
-                    else {
+                    else if data["tableName"] as! String == "getvwvstdet" {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DetailedReportsModel].self) { decodecObj in
                             encodedDetailedReportsModelData = decodecObj
                             do {
@@ -322,16 +322,12 @@ final class ConnectionHandler : NSObject {
                         
                  
                     }
-                    
-       
-                    
-
-                    
+ 
                 } else   {
                     if let data = anyData,
                        let json = JSON(data){
                         
-                        if api == .getAllPlansData || api == .getReports {
+                        if api == .getAllPlansData || api == .getReports || api == .saveDCR  {
                            
                             if json.isEmpty {
                                 responseHandler.handleFailure(value: json.status_message)

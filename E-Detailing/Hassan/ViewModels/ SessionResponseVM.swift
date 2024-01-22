@@ -87,4 +87,17 @@ class  SessionResponseVM {
         })
     }
     
+    
+    
+    func saveDCRdata(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<DCRCallesponseModel,TPErrors>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: DCRCallesponseModel.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(TPErrors.unableConnect))
+        })
+    }
+    
 }

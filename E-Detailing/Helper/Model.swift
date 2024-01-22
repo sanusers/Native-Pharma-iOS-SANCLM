@@ -5,11 +5,12 @@ struct Section {
     var items: [TodayCallsModel]
     var isCallExpanded: Bool
     var collapsed: Bool
+    var isLoading = Bool()
     
     init(items: [TodayCallsModel] , collapsed: Bool = true, isCallExpanded: Bool = false, date: String) {
-    self.items = [TodayCallsModel]()
+    self.items = items
     self.collapsed = collapsed
-    self.isCallExpanded = false
+    self.isCallExpanded = isCallExpanded
     self.date = date
   }
 }

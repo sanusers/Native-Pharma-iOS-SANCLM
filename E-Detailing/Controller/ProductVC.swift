@@ -131,6 +131,8 @@ class ProductVC : UIViewController {
     
     private var SampleInputSegmentControl : UISegmentedControl!
     
+    var sessionResponseVM : SessionResponseVM?
+    
     var dcrCall : CallViewModel!
     
     var feedback = [Feedback]()
@@ -161,6 +163,7 @@ class ProductVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.sessionResponseVM = SessionResponseVM()
         self.registerTableViewCell()
         
     //    self.updateDisplay()
@@ -496,7 +499,7 @@ class ProductVC : UIViewController {
     }
     
     @IBAction func submitAction(_ sender: UIButton) {
-        
+        Shared.instance.showLoaderInWindow()
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         let urlStr = appMainURL + "save/dcr"
@@ -642,51 +645,52 @@ class ProductVC : UIViewController {
         
         
         
-        let params : [String : Any] = ["JointWork" : jointWorkData,
-                      "Inputs": inputData,
-                      "Products" : productData,
-                      "AdCuss" : additionalCallData,
-                      "RCPAEntry" : rcpaData,
-                      "CateCode" : dcrCall.cateCode,
-                      "CusType" : cusType,
-                      "CustCode" : dcrCall.code,
-                      "CustName" : dcrCall.name,
-                      "Entry_location" : "0.0:0.0",
-                      "address" : "Address not Found",
-                      "sfcode" : appsetup.sfCode ?? "",
-                      "Rsf" : appsetup.sfCode ?? "",
-                      "sf_type" : "\(appsetup.sfType ?? 0)",
-                      "Designation" : appsetup.dsName ?? "",
-                      "state_code" : appsetup.stateCode ?? "",
-                      "subdivision_code" : appsetup.subDivisionCode ?? "",
-                      "division_code" : divisionCode,
-                      "AppUserSF" : appsetup.sfCode ?? "",
-                      "SFName" : appsetup.sfName ?? "",
-                      "SpecCode" : dcrCall.specialityCode,
-                      "mappedProds" : "",
-                      "mode" : "0",
-                      "Appver" : "iEdet.1.1",
-                      "Mod" : "ios-Edet-New",
-                      "WT_code" : "2748",
-                      "WTName" : "Field Work",
-                      "FWFlg" : "F",
-                       "town_code" : dcrCall.townCode,
-                       "town_name" : dcrCall.townName,
-                      "ModTime" : date,
-                      "ReqDt" : date,
-                      "vstTime" : date,
-                      "Remarks" : self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? "",
-                      "amc"  : "",
-                      "sign_path" : "",
-                      "SignImageName" : "",
-                      "filepath" : "",
-                      "EventCapture" : "",
-                      "EventImageName" : "",
-                      "DCSUPOB" : self.txtPob.text ?? "",
-                      "Drcallfeedbackcode" : (self.selectedFeedback == nil) ? "" : (self.selectedFeedback.code ?? "") ?? "",
-                      "sample_validation" : "0",
-                      "input_validation" : "0"
-        ]
+        var params = [String : Any]()
+        params["tableName"] = "postDCRdata"
+        params["JointWork"] = jointWorkData
+        params["Inputs"] = inputData
+        params["Products"] = productData
+        params["AdCuss"] = additionalCallData
+        params["RCPAEntry"] = rcpaData
+        params["CateCode"] = dcrCall.cateCode
+        params["CusType"] = cusType
+        params["CustCode"] = dcrCall.code
+        params["CustName"] = dcrCall.name
+        params["Entry_location"] = "0.0:0.0"
+        params["address"] = "Address not Found"
+        params["sfcode"] = appsetup.sfCode ?? ""
+        params["Rsf"] = appsetup.sfCode ?? ""
+        params["sf_type"] = "\(appsetup.sfType ?? 0)"
+        params["Designation"] = appsetup.dsName ?? ""
+        params["state_code"] = appsetup.stateCode ?? ""
+        params["subdivision_code"] = appsetup.subDivisionCode ?? ""
+        params["division_code"] = divisionCode
+        params["AppUserSF"] = appsetup.sfCode ?? ""
+        params["SFName"] = appsetup.sfName ?? ""
+        params["SpecCode"] = dcrCall.specialityCode
+        params["mappedProds"] = ""
+        params["mode"]  = "0"
+        params["Appver"] = "iEdet.1.1"
+        params["Mod"] = "ios-Edet-New"
+        params["WT_code"] = "2748"
+        params["WTName"] = "Field Work"
+        params["FWFlg"] = "F"
+        params["town_code"] = dcrCall.townCode
+        params["town_name"] = dcrCall.townName
+        params["ModTime"] = date
+        params["ReqDt"] = date
+        params["vstTime"] = date
+        params["Remarks"] = self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
+        params["amc"] = ""
+        params["sign_path"] = ""
+        params["SignImageName"] = ""
+        params["filepath"] = ""
+        params["EventCapture"] = ""
+        params["EventImageName"] = ""
+        params["DCSUPOB"] = self.txtPob.text ?? ""
+        params["Drcallfeedbackcode"] = (self.selectedFeedback == nil) ? "" : (self.selectedFeedback.code ?? "") ?? ""
+        params["sample_validation"] = "0"
+        params["input_validation"] = "0"
         
         
         
@@ -735,34 +739,23 @@ class ProductVC : UIViewController {
                         
                         if let responseDict = apiResponse as? [String: Any] {
                             if responseDict["msg"] as! String == "Call Already Exists" {
-                                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
                                 self.toCreateToast(responseDict["msg"] as! String)
                             } else {
-                                self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                                self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: params)
                             }
                         }
                         
-                     
-//                        let status = self.getStatus(json: apiResponse)
-//
-//                        if status.isOk {
-//
-//                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
-//
-//                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                                appDelegate.setupRootViewControllers()
-//                            }
-//                        }
-                     
                         self.popToBack(UIStoryboard.mainVC)
                         
                     }catch {
                         print(error)
                     }
+                Shared.instance.removeLoaderInWindow()
                 case .failure(let error):
-                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
                   //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-                
+                Shared.instance.removeLoaderInWindow()
                 self.toCreateToast("\(error)")
                     print(error)
                    self.popToBack(UIStoryboard.mainVC)
@@ -775,22 +768,109 @@ class ProductVC : UIViewController {
         
     }
     
+    func postDCTdata(_ param: [String: Any], paramData: JSON) {
+
+    }
     
-    func saveParamoutboxParamtoDefaults(param: Data) {
-        // Retrieve data
-        LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: param)
+    
+    func saveParamoutboxParamtoDefaults(param: JSON) {
         
-        let paramData =   LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
+        var callsByDay: [String: [[String: Any]]] = [:]
+        
+        let paramdate = param["vstTime"]
+    var dayString = String()
+        
+        // Create a DateFormatter to parse the vstTime
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        if let date = dateFormatter.date(from: paramdate as! String) {
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+             dayString = dateFormatter.string(from: date)
+            
+            // Check if the day key exists in the dictionary
+            if callsByDay[dayString] == nil {
+                callsByDay[dayString] = [param]
+            } else {
+                callsByDay[dayString]?.append(param)
+            }
+        }
+        
+        var jsonDatum = Data()
         
         do {
-            let savedParams  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: Any]
+            let jsonData = try JSONSerialization.data(withJSONObject: callsByDay, options: [])
+            jsonDatum = jsonData
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+                
+            }
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        
+        // LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+        
+        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
+        if paramData.isEmpty {
+            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+            return
+        }
+        var localParamArr = [String: [[String: Any]]]()
+      //  var paramArr = [String: [[String: Any]]]()
+        do {
+            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+            dump(localParamArr)
         } catch {
             self.toCreateToast("unable to retrive")
         }
         
+        
+        var matchFound = Bool()
+        for (_, calls) in localParamArr {
+            for call in calls {
+                // if let vstTime = call["vstTime"] as? String,
+                if  let custCode = call["CustCode"] as? String,
+                    //   vstTime == param["vstTime"] as? String,
+                    custCode == param["CustCode"] as? String {
+                    // Match found, do something with the matching call
+                    matchFound = true
+                    print("Match found for CustCode: \(custCode)")
+                    // vstTime: \(vstTime),
+                    
+                }
+            }
+        }
+        
+        if !matchFound {
+            // Check if the day key exists in the dictionary
+            if localParamArr[dayString] == nil {
+                callsByDay[dayString] = [param]
+            } else {
+                callsByDay[dayString]?.append(param)
+            }
+            
+            var jsonDatum = Data()
+            
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: callsByDay, options: [])
+                jsonDatum = jsonData
+                // Convert JSON data to a string
+                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                    print(tempjsonString)
+                    
+                }
+            } catch {
+                print("Error converting parameter to JSON: \(error)")
+            }
+            
+            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+        }
     }
     
-    func saveCallsToDB(issussess: Bool, appsetup: AppSetUp, cusType : String, param: Data) {
+    func saveCallsToDB(issussess: Bool, appsetup: AppSetUp, cusType : String, param: [String: Any]) {
         var dbparam = [String: Any]()
         dbparam["CustCode"] = dcrCall.code
         dbparam["CustType"] = cusType
@@ -823,7 +903,6 @@ class ProductVC : UIViewController {
                 HomeDataSetupItem.setValues(fromDictionary: homeData)
                 HomeDataSetupItem.index = Int16(index)
                 HomeDataSetupArray.append(HomeDataSetupItem)
-                saveParamoutboxParamtoDefaults(param: param)
             }
             
             
@@ -834,6 +913,10 @@ class ProductVC : UIViewController {
             masterData.addToHomeData(type)
         }
         DBManager.shared.saveContext()
+        
+        if !issussess {
+            saveParamoutboxParamtoDefaults(param: param)
+        }
     }
     
     private func popToBack<T>(_ VC : T) {

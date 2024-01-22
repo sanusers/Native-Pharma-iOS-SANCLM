@@ -10,7 +10,7 @@ import Foundation
 import FSCalendar
 import UICircularProgressRing
 import Alamofire
-
+import CoreData
 
 extension MainVC : HomeLineChartViewDelegate
 {
@@ -295,6 +295,7 @@ class MainVC : UIViewController {
     var cacheINdex: Int = 0
     var selectedCallIndex: Int = 0
     var sessionResponseVM : SessionResponseVM?
+    let dispatchGroup = DispatchGroup()
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -395,17 +396,20 @@ class MainVC : UIViewController {
                        if status == "No Connection" {
                         //   self.toSetPageType(.notconnected)
                            self.toCreateToast("Please check your internet connection.")
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                        } else if  status == "WiFi" || status ==  "Cellular"   {
                            
                            self.toCreateToast("You are now connected.")
-                           
-                           
-                           
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                           self.toretryDCRupload( date: "")
+                           self.toSetParams()
+                          
                        }
                    }
                }
            }
     }
+    
     
     
     func setupUI() {
@@ -478,7 +482,11 @@ class MainVC : UIViewController {
         self.toSeperateDCR()
         self.updateDcr()
         self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
-        toSetParams()
+        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            toSetParams()
+        }
+    
         toLoadDcrCollection()
         toLoadOutboxTable()
     }
@@ -952,8 +960,15 @@ class MainVC : UIViewController {
     
     
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
-        
-        toSetParams()
+        let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
+      //  obj_sections[section].isLoading = true
+        if isConnected {
+            toSetParams()
+            //self.toretryDCRupload( date: obj_sections[section].date)
+        } else {
+            self.toCreateToast("Please connect to internet and try again later.")
+        }
+      
 //        let appsetup = AppDefaults.shared.getAppSetUp()
 //
 //        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -1571,8 +1586,12 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             case self.callTableView:
             return self.todayCallsModel?.count ?? 0
             case self.outboxTableView:
-
-            return obj_sections[section].collapsed ? 0 : 1
+            if obj_sections.isEmpty {
+              return  0
+            } else {
+                return obj_sections[section].collapsed ? 0 : 1
+            }
+           
             default :
                 return 10
         }
@@ -1601,8 +1620,12 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 return cell
             case self.outboxTableView:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "OutboxDetailsTVC", for: indexPath) as! OutboxDetailsTVC
-            cell.todayCallsModel = self.outBoxDataArr
-            let count = self.outBoxDataArr?.count ?? 0
+            let model = obj_sections[indexPath.section].items
+            cell.todayCallsModel = model
+            //[indexPath.row]
+            //self.outBoxDataArr
+            let count = model.count
+            //self.outBoxDataArr?.count ?? 0
             cell.callsCountLbl.text = "\(count)"
             cell.toLoadData()
             
@@ -1651,7 +1674,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
        // return UITableView.automaticDimension
        
         if tableView == self.outboxTableView {
-            let count = self.outBoxDataArr?.count ?? 0
+            let count = obj_sections[indexPath.section].items.count
+            //self.outBoxDataArr?.count ?? 0
             switch indexPath.section {
             default:
                 if  obj_sections[indexPath.section].isCallExpanded == true {
@@ -1699,6 +1723,20 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             
             
+            header?.refreshBtn.addTap {
+                
+                let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
+              //  obj_sections[section].isLoading = true
+                if isConnected {
+                    self.toretryDCRupload( date: obj_sections[section].date)
+                } else {
+                    self.toCreateToast("Please connect to internet and try again later.")
+                }
+                
+               // header?.refreshBtn.isUserInteractionEnabled = false
+               // header?.refreshBtn.alpha = 0.5
+            }
+            
             let dateString = obj_sections[section].date
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -1724,6 +1762,286 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         }
     }
 
+    func toretryDCRupload( date: String) {
+    
+        let paramData = LocalStorage.shared.getData(key: .outboxParams)
+        var localParamArr = [String: [[String: Any]]]()
+        do {
+            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+            dump(localParamArr)
+        } catch {
+            self.toCreateToast("unable to retrive")
+        }
+        
+        var specificDateParams : [[String: Any]] = [[:]]
+        
+        
+        if date.isEmpty {
+            localParamArr.forEach { key, value in
+            
+                    specificDateParams = value
+             
+            }
+        } else {
+            localParamArr.forEach { key, value in
+                if key == date {
+                    dump(value)
+                    specificDateParams = value
+                }
+            }
+        }
+        
+
+        
+        
+        
+        print("specificDateParams has \(specificDateParams.count) values")
+        
+//        var paramArr = [String : Any]()
+//
+//        specificDateParams.forEach { param in
+//            paramArr["data"] = param
+//        }
+        if !localParamArr.isEmpty {
+            toSendParamsToAPISerially(paramsArr: specificDateParams)
+            dispatchGroup.notify(queue: .main) {
+                   print("All services complete")
+                DispatchQueue.main.async {
+                    self.toLoadOutboxTable()
+                }
+                Shared.instance.removeLoaderInWindow()
+               }
+       
+        } else {
+            Shared.instance.removeLoaderInWindow()
+        }
+      
+    }
+    
+    func toSendParamsToAPISerially(paramsArr : [JSON]) {
+         // Iterate through the array of parameters
+        
+ 
+        
+        for (paramIndex, params) in paramsArr.enumerated() {
+            
+            var jsonDatum = Data()
+            
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
+                jsonDatum = jsonData
+                // Convert JSON data to a string
+                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                    print(tempjsonString)
+                    
+                }
+                
+                
+            } catch {
+                print("Error converting parameter to JSON: \(error)")
+            }
+        
+            
+            
+            
+            var toSendData = [String: Any]()
+            toSendData["data"] = jsonDatum
+            dispatchGroup.enter()
+            if params.isEmpty {
+               
+                return
+            }
+            self.sendAPIrequest(toSendData, paramData: params)
+                   
+        }
+    }
+    
+    
+    func sendAPIrequest(_ param: [String: Any], paramData: JSON) {
+        Shared.instance.showLoaderInWindow()
+        sessionResponseVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+
+                dump(response)
+                if response.msg == "Call Already Exists" {
+                   // self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                    self.toCreateToast(response.msg!)
+                    self.toRemoveOutboxandDefaultParams(param: paramData)
+                } else {
+                    self.toRemoveOutboxandDefaultParams(param: paramData)
+                    
+                 //   self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                }
+                Shared.instance.removeLoaderInWindow()
+              
+            case .failure(let error):
+             //   self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                Shared.instance.removeLoaderInWindow()
+                print(error.localizedDescription)
+                self.view.toCreateToast("Error uploading data try again later.")
+                return
+
+            }
+          
+        }
+    }
+    
+    
+    @IBAction func didTapClearCalls() {
+        
+        self.outBoxDataArr?.removeAll()
+        
+        
+        LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
+        
+        let context = DBManager.shared.managedContext()
+        let fetchRequest: NSFetchRequest<HomeData> = HomeData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isDataSentToAPI == %@", "0")
+
+        do {
+            let results = try context.fetch(fetchRequest)
+            
+            for object in results {
+                context.delete(object)
+            }
+
+            // Save the context to persist changes
+            DBManager.shared.saveContext()
+        } catch {
+            // Handle fetch error
+        }
+        
+        DispatchQueue.main.async {
+            self.toLoadOutboxTable()
+        }
+    }
+    
+    func toRemoveOutboxandDefaultParams(param: JSON) {
+        
+
+        //to remove object from Local array and core data
+        
+       let filteredValues =  self.outBoxDataArr?.filter({ outBoxCallModel in
+            outBoxCallModel.custCode != param["CustCode"] as! String
+        })
+        
+        self.outBoxDataArr = filteredValues
+        
+        
+        self.homeDataArr.forEach { aHomeData in
+            if aHomeData.custCode == param["CustCode"] as? String {
+                aHomeData.isDataSentToAPI = "1"
+            }
+        }
+        let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
+       // let existingHomeData = masterData.homeData?.first { ($0 as! HomeData).custCode == identifier }
+        
+        
+        let context = DBManager.shared.managedContext()
+
+        let fetchRequest: NSFetchRequest<HomeData> = HomeData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", identifier ?? "")
+
+        do {
+            let results = try context.fetch(fetchRequest)
+            if let existingObject = results.first {
+                // Object found, update isDataSentToAPI
+                existingObject.isDataSentToAPI = "1"
+                
+                // Save the context to persist changes
+                DBManager.shared.saveContext()
+            } else {
+                // Object not found, handle accordingly
+            }
+        } catch {
+            // Handle fetch error
+        }
+        
+        
+        //to remove values from User defaults values
+        
+        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
+        
+        
+        var localParamArr = [String: [[String: Any]]]()
+        do {
+            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+            dump(localParamArr)
+        } catch {
+            self.toCreateToast("unable to retrive")
+        }
+        
+        
+        let custCodeToRemove = param["CustCode"] as! String
+
+        // Iterate through the dictionary and filter out elements with the specified CustCode
+        localParamArr = localParamArr.mapValues { callsArray in
+            let filteredCalls = callsArray.filter { call in
+                guard let custCode = call["CustCode"] as? String else {
+                    return true // Keep entries without CustCode
+                }
+                return custCode != custCodeToRemove
+            }
+            return filteredCalls
+        }
+
+        // Remove entries where the filtered array is empty
+        localParamArr = localParamArr.filter { _, callsArray in
+            return !callsArray.isEmpty
+        }
+     
+
+          
+            
+            var jsonDatum = Data()
+            
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: localParamArr, options: [])
+                jsonDatum = jsonData
+                // Convert JSON data to a string
+                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                    print(tempjsonString)
+                    
+                }
+            } catch {
+                print("Error converting parameter to JSON: \(error)")
+            }
+            
+            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+        
+        
+
+        // Create a new array with modified sections
+        let updatedSections = obj_sections.map { section -> Section in
+            var updatedSection = section
+
+            // Filter items in the section
+            updatedSection.items = section.items.filter { call in
+                // Assuming custCode is not an optional type
+                return call.custCode != custCodeToRemove
+            }
+
+            // Keep the section if it still has items after filtering
+            return updatedSection
+        }
+
+        
+
+        
+        
+        // Assign the updated array back to obj_sections
+        obj_sections = updatedSections.filter({ section in
+            !section.items.isEmpty
+        })
+
+        // Print the updated obj_sections
+        print(obj_sections)
+        self.dispatchGroup.leave()
+        
+    }
+    
     
     func toggleSection(_ header: CollapsibleTableViewHeader, section: Int) {
         

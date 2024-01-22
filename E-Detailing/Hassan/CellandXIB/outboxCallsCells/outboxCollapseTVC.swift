@@ -11,6 +11,7 @@ import UIKit
 
 class outboxCollapseTVC: UITableViewHeaderFooterView {
 
+    @IBOutlet var refreshBtn: UIButton!
     @IBOutlet var headerRefreshView: UIView!
     @IBOutlet var seperatorView: UIView!
     @IBOutlet var collapseIV: UIImageView!
@@ -21,6 +22,7 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
     var section: Int = 0
     override func awakeFromNib() {
         super.awakeFromNib()
+        refreshBtn.setTitle("", for: .normal)
         headerRefreshView.layer.cornerRadius = 3
         seperatorView.backgroundColor = .appLightTextColor
         self.collapseIV.addTap {

@@ -20,6 +20,7 @@ class LocalStorage {
         case isMR
         case offsets
         case outboxParams
+        case isConnectedToNetwork
     }
     
     enum Offsets: String {

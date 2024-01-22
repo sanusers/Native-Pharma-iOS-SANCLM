@@ -29,11 +29,13 @@ class CalldetailsCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        callStatusVxVIew.backgroundColor = .appLightPink
         callDCRinfoLbl.setFont(font: .medium(size: .BODY))
         callDCRinfoLbl.textColor = .appTextColor
         timeinfoLbl.setFont(font: .medium(size: .SMALL))
         timeinfoLbl.textColor = .appLightTextColor
-        callStatusLbl.setFont(font: .medium(size: .BODY))
+        callStatusLbl.setFont(font: .bold(size: .BODY))
+        callStatusLbl.textColor = .appLightPink
         statusView.layer.cornerRadius = 3
     }
     
