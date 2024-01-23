@@ -333,11 +333,13 @@ class LoginVC : UIViewController {
         
         
         if userId.isEmpty {
-            ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
+          //  ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
+            self.toCreateToast("Please Enter User ID")
             return
             
         }else if password.isEmpty {
-            ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
+            self.toCreateToast("Please Enter Password")
+           // ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
             return
         }
         
@@ -402,11 +404,13 @@ class LoginVC : UIViewController {
                         }
                         
                     }catch {
-                        
+                        print("Json could not be serialized")
                     }
                 case .failure(let error):
                 
-                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                self.toCreateToast(error.localizedDescription)
+                
+                  //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                     print(error)
                     return
             }
@@ -430,15 +434,16 @@ class LoginVC : UIViewController {
             if let errormsg = info["msg"] as? String{
                 if isShowToast {
                    // let appdelegate = UIApplication.shared.delegate as! AppDelegate
-                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
+                    self.toCreateToast(errormsg)
+                   // ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
                     
                    // appdelegate.window?.rootViewController?.showToast(with: errormsg)
                 }
             }else if let errormsg = info["Msg"] as? String{
                 if isShowToast {
                    // let appdelegate = UIApplication.shared.delegate as! AppDelegate
-                    
-                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
+                    self.toCreateToast(errormsg)
+                   // ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
                    // appdelegate.window?.rootViewController?.showToast(with: errormsg)
                 }
             }
@@ -450,16 +455,16 @@ class LoginVC : UIViewController {
                 if isShowToast {
 //                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
 //                    appdelegate.window?.rootViewController?.showToast(with: errormsg)
-                    
-                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
+                    self.toCreateToast(errormsg)
+                 //   ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
                     //showAlert(title: "", message: errormsg, style: .alert, buttons: ["OK"], controller: nil, completion: nil)
                 }
             }else if let errormsg = info["Msg"] as? String{
                 if isShowToast {
 //                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
 //                    appdelegate.window?.rootViewController?.showToast(with: errormsg)
-                    
-                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
+                    self.toCreateToast(errormsg)
+                  //  ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
                     //showAlert(title: "", message: errormsg, style: .alert, buttons: ["OK"], controller: nil, completion: nil)
                 }
             }

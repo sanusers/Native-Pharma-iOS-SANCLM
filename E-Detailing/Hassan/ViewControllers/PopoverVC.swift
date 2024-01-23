@@ -14,6 +14,7 @@ class PopOverVC: UIViewController {
         case TP
         case HomeGraph
         case calls
+        case presentation
     }
     
     
@@ -32,6 +33,10 @@ class PopOverVC: UIViewController {
             setupUI()
             
         case .calls:
+            self.contentTable.isHidden = false
+            graphInfoView.isHidden = true
+            toLOadData()
+        case .presentation:
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             toLOadData()
@@ -91,7 +96,7 @@ class PopOverVC: UIViewController {
     }
     
     func toLOadData() {
-        strArr = pageType == .TP ? ["Edit"] : ["Edit", "Delete"]
+        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete"] : ["Play", "Edit", "Delete"]
         contentTable.delegate = self
         contentTable.dataSource = self
         contentTable.reloadData()
@@ -114,7 +119,7 @@ class PopOverVC: UIViewController {
     
      
         popover.backgroundColor = .appGreen
-        popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
+        popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
         
         
         return infoWindow
@@ -163,6 +168,23 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
             self.delegate?.didTapRow(indexPath.row, self.selectedIndex)
         }
 
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+
+        switch self.pageType {
+
+        case .TP:
+            return 40
+        case .HomeGraph:
+            return UITableView.automaticDimension
+        case .calls:
+            return 40
+        case .presentation:
+            return 40
+        }
+        
+   
     }
     
     

@@ -6,7 +6,9 @@
 //
 
 import UIKit
-
+protocol outboxCollapseTVCDelegate: AnyObject {
+    func didTapRefresh(_ refreshIndex: Int)
+}
 
 
 class outboxCollapseTVC: UITableViewHeaderFooterView {
@@ -18,7 +20,8 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
     @IBOutlet var syncIV: UIImageView!
     @IBOutlet var vxView: UIVisualEffectView!
     @IBOutlet var dateLbl: UILabel!
-     var delegate:  CollapsibleTableViewHeaderDelegate?
+     var delegate: CollapsibleTableViewHeaderDelegate?
+     var refreshdelegate:  outboxCollapseTVCDelegate?
     var section: Int = 0
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,6 +31,8 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
         self.collapseIV.addTap {
             self.delegate?.toggleSection(self, section: self.section)
         }
+        
+        self.refreshBtn.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         
         // Initialization code
         dateLbl.setFont(font: .bold(size: .BODY))
@@ -46,6 +51,12 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
         
       
         
+    }
+    
+    @objc func buttonTapped() {
+        print("Button tapped!")
+        // Perform any actions you want when the button is tapped
+        refreshdelegate?.didTapRefresh(self.section)
     }
 
     func populateCell() {

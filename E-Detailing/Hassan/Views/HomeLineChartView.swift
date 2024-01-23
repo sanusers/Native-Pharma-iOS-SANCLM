@@ -1032,6 +1032,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         print("Tapped -->")
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: lineChartView.width / 3.5 , height: lineChartView.height / 3.7), on: view, onframe: CGRect(), pagetype: .HomeGraph)
+        //
         // vc.delegate = self
         // vc.selectedIndex = indexPath.row
         vc.color = self.dcrCount.color

@@ -50,6 +50,12 @@
 		3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */; };
 		3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */; };
 		3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */; };
+		3885463F2B5FC765005FC9FC /* HomeWorktypeTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3885463D2B5FC765005FC9FC /* HomeWorktypeTVC.swift */; };
+		388546402B5FC765005FC9FC /* HomeWorktypeTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3885463E2B5FC765005FC9FC /* HomeWorktypeTVC.xib */; };
+		388546422B5FDB90005FC9FC /* PresentationHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388546412B5FDB90005FC9FC /* PresentationHomeVC.swift */; };
+		388546442B5FDBA3005FC9FC /* PresentationHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388546432B5FDBA2005FC9FC /* PresentationHomeView.swift */; };
+		388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388546462B5FE65F005FC9FC /* CreatedPresentationCVC.swift */; };
+		388546492B5FE65F005FC9FC /* CreatedPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 388546472B5FE65F005FC9FC /* CreatedPresentationCVC.xib */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */; };
 		38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */; };
@@ -297,6 +303,12 @@
 		3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkPlansInfoCVC.swift; sourceTree = "<group>"; };
 		3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkPlansInfoCVC.xib; sourceTree = "<group>"; };
 		3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFormatter.swift; sourceTree = "<group>"; };
+		3885463D2B5FC765005FC9FC /* HomeWorktypeTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWorktypeTVC.swift; sourceTree = "<group>"; };
+		3885463E2B5FC765005FC9FC /* HomeWorktypeTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeWorktypeTVC.xib; sourceTree = "<group>"; };
+		388546412B5FDB90005FC9FC /* PresentationHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationHomeVC.swift; sourceTree = "<group>"; };
+		388546432B5FDBA2005FC9FC /* PresentationHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationHomeView.swift; sourceTree = "<group>"; };
+		388546462B5FE65F005FC9FC /* CreatedPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedPresentationCVC.swift; sourceTree = "<group>"; };
+		388546472B5FE65F005FC9FC /* CreatedPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CreatedPresentationCVC.xib; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverVC.swift; sourceTree = "<group>"; };
 		38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRGraphModel.swift; sourceTree = "<group>"; };
@@ -584,6 +596,7 @@
 				38E659892B33193F00E7BF42 /* DetailedReportVC.swift */,
 				38D568FF2B356468007CB86D /* ViewDayReportVC.swift */,
 				3801D4942B4ECF4800A9740F /* HomeSideMenuVC.swift */,
+				388546412B5FDB90005FC9FC /* PresentationHomeVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -599,6 +612,7 @@
 				38D569072B35A785007CB86D /* SortView.swift */,
 				38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */,
 				3801D4962B4ECFB700A9740F /* HomeSideMenuMenuView.swift */,
+				388546432B5FDBA2005FC9FC /* PresentationHomeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -606,6 +620,8 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				388546452B5FE617005FC9FC /* Presentation */,
+				3885463C2B5FC739005FC9FC /* WorktypeCells */,
 				38DAADE22B58FF7C00966B33 /* outboxCallsCells */,
 				38DD14B42B4FEED70036384F /* HomeSIdeMenu */,
 				38107C4A2B36F18900ACEDF3 /* ReportsViewMore */,
@@ -614,6 +630,24 @@
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
 			);
 			path = CellandXIB;
+			sourceTree = "<group>";
+		};
+		3885463C2B5FC739005FC9FC /* WorktypeCells */ = {
+			isa = PBXGroup;
+			children = (
+				3885463D2B5FC765005FC9FC /* HomeWorktypeTVC.swift */,
+				3885463E2B5FC765005FC9FC /* HomeWorktypeTVC.xib */,
+			);
+			path = WorktypeCells;
+			sourceTree = "<group>";
+		};
+		388546452B5FE617005FC9FC /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				388546462B5FE65F005FC9FC /* CreatedPresentationCVC.swift */,
+				388546472B5FE65F005FC9FC /* CreatedPresentationCVC.xib */,
+			);
+			path = Presentation;
 			sourceTree = "<group>";
 		};
 		38B52CE32B29D13900CF30D9 /* StoryBoard */ = {
@@ -1181,6 +1215,7 @@
 				38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */,
 				38107C4E2B36F1B900ACEDF3 /* VisitInfoCVC.xib in Resources */,
 				38C4B7B02A6EA54D001C2FD5 /* AnalysisCell.xib in Resources */,
+				388546492B5FE65F005FC9FC /* CreatedPresentationCVC.xib in Resources */,
 				38C673222A3C2B5800528E36 /* Activity.storyboard in Resources */,
 				38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */,
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
@@ -1208,6 +1243,7 @@
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
 				38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */,
 				38D569062B3570E3007CB86D /* ListedWorkTypesTVC.xib in Resources */,
+				388546402B5FC765005FC9FC /* HomeWorktypeTVC.xib in Resources */,
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
 				38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */,
 				38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */,
@@ -1346,6 +1382,7 @@
 				38107C592B36F86C00ACEDF3 /* rcpaCVC.swift in Sources */,
 				3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */,
 				38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */,
+				3885463F2B5FC765005FC9FC /* HomeWorktypeTVC.swift in Sources */,
 				38C4D33C2A7BD9BB0029AC12 /* MainViewModel.swift in Sources */,
 				38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */,
 				38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */,
@@ -1384,6 +1421,7 @@
 				38C94CAE2A60269F007F1871 /* LeaveStatusCell.swift in Sources */,
 				3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */,
 				38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */,
+				388546442B5FDBA3005FC9FC /* PresentationHomeView.swift in Sources */,
 				38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */,
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
@@ -1425,6 +1463,7 @@
 				38F5558F2B57B7BE000D9294 /* TodayCallsModel.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
+				388546422B5FDB90005FC9FC /* PresentationHomeVC.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
 				38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */,
 				385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */,
@@ -1451,6 +1490,7 @@
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,
 				38107C552B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift in Sources */,
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
+				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,
 				B291878629FA83B60033DE16 /* Class.swift in Sources */,
