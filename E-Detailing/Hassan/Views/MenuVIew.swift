@@ -422,23 +422,23 @@ extension MenuView {
         param["Approved_time"] = ""
         param["app_version"] = "N 1.6.9"
         
-
+        let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: [param])
  
-        var jsonDatum = Data()
-
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: [param], options: [])
-            jsonDatum = jsonData
-            // Convert JSON data to a string
-            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                print(tempjsonString)
-     
-            }
-            
-
-        } catch {
-            print("Error converting parameter to JSON: \(error)")
-        }
+//        var jsonDatum = Data()
+//
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: [param], options: [])
+//            jsonDatum = jsonData
+//            // Convert JSON data to a string
+//            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+//                print(tempjsonString)
+//
+//            }
+//
+//
+//        } catch {
+//            print("Error converting parameter to JSON: \(error)")
+//        }
         
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum

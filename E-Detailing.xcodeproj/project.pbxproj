@@ -49,6 +49,7 @@
 		3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */; };
 		3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */; };
 		3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */; };
+		3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */; };
 		38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */; };
@@ -295,6 +296,7 @@
 		3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = worksPlanTVC.xib; sourceTree = "<group>"; };
 		3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkPlansInfoCVC.swift; sourceTree = "<group>"; };
 		3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkPlansInfoCVC.xib; sourceTree = "<group>"; };
+		3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFormatter.swift; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverVC.swift; sourceTree = "<group>"; };
 		38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRGraphModel.swift; sourceTree = "<group>"; };
@@ -647,6 +649,7 @@
 				38DD14B02B4FBAA70036384F /* Shared.swift */,
 				38DD14B92B5002340036384F /* MenuResponseProtocol.swift */,
 				380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */,
+				3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1349,6 +1352,7 @@
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
 				3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */,
 				B287E63829F29F7C0097974D /* HomeVC.swift in Sources */,
+				3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */,
 				38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */,
 				38C855252A8CC9AB00C34A58 /* ProductViewModel.swift in Sources */,
 				38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */,

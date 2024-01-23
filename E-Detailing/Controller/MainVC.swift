@@ -397,12 +397,18 @@ class MainVC : UIViewController {
                         //   self.toSetPageType(.notconnected)
                            self.toCreateToast("Please check your internet connection.")
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                           self.segmentControlForDcr.selectedSegmentIndex = 2
+                           self.segmentControlForDcr.sendActions(for: .valueChanged)
                        } else if  status == "WiFi" || status ==  "Cellular"   {
                            
                            self.toCreateToast("You are now connected.")
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                           self.toretryDCRupload( date: "")
-                           self.toSetParams()
+                           self.toretryDCRupload( date: "") {isCompleted in
+                               if isCompleted {
+                                   self.toSetParams()
+                               }
+                           }
+                         
                           
                        }
                    }
@@ -485,8 +491,14 @@ class MainVC : UIViewController {
         
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             toSetParams()
+           // self.segmentControlForDcr.selectedSegmentIndex = 1
+        } else {
+          //  self.segmentControlForDcr.selectedSegmentIndex = 2
+          
         }
-    
+       // self.segmentControlForDcr.underlinePosition()
+       // self.segmentControlForDcr.sendActions(for: .valueChanged)
+
         toLoadDcrCollection()
         toLoadOutboxTable()
     }
@@ -1035,21 +1047,23 @@ class MainVC : UIViewController {
         params["Designation"] = appsetup.dsName ?? ""
         params["state_code"] = appsetup.stateCode ?? ""
         
-        var jsonDatum = Data()
-
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
-            jsonDatum = jsonData
-            // Convert JSON data to a string
-            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                print(tempjsonString)
-
-            }
-
-
-        } catch {
-            print("Error converting parameter to JSON: \(error)")
-        }
+       let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
+        
+//        var jsonDatum = Data()
+//
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
+//            jsonDatum = jsonData
+//            // Convert JSON data to a string
+//            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+//                print(tempjsonString)
+//
+//            }
+//
+//
+//        } catch {
+//            print("Error converting parameter to JSON: \(error)")
+//        }
 
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
@@ -1728,7 +1742,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
               //  obj_sections[section].isLoading = true
                 if isConnected {
-                    self.toretryDCRupload( date: obj_sections[section].date)
+                    self.toretryDCRupload( date: obj_sections[section].date) {_ in }
                 } else {
                     self.toCreateToast("Please connect to internet and try again later.")
                 }
@@ -1762,7 +1776,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         }
     }
 
-    func toretryDCRupload( date: String) {
+    func toretryDCRupload( date: String, completion: @escaping (Bool) -> Void) {
     
         let paramData = LocalStorage.shared.getData(key: .outboxParams)
         var localParamArr = [String: [[String: Any]]]()
@@ -1791,10 +1805,6 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
         }
         
-
-        
-        
-        
         print("specificDateParams has \(specificDateParams.count) values")
         
 //        var paramArr = [String : Any]()
@@ -1802,63 +1812,109 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 //        specificDateParams.forEach { param in
 //            paramArr["data"] = param
 //        }
+        //paramsArr: specificDateParams
         if !localParamArr.isEmpty {
-            toSendParamsToAPISerially(paramsArr: specificDateParams)
-            dispatchGroup.notify(queue: .main) {
-                   print("All services complete")
-                DispatchQueue.main.async {
-                    self.toLoadOutboxTable()
+            toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
+                if isCompleted {
+                    
+                    self.toSetParams()
+                    completion(true)
                 }
-                Shared.instance.removeLoaderInWindow()
-               }
-       
+            }
+ 
         } else {
-            Shared.instance.removeLoaderInWindow()
+          
+            completion(true)
         }
       
     }
     
-    func toSendParamsToAPISerially(paramsArr : [JSON]) {
-         // Iterate through the array of parameters
-        
- 
-        
-        for (paramIndex, params) in paramsArr.enumerated() {
-            
-            var jsonDatum = Data()
-            
-            do {
-                let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
-                jsonDatum = jsonData
-                // Convert JSON data to a string
-                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                    print(tempjsonString)
-                    
-                }
-                
-                
-            } catch {
-                print("Error converting parameter to JSON: \(error)")
-            }
-        
-            
-            
-            
-            var toSendData = [String: Any]()
-            toSendData["data"] = jsonDatum
-            dispatchGroup.enter()
-            if params.isEmpty {
-               
-                return
-            }
-            self.sendAPIrequest(toSendData, paramData: params)
-                   
-        }
-    }
     
     
-    func sendAPIrequest(_ param: [String: Any], paramData: JSON) {
+    func toSendParamsToAPISerially(index: Int, items: [JSON], completion: @escaping (Bool) -> Void) {
         Shared.instance.showLoaderInWindow()
+        guard index < items.count else {
+            // All items processed, exit the recursion
+            DispatchQueue.main.async {
+                self.toLoadOutboxTable()
+            }
+      
+            return
+        }
+
+        let params = items[index]
+
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
+        
+        // Perform your asynchronous task or function
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+      
+        if params.isEmpty {
+           completion(true)
+           return
+        }
+        self.sendAPIrequest(toSendData, paramData: params) { iscompleted in
+            completion(iscompleted)
+            let nextIndex = index + 1
+            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
+            
+        }
+            // Handle the result if needed
+
+            // Move to the next item
+      
+        }
+    
+
+    
+    
+//    func toSendParamsToAPISerially(paramsArr : [JSON], completion: @escaping (Bool) -> Void) {
+//         // Iterate through the array of parameters
+//
+//
+//
+//        for (_, params) in paramsArr.enumerated() {
+//
+//            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
+//
+////            var jsonDatum = Data()
+////
+////            do {
+////                let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
+////                jsonDatum = jsonData
+////                // Convert JSON data to a string
+////                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+////                    print(tempjsonString)
+////
+////                }
+////
+////
+////            } catch {
+////                print("Error converting parameter to JSON: \(error)")
+////            }
+//
+//
+//
+//
+//            var toSendData = [String: Any]()
+//            toSendData["data"] = jsonDatum
+//
+//            if params.isEmpty {
+//               completion(true)
+//               return
+//            }
+//            self.sendAPIrequest(toSendData, paramData: params) { iscompleted in
+//                completion(iscompleted)
+//
+//            }
+//
+//        }
+//    }
+    
+    
+    func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (Bool) -> Void) {
+        
         sessionResponseVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
             switch result {
             case .success(let response):
@@ -1874,15 +1930,19 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     
                  //   self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: jsonDatum)
                 }
+             
+              completion(true)
                 Shared.instance.removeLoaderInWindow()
-              
             case .failure(let error):
              //   self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
-                Shared.instance.removeLoaderInWindow()
+               
                 print(error.localizedDescription)
                 self.view.toCreateToast("Error uploading data try again later.")
+           
+                completion(true)
+                Shared.instance.removeLoaderInWindow()
+           
                 return
-
             }
           
         }
@@ -1978,36 +2038,37 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 
         // Iterate through the dictionary and filter out elements with the specified CustCode
         localParamArr = localParamArr.mapValues { callsArray in
-            let filteredCalls = callsArray.filter { call in
-                guard let custCode = call["CustCode"] as? String else {
-                    return true // Keep entries without CustCode
+            return callsArray.filter { call in
+                if let custCode = call["CustCode"] as? String {
+                    if custCode == custCodeToRemove {
+                        print("Removing element with CustCode: \(custCode)")
+                        return false
+                    }
                 }
-                return custCode != custCodeToRemove
+                return true
             }
-            return filteredCalls
         }
-
         // Remove entries where the filtered array is empty
         localParamArr = localParamArr.filter { _, callsArray in
             return !callsArray.isEmpty
         }
      
-
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
           
             
-            var jsonDatum = Data()
-            
-            do {
-                let jsonData = try JSONSerialization.data(withJSONObject: localParamArr, options: [])
-                jsonDatum = jsonData
-                // Convert JSON data to a string
-                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                    print(tempjsonString)
-                    
-                }
-            } catch {
-                print("Error converting parameter to JSON: \(error)")
-            }
+//            var jsonDatum = Data()
+//
+//            do {
+//                let jsonData = try JSONSerialization.data(withJSONObject: localParamArr, options: [])
+//                jsonDatum = jsonData
+//                // Convert JSON data to a string
+//                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+//                    print(tempjsonString)
+//
+//                }
+//            } catch {
+//                print("Error converting parameter to JSON: \(error)")
+//            }
             
             LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
         
@@ -2036,9 +2097,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             !section.items.isEmpty
         })
 
-        // Print the updated obj_sections
         print(obj_sections)
-        self.dispatchGroup.leave()
+    
         
     }
     

@@ -163,6 +163,7 @@ class ProductVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         self.sessionResponseVM = SessionResponseVM()
         self.registerTableViewCell()
         
@@ -198,6 +199,27 @@ class ProductVC : UIViewController {
         
     }
     
+    
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+               if let status = dict["Type"] as? String{
+                   DispatchQueue.main.async {
+                       if status == "No Connection" {
+                           self.toCreateToast("Please check your internet connection.")
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                       } else if  status == "WiFi" || status ==  "Cellular"   {
+                           
+                           self.toCreateToast("You are now connected.")
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+              
+                          
+                       }
+                   }
+               }
+           }
+    }
     
     @objc func productSearchFilterAction (_ sender : UITextField){
         print(sender.text!)
@@ -499,7 +521,7 @@ class ProductVC : UIViewController {
     }
     
     @IBAction func submitAction(_ sender: UIButton) {
-        Shared.instance.showLoaderInWindow()
+   
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         let urlStr = appMainURL + "save/dcr"
@@ -701,75 +723,48 @@ class ProductVC : UIViewController {
         
         print(param)
         
-        var jsonDatum = Data()
-        var objParam = [String : Any]()
-        objParam["data"] = params
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
+        var toSendData = [String : Any]()
+      
+        toSendData["data"] = jsonDatum
         
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: objParam, options: [])
-            jsonDatum = jsonData
-            // Convert JSON data to a string
-            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                print(tempjsonString)
-                
-            }
-            
-            
-        } catch {
-            print("Error converting parameter to JSON: \(error)")
-        }
-        
-        
-        
-        AF.request(urlStr,method: .post,parameters: param).responseData(){(response) in
-            
-            switch response.result {
-                
-                case .success(_):
-                    do {
-                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                        
-                        let date1 = Date()
-                        
-                        print(date1)
-        
-                        print("ssususnbjbo")
-                        print(apiResponse)
-                        print("ssusus")
-                        
-                        if let responseDict = apiResponse as? [String: Any] {
-                            if responseDict["msg"] as! String == "Call Already Exists" {
-                                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
-                                self.toCreateToast(responseDict["msg"] as! String)
-                            } else {
-                                self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: params)
-                            }
-                        }
-                        
-                        self.popToBack(UIStoryboard.mainVC)
-                        
-                    }catch {
-                        print(error)
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            Shared.instance.showLoaderInWindow()
+            postDCTdata(toSendData, paramData: params) { result in
+                switch result {
+                case .success(let response):
+                    if response.msg == "Call Already Exists" {
+                        self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
+                        self.toCreateToast(response.msg ?? "Call Already Exists")
+                    } else {
+                        self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: params)
                     }
-                Shared.instance.removeLoaderInWindow()
+                    Shared.instance.removeLoaderInWindow()
                 case .failure(let error):
-                self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
-                  //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-                Shared.instance.removeLoaderInWindow()
-                self.toCreateToast("\(error)")
+                    self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
+                    Shared.instance.removeLoaderInWindow()
+                    self.toCreateToast("\(error)")
                     print(error)
-                   self.popToBack(UIStoryboard.mainVC)
+                    Shared.instance.removeLoaderInWindow()
+                }
+                self.popToBack(UIStoryboard.mainVC)
             }
-            
-            print("2")
-            print(response)
-            print("2")
+        } else {
+            self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
+           // Shared.instance.removeLoaderInWindow()
+            self.toCreateToast("Unable to connect to internet")
+            self.popToBack(UIStoryboard.mainVC)
         }
+        
+
         
     }
     
-    func postDCTdata(_ param: [String: Any], paramData: JSON) {
-
+    func postDCTdata(_ param: [String: Any], paramData: JSON, _ completion : @escaping (Result<DCRCallesponseModel,Error>) -> Void)  {
+       
+        sessionResponseVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
+            completion(result)
+        }
     }
     
     
@@ -778,7 +773,7 @@ class ProductVC : UIViewController {
         var callsByDay: [String: [[String: Any]]] = [:]
         
         let paramdate = param["vstTime"]
-    var dayString = String()
+        var dayString = String()
         
         // Create a DateFormatter to parse the vstTime
         let dateFormatter = DateFormatter()
@@ -796,19 +791,21 @@ class ProductVC : UIViewController {
             }
         }
         
-        var jsonDatum = Data()
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: callsByDay)
         
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: callsByDay, options: [])
-            jsonDatum = jsonData
-            // Convert JSON data to a string
-            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                print(tempjsonString)
-                
-            }
-        } catch {
-            print("Error converting parameter to JSON: \(error)")
-        }
+//        var jsonDatum = Data()
+//
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: callsByDay, options: [])
+//            jsonDatum = jsonData
+//            // Convert JSON data to a string
+//            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+//                print(tempjsonString)
+//
+//            }
+//        } catch {
+//            print("Error converting parameter to JSON: \(error)")
+//        }
         
         
         // LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
@@ -847,24 +844,26 @@ class ProductVC : UIViewController {
         if !matchFound {
             // Check if the day key exists in the dictionary
             if localParamArr[dayString] == nil {
-                callsByDay[dayString] = [param]
+                localParamArr[dayString] = [param]
             } else {
-                callsByDay[dayString]?.append(param)
+                localParamArr[dayString]?.append(param)
             }
+            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+          //  var jsonDatum = Data()
             
-            var jsonDatum = Data()
+           
             
-            do {
-                let jsonData = try JSONSerialization.data(withJSONObject: callsByDay, options: [])
-                jsonDatum = jsonData
-                // Convert JSON data to a string
-                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-                    print(tempjsonString)
-                    
-                }
-            } catch {
-                print("Error converting parameter to JSON: \(error)")
-            }
+//            do {
+//                let jsonData = try JSONSerialization.data(withJSONObject: callsByDay, options: [])
+//                jsonDatum = jsonData
+//                // Convert JSON data to a string
+//                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+//                    print(tempjsonString)
+//
+//                }
+//            } catch {
+//                print("Error converting parameter to JSON: \(error)")
+//            }
             
             LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
         }
@@ -904,9 +903,6 @@ class ProductVC : UIViewController {
                 HomeDataSetupItem.index = Int16(index)
                 HomeDataSetupArray.append(HomeDataSetupItem)
             }
-            
-            
-
         }
 
         HomeDataSetupArray.forEach{ (type) in
