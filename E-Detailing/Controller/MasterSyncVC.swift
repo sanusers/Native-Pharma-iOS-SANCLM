@@ -297,6 +297,12 @@ class MasterSyncVC : UIViewController {
                                 var slides = AppDefaults.shared.getSlides()
                                 slides.removeAll()
                                 slides.append(contentsOf: response)
+                                
+                                let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: response)
+                                
+                                LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: jsonDatum)
+                                
+                                
                                 AppDefaults.shared.save(key: .slide, value: slides)
                             }
                         }else if let responseDic = apiResponse as? [String : Any] {

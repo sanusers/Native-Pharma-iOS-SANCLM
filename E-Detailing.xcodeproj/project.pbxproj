@@ -112,6 +112,16 @@
 		38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */; };
 		38CA1FE02B60EDF400AFCFD2 /* SelectedSlidesTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FDE2B60EDF400AFCFD2 /* SelectedSlidesTVC.swift */; };
 		38CA1FE12B60EDF400AFCFD2 /* SelectedSlidesTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */; };
+		38CA1FE42B6102AB00AFCFD2 /* SelectPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FE22B6102AB00AFCFD2 /* SelectPresentationCVC.swift */; };
+		38CA1FE52B6102AB00AFCFD2 /* SelectPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FE32B6102AB00AFCFD2 /* SelectPresentationCVC.xib */; };
+		38CA1FE82B61080A00AFCFD2 /* SelectedSlidesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FE72B61080A00AFCFD2 /* SelectedSlidesModel.swift */; };
+		38CA1FEA2B61163C00AFCFD2 /* PlayPresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FE92B61163C00AFCFD2 /* PlayPresentationView.swift */; };
+		38CA1FEC2B61169300AFCFD2 /* PlayPresentationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FEB2B61169300AFCFD2 /* PlayPresentationVC.swift */; };
+		38CA1FEF2B611CBF00AFCFD2 /* PlayPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FED2B611CBF00AFCFD2 /* PlayPresentationCVC.swift */; };
+		38CA1FF02B611CBF00AFCFD2 /* PlayPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FEE2B611CBF00AFCFD2 /* PlayPresentationCVC.xib */; };
+		38CA1FF32B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FF12B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift */; };
+		38CA1FF42B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */; };
+		38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */; };
 		38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */; };
 		38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */; };
 		38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */; };
@@ -371,6 +381,16 @@
 		38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BrandsNameTVC.xib; sourceTree = "<group>"; };
 		38CA1FDE2B60EDF400AFCFD2 /* SelectedSlidesTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSlidesTVC.swift; sourceTree = "<group>"; };
 		38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedSlidesTVC.xib; sourceTree = "<group>"; };
+		38CA1FE22B6102AB00AFCFD2 /* SelectPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPresentationCVC.swift; sourceTree = "<group>"; };
+		38CA1FE32B6102AB00AFCFD2 /* SelectPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectPresentationCVC.xib; sourceTree = "<group>"; };
+		38CA1FE72B61080A00AFCFD2 /* SelectedSlidesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSlidesModel.swift; sourceTree = "<group>"; };
+		38CA1FE92B61163C00AFCFD2 /* PlayPresentationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPresentationView.swift; sourceTree = "<group>"; };
+		38CA1FEB2B61169300AFCFD2 /* PlayPresentationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPresentationVC.swift; sourceTree = "<group>"; };
+		38CA1FED2B611CBF00AFCFD2 /* PlayPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPresentationCVC.swift; sourceTree = "<group>"; };
+		38CA1FEE2B611CBF00AFCFD2 /* PlayPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayPresentationCVC.xib; sourceTree = "<group>"; };
+		38CA1FF12B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayLoadedPresentationCVC.swift; sourceTree = "<group>"; };
+		38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayLoadedPresentationCVC.xib; sourceTree = "<group>"; };
+		38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesModel.swift; sourceTree = "<group>"; };
 		38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subordinate + Extension.swift"; sourceTree = "<group>"; };
 		38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCell.swift; sourceTree = "<group>"; };
 		38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCell.xib; sourceTree = "<group>"; };
@@ -610,6 +630,7 @@
 				3801D4942B4ECF4800A9740F /* HomeSideMenuVC.swift */,
 				388546412B5FDB90005FC9FC /* PresentationHomeVC.swift */,
 				38CA1FD82B60DBBA00AFCFD2 /* CreatePresentationVC.swift */,
+				38CA1FEB2B61169300AFCFD2 /* PlayPresentationVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -627,6 +648,7 @@
 				3801D4962B4ECFB700A9740F /* HomeSideMenuMenuView.swift */,
 				388546432B5FDBA2005FC9FC /* PresentationHomeView.swift */,
 				38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */,
+				38CA1FE92B61163C00AFCFD2 /* PlayPresentationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -664,6 +686,12 @@
 				38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */,
 				38CA1FDE2B60EDF400AFCFD2 /* SelectedSlidesTVC.swift */,
 				38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */,
+				38CA1FE22B6102AB00AFCFD2 /* SelectPresentationCVC.swift */,
+				38CA1FE32B6102AB00AFCFD2 /* SelectPresentationCVC.xib */,
+				38CA1FED2B611CBF00AFCFD2 /* PlayPresentationCVC.swift */,
+				38CA1FEE2B611CBF00AFCFD2 /* PlayPresentationCVC.xib */,
+				38CA1FF12B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift */,
+				38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -737,6 +765,7 @@
 		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				38CA1FE62B6107E700AFCFD2 /* Presentation */,
 				38F5558D2B57B776000D9294 /* Calls */,
 				38BA66862B4685A8008C6D2C /* DCR */,
 				38D1F1F12B3429A600CE8F86 /* Reports */,
@@ -838,6 +867,15 @@
 				38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		38CA1FE62B6107E700AFCFD2 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				38CA1FE72B61080A00AFCFD2 /* SelectedSlidesModel.swift */,
+				38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */,
+			);
+			path = Presentation;
 			sourceTree = "<group>";
 		};
 		38D1F1F12B3429A600CE8F86 /* Reports */ = {
@@ -1197,6 +1235,7 @@
 			files = (
 				38E659842B33075200E7BF42 /* ReportTypesCVC.xib in Resources */,
 				38D568FE2B3560C6007CB86D /* VisitsCountCVC.xib in Resources */,
+				38CA1FF02B611CBF00AFCFD2 /* PlayPresentationCVC.xib in Resources */,
 				38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */,
 				38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */,
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
@@ -1219,6 +1258,7 @@
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */,
+				38CA1FE52B6102AB00AFCFD2 /* SelectPresentationCVC.xib in Resources */,
 				38107C562B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib in Resources */,
 				38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */,
 				38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */,
@@ -1262,6 +1302,7 @@
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
 				38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */,
+				38CA1FF42B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib in Resources */,
 				38D569062B3570E3007CB86D /* ListedWorkTypesTVC.xib in Resources */,
 				388546402B5FC765005FC9FC /* HomeWorktypeTVC.xib in Resources */,
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
@@ -1355,7 +1396,9 @@
 				38D569052B3570E3007CB86D /* ListedWorkTypesTVC.swift in Sources */,
 				38CA1FE02B60EDF400AFCFD2 /* SelectedSlidesTVC.swift in Sources */,
 				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
+				38CA1FEF2B611CBF00AFCFD2 /* PlayPresentationCVC.swift in Sources */,
 				38E659882B33088200E7BF42 /* ReportsView.swift in Sources */,
+				38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */,
@@ -1363,7 +1406,10 @@
 				38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */,
 				38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */,
 				38CD60D92A86139D006FFB39 /* CallViewModel.swift in Sources */,
+				38CA1FE82B61080A00AFCFD2 /* SelectedSlidesModel.swift in Sources */,
 				38C5D35E2A835FB800513BC8 /* ProductVC.swift in Sources */,
+				38CA1FF32B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift in Sources */,
+				38CA1FEC2B61169300AFCFD2 /* PlayPresentationVC.swift in Sources */,
 				38DAADE92B5916AC00966B33 /* OutboxDetailsTVC.swift in Sources */,
 				38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */,
 				38E659832B33075200E7BF42 /* ReportTypesCVC.swift in Sources */,
@@ -1446,6 +1492,7 @@
 				38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */,
 				388546442B5FDBA3005FC9FC /* PresentationHomeView.swift in Sources */,
 				38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */,
+				38CA1FEA2B61163C00AFCFD2 /* PlayPresentationView.swift in Sources */,
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
@@ -1516,6 +1563,7 @@
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
+				38CA1FE42B6102AB00AFCFD2 /* SelectPresentationCVC.swift in Sources */,
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,
 				B291878629FA83B60033DE16 /* Class.swift in Sources */,
 				38C4B7AE2A6EA52D001C2FD5 /* AnalysisCell.swift in Sources */,
