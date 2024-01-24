@@ -16,7 +16,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "871"
             endingLineNumber = "871"
-            landmarkName = "toAppendWeeklyoffs(date:rawDate:isHolidayDict:)"
+            landmarkName = "monthWiseSeperationofSessions(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -32,7 +32,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1546"
             endingLineNumber = "1546"
-            landmarkName = "updateCalender()"
+            landmarkName = "moveCurrentPage(moveUp:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1480"
             endingLineNumber = "1480"
-            landmarkName = "updateCalender()"
+            landmarkName = "toDisableNextPrevBtn(enableprevBtn:enablenextBtn:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -97,6 +97,21 @@
                   endingLineNumber = "547"
                   offsetFromSymbolStart = "564">
                </Location>
+               <Location
+                  uuid = "7CA24338-408B-4546-B862-770AAFAD1D1C - dafdaf384203c73b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.MasterSyncVC.getAllPlansData(_: Swift.Dictionary&lt;Swift.String, Any&gt;, paramData: Swift.Dictionary&lt;Swift.String, Any&gt;, completion: (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "548"
+                  endingLineNumber = "548"
+                  offsetFromSymbolStart = "80">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -130,6 +145,38 @@
             endingLineNumber = "549"
             landmarkName = "toPostDataToserver(type:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "35A0D128-2A4A-42D5-B29E-0C967286169B - dafdaf384203c75a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.MasterSyncVC.getAllPlansData(_: Swift.Dictionary&lt;Swift.String, Any&gt;, paramData: Swift.Dictionary&lt;Swift.String, Any&gt;, completion: (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "549"
+                  endingLineNumber = "549"
+                  offsetFromSymbolStart = "112">
+               </Location>
+               <Location
+                  uuid = "35A0D128-2A4A-42D5-B29E-0C967286169B - 8c10626603c2406e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, E_Detailing.SessionResponseVM.TPErrors&gt;) -&gt; () in E_Detailing.MasterSyncVC.getAllPlansData(_: Swift.Dictionary&lt;Swift.String, Any&gt;, paramData: Swift.Dictionary&lt;Swift.String, Any&gt;, completion: (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "551"
+                  endingLineNumber = "551"
+                  offsetFromSymbolStart = "104">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -176,6 +223,21 @@
                   startingLineNumber = "553"
                   endingLineNumber = "553"
                   offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "CE80A596-26B3-455F-866C-B29E4909F8F2 - 8c10626603c2404d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;E_Detailing.SessionResponseModel, E_Detailing.SessionResponseVM.TPErrors&gt;) -&gt; () in E_Detailing.MasterSyncVC.getAllPlansData(_: Swift.Dictionary&lt;Swift.String, Any&gt;, paramData: Swift.Dictionary&lt;Swift.String, Any&gt;, completion: (Swift.Result&lt;E_Detailing.SessionResponseModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "552"
+                  endingLineNumber = "552"
+                  offsetFromSymbolStart = "148">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -289,6 +351,21 @@
                   endingLineNumber = "746"
                   offsetFromSymbolStart = "296">
                </Location>
+               <Location
+                  uuid = "9B7A457B-ADB9-4064-BC5A-DD74E08BFBDD - fbd4d2a518a749b1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.MasterSyncVC.toSetParams(_: Swift.Array&lt;E_Detailing.SessionDetailsArr&gt;, completion: (Swift.Result&lt;E_Detailing.SaveTPresponseModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "754"
+                  endingLineNumber = "754"
+                  offsetFromSymbolStart = "1304">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -306,6 +383,38 @@
             endingLineNumber = "525"
             landmarkName = "getAllPlansData(_:paramData:completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2C0E7463-0AB4-45B7-B202-52BB9C8178F2 - 8f7dc1b9c8816bdc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.MasterSyncVC.groupSyncAll(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "525"
+                  endingLineNumber = "525"
+                  offsetFromSymbolStart = "124">
+               </Location>
+               <Location
+                  uuid = "2C0E7463-0AB4-45B7-B202-52BB9C8178F2 - 2685d512e44f5529"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int) -&gt; Swift.Bool in E_Detailing.MasterSyncVC.groupSyncAll(__C.UIButton) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Controller/MasterSyncVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "525"
+                  endingLineNumber = "525"
+                  offsetFromSymbolStart = "12">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -352,7 +461,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "726"
             endingLineNumber = "726"
-            landmarkName = "toGenerateNewSession(_:)"
+            landmarkName = "loadrequiredDataFromDB()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -370,6 +479,38 @@
             endingLineNumber = "766"
             landmarkName = "toGenerateNewSession(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "BFED9AB2-CE19-4C75-9B3D-92B3AD33741A - 76b2737d3e54e9d4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.MenuView.toGenerateNewSession(Swift.Bool) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "766"
+                  endingLineNumber = "766"
+                  offsetFromSymbolStart = "2340">
+               </Location>
+               <Location
+                  uuid = "BFED9AB2-CE19-4C75-9B3D-92B3AD33741A - cc9078cb97fe6763"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (E_Detailing.SessionDetail) -&gt; () in E_Detailing.MenuView.toGenerateNewSession(Swift.Bool) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/MenuVIew.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "767"
+                  endingLineNumber = "767"
+                  offsetFromSymbolStart = "104">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -400,7 +541,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "723"
             endingLineNumber = "723"
-            landmarkName = "loadrequiredDataFromDB()"
+            landmarkName = "toConfigureTableSetup()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -432,7 +573,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "612"
             endingLineNumber = "612"
-            landmarkName = "initView()"
+            landmarkName = "setTheme()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -526,6 +667,21 @@
                   endingLineNumber = "256"
                   offsetFromSymbolStart = "820">
                </Location>
+               <Location
+                  uuid = "C732EA62-9B77-4402-BB27-CB5142A858B7 - 118a0bc9b3ff246e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Alamofire.DataResponse&lt;Swift.Optional&lt;Foundation.Data&gt;, Alamofire.AFError&gt;) -&gt; () in E_Detailing.ConnectionHandler.uploadRequest(for: E_Detailing.APIEnums, params: Swift.Dictionary&lt;Swift.String, Any&gt;, data: Swift.Dictionary&lt;Swift.String, Any&gt;, imageName: Swift.String) -&gt; E_Detailing.APIResponseProtocol"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/ConnectionHandlers/ConnectionHandler.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "256"
+                  endingLineNumber = "256"
+                  offsetFromSymbolStart = "1064">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -573,6 +729,21 @@
                   startingLineNumber = "80"
                   endingLineNumber = "80"
                   offsetFromSymbolStart = "2312">
+               </Location>
+               <Location
+                  uuid = "75B4E53D-8860-4924-88C5-8CF73E9DC693 - 76556cfed58dc1a6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.DetailedReportVC.toSetParamsAndGetResponse(Foundation.Date) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/ViewControllers/DetailedReportVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "3208">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -622,6 +793,21 @@
                   endingLineNumber = "92"
                   offsetFromSymbolStart = "736">
                </Location>
+               <Location
+                  uuid = "85FFF7AB-384B-4692-B297-D8340D4502B7 - 76556cfed58dc1a6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.DetailedReportVC.toSetParamsAndGetResponse(Foundation.Date) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/ViewControllers/DetailedReportVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "3208">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -670,6 +856,21 @@
                   endingLineNumber = "95"
                   offsetFromSymbolStart = "848">
                </Location>
+               <Location
+                  uuid = "88F5A527-5F8E-4029-8CBF-31A02772EED0 - 76556cfed58dc1a6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.DetailedReportVC.toSetParamsAndGetResponse(Foundation.Date) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/ViewControllers/DetailedReportVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "3208">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -717,6 +918,21 @@
                   startingLineNumber = "90"
                   endingLineNumber = "90"
                   offsetFromSymbolStart = "332">
+               </Location>
+               <Location
+                  uuid = "C4749AE8-50FA-43A4-8AF1-2D468D4FA9D9 - 76556cfed58dc1a6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.DetailedReportVC.toSetParamsAndGetResponse(Foundation.Date) -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/ViewControllers/DetailedReportVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "3208">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -988,6 +1204,21 @@
                   endingLineNumber = "275"
                   offsetFromSymbolStart = "116">
                </Location>
+               <Location
+                  uuid = "9898F3A2-FA16-4CAD-BDF5-7E97CFCDF726 - 118a0bc9b3ff2afa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Alamofire.DataResponse&lt;Swift.Optional&lt;Foundation.Data&gt;, Alamofire.AFError&gt;) -&gt; () in E_Detailing.ConnectionHandler.uploadRequest(for: E_Detailing.APIEnums, params: Swift.Dictionary&lt;Swift.String, Any&gt;, data: Swift.Dictionary&lt;Swift.String, Any&gt;, imageName: Swift.String) -&gt; E_Detailing.APIResponseProtocol"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/ConnectionHandlers/ConnectionHandler.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "268"
+                  endingLineNumber = "268"
+                  offsetFromSymbolStart = "1916">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -1037,6 +1268,54 @@
             endingLineNumber = "67"
             landmarkName = "init(from:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "07A85F42-A688-407A-87D6-1458832C8785"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "E-Detailing/Hassan/Views/CreatePresentationView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "cellRegistration()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "07A85F42-A688-407A-87D6-1458832C8785 - d03726b9f0dfc09"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.CreatePresentationView.cellRegistration() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/CreatePresentationView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "692">
+               </Location>
+               <Location
+                  uuid = "07A85F42-A688-407A-87D6-1458832C8785 - d03726b9f0dfc4b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "E_Detailing.CreatePresentationView.cellRegistration() -&gt; ()"
+                  moduleName = "E-Detailing"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/saneforce/Desktop/Native-Pharma-iOS-SANCLM/E-Detailing/Hassan/Views/CreatePresentationView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "140"
+                  endingLineNumber = "140"
+                  offsetFromSymbolStart = "400">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

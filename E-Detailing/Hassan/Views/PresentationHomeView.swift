@@ -93,6 +93,11 @@ class PresentationHomeView : BaseView {
         backHolderView.addTap {
             self.presentationHomeVC.navigationController?.popViewController(animated: true)
         }
+        
+        addpresentationView.addTap {
+            let vc = CreatePresentationVC.initWithStory()
+            self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     

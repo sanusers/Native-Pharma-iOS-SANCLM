@@ -106,6 +106,12 @@
 		38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */; };
 		38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */; };
 		38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */; };
+		38CA1FD72B60DB6700AFCFD2 /* CreatePresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */; };
+		38CA1FD92B60DBBA00AFCFD2 /* CreatePresentationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD82B60DBBA00AFCFD2 /* CreatePresentationVC.swift */; };
+		38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FDA2B60E61900AFCFD2 /* BrandsNameTVC.swift */; };
+		38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */; };
+		38CA1FE02B60EDF400AFCFD2 /* SelectedSlidesTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FDE2B60EDF400AFCFD2 /* SelectedSlidesTVC.swift */; };
+		38CA1FE12B60EDF400AFCFD2 /* SelectedSlidesTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */; };
 		38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */; };
 		38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */; };
 		38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */; };
@@ -359,6 +365,12 @@
 		38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarVC.swift; sourceTree = "<group>"; };
 		38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaSelectedCompetitorView.swift; sourceTree = "<group>"; };
 		38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaSelectedCompetitorView.xib; sourceTree = "<group>"; };
+		38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePresentationView.swift; sourceTree = "<group>"; };
+		38CA1FD82B60DBBA00AFCFD2 /* CreatePresentationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePresentationVC.swift; sourceTree = "<group>"; };
+		38CA1FDA2B60E61900AFCFD2 /* BrandsNameTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandsNameTVC.swift; sourceTree = "<group>"; };
+		38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BrandsNameTVC.xib; sourceTree = "<group>"; };
+		38CA1FDE2B60EDF400AFCFD2 /* SelectedSlidesTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSlidesTVC.swift; sourceTree = "<group>"; };
+		38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedSlidesTVC.xib; sourceTree = "<group>"; };
 		38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subordinate + Extension.swift"; sourceTree = "<group>"; };
 		38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCell.swift; sourceTree = "<group>"; };
 		38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCell.xib; sourceTree = "<group>"; };
@@ -597,6 +609,7 @@
 				38D568FF2B356468007CB86D /* ViewDayReportVC.swift */,
 				3801D4942B4ECF4800A9740F /* HomeSideMenuVC.swift */,
 				388546412B5FDB90005FC9FC /* PresentationHomeVC.swift */,
+				38CA1FD82B60DBBA00AFCFD2 /* CreatePresentationVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -613,6 +626,7 @@
 				38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */,
 				3801D4962B4ECFB700A9740F /* HomeSideMenuMenuView.swift */,
 				388546432B5FDBA2005FC9FC /* PresentationHomeView.swift */,
+				38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -646,6 +660,10 @@
 			children = (
 				388546462B5FE65F005FC9FC /* CreatedPresentationCVC.swift */,
 				388546472B5FE65F005FC9FC /* CreatedPresentationCVC.xib */,
+				38CA1FDA2B60E61900AFCFD2 /* BrandsNameTVC.swift */,
+				38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */,
+				38CA1FDE2B60EDF400AFCFD2 /* SelectedSlidesTVC.swift */,
+				38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -1203,6 +1221,8 @@
 				38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */,
 				38107C562B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib in Resources */,
 				38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */,
+				38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */,
+				38CA1FE12B60EDF400AFCFD2 /* SelectedSlidesTVC.xib in Resources */,
 				38EA3D172AFDED4C00DA7018 /* SessionInfoTVC.xib in Resources */,
 				38DD14B32B4FBB6C0036384F /* Loaders in Resources */,
 				B287E68329F2A20F0097974D /* Satoshi-LightItalic.otf in Resources */,
@@ -1333,6 +1353,7 @@
 				38E3C36B2AFA047400623C33 /* Codable.swift in Sources */,
 				38CC72B32A75347E00BFDAF5 /* SideMenuCell.swift in Sources */,
 				38D569052B3570E3007CB86D /* ListedWorkTypesTVC.swift in Sources */,
+				38CA1FE02B60EDF400AFCFD2 /* SelectedSlidesTVC.swift in Sources */,
 				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
 				38E659882B33088200E7BF42 /* ReportsView.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
@@ -1356,6 +1377,7 @@
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
 				38CD60DF2A866CEA006FFB39 /* ProductSampleTableViewCell.swift in Sources */,
+				38CA1FD72B60DB6700AFCFD2 /* CreatePresentationView.swift in Sources */,
 				38D5690D2B35AFE3007CB86D /* RadioSelectionTVC.swift in Sources */,
 				38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */,
 				38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */,
@@ -1398,6 +1420,7 @@
 				38D569082B35A785007CB86D /* SortView.swift in Sources */,
 				38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */,
 				38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */,
+				38CA1FD92B60DBBA00AFCFD2 /* CreatePresentationVC.swift in Sources */,
 				38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */,
 				38145EC62B3459E100DD7B4E /* WTsheetCVC.swift in Sources */,
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
@@ -1491,6 +1514,7 @@
 				38107C552B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift in Sources */,
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
+				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,
 				B291878629FA83B60033DE16 /* Class.swift in Sources */,
@@ -1571,7 +1595,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1626,7 +1650,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
