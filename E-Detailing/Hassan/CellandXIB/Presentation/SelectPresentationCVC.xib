@@ -25,6 +25,15 @@
                                 <rect key="frame" x="0.0" y="0.0" width="290" height="212"/>
                                 <color key="backgroundColor" systemColor="systemGray6Color"/>
                             </imageView>
+                            <visualEffectView opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZI8-Dz-f0d">
+                                <rect key="frame" x="0.0" y="0.0" width="290" height="212"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Vre-B7-eCn">
+                                    <rect key="frame" x="0.0" y="0.0" width="290" height="212"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <blurEffect style="regular"/>
+                            </visualEffectView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9ub-jO-yQq">
                                 <rect key="frame" x="122.5" y="83.5" width="45" height="45"/>
                                 <subviews>
@@ -45,11 +54,15 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="ZI8-Dz-f0d" firstAttribute="top" secondItem="dMW-Pu-OS4" secondAttribute="top" id="1Kd-vb-Oiu"/>
+                            <constraint firstAttribute="trailing" secondItem="ZI8-Dz-f0d" secondAttribute="trailing" id="25l-9J-EY8"/>
                             <constraint firstItem="szX-7k-ZwA" firstAttribute="height" secondItem="dMW-Pu-OS4" secondAttribute="height" id="2tP-ar-DwH"/>
                             <constraint firstItem="9ub-jO-yQq" firstAttribute="centerY" secondItem="dMW-Pu-OS4" secondAttribute="centerY" id="FYh-fm-jvl"/>
                             <constraint firstItem="9ub-jO-yQq" firstAttribute="centerX" secondItem="dMW-Pu-OS4" secondAttribute="centerX" id="GcX-oo-QqQ"/>
+                            <constraint firstItem="ZI8-Dz-f0d" firstAttribute="leading" secondItem="dMW-Pu-OS4" secondAttribute="leading" id="LuA-0y-ub6"/>
                             <constraint firstItem="szX-7k-ZwA" firstAttribute="centerX" secondItem="dMW-Pu-OS4" secondAttribute="centerX" id="V9O-wM-YuY"/>
                             <constraint firstItem="szX-7k-ZwA" firstAttribute="width" secondItem="dMW-Pu-OS4" secondAttribute="width" id="Zun-hV-Loj"/>
+                            <constraint firstAttribute="bottom" secondItem="ZI8-Dz-f0d" secondAttribute="bottom" id="fav-0b-7SP"/>
                             <constraint firstItem="szX-7k-ZwA" firstAttribute="centerY" secondItem="dMW-Pu-OS4" secondAttribute="centerY" id="pgr-kJ-nGg"/>
                         </constraints>
                     </view>
@@ -66,6 +79,7 @@
             <connections>
                 <outlet property="contentsHolderView" destination="dMW-Pu-OS4" id="Dwb-3z-Yvw"/>
                 <outlet property="presentationIV" destination="szX-7k-ZwA" id="7tT-Jl-OxJ"/>
+                <outlet property="selectedVxVIew" destination="ZI8-Dz-f0d" id="ihJ-0q-zIR"/>
                 <outlet property="selectionImage" destination="heQ-aV-fBe" id="AnM-VE-2S9"/>
                 <outlet property="selectionView" destination="9ub-jO-yQq" id="Vua-WL-ETL"/>
             </connections>

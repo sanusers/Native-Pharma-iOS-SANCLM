@@ -1050,15 +1050,22 @@
                                         <color key="textColor" systemColor="systemBackgroundColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CBV-do-gfa">
+                                        <rect key="frame" x="553" y="4" width="74" height="74"/>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.20784313730000001" green="0.22352941179999999" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="CBV-do-gfa" firstAttribute="centerY" secondItem="yrI-fJ-jor" secondAttribute="centerY" id="38C-WT-tzt"/>
                                     <constraint firstItem="u1r-5W-p4s" firstAttribute="leading" secondItem="yrI-fJ-jor" secondAttribute="leading" constant="5" id="D1g-oX-dzF"/>
                                     <constraint firstItem="u1r-5W-p4s" firstAttribute="centerY" secondItem="yrI-fJ-jor" secondAttribute="centerY" multiplier="1.2" id="NSi-EE-dKf"/>
                                     <constraint firstItem="u1r-5W-p4s" firstAttribute="height" secondItem="yrI-fJ-jor" secondAttribute="height" multiplier="0.8" id="OUn-Q6-uR1"/>
                                     <constraint firstItem="Z4v-bd-4XV" firstAttribute="leading" secondItem="u1r-5W-p4s" secondAttribute="trailing" constant="5" id="fqg-h8-Cra"/>
+                                    <constraint firstItem="CBV-do-gfa" firstAttribute="width" secondItem="yrI-fJ-jor" secondAttribute="height" multiplier="0.9" id="hD2-9p-PWV"/>
                                     <constraint firstItem="u1r-5W-p4s" firstAttribute="width" secondItem="yrI-fJ-jor" secondAttribute="height" multiplier="0.8" id="iMI-ej-9Us"/>
+                                    <constraint firstItem="CBV-do-gfa" firstAttribute="height" secondItem="yrI-fJ-jor" secondAttribute="height" multiplier="0.9" id="igX-BE-R6m"/>
                                     <constraint firstItem="Z4v-bd-4XV" firstAttribute="centerY" secondItem="u1r-5W-p4s" secondAttribute="centerY" id="kRw-cw-6qo"/>
+                                    <constraint firstItem="CBV-do-gfa" firstAttribute="centerX" secondItem="yrI-fJ-jor" secondAttribute="centerX" id="uyZ-d7-4D2"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -1084,6 +1091,7 @@
                             <outlet property="navigationVIew" destination="yrI-fJ-jor" id="fMT-Hm-PKu"/>
                             <outlet property="playLbl" destination="3rZ-8Q-dUd" id="4ce-kj-l4g"/>
                             <outlet property="playView" destination="DNS-PM-8HQ" id="gwk-Y0-gv0"/>
+                            <outlet property="sampleImage" destination="CBV-do-gfa" id="VCh-uh-DEu"/>
                             <outlet property="saveLbl" destination="1NL-9j-okX" id="nqd-KY-8MG"/>
                             <outlet property="saveVIew" destination="2Sb-Uf-Mfz" id="0bX-Cm-CCr"/>
                             <outlet property="selectSlidesCollection" destination="yjd-9E-nu0" id="XWg-f7-Lxc"/>

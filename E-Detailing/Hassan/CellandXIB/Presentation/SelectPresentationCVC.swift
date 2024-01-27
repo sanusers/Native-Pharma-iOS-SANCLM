@@ -9,6 +9,7 @@ import UIKit
 
 class SelectPresentationCVC: UICollectionViewCell {
 
+    @IBOutlet var selectedVxVIew: UIVisualEffectView!
     @IBOutlet var selectionImage: UIImageView!
     @IBOutlet var selectionView: UIView!
     @IBOutlet var presentationIV: UIImageView!
@@ -24,6 +25,19 @@ class SelectPresentationCVC: UICollectionViewCell {
         selectionView.backgroundColor = .appWhiteColor
         selectionImage.tintColor = .appGreen
         selectionImage.image = UIImage(systemName: "checkmark.circle.fill")
+        
+    }
+    
+    func toPopulateCell(_ model: SlidesModel) {
+        
+        if let image = UIImage(data: model.slideData) {
+            // The downloaded data represents an image
+            presentationIV.image = image
+            print("Downloaded data is an image.")
+        } else {
+            // The downloaded data is not an image
+            print("Downloaded data is of an unknown type.")
+        }
         
     }
 

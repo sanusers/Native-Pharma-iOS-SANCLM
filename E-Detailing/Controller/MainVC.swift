@@ -1856,9 +1856,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         if !localParamArr.isEmpty {
             toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
                 if isCompleted {
+                    Shared.instance.removeLoaderInWindow()
                     self.toSetParams()
                     completion(true)
-                    Shared.instance.removeLoaderInWindow()
                 }
             }
         } else {

@@ -11,11 +11,12 @@ import UIKit
 
 extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return savePresentationArr?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: CreatedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CreatedPresentationCVC", for: indexPath) as!  CreatedPresentationCVC
+      
         cell.optionsHolderView.addTap {
             let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 120), on: cell.optionsIV, onframe: CGRect(), pagetype: .presentation)
             self.presentationHomeVC.navigationController?.present(vc, animated: true)
@@ -45,14 +46,38 @@ class PresentationHomeView : BaseView {
     @IBOutlet var addPresentationLbl: UILabel!
     
     @IBOutlet var contentsHolderView: UIView!
-    
+    var savePresentationArr : [SavedPresentation]?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.presentationHomeVC = baseVC as? PresentationHomeVC
         setupUI()
         initView()
+      
         cellRegistration()
+     
+    }
+    
+    
+    override func willAppear(baseVC: BaseViewController) {
+        retriveSavedPresentations()
         toLoadPresentationCollection()
+        
+    }
+    
+    func retriveSavedPresentations() {
+        
+        do {
+             savePresentationArr  = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.SavedPresentations)
+         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
+          //  self.toLoadBrandsTable()
+            dump(savePresentationArr)
+       } catch {
+           print("Error: \(error)")
+       }
+        
+        
+        
+ 
     }
     
     func toLoadPresentationCollection() {

@@ -27,8 +27,15 @@ final class ConnectionHandler : NSObject {
                                         serverTrustManager: .none)//Alamofire.SessionManager(configuration: configuration)
     }
     func getRequest(for api : APIEnums,
-                    params : Parameters) -> APIResponseProtocol{
+                    params : Parameters, istoDownload: Bool? = false, apiFilepath: String? = "") -> APIResponseProtocol{
         // + api.rawValue
+        
+        if istoDownload ?? false {
+            return self.getRequest(forAPI: slideURL + (apiFilepath ?? ""),
+                                   params: params,
+                                   CacheAttribute: api.cacheAttribute ?  .none : api)
+        }
+        
         if api.method == .get {
             return self.getRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
                                    params: params,
@@ -152,8 +159,9 @@ final class ConnectionHandler : NSObject {
         alamofireManager.request(api,
                                  method: .get,
                                  parameters: parameters,
-                                 encoding: URLEncoding.default,
-                                 headers: HTTPHeaders(header))
+                                 encoding: URLEncoding.default)
+        //,
+    //headers: HTTPHeaders(header)
         .responseJSON { (response) in
             print("Å api : ",response.request?.url ?? ("\(api)\(params)"))
             let endTime = Date()

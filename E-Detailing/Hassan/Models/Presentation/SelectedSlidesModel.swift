@@ -23,9 +23,23 @@ extension SelectedSlidesModel {
          by the `tableView(_:itemsForBeginning:at:)` method.
     */
     func dragItems(for indexPath: IndexPath) -> [UIDragItem] {
-        let placeName = placeNames[indexPath.row]
+        let slideNames = slideNames[indexPath.row]
 
-        let data = placeName.data(using: .utf8)
+        var data = Data()
+        
+        // Use JSONEncoder to convert the class object to Data
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted // Optional: Add formatting for readability
+            let jsonData = try encoder.encode(slideNames)
+            
+            // Now you have the class object as Data
+            print(String(data: jsonData, encoding: .utf8) ?? "Failed to convert Data to String")
+            data = jsonData
+        } catch {
+            print("Error encoding class object to Data: \(error)")
+        }
+        
         let itemProvider = NSItemProvider()
         
         itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .all) { completion in
@@ -40,30 +54,22 @@ extension SelectedSlidesModel {
 }
 
 class SelectedSlidesModel {
-        private(set) var placeNames = [
-            "Yosemite",
-            "Yellowstone",
-            "Theodore Roosevelt",
-            "Sequoia",
-            "Pinnacles",
-            "Mount Rainier",
-            "Mammoth Cave",
-            "Great Basin",
-            "Grand Canyon"
-        ]
+    
+    
+    var slideNames : [SlidesModel] = []
         
         /// The traditional method for rearranging rows in a table view.
      func moveItem(at sourceIndex: Int, to destinationIndex: Int) {
             guard sourceIndex != destinationIndex else { return }
             
-            let place = placeNames[sourceIndex]
-            placeNames.remove(at: sourceIndex)
-            placeNames.insert(place, at: destinationIndex)
+         let place = slideNames[sourceIndex]
+         slideNames.remove(at: sourceIndex)
+         slideNames.insert(place, at: destinationIndex)
         }
         
         /// The method for adding a new item to the table view's data model.
-    func addItem(_ place: String, at index: Int) {
-            placeNames.insert(place, at: index)
+    func addItem(_ place: SlidesModel, at index: Int) {
+        slideNames.insert(place, at: index)
         }
     
 }

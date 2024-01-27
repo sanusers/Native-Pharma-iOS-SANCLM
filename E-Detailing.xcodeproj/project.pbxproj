@@ -230,6 +230,7 @@
 		38EA3D172AFDED4C00DA7018 /* SessionInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */; };
 		38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */; };
 		38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EBB8902A6BD447008E007C /* QuickLinkCell.xib */; };
+		38EC6FB22B6242D10065A707 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EC6FB12B6242D10065A707 /* Media.swift */; };
 		38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EDEA792A6A5F16000E857C /* MainVC.swift */; };
 		38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B12B0C8FC200045D4F /* NotificationEnum.swift */; };
 		38F289B42B0CA70200045D4F /* CustomCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */; };
@@ -499,6 +500,7 @@
 		38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SessionInfoTVC.xib; sourceTree = "<group>"; };
 		38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLinkCell.swift; sourceTree = "<group>"; };
 		38EBB8902A6BD447008E007C /* QuickLinkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickLinkCell.xib; sourceTree = "<group>"; };
+		38EC6FB12B6242D10065A707 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		38EDEA792A6A5F16000E857C /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		38F289B12B0C8FC200045D4F /* NotificationEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEnum.swift; sourceTree = "<group>"; };
 		38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalenderCell.swift; sourceTree = "<group>"; };
@@ -730,6 +732,7 @@
 				38DD14B92B5002340036384F /* MenuResponseProtocol.swift */,
 				380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */,
 				3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */,
+				38EC6FB12B6242D10065A707 /* Media.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1456,6 +1459,7 @@
 				38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */,
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
 				3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */,
+				38EC6FB22B6242D10065A707 /* Media.swift in Sources */,
 				B287E63829F29F7C0097974D /* HomeVC.swift in Sources */,
 				3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */,
 				38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */,

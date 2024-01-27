@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import MobileCoreServices
 extension CreatePresentationView: UITextFieldDelegate {
     
 }
@@ -19,7 +20,7 @@ extension CreatePresentationView: UITableViewDropDelegate {
          that the view can consume.
     */
     func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-        return selectedSlidesModel!.canHandle(session)
+        return selectedSlidesModel.canHandle(session)
     }
 
     /**
@@ -68,12 +69,12 @@ extension CreatePresentationView: UITableViewDropDelegate {
         
         coordinator.session.loadObjects(ofClass: NSString.self) { items in
             // Consume drag items.
-            let stringItems = items as! [String]
+            let stringItems = items as! [SlidesModel]
             
             var indexPaths = [IndexPath]()
             for (index, item) in stringItems.enumerated() {
                 let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
-                self.selectedSlidesModel?.addItem(item, at: indexPath.row)
+                self.selectedSlidesModel.addItem(item, at: indexPath.row)
                 indexPaths.append(indexPath)
             }
 
@@ -91,7 +92,7 @@ extension CreatePresentationView: UITableViewDragDelegate {
          to implement for allowing dragging from a table.
     */
     func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        return selectedSlidesModel!.dragItems(for: indexPath)
+        return selectedSlidesModel.dragItems(for: indexPath)
     }
     
     func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
@@ -115,9 +116,9 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
         
         switch tableView {
         case brandsTable:
-            return 10
+            return self.groupedBrandsSlideModel?.count ?? 0
         case selectedSlidesTable:
-            return  selectedSlidesModel?.placeNames.count ?? 0
+            return  selectedSlidesModel.slideNames.count
         default:
             return 1
         }
@@ -129,11 +130,11 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
         case brandsTable:
             let cell: BrandsNameTVC = brandsTable.dequeueReusableCell(withIdentifier: "BrandsNameTVC", for: indexPath) as! BrandsNameTVC
             cell.selectionStyle = .none
-            
+            let model = groupedBrandsSlideModel?[indexPath.row] ?? GroupedBrandsSlideModel()
+            cell.toPopulateCell(model)
             cell.contentsHolderView.layer.borderWidth = 0
             cell.contentsHolderView.layer.borderColor = UIColor.clear.cgColor
             cell.contentsHolderView.elevate(0)
-   
             cell.accessoryIV.image = UIImage(systemName: "chevron.down")
         
             if selectedBrandsIndex == indexPath.row {
@@ -148,6 +149,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             cell.addTap {
                 self.selectedBrandsIndex = indexPath.row
                 self.brandsTable.reloadData()
+                self.selectSlidesCollection.reloadData()
             }
             
      return cell
@@ -155,8 +157,36 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             
         case selectedSlidesTable:
             let cell: SelectedSlidesTVC = selectedSlidesTable.dequeueReusableCell(withIdentifier: "SelectedSlidesTVC", for: indexPath) as! SelectedSlidesTVC
-            cell.titleLbl.text = self.selectedSlidesModel?.placeNames[indexPath.row]
+            
             cell.selectionStyle = .none
+            let model = self.selectedSlidesModel.slideNames[indexPath.row]
+            cell.titleLbl.text = model.name
+            cell.descriptionLbl.text = "Yet to be added"
+            cell.deleteoptionView.addTap {
+                self.selectedSlidesModel.slideNames = self.selectedSlidesModel.slideNames.filter { aSlideModel in
+                    aSlideModel.slideId != model.slideId
+                }
+                self.groupedBrandsSlideModel?[self.selectedBrandsIndex].groupedSlide.forEach({ aSlideModel in
+                    if  aSlideModel.slideId == model.slideId {
+                        aSlideModel.isSelected = false
+                    }
+                })
+                
+                self.selectedSlides.forEach({ aSlideModel in
+                    if  aSlideModel.slideId == model.slideId {
+                        aSlideModel.isSelected = false
+                    }
+                })
+                
+                
+                self.selectedSlides = self.selectedSlides.filter({ aslideModel in
+                    aslideModel.isSelected
+                })
+                
+                self.sledeCountLbl.text = "\(self.selectedSlides.count)"
+                self.selectedSlidesTable.reloadData()
+                self.selectSlidesCollection.reloadData()
+            }
             return cell
         default:
             return UITableViewCell()
@@ -182,7 +212,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
     }
     
      func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-         selectedSlidesModel!.moveItem(at: sourceIndexPath.row, to: destinationIndexPath.row)
+         selectedSlidesModel.moveItem(at: sourceIndexPath.row, to: destinationIndexPath.row)
     }
     
      func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -231,59 +261,82 @@ class CreatePresentationView : BaseView {
     @IBOutlet var titleLbl: UILabel!
     @IBOutlet var backHolderView: UIView!
     
+    @IBOutlet var sampleImage: UIImageView!
     @IBOutlet var selectedSlidesTable: UITableView!
-    
-    var selectedBrandsIndex: Int? = nil
-    var selectedSlidesModel: SelectedSlidesModel?
+    var arrayOfBrandSlideObjects = [BrandSlidesModel]()
+    var arrayOfAllSlideObjects = [SlidesModel]()
+    var groupedBrandsSlideModel : [GroupedBrandsSlideModel]?
+    var selectedSlides = [SlidesModel]()
+    var selectedBrandsIndex: Int = 0
+    var selectedPresentationIndex: Int? = nil
+    var selectedSlidesModel = SelectedSlidesModel()
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.createPresentationVC = baseVC as? CreatePresentationVC
         toLoadPresentationData()
         setupUI()
         cellRegistration()
-        toLoadBrandsTable()
-        toLoadSelectedSlidesCollection()
-        toLoadselectedSlidesTable()
+       // toLoadBrandsTable()
+     
+    
         initView()
     }
     
     
     func toLoadPresentationData() {
-
-        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse)
-     //   var localParamArr = [[String: Any]]()
-        var encodedSlideModelData: [SlidesModel]?
         
-      
-        
-        var localParamArr = [[String:  Any]]()
         do {
-            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as?  [[String:  Any]] ??  [[String:  Any]]()
-            dump(localParamArr)
-        } catch {
-            self.toCreateToast("unable to retrive")
+        self.arrayOfBrandSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedBrandSlideData)
+         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
+          //  self.toLoadBrandsTable()
+       } catch {
+           print("Error: \(error)")
+       }
+        
+        
+        do {
+        self.arrayOfAllSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedSlideData)
+         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
+          //  self.toLoadBrandsTable()
+       } catch {
+           print("Error: \(error)")
+       }
+        
+        
+       
+        self.groupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
+        
+        self.arrayOfBrandSlideObjects.forEach { brandSlideModel in
+           let aBrandData =  arrayOfAllSlideObjects.filter({ aSlideModel in
+               aSlideModel.code == brandSlideModel.productBrdCode
+            })
+            
+            let aBrandGroup = GroupedBrandsSlideModel()
+           
+            aBrandGroup.groupedSlide = aBrandData
+            aBrandGroup.priority = brandSlideModel.priority
+            aBrandGroup.updatedDate = brandSlideModel.updatedDate
+            aBrandGroup.divisionCode = brandSlideModel.divisionCode
+            aBrandGroup.productBrdCode = brandSlideModel.productBrdCode
+            aBrandGroup.subdivisionCode = brandSlideModel.subdivisionCode
+            aBrandGroup.createdDate = brandSlideModel.createdDate
+            aBrandGroup.id = brandSlideModel.id
+            
+            self.groupedBrandsSlideModel?.append(aBrandGroup)
         }
         
-//        if let jsonData = localParamArr.data(using: .utf8),
-//           let person = try? JSONDecoder().decode([].self, from: jsonData) {
-//            print(person.name)  // Output: John
-//            print(person.age)   // Output: 30
-//        } else {
-//            print("Failed to decode JSON into Person")
-//        }
-        
-        
-        
-        
-        
-        
-//        ConnectionHandler.shared.toConvertDataToObj(responseData: paramData, to: [SlidesModel].self) { decodecObj in
-//            encodedSlideModelData = decodecObj
-//
-//        }
-        
+        toLoadBrandsTable()
+        toLoadSelectedSlidesCollection()
     }
     
+    
+    func toGenerateDataSource() {
+        
+        
+        
+        
+    }
+
     func initView() {
         addNameTF.delegate = self
         
@@ -297,7 +350,54 @@ class CreatePresentationView : BaseView {
             self.createPresentationVC.navigationController?.popViewController(animated: true)
         }
         
+
+        
+        
+        saveVIew.addTap { [self] in
+            
+            
+          
+
+            
+            retriveSavedPresentations()
+
+        }
+        
+  
+        
+        
+        
+        
     }
+    
+    
+    func retriveSavedPresentations() {
+        
+        var savePresentationArr = [SavedPresentation]()
+        
+        do {
+             savePresentationArr = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.SavedPresentations)
+         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
+          //  self.toLoadBrandsTable()
+            dump(savePresentationArr)
+            
+            
+            
+       } catch {
+           print("Error: \(error)")
+       }
+        
+        var savedPresentation = SavedPresentation()
+        savedPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel ?? [GroupedBrandsSlideModel]()
+        
+     
+        savePresentationArr.append(savedPresentation)
+        
+        LocalStorage.shared.saveObjectToUserDefaults(savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
+ 
+    }
+    
+    func saveObjectToDafaults() {}
     
     func cellRegistration() {
         brandsTable.register(UINib(nibName: "BrandsNameTVC", bundle: nil), forCellReuseIdentifier: "BrandsNameTVC")
@@ -322,6 +422,7 @@ class CreatePresentationView : BaseView {
         slidesCountHolder.layer.cornerRadius = 3
         sledesCountVxView.backgroundColor = .appGreyColor
         sledeCountLbl.setFont(font: .bold(size: .BODY))
+        sledeCountLbl.text = "\(0)"
         playView.backgroundColor = .appTextColor
         playView.layer.cornerRadius = 5
         playLbl.setFont(font: .bold(size: .BODY))
@@ -352,7 +453,7 @@ class CreatePresentationView : BaseView {
     
     func toLoadselectedSlidesTable() {
        // createPresentationVC.navigationItem.rightBarButtonItem
-        self.selectedSlidesModel = SelectedSlidesModel()
+      //  self.selectedSlidesModel = SelectedSlidesModel()
         selectedSlidesTable.delegate = self
         selectedSlidesTable.dataSource = self
         selectedSlidesTable.dragDelegate = self
@@ -375,11 +476,49 @@ class CreatePresentationView : BaseView {
 
 extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        guard self.groupedBrandsSlideModel?.count != 0  else {
+            return 0
+        }
+        
+        return self.groupedBrandsSlideModel?[selectedBrandsIndex].groupedSlide.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: SelectPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectPresentationCVC", for: indexPath) as! SelectPresentationCVC
+        
+        let model = self.groupedBrandsSlideModel?[selectedBrandsIndex].groupedSlide[indexPath.row] ?? SlidesModel()
+        cell.toPopulateCell(model)
+        
+        
+        if model.isSelected {
+            cell.selectionView.isHidden = false
+            cell.selectedVxVIew.isHidden = false
+        } else {
+            cell.selectionView.isHidden = true
+            cell.selectedVxVIew.isHidden = true
+        }
+        
+        
+        
+        cell.addTap {
+            //self.selectedPresentationIndex = indexPath.row
+            model.isSelected = model.isSelected == true ? false : true
+            if model.isSelected  {
+                self.selectedSlides.append(model)
+               
+            } else {
+                self.selectedSlides = self.selectedSlides.filter({ aslideModel in
+                    aslideModel.isSelected
+                })
+            }
+            self.selectedSlidesModel = SelectedSlidesModel()
+            self.selectedSlidesModel.slideNames =  self.selectedSlides
+            self.selectSlidesCollection.reloadData()
+            self.sledeCountLbl.text = "\(self.selectedSlides.count)"
+            self.toLoadselectedSlidesTable()
+            
+        }
+        
         return cell
     }
     
@@ -388,4 +527,23 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
         return CGSize(width: collectionView.width / 2, height: collectionView.height / 5)
     }
     
+}
+
+
+class MediaDownloader {
+    func downloadMedia(from url: URL, completion: @escaping (Data?, Error?) -> Void) {
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            guard let data = data else {
+                let noDataError = NSError(domain: "E-Detailing", code: 1, userInfo: [NSLocalizedDescriptionKey: "No data received"])
+                completion(nil, noDataError)
+                return
+            }
+
+            completion(data, nil)
+        }.resume()
+    }
 }

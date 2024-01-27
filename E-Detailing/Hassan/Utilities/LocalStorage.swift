@@ -8,6 +8,13 @@
 import Foundation
 
 class LocalStorage {
+    
+    enum UserDefaultsError: Error {
+        case encodingFailed
+        case decodingFailed
+        case dataNotFound
+    }
+    
     static var shared = LocalStorage()
     
     var sentToApprovalModelArr = [SentToApprovalModel]()
@@ -21,7 +28,11 @@ class LocalStorage {
         case offsets
         case outboxParams
         case slideResponse
+        case BrandSlideResponse
         case isConnectedToNetwork
+        case LoadedSlideData
+        case LoadedBrandSlideData
+        case SavedPresentations
     }
     
     enum Offsets: String {
@@ -115,6 +126,39 @@ class LocalStorage {
         let result = UserDefaults.standard.double(forKey: key.rawValue)
         return result
     }
+    
+    
+    // Save function
+    func saveObjectToUserDefaults<T: Codable>(_ object: T, forKey key: LocalValue) {
+        do {
+            // Convert the object to Data
+            let encoder = JSONEncoder()
+            let encodedData = try encoder.encode(object)
+
+            // Save the Data to UserDefaults
+            UserDefaults.standard.set(encodedData, forKey: key.rawValue)
+        } catch {
+            print("Error encoding object: \(error)")
+        }
+    }
+
+    // Retrieve function
+    func retrieveObjectFromUserDefaults<T: Codable>(forKey key: LocalValue) throws -> T {
+        guard let encodedData = UserDefaults.standard.data(forKey: key.rawValue) else {
+            throw UserDefaultsError.dataNotFound
+        }
+
+        do {
+            // Decode Data to the specified type
+            let decoder = JSONDecoder()
+            let object = try decoder.decode(T.self, from: encodedData)
+            return object
+        } catch {
+            throw UserDefaultsError.decodingFailed
+        }
+    }
+    
+    
 }
 
 // Thanks to the author @Hassan

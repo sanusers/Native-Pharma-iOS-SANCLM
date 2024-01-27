@@ -8,9 +8,151 @@
 import Foundation
 import UIKit
 import Alamofire
+import MobileCoreServices
 
+extension MasterSyncVC {
+    func toLoadPresentationData(type : MasterInfo) {
+        
+    
+        
+        let paramData = type == MasterInfo.slides ? LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse) :  LocalStorage.shared.getData(key: LocalStorage.LocalValue.BrandSlideResponse)
+     //   var localParamArr = [[String: Any]]()
+      //  var encodedSlideModelData: [SlidesModel]?
+ 
+        var localParamArr = [[String:  Any]]()
+        do {
+            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as?  [[String:  Any]] ??  [[String:  Any]]()
+            dump(localParamArr)
+        } catch {
+            self.toCreateToast("unable to retrive")
+        }
+        
+        type == MasterInfo.slides ? arrayOfAllSlideObjects.removeAll() :  arrayOfBrandSlideObjects.removeAll()
+        
+        if type == MasterInfo.slides {
+            for dictionary in localParamArr {
+                if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary),
+                   let model = try? JSONDecoder().decode(SlidesModel.self , from: jsonData) {
+                    
+                   arrayOfAllSlideObjects.append(model)
+                    
+                   
+                } else {
+                    print("Failed to decode dictionary into YourModel")
+                }
+            }
+        } else {
+            for dictionary in localParamArr {
+                if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary),
+                   let model = try? JSONDecoder().decode(BrandSlidesModel.self , from: jsonData) {
+                    
+                   arrayOfBrandSlideObjects.append(model)
+                    
+                   
+                } else {
+                    print("Failed to decode dictionary into YourModel")
+                }
+            }
+        }
+        
 
+        if type == .slides {
+            toSendParamsToAPISerially(index: 0, items:  arrayOfAllSlideObjects) { _ in
+                
+            }
+        } else {
+            LocalStorage.shared.saveObjectToUserDefaults(arrayOfBrandSlideObjects, forKey: LocalStorage.LocalValue.LoadedBrandSlideData)
+        }
+     
+  
 
+    }
+    
+    
+
+    
+    
+    
+    func toSendParamsToAPISerially(index: Int, items: [SlidesModel], completion: @escaping (Bool) -> Void) {
+        Shared.instance.showLoaderInWindow()
+        self.arrayOfAllSlideObjects = items
+        guard index < items.count else {
+            // All items processed, exit the recursion
+    
+                LocalStorage.shared.saveObjectToUserDefaults(arrayOfAllSlideObjects, forKey: LocalStorage.LocalValue.LoadedSlideData)
+           
+       
+            
+            Shared.instance.removeLoaderInWindow()
+            DispatchQueue.main.async {
+             //   self.toLoadOutboxTable()
+               // self.toLoadBrandsTable()
+                
+                
+                self.toCreateToast("Download completed")
+            }
+            completion(true)
+            return
+        }
+        
+        let params = items[index]
+        
+        
+        let filePath = params.filePath
+        let url =  slideURL+filePath
+
+        
+    
+        if index == 4 {
+            print("Reached")
+        
+        }
+        
+       let type = mimeTypeForPath(path: url)
+        params.utType = type
+        
+// https://sanffa.info/Edetailing_files/DP/download/CC_VA_2021_.jpg
+
+        self.downloadData(mediaURL : url) {  data ,error  in
+            if let error = error {
+                print("Error downloading media: \(error)")
+                return
+            }
+            if let data = data {
+                params.slideData = data
+             
+                completion(true)
+            }
+            
+            let nextIndex = index + 1
+            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in
+                
+            }
+            
+        }
+
+    }
+    
+    func downloadData(mediaURL: String, competion: @escaping (Data?, Error?) -> Void) {
+        let downloader = MediaDownloader()
+        let mediaURL = URL(string: mediaURL)!
+        downloader.downloadMedia(from: mediaURL) { (data, error) in
+            competion(data, error)
+        }
+    }
+    
+    func mimeTypeForPath(path: String) -> String {
+        let url = NSURL(fileURLWithPath: path)
+        let pathExtension = url.pathExtension
+
+        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension! as NSString, nil)?.takeRetainedValue() {
+            if let mimetype = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+                return mimetype as String
+            }
+        }
+        return "application/octet-stream"
+    }
+}
 
 class MasterSyncVC : UIViewController {
     
@@ -34,6 +176,9 @@ class MasterSyncVC : UIViewController {
             _ = self.animations.filter{$0 == false}
         }
     }
+    
+    var arrayOfAllSlideObjects = [SlidesModel]()
+    var arrayOfBrandSlideObjects = [BrandSlidesModel]()
     
     var selectedHeadquarter : Subordinate? {
         didSet{
@@ -290,20 +435,36 @@ class MasterSyncVC : UIViewController {
                             print("Caught")
                         }
                         
-                        if let response = apiResponse as? [[String : Any]] {
-                            DBManager.shared.saveMasterData(type: type, Values: response,id: self.getSFCode)
+                        if let jsonObjectresponse = apiResponse as? [[String : Any]] {
+                            DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: self.getSFCode)
                             
-                            if type == MasterInfo.slides {
-                                var slides = AppDefaults.shared.getSlides()
-                                slides.removeAll()
-                                slides.append(contentsOf: response)
+                            if type == MasterInfo.slides || type == MasterInfo.slideBrand {
+  
                                 
-                                let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: response)
+                                switch type {
+                                case MasterInfo.slides:
+                                    
+                                    var slides = AppDefaults.shared.getSlides()
+                                    slides.removeAll()
+                                    slides.append(contentsOf: jsonObjectresponse)
+                                    AppDefaults.shared.save(key: .slide, value: slides)
+                                    LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
+                                    self.toLoadPresentationData(type: MasterInfo.slides)
+                                    
+                                    
+                                case MasterInfo.slideBrand:
+                                    
+                                    LocalStorage.shared.setData(LocalStorage.LocalValue.BrandSlideResponse, data: response.data!)
+                                    self.toLoadPresentationData(type: MasterInfo.slideBrand)
+                                default:
+                                    print("Yet to implement")
+                                }
+                            
                                 
-                                LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: jsonDatum)
                                 
+                           
                                 
-                                AppDefaults.shared.save(key: .slide, value: slides)
+                              
                             }
                         }else if let responseDic = apiResponse as? [String : Any] {
                             DBManager.shared.saveMasterData(type: type, Values: [responseDic],id: self.getSFCode)

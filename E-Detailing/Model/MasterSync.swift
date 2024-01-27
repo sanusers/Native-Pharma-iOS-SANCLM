@@ -307,6 +307,8 @@ struct MasterSyncParams {
         let paramString = "{\"tableName\":\"getprodslides\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
+        
+   // {"tableName":"getprodslides","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"ASM","state_code":"13","subdivision_code":"86,"}
     }
     
     static var subordinateParams : [String : Any] {

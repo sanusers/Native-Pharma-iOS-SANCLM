@@ -57,6 +57,7 @@ var appMainURL : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?ax
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
  
  var APIUrl : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?axn="
+ var slideURL : String = "https://sanffa.info/Edetailing_files/DP/download/"
  var licenseKey : String = ""
 //+ "api/"
 
