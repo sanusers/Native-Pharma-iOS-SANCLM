@@ -8,7 +8,30 @@
 import Foundation
 import UIKit
 
-
+extension PresentationHomeView: PopOverVCDelegate {
+    func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
+        print("Index is: \(index) -- ArrIndex is \(SelectedArrIndex)")
+        
+        switch index {
+        case 0:
+            //VIEW
+            moveToCreatePresentationVC()
+        case 1:
+            //EDIT
+            let model = self.savePresentationArr?[createdPresentationSelectedIndex ?? 0] ?? SavedPresentation()
+            toEditPresentation(model: model)
+        case 2:
+            //DELETE
+         toShowAlert()
+        default:
+            print("Yet to implement")
+        }
+        
+    }
+    
+    
+}
+ 
 extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return savePresentationArr?.count ?? 0
@@ -16,9 +39,18 @@ extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: CreatedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CreatedPresentationCVC", for: indexPath) as!  CreatedPresentationCVC
+        
+        let model = savePresentationArr?[indexPath.row]
+            
+            if let model = model {
+                cell.populateCell(model: model)
+            }
+            
       
-        cell.optionsHolderView.addTap {
+        cell.addTap {
+            self.createdPresentationSelectedIndex = indexPath.row
             let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 120), on: cell.optionsIV, onframe: CGRect(), pagetype: .presentation)
+            vc.delegate = self
             self.presentationHomeVC.navigationController?.present(vc, animated: true)
         }
         return cell
@@ -32,6 +64,26 @@ extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 class PresentationHomeView : BaseView {
+    
+    enum PageType {
+        case exists
+        case empty
+    }
+    
+    func toSetPageType(pageType: PageType) {
+        switch pageType {
+            
+        case .exists:
+            self.presentationCollectionVIew.isHidden = false
+            self.noPresentationView.isHidden = true
+            cellRegistration()
+            toLoadPresentationCollection()
+        case .empty:
+            self.presentationCollectionVIew.isHidden = true
+            self.noPresentationView.isHidden = false
+        }
+    }
+    
     var presentationHomeVC : PresentationHomeVC!
     
     @IBOutlet var presentationCollectionVIew: UICollectionView!
@@ -43,24 +95,28 @@ class PresentationHomeView : BaseView {
     
     @IBOutlet var titlrLbl: UILabel!
     
+    @IBOutlet var noPresentationsLbl: UILabel!
     @IBOutlet var addPresentationLbl: UILabel!
     
+    @IBOutlet var noPresentationView: UIView!
     @IBOutlet var contentsHolderView: UIView!
+    var pageType: PageType = .empty
     var savePresentationArr : [SavedPresentation]?
+    var createdPresentationSelectedIndex: Int? = nil
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.presentationHomeVC = baseVC as? PresentationHomeVC
         setupUI()
         initView()
-      
-        cellRegistration()
+        
+        retriveSavedPresentations()
+        
      
     }
     
     
     override func willAppear(baseVC: BaseViewController) {
-        retriveSavedPresentations()
-        toLoadPresentationCollection()
+   
         
     }
     
@@ -71,13 +127,17 @@ class PresentationHomeView : BaseView {
          //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
           //  self.toLoadBrandsTable()
             dump(savePresentationArr)
+            if savePresentationArr?.count == 0 {
+                toSetPageType(pageType: .empty)
+            } else {
+                toSetPageType(pageType: .exists)
+            }
+           
        } catch {
            print("Error: \(error)")
+           toSetPageType(pageType: .empty)
+           
        }
-        
-        
-        
- 
     }
     
     func toLoadPresentationCollection() {
@@ -98,6 +158,9 @@ class PresentationHomeView : BaseView {
 //            layout.collectionView?.isScrollEnabled = true
 //
 //        }
+        
+        noPresentationsLbl.setFont(font: .medium(size: .BODY))
+        noPresentationsLbl.textColor = .appTextColor
         addPresentationLbl.setFont(font: .bold(size: .BODY))
         addPresentationLbl.textColor = .appWhiteColor
         addpresentationView.layer.cornerRadius = 5
@@ -120,9 +183,58 @@ class PresentationHomeView : BaseView {
         }
         
         addpresentationView.addTap {
-            let vc = CreatePresentationVC.initWithStory()
-            self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
+            self.moveToCreatePresentationVC()
         }
+    }
+    
+    
+    func moveToCreatePresentationVC() {
+        let vc = CreatePresentationVC.initWithStory()
+        vc.delegate = self
+        self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    
+    func toEditPresentation(model: SavedPresentation) {
+        let vc = CreatePresentationVC.initWithStory()
+        vc.delegate = self
+        vc.isToedit = true
+      
+       // vc.groupedBrandsSlideModel = model.groupedBrandsSlideModel
+        vc.savedPresentation = model
+        self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func toDeletePresentation() {
+        self.savePresentationArr?.remove(at: createdPresentationSelectedIndex ?? 0)
+        LocalStorage.shared.saveObjectToUserDefaults(self.savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
+        
+        
+        retriveSavedPresentations()
+       
+    }
+    
+    
+    func toShowAlert() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Are you sure about removing presentation?", okAction: "Yes",cancelAction: "No")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            self.toDeletePresentation()
+        }
+        commonAlert.addAdditionalCancelAction {
+            print("yes action")
+         
+        }
+    }
+}
+
+
+extension PresentationHomeView: CreatePresentationVCDelegate {
+    func presentationSaved() {
+        retriveSavedPresentations()
+        toLoadPresentationCollection()
     }
     
     

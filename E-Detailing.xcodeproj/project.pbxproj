@@ -70,6 +70,8 @@
 		38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C0F2472A41A10500C4ACB9 /* ProductSlide + Extension.swift */; };
 		38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C1C4382AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift */; };
 		38C1C43B2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C1C43A2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib */; };
+		38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C25E9F2B64D7E300A8E076 /* DeletePHIAlertview.swift */; };
+		38C25EA22B64D88E00A8E076 /* DeletePHIAlertview.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C25EA12B64D88E00A8E076 /* DeletePHIAlertview.xib */; };
 		38C4245E2A2B4DB1004A89EF /* MasterSyncCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4245D2A2B4DB1004A89EF /* MasterSyncCell.xib */; };
 		38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4245F2A2B4DC5004A89EF /* MasterSyncCell.swift */; };
 		38C44CC42A404DB6009D7B68 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C44CC32A404DB6009D7B68 /* DBManager.swift */; };
@@ -340,6 +342,8 @@
 		38C0F2472A41A10500C4ACB9 /* ProductSlide + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSlide + Extension.swift"; sourceTree = "<group>"; };
 		38C1C4382AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleInputTableViewCell.swift; sourceTree = "<group>"; };
 		38C1C43A2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleInputTableViewCell.xib; sourceTree = "<group>"; };
+		38C25E9F2B64D7E300A8E076 /* DeletePHIAlertview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePHIAlertview.swift; sourceTree = "<group>"; };
+		38C25EA12B64D88E00A8E076 /* DeletePHIAlertview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeletePHIAlertview.xib; sourceTree = "<group>"; };
 		38C4245D2A2B4DB1004A89EF /* MasterSyncCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MasterSyncCell.xib; sourceTree = "<group>"; };
 		38C4245F2A2B4DC5004A89EF /* MasterSyncCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncCell.swift; sourceTree = "<group>"; };
 		38C44CC32A404DB6009D7B68 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -717,6 +721,7 @@
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				38C25E9E2B64D7C900A8E076 /* Common alert */,
 				38DD14B22B4FBB6C0036384F /* Loaders */,
 				385A424C2AFBAB6400C0A58A /* View+UX.swift */,
 				38E3C3632AF9FB0B00623C33 /* Constants.swift */,
@@ -776,6 +781,15 @@
 				38E3C3672AFA032400623C33 /* Cofiguration */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		38C25E9E2B64D7C900A8E076 /* Common alert */ = {
+			isa = PBXGroup;
+			children = (
+				38C25EA12B64D88E00A8E076 /* DeletePHIAlertview.xib */,
+				38C25E9F2B64D7E300A8E076 /* DeletePHIAlertview.swift */,
+			);
+			path = "Common alert";
 			sourceTree = "<group>";
 		};
 		38C4245C2A2B4D1F004A89EF /* View */ = {
@@ -1256,6 +1270,7 @@
 				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
 				38DAADEA2B5916AC00966B33 /* OutboxDetailsTVC.xib in Resources */,
 				B287E68429F2A20F0097974D /* Satoshi-Medium.otf in Resources */,
+				38C25EA22B64D88E00A8E076 /* DeletePHIAlertview.xib in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
@@ -1512,6 +1527,7 @@
 				38C600DC2A93392100C733AF /* Color.swift in Sources */,
 				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				3801D4952B4ECF4800A9740F /* HomeSideMenuVC.swift in Sources */,
+				38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */,
 				38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */,
 				38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */,
 				38E6598C2B33195C00E7BF42 /* DetailedReportView.swift in Sources */,

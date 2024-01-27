@@ -33,5 +33,28 @@ class CreatedPresentationCVC: UICollectionViewCell {
         optionsIV.transform =  optionsIV.transform.rotated(by: .pi  * 1.5)
         optionsIV.tintColor = .appWhiteColor
     }
+    
+    func populateCell(model: SavedPresentation) {
+        
+        
+        var slidesModel = [SlidesModel]()
+        model.groupedBrandsSlideModel.forEach { aGroupedBrandsSlideModel in
+          let aslidesModel = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                aSlidesModel.isSelected
+            }
+            slidesModel.append(contentsOf: aslidesModel)
+        }
+        
+
+            slideDescriptionLbl.text = "\(slidesModel.count) Asserts"
+        
+        
+        slideTitleLbl.text = model.name
+        let groupedBrandsSlideElement = model.groupedBrandsSlideModel.randomElement()
+        let slideElement = groupedBrandsSlideElement?.groupedSlide.randomElement()
+        let imageData = slideElement?.slideData
+        presentationIV.image = UIImage(data: imageData ?? Data())
+    }
+    
 
 }

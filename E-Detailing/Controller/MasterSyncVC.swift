@@ -79,7 +79,7 @@ extension MasterSyncVC {
         guard index < items.count else {
             // All items processed, exit the recursion
     
-                LocalStorage.shared.saveObjectToUserDefaults(arrayOfAllSlideObjects, forKey: LocalStorage.LocalValue.LoadedSlideData)
+                LocalStorage.shared.saveObjectToUserDefaults(items, forKey: LocalStorage.LocalValue.LoadedSlideData)
            
        
             

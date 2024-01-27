@@ -100,7 +100,12 @@ import Foundation
     }
     
     
-    class SlidesModel: Codable {
+    class SlidesModel: Codable, Hashable {
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(slideId)
+        }
+        
         let code: Int
         let camp: Int
         let productDetailCode: String
@@ -136,6 +141,9 @@ import Foundation
             case effTo = "EffTo"
             case ordNo = "OrdNo"
             case priority = "Priority"
+            case slideData
+            case utType
+            case isSelected
             
         }
         
@@ -156,9 +164,9 @@ import Foundation
             self.effTo              =   try container.decodeIfPresent(DateInfo.self, forKey: .effTo) ?? DateInfo()
             self.ordNo              = container.safeDecodeValue(forKey: .ordNo)
             self.priority           = container.safeDecodeValue(forKey: .priority)
-            self.slideData = Data()
-            self.utType = String()
-            self.isSelected = Bool()
+            self.slideData          =  try container.decodeIfPresent(Data.self, forKey: .slideData) ?? Data()
+            self.utType             = container.safeDecodeValue(forKey: .utType)
+            self.isSelected         = container.safeDecodeValue(forKey: .isSelected)
         }
         
         
@@ -187,6 +195,12 @@ import Foundation
         }
     }
     
+extension SlidesModel: Equatable {
+    static func == (lhs: SlidesModel, rhs: SlidesModel) -> Bool {
+        return lhs.slideId == rhs.slideId
+    }
+}
+
     class DateInfo: Codable {
         let date: String
         let timezone: String
@@ -225,13 +239,18 @@ import Foundation
 
 class SavedPresentation: Codable {
     var groupedBrandsSlideModel : [GroupedBrandsSlideModel]
-    
+    var uuid: UUID
+    var name: String
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.groupedBrandsSlideModel = try container.decode([GroupedBrandsSlideModel].self, forKey: .groupedBrandsSlideModel)
+        self.uuid = try container.decode(UUID.self, forKey: .uuid)
+        self.name = container.safeDecodeValue(forKey: .name)
     }
     
     init() {
         self.groupedBrandsSlideModel = [GroupedBrandsSlideModel]()
+        self.uuid = UUID()
+        self.name = String()
     }
 }

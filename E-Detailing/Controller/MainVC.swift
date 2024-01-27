@@ -1824,7 +1824,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func toretryDCRupload( date: String, completion: @escaping (Bool) -> Void) {
-        Shared.instance.showLoaderInWindow()
+    
         let paramData = LocalStorage.shared.getData(key: .outboxParams)
         var localParamArr = [String: [[String: Any]]]()
         do {
@@ -1953,7 +1953,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     
     func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (Bool) -> Void) {
-        
+        Shared.instance.showLoaderInWindow()
         sessionResponseVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
             switch result {
             case .success(let response):

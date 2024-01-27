@@ -7,10 +7,22 @@
 
 import Foundation
 import UIKit
+
+
+protocol CreatePresentationVCDelegate: AnyObject {
+    func presentationSaved()
+}
+
+
 class CreatePresentationVC: BaseViewController {
     
     @IBOutlet var createPresentationView: CreatePresentationView!
     
+    
+    weak var delegate: CreatePresentationVCDelegate?
+    var isToedit: Bool = false
+  
+    var savedPresentation : SavedPresentation?
     override func viewDidLoad() {
         super.viewDidLoad()
 
