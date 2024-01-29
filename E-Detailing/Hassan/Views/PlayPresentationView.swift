@@ -10,6 +10,27 @@ import UIKit
 
 extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    func stopAllVideoPlayers() {
+        // Iterate through visible cells and stop their video players
+        for cell in PlayingSlideCollection.visibleCells {
+            if let videoCell = cell as? VideoPlayerCVC {
+                videoCell.player?.pause()
+                videoCell.player = nil
+            }
+        }
+    }
+    
+     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let videoCell = cell as? VideoPlayerCVC {
+          //  videoCell.playVideo()
+        }
+    }
+
+     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let videoCell = cell as? VideoPlayerCVC {
+            videoCell.pauseVideo()
+        }
+    }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         // Calculate the index based on the current content offset and item size
@@ -29,26 +50,76 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return colors.count
+        return selectedSlideModel?.count ?? 0
     }
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+       
         
         switch collectionView {
+ 
         case PlayingSlideCollection:
-            let cell: PlayLoadedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayLoadedPresentationCVC", for: indexPath) as! PlayLoadedPresentationCVC
-            cell.addTap {
-                self.pageState = .expanded
-                self.setPageType(self.pageState)
+            let model =  self.selectedSlideModel?[indexPath.row]
+            switch model?.utType {
+            case "application/pdf":
+                let cell: PlayPDFCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayPDFCVC", for: indexPath) as! PlayPDFCVC
+                cell.toLoadData(data: model?.slideData ?? Data())
+                cell.addTap {
+                    self.pageState = .expanded
+                    self.setPageType(self.pageState)
+                }
+             //   cell.presentationIV.backgroundColor = colors[indexPath.row]
+               
+                return cell
+            case "image/jpeg":
+                let cell: PlayLoadedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayLoadedPresentationCVC", for: indexPath) as! PlayLoadedPresentationCVC
+                if let model = model {
+                    cell.populateCell(model: model)
+                }
+              
+                cell.addTap {
+                    self.pageState = .expanded
+                    self.setPageType(self.pageState)
+                }
+               // cell.presentationIV.backgroundColor = colors[indexPath.row]
+               
+                return cell
+            case "video/mp4":
+                
+                let cell: VideoPlayerCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "VideoPlayerCVC", for: indexPath) as! VideoPlayerCVC
+               
+                cell.setupPlayer(data: model?.slideData ?? Data())
+                cell.state = self.pageState
+                cell.addTap {
+                    self.pageState = .expanded
+                    self.setPageType(self.pageState)
+                }
+                //cell.presentationIV.backgroundColor = colors[indexPath.row]
+               
+                return cell
+            default:
+                
+                let cell: PlayLoadedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayLoadedPresentationCVC", for: indexPath) as! PlayLoadedPresentationCVC
+               
+             
+                cell.addTap {
+                    self.pageState = .expanded
+                    self.setPageType(self.pageState)
+                }
+                //cell.presentationIV.backgroundColor = colors[indexPath.row]
+               
+                return cell
             }
-            cell.presentationIV.backgroundColor = colors[indexPath.row]
-           
-            return cell
+
         case loadedSlidesCollection:
+            let model =  self.selectedSlideModel?[indexPath.row]
             let cell: PlayPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayPresentationCVC", for: indexPath) as! PlayPresentationCVC
-            
-            cell.presentationIV.backgroundColor = colors[indexPath.row]
+            if let model = model {
+                cell.toPopulateCell(model)
+            }
+          //  cell.presentationIV.backgroundColor = colors[indexPath.row]
             if indexPath.row ==  self.selectedLoadPresentationIndex  {
                 cell.holderViewWidth.constant = 155
                 cell.holderViewHeight.constant = 105
@@ -63,6 +134,8 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             
             cell.addTap {
                 self.selectedLoadPresentationIndex = indexPath.row
+                
+                self.PlayingSlideCollection.reloadData()
                 
                 self.PlayingSlideCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
                 
@@ -102,17 +175,20 @@ class  PlayPresentationView: BaseView {
     
     
     func setPageType(_ type: PageState) {
+        self.pageState = type
         switch type {
             
         case .expanded:
             self.viewMInimize.isHidden = false
             self.viewClosePreview.isHidden = true
             self.loadedCollectionHolderView.isHidden = true
-            
+            NotificationCenter.default.post(name: NSNotification.Name("viewExpanded"), object: nil)
         case .minimized:
             self.viewMInimize.isHidden = true
             self.viewClosePreview.isHidden = false
             self.loadedCollectionHolderView.isHidden = false
+            NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
+           
         }
         
         
@@ -138,15 +214,16 @@ class  PlayPresentationView: BaseView {
     
     var pageState : PageState = .expanded
     var selectedLoadPresentationIndex : Int? = 0
-    let colors : [UIColor] = [.appBlue, .appBrown, .appGreen, .appLightPink, .appGreyColor, .appLightTextColor, .systemYellow, .systemTeal]
+    var selectedSlideModel : [SlidesModel]?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.playPresentationVC = baseVC as? PlayPresentationVC
         setupUI()
         initView()
         cellregistration()
-        toLoadPlayingSlideCollection()
+      
         toLoadloadedSlidesCollection()
+        toLoadPlayingSlideCollection()
        // cellRegistration()
        // toLoadPresentationCollection()
     }
@@ -177,8 +254,10 @@ class  PlayPresentationView: BaseView {
             PlayingSlidelayout.scrollDirection = .horizontal
             PlayingSlidelayout.collectionView?.isScrollEnabled = true
         }
-        
+        PlayingSlideCollection.register(UINib(nibName: "PlayPDFCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPDFCVC")
       
+        PlayingSlideCollection.register(UINib(nibName: "VideoPlayerCVC", bundle: nil), forCellWithReuseIdentifier: "VideoPlayerCVC")
+        
         
         
         loadedSlidesCollection.register(UINib(nibName: "PlayPresentationCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPresentationCVC")
@@ -188,6 +267,7 @@ class  PlayPresentationView: BaseView {
     }
     
     func  setupUI() {
+        self.selectedSlideModel = playPresentationVC.selectedSlideModel
         loadedcollectionVxView.backgroundColor = .appTextColor
         self.setPageType(self.pageState)
         viewMInimize.layer.cornerRadius = viewMInimize.height / 2
@@ -198,6 +278,7 @@ class  PlayPresentationView: BaseView {
     func initView() {
         
         self.viewClosePreview.addTap {
+            self.stopAllVideoPlayers()
             self.playPresentationVC.navigationController?.popViewController(animated: true)
         }
         

@@ -170,6 +170,8 @@
 		38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */; };
 		38D6E88B2B34081B003CC4D8 /* BasicReportsInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */; };
 		38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D738222B120A6F00162548 /* TableSetupModel.swift */; };
+		38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */; };
+		38D7E1E52B677FD500085293 /* PlayPDFCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */; };
 		38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D7F6E12B21D8830091B2CF /* LocalStorage.swift */; };
 		38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363A2A4C014B0032588D /* MasterSync.swift */; };
 		38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */; };
@@ -206,6 +208,8 @@
 		38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3E5352A80BE7200AE5AF6 /* CallVC.swift */; };
 		38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3E5372A80C75000AE5AF6 /* DoctorCallCell.swift */; };
 		38E3E53A2A80C78700AE5AF6 /* DoctorCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */; };
+		38E42B1E2B679634001E0F07 /* VideoPlayerCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E42B1C2B679634001E0F07 /* VideoPlayerCVC.swift */; };
+		38E42B1F2B679634001E0F07 /* VideoPlayerCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E42B1D2B679634001E0F07 /* VideoPlayerCVC.xib */; };
 		38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */; };
 		38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */; };
 		38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E48DA12AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift */; };
@@ -442,6 +446,8 @@
 		38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicReportsInfoTVC.swift; sourceTree = "<group>"; };
 		38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BasicReportsInfoTVC.xib; sourceTree = "<group>"; };
 		38D738222B120A6F00162548 /* TableSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSetupModel.swift; sourceTree = "<group>"; };
+		38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPDFCVC.swift; sourceTree = "<group>"; };
+		38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayPDFCVC.xib; sourceTree = "<group>"; };
 		38D7F6E12B21D8830091B2CF /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 		38D8363A2A4C014B0032588D /* MasterSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSync.swift; sourceTree = "<group>"; };
 		38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncTbCell.swift; sourceTree = "<group>"; };
@@ -478,6 +484,8 @@
 		38E3E5352A80BE7200AE5AF6 /* CallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallVC.swift; sourceTree = "<group>"; };
 		38E3E5372A80C75000AE5AF6 /* DoctorCallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorCallCell.swift; sourceTree = "<group>"; };
 		38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoctorCallCell.xib; sourceTree = "<group>"; };
+		38E42B1C2B679634001E0F07 /* VideoPlayerCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerCVC.swift; sourceTree = "<group>"; };
+		38E42B1D2B679634001E0F07 /* VideoPlayerCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoPlayerCVC.xib; sourceTree = "<group>"; };
 		38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaAddedListTableViewCell.xib; sourceTree = "<group>"; };
 		38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaAddedListTableViewCell.swift; sourceTree = "<group>"; };
 		38E48DA12AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameWithSampleTableViewCell.swift; sourceTree = "<group>"; };
@@ -698,6 +706,10 @@
 				38CA1FEE2B611CBF00AFCFD2 /* PlayPresentationCVC.xib */,
 				38CA1FF12B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift */,
 				38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */,
+				38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */,
+				38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */,
+				38E42B1C2B679634001E0F07 /* VideoPlayerCVC.swift */,
+				38E42B1D2B679634001E0F07 /* VideoPlayerCVC.xib */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -1254,6 +1266,7 @@
 				38D568FE2B3560C6007CB86D /* VisitsCountCVC.xib in Resources */,
 				38CA1FF02B611CBF00AFCFD2 /* PlayPresentationCVC.xib in Resources */,
 				38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */,
+				38E42B1F2B679634001E0F07 /* VideoPlayerCVC.xib in Resources */,
 				38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */,
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
 				B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */,
@@ -1299,6 +1312,7 @@
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
 				B287E68529F2A20F0097974D /* Satoshi-MediumItalic.otf in Resources */,
 				38D2E0C42B04FC03002DD291 /* SelectAllTypesTVC.xib in Resources */,
+				38D7E1E52B677FD500085293 /* PlayPDFCVC.xib in Resources */,
 				B287E67D29F2A20F0097974D /* Satoshi-Black.otf in Resources */,
 				B287E68229F2A20F0097974D /* Satoshi-Light.otf in Resources */,
 				38145ECB2B345C6400DD7B4E /* VisitInfoTVC.xib in Resources */,
@@ -1435,6 +1449,7 @@
 				3801D4972B4ECFB700A9740F /* HomeSideMenuMenuView.swift in Sources */,
 				38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */,
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
+				38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */,
 				38D528AA2A9A0AE600AD3F78 /* NearMeVC.swift in Sources */,
 				38CCDE7B2A5442E5007AA5FF /* JointWork + Extension.swift in Sources */,
 				38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */,
@@ -1511,6 +1526,7 @@
 				38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */,
 				388546442B5FDBA3005FC9FC /* PresentationHomeView.swift in Sources */,
 				38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */,
+				38E42B1E2B679634001E0F07 /* VideoPlayerCVC.swift in Sources */,
 				38CA1FEA2B61163C00AFCFD2 /* PlayPresentationView.swift in Sources */,
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,

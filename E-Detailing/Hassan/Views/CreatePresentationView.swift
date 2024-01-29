@@ -144,7 +144,10 @@ class CreatePresentationView : BaseView {
         addNameTF.delegate = self
         
         playView.addTap {
-            let vc = PlayPresentationVC.initWithStory()
+            
+          
+            
+            let vc = PlayPresentationVC.initWithStory(model: self.toSetupPlayerModel())
             self.createPresentationVC.navigationController?.pushViewController(vc, animated: true)
             
         }
@@ -181,6 +184,22 @@ class CreatePresentationView : BaseView {
             }
         }
 
+    }
+    
+    
+    func toSetupPlayerModel() -> [SlidesModel] {
+ 
+        
+        var selectedSlidesModelArr = [SlidesModel]()
+        
+        self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
+           let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                aSlidesModel.isSelected == true
+            }
+            selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
+        })
+        return selectedSlidesModelArr
+        
     }
     
     

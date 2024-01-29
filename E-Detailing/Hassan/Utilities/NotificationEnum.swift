@@ -12,6 +12,7 @@ enum NotificationEnum :String {
     case messageReceived
     case removeobserver
     case UIKeyboardWillHideNotification
+    case viewMinimized
     
     func addObserver(_ observer:Any, selector: Selector){
         NotificationCenter.default.addObserver(observer, selector: selector, name: NSNotification.Name(rawValue: self.rawValue), object: nil)
