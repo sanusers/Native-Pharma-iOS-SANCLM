@@ -12,7 +12,24 @@ extension CreatePresentationView: UITextFieldDelegate {
     
 }
 
+
+
 class CreatePresentationView : BaseView {
+    
+    
+    
+    override func didDisappear(baseVC: BaseViewController) {
+        super.didDisappear(baseVC: baseVC)
+        arrayOfBrandSlideObjects = nil
+        arrayOfAllSlideObjects = nil
+        groupedBrandsSlideModel = nil
+        savedPresentation = nil
+        selectedSlides = nil
+        createPresentationVC.savedPresentation = nil
+    }
+    
+
+    
     var createPresentationVC : CreatePresentationVC!
     
     @IBOutlet var navigationVIew: UIView!
@@ -50,21 +67,20 @@ class CreatePresentationView : BaseView {
     
     @IBOutlet var sampleImage: UIImageView!
     @IBOutlet var selectedSlidesTable: UITableView!
-    var arrayOfBrandSlideObjects = [BrandSlidesModel]()
-    var arrayOfAllSlideObjects = [SlidesModel]()
+    var arrayOfBrandSlideObjects: [BrandSlidesModel]?
+    var arrayOfAllSlideObjects: [SlidesModel]?
     var groupedBrandsSlideModel : [GroupedBrandsSlideModel]?
     var savedPresentation: SavedPresentation?
-    var selectedSlides = [SlidesModel]()
+    var selectedSlides: [SlidesModel]?
     var selectedBrandsIndex: Int = 0
     var selectedPresentationIndex: Int? = nil
-    var selectedSlidesModel = SelectedSlidesModel()
+    var selectedSlidesModel : SelectedSlidesModel?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.createPresentationVC = baseVC as? CreatePresentationVC
         setupUI()
         cellRegistration()
         createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
-        
         initView()
     }
     
@@ -72,7 +88,7 @@ class CreatePresentationView : BaseView {
     
     
     func toLoadNewPresentationData() {
-        
+        self.selectedSlidesModel = SelectedSlidesModel()
         do {
         self.arrayOfBrandSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedBrandSlideData)
          //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
@@ -93,14 +109,14 @@ class CreatePresentationView : BaseView {
         
        
         self.groupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
-        self.arrayOfBrandSlideObjects.forEach { brandSlideModel in
-           let aBrandData =  arrayOfAllSlideObjects.filter({ aSlideModel in
+        self.arrayOfBrandSlideObjects?.forEach { brandSlideModel in
+            let aBrandData =  arrayOfAllSlideObjects?.filter({ aSlideModel in
                aSlideModel.code == brandSlideModel.productBrdCode
             })
             
             let aBrandGroup = GroupedBrandsSlideModel()
            
-            aBrandGroup.groupedSlide = aBrandData
+            aBrandGroup.groupedSlide = aBrandData ?? [SlidesModel]()
             aBrandGroup.priority = brandSlideModel.priority
             aBrandGroup.updatedDate = brandSlideModel.updatedDate
             aBrandGroup.divisionCode = brandSlideModel.divisionCode
@@ -320,8 +336,8 @@ class CreatePresentationView : BaseView {
       //  self.selectedSlidesModel = SelectedSlidesModel()
         selectedSlidesTable.delegate = self
         selectedSlidesTable.dataSource = self
-        selectedSlidesTable.dragDelegate = self
-        selectedSlidesTable.dropDelegate = self
+        //selectedSlidesTable.dragDelegate = self
+       // selectedSlidesTable.dropDelegate = self
         selectedSlidesTable.dragInteractionEnabled = true
         selectedSlidesTable.reloadData()
     }
@@ -336,6 +352,7 @@ class CreatePresentationView : BaseView {
     }
     
     func toEditPresentationData() {
+        self.selectedSlidesModel = SelectedSlidesModel()
         self.savedPresentation = createPresentationVC.savedPresentation
         self.groupedBrandsSlideModel = self.savedPresentation?.groupedBrandsSlideModel
         self.addNameTF.text = self.savedPresentation?.name
@@ -351,12 +368,17 @@ class CreatePresentationView : BaseView {
         self.selectedSlides = slideModel.filter({ aSlideModel in
             aSlideModel.isSelected
         })
-        self.selectedSlidesModel.slideNames = slideModel
+        self.selectedSlidesModel?.slideNames = slideModel
      //   self.selectedSlides = slideModel
         if  slideModel.isEmpty {
             self.sledeCountLbl.text = "0"
       } else {
-          self.sledeCountLbl.text = "\(self.selectedSlidesModel.slideNames.count)"
+          
+          if let selectedSlidesModel = selectedSlidesModel {
+              self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
+          }
+          
+        
       }
         
        
@@ -392,29 +414,29 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
             model.isSelected = model.isSelected == true ? false : true
             if model.isSelected  {
                 
-                    self.selectedSlides.append(model)
-                
-             
-               
-               
+                self.selectedSlides?.append(model)
+  
             } else {
-                self.selectedSlides = self.selectedSlides.filter({ aslideModel in
+                self.selectedSlides = self.selectedSlides?.filter({ aslideModel in
                     aslideModel.isSelected
                 })
                 
           
             }
-            self.selectedSlides = Array(Set(self.selectedSlides))
+            self.selectedSlides = Array(Set(self.selectedSlides ?? [SlidesModel]()))
             if self.createPresentationVC.isToedit {
-                self.selectedSlidesModel.slideNames.removeAll()
-                self.selectedSlidesModel.slideNames.append(contentsOf: self.selectedSlides)
+                self.selectedSlidesModel?.slideNames.removeAll()
+                self.selectedSlidesModel?.slideNames.append(contentsOf: self.selectedSlides ?? [SlidesModel]())
             } else {
-                self.selectedSlidesModel.slideNames =  self.selectedSlides
+                self.selectedSlidesModel?.slideNames =  self.selectedSlides ?? [SlidesModel]()
             }
           //  self.selectedSlidesModel = SelectedSlidesModel()
         
             self.selectSlidesCollection.reloadData()
-            self.sledeCountLbl.text = "\(self.selectedSlidesModel.slideNames.count)"
+            if let selectedSlidesModel = self.selectedSlidesModel {
+                self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
+            }
+           
             self.toLoadselectedSlidesTable()
             
         }
@@ -448,7 +470,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
         case brandsTable:
             return self.groupedBrandsSlideModel?.count ?? 0
         case selectedSlidesTable:
-            return  selectedSlidesModel.slideNames.count
+            return  selectedSlidesModel?.slideNames.count ?? 0
         default:
             return 1
         }
@@ -489,31 +511,33 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             let cell: SelectedSlidesTVC = selectedSlidesTable.dequeueReusableCell(withIdentifier: "SelectedSlidesTVC", for: indexPath) as! SelectedSlidesTVC
             
             cell.selectionStyle = .none
-            let model = self.selectedSlidesModel.slideNames[indexPath.row]
-            cell.titleLbl.text = model.name
+            let model = self.selectedSlidesModel?.slideNames[indexPath.row]
+            cell.titleLbl.text = model?.name
             cell.descriptionLbl.text = "Yet to be added"
             cell.deleteoptionView.addTap {
-                self.selectedSlidesModel.slideNames = self.selectedSlidesModel.slideNames.filter { aSlideModel in
-                    aSlideModel.slideId != model.slideId
-                }
+                self.selectedSlidesModel?.slideNames = self.selectedSlidesModel?.slideNames.filter { aSlideModel in
+                    aSlideModel.slideId != model?.slideId
+                } ?? [SlidesModel]()
                 self.groupedBrandsSlideModel?[self.selectedBrandsIndex].groupedSlide.forEach({ aSlideModel in
-                    if  aSlideModel.slideId == model.slideId {
+                    if  aSlideModel.slideId == model?.slideId {
                         aSlideModel.isSelected = false
                     }
                 })
                 
-                self.selectedSlides.forEach({ aSlideModel in
-                    if  aSlideModel.slideId == model.slideId {
+                self.selectedSlides?.forEach({ aSlideModel in
+                    if  aSlideModel.slideId == model?.slideId {
                         aSlideModel.isSelected = false
                     }
                 })
                 
                 
-                self.selectedSlides = self.selectedSlides.filter({ aslideModel in
+                self.selectedSlides = self.selectedSlides?.filter({ aslideModel in
                     aslideModel.isSelected
                 })
-                
-                self.sledeCountLbl.text = "\(self.selectedSlidesModel.slideNames.count)"
+                if let selectedSlidesModel = self.selectedSlidesModel {
+                    self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
+                }
+               
                 self.selectedSlidesTable.reloadData()
                 self.selectSlidesCollection.reloadData()
             }
@@ -542,7 +566,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
     }
     
      func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-         selectedSlidesModel.moveItem(at: sourceIndexPath.row, to: destinationIndexPath.row)
+         selectedSlidesModel?.moveItem(at: sourceIndexPath.row, to: destinationIndexPath.row)
     }
     
      func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -555,97 +579,97 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-extension CreatePresentationView: UITableViewDragDelegate {
-    // MARK: - UITableViewDragDelegate
-    
-    /**
-         The `tableView(_:itemsForBeginning:at:)` method is the essential method
-         to implement for allowing dragging from a table.
-    */
-    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        return selectedSlidesModel.dragItems(for: indexPath)
-    }
-    
-    func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
-       // navigationItem.rightBarButtonItem?.isEnabled = false
-    }
-    
-    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
-     //   navigationItem.rightBarButtonItem?.isEnabled = true
-    }
-}
+//extension CreatePresentationView: UITableViewDragDelegate {
+//    // MARK: - UITableViewDragDelegate
+//
+//    /**
+//         The `tableView(_:itemsForBeginning:at:)` method is the essential method
+//         to implement for allowing dragging from a table.
+//    */
+//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+//        return selectedSlidesModel.dragItems(for: indexPath)
+//    }
+//
+//    func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
+//       // navigationItem.rightBarButtonItem?.isEnabled = false
+//    }
+//
+//    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
+//     //   navigationItem.rightBarButtonItem?.isEnabled = true
+//    }
+//}
 
 
-extension CreatePresentationView: UITableViewDropDelegate {
-    // MARK: - UITableViewDropDelegate
-    
-    /**
-         Ensure that the drop session contains a drag item with a data representation
-         that the view can consume.
-    */
-    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-        return selectedSlidesModel.canHandle(session)
-    }
-
-    /**
-         A drop proposal from a table view includes two items: a drop operation,
-         typically .move or .copy; and an intent, which declares the action the
-         table view will take upon receiving the items. (A drop proposal from a
-         custom view does includes only a drop operation, not an intent.)
-    */
-    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
-        var dropProposal = UITableViewDropProposal(operation: .cancel)
-        
-        // Accept only one drag item.
-        guard session.items.count == 1 else { return dropProposal }
-        
-        // The .move drag operation is available only for dragging within this app and while in edit mode.
-        if tableView.hasActiveDrag {
-            if tableView.isEditing {
-                dropProposal = UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
-            }
-        } else {
-            // Drag is coming from outside the app.
-            dropProposal = UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
-        }
-
-        return dropProposal
-    }
-    
-    /**
-         This delegate method is the only opportunity for accessing and loading
-         the data representations offered in the drag item. The drop coordinator
-         supports accessing the dropped items, updating the table view, and specifying
-         optional animations. Local drags with one item go through the existing
-         `tableView(_:moveRowAt:to:)` method on the data source.
-    */
-    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-        let destinationIndexPath: IndexPath
-        
-        if let indexPath = coordinator.destinationIndexPath {
-            destinationIndexPath = indexPath
-        } else {
-            // Get last index path of table view.
-            let section = tableView.numberOfSections - 1
-            let row = tableView.numberOfRows(inSection: section)
-            destinationIndexPath = IndexPath(row: row, section: section)
-        }
-        
-        coordinator.session.loadObjects(ofClass: NSString.self) { items in
-            // Consume drag items.
-            let stringItems = items as! [SlidesModel]
-            
-            var indexPaths = [IndexPath]()
-            for (index, item) in stringItems.enumerated() {
-                let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
-                self.selectedSlidesModel.addItem(item, at: indexPath.row)
-                indexPaths.append(indexPath)
-            }
-
-            tableView.insertRows(at: indexPaths, with: .automatic)
-        }
-    }
-}
+//extension CreatePresentationView: UITableViewDropDelegate {
+//    // MARK: - UITableViewDropDelegate
+//
+//    /**
+//         Ensure that the drop session contains a drag item with a data representation
+//         that the view can consume.
+//    */
+//    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
+//        return selectedSlidesModel.canHandle(session)
+//    }
+//
+//    /**
+//         A drop proposal from a table view includes two items: a drop operation,
+//         typically .move or .copy; and an intent, which declares the action the
+//         table view will take upon receiving the items. (A drop proposal from a
+//         custom view does includes only a drop operation, not an intent.)
+//    */
+//    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+//        var dropProposal = UITableViewDropProposal(operation: .cancel)
+//
+//        // Accept only one drag item.
+//        guard session.items.count == 1 else { return dropProposal }
+//
+//        // The .move drag operation is available only for dragging within this app and while in edit mode.
+//        if tableView.hasActiveDrag {
+//            if tableView.isEditing {
+//                dropProposal = UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+//            }
+//        } else {
+//            // Drag is coming from outside the app.
+//            dropProposal = UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
+//        }
+//
+//        return dropProposal
+//    }
+//
+//    /**
+//         This delegate method is the only opportunity for accessing and loading
+//         the data representations offered in the drag item. The drop coordinator
+//         supports accessing the dropped items, updating the table view, and specifying
+//         optional animations. Local drags with one item go through the existing
+//         `tableView(_:moveRowAt:to:)` method on the data source.
+//    */
+//    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+//        let destinationIndexPath: IndexPath
+//
+//        if let indexPath = coordinator.destinationIndexPath {
+//            destinationIndexPath = indexPath
+//        } else {
+//            // Get last index path of table view.
+//            let section = tableView.numberOfSections - 1
+//            let row = tableView.numberOfRows(inSection: section)
+//            destinationIndexPath = IndexPath(row: row, section: section)
+//        }
+//
+//        coordinator.session.loadObjects(ofClass: NSString.self) { items in
+//            // Consume drag items.
+//            let stringItems = items as! [SlidesModel]
+//
+//            var indexPaths = [IndexPath]()
+//            for (index, item) in stringItems.enumerated() {
+//                let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
+//                self.selectedSlidesModel.addItem(item, at: indexPath.row)
+//                indexPaths.append(indexPath)
+//            }
+//
+//            tableView.insertRows(at: indexPaths, with: .automatic)
+//        }
+//    }
+//}
 
 
 

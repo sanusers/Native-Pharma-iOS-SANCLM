@@ -101,6 +101,7 @@ class PresentationHomeView : BaseView {
     @IBOutlet var noPresentationView: UIView!
     @IBOutlet var contentsHolderView: UIView!
     var pageType: PageType = .empty
+    let localStorage =  LocalStorage.shared
     var savePresentationArr : [SavedPresentation]?
     var createdPresentationSelectedIndex: Int? = nil
     override func didLoad(baseVC: BaseViewController) {
@@ -108,22 +109,28 @@ class PresentationHomeView : BaseView {
         self.presentationHomeVC = baseVC as? PresentationHomeVC
         setupUI()
         initView()
-        
         retriveSavedPresentations()
         
      
     }
     
     
+    override func willDisappear(baseVC: BaseViewController) {
+        super.willDisappear(baseVC: baseVC)
+        self.savePresentationArr = nil
+       
+    }
+    
     override func willAppear(baseVC: BaseViewController) {
-   
+        super.willAppear(baseVC: baseVC)
+        retriveSavedPresentations()
         
     }
     
     func retriveSavedPresentations() {
         
         do {
-             savePresentationArr  = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.SavedPresentations)
+             savePresentationArr  = try localStorage.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.SavedPresentations)
          //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
           //  self.toLoadBrandsTable()
             dump(savePresentationArr)
@@ -208,7 +215,7 @@ class PresentationHomeView : BaseView {
     
     func toDeletePresentation() {
         self.savePresentationArr?.remove(at: createdPresentationSelectedIndex ?? 0)
-        LocalStorage.shared.saveObjectToUserDefaults(self.savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
+        localStorage.saveObjectToUserDefaults(self.savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
         
         
         retriveSavedPresentations()
