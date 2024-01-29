@@ -2457,6 +2457,24 @@
                                     <constraint firstItem="c5g-M7-4ba" firstAttribute="top" secondItem="LUS-6g-guy" secondAttribute="top" id="yVC-8C-Ptg"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WY8-GZ-Cv1">
+                                <rect key="frame" x="0.0" y="587.5" width="140.5" height="57.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Back" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3gZ-s2-rdF">
+                                        <rect key="frame" x="0.0" y="0.0" width="140.5" height="57.5"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="3gZ-s2-rdF" secondAttribute="trailing" id="BUn-C3-I8S"/>
+                                    <constraint firstItem="3gZ-s2-rdF" firstAttribute="top" secondItem="WY8-GZ-Cv1" secondAttribute="top" id="MFb-Y7-dRe"/>
+                                    <constraint firstItem="3gZ-s2-rdF" firstAttribute="leading" secondItem="WY8-GZ-Cv1" secondAttribute="leading" id="aHL-fT-jcT"/>
+                                    <constraint firstAttribute="bottom" secondItem="3gZ-s2-rdF" secondAttribute="bottom" id="zD3-8G-nHy"/>
+                                </constraints>
+                            </view>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8UM-hX-mMz">
                                 <rect key="frame" x="550" y="755.5" width="80" height="80"/>
                                 <subviews>
@@ -2499,16 +2517,22 @@
                             <constraint firstItem="w85-gY-Ysn" firstAttribute="trailing" secondItem="oD9-VM-mn6" secondAttribute="trailing" id="6vA-TE-Z9l"/>
                             <constraint firstItem="8UM-hX-mMz" firstAttribute="centerX" secondItem="Vu8-35-ALk" secondAttribute="centerX" id="7bB-qy-66z"/>
                             <constraint firstItem="w85-gY-Ysn" firstAttribute="trailing" secondItem="LUS-6g-guy" secondAttribute="trailing" id="FkP-AK-F1J"/>
+                            <constraint firstItem="WY8-GZ-Cv1" firstAttribute="width" secondItem="LUS-6g-guy" secondAttribute="width" multiplier="0.7" id="GCm-5b-wuo"/>
                             <constraint firstItem="oD9-VM-mn6" firstAttribute="leading" secondItem="w85-gY-Ysn" secondAttribute="leading" id="HYN-on-eYO"/>
+                            <constraint firstItem="WY8-GZ-Cv1" firstAttribute="height" secondItem="LUS-6g-guy" secondAttribute="height" id="QFK-YK-Ipi"/>
                             <constraint firstItem="w85-gY-Ysn" firstAttribute="bottom" secondItem="oD9-VM-mn6" secondAttribute="bottom" id="Wws-az-MV3"/>
+                            <constraint firstItem="WY8-GZ-Cv1" firstAttribute="centerY" secondItem="LUS-6g-guy" secondAttribute="centerY" id="dBF-Bw-6nk"/>
                             <constraint firstItem="8UM-hX-mMz" firstAttribute="centerY" secondItem="Vu8-35-ALk" secondAttribute="centerY" multiplier="1.94" id="g3N-hY-gSl"/>
                             <constraint firstItem="nTO-Lk-fGa" firstAttribute="top" secondItem="w85-gY-Ysn" secondAttribute="top" id="hWd-vF-ogD"/>
                             <constraint firstItem="oD9-VM-mn6" firstAttribute="top" secondItem="LUS-6g-guy" secondAttribute="bottom" constant="5" id="t6G-OA-rQn"/>
                             <constraint firstItem="LUS-6g-guy" firstAttribute="height" secondItem="Vu8-35-ALk" secondAttribute="height" multiplier="0.07" id="wJm-Lg-sYY"/>
                             <constraint firstItem="nTO-Lk-fGa" firstAttribute="leading" secondItem="w85-gY-Ysn" secondAttribute="leading" id="wi3-Kp-LPg"/>
+                            <constraint firstItem="WY8-GZ-Cv1" firstAttribute="leading" secondItem="w85-gY-Ysn" secondAttribute="leading" id="y8N-c5-mu7"/>
                         </constraints>
                         <connections>
                             <outlet property="PlayingSlideCollection" destination="nTO-Lk-fGa" id="Fye-8S-NfD"/>
+                            <outlet property="backHolderView" destination="WY8-GZ-Cv1" id="8RS-Fp-mYJ"/>
+                            <outlet property="backlbl" destination="3gZ-s2-rdF" id="syj-dz-37G"/>
                             <outlet property="labelClosePreview" destination="c5g-M7-4ba" id="5qC-Hx-2Ol"/>
                             <outlet property="loadedCollectionHolderView" destination="oD9-VM-mn6" id="Yj4-i9-fLU"/>
                             <outlet property="loadedSlidesCollection" destination="9P3-OD-s3q" id="Bep-L7-ln0"/>

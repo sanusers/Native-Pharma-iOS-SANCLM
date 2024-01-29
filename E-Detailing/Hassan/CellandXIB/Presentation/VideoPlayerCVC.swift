@@ -10,7 +10,12 @@ import AVFoundation
 class VideoPlayerCVC: UICollectionViewCell {
     
     
-    
+    let playpauseHolderView: UIView = {
+        let aVIew = UIView()
+        aVIew.clipsToBounds = true
+        aVIew.backgroundColor = .clear
+        return aVIew
+    }()
     
     let playpauseView: UIView = {
         let aVIew = UIView()
@@ -61,6 +66,10 @@ class VideoPlayerCVC: UICollectionViewCell {
             self.videoTapped()
         }
         
+        self.playpauseHolderView.addTap {
+            self.videoTapped()
+        }
+        
         self.contentView.triggerSwipeDownActionHandleBlocks()
         
         
@@ -106,9 +115,12 @@ class VideoPlayerCVC: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         playerLayer?.frame = bounds
-        self.addSubview(playpauseView)
-        playpauseView.frame = CGRect(x: contentView.frame.size.width / 2 - (100 / 2), y: contentView.frame.size.height / 2 - (100 / 2), width: 100, height: 100)
-        playpauseView.center = contentView.center
+        self.addSubview(playpauseHolderView)
+        playpauseHolderView.addSubview(playpauseView)
+        
+        playpauseHolderView.frame = CGRect(x: contentView.frame.size.width / 2 - (100 / 2), y: contentView.frame.size.height / 2 - (100 / 2), width: 100, height: 100)
+        playpauseView.frame = playpauseHolderView.bounds
+       // playpauseView.center = contentView.center
         playpauseView.layer.cornerRadius = playpauseView.height / 2
         playpauseView.addSubview(vxVIew)
         playpauseView.addSubview(playIV)

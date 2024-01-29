@@ -13,7 +13,9 @@ class PlayPresentationVC: BaseViewController {
     @IBOutlet var playPresentationView: PlayPresentationView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if let navigationController = self.navigationController {
+               navigationController.interactivePopGestureRecognizer?.isEnabled = false
+           }
         // Do any additional setup after loading the view.
     }
     class func initWithStory(model: [SlidesModel]) -> PlayPresentationVC {

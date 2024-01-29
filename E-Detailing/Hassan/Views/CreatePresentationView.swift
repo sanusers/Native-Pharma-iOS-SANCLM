@@ -432,8 +432,13 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
             //self.selectedPresentationIndex = indexPath.row
             model.isSelected = model.isSelected == true ? false : true
             if model.isSelected  {
-                
-                self.selectedSlides?.append(model)
+                if let selectedSlides = self.selectedSlides {
+                    self.selectedSlides?.append(model)
+                } else {
+                    self.selectedSlides = [SlidesModel]()
+                    self.selectedSlides?.append(model)
+                }
+               
   
             } else {
                 self.selectedSlides = self.selectedSlides?.filter({ aslideModel in

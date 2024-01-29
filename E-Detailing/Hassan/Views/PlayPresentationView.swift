@@ -8,6 +8,153 @@
 import Foundation
 import UIKit
 
+
+
+class  PlayPresentationView: BaseView {
+    
+    override func willDisappear(baseVC: BaseViewController) {
+        super.willDisappear(baseVC: baseVC)
+        playPresentationVC.selectedSlideModel = nil
+        self.selectedSlideModel = nil
+        
+    }
+    
+    enum PageState {
+        case expanded
+        case minimized
+    }
+    
+    
+    func setPageType(_ type: PageState) {
+        self.pageState = type
+        switch type {
+            
+        case .expanded:
+            self.viewMInimize.isHidden = false
+            self.viewClosePreview.isHidden = true
+            backHolderView.isHidden = true
+            self.loadedCollectionHolderView.isHidden = true
+            NotificationCenter.default.post(name: NSNotification.Name("viewExpanded"), object: nil)
+        case .minimized:
+            self.viewMInimize.isHidden = true
+            self.viewClosePreview.isHidden = false
+            backHolderView.isHidden = false
+            self.loadedCollectionHolderView.isHidden = false
+            NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
+           
+        }
+        
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//            self.setPageType(.expanded)
+//        }
+        
+    }
+    
+    var playPresentationVC : PlayPresentationVC!
+    
+    @IBOutlet var loadedCollectionHolderView: UIView!
+    @IBOutlet var labelClosePreview: UILabel!
+    @IBOutlet var PlayingSlideCollection: UICollectionView!
+    
+    @IBOutlet var loadedSlidesCollection: UICollectionView!
+    
+    @IBOutlet var viewClosePreview: UIView!
+    
+    @IBOutlet var loadedcollectionVxView: UIVisualEffectView!
+    
+    @IBOutlet var viewMInimize: UIView!
+    
+    
+    @IBOutlet var backHolderView: UIView!
+    
+    @IBOutlet var backlbl: UILabel!
+    var pageState : PageState = .expanded
+    var selectedLoadPresentationIndex : Int? = 0
+    var selectedSlideModel : [SlidesModel]?
+    override func didLoad(baseVC: BaseViewController) {
+        super.didLoad(baseVC: baseVC)
+        self.playPresentationVC = baseVC as? PlayPresentationVC
+        setupUI()
+        initView()
+        cellregistration()
+      
+        toLoadloadedSlidesCollection()
+        toLoadPlayingSlideCollection()
+       // cellRegistration()
+       // toLoadPresentationCollection()
+    }
+    
+    func toLoadPlayingSlideCollection() {
+        PlayingSlideCollection.delegate = self
+        PlayingSlideCollection.dataSource = self
+        PlayingSlideCollection.reloadData()
+    }
+    
+    func toLoadloadedSlidesCollection() {
+        loadedSlidesCollection.delegate = self
+        loadedSlidesCollection.dataSource = self
+        loadedSlidesCollection.reloadData()
+    }
+    
+    func cellregistration() {
+        
+        loadedSlidesCollection.isPagingEnabled = false
+        PlayingSlideCollection.isPagingEnabled = true
+        if let loadedSlideslayout = self.loadedSlidesCollection.collectionViewLayout as? UICollectionViewFlowLayout  {
+            loadedSlideslayout.scrollDirection = .horizontal
+            loadedSlideslayout.collectionView?.isScrollEnabled = true
+        }
+        
+        
+        if  let PlayingSlidelayout = self.PlayingSlideCollection.collectionViewLayout as? UICollectionViewFlowLayout  {
+            PlayingSlidelayout.scrollDirection = .horizontal
+            PlayingSlidelayout.collectionView?.isScrollEnabled = true
+        }
+        PlayingSlideCollection.register(UINib(nibName: "PlayPDFCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPDFCVC")
+      
+        PlayingSlideCollection.register(UINib(nibName: "VideoPlayerCVC", bundle: nil), forCellWithReuseIdentifier: "VideoPlayerCVC")
+        
+        
+        
+        loadedSlidesCollection.register(UINib(nibName: "PlayPresentationCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPresentationCVC")
+        
+        
+        PlayingSlideCollection.register(UINib(nibName: "PlayLoadedPresentationCVC", bundle: nil), forCellWithReuseIdentifier: "PlayLoadedPresentationCVC")
+    }
+    
+    func  setupUI() {
+        self.selectedSlideModel = playPresentationVC.selectedSlideModel
+        loadedcollectionVxView.backgroundColor = .appTextColor
+        self.setPageType(self.pageState)
+        viewMInimize.layer.cornerRadius = viewMInimize.height / 2
+        viewClosePreview.backgroundColor = .appTextColor
+        labelClosePreview.setFont(font: .bold(size: .BODY))
+        
+        backlbl.textColor = .appWhiteColor
+        backlbl.setFont(font: .bold(size: .BODY))
+        backHolderView.backgroundColor = .appTextColor
+    }
+    
+    func initView() {
+        
+        self.viewClosePreview.addTap {
+            self.setPageType(.expanded)
+        }
+        
+        self.viewMInimize.addTap {
+            self.pageState = self.pageState == .expanded ? .minimized : .expanded
+            
+            self.setPageType(self.pageState)
+        }
+        
+        backHolderView.addTap {
+            self.stopAllVideoPlayers()
+            self.playPresentationVC.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+}
 extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func stopAllVideoPlayers() {
@@ -20,11 +167,11 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
         }
     }
     
-     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let videoCell = cell as? VideoPlayerCVC {
-          //  videoCell.playVideo()
-        }
-    }
+//     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//        if let videoCell = cell as? VideoPlayerCVC {
+//            videoCell.playVideo()
+//        }
+//    }
 
      func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let videoCell = cell as? VideoPlayerCVC {
@@ -164,129 +311,4 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             return CGSize()
         }
     }
-}
-
-class  PlayPresentationView: BaseView {
-    
-    enum PageState {
-        case expanded
-        case minimized
-    }
-    
-    
-    func setPageType(_ type: PageState) {
-        self.pageState = type
-        switch type {
-            
-        case .expanded:
-            self.viewMInimize.isHidden = false
-            self.viewClosePreview.isHidden = true
-            self.loadedCollectionHolderView.isHidden = true
-            NotificationCenter.default.post(name: NSNotification.Name("viewExpanded"), object: nil)
-        case .minimized:
-            self.viewMInimize.isHidden = true
-            self.viewClosePreview.isHidden = false
-            self.loadedCollectionHolderView.isHidden = false
-            NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
-           
-        }
-        
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//            self.setPageType(.expanded)
-//        }
-        
-    }
-    
-    var playPresentationVC : PlayPresentationVC!
-    
-    @IBOutlet var loadedCollectionHolderView: UIView!
-    @IBOutlet var labelClosePreview: UILabel!
-    @IBOutlet var PlayingSlideCollection: UICollectionView!
-    
-    @IBOutlet var loadedSlidesCollection: UICollectionView!
-    
-    @IBOutlet var viewClosePreview: UIView!
-    
-    @IBOutlet var loadedcollectionVxView: UIVisualEffectView!
-    
-    @IBOutlet var viewMInimize: UIView!
-    
-    var pageState : PageState = .expanded
-    var selectedLoadPresentationIndex : Int? = 0
-    var selectedSlideModel : [SlidesModel]?
-    override func didLoad(baseVC: BaseViewController) {
-        super.didLoad(baseVC: baseVC)
-        self.playPresentationVC = baseVC as? PlayPresentationVC
-        setupUI()
-        initView()
-        cellregistration()
-      
-        toLoadloadedSlidesCollection()
-        toLoadPlayingSlideCollection()
-       // cellRegistration()
-       // toLoadPresentationCollection()
-    }
-    
-    func toLoadPlayingSlideCollection() {
-        PlayingSlideCollection.delegate = self
-        PlayingSlideCollection.dataSource = self
-        PlayingSlideCollection.reloadData()
-    }
-    
-    func toLoadloadedSlidesCollection() {
-        loadedSlidesCollection.delegate = self
-        loadedSlidesCollection.dataSource = self
-        loadedSlidesCollection.reloadData()
-    }
-    
-    func cellregistration() {
-        
-        loadedSlidesCollection.isPagingEnabled = false
-        PlayingSlideCollection.isPagingEnabled = true
-        if let loadedSlideslayout = self.loadedSlidesCollection.collectionViewLayout as? UICollectionViewFlowLayout  {
-            loadedSlideslayout.scrollDirection = .horizontal
-            loadedSlideslayout.collectionView?.isScrollEnabled = true
-        }
-        
-        
-        if  let PlayingSlidelayout = self.PlayingSlideCollection.collectionViewLayout as? UICollectionViewFlowLayout  {
-            PlayingSlidelayout.scrollDirection = .horizontal
-            PlayingSlidelayout.collectionView?.isScrollEnabled = true
-        }
-        PlayingSlideCollection.register(UINib(nibName: "PlayPDFCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPDFCVC")
-      
-        PlayingSlideCollection.register(UINib(nibName: "VideoPlayerCVC", bundle: nil), forCellWithReuseIdentifier: "VideoPlayerCVC")
-        
-        
-        
-        loadedSlidesCollection.register(UINib(nibName: "PlayPresentationCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPresentationCVC")
-        
-        
-        PlayingSlideCollection.register(UINib(nibName: "PlayLoadedPresentationCVC", bundle: nil), forCellWithReuseIdentifier: "PlayLoadedPresentationCVC")
-    }
-    
-    func  setupUI() {
-        self.selectedSlideModel = playPresentationVC.selectedSlideModel
-        loadedcollectionVxView.backgroundColor = .appTextColor
-        self.setPageType(self.pageState)
-        viewMInimize.layer.cornerRadius = viewMInimize.height / 2
-        viewClosePreview.backgroundColor = .appTextColor
-        labelClosePreview.setFont(font: .bold(size: .BODY))
-    }
-    
-    func initView() {
-        
-        self.viewClosePreview.addTap {
-            self.stopAllVideoPlayers()
-            self.playPresentationVC.navigationController?.popViewController(animated: true)
-        }
-        
-        self.viewMInimize.addTap {
-            self.pageState = self.pageState == .expanded ? .minimized : .expanded
-            
-            self.setPageType(self.pageState)
-        }
-    }
-    
 }
