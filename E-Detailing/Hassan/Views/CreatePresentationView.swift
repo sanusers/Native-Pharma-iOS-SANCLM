@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import MobileCoreServices
-
+import SSZipArchive
 
 extension CreatePresentationView: UITextFieldDelegate {
     
@@ -83,6 +83,7 @@ class CreatePresentationView : BaseView {
         setupUI()
         cellRegistration()
         createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
+        tounArchiveData()
         initView()
     }
     
@@ -407,35 +408,190 @@ class CreatePresentationView : BaseView {
     }
     
     func tounArchiveData() {
-        var zipContentsSlides = [SlidesModel]()
+     var zipContentsSlides = [SlidesModel]()
+        var zipgropedBrandModels = [GroupedBrandsSlideModel]()
+        
         if  let groupedBrandsSlideModel = self.groupedBrandsSlideModel {
+            var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
             groupedBrandsSlideModel.enumerated().forEach { aGroupedBrandsSlideModelIndex, aGroupedBrandsSlideModel in
-                zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+                // Filter out slides with utType equal to "application/zip"
+                 zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
                     aSlideModel.utType == "application/zip"
                 }
+                
+                // Update groupedSlideModel by removing slides with utType equal to "application/zip"
                 self.groupedBrandsSlideModel?[aGroupedBrandsSlideModelIndex].groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
                     aSlideModel.utType != "application/zip"
-                    
                 }
-                
+
+                // Append to zipgropedBrandModels if there are zipContentsSlides
+                if !zipContentsSlides.isEmpty {
+                   
+                    zipgropedBrandModels.append(aGroupedBrandsSlideModel)
+                } else {
+                    tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
+                }
             }
             
-//            zipContentsSlides.forEach { aSlidesModel in
-//                <#code#>
-//            }
+            self.groupedBrandsSlideModel = tempGroupedBrandsSlideModel
+           
+            var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
+            
+            zipgropedBrandModels.forEach { aGroupedBrandsSlideModel in
+                let tempGroupedBrandsSlideModel = GroupedBrandsSlideModel()
+//              let zipContentsSlides =  aGroupedBrandsSlideModel.groupedSlide.filter { aGroupedSlide in
+//                  aGroupedSlide.utType == "application/zip"
+//                }
+                var aGroupedSlideArr = [SlidesModel]()
+                var dataArr = [Data]()
+                
+                if !zipContentsSlides.isEmpty {
+                    zipContentsSlides.forEach { aSlidesModel in
+                        dataArr.append(contentsOf: unarchiveAndGetData(from: aSlidesModel.slideData) ?? [Data]())
+                       
+                            dataArr.forEach { aData in
+                            let aGroupedSlide = SlidesModel()
+                            aGroupedSlide.code = (aSlidesModel.code)
+                            aGroupedSlide.filePath = aSlidesModel.filePath
+                            aGroupedSlide.code =   (aSlidesModel.code)
+                            aGroupedSlide.camp = (aSlidesModel.camp)
+                            aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
+                            aGroupedSlide.filePath = aSlidesModel.filePath
+                            aGroupedSlide.group = (aSlidesModel.group)
+                            aGroupedSlide.specialityCode = aSlidesModel.specialityCode
+                            aGroupedSlide.slideId = (aSlidesModel.slideId)
+                            aGroupedSlide.fileType = aSlidesModel.fileType
+                           // aGroupedSlidedel.effFrom = effFrom = DateI
+                            aGroupedSlide.categoryCode = aSlidesModel.categoryCode
+                            aGroupedSlide.name = aSlidesModel.name
+                            aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
+                           // aGroupedSlidedel.effTo = effTo = DateI
+                            aGroupedSlide.ordNo = (aSlidesModel.ordNo)
+                            aGroupedSlide.priority = (aSlidesModel.priority)
+                            aGroupedSlide.slideData = aData
+                            let type = mimeTypeForData(data: aData)
+                            aGroupedSlide.utType = type
+                            aGroupedSlide.isSelected = aSlidesModel.isSelected
+                            aGroupedSlideArr.append(aGroupedSlide)
+                        }
+
+                    }
+                }
+                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+                tempGroupedBrandsSlideModel.groupedSlide = aGroupedSlideArr
+                tempGroupedBrandsSlideModel.priority   = aGroupedBrandsSlideModel.priority
+                tempGroupedBrandsSlideModel.updatedDate = aGroupedBrandsSlideModel.updatedDate
+                tempGroupedBrandsSlideModel.divisionCode = aGroupedBrandsSlideModel.divisionCode
+                tempGroupedBrandsSlideModel.productBrdCode = aGroupedBrandsSlideModel.productBrdCode
+                tempGroupedBrandsSlideModel.subdivisionCode = aGroupedBrandsSlideModel.subdivisionCode
+                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+                tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
+                modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
+            }
+
+            self.groupedBrandsSlideModel?.append(contentsOf: modifiedZipgropedBrandModels)
+            }
+            
             
             
         }
         
+    
+    
+
+
+    func unarchiveAndGetData(from zipData: Data) -> [Data]? {
+        // Create a temporary directory to extract the files
+        let temporaryDirectory = NSTemporaryDirectory()
+        let tempZipFilePath = (temporaryDirectory as NSString).appendingPathComponent("temp.zip")
+        
+        // Write the zip data to a temporary file
+        do {
+            try zipData.write(to: URL(fileURLWithPath: tempZipFilePath))
+        } catch {
+            print("Error writing zip data to a temporary file: \(error.localizedDescription)")
+            return nil
+        }
+
+        // Create the directory for extracting the contents
+        let extractionDirectory = (temporaryDirectory as NSString).appendingPathComponent(UUID().uuidString)
+        
+        // Unarchive the zip data
+        guard SSZipArchive.unzipFile(atPath: tempZipFilePath, toDestination: extractionDirectory) else {
+            print("Error unzipping data")
+            return nil
+        }
+
+        // Get the list of files in the extraction directory
+        do {
+            let fileURLs = try FileManager.default.contentsOfDirectory(at: URL(fileURLWithPath: extractionDirectory), includingPropertiesForKeys: nil, options: [])
+
+            // Read data from each file
+            var dataArray: [Data] = []
+            for fileURL in fileURLs {
+                guard FileManager.default.fileExists(atPath: fileURL.path) else {
+                    print("File does not exist at path: \(fileURL.path)")
+                    continue
+                }
+                dataArray.append(contentsOf: findMediaFiles(inDirectory: fileURL))
+            }
+            // Remove the temporary files and directory
+            do {
+                try FileManager.default.removeItem(atPath: tempZipFilePath)
+                try FileManager.default.removeItem(atPath: extractionDirectory)
+            } catch {
+                print("Error removing temporary files or directory: \(error.localizedDescription)")
+            }
+
+            return dataArray
+        } catch {
+            print("Error listing files in extraction directory: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    func loadFileFromLocalPath(_ localFilePath: String) ->Data? {
+       return try? Data(contentsOf: URL(fileURLWithPath: localFilePath))
+    }
+
+    func findMediaFiles(inDirectory directoryURL: URL) -> [Data] {
+        var mediaFilesData: [Data] = []
+        let fileManager = FileManager.default
+
+        do {
+            let contents = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil)
+
+            for itemURL in contents {
+                var isDirectory: ObjCBool = false
+
+                if fileManager.fileExists(atPath: itemURL.path, isDirectory: &isDirectory) {
+                    if isDirectory.boolValue {
+                        // Recursively search for media files in subdirectories
+                        mediaFilesData += findMediaFiles(inDirectory: itemURL)
+                    } else {
+                        // Check if the file is a media file (you can customize this check based on your file types)
+                        if isMediaFile(itemURL) {
+                            if let fileData = try? Data(contentsOf: itemURL) {
+                                mediaFilesData.append(fileData)
+                            }
+                        }
+                    }
+                }
+            }
+        } catch {
+            print("Error while accessing contents of directory: \(error)")
+        }
+
+        return mediaFilesData
     }
     
+    func isMediaFile(_ fileURL: URL) -> Bool {
+        let mediaFileExtensions = ["jpg", "jpeg", "png", "gif", "mp4", "mov", "avi", "html"] // Add more extensions as needed
 
-
-    
-
-
-
-
+         let fileExtension = fileURL.pathExtension.lowercased()
+            return mediaFileExtensions.contains(fileExtension)
+        
+    }
 
 }
 
@@ -510,7 +666,7 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.width / 2, height: collectionView.height / 5)
+        return CGSize(width: collectionView.width / 2, height: collectionView.height / 4)
     }
     
 }

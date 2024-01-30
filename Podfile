@@ -15,6 +15,6 @@ pod 'ReachabilitySwift'
 pod 'GoogleMaps'
 pod 'SVProgressHUD'
 pod 'Toast-Swift'
-Pod 'IQKeyboardManagerSwift'
+pod 'IQKeyboardManagerSwift'
 pod 'SSZipArchive'
 end

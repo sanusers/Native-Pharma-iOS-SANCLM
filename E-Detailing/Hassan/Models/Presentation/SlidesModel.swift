@@ -112,6 +112,7 @@ import Foundation
        var filePath: String
        var group: Int
        var specialityCode: String
+        var uuid: UUID
        var slideId: Int
        var fileType: String
        var effFrom: DateInfo

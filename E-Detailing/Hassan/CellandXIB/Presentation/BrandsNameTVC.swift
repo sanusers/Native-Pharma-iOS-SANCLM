@@ -41,22 +41,7 @@ class BrandsNameTVC: UITableViewCell {
         brandsTitle.text = model.groupedSlide[0].name
         self.countsHolderView.isHidden = model.groupedSlide.isEmpty ? true : false
         self.countsLbl.text = "\(model.groupedSlide.count)"
-        
-//        if let image = UIImage(data: model.slideData) {
-//                    // The downloaded data represents an image
-//                    print("Downloaded data is an image.")
-//
-//                    DispatchQueue.main.async {
-//                        self.sampleImage.image = image
-//                    }
-//
-//                } else {
-//                    // The downloaded data is not an image
-//
-//                    print("Downloaded data is of Unknown type")
-//
-//
-//                }
+
         
     }
     

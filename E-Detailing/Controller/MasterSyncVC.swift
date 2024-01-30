@@ -10,6 +10,66 @@ import UIKit
 import Alamofire
 import MobileCoreServices
 
+
+func mimeTypeForData(data: Data) -> String {
+    var buffer = [UInt8](repeating: 0, count: 1)
+    data.copyBytes(to: &buffer, count: 1)
+
+    let uti: CFString
+
+    switch buffer[0] {
+    case 0xFF:
+        uti = kUTTypeJPEG
+    case 0x89:
+        uti = kUTTypePNG
+    case 0x47:
+        uti = kUTTypeGIF
+    case 0x49, 0x4D:
+        uti = kUTTypeTIFF
+    case 0x52 where data.count >= 12:
+        let identifier = String(data: data.subdata(in: 0..<12), encoding: .ascii)
+        if identifier == "RIFFWAVEfmt " {
+            uti = kUTTypeWaveformAudio
+        } else {
+            uti = kUTTypeAudio
+        }
+//    case 0x4D where data.count >= 8:
+//        let identifier = String(data: data.subdata(in: 0..<8), encoding: .ascii)
+//        if identifier == "MThd\x00\x00\x00\x06" {
+//            uti = kUTTypeMIDI
+//        } else {
+//            uti = kUTTypeAudio
+//        }
+    case 0x00 where data.count >= 12:
+        let identifier = String(data: data.subdata(in: 8..<12), encoding: .ascii)
+        if identifier == "ftypmp42" {
+            uti = kUTTypeMPEG4
+        } else {
+            uti = kUTTypeVideo
+        }
+    default:
+        uti = kUTTypeData
+    }
+
+    if let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+        return mimeType as String
+    } else {
+        return "application/octet-stream"
+    }
+}
+
+func mimeTypeForPath(path: String) -> String {
+    let url = NSURL(fileURLWithPath: path)
+    let pathExtension = url.pathExtension
+
+    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension! as NSString, nil)?.takeRetainedValue() {
+        if let mimetype = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+            return mimetype as String
+        }
+    }
+    return "application/octet-stream"
+}
+
 extension MasterSyncVC {
     func toLoadPresentationData(type : MasterInfo) {
         
@@ -141,17 +201,7 @@ extension MasterSyncVC {
         }
     }
     
-    func mimeTypeForPath(path: String) -> String {
-        let url = NSURL(fileURLWithPath: path)
-        let pathExtension = url.pathExtension
 
-        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension! as NSString, nil)?.takeRetainedValue() {
-            if let mimetype = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
-                return mimetype as String
-            }
-        }
-        return "application/octet-stream"
-    }
 }
 
 class MasterSyncVC : UIViewController {
