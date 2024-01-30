@@ -1313,82 +1313,84 @@ class MenuView : BaseView{
             self.hideMenuAndDismiss()
         }
         
-        saveView.addTap { [self] in
-            self.endEditing(true)
-            self.isSearched = false
-            switch self.cellType {
+        saveView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.endEditing(true)
+            welf.isSearched = false
+            switch welf.cellType {
             case .edit:
               //  self.menuTable.reloadData()
               //  self.toGetTourPlanResponse()
          
-                    lblAddPlan.text = "Edit (\(self.menuVC.sessionDetailsArr?.date ?? ""))"
+                welf.lblAddPlan.text = "Edit (\(welf.menuVC.sessionDetailsArr?.date ?? ""))"
           
                   //  lblAddPlan.text = self.menuVC.sessionDetailsArr?.date ?? ""
                 
                 
-                self.sessionDetailsArr.changeStatus = "True"
-                self.setPageType(.session)
+                welf.sessionDetailsArr.changeStatus = "True"
+                welf.setPageType(.session)
             case .session:
                // self.menuTable.reloadData()
-                self.toGetTourPlanResponse()
+                welf.toGetTourPlanResponse()
             case .workType:
-                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork ?? false {
-                    setPageType(.session, for: self.selectedSession)
+                if welf.sessionDetailsArr.sessionDetails![welf.selectedSession].isForFieldWork ?? false {
+                    welf.setPageType(.session, for: welf.selectedSession)
                 } else {
-                    setPageType(.session, for: self.selectedSession)
+                    welf.setPageType(.session, for: welf.selectedSession)
                 }
             case .cluster:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
               
             case .headQuater:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
                
             case .jointCall:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
                
             case .listedDoctor:
                
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
                 
             case .chemist:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
 
           
             case .stockist:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .unlistedDoctor:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             }
         }
         
-        selectView.addTap { [self] in
-            self.endEditing(true)
-            self.isSearched = false
-            switch self.cellType {
+        selectView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.endEditing(true)
+            welf.isSearched = false
+            switch welf.cellType {
             case .edit:
                 break
             case .session:
                 break
             case .workType:
-                if sessionDetailsArr.sessionDetails![selectedSession].isForFieldWork ?? false {
-                    setPageType(.session, for: self.selectedSession)
+                if welf.sessionDetailsArr.sessionDetails![welf.selectedSession].isForFieldWork ?? false {
+                    welf.setPageType(.session, for: welf.selectedSession)
                 } else {
-                    setPageType(.session, for: self.selectedSession)
+                    welf.setPageType(.session, for: welf.selectedSession)
                 }
             case .cluster:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .headQuater:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .jointCall:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .listedDoctor:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .chemist:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .stockist:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             case .unlistedDoctor:
-                setPageType(.session, for: self.selectedSession)
+                welf.setPageType(.session, for: welf.selectedSession)
             }
            
         }
@@ -1427,37 +1429,38 @@ class MenuView : BaseView{
         
     
          
-        clearview.addTap { [self] in
-            switch self.cellType {
+        clearview.addTap { [weak self] in
+            guard let welf = self else {return}
+            switch welf.cellType {
                 
             case .session:
                 break
             case .workType:
                 break
             case .cluster:
-                sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?.removeAll()
+                welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedClusterID?.removeAll()
               
             case .headQuater:
               //  sessionDetailsArr.sessionDetails?[selectedSession].selectedHeadQuaterID.removeAll()
                 break
                 
             case .jointCall:
-                sessionDetailsArr.sessionDetails?[selectedSession].selectedjointWorkID?.removeAll()
+                welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedjointWorkID?.removeAll()
              
             case .listedDoctor:
-                sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID?.removeAll()
+                welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedlistedDoctorsID?.removeAll()
                
             case .chemist:
-                sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID?.removeAll()
+                welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedchemistID?.removeAll()
              
             case .edit:
                 break
             case .stockist:
-                sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID?.removeAll()
+                welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedStockistID?.removeAll()
             case .unlistedDoctor:
-                sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?.removeAll()
+                welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedUnlistedDoctorsID?.removeAll()
             }
-            self.menuTable.reloadData()
+            welf.menuTable.reloadData()
         }
         
         
@@ -2410,18 +2413,19 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
 
             
-            cell.clusterView.addTap { [self] in
+            cell.clusterView.addTap { [weak self] in
+                guard let welf = self else {return}
                
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
-                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
+                welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
+                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
                     isToproceed = true
                 }
                 if isToproceed {
-                    self.cellType = .cluster
-                    self.selectedSession = indexPath.row
-                    self.setPageType(.cluster)
+                    welf.cellType = .cluster
+                    welf.selectedSession = indexPath.row
+                    welf.setPageType(.cluster)
                 } else {
-                    self.toCreateToast("Please select work type")
+                    welf.toCreateToast("Please select work type")
                 }
                 
                 
@@ -2437,7 +2441,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             
-            cell.headQuatersView.addTap { [self] in
+            cell.headQuatersView.addTap { [weak self] in
+                guard let welf = self else {return}
 //                [self] in
 //                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedHeadQuaterID.count)
 //                if sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  ||  sessionDetailsArr.sessionDetails?[indexPath.row].selectedWorkTypeIndex != nil  {
@@ -2451,29 +2456,31 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                } else {
 //                    self.toCreateToast("Please select work type")
 //                }
-                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
+                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
-                    self.cellType = .headQuater
-                    self.selectedSession = indexPath.row
-                    self.setPageType(.headQuater)
+                    welf.cellType = .headQuater
+                    welf.selectedSession = indexPath.row
+                    welf.setPageType(.headQuater)
                 } else {
-                    self.toCreateToast("Please select work type")
+                    welf.toCreateToast("Please select work type")
                 }
             }
-            cell.jointCallView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.count ?? 0)
-                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
+            cell.jointCallView.addTap { [weak self] in
+                guard let welf = self else {return}
+               
+                welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedjointWorkID?.count ?? 0)
+                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
-                    self.cellType = .jointCall
-                    self.selectedSession = indexPath.row
+                    welf.cellType = .jointCall
+                    welf.selectedSession = indexPath.row
                     
-                    self.setPageType(.jointCall)
+                    welf.setPageType(.jointCall)
                 } else {
-                    self.toCreateToast("Please select work type")
+                    welf.toCreateToast("Please select work type")
                 }
                 
                 
@@ -2495,17 +2502,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 
             }
-            cell.chemistView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.count ?? 0)
-                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
+            cell.chemistView.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.count ?? 0)
+                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
-                    self.cellType = .chemist
-                    self.selectedSession = indexPath.row
-                    self.setPageType(.chemist)
+                    welf.cellType = .chemist
+                    welf.selectedSession = indexPath.row
+                    welf.setPageType(.chemist)
                 } else {
-                    self.toCreateToast("Please select work type")
+                    welf.toCreateToast("Please select work type")
                 }
                 
                 
@@ -2527,17 +2535,18 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             
             
-            cell.newCustomersView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.count ?? 0)
-                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
+            cell.newCustomersView.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.count ?? 0)
+                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
                 }
                 if isToproceed {
-                    self.cellType = .unlistedDoctor
-                    self.selectedSession = indexPath.row
-                    self.setPageType(.unlistedDoctor)
+                    welf.cellType = .unlistedDoctor
+                    welf.selectedSession = indexPath.row
+                    welf.setPageType(.unlistedDoctor)
                 } else {
-                    self.toCreateToast("Please select work type")
+                    welf.toCreateToast("Please select work type")
                 }
             }
             

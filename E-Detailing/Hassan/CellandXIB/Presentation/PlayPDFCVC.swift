@@ -35,17 +35,12 @@ class PlayPDFCVC: UICollectionViewCell {
     
     func toLoadData(data: Data) {
             // your PDF data, fetched or loaded from somewhere
-        do {
-            guard let document = try? PDFDocument(data: data) else {
-                print("Failed to initialize PDF document.")
-                return
-            }
+        
+             let document = PDFDocument(data: data)
 
             pdfView.document = document
            
-        } catch {
-            print("Error loading PDF from data: \(error)")
-        }
+     
             
     }
 

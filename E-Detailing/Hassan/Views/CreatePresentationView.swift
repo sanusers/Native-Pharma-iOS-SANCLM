@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 import MobileCoreServices
+
+
 extension CreatePresentationView: UITextFieldDelegate {
     
 }
@@ -18,17 +20,17 @@ class CreatePresentationView : BaseView {
     
     
     
-    override func didDisappear(baseVC: BaseViewController) {
-        super.didDisappear(baseVC: baseVC)
-        arrayOfBrandSlideObjects = nil
-        arrayOfAllSlideObjects = nil
-        groupedBrandsSlideModel = nil
-        savedPresentation = nil
-        selectedSlides = nil
-        createPresentationVC.savedPresentation = nil
-    }
+    //    override func didDisappear(baseVC: BaseViewController) {
+    //        super.didDisappear(baseVC: baseVC)
+    //        arrayOfBrandSlideObjects = nil
+    //        arrayOfAllSlideObjects = nil
+    //        groupedBrandsSlideModel = nil
+    //        savedPresentation = nil
+    //        selectedSlides = nil
+    //        createPresentationVC.savedPresentation = nil
+    //    }
     
-
+    
     
     var createPresentationVC : CreatePresentationVC!
     
@@ -84,45 +86,49 @@ class CreatePresentationView : BaseView {
         initView()
     }
     
-
+    
     
     
     func toLoadNewPresentationData() {
         self.selectedSlidesModel = SelectedSlidesModel()
         do {
-        self.arrayOfBrandSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedBrandSlideData)
-         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
-          //  self.toLoadBrandsTable()
-       } catch {
-           print("Error: \(error)")
-       }
+            self.arrayOfBrandSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedBrandSlideData)
+            //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
+            //  self.toLoadBrandsTable()
+        } catch {
+            print("Error: \(error)")
+        }
+        
+        
         
         
         do {
-        self.arrayOfAllSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedSlideData)
-         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
-          //  self.toLoadBrandsTable()
-       } catch {
-           print("Error: \(error)")
-       }
+            self.arrayOfAllSlideObjects = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.LoadedSlideData)
+            //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
+            //  self.toLoadBrandsTable()
+        } catch {
+            print("Error: \(error)")
+        }
         
+        //        CoreDataManager.shared.fetchMovies { savedCDPresentationArr in
+        //            self.arrayOfAllSlideObjects = savedCDPresentationArr
+        //        }
         
-       
         self.groupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
         self.arrayOfBrandSlideObjects?.forEach { brandSlideModel in
             let aBrandData =  arrayOfAllSlideObjects?.filter({ aSlideModel in
-               aSlideModel.code == brandSlideModel.productBrdCode
+                aSlideModel.code == brandSlideModel.productBrdCode
             })
             
             let aBrandGroup = GroupedBrandsSlideModel()
-           
+            
             aBrandGroup.groupedSlide = aBrandData ?? [SlidesModel]()
             aBrandGroup.priority = brandSlideModel.priority
-            aBrandGroup.updatedDate = brandSlideModel.updatedDate
+            // aBrandGroup.updatedDate = brandSlideModel.updatedDate
             aBrandGroup.divisionCode = brandSlideModel.divisionCode
             aBrandGroup.productBrdCode = brandSlideModel.productBrdCode
             aBrandGroup.subdivisionCode = brandSlideModel.subdivisionCode
-            aBrandGroup.createdDate = brandSlideModel.createdDate
+            //  aBrandGroup.createdDate = brandSlideModel.createdDate
             aBrandGroup.id = brandSlideModel.id
             
             self.groupedBrandsSlideModel?.append(aBrandGroup)
@@ -139,61 +145,81 @@ class CreatePresentationView : BaseView {
         
         
     }
-
+    
     func initView() {
         addNameTF.delegate = self
         
-        playView.addTap {
+        playView.addTap { [weak self] in
+            guard let welf = self else {return}
             
-          
+            let isToproceed =  welf.sledeCountLbl.text == "0" ||  welf.sledeCountLbl.text == "" ? false : true
+            if isToproceed {
+                let vc = PlayPresentationVC.initWithStory(model: welf.toSetupPlayerModel())
+                welf.createPresentationVC.navigationController?.pushViewController(vc, animated: true)
+            } else {
+                let commonAlert = CommonAlert()
+                commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to preview", okAction: "Ok")
+                commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+                    print("no action")
+                }
+            }
             
-            let vc = PlayPresentationVC.initWithStory(model: self.toSetupPlayerModel())
-            self.createPresentationVC.navigationController?.pushViewController(vc, animated: true)
+            
+            
             
         }
         
         backHolderView.addTap {
             self.createPresentationVC.navigationController?.popViewController(animated: true)
         }
-
         
-        saveVIew.addTap { [self] in
+        
+        saveVIew.addTap { [weak self] in
+            guard let welf = self else {return}
+            let isToproceed =  welf.toCheckDataPersistance()
             
-            if self.sledeCountLbl.text == "0" {
-                let commonAlert = CommonAlert()
-                commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to save.", okAction: "Ok")
-                commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-                    print("no action")
-                  
-                }
-    
-            } else if addNameTF.text == "" {
-                let commonAlert = CommonAlert()
-                commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Lets give presentation a name.", okAction: "Ok")
-                commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-                    print("no action")
-                    self.alertTF()
-                }
-
-            } else {
-                if createPresentationVC.isToedit {
-                    retriveEditandSave()
+            if isToproceed {
+                if welf.createPresentationVC.isToedit {
+                    welf.retriveEditandSave()
                 } else {
-                    retriveSavedPresentations()
+                    welf.toSaveNewPresentation()
                 }
             }
+            
+            
         }
-
+        
+    }
+    
+    func toCheckDataPersistance() -> Bool {
+        if self.sledeCountLbl.text == "0" {
+            let commonAlert = CommonAlert()
+            commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to save.", okAction: "Ok")
+            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+                print("no action")
+            }
+            return false
+        } else if addNameTF.text == "" {
+            let commonAlert = CommonAlert()
+            commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Lets give presentation a name.", okAction: "Ok")
+            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+                print("no action")
+                self.alertTF()
+            }
+            return false
+        } else {
+            return true
+        }
     }
     
     
     func toSetupPlayerModel() -> [SlidesModel] {
- 
+        
         
         var selectedSlidesModelArr = [SlidesModel]()
         
         self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
-           let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+            let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                 aSlidesModel.isSelected == true
             }
             selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
@@ -204,97 +230,70 @@ class CreatePresentationView : BaseView {
     
     
     func alertTF() {
-      
+        
+        UIView.animate(withDuration: 1, delay: 0, animations: {
+            self.addNameTFHolderView.backgroundColor =  .red.withAlphaComponent(0.5)
+        })
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             UIView.animate(withDuration: 1, delay: 0, animations: {
-                self.addNameTFHolderView.backgroundColor =  .red.withAlphaComponent(0.5)
+                self.addNameTFHolderView.backgroundColor = .appWhiteColor
+                self.addNameTF.becomeFirstResponder()
             })
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                UIView.animate(withDuration: 1, delay: 0, animations: {
-                    self.addNameTFHolderView.backgroundColor = .appWhiteColor
-                    self.addNameTF.becomeFirstResponder()
-                })
-            }
+        }
         
-    }
-    
-    func toRetriveSavedPresentation() -> [SavedPresentation] {
-        
-        
-        var savePresentationArr = [SavedPresentation]()
-        
-        do {
-             savePresentationArr = try LocalStorage.shared.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.SavedPresentations)
-         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
-          //  self.toLoadBrandsTable()
-            dump(savePresentationArr)
-       } catch {
-           print("Error: \(error)")
-       }
-        
-        return savePresentationArr
     }
     
     
     func retriveEditandSave() {
-        var savePresentationArr = toRetriveSavedPresentation()
         
-        let savedPresentation = SavedPresentation()
-        savedPresentation.uuid = UUID()
-        savedPresentation.name = self.addNameTF.text ?? ""
-        savedPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel ?? [GroupedBrandsSlideModel]()
-        
-       let existingObj = savePresentationArr.filter { aSavedPresentation in
-            aSavedPresentation.name == savedPresentation.name
-        }
-        
-        
-        
-        let isExists: Bool = existingObj.isEmpty  ? false : true
-        
-        
-        if isExists {
-            savePresentationArr =  savePresentationArr.filter { aSavedPresentation in
-                 aSavedPresentation.name != savedPresentation.name
-             }
-            savePresentationArr.append(savedPresentation)
+        if let savedPresentation = self.savedPresentation {
+            savedPresentation.name = self.addNameTF.text ?? ""
+            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, savedPresentation.uuid) { isEdited in
+                if isEdited {
+                    self.toCreateToast("Presentation saved successfully.")
+                } else {
+                    self.toCreateToast("Error saving presentation.")
+                }
+                
+            }
         } else {
-            savePresentationArr.append(savedPresentation)
+            self.toCreateToast("Error saving presentation.")
+            
         }
         
-        LocalStorage.shared.saveObjectToUserDefaults(savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
+        toExiteVC()
         
+        
+        
+    }
+    
+    func toExiteVC() {
         self.createPresentationVC.delegate?.presentationSaved()
         self.createPresentationVC.navigationController?.popViewController(animated: true)
     }
     
-    func retriveSavedPresentations() {
-        
-    
-        
-        var savePresentationArr = toRetriveSavedPresentation()
-        
+    func toSaveNewPresentation() {
         let savedPresentation = SavedPresentation()
         savedPresentation.uuid = UUID()
         savedPresentation.name = self.addNameTF.text ?? ""
-    
-        
-//        self.groupedBrandsSlideModel = self.groupedBrandsSlideModel?.filter({ aGroupedBrandsSlideModel in
-//            !aGroupedBrandsSlideModel.groupedSlide.isEmpty
-//        })
-        
         savedPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel ?? [GroupedBrandsSlideModel]()
         
-     
-        savePresentationArr.append(savedPresentation)
+        CoreDataManager.shared.saveToCoreData(savedPresentation: savedPresentation) { isObjSaved in
+            if isObjSaved {
+                self.toCreateToast("Presentation saved Successfully.")
+            } else {
+                self.toCreateToast("Presentation might be aldready saved.")
+            }
+        }
         
-        LocalStorage.shared.saveObjectToUserDefaults(savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
- 
+        toExiteVC()
         
-        self.createPresentationVC.delegate?.presentationSaved()
-        self.createPresentationVC.navigationController?.popViewController(animated: true)
-        
+        //        CoreDataManager.shared.fetchMovies { savedCDPresentationArr in
+        //            dump(savedCDPresentationArr)
+        //        }
     }
+    
     
     func saveObjectToDafaults() {}
     
@@ -340,7 +339,7 @@ class CreatePresentationView : BaseView {
         addNameTFHolderView.layer.borderWidth = 0.5
         
         
-      
+        
         
     }
     
@@ -351,12 +350,12 @@ class CreatePresentationView : BaseView {
     }
     
     func toLoadselectedSlidesTable() {
-       // createPresentationVC.navigationItem.rightBarButtonItem
-      //  self.selectedSlidesModel = SelectedSlidesModel()
+        // createPresentationVC.navigationItem.rightBarButtonItem
+        //  self.selectedSlidesModel = SelectedSlidesModel()
         selectedSlidesTable.delegate = self
         selectedSlidesTable.dataSource = self
         //selectedSlidesTable.dragDelegate = self
-       // selectedSlidesTable.dropDelegate = self
+        // selectedSlidesTable.dropDelegate = self
         selectedSlidesTable.dragInteractionEnabled = true
         selectedSlidesTable.reloadData()
     }
@@ -376,7 +375,7 @@ class CreatePresentationView : BaseView {
         self.groupedBrandsSlideModel = self.savedPresentation?.groupedBrandsSlideModel
         self.addNameTF.text = self.savedPresentation?.name
         
-       var slideModel = [SlidesModel]()
+        var slideModel = [SlidesModel]()
         self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
             
             let selectedSlides =  aGroupedBrandsSlideModel.groupedSlide.filter({ $0.isSelected })
@@ -388,25 +387,56 @@ class CreatePresentationView : BaseView {
             aSlideModel.isSelected
         })
         self.selectedSlidesModel?.slideNames = slideModel
-     //   self.selectedSlides = slideModel
+        //   self.selectedSlides = slideModel
         if  slideModel.isEmpty {
             self.sledeCountLbl.text = "0"
-      } else {
-          
-          if let selectedSlidesModel = selectedSlidesModel {
-              self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
-          }
-          
+        } else {
+            
+            if let selectedSlidesModel = selectedSlidesModel {
+                self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
+            }
+            
+            
+        }
         
-      }
         
-       
         
         toLoadBrandsTable()
         toLoadSelectedSlidesCollection()
         toLoadselectedSlidesTable()
     }
     
+    func tounArchiveData() {
+        var zipContentsSlides = [SlidesModel]()
+        if  let groupedBrandsSlideModel = self.groupedBrandsSlideModel {
+            groupedBrandsSlideModel.enumerated().forEach { aGroupedBrandsSlideModelIndex, aGroupedBrandsSlideModel in
+                zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+                    aSlideModel.utType == "application/zip"
+                }
+                self.groupedBrandsSlideModel?[aGroupedBrandsSlideModelIndex].groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+                    aSlideModel.utType != "application/zip"
+                    
+                }
+                
+            }
+            
+//            zipContentsSlides.forEach { aSlidesModel in
+//                <#code#>
+//            }
+            
+            
+        }
+        
+    }
+    
+
+
+    
+
+
+
+
+
 }
 
 extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -538,6 +568,9 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             let model = self.selectedSlidesModel?.slideNames[indexPath.row]
             cell.titleLbl.text = model?.name
             cell.descriptionLbl.text = "Yet to be added"
+            let data =  model?.slideData ?? Data()
+            let utType = model?.utType ?? ""
+            cell.presentationIV.toSetImageFromData(utType: utType, data: data)
             cell.deleteoptionView.addTap {
                 self.selectedSlidesModel?.slideNames = self.selectedSlidesModel?.slideNames.filter { aSlideModel in
                     aSlideModel.slideId != model?.slideId

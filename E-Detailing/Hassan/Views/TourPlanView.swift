@@ -2197,18 +2197,18 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         }
         
 
-        cell.addTap { [self] in
-            
-            responseHolidaydates.forEach { aHolisayDate in
-                if toModifyDate(date: date, isForHoliday: true) == aHolisayDate {
+        cell.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.responseHolidaydates.forEach { aHolisayDate in
+                if welf.toModifyDate(date: date, isForHoliday: true) == aHolisayDate {
                     isForHoliday = true
 
                 }
             }
-            self.selectedDate =  self.toTrimDate(date: date)
-            self.tourPlanCalander.collectionView.reloadData()
+            welf.selectedDate =  welf.toTrimDate(date: date)
+            welf.tourPlanCalander.collectionView.reloadData()
             
-            self.moveToMenuVC(date, isForWeekOff: isWeeklyoff, isforHoliday: isForHoliday)
+            welf.moveToMenuVC(date, isForWeekOff: isWeeklyoff, isforHoliday: isForHoliday)
 
         }
         

@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import PDFKit
+import AVFoundation
 
 class CreatedPresentationCVC: UICollectionViewCell {
 
@@ -18,6 +20,7 @@ class CreatedPresentationCVC: UICollectionViewCell {
     
     @IBOutlet var bottomContentsHolder: UIView!
     @IBOutlet var optionsIV: UIImageView!
+    let pdfView = PDFView()
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -50,11 +53,17 @@ class CreatedPresentationCVC: UICollectionViewCell {
         
         
         slideTitleLbl.text = model.name
-        let groupedBrandsSlideElement = model.groupedBrandsSlideModel.randomElement()
-        let slideElement = groupedBrandsSlideElement?.groupedSlide.randomElement()
-        let imageData = slideElement?.slideData
-        presentationIV.image = UIImage(data: imageData ?? Data())
+        let groupedBrandsSlideElement = model.groupedBrandsSlideModel.last
+        
+        
+        
+        let slideElement = groupedBrandsSlideElement?.groupedSlide.last
+        let imageDatatype = slideElement?.utType ?? ""
+        
+        
+        self.presentationIV.toSetImageFromData(utType: imageDatatype, data: slideElement?.slideData ?? Data())
+        
     }
-    
+
 
 }

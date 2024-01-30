@@ -33,42 +33,20 @@ class PlayPresentationCVC: UICollectionViewCell {
     }
     
     func toPopulateCell(_ model: SlidesModel) {
-    
-        if model.utType == "application/pdf" {
-            pdfView.contentMode = .scaleAspectFit
-            formatIV.image = UIImage(named: "pdf")
-             let pdfData = model.slideData
-                if let pdfDocument = PDFDocument(data: pdfData) {
-                    pdfView.document = pdfDocument
-
-                     let pdfPage = pdfDocument.page(at: 0)
-                        // Convert the PDF page to an image
-                    if let pdfImage = pdfPage?.thumbnail(of: CGSize(width: pdfPage?.bounds(for: .mediaBox).width ?? 0, height: pdfPage?.bounds(for: .mediaBox).height ?? 0), for: .mediaBox) {
-                            // Display the image in the UIImageView
-                        presentationIV.image = pdfImage
-                        }
-                    
-                } else {
-                    print("Failed to create PDF document from data.")
-                }
         
+            let data =  model.slideData
+            let utType = model.utType
+            presentationIV.toSetImageFromData(utType: utType, data: data)
+        if model.utType == "application/pdf" {
+        
+            formatIV.image = UIImage(named: "pdf")
         } else  if model.utType == "image/jpeg" {
-            formatIV.image = UIImage(named: "image")   
-            presentationIV.contentMode = .scaleAspectFill
-            if let image = UIImage(data: model.slideData) {
-                // The downloaded data represents an image
-                presentationIV.image = image
-                print("Downloaded data is an image.")
-            } else {
-                // The downloaded data is not an image
-                print("Downloaded data is of an unknown type.")
-            }
+            formatIV.image = UIImage(named: "image")
+   
         } else if model.utType == "video/mp4" {
-            print(model.utType)
+         
             formatIV.image = UIImage(named: "video")
-            displayThumbnail(for: model.slideData)
-            
-            
+    
         } else if model.utType == "application/zip" {
           
             print(model.utType)
@@ -114,6 +92,9 @@ class PlayPresentationCVC: UICollectionViewCell {
             return nil
         }
     }
+    
+    
+
     
     
 

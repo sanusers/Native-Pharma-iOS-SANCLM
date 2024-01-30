@@ -106,24 +106,24 @@ import Foundation
             hasher.combine(slideId)
         }
         
-        let code: Int
-        let camp: Int
-        let productDetailCode: String
-        let filePath: String
-        let group: Int
-        let specialityCode: String
-        let slideId: Int
-        let fileType: String
-        let effFrom: DateInfo
-        let categoryCode: String
-        let name: String
-        let noofSamples: Int
-        let effTo: DateInfo
-        let ordNo: Int
-        let priority: Int
-        var slideData: Data
-        var utType : String
-        var isSelected : Bool
+       var code: Int
+       var camp: Int
+       var productDetailCode: String
+       var filePath: String
+       var group: Int
+       var specialityCode: String
+       var slideId: Int
+       var fileType: String
+       var effFrom: DateInfo
+       var categoryCode: String
+       var name: String
+       var noofSamples: Int
+       var effTo: DateInfo
+       var ordNo: Int
+       var priority: Int
+       var slideData: Data
+       var utType : String
+       var isSelected : Bool
         
         enum CodingKeys: String, CodingKey {
             case code              = "Code"

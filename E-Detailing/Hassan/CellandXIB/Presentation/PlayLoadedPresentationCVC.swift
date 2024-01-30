@@ -18,19 +18,11 @@ class PlayLoadedPresentationCVC: UICollectionViewCell {
     }
     
     func populateCell(model: SlidesModel) {
-        presentationIV.contentMode = .scaleAspectFit
-        if let image = UIImage(data: model.slideData) {
-            // The downloaded data represents an image
-            presentationIV.image = image
-            print("Downloaded data is an image.")
-        } else {
-            // The downloaded data is not an image
-            print("Downloaded data is of an unknown type.")
-        }
+
+            let data =  model.slideData
+            let utType = model.utType
+            presentationIV.toSetImageFromData(utType: utType, data: data)
+
     }
     
-    
-    
-
-
 }

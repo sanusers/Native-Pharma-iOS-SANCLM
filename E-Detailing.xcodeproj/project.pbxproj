@@ -60,6 +60,7 @@
 		38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */; };
 		38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */; };
 		38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */; };
+		38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */; };
 		38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */; };
@@ -108,7 +109,6 @@
 		38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */; };
 		38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */; };
 		38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */; };
-		38CA1FD72B60DB6700AFCFD2 /* CreatePresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */; };
 		38CA1FD92B60DBBA00AFCFD2 /* CreatePresentationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD82B60DBBA00AFCFD2 /* CreatePresentationVC.swift */; };
 		38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FDA2B60E61900AFCFD2 /* BrandsNameTVC.swift */; };
 		38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FDB2B60E61900AFCFD2 /* BrandsNameTVC.xib */; };
@@ -210,6 +210,7 @@
 		38E3E53A2A80C78700AE5AF6 /* DoctorCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */; };
 		38E42B1E2B679634001E0F07 /* VideoPlayerCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E42B1C2B679634001E0F07 /* VideoPlayerCVC.swift */; };
 		38E42B1F2B679634001E0F07 /* VideoPlayerCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E42B1D2B679634001E0F07 /* VideoPlayerCVC.xib */; };
+		38E42B222B67D265001E0F07 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E42B212B67D265001E0F07 /* CoreDataManager.swift */; };
 		38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */; };
 		38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */; };
 		38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E48DA12AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift */; };
@@ -486,6 +487,7 @@
 		38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoctorCallCell.xib; sourceTree = "<group>"; };
 		38E42B1C2B679634001E0F07 /* VideoPlayerCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerCVC.swift; sourceTree = "<group>"; };
 		38E42B1D2B679634001E0F07 /* VideoPlayerCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoPlayerCVC.xib; sourceTree = "<group>"; };
+		38E42B212B67D265001E0F07 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		38E4539F2AAA07C300A62644 /* RcpaAddedListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaAddedListTableViewCell.xib; sourceTree = "<group>"; };
 		38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaAddedListTableViewCell.swift; sourceTree = "<group>"; };
 		38E48DA12AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameWithSampleTableViewCell.swift; sourceTree = "<group>"; };
@@ -733,6 +735,7 @@
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				38E42B202B67D226001E0F07 /* LocalStorage */,
 				38C25E9E2B64D7C900A8E076 /* Common alert */,
 				38DD14B22B4FBB6C0036384F /* Loaders */,
 				385A424C2AFBAB6400C0A58A /* View+UX.swift */,
@@ -972,6 +975,14 @@
 				385A42532AFBB75300C0A58A /* AppSetupModel.swift */,
 			);
 			path = Cofiguration;
+			sourceTree = "<group>";
+		};
+		38E42B202B67D226001E0F07 /* LocalStorage */ = {
+			isa = PBXGroup;
+			children = (
+				38E42B212B67D265001E0F07 /* CoreDataManager.swift */,
+			);
+			path = LocalStorage;
 			sourceTree = "<group>";
 		};
 		38E48D332B14AA9A00878DA9 /* TourPlan */ = {
@@ -1456,7 +1467,6 @@
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
 				38CD60DF2A866CEA006FFB39 /* ProductSampleTableViewCell.swift in Sources */,
-				38CA1FD72B60DB6700AFCFD2 /* CreatePresentationView.swift in Sources */,
 				38D5690D2B35AFE3007CB86D /* RadioSelectionTVC.swift in Sources */,
 				38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */,
 				38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */,
@@ -1465,6 +1475,7 @@
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */,
 				38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */,
+				38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */,
 				38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38DD14B12B4FBAA70036384F /* Shared.swift in Sources */,
@@ -1536,6 +1547,7 @@
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,
+				38E42B222B67D265001E0F07 /* CoreDataManager.swift in Sources */,
 				38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */,
 				38CBA4D02A9F59B3001992C4 /* DcrTagTitleCell.swift in Sources */,
 				38E3C3692AFA033C00623C33 /* ConfigModel.swift in Sources */,
@@ -1686,6 +1698,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1740,6 +1753,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

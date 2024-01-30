@@ -9,13 +9,34 @@ import Foundation
 import UIKit
 
 extension PresentationHomeView: PopOverVCDelegate {
+    
+    func toSetupPlayerModel(_ index: Int) -> [SlidesModel] {
+        var selectedSlidesModelArr = [SlidesModel]()
+        if let savePresentationArr = self.savePresentationArr {
+            let selectedPresentation = savePresentationArr[index]
+            selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
+               let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                    aSlidesModel.isSelected == true
+                }
+                selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
+            })
+         
+        }
+      
+
+        return selectedSlidesModelArr
+        
+    }
+    
     func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
         print("Index is: \(index) -- ArrIndex is \(SelectedArrIndex)")
         
         switch index {
         case 0:
             //VIEW
-            moveToCreatePresentationVC()
+            let vc = PlayPresentationVC.initWithStory(model:  toSetupPlayerModel(createdPresentationSelectedIndex ?? 0))
+            self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
+           
         case 1:
             //EDIT
             let model = self.savePresentationArr?[createdPresentationSelectedIndex ?? 0] ?? SavedPresentation()
@@ -117,34 +138,31 @@ class PresentationHomeView : BaseView {
     
     override func willDisappear(baseVC: BaseViewController) {
         super.willDisappear(baseVC: baseVC)
-        self.savePresentationArr = nil
+      //  self.savePresentationArr = nil
        
     }
     
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
-        retriveSavedPresentations()
+      //  retriveSavedPresentations()
         
     }
     
-    func retriveSavedPresentations() {
+    func retriveSavedPresentations()  {
         
-        do {
-             savePresentationArr  = try localStorage.retrieveObjectFromUserDefaults(forKey: LocalStorage.LocalValue.SavedPresentations)
-         //  print("Retrieved Object: \(retrievedObject.name), \(retrievedObject.age)")
-          //  self.toLoadBrandsTable()
+        self.savePresentationArr = CoreDataManager.shared.retriveSavedPresentations()
+        
+        if let savePresentationArr =   self.savePresentationArr {
             dump(savePresentationArr)
-            if savePresentationArr?.count == 0 {
+            if savePresentationArr.count == 0 {
                 toSetPageType(pageType: .empty)
             } else {
                 toSetPageType(pageType: .exists)
             }
-           
-       } catch {
-           print("Error: \(error)")
-           toSetPageType(pageType: .empty)
-           
-       }
+        }
+        
+       
+ 
     }
     
     func toLoadPresentationCollection() {
@@ -214,11 +232,19 @@ class PresentationHomeView : BaseView {
     }
     
     func toDeletePresentation() {
-        self.savePresentationArr?.remove(at: createdPresentationSelectedIndex ?? 0)
-        localStorage.saveObjectToUserDefaults(self.savePresentationArr, forKey: LocalStorage.LocalValue.SavedPresentations)
+
+        if let  savePresentationArr =   self.savePresentationArr {
+            CoreDataManager.shared.toRemovePresentation(savePresentationArr[createdPresentationSelectedIndex ?? 0].uuid) { isDeleted in
+                if isDeleted {
+                    self.toCreateToast("presentation deleted successfully")
+                    retriveSavedPresentations()
+                } else {
+                    self.toCreateToast("operation couldn't be completed.")
+                }
+            }
         
-        
-        retriveSavedPresentations()
+        }
+  
        
     }
     
