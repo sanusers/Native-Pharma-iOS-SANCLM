@@ -494,7 +494,7 @@ class MainVC : UIViewController {
         self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
         
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            toSetParams()
+           // toSetParams()
             // self.segmentControlForDcr.selectedSegmentIndex = 1
         } else {
             //  self.segmentControlForDcr.selectedSegmentIndex = 2

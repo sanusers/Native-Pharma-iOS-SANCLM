@@ -32,7 +32,7 @@ extension UIImageView {
             } else {
                 print("Failed to create PDF document from data.")
             }
-        case "image/jpeg":
+        case "image/jpeg", "image/png", "image/jpg", "image/bmp", "text/html":
            
             if let image = UIImage(data: data) {
                 // The downloaded data represents an image
@@ -53,12 +53,15 @@ extension UIImageView {
                 self.image = UIImage(named: "zip")
            
                 
-          
-            
+ 
         default:
-            print("utType")
+            print("Unknown type")
+            self.image = UIImage(named: "ic_close")
+
         }
     }
+    
+    
     
     
     func displayThumbnail(for videoData: Data) {

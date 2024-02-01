@@ -10,11 +10,19 @@
 import Foundation
 import CoreData
 import UIKit
+
 class CoreDataManager {
     static let shared = CoreDataManager()
+    var savedSlideBrand: [SlideBrand]?
+    var savedSlides : [SlidesCDModel]?
+    var savedGroupedSlides : [GroupedBrandsSlideCDModel]?
     var savedCDpresentations:[SavedCDPresentation]?
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
+    // MARK: - functionalities for presentation flow
+    
+    /// function to fetch all saved presentation
+    /// - Parameter completion: array of type SavedCDPresentation
     func fetchPresentations(completion: ([SavedCDPresentation]) -> () )  {
         do {
             savedCDpresentations = try  context.fetch(SavedCDPresentation.fetchRequest())
@@ -25,7 +33,10 @@ class CoreDataManager {
         }
        
     }
-    // MARK: - functionalities for presentation flow
+    
+    
+
+    
     
     /// function checks for existing object from core data SavedCDPresentation
     /// - Parameters:
@@ -51,7 +62,6 @@ class CoreDataManager {
     }
     
     
-
     
     
     /// function to remove a presentation
@@ -120,14 +130,14 @@ class CoreDataManager {
     }
     
     
+
+    
+
     /// to save object of type SavedPresentation to core data
     /// - Parameters:
     ///   - savedPresentation: SavedPresentation
     ///   - completion: boolean
     func saveToCoreData(savedPresentation: SavedPresentation  , completion: (Bool) -> ()) {
-        
-
-        
         toCheckExistance(savedPresentation.uuid) { isExists in
             if !isExists {
                 let context = self.context
@@ -224,9 +234,6 @@ class CoreDataManager {
                 cdSlidesModel.slideData = slidesModel.slideData
                 cdSlidesModel.utType = slidesModel.utType
                 cdSlidesModel.isSelected = slidesModel.isSelected
-                
-                
-                
                 // Convert other properties...
                 
                 // Add to set
@@ -301,6 +308,395 @@ class CoreDataManager {
     }
     // MARK: - functionalities for presentation flow Ends
 }
+
+
+extension CoreDataManager {
+    
+    
+    func fetchGroupedSlides(completion: ([GroupedBrandsSlideCDModel]) -> () )  {
+        do {
+            savedGroupedSlides = try  context.fetch(GroupedBrandsSlideCDModel.fetchRequest())
+            completion(savedGroupedSlides ?? [GroupedBrandsSlideCDModel]())
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+    
+    
+    func retriveGroupedSlides() -> [GroupedBrandsSlideModel] {
+        
+        var savePresentationArr = [GroupedBrandsSlideModel]()
+        
+        CoreDataManager.shared.fetchGroupedSlides { groupedBrandsArr in
+            groupedBrandsArr.forEach { agroupedBrands in
+                let aGroupedBrandsSlideModel = GroupedBrandsSlideModel()
+                aGroupedBrandsSlideModel.uuid = agroupedBrands.uuid ?? UUID()
+                aGroupedBrandsSlideModel.id = Int(agroupedBrands.id)
+                aGroupedBrandsSlideModel.divisionCode = Int(agroupedBrands.divisionCode)
+                aGroupedBrandsSlideModel.priority = Int(agroupedBrands.priority)
+                aGroupedBrandsSlideModel.productBrdCode = Int(agroupedBrands.productBrdCode)
+                aGroupedBrandsSlideModel.subdivisionCode = Int(agroupedBrands.subdivisionCode)
+
+                var groupedSlideArr = [SlidesModel]()
+                if let  groupedSlideModelSet = agroupedBrands.groupedSlide as? Set<SlidesCDModel>  {
+                    let groupedBrandsSlideModelArray = Array(groupedSlideModelSet)
+                    groupedBrandsSlideModelArray.forEach { slidesCDModel in
+                        let agroupedSlide = SlidesModel()
+                        agroupedSlide.code = Int(slidesCDModel.code)
+                        agroupedSlide.camp = Int(slidesCDModel.camp)
+                        agroupedSlide.productDetailCode = slidesCDModel.productDetailCode ?? ""
+                        agroupedSlide.filePath = slidesCDModel.filePath ?? ""
+                        agroupedSlide.group = Int(slidesCDModel.group)
+                        agroupedSlide.specialityCode = slidesCDModel.specialityCode ?? ""
+                        agroupedSlide.slideId = Int(slidesCDModel.slideId)
+                        agroupedSlide.fileType = slidesCDModel.fileType ?? ""
+                        agroupedSlide.categoryCode = slidesCDModel.categoryCode ?? ""
+                        agroupedSlide.name = slidesCDModel.name ?? ""
+                        agroupedSlide.noofSamples = Int(slidesCDModel.noofSamples)
+                        agroupedSlide.ordNo = Int(slidesCDModel.ordNo)
+                        agroupedSlide.priority = Int(slidesCDModel.priority)
+                        agroupedSlide.slideData = slidesCDModel.slideData ?? Data()
+                        agroupedSlide.utType = slidesCDModel.utType ?? ""
+                        agroupedSlide.isSelected = slidesCDModel.isSelected
+                        groupedSlideArr.append(agroupedSlide)
+                    }
+                    
+                    aGroupedBrandsSlideModel.groupedSlide = groupedSlideArr
+                    
+                }
+                
+                savePresentationArr.append(aGroupedBrandsSlideModel)
+            }
+        }
+        
+        return savePresentationArr
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    func toCheckGroupedSlidesExistance(_ id: UUID, completion: (Bool) -> ()) {
+        
+        do {
+            let request = GroupedBrandsSlideCDModel.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "uuid == '\(id)'")
+            //LIKE
+            request.predicate = pred
+           let films = try context.fetch(request)
+            if films.isEmpty {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+    }
+    
+    
+    func removeAllGroupedSlides() {
+        //completion: @escaping () -> Void
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = GroupedBrandsSlideCDModel.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+           // completion()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+          //  completion()
+        }
+    }
+    
+    
+    func toSaveGroupedSlidesToCoreData(groupedBrandSlide: GroupedBrandsSlideModel  , completion: @escaping (Bool) -> ()) {
+        toCheckGroupedSlidesExistance(groupedBrandSlide.uuid) { isExists in
+            if !isExists {
+                let context = self.context
+                // Create a new managed object
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "GroupedBrandsSlideCDModel", in: context) {
+                    let GroupedBrandsSlides = GroupedBrandsSlideCDModel(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+                    GroupedBrandsSlides.uuid = groupedBrandSlide.uuid
+                    GroupedBrandsSlides.divisionCode = Int16(groupedBrandSlide.divisionCode)
+                    GroupedBrandsSlides.priority = Int16(groupedBrandSlide.priority)
+                    GroupedBrandsSlides.productBrdCode = Int16(groupedBrandSlide.productBrdCode)
+                    GroupedBrandsSlides.subdivisionCode = Int16(groupedBrandSlide.subdivisionCode)
+
+                    // Convert and add groupedBrandsSlideModel
+                    GroupedBrandsSlides.groupedSlide = convertToSlidesCDModel(groupedBrandSlide.groupedSlide, context: context)
+
+                    // Save to Core Data
+                    do {
+                        try context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+            } else {
+                completion(false)
+            }
+        }
+    }
+}
+
+
+extension CoreDataManager {
+    // MARK: - functionalities for slides flow
+    func toCheckSlideExistance(_ id: UUID, completion: (Bool) -> ()) {
+        
+        do {
+            let request = SlidesCDModel.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "uuid == '\(id)'")
+            //LIKE
+            request.predicate = pred
+           let films = try context.fetch(request)
+            if films.isEmpty {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+    }
+
+    
+    func toCheckBrandExistance(_ id: UUID, completion: (Bool) -> ()) {
+        
+        do {
+            let request = SlideBrand.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "uuid == '\(id)'")
+            //LIKE
+            request.predicate = pred
+           let films = try context.fetch(request)
+            if films.isEmpty {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+    }
+
+    
+    func fetchBarndSlides(completion: ([SlideBrand]) -> () )  {
+        do {
+            savedSlideBrand = try  context.fetch(SlideBrand.fetchRequest())
+            completion(savedSlideBrand ?? [SlideBrand]())
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+    
+    func removeAllSlideBrands() {
+        //completion: @escaping () -> Void
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SlideBrand.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+           // completion()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+          //  completion()
+        }
+    }
+    
+    
+    func removeAllSlides() {
+        //completion: @escaping () -> Void
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SlidesCDModel.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+           // completion()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+          //  completion()
+        }
+    }
+    
+    
+    
+    
+    func fetchSlides(completion: ([SlidesCDModel]) -> () )  {
+        do {
+            savedSlides = try  context.fetch(SlidesCDModel.fetchRequest())
+            completion(savedSlides ?? [SlidesCDModel]())
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+
+    
+    func saveSlidesToCoreData(savedSlides: SlidesModel  , completion: (Bool) -> ()) {
+        toCheckSlideExistance(savedSlides.uuid) { isExists in
+            if !isExists {
+                let context = self.context
+                
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "SlidesCDModel", in: context) {
+                    let savedCDSlide = SlidesCDModel(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+         
+                    savedCDSlide.code              =         Int16(savedSlides.code)
+                    savedCDSlide.camp              =         Int16(savedSlides.camp)
+                    savedCDSlide.productDetailCode =         savedSlides.productDetailCode
+                    savedCDSlide.filePath          =         savedSlides.filePath
+                    savedCDSlide.group             =         Int16(savedSlides.group)
+                    savedCDSlide.specialityCode    =         savedSlides.specialityCode
+                    savedCDSlide.slideId           =         Int16(savedSlides.slideId)
+                    savedCDSlide.fileType          =         savedSlides.fileType
+                   // savedCDSlide.effFrom           =         savedSlides.effFrom
+                    savedCDSlide.categoryCode      =         savedSlides.categoryCode
+                    savedCDSlide.name              =         savedSlides.name
+                    savedCDSlide.noofSamples       =         Int16(savedSlides.noofSamples)
+                   // savedCDSlide.effTo             =         savedSlides.effTo
+                    savedCDSlide.ordNo             =         Int16(savedSlides.ordNo)
+                    savedCDSlide.priority          =         Int16(savedSlides.priority)
+                    savedCDSlide.slideData         =         savedSlides.slideData
+                    savedCDSlide.utType            =         savedSlides.utType
+                    savedCDSlide.isSelected        =         savedSlides.isSelected
+                    savedCDSlide.uuid              =         savedSlides.uuid
+                  
+                    // Save to Core Data
+                    do {
+                        try context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+                
+            } else {
+                
+            }
+        }
+    }
+    
+    
+    
+    func saveBrandSlidesToCoreData(savedBrandSlides: BrandSlidesModel  , completion: (Bool) -> ()) {
+        toCheckBrandExistance(savedBrandSlides.uuid) { isExists in
+            if !isExists {
+                let context = self.context
+                
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "SlideBrand", in: context) {
+                    let savedCDSlideBrands = SlideBrand(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+                    savedCDSlideBrands.uuid = savedBrandSlides.uuid
+                    savedCDSlideBrands.priority = String(savedBrandSlides.priority)
+                    savedCDSlideBrands.divisionCode = String(savedBrandSlides.divisionCode)
+                    savedCDSlideBrands.id =  String(savedBrandSlides.id)
+                    savedCDSlideBrands.productBrandCode = String(savedBrandSlides.productBrdCode)
+                    savedCDSlideBrands.subDivisionCode = String(savedBrandSlides.subdivisionCode)
+                
+
+                    // Save to Core Data
+                    do {
+                        try context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+                
+            } else {
+                
+            }
+        }
+    }
+    
+    
+
+    
+    func retriveSavedSlides() -> [SlidesModel] {
+        
+        var saveSlidesArr = [SlidesModel]()
+        
+        CoreDataManager.shared.fetchSlides { savedCDSlides in
+            
+            savedCDSlides.forEach { aSavedCDPresentation in
+                let asaveSlide = SlidesModel()
+                asaveSlide.code              =     Int(aSavedCDPresentation.code)
+                asaveSlide.camp              =     Int(aSavedCDPresentation.camp)
+                asaveSlide.productDetailCode =     aSavedCDPresentation.productDetailCode ?? ""
+                asaveSlide.filePath          =     aSavedCDPresentation.filePath ?? ""
+                asaveSlide.group             =     Int(aSavedCDPresentation.group)
+                asaveSlide.specialityCode    =     aSavedCDPresentation.specialityCode ?? ""
+                asaveSlide.slideId           =     Int(aSavedCDPresentation.slideId)
+                asaveSlide.fileType          =     aSavedCDPresentation.fileType ?? ""
+               // asaveSliderr.effFrom           =   aSavedCDPresentationides.effFrom
+                asaveSlide.categoryCode      =     aSavedCDPresentation.categoryCode ?? ""
+                asaveSlide.name              =     aSavedCDPresentation.name ?? ""
+                asaveSlide.noofSamples       =     Int(aSavedCDPresentation.noofSamples)
+               //asaveSliderr.effTo             =   aSavedCDPresentationides.effTo
+                asaveSlide.ordNo             =     Int(aSavedCDPresentation.ordNo)
+                asaveSlide.priority          =     Int(aSavedCDPresentation.priority)
+                asaveSlide.slideData         =     aSavedCDPresentation.slideData ?? Data()
+                asaveSlide.utType            =     aSavedCDPresentation.utType ?? ""
+                asaveSlide.isSelected        =     aSavedCDPresentation.isSelected
+                asaveSlide.uuid              =     aSavedCDPresentation.uuid ?? UUID()
+                saveSlidesArr.append(asaveSlide)
+                
+            }
+
+        }
+        
+       return saveSlidesArr
+    }
+    
+    
+    func retriveSavedBrandSlides() -> [BrandSlidesModel] {
+        
+        var saveSlidesArr = [BrandSlidesModel]()
+        
+        CoreDataManager.shared.fetchBarndSlides{ SlideBrands in
+            SlideBrands.forEach { aSlideBrand in
+                let asaveSlide = BrandSlidesModel()
+                asaveSlide.uuid = aSlideBrand.uuid ?? UUID()
+                asaveSlide.priority = Int(aSlideBrand.priority ?? "0") ?? 0
+                asaveSlide.divisionCode = Int(aSlideBrand.divisionCode ?? "0") ?? 0
+                asaveSlide.id =   Int(aSlideBrand.id ?? "0") ?? 0
+                asaveSlide.productBrdCode =  Int(aSlideBrand.productBrandCode ?? "0") ?? 0
+                asaveSlide.subdivisionCode = Int(aSlideBrand.subDivisionCode ?? "0") ?? 0
+                saveSlidesArr.append(asaveSlide)
+            }
+ 
+        }
+        
+       return saveSlidesArr
+    }
+    // MARK: - functionalities for slides flow Ends
+}
+
+
 
     
 

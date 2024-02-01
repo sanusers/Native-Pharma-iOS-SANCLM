@@ -28,7 +28,7 @@ class SlideDownloadVC : UIViewController {
         self.slides = DBManager.shared.getSlide()
         self.tableView.reloadData()
         
-        self.downloadSlideData()
+       // self.downloadSlideData()
     }
     
     

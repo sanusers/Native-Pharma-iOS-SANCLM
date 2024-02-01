@@ -216,6 +216,7 @@ class PresentationHomeView : BaseView {
     func moveToCreatePresentationVC() {
         let vc = CreatePresentationVC.initWithStory()
         vc.delegate = self
+        vc.isToedit = false
         self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
     }
     

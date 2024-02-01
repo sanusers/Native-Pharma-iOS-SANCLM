@@ -38,7 +38,10 @@ class BrandsNameTVC: UITableViewCell {
     
     
     func toPopulateCell(_ model: GroupedBrandsSlideModel) {
-        brandsTitle.text = model.groupedSlide[0].name
+        if !model.groupedSlide.isEmpty {
+            brandsTitle.text = model.groupedSlide[0].name
+        }
+        
         self.countsHolderView.isHidden = model.groupedSlide.isEmpty ? true : false
         self.countsLbl.text = "\(model.groupedSlide.count)"
 

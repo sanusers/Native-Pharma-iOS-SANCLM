@@ -8,203 +8,51 @@
 import Foundation
 import UIKit
 import Alamofire
-import MobileCoreServices
 
 
-func mimeTypeForData(data: Data) -> String {
-    var buffer = [UInt8](repeating: 0, count: 1)
-    data.copyBytes(to: &buffer, count: 1)
 
-    let uti: CFString
 
-    switch buffer[0] {
-    case 0xFF:
-        uti = kUTTypeJPEG
-    case 0x89:
-        uti = kUTTypePNG
-    case 0x47:
-        uti = kUTTypeGIF
-    case 0x49, 0x4D:
-        uti = kUTTypeTIFF
-    case 0x52 where data.count >= 12:
-        let identifier = String(data: data.subdata(in: 0..<12), encoding: .ascii)
-        if identifier == "RIFFWAVEfmt " {
-            uti = kUTTypeWaveformAudio
-        } else {
-            uti = kUTTypeAudio
-        }
-//    case 0x4D where data.count >= 8:
-//        let identifier = String(data: data.subdata(in: 0..<8), encoding: .ascii)
-//        if identifier == "MThd\x00\x00\x00\x06" {
-//            uti = kUTTypeMIDI
-//        } else {
-//            uti = kUTTypeAudio
-//        }
-    case 0x00 where data.count >= 12:
-        let identifier = String(data: data.subdata(in: 8..<12), encoding: .ascii)
-        if identifier == "ftypmp42" {
-            uti = kUTTypeMPEG4
-        } else {
-            uti = kUTTypeVideo
-        }
-    default:
-        uti = kUTTypeData
-    }
 
-    if let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
-        return mimeType as String
-    } else {
-        return "application/octet-stream"
-    }
-}
 
-func mimeTypeForPath(path: String) -> String {
-    let url = NSURL(fileURLWithPath: path)
-    let pathExtension = url.pathExtension
-
-    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension! as NSString, nil)?.takeRetainedValue() {
-        if let mimetype = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
-            return mimetype as String
-        }
-    }
-    return "application/octet-stream"
-}
-
-extension MasterSyncVC {
-    func toLoadPresentationData(type : MasterInfo) {
-        
-    
-        
-        let paramData = type == MasterInfo.slides ? LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse) :  LocalStorage.shared.getData(key: LocalStorage.LocalValue.BrandSlideResponse)
-     //   var localParamArr = [[String: Any]]()
-      //  var encodedSlideModelData: [SlidesModel]?
- 
-        var localParamArr = [[String:  Any]]()
-        do {
-            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as?  [[String:  Any]] ??  [[String:  Any]]()
-            dump(localParamArr)
-        } catch {
-            self.toCreateToast("unable to retrive")
-        }
-        
-        type == MasterInfo.slides ? arrayOfAllSlideObjects.removeAll() :  arrayOfBrandSlideObjects.removeAll()
-        
-        if type == MasterInfo.slides {
-            for dictionary in localParamArr {
-                if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary),
-                   let model = try? JSONDecoder().decode(SlidesModel.self , from: jsonData) {
-                    
-                   arrayOfAllSlideObjects.append(model)
-                    
-                   
-                } else {
-                    print("Failed to decode dictionary into YourModel")
-                }
-            }
-        } else {
-            for dictionary in localParamArr {
-                if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary),
-                   let model = try? JSONDecoder().decode(BrandSlidesModel.self , from: jsonData) {
-                    
-                   arrayOfBrandSlideObjects.append(model)
-                    
-                   
-                } else {
-                    print("Failed to decode dictionary into YourModel")
-                }
-            }
-        }
-        
-
-        if type == .slides {
-            toSendParamsToAPISerially(index: 0, items:  arrayOfAllSlideObjects) { _ in
-                
-            }
-        } else {
-            LocalStorage.shared.saveObjectToUserDefaults(arrayOfBrandSlideObjects, forKey: LocalStorage.LocalValue.LoadedBrandSlideData)
-        }
-     
-  
-
-    }
-    
-    
-
-    
-    
-    
-    func toSendParamsToAPISerially(index: Int, items: [SlidesModel], completion: @escaping (Bool) -> Void) {
-        Shared.instance.showLoaderInWindow()
-        self.arrayOfAllSlideObjects = items
-        guard index < items.count else {
-            // All items processed, exit the recursion
-    
-                LocalStorage.shared.saveObjectToUserDefaults(items, forKey: LocalStorage.LocalValue.LoadedSlideData)
-           
-       
-            
-            Shared.instance.removeLoaderInWindow()
-            DispatchQueue.main.async {
-             //   self.toLoadOutboxTable()
-               // self.toLoadBrandsTable()
-                
-                
-                self.toCreateToast("Download completed")
-            }
-            completion(true)
-            return
-        }
-        
-        let params = items[index]
-        
-        
-        let filePath = params.filePath
-        let url =  slideURL+filePath
-
-        
-    
-        if index == 4 {
-            print("Reached")
-        
-        }
-        
-       let type = mimeTypeForPath(path: url)
-        params.utType = type
-        
-// https://sanffa.info/Edetailing_files/DP/download/CC_VA_2021_.jpg
-
-        self.downloadData(mediaURL : url) {  data ,error  in
-            if let error = error {
-                print("Error downloading media: \(error)")
-                return
-            }
-            if let data = data {
-                params.slideData = data
-             
-                completion(true)
-            }
-            
-            let nextIndex = index + 1
-            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in
-                
-            }
-            
-        }
-
-    }
-    
-    func downloadData(mediaURL: String, competion: @escaping (Data?, Error?) -> Void) {
-        let downloader = MediaDownloader()
-        let mediaURL = URL(string: mediaURL)!
-        downloader.downloadMedia(from: mediaURL) { (data, error) in
-            competion(data, error)
-        }
-    }
-    
-
-}
 
 class MasterSyncVC : UIViewController {
+    
+    enum PageType {
+        case loading
+        case loaded
+        case navigate
+    }
+    
+    func setLoader(pageType: PageType) {
+        switch pageType {
+        case .loading:
+            Shared.instance.showLoaderInWindow()
+        case .loaded:
+            Shared.instance.removeLoaderInWindow()
+        case .navigate:
+            Shared.instance.removeLoaderInWindow()
+       //     let commonAlert = CommonAlert()
+//            commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to preview", okAction: "Ok")
+//            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+//                print("no action")
+//                let slideVC = UIStoryboard.slideDownloadVC
+//                self.present(slideVC, animated: true)
+//                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
+//                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+//                        appDelegate.setupRootViewControllers()
+//                    }
+//                }
+//            }
+            self.toCreateToast("Master sync completed")
+            let slideVC = UIStoryboard.slideDownloadVC
+            self.present(slideVC, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                    appDelegate.setupRootViewControllers()
+                }
+            }
+        }
+    }
     
     static let shared = MasterSyncVC()
     
@@ -214,7 +62,9 @@ class MasterSyncVC : UIViewController {
     @IBOutlet weak var lblHqName: UILabel!
     @IBOutlet weak var lblSyncStatus: UILabel!
     
-    
+    var pageType: PageType = .loaded
+ 
+    var extractedFileName: String?
     var isFromLaunch : Bool = false
     
     var masterData = [MasterInfo]()
@@ -228,7 +78,7 @@ class MasterSyncVC : UIViewController {
     }
     
     var arrayOfAllSlideObjects = [SlidesModel]()
-    var arrayOfBrandSlideObjects = [BrandSlidesModel]()
+  //  var arrayOfBrandSlideObjects = [BrandSlidesModel]()
     
     var selectedHeadquarter : Subordinate? {
         didSet{
@@ -283,6 +133,8 @@ class MasterSyncVC : UIViewController {
         return login.sfCode!
     }
     
+    var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
        // addobservers()
@@ -310,6 +162,7 @@ class MasterSyncVC : UIViewController {
         if !isFromLaunch {
             animations = (0...(masterData.count - 1)).map{_ in false}
         }else {
+            self.setLoader(pageType: .loading)
             animations = (0...(masterData.count - 1)).map{_ in true}
             _ = masterData.map{self.fetchmasterData(type: $0)}
         }
@@ -334,6 +187,7 @@ class MasterSyncVC : UIViewController {
     
     @objc func syncTapped() {
         print("Tapped")
+        self.setLoader(pageType: .loading)
         self.fetchmasterData(type: .getTP)
     }
     
@@ -351,7 +205,7 @@ class MasterSyncVC : UIViewController {
     
     
     @IBAction func syncAll(_ sender: UIButton) {
-        
+        self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
      //   self.collectionView.reloadData()
         _ = masterData.map{self.fetchmasterData(type: $0)}
@@ -441,7 +295,7 @@ class MasterSyncVC : UIViewController {
     }
     
     func fetchmasterData(type : MasterInfo) {
-        Shared.instance.showLoader(in: self.view)
+       // self.setLoader(pageType: .loading)
         if type == .getTP {
             toPostDataToserver(type : type)
 
@@ -499,6 +353,7 @@ class MasterSyncVC : UIViewController {
                                     slides.append(contentsOf: jsonObjectresponse)
                                     AppDefaults.shared.save(key: .slide, value: slides)
                                     LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
+                                    
                                     self.toLoadPresentationData(type: MasterInfo.slides)
                                     
                                     
@@ -509,12 +364,6 @@ class MasterSyncVC : UIViewController {
                                 default:
                                     print("Yet to implement")
                                 }
-                            
-                                
-                                
-                           
-                                
-                              
                             }
                         }else if let responseDic = apiResponse as? [String : Any] {
                             DBManager.shared.saveMasterData(type: type, Values: [responseDic],id: self.getSFCode)
@@ -525,10 +374,11 @@ class MasterSyncVC : UIViewController {
                 AppDefaults.shared.save(key: .syncTime, value: Date())
                 let date = Date().toString(format: "dd MMM yyyy hh:mm a")
                 self.lblSyncStatus.text = "Last Sync: " + date
-                Shared.instance.removeLoader(in: self.view)
+              
                 case .failure(let error):
-                    Shared.instance.removeLoader(in: self.view)
-                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                self.setLoader(pageType: .loaded)
+                    //ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                self.toCreateToast("\(error.localizedDescription)")
                     print(error)
                     return
             }
@@ -539,7 +389,7 @@ class MasterSyncVC : UIViewController {
                 
              //   self.collectionView.reloadSections(NSIndexSet(index: index) as IndexSet) //, with: .automatic)
             }
-            self.checkifSyncIsCompleted()
+          
             
             print("2")
             print(response)
@@ -547,25 +397,7 @@ class MasterSyncVC : UIViewController {
         }
     }
     
-    func checkifSyncIsCompleted(){
-        if !isFromLaunch{
-            return
-        }
-        let filterStatus = self.animations.filter{$0 == true}
-        if filterStatus.isEmpty{
-            
-            ConfigVC().showToast(controller: self, message: "Master Sync Completed", seconds: 2)
-            
-            let slideVC = UIStoryboard.slideDownloadVC
-            self.present(slideVC, animated: true)
-            
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
-                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                    appDelegate.setupRootViewControllers()
-                }
-            }
-        }
-    }
+    // checkifSyncIsCompleted()
 }
 
 
@@ -607,7 +439,7 @@ extension MasterSyncVC : tableViewProtocols {
     }
     
     @objc func syncAllAction (_ sender : UIButton) {
-        
+        self.setLoader(pageType: .loading)
         self.masterData = [MasterInfo.slides,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.myDayPlan,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
                            MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup]
         
@@ -738,7 +570,7 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     @objc func groupSyncAll(_ sender : UIButton){
-        
+        self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
         self.collectionView.reloadData()
         _ = masterData.map{self.fetchmasterData(type: $0)}
@@ -849,11 +681,11 @@ extension MasterSyncVC {
                                  self.lblSyncStatus.text = "Last Sync: " + date
                              }
                          }
-                         Shared.instance.removeLoader(in: self.view)
+                         self.setLoader(pageType: .loaded)
                      case .failure( let error):
                       dump(error)
-                         Shared.instance.removeLoader(in: self.view)
-                      //  self.toCreateToast("Failed connecting to server!")
+                         self.setLoader(pageType: .loaded)
+                        self.toCreateToast("Failed connecting to server!")
                      }
                  }
             }
@@ -976,13 +808,13 @@ extension MasterSyncVC {
             case .success(let response):
                 dump(response)
                 completion(.success(response))
-                Shared.instance.removeLoader(in: self.view)
+                self.setLoader(pageType: .loaded)
                 
             case .failure(let error):
                 print(error.localizedDescription)
                 
                 completion(.failure(error))
-                Shared.instance.removeLoader(in: self.view)
+                self.setLoader(pageType: .loaded)
             }
         }
     }

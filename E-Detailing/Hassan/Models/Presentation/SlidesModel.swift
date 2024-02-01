@@ -15,6 +15,7 @@ import Foundation
     
     
     class GroupedBrandsSlideModel: Codable {
+        var uuid: UUID
         var groupedSlide : [SlidesModel]
         var priority: Int
         var updatedDate: DateInfo
@@ -35,6 +36,7 @@ import Foundation
             self.subdivisionCode = try container.decode(Int.self, forKey: .subdivisionCode)
             self.createdDate = try container.decode(DateInfo.self, forKey: .createdDate)
             self.id = try container.decode(Int.self, forKey: .id)
+            self.uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
         }
         
         
@@ -47,19 +49,21 @@ import Foundation
             self.subdivisionCode = Int()
             self.createdDate = DateInfo()
             self.id = Int()
+            self.uuid = UUID()
         }
         
     }
     
     
     class  BrandSlidesModel: Codable {
-        let priority: Int
-        let updatedDate: DateInfo
-        let divisionCode: Int
-        let productBrdCode: Int
-        let subdivisionCode: Int
-        let createdDate: DateInfo
-        let id: Int
+        var uuid : UUID
+        var priority: Int
+        var updatedDate: DateInfo
+        var divisionCode: Int
+        var productBrdCode: Int
+        var subdivisionCode: Int
+        var createdDate: DateInfo
+        var id: Int
         
         private enum CodingKeys: String, CodingKey {
             case priority = "Priority"
@@ -69,6 +73,7 @@ import Foundation
             case subdivisionCode = "Subdivision_Code"
             case createdDate = "Created_Date"
             case id = "ID"
+            case uuid
         }
         
         required init(from decoder: Decoder) throws {
@@ -79,12 +84,13 @@ import Foundation
             self.productBrdCode = container.safeDecodeValue(forKey: .productBrdCode)
             self.subdivisionCode = container.safeDecodeValue(forKey: .subdivisionCode)
             self.createdDate =  try container.decodeIfPresent(DateInfo.self, forKey: .createdDate) ?? DateInfo()
-            self.id = try container.decode(Int.self, forKey: .id)
+            self.id =  container.safeDecodeValue(forKey: .id)
+            self.uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
         }
         
         
         init() {
-            
+            uuid = UUID()
             priority = Int()
             updatedDate = DateInfo()
             divisionCode = Int()
@@ -103,7 +109,7 @@ import Foundation
     class SlidesModel: Codable, Hashable {
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(slideId)
+            hasher.combine(uuid)
         }
         
        var code: Int
@@ -145,7 +151,7 @@ import Foundation
             case slideData
             case utType
             case isSelected
-            
+            case uuid
         }
         
         required init(from decoder: Decoder) throws {
@@ -168,6 +174,7 @@ import Foundation
             self.slideData          =  try container.decodeIfPresent(Data.self, forKey: .slideData) ?? Data()
             self.utType             = container.safeDecodeValue(forKey: .utType)
             self.isSelected         = container.safeDecodeValue(forKey: .isSelected)
+            self.uuid               = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
         }
         
         
@@ -175,24 +182,25 @@ import Foundation
         
         init() {
             
-            code = Int()
-            camp = Int()
+            code              = Int()
+            camp              = Int()
             productDetailCode = String()
-            filePath = String()
-            group = Int()
-            specialityCode = String()
-            slideId = Int()
-            fileType = String()
-            effFrom = DateInfo()
-            categoryCode = String()
-            name = String()
-            noofSamples = Int()
-            effTo = DateInfo()
-            ordNo = Int()
-            priority = Int()
-            slideData = Data()
-            utType = String()
-            isSelected = Bool()
+            filePath          = String()
+            group             = Int()
+            specialityCode    = String()
+            slideId           = Int()
+            fileType          = String()
+            effFrom            = DateInfo()
+            categoryCode       = String()
+            name              = String()
+            noofSamples        = Int()
+            effTo            = DateInfo()
+            ordNo             = Int()
+            priority          = Int()
+            slideData         = Data()
+            utType             = String()
+            isSelected          = Bool()
+            uuid                = UUID()
         }
     }
     

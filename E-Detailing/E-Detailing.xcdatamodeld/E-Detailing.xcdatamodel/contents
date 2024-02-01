@@ -89,6 +89,7 @@
         <attribute name="timeZone" optional="YES" attributeType="String"/>
         <attribute name="timeZoneType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
     <entity name="Feedback" representedClassName="Feedback" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -100,6 +101,7 @@
         <attribute name="priority" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="productBrdCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="subdivisionCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="groupedSlide" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SlidesCDModel"/>
     </entity>
     <entity name="Holidays" representedClassName="Holidays" syncable="YES" codeGenerationType="class">
@@ -293,6 +295,7 @@
         <attribute name="priority" optional="YES" attributeType="String"/>
         <attribute name="productBrandCode" optional="YES" attributeType="String"/>
         <attribute name="subDivisionCode" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="createdDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="updatedDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
     </entity>
@@ -313,6 +316,7 @@
         <attribute name="slideId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="specialityCode" optional="YES" attributeType="String"/>
         <attribute name="utType" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
     </entity>
     <entity name="SlideSpeciality" representedClassName="SlideSpeciality" syncable="YES" codeGenerationType="class">
         <attribute name="divisionCode" optional="YES" attributeType="String"/>

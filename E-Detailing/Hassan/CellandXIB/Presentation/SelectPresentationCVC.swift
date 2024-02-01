@@ -43,10 +43,7 @@ class SelectPresentationCVC: UICollectionViewCell {
         
         
     }
-    
-    
-    
-    
+ 
     func setupVIews() {
         
     }

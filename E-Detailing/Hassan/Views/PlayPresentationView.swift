@@ -121,6 +121,9 @@ class  PlayPresentationView: BaseView {
         
         
         PlayingSlideCollection.register(UINib(nibName: "PlayLoadedPresentationCVC", bundle: nil), forCellWithReuseIdentifier: "PlayLoadedPresentationCVC")
+        
+        PlayingSlideCollection.register(PlayHTMLCVC.self, forCellWithReuseIdentifier: PlayHTMLCVC.identifier)
+      
     }
     
     func  setupUI() {
@@ -246,11 +249,13 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                 //cell.presentationIV.backgroundColor = colors[indexPath.row]
                
                 return cell
+
             default:
+                let cell: PlayHTMLCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayHTMLCVC", for: indexPath) as! PlayHTMLCVC
+                let filepath = model?.filePath ?? ""
+                cell.loadURL(filepath)
+               // cell.loadURL(model?.filePath)
                 
-                let cell: PlayLoadedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayLoadedPresentationCVC", for: indexPath) as! PlayLoadedPresentationCVC
-               
-             
                 cell.addTap {
                     self.pageState = .expanded
                     self.setPageType(self.pageState)

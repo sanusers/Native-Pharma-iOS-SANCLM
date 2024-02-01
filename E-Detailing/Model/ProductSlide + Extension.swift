@@ -97,14 +97,14 @@ extension SlideBrand {
             let dateEntity = NSEntityDescription.entity(forEntityName: "Efff", in: context)
             let effItem = Efff(entity: dateEntity!, insertInto: context)
             effItem.setValues(fromDictionary: createdData)
-            createdDate = effItem
+          //  createdDate = effItem
         }
         
         if let updetedData = dictionary["Updated_Date"] as? [String:Any]{
             let dateEntity = NSEntityDescription.entity(forEntityName: "Efff", in: context)
             let effItem = Efff(entity: dateEntity!, insertInto: context)
             effItem.setValues(fromDictionary: updetedData)
-            updatedDate = effItem
+          //  updatedDate = effItem
         }
     }
 }
