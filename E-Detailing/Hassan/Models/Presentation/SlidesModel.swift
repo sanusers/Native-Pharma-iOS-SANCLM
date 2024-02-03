@@ -7,7 +7,7 @@
 
 import Foundation
 import Foundation
-
+import MobileCoreServices
 
 
 
@@ -106,10 +106,29 @@ import Foundation
     }
     
     
-    class SlidesModel: Codable, Hashable {
+    class SlidesModel: NSObject, Codable, NSItemProviderWriting {
         
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(uuid)
+//        func hash(into hasher: inout Hasher) {
+//            hasher.combine(uuid)
+//        }
+        
+        
+        // MARK: - NSItemProviderWriting
+
+        static var writableTypeIdentifiersForItemProvider: [String] {
+            return [kUTTypeData as String]
+        }
+
+        func loadData(withTypeIdentifier typeIdentifier: String, forItemProviderCompletionHandler completionHandler: @escaping (Data?, Error?) -> Void) -> Progress? {
+            do {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                let jsonData = try encoder.encode(self)
+                completionHandler(jsonData, nil)
+            } catch {
+                completionHandler(nil, error)
+            }
+            return nil
         }
         
        var code: Int
@@ -131,6 +150,7 @@ import Foundation
        var slideData: Data
        var utType : String
        var isSelected : Bool
+        var fileName: String
         
         enum CodingKeys: String, CodingKey {
             case code              = "Code"
@@ -152,6 +172,7 @@ import Foundation
             case utType
             case isSelected
             case uuid
+            case fileName
         }
         
         required init(from decoder: Decoder) throws {
@@ -175,12 +196,15 @@ import Foundation
             self.utType             = container.safeDecodeValue(forKey: .utType)
             self.isSelected         = container.safeDecodeValue(forKey: .isSelected)
             self.uuid               = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
+            self.fileName               = try container.decodeIfPresent(String.self, forKey: .fileName) ?? String()
+            
+            
         }
         
         
         
         
-        init() {
+        override init() {
             
             code              = Int()
             camp              = Int()
@@ -201,14 +225,15 @@ import Foundation
             utType             = String()
             isSelected          = Bool()
             uuid                = UUID()
+            fileName = String()
         }
     }
     
-extension SlidesModel: Equatable {
-    static func == (lhs: SlidesModel, rhs: SlidesModel) -> Bool {
-        return lhs.slideId == rhs.slideId
-    }
-}
+//extension SlidesModel: Equatable {
+//    static func == (lhs: SlidesModel, rhs: SlidesModel) -> Bool {
+//        return lhs.slideId == rhs.slideId
+//    }
+//}
 
     class DateInfo: Codable {
         let date: String

@@ -4116,3 +4116,94 @@
 //    
 //}
 
+//func unarchiveAndGetData(from zipData: Data) -> HTMLinfo {
+//    // Create a temporary directory to extract the files
+//    guard let temporaryDirectoryURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("MyAppTemp") else {
+//        print("Error creating a temporary directory.")
+//        return HTMLinfo()
+//    }
+//    
+//    // Create the directory for extracting the contents
+//    let extractionDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString)
+//    
+//    // Ensure that the directory exists
+//    do {
+//        try FileManager.default.createDirectory(at: extractionDirectory, withIntermediateDirectories: true, attributes: nil)
+//    } catch {
+//        print("Error creating extraction directory: \(error.localizedDescription)")
+//        return HTMLinfo()
+//    }
+//    
+//    // Create the path for the temporary zip file
+//    let tempZipFilePath = extractionDirectory.appendingPathComponent("temp.zip").path
+//    
+//    // Write the zip data to a temporary file
+//    do {
+//        try zipData.write(to: URL(fileURLWithPath: tempZipFilePath), options: .atomic)
+//    } catch {
+//        print("Error writing zip data to a temporary file: \(error)")
+//        return HTMLinfo()
+//    }
+//    
+//    
+//    // Ensure that the directory exists
+//    do {
+//        try FileManager.default.createDirectory(at: extractionDirectory, withIntermediateDirectories: true, attributes: nil)
+//    } catch {
+//        print("Error creating extraction directory: \(error.localizedDescription)")
+//        return HTMLinfo()
+//    }
+//    
+//    // Unarchive the zip data
+//    // Unarchive the zip data
+//    guard SSZipArchive.unzipFile(atPath: tempZipFilePath, toDestination: extractionDirectory.path) else {
+//        print("Error unzipping data")
+//        return HTMLinfo()
+//    }
+//    
+//    // Get the list of files in the extraction directory
+//        do {
+//            let fileURLs = try FileManager.default.contentsOfDirectory(at: URL(fileURLWithPath: extractionDirectory.path), includingPropertiesForKeys: nil, options: [])
+//            
+//            // Convert URLs to paths without /private prefix
+//            let fileURLsFromPaths = fileURLs.map { $0.path }
+//            
+//            // Convert URLs to strings without /private prefix
+//            let fileURLStrings = fileURLs.map { $0.absoluteString }
+//            
+//            // Read data from each file
+//            var aHTMLinfo = HTMLinfo()
+//            var dataArray: Data = Data()
+//            for fileURL in fileURLsFromPaths {
+//                guard FileManager.default.fileExists(atPath: fileURL) else {
+//                    print("File does not exist at path: \(fileURL)")
+//                    continue
+//                }
+//                
+//                let pathurl =  URL(fileURLWithPath: fileURL)
+//                let fileNameWithoutExtension = pathurl.deletingPathExtension().lastPathComponent
+//                print("File Name (without extension): \(fileNameWithoutExtension)")
+//                let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: fileURL)
+//                extractedFileName = fileNameWithoutExtension
+//                dataArray = findImageData(inDirectory: pathurl) ?? Data()
+//                
+//                
+//                aHTMLinfo.fileData = dataArray
+//                aHTMLinfo.htmlFileURL = extractionDirectory
+//                aHTMLinfo.htmlString = result.htmlString
+//                
+//            }
+//            // Remove the temporary files and directory
+//            do {
+//                try FileManager.default.removeItem(atPath: tempZipFilePath)
+//                try FileManager.default.removeItem(atPath: extractionDirectory.path)
+//            } catch {
+//                print("Error removing temporary files or directory: \(error.localizedDescription)")
+//            }
+//            return aHTMLinfo
+//        } catch {
+//            print("Error listing files in extraction directory: \(error.localizedDescription)")
+//            return HTMLinfo()
+//        }
+//    
+//}

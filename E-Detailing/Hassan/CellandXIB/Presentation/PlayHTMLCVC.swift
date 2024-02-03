@@ -9,7 +9,7 @@ import UIKit
 import WebKit
 
     
-    class PlayHTMLCVC: UICollectionViewCell {
+class PlayHTMLCVC: UICollectionViewCell, WKUIDelegate, WKNavigationDelegate {
         static let  identifier = "PlayHTMLCVC"
         let webView: WKWebView = {
             let webVIew = WKWebView()
@@ -39,16 +39,49 @@ import WebKit
     
         }
 
-        func loadURL(_ htmlString: String) {
-            if let fileURL = URL(string: htmlString) {
-                let baseURL = URL(fileURLWithPath: htmlString).deletingLastPathComponent()
-                webView.loadFileURL(fileURL, allowingReadAccessTo: baseURL)
-            } else {
-                print("Invalid file path")
-            }
-           // webView.loadHTMLString(htmlString, baseURL: nil)
-          
+//        func loadURL(_ filepathURL: String) {
+////            let fileURL =  URL(fileURLWithPath: filepathURLURL)
+////            let baseURL = URL(fileURLWithPath: filepathURLURL).deletingLastPathComponent()
+////            webView.loadFileURL(fileURL, allowingReadAccessTo: baseURL)
+//
+//            //let extractedFolderPath =  filepathURL
+//            if   let extractedFolderPath = URL(string: filepathURL) {
+//                // Get the contents of the extracted folder
+//                if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
+//                    // Enumerate through the contents
+//                    for fileURL in contents {
+//                        print("File URL: \(fileURL)")
+//                        print("File Name: \(fileURL.lastPathComponent)")
+//                        let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
+//                        print("File Name (without extension): \(fileNameWithoutExtension)")
+//
+//                        // Create a valid file URL
+//                    }
+//                } else {
+//                    print("Error getting contents of the extracted folder.")
+//                }
+//            }
+//
+//
+//
+//
+//
+//
+//        }
+    
+    
+    func loadURL(_ filepathURL: String) {
+        if let url = URL(string: filepathURL) {
+            // Create a base URL for the folder containing the HTML file
+            let baseURL = url.deletingLastPathComponent()
+
+            // Assuming webView is an instance of WKWebView
+            webView.loadFileURL(url, allowingReadAccessTo: baseURL)
+        } else {
+            print("Error: Invalid file path.")
         }
     }
+    }
+
 
 

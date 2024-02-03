@@ -464,14 +464,9 @@ class TourPlanView: BaseView {
     }
     
     func initialSetups() {
-        Shared.instance.showLoader(in: self)
         self.toSetPagetype(ofType: .general)
         self.setupUI()
         self.initViews()
-        DispatchQueue.main.async {
-            Shared.instance.removeLoader(in: self)
-        }
-      
     }
     
     
@@ -1021,7 +1016,7 @@ class TourPlanView: BaseView {
         }
         
             var sessionDetail = SessionDetail()
-
+          
 
            
                 AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
@@ -1029,6 +1024,7 @@ class TourPlanView: BaseView {
                     
                   //  let dateArray = [/* Your Date array */]
                   //  let dateBoolDictionary = [Date: Bool](/* Your [Date: Bool] dictionary */)
+                    let aSessionDetArr = SessionDetailsArr()
                     var isTrue = Bool()
                     let dateStr = toModifyDate(date: adate)
                     
@@ -1045,7 +1041,7 @@ class TourPlanView: BaseView {
                   // let isTrue = isHolidayDict[dateStr]
 
                     let aSession = SessionDetail()
-                    let aSessionDetArr = SessionDetailsArr()
+                    
                     aSession.isForFieldWork = false
               
 
@@ -2088,12 +2084,6 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print("::>--Tapped-->::")
-        //  let cell = calendar.dequeueReusableCell(withIdentifier: "CustomCalendarCell", for: date, at: monthPosition) as! CustomCalendarCell
-       // self.selectedDate = date
-//        let menuvc = MenuVC.initWithStory(self)
-//        self.tourplanVC.modalPresentationStyle = .custom
-//        menuvc.menuDelegate = self
-//        self.tourplanVC.navigationController?.present(menuvc, animated: true)
         print(date)
         let dateformatter = DateFormatter()
         let month = DateFormatter()
@@ -2167,13 +2157,6 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         //dump(self.weeklyOffRawDates)
         //dump(self.weeklyOffDates)
         var isForHoliday = Bool()
-        
-
-        
- 
-        
-
-
         
         cell.addedIV.isHidden = isExist || isForHoliday  ? false : true
        // cell.addedIV.tintColor = isExist ? UIColor.green : UIColor.red

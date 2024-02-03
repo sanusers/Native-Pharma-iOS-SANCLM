@@ -95,7 +95,7 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="GroupedBrandsSlideCDModel" representedClassName="GroupedBrandsSlideCDModel" syncable="YES" codeGenerationType="class">
+    <entity name="GeneralSlideGroupsCDModel" representedClassName="GeneralSlideGroupsCDModel" syncable="YES" codeGenerationType="class">
         <attribute name="divisionCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="priority" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -103,6 +103,15 @@
         <attribute name="subdivisionCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="groupedSlide" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SlidesCDModel"/>
+    </entity>
+    <entity name="GroupedBrandsSlideCDModel" representedClassName="GroupedBrandsSlideCDModel" syncable="YES" codeGenerationType="class">
+        <attribute name="divisionCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="priority" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="productBrdCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subdivisionCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="groupedSlide" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SavedSlidesCDModel"/>
     </entity>
     <entity name="Holidays" representedClassName="Holidays" syncable="YES" codeGenerationType="class">
         <attribute name="day_name" optional="YES" attributeType="String"/>
@@ -285,6 +294,26 @@
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="groupedBrandsSlideModel" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GroupedBrandsSlideCDModel"/>
     </entity>
+    <entity name="SavedSlidesCDModel" representedClassName="SavedSlidesCDModel" syncable="YES" codeGenerationType="class">
+        <attribute name="camp" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="categoryCode" optional="YES" attributeType="String"/>
+        <attribute name="code" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String"/>
+        <attribute name="filePath" optional="YES" attributeType="String"/>
+        <attribute name="fileType" optional="YES" attributeType="String"/>
+        <attribute name="group" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isSelected" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="noofSamples" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="ordNo" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="priority" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="productDetailCode" optional="YES" attributeType="String"/>
+        <attribute name="slideData" optional="YES" attributeType="Binary"/>
+        <attribute name="slideId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="specialityCode" optional="YES" attributeType="String"/>
+        <attribute name="utType" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+    </entity>
     <entity name="SessionDetailArrCDM" representedClassName="SessionDetailArrCDM" syncable="YES" codeGenerationType="class">
         <attribute name="sessionDetailArr" optional="YES" attributeType="Transformable" customClassName="SessionDetailsArr"/>
     </entity>
@@ -303,6 +332,7 @@
         <attribute name="camp" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="categoryCode" optional="YES" attributeType="String"/>
         <attribute name="code" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String"/>
         <attribute name="filePath" optional="YES" attributeType="String"/>
         <attribute name="fileType" optional="YES" attributeType="String"/>
         <attribute name="group" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

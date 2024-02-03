@@ -47,12 +47,11 @@ extension UIView {
 }
 extension UIViewController {
     func toCreateToast(_ text: String) {
-
-            if #available(iOS 13.0, *) {
+        DispatchQueue.main.async {
                 (UIApplication.shared.delegate as! AppDelegate).createToastMessage(text, isFromWishList: true)
-            } else {
-              print(text)
-            }
+         
+        }
+
         
     }
 }

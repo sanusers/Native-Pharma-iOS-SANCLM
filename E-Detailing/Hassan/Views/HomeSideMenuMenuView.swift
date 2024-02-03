@@ -53,7 +53,6 @@ extension HomeSideMenuView: UITableViewDelegate, UITableViewDataSource {
     
     
 }
-
 class HomeSideMenuView : BaseView{
     
     struct MenuItems {
@@ -124,6 +123,7 @@ class HomeSideMenuView : BaseView{
     
     
     func toAppendMenuItems() -> [MenuItems]{
+      //  let vc = SlideDownloadVC.initWithStory()
         let refreshItem : MenuItems = MenuItems(menuName: "Refresh", menuIcon: UIImage(named: "refreshSlide") ?? UIImage(), VC: nil)
         menuItemArr.append(refreshItem)
         

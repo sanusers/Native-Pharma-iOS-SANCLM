@@ -126,6 +126,15 @@ class  PlayPresentationView: BaseView {
       
     }
     
+    deinit {
+        self.selectedSlideModel = nil
+    }
+    
+    override func didDisappear(baseVC: BaseViewController) {
+        super.didDisappear(baseVC: baseVC)
+        self.selectedSlideModel = nil
+    }
+    
     func  setupUI() {
         self.selectedSlideModel = playPresentationVC.selectedSlideModel
         loadedcollectionVxView.backgroundColor = .appTextColor
@@ -242,6 +251,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                
                 cell.setupPlayer(data: model?.slideData ?? Data())
                 cell.state = self.pageState
+                cell.delegate = self
                 cell.addTap {
                     self.pageState = .expanded
                     self.setPageType(self.pageState)
@@ -252,9 +262,8 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
 
             default:
                 let cell: PlayHTMLCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayHTMLCVC", for: indexPath) as! PlayHTMLCVC
-                let filepath = model?.filePath ?? ""
-                cell.loadURL(filepath)
-               // cell.loadURL(model?.filePath)
+                let fileURL =  model?.filePath ?? ""
+                cell.loadURL(fileURL)
                 
                 cell.addTap {
                     self.pageState = .expanded
@@ -316,4 +325,20 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             return CGSize()
         }
     }
+}
+
+
+extension PlayPresentationView: VideoPlayerCVCDelegate {
+    func videoplayingSatatus(isplaying: Bool) {
+        if isplaying {
+            self.pageState = .minimized
+           
+        } else {
+            self.pageState = .expanded
+        }
+        
+        self.setPageType(self.pageState)
+    }
+    
+    
 }

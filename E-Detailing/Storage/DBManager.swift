@@ -374,11 +374,11 @@ class DBManager {
             toCinfigureApprovalState(sessionResponseArr)
         }
      
-        if !(modal.next.isEmpty) {
-            let sessionResponseArr = modal.next[0]
-            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
-            toCinfigureApprovalState(sessionResponseArr)
-        }
+//        if !(modal.next.isEmpty) {
+//            let sessionResponseArr = modal.next[0]
+//            apiMnths.append(Int(sessionResponseArr.mnth) ?? 1)
+//            toCinfigureApprovalState(sessionResponseArr)
+//        }
   
         
        let currentMnthRange = toGetcurrentNextPrevMonthNumbers()

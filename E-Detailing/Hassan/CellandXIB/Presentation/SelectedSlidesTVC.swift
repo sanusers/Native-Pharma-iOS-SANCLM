@@ -38,4 +38,14 @@ class SelectedSlidesTVC: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func toPopulateCell(model: SlidesModel) {
+        titleLbl.text = model.name
+        descriptionLbl.text = model.fileName
+        //extractFileName(from: model.slideData)
+        //"Yet to be added"
+        let data =  model.slideData
+        let utType = model.utType
+        presentationIV.toSetImageFromData(utType: utType, data: data)
+    }
+
 }

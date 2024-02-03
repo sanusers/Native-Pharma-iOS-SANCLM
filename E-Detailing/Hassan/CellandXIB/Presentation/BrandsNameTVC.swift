@@ -43,7 +43,14 @@ class BrandsNameTVC: UITableViewCell {
         }
         
         self.countsHolderView.isHidden = model.groupedSlide.isEmpty ? true : false
-        self.countsLbl.text = "\(model.groupedSlide.count)"
+        
+       let selectedModel = model.groupedSlide.filter { aSlidesModel in
+            aSlidesModel.isSelected == true
+        }
+        
+        //self.countsLbl.text = "\(model.groupedSlide.count)"
+        self.countsHolderView.isHidden = selectedModel.count == 0 ? true : false
+        self.countsLbl.text = selectedModel.count == 0 ? "" : "\(selectedModel.count)"
 
         
     }

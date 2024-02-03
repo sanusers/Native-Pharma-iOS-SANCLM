@@ -142,7 +142,7 @@ enum `MasterInfo` : String {
     case weeklyOff = "Weekly Off"
     case tableSetup = "Table Setup"
     case homeSetup = "Charts"
- 
+ ///note: Don't add types at last it affects page loading algorithm.
     var getUrl : String {
         
         let mainUrl = AppDefaults.shared.webUrl + AppDefaults.shared.iosUrl

@@ -18,17 +18,15 @@ extension CreatePresentationView: UITextFieldDelegate {
 
 class CreatePresentationView : BaseView {
     
-    
-    
-    //    override func didDisappear(baseVC: BaseViewController) {
-    //        super.didDisappear(baseVC: baseVC)
-    //        arrayOfBrandSlideObjects = nil
-    //        arrayOfAllSlideObjects = nil
-    //        groupedBrandsSlideModel = nil
-    //        savedPresentation = nil
-    //        selectedSlides = nil
-    //        createPresentationVC.savedPresentation = nil
-    //    }
+//    override func didDisappear(baseVC: BaseViewController) {
+//        super.didDisappear(baseVC: baseVC)
+//        arrayOfBrandSlideObjects = nil
+//        arrayOfAllSlideObjects = nil
+//        groupedBrandsSlideModel = nil
+//        savedPresentation = nil
+//        selectedSlides = nil
+//        createPresentationVC.savedPresentation = nil
+//    }
     
     
     
@@ -77,6 +75,7 @@ class CreatePresentationView : BaseView {
     var selectedBrandsIndex: Int = 0
     var selectedPresentationIndex: Int? = nil
     var selectedSlidesModel : SelectedSlidesModel?
+    
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.createPresentationVC = baseVC as? CreatePresentationVC
@@ -86,9 +85,13 @@ class CreatePresentationView : BaseView {
         initView()
     }
     
+    override func willAppear(baseVC: BaseViewController) {
+        super.willAppear(baseVC: baseVC)
+        toRetriveModelsFromCoreData()
+    }
     
     func toRetriveModelsFromCoreData() {
-        self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGroupedSlides()
+        self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
         if let groupedBrandsSlideModel = groupedBrandsSlideModel {
             self.selectedSlides = [SlidesModel]()
             self.selectedSlidesModel = SelectedSlidesModel()
@@ -334,8 +337,8 @@ class CreatePresentationView : BaseView {
         //  self.selectedSlidesModel = SelectedSlidesModel()
         selectedSlidesTable.delegate = self
         selectedSlidesTable.dataSource = self
-        //selectedSlidesTable.dragDelegate = self
-        // selectedSlidesTable.dropDelegate = self
+        selectedSlidesTable.dragDelegate = self
+         selectedSlidesTable.dropDelegate = self
         selectedSlidesTable.dragInteractionEnabled = true
         selectedSlidesTable.reloadData()
     }
@@ -433,6 +436,7 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
             }
            
             self.toLoadselectedSlidesTable()
+            self.brandsTable.reloadData()
             
         }
         
@@ -507,11 +511,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             
             cell.selectionStyle = .none
             let model = self.selectedSlidesModel?.slideNames[indexPath.row]
-            cell.titleLbl.text = model?.name
-            cell.descriptionLbl.text = "Yet to be added"
-            let data =  model?.slideData ?? Data()
-            let utType = model?.utType ?? ""
-            cell.presentationIV.toSetImageFromData(utType: utType, data: data)
+            cell.toPopulateCell(model: model ?? SlidesModel())
             cell.deleteoptionView.addTap {
                 self.selectedSlidesModel?.slideNames = self.selectedSlidesModel?.slideNames.filter { aSlideModel in
                     aSlideModel.slideId != model?.slideId
@@ -538,6 +538,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
                
                 self.selectedSlidesTable.reloadData()
                 self.selectSlidesCollection.reloadData()
+                self.brandsTable.reloadData()
             }
             return cell
         default:
@@ -577,115 +578,128 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-//extension CreatePresentationView: UITableViewDragDelegate {
-//    // MARK: - UITableViewDragDelegate
-//
-//    /**
-//         The `tableView(_:itemsForBeginning:at:)` method is the essential method
-//         to implement for allowing dragging from a table.
-//    */
-//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-//        return selectedSlidesModel.dragItems(for: indexPath)
-//    }
-//
-//    func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
-//       // navigationItem.rightBarButtonItem?.isEnabled = false
-//    }
-//
-//    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
-//     //   navigationItem.rightBarButtonItem?.isEnabled = true
-//    }
-//}
+extension CreatePresentationView: UITableViewDragDelegate {
+    // MARK: - UITableViewDragDelegate
+
+    /**
+         The `tableView(_:itemsForBeginning:at:)` method is the essential method
+         to implement for allowing dragging from a table.
+    */
+    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        return selectedSlidesModel!.dragItems(for: indexPath)
+        //?? SelectedSlidesModel()
+    }
+
+    func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
+       // navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+
+    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
+     //   navigationItem.rightBarButtonItem?.isEnabled = true
+    }
+}
 
 
-//extension CreatePresentationView: UITableViewDropDelegate {
-//    // MARK: - UITableViewDropDelegate
-//
-//    /**
-//         Ensure that the drop session contains a drag item with a data representation
-//         that the view can consume.
-//    */
-//    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-//        return selectedSlidesModel.canHandle(session)
-//    }
-//
-//    /**
-//         A drop proposal from a table view includes two items: a drop operation,
-//         typically .move or .copy; and an intent, which declares the action the
-//         table view will take upon receiving the items. (A drop proposal from a
-//         custom view does includes only a drop operation, not an intent.)
-//    */
-//    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
-//        var dropProposal = UITableViewDropProposal(operation: .cancel)
-//
-//        // Accept only one drag item.
-//        guard session.items.count == 1 else { return dropProposal }
-//
-//        // The .move drag operation is available only for dragging within this app and while in edit mode.
-//        if tableView.hasActiveDrag {
-//            if tableView.isEditing {
-//                dropProposal = UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
-//            }
-//        } else {
-//            // Drag is coming from outside the app.
-//            dropProposal = UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
-//        }
-//
-//        return dropProposal
-//    }
-//
-//    /**
-//         This delegate method is the only opportunity for accessing and loading
-//         the data representations offered in the drag item. The drop coordinator
-//         supports accessing the dropped items, updating the table view, and specifying
-//         optional animations. Local drags with one item go through the existing
-//         `tableView(_:moveRowAt:to:)` method on the data source.
-//    */
-//    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-//        let destinationIndexPath: IndexPath
-//
-//        if let indexPath = coordinator.destinationIndexPath {
-//            destinationIndexPath = indexPath
-//        } else {
-//            // Get last index path of table view.
-//            let section = tableView.numberOfSections - 1
-//            let row = tableView.numberOfRows(inSection: section)
-//            destinationIndexPath = IndexPath(row: row, section: section)
-//        }
-//
-//        coordinator.session.loadObjects(ofClass: NSString.self) { items in
-//            // Consume drag items.
-//            let stringItems = items as! [SlidesModel]
-//
-//            var indexPaths = [IndexPath]()
-//            for (index, item) in stringItems.enumerated() {
-//                let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
-//                self.selectedSlidesModel.addItem(item, at: indexPath.row)
-//                indexPaths.append(indexPath)
-//            }
-//
-//            tableView.insertRows(at: indexPaths, with: .automatic)
-//        }
-//    }
-//}
+extension CreatePresentationView: UITableViewDropDelegate {
+    // MARK: - UITableViewDropDelegate
+
+    /**
+         Ensure that the drop session contains a drag item with a data representation
+         that the view can consume.
+    */
+    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
+        return selectedSlidesModel!.canHandle(session)
+    }
+
+    /**
+         A drop proposal from a table view includes two items: a drop operation,
+         typically .move or .copy; and an intent, which declares the action the
+         table view will take upon receiving the items. (A drop proposal from a
+         custom view does includes only a drop operation, not an intent.)
+    */
+    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+        var dropProposal = UITableViewDropProposal(operation: .cancel)
+
+        // Accept only one drag item.
+        guard session.items.count == 1 else { return dropProposal }
+
+        // The .move drag operation is available only for dragging within this app and while in edit mode.
+        if tableView.hasActiveDrag {
+            if tableView.isEditing {
+                dropProposal = UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+            }
+        } else {
+            // Drag is coming from outside the app.
+            dropProposal = UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
+        }
+
+        return dropProposal
+    }
+
+    /**
+         This delegate method is the only opportunity for accessing and loading
+         the data representations offered in the drag item. The drop coordinator
+         supports accessing the dropped items, updating the table view, and specifying
+         optional animations. Local drags with one item go through the existing
+         `tableView(_:moveRowAt:to:)` method on the data source.
+    */
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+        let destinationIndexPath: IndexPath
+
+        if let indexPath = coordinator.destinationIndexPath {
+            destinationIndexPath = indexPath
+        } else {
+            // Get last index path of table view.
+            let section = tableView.numberOfSections - 1
+            let row = tableView.numberOfRows(inSection: section)
+            destinationIndexPath = IndexPath(row: row, section: section)
+        }
+
+        coordinator.session.loadObjects(ofClass: NSString.self) { items in
+            // Consume drag items.
+            let stringItems = items as! [SlidesModel]
+
+            var indexPaths = [IndexPath]()
+            for (index, item) in stringItems.enumerated() {
+                let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
+                self.selectedSlidesModel!.addItem(item, at: indexPath.row)
+                indexPaths.append(indexPath)
+            }
+
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        }
+    }
+}
 
 
 
 
-class MediaDownloader {
+class MediaDownloader: NSObject {
+
+    private var delegate: URLSessionDownloadDelegate?
+
+    init(delegate: URLSessionDownloadDelegate) {
+        self.delegate = delegate
+    }
+
     func downloadMedia(from url: URL, completion: @escaping (Data?, Error?) -> Void) {
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
+        let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: OperationQueue.main)
+        let downloadTask = session.downloadTask(with: url) { (location, response, error) in
             if let error = error {
                 completion(nil, error)
                 return
             }
-            guard let data = data else {
-                let noDataError = NSError(domain: "E-Detailing", code: 1, userInfo: [NSLocalizedDescriptionKey: "No data received"])
-                completion(nil, noDataError)
-                return
-            }
 
-            completion(data, nil)
-        }.resume()
+            if let location = location {
+                do {
+                    let data = try Data(contentsOf: location)
+                    completion(data, nil)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+        }
+
+        downloadTask.resume()
     }
 }

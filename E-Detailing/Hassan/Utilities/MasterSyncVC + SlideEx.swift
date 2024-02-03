@@ -1,174 +1,22 @@
 //
-//  SlideDownloadVC.swift
+//  Appdelegate+Ex.swift
 //  E-Detailing
 //
-//  Created by NAGAPRASATH on 21/06/23.
+//  Created by San eforce on 31/01/24.
 //
 
-import UIKit
-import Alamofire
+import Foundation
 import MobileCoreServices
 import SSZipArchive
-
-
-
-
-extension SlideDownloadVC : SlideDownloaderCellDelegate {
-
-    
-    func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, completion: @escaping (Bool) -> Void) {
-       
-        self.arrayOfAllSlideObjects = arrayOfAllSlideObjects
-        self.countLbl.text = "\(index)/\( self.arrayOfAllSlideObjects .count)"
-        guard index < arrayOfAllSlideObjects.count else {
-            self.toCreateToast("Download completed")
-            // All items processed, exit the recursion
-
-            //   LocalStorage.shared.saveObjectToUserDefaults(items, forKey: LocalStorage.LocalValue.LoadedSlideData)
-            CoreDataManager.shared.removeAllSlides()
-            arrayOfAllSlideObjects.forEach { aSlidesModel in
-                CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
-                    if isInstanceSaved {
-
-                    } else {
-
-                    }
-                }
-            }
-            toGroupSlidesBrandWise() {_ in
-                completion(true)
-            }
-            
-            self.tableView.isUserInteractionEnabled = true
-            return
-        }
-        
-        toDownloadMedia(index: index, items: arrayOfAllSlideObjects)
+extension MasterSyncVC: URLSessionDownloadDelegate {
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        print("Yet to implement")
     }
     
     
 }
 
-protocol SlideDownloadVCDelegate: AnyObject {
-    func didDownloadCompleted()
-}
-
-typealias SlidesCallBack = (_ status: Bool) -> Void
- 
-class SlideDownloadVC : UIViewController {
-    
-    @IBOutlet var countLbl: UILabel!
-    @IBOutlet var slideHolderVIew: UIView!
-    @IBOutlet var closeHolderView: UIView!
-    @IBOutlet var lblStatus: UILabel!
-    @IBOutlet var titleLbl: UILabel!
-    weak var delegate: SlideDownloadVCDelegate?
-    class func initWithStory() -> SlideDownloadVC {
-        let tourPlanVC : SlideDownloadVC = UIStoryboard.Hassan.instantiateViewController()
-        return tourPlanVC
-    }
-    var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
-    var arrayOfAllSlideObjects = [SlidesModel]()
-    var extractedFileName: String?
-    
-    @IBOutlet weak var tableView: UITableView!
-    
-    var slidesModel = [SlidesModel]()
-    var slides = [ProductSlides]()
-    var loadingIndex : Int? = nil
-    var loadedIndex: [Int] = []
-    func setupuUI() {
-        
-        self.tableView.register(UINib(nibName: "SlideDownloaderCell", bundle: nil), forCellReuseIdentifier: "SlideDownloaderCell")
-        titleLbl.setFont(font: .bold(size: .BODY))
-        lblStatus.setFont(font: .bold(size: .BODY))
-        slideHolderVIew.layer.cornerRadius = 5
-        // slideHolderVIew.elevate(2)
-        self.tableView.isUserInteractionEnabled = false
-    }
-    
-    func initVIew() {
-        closeHolderView.addTap {
-            self.dismiss(animated: false)
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupuUI()
-        initVIew()
-        toLoadPresentationData(type: .slideBrand)
-        toLoadPresentationData(type: .slides)
-        
-        
-        // self.slides = DBManager.shared.getSlide()
-        // self.tableView.reloadData()
-        
-        // self.downloadSlideData()
-    }
-    
-    
-    @IBAction func CloseAction(_ sender: UIButton) {
-        self.dismiss(animated: true)
-    }
-    
-    
-    func getFileValue(int: Int, data : [String : Any],callback : @escaping SlidesCallBack) {
-        
-        let url = URL(string: AppDefaults.shared.webUrl + AppDefaults.shared.slideUrl + "\(self.slides[int].filePath!.replacingOccurrences(of: " ", with: "%20"))")!
-        
-        
-        print(url)
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request , completionHandler: { (data, response, error) in
-            
-            if error != nil {
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse {
-                print(response.statusCode)
-                if response.statusCode == 200 {
-                    
-                    DispatchQueue.main.async {
-                        
-                        // self.data = data
-                    }
-                }
-                
-                var slides = AppDefaults.shared.getSlides()
-                if !slides.isEmpty {
-                    slides.removeFirst()
-                    AppDefaults.shared.save(key: .slide, value: slides)
-                    callback(true)
-                }
-            }
-        }).resume()
-    }
-    
-    
-    func downloadSlideData() {
-        DispatchQueue.global(qos: .background).async {
-            let slides = AppDefaults.shared.getSlides()
-            
-            guard let slide = slides.first else{
-                return
-            }
-            self.getFileValue(int: 0, data: slide){ (_) in
-                self.downloadSlideData()
-            }
-        }
-        
-        
-    }
-    
-    func toSetTableVIewDataSource() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.reloadData()
-    }
+extension MasterSyncVC {
     func toLoadPresentationData(type : MasterInfo) {
         
         let paramData = type == MasterInfo.slides ? LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse) :  LocalStorage.shared.getData(key: LocalStorage.LocalValue.BrandSlideResponse)
@@ -179,16 +27,13 @@ class SlideDownloadVC : UIViewController {
         do {
             localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as?  [[String:  Any]] ??  [[String:  Any]]()
             dump(localParamArr)
-            
-            
-            
         } catch {
-            //  self.toCreateToast("unable to retrive")
+            self.toCreateToast("unable to retrive")
         }
         
         if type == MasterInfo.slides {
             arrayOfAllSlideObjects.removeAll()
-        } 
+        }
         
         if type == MasterInfo.slides {
             for dictionary in localParamArr {
@@ -202,10 +47,9 @@ class SlideDownloadVC : UIViewController {
                     print("Failed to decode dictionary into YourModel")
                 }
             }
-            //  self.toSetTableVIewDataSource()
         } else {
             CoreDataManager.shared.removeAllSlideBrands()
-            localParamArr.enumerated().forEach { index, dictionary in
+            for dictionary in localParamArr {
                 if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary),
                    let model = try? JSONDecoder().decode(BrandSlidesModel.self , from: jsonData) {
                     model.uuid = UUID()
@@ -221,53 +65,88 @@ class SlideDownloadVC : UIViewController {
                 } else {
                     print("Failed to decode dictionary into YourModel")
                 }
-                
             }
         }
         
         
         if type == .slides {
-            //            toSendParamsToAPISerially(index: 0, items:  arrayOfAllSlideObjects) { _ in
-            //
-            //            }
-            toSetTableVIewDataSource()
-            self.countLbl.text = "1/\(arrayOfAllSlideObjects.count)"
-            toDownloadMedia(index: 0, items: arrayOfAllSlideObjects)
+            toSendParamsToAPISerially(index: 0, items:  arrayOfAllSlideObjects) { _ in
+                
+            }
         }
         
     }
     
-    
-    func toDownloadMedia(index: Int, items: [SlidesModel]) {
-        
-        guard index >= 0, index < items.count else {
+    func toSendParamsToAPISerially(index: Int, items: [SlidesModel], completion: @escaping (Bool) -> Void) {
+      
+        self.arrayOfAllSlideObjects = items
+        guard index < items.count else {
+            self.toCreateToast("Download completed")
+            // All items processed, exit the recursion
             
+            //   LocalStorage.shared.saveObjectToUserDefaults(items, forKey: LocalStorage.LocalValue.LoadedSlideData)
+            CoreDataManager.shared.removeAllSlides()
+            items.forEach { aSlidesModel in
+                CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
+                    if isInstanceSaved {
+                        
+                    } else {
+                        
+                    }
+                }
+            }
+            
+            
+          
+            //            DispatchQueue.main.async {
+            //                self.toCreateToast("Download completed")
+            //            }
+            //            completion(true)
+            toGroupSlidesBrandWise()
+            completion(true)
             return
         }
         
-        let indexPath = IndexPath(row: index, section: 0) // Assuming single section
+        let params = items[index]
         
-        if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
-            cell.toSendParamsToAPISerially(index: index, items: items)
-            cell.delegate = self
-            scrollToItem(at: index + 1, animated: true)
-        } else {
-            //  completion(false) // Couldn't get the cell
-            print("Cant able to retrive cell.")
-        }
-    }
-    
-    func scrollToItem(at index: Int, animated: Bool) {
-        guard index >= 0, index < self.arrayOfAllSlideObjects.count else {
-            return // Invalid index
+        
+        let filePath = params.filePath
+        let url =  slideURL+filePath
+        
+        
+        
+        if index == 4 {
+            print("Reached")
+            
         }
         
-        let indexPath = IndexPath(row: index, section: 0) // Assuming single section
-        tableView.scrollToRow(at: indexPath, at: .middle, animated: animated)
+        let type = mimeTypeForPath(path: url)
+        params.utType = type
+        
+        // https://sanffa.info/Edetailing_files/DP/download/CC_VA_2021_.jpg
+        
+        self.downloadData(mediaURL : url) {  data ,error  in
+            if let error = error {
+                print("Error downloading media: \(error)")
+                return
+            }
+            if let data = data {
+                params.slideData = data
+                
+                completion(true)
+            }
+            
+            let nextIndex = index + 1
+            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in
+                
+            }
+            
+        }
+        
     }
     
     
-    func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
+    func toGroupSlidesBrandWise() {
         let  arrayOfAllSlideObjects =  CoreDataManager.shared.retriveSavedSlides()
         let arrayOfBrandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
         //  CoreDataManager.shared.removeAllGroupedSlides()
@@ -298,7 +177,6 @@ class SlideDownloadVC : UIViewController {
                     print("Saved successfully")
                     self.tounArchiveData { _ in
                         if index == arrayOfBrandSlideObjects.count - 1 {
-                            completion(true)
                             self.checkifSyncIsCompleted()
                         }
                     }
@@ -438,12 +316,26 @@ class SlideDownloadVC : UIViewController {
     
     
     func checkifSyncIsCompleted(){
-        self.delegate?.didDownloadCompleted()
-        DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: false)
+        if !isFromLaunch{
+            setLoader(pageType: .loaded)
+            return
         }
+        //            let filterStatus = self.animations.filter{$0 == true}
+        //            if filterStatus.isEmpty{
+        //
+        //                ConfigVC().showToast(controller: self, message: "Master Sync Completed", seconds: 2)
+        //
+        //                let slideVC = UIStoryboard.slideDownloadVC
+        //                self.present(slideVC, animated: true)
+        //
+        //                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
+        //                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+        //                        appDelegate.setupRootViewControllers()
+        //                    }
+        //                }
+        //            }
         
-        
+        setLoader(pageType: .navigate)
     }
     
     
@@ -602,50 +494,92 @@ class SlideDownloadVC : UIViewController {
         return nil
     }
     
+    
     func isImageFile(_ fileURL: URL) -> Bool {
         let imageFileExtensions = ["jpg", "jpeg", "png", "gif", "bmp"] // Add more extensions as needed
 
         let fileExtension = fileURL.pathExtension.lowercased()
         return imageFileExtensions.contains(fileExtension)
     }
-
+    
     func isMediaFile(_ fileURL: URL) -> Bool {
         let mediaFileExtensions = ["jpg", "jpeg", "png"] // Add more extensions as needed
         //, "gif", "mp4", "mov", "avi", "html"
         let fileExtension = fileURL.pathExtension.lowercased()
         return mediaFileExtensions.contains(fileExtension)
-
+        
     }
     
     func downloadData(mediaURL: String, competion: @escaping (Data?, Error?) -> Void) {
-//        let downloader = MediaDownloader()
-//        let mediaURL = URL(string: mediaURL)!
-//        downloader.downloadMedia(from: mediaURL) { (data, error) in
-//            competion(data, error)
-//        }
+        let downloader = MediaDownloader(delegate: self)
+        let mediaURL = URL(string: mediaURL)!
+        downloader.downloadMedia(from: mediaURL) { (data, error) in
+            competion(data, error)
+        }
     }
 }
 
 
 
 
+func mimeTypeForData(data: Data) -> String {
+    var buffer = [UInt8](repeating: 0, count: 1)
+    data.copyBytes(to: &buffer, count: 1)
 
-extension SlideDownloadVC : tableViewProtocols {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayOfAllSlideObjects.count
+    let uti: CFString
+
+    switch buffer[0] {
+    case 0xFF:
+        uti = kUTTypeJPEG
+    case 0x89:
+        uti = kUTTypePNG
+    case 0x47:
+        uti = kUTTypeGIF
+    case 0x49, 0x4D:
+        uti = kUTTypeTIFF
+    case 0x52 where data.count >= 12:
+        let identifier = String(data: data.subdata(in: 0..<12), encoding: .ascii)
+        if identifier == "RIFFWAVEfmt " {
+            uti = kUTTypeWaveformAudio
+        } else {
+            uti = kUTTypeAudio
+        }
+    case 0x00 where data.count >= 12:
+        let identifier = String(data: data.subdata(in: 8..<12), encoding: .ascii)
+        if identifier == "ftypmp42" {
+            uti = kUTTypeMPEG4
+        } else {
+            uti = kUTTypeVideo
+        }
+    case 0x3C where data.count >= 4:
+        let identifier = String(data: data.subdata(in: 0..<4), encoding: .ascii)
+        if identifier == "<!DO" {
+            uti = kUTTypeHTML
+        } else {
+            uti = kUTTypeData
+        }
+    default:
+        uti = kUTTypeData
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SlideDownloaderCell", for: indexPath) as! SlideDownloaderCell
-        cell.lblName.text = arrayOfAllSlideObjects[indexPath.row].name
-        cell.selectionStyle = .none
-        return cell
+
+    if let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+        return mimeType as String
+    } else {
+        return "application/octet-stream"
     }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.height / 5
-    }
-    
-    
 }
+
+
+
+func mimeTypeForPath(path: String) -> String {
+    let url = NSURL(fileURLWithPath: path)
+    let pathExtension = url.pathExtension
+
+    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension! as NSString, nil)?.takeRetainedValue() {
+        if let mimetype = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+            return mimetype as String
+        }
+    }
+    return "application/octet-stream"
+}
+

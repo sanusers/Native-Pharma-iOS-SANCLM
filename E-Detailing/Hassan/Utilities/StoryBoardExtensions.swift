@@ -12,6 +12,10 @@ extension UIViewController: ReusableView { }
 
 extension UIStoryboard {
     
+    static var Main : UIStoryboard{
+        return UIStoryboard(name: "Main", bundle: nil)
+    }
+    
     static var Hassan : UIStoryboard{
         return UIStoryboard(name: "Hassan", bundle: nil)
     }

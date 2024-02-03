@@ -629,13 +629,20 @@ extension AppDelegate {
     
     func createToastMessage(_ strMessage:String,
                             bgColor: UIColor = .white,
-                            textColor: UIColor = .white, isFromSearch: Bool? = false, isFromWishList: Bool? = false)
-    {
-        guard let keyWindow = UIApplication.shared.connectedScenes
+                            textColor: UIColor = .white, isFromSearch: Bool? = false, isFromWishList: Bool? = false) {
+        var keyWindow = UIWindow()
+    DispatchQueue.main.async {
+        guard let keyedWindow = UIApplication.shared.connectedScenes
             .filter({$0.activationState == .foregroundActive || $0.activationState == .background || $0.activationState == .foregroundInactive})
             .compactMap({$0 as? UIWindowScene})
             .first?.windows
-            .filter({$0.isKeyWindow}).first else { return }
+            .filter({$0.isKeyWindow}).first
+       
+        else { return }
+        
+        keyWindow = keyedWindow
+    }
+
         var lblMessage = UILabel()
         var backgroundHolderView=UIView()
         backgroundHolderView.isUserInteractionEnabled = false

@@ -93,6 +93,7 @@
 		38C600D82A93331700C733AF /* InputSampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C600D72A93331700C733AF /* InputSampleTableViewCell.swift */; };
 		38C600DA2A93332100C733AF /* InputSampleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C600D92A93332100C733AF /* InputSampleTableViewCell.xib */; };
 		38C600DC2A93392100C733AF /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C600DB2A93392100C733AF /* Color.swift */; };
+		38C661452B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C661442B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift */; };
 		38C673222A3C2B5800528E36 /* Activity.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38C673212A3C2B5800528E36 /* Activity.storyboard */; };
 		38C673242A3C2DCA00528E36 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C673232A3C2DCA00528E36 /* Login.swift */; };
 		38C7F0DF2A5D630100363E24 /* LeaveType + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7F0DE2A5D630100363E24 /* LeaveType + Extension.swift */; };
@@ -239,7 +240,7 @@
 		38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EBB8902A6BD447008E007C /* QuickLinkCell.xib */; };
 		38EC6FB22B6242D10065A707 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EC6FB12B6242D10065A707 /* Media.swift */; };
 		38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EDEA792A6A5F16000E857C /* MainVC.swift */; };
-		38EF48942B6A40F3004B6600 /* MasterSyncVC+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EF48932B6A40F3004B6600 /* MasterSyncVC+Ex.swift */; };
+		38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */; };
 		38EF48972B6A791E004B6600 /* PlayHTMLCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EF48952B6A791E004B6600 /* PlayHTMLCVC.swift */; };
 		38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B12B0C8FC200045D4F /* NotificationEnum.swift */; };
 		38F289B42B0CA70200045D4F /* CustomCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */; };
@@ -371,6 +372,7 @@
 		38C600D72A93331700C733AF /* InputSampleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSampleTableViewCell.swift; sourceTree = "<group>"; };
 		38C600D92A93332100C733AF /* InputSampleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputSampleTableViewCell.xib; sourceTree = "<group>"; };
 		38C600DB2A93392100C733AF /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		38C661442B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC + TourPlanEX.swift"; sourceTree = "<group>"; };
 		38C673212A3C2B5800528E36 /* Activity.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Activity.storyboard; sourceTree = "<group>"; };
 		38C673232A3C2DCA00528E36 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		38C7F0DE2A5D630100363E24 /* LeaveType + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeaveType + Extension.swift"; sourceTree = "<group>"; };
@@ -518,7 +520,7 @@
 		38EBB8902A6BD447008E007C /* QuickLinkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickLinkCell.xib; sourceTree = "<group>"; };
 		38EC6FB12B6242D10065A707 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		38EDEA792A6A5F16000E857C /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
-		38EF48932B6A40F3004B6600 /* MasterSyncVC+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC+Ex.swift"; sourceTree = "<group>"; };
+		38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC + SlideEx.swift"; sourceTree = "<group>"; };
 		38EF48952B6A791E004B6600 /* PlayHTMLCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayHTMLCVC.swift; sourceTree = "<group>"; };
 		38F289B12B0C8FC200045D4F /* NotificationEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEnum.swift; sourceTree = "<group>"; };
 		38F289B32B0CA70200045D4F /* CustomCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalenderCell.swift; sourceTree = "<group>"; };
@@ -676,6 +678,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38C661482B6CFCD90066EBC8 /* SlideDownload */,
 				388546452B5FE617005FC9FC /* Presentation */,
 				3885463C2B5FC739005FC9FC /* WorktypeCells */,
 				38DAADE22B58FF7C00966B33 /* outboxCallsCells */,
@@ -758,7 +761,8 @@
 				380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */,
 				3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */,
 				38EC6FB12B6242D10065A707 /* Media.swift */,
-				38EF48932B6A40F3004B6600 /* MasterSyncVC+Ex.swift */,
+				38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */,
+				38C661442B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -905,6 +909,13 @@
 				38BD4C1C2A29E39700A3A5BF /* UIStoryboard+Extensions.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		38C661482B6CFCD90066EBC8 /* SlideDownload */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SlideDownload;
 			sourceTree = "<group>";
 		};
 		38CA1FE62B6107E700AFCFD2 /* Presentation */ = {
@@ -1458,6 +1469,7 @@
 				38CA1FE82B61080A00AFCFD2 /* SelectedSlidesModel.swift in Sources */,
 				38C5D35E2A835FB800513BC8 /* ProductVC.swift in Sources */,
 				38CA1FF32B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift in Sources */,
+				38C661452B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift in Sources */,
 				38CA1FEC2B61169300AFCFD2 /* PlayPresentationVC.swift in Sources */,
 				38DAADE92B5916AC00966B33 /* OutboxDetailsTVC.swift in Sources */,
 				38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */,
@@ -1549,7 +1561,7 @@
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
-				38EF48942B6A40F3004B6600 /* MasterSyncVC+Ex.swift in Sources */,
+				38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
@@ -1778,10 +1790,11 @@
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "E-Detailing/Info.plist";
-				INFOPLIST_KEY_NSCameraUsageDescription = "$(PRODUCT_NAME) uses pictures to verify Events";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "$(PRODUCT_NAME) uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationUsageDescription = "$(PRODUCT_NAME) uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "$(PRODUCT_NAME) uses location to Show nearby Customers.";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "E-Detailing uses pictures to verify Events";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "E-Detailing uses location to Show nearby Customers.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -1814,10 +1827,11 @@
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "E-Detailing/Info.plist";
-				INFOPLIST_KEY_NSCameraUsageDescription = "$(PRODUCT_NAME) uses pictures to verify Events";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "$(PRODUCT_NAME) uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationUsageDescription = "$(PRODUCT_NAME) uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "$(PRODUCT_NAME) uses location to Show nearby Customers.";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "E-Detailing uses pictures to verify Events";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "E-Detailing uses location to Show nearby Customers.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

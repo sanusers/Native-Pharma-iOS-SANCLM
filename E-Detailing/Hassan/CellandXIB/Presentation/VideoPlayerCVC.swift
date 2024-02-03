@@ -7,6 +7,11 @@
 
 import UIKit
 import AVFoundation
+
+protocol VideoPlayerCVCDelegate: AnyObject {
+    func videoplayingSatatus(isplaying: Bool)
+}
+
 class VideoPlayerCVC: UICollectionViewCell {
     
     
@@ -23,6 +28,8 @@ class VideoPlayerCVC: UICollectionViewCell {
         aVIew.backgroundColor = .clear
         return aVIew
     }()
+    
+    weak var delegate: VideoPlayerCVCDelegate?
     
     let playIV: UIImageView = {
         let aImage = UIImageView()
@@ -94,12 +101,11 @@ class VideoPlayerCVC: UICollectionViewCell {
         
         playIV.image = isPlaying ? UIImage(systemName: "pause.fill") :  UIImage(systemName: "play.fill" )
         
+        self.isPlaying = !self.isPlaying
+        self.isPlaying ? self.player?.pause() :  self.player?.play()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            
             UIView.animate(withDuration: 1, delay: 0, animations: {
-                
-                self.isPlaying = !self.isPlaying
-                self.isPlaying ? self.player?.pause() :  self.player?.play()
                 self.playpauseView.isHidden = self.isPlaying ? false : true
                 // self.slider.isHidden = self.isPlaying ? false : true
             })
@@ -110,6 +116,8 @@ class VideoPlayerCVC: UICollectionViewCell {
                 self.videoTapped()
             }
         }
+        
+        delegate?.videoplayingSatatus(isplaying: isPlaying)
     }
     
     override func layoutSubviews() {
