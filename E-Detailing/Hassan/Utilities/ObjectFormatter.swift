@@ -32,7 +32,7 @@ extension UIImageView {
             } else {
                 print("Failed to create PDF document from data.")
             }
-        case "image/jpeg", "image/png", "image/jpg", "image/bmp", "text/html":
+        case "image/jpeg", "image/png", "image/jpg", "image/bmp", "text/html", "image/gif":
            
             if let image = UIImage(data: data) {
                 // The downloaded data represents an image

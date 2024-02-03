@@ -204,16 +204,17 @@ class SlideDownloadVC : UIViewController {
             }
             //  self.toSetTableVIewDataSource()
         } else {
+          
             CoreDataManager.shared.removeAllSlideBrands()
             localParamArr.enumerated().forEach { index, dictionary in
                 if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary),
                    let model = try? JSONDecoder().decode(BrandSlidesModel.self , from: jsonData) {
                     model.uuid = UUID()
-                    // arrayOfBrandSlideObjects.append(model)
-                    
+              
                     CoreDataManager.shared.saveBrandSlidesToCoreData(savedBrandSlides: model) { isInstanceSaved in
                         if isInstanceSaved {
                             print("Saved BrandSlidesModel sucessfully to core data")
+                            
                         } else {
                             print("Error saving  BrandSlidesModel to core data")
                         }
@@ -223,6 +224,7 @@ class SlideDownloadVC : UIViewController {
                 }
                 
             }
+        
         }
         
         
@@ -523,7 +525,7 @@ class SlideDownloadVC : UIViewController {
                         
                         let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
                         guard result.htmlFileURL != nil, result.htmlString != nil else {
-                            return HTMLinfo()
+                             return HTMLinfo()
                         }
                         
                         extractedFileName = fileNameWithoutExtension
@@ -542,12 +544,12 @@ class SlideDownloadVC : UIViewController {
                 }
                 
             }
-            
-            do {
-                try FileManager.default.removeItem(at: temporaryDirectoryURL)
-            } catch {
-                print("Error removing temporary directory: \(error.localizedDescription)")
-            }
+                
+                do {
+                    try FileManager.default.removeItem(at: temporaryDirectoryURL)
+                } catch {
+                    print("Error removing temporary directory: \(error.localizedDescription)")
+                }
             
         }
         return HTMLinfo()
@@ -638,9 +640,14 @@ extension SlideDownloadVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SlideDownloaderCell", for: indexPath) as! SlideDownloaderCell
-        cell.lblName.text = arrayOfAllSlideObjects[indexPath.row].name
+        cell.lblName.text = arrayOfAllSlideObjects[indexPath.row].filePath
+        cell.btnRetry.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel]())
+        }
         cell.selectionStyle = .none
         return cell
+        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

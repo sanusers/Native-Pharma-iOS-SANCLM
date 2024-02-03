@@ -87,7 +87,7 @@ class CreatePresentationView : BaseView {
     
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
-        toRetriveModelsFromCoreData()
+       // toRetriveModelsFromCoreData()
     }
     
     func toRetriveModelsFromCoreData() {
@@ -673,33 +673,3 @@ extension CreatePresentationView: UITableViewDropDelegate {
 
 
 
-
-class MediaDownloader: NSObject {
-
-    private var delegate: URLSessionDownloadDelegate?
-
-    init(delegate: URLSessionDownloadDelegate) {
-        self.delegate = delegate
-    }
-
-    func downloadMedia(from url: URL, completion: @escaping (Data?, Error?) -> Void) {
-        let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: OperationQueue.main)
-        let downloadTask = session.downloadTask(with: url) { (location, response, error) in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
-
-            if let location = location {
-                do {
-                    let data = try Data(contentsOf: location)
-                    completion(data, nil)
-                } catch {
-                    completion(nil, error)
-                }
-            }
-        }
-
-        downloadTask.resume()
-    }
-}

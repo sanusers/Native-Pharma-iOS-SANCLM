@@ -27,6 +27,7 @@ class SelectedSlidesTVC: UITableViewCell {
         titleLbl.setFont(font: .bold(size: .BODY))
         descriptionLbl.setFont(font: .medium(size: .SMALL))
         titleLbl.textColor = .appTextColor
+       
         descriptionLbl.textColor = .appLightTextColor
         
         
@@ -43,6 +44,7 @@ class SelectedSlidesTVC: UITableViewCell {
         descriptionLbl.text = model.fileName
         //extractFileName(from: model.slideData)
         //"Yet to be added"
+        descriptionLbl.text = model.filePath
         let data =  model.slideData
         let utType = model.utType
         presentationIV.toSetImageFromData(utType: utType, data: data)

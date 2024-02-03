@@ -58,32 +58,33 @@ import MobileCoreServices
     class  BrandSlidesModel: Codable {
         var uuid : UUID
         var priority: Int
-        var updatedDate: DateInfo
+       // var updatedDate: DateInfo
         var divisionCode: Int
         var productBrdCode: Int
         var subdivisionCode: Int
-        var createdDate: DateInfo
+      //  var createdDate: DateInfo
         var id: Int
         
         private enum CodingKeys: String, CodingKey {
             case priority = "Priority"
-            case updatedDate = "Updated_Date"
+           // case updatedDate = "Updated_Date"
             case divisionCode = "Division_Code"
             case productBrdCode = "Product_Brd_Code"
             case subdivisionCode = "Subdivision_Code"
-            case createdDate = "Created_Date"
+           // case createdDate = "Created_Date"
             case id = "ID"
             case uuid
         }
         
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.priority = container.safeDecodeValue(forKey: .priority)
-            self.updatedDate =  try container.decodeIfPresent(DateInfo.self, forKey: .updatedDate) ?? DateInfo()
-            self.divisionCode = container.safeDecodeValue(forKey: .divisionCode)
             self.productBrdCode = container.safeDecodeValue(forKey: .productBrdCode)
+            self.priority = container.safeDecodeValue(forKey: .priority)
+           // self.updatedDate =  try container.decodeIfPresent(DateInfo.self, forKey: .updatedDate) ?? DateInfo()
+            self.divisionCode = container.safeDecodeValue(forKey: .divisionCode)
+          
             self.subdivisionCode = container.safeDecodeValue(forKey: .subdivisionCode)
-            self.createdDate =  try container.decodeIfPresent(DateInfo.self, forKey: .createdDate) ?? DateInfo()
+          //  self.createdDate =  try container.decodeIfPresent(DateInfo.self, forKey: .createdDate) ?? DateInfo()
             self.id =  container.safeDecodeValue(forKey: .id)
             self.uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
         }
@@ -92,11 +93,11 @@ import MobileCoreServices
         init() {
             uuid = UUID()
             priority = Int()
-            updatedDate = DateInfo()
+           // updatedDate = DateInfo()
             divisionCode = Int()
             productBrdCode = Int()
             subdivisionCode = Int()
-            createdDate = DateInfo()
+          //  createdDate = DateInfo()
             id = Int()
             
             

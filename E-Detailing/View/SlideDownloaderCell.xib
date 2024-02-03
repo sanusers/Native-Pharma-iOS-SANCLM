@@ -19,30 +19,30 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="99" id="784-4n-IJ3" customClass="SlideDownloaderCell" customModule="E_Detailing" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="408" height="99"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="120" id="784-4n-IJ3" customClass="SlideDownloaderCell" customModule="E_Detailing" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="411" height="120"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="784-4n-IJ3" id="E74-cq-CJJ">
-                <rect key="frame" x="0.0" y="0.0" width="408" height="99"/>
+                <rect key="frame" x="0.0" y="0.0" width="411" height="120"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0V-ON-Ve7">
-                        <rect key="frame" x="10" y="1" width="388" height="97"/>
+                        <rect key="frame" x="10.5" y="1" width="390" height="118"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="erG-6V-75n">
-                                <rect key="frame" x="5" y="5" width="378" height="87"/>
+                                <rect key="frame" x="5" y="5" width="380" height="108"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eKJ-vk-NLd">
-                                        <rect key="frame" x="0.0" y="0.0" width="378" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="380" height="46.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PuO-12-1Q5">
-                                                <rect key="frame" x="0.0" y="7.5" width="45.5" height="22.5"/>
+                                                <rect key="frame" x="0.0" y="12" width="45.5" height="22.5"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XUe-Mz-c2t" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="302.5" y="5.5" width="75.5" height="26"/>
+                                                <rect key="frame" x="304" y="7" width="76" height="32.5"/>
                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -70,10 +70,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="413-CJ-ZBd">
-                                        <rect key="frame" x="0.0" y="42.5" width="378" height="26"/>
+                                        <rect key="frame" x="0.0" y="51.5" width="380" height="26.5"/>
                                         <subviews>
-                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="f8g-C7-1Ee">
-                                                <rect key="frame" x="0.0" y="11.5" width="378" height="3"/>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f8g-C7-1Ee">
+                                                <rect key="frame" x="0.0" y="12" width="380" height="3"/>
                                                 <color key="progressTintColor" red="0.0" green="0.77647058823529413" blue="0.53725490196078429" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </progressView>
                                         </subviews>
@@ -86,10 +86,10 @@
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IH8-if-Orv">
-                                        <rect key="frame" x="0.0" y="73.5" width="378" height="13.5"/>
+                                        <rect key="frame" x="0.0" y="83" width="380" height="25"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3gD-Pb-bZI">
-                                                <rect key="frame" x="0.0" y="0.0" width="378" height="13.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="380" height="25"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -99,7 +99,7 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="eKJ-vk-NLd" firstAttribute="height" secondItem="erG-6V-75n" secondAttribute="height" multiplier="0.428571" id="Dta-gu-iAT"/>
-                                    <constraint firstItem="413-CJ-ZBd" firstAttribute="height" secondItem="erG-6V-75n" secondAttribute="height" multiplier="0.3" id="b4w-wO-xKi"/>
+                                    <constraint firstItem="413-CJ-ZBd" firstAttribute="height" secondItem="erG-6V-75n" secondAttribute="height" multiplier="0.25" id="b4w-wO-xKi"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -125,7 +125,7 @@
                 <outlet property="lblName" destination="PuO-12-1Q5" id="isN-Tr-3DJ"/>
                 <outlet property="progressView" destination="f8g-C7-1Ee" id="ip8-gL-k5K"/>
             </connections>
-            <point key="canvasLocation" x="117.80487804878048" y="-140.59322033898306"/>
+            <point key="canvasLocation" x="118.90243902439025" y="-135.25423728813561"/>
         </tableViewCell>
     </objects>
     <resources>

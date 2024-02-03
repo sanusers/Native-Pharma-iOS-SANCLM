@@ -28,6 +28,8 @@ class CreatedPresentationCVC: UICollectionViewCell {
         holderView.backgroundColor = .appWhiteColor
         bottomContentsHolder.backgroundColor = .appTextColor
         holderView.layer.cornerRadius = 5
+        holderView.layer.borderColor = UIColor.appGreyColor.cgColor
+        holderView.layer.borderWidth = 1
         bottomContentsHolder.backgroundColor = .appTextColor
         slideTitleLbl.setFont(font: .bold(size: .BODY))
         slideTitleLbl.textColor = .appWhiteColor
@@ -53,14 +55,12 @@ class CreatedPresentationCVC: UICollectionViewCell {
         
         
         slideTitleLbl.text = model.name
-        let groupedBrandsSlideElement = model.groupedBrandsSlideModel.last
+       // let groupedBrandsSlideElement = model.groupedBrandsSlideModel.last
         
         
         
-        let slideElement = groupedBrandsSlideElement?.groupedSlide.last
+        let slideElement = slidesModel.last
         let imageDatatype = slideElement?.utType ?? ""
-        
-        
         self.presentationIV.toSetImageFromData(utType: imageDatatype, data: slideElement?.slideData ?? Data())
         
     }

@@ -54,7 +54,7 @@ class SelectPresentationCVC: UICollectionViewCell {
         let data =  model.slideData
         let utType = model.utType
         presentationIV.toSetImageFromData(utType: utType, data: data)
-      
+     
         
         
     }

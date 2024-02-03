@@ -232,7 +232,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
              //   cell.presentationIV.backgroundColor = colors[indexPath.row]
                
                 return cell
-            case "image/jpeg":
+            case "image/jpeg", "image/png", "image/jpg", "image/bmp", "image/gif":
                 let cell: PlayLoadedPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayLoadedPresentationCVC", for: indexPath) as! PlayLoadedPresentationCVC
                 if let model = model {
                     cell.populateCell(model: model)
