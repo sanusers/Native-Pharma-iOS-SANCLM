@@ -39,35 +39,6 @@ class PlayHTMLCVC: UICollectionViewCell, WKUIDelegate, WKNavigationDelegate {
     
         }
 
-//        func loadURL(_ filepathURL: String) {
-////            let fileURL =  URL(fileURLWithPath: filepathURLURL)
-////            let baseURL = URL(fileURLWithPath: filepathURLURL).deletingLastPathComponent()
-////            webView.loadFileURL(fileURL, allowingReadAccessTo: baseURL)
-//
-//            //let extractedFolderPath =  filepathURL
-//            if   let extractedFolderPath = URL(string: filepathURL) {
-//                // Get the contents of the extracted folder
-//                if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
-//                    // Enumerate through the contents
-//                    for fileURL in contents {
-//                        print("File URL: \(fileURL)")
-//                        print("File Name: \(fileURL.lastPathComponent)")
-//                        let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
-//                        print("File Name (without extension): \(fileNameWithoutExtension)")
-//
-//                        // Create a valid file URL
-//                    }
-//                } else {
-//                    print("Error getting contents of the extracted folder.")
-//                }
-//            }
-//
-//
-//
-//
-//
-//
-//        }
     
     
     func loadURL(_ filepathURL: String) {

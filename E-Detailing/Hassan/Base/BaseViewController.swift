@@ -51,8 +51,6 @@ class BaseViewController: UIViewController {
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
                            
-                           
-                           
                        }
                    }
                }

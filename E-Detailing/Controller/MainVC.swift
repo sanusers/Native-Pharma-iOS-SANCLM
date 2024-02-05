@@ -1468,6 +1468,14 @@ extension MainVC : collectionViewProtocols {
         }
     }
     
+    func toSetupAlert() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Slides sync is in progress.", okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("no action")
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let color = [UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.7))].randomElement()
@@ -1480,8 +1488,15 @@ extension MainVC : collectionViewProtocols {
             cell.addTap {
                 switch cell.link.name {
                 case "Presentaion":
-                    let vc =  PresentationHomeVC.initWithStory()
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    
+                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
+                        let vc =  PresentationHomeVC.initWithStory()
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    } else {
+                        self.toSetupAlert()
+                    }
+                    
+                
                 case .none:
                     print("none")
                 case .some(_):

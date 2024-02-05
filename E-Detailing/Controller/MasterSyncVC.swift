@@ -10,12 +10,25 @@ import UIKit
 import Alamofire
 extension MasterSyncVC:  SlideDownloadVCDelegate {
     func didDownloadCompleted() {
-        self.toCreateToast("Master sync completed")
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                appDelegate.setupRootViewControllers()
+        
+        if isFromLaunch {
+            self.toCreateToast("Master sync completed")
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                    appDelegate.setupRootViewControllers()
+                }
             }
+        } else {
+            self.toCreateToast("Slide downloaded succeessfully.")
         }
+        
+
+    }
+    
+    
+    func toCheckSlideExistence() -> Bool {
+        
+        return false
     }
     
     
@@ -38,8 +51,7 @@ class MasterSyncVC : UIViewController {
         case .navigate:
             Shared.instance.removeLoaderInWindow()
             
-        
-            if type == .homeSetup {
+            if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.count >= 2 {
                 if self.loadedSlideInfo.count >= 2 {
                     let vc = SlideDownloadVC.initWithStory()
                     vc.delegate = self
@@ -48,28 +60,7 @@ class MasterSyncVC : UIViewController {
                 }
             }
             
-
-            
-       //     let commonAlert = CommonAlert()
-//            commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to preview", okAction: "Ok")
-//            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-//                print("no action")
-//                let slideVC = UIStoryboard.slideDownloadVC
-//                self.present(slideVC, animated: true)
-//                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
-//                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                        appDelegate.setupRootViewControllers()
-//                    }
-//                }
-//            }
             self.toCreateToast("Master sync completed")
-//            let slideVC = UIStoryboard.slideDownloadVC
-//            self.present(slideVC, animated: true)
-//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
-//                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                    appDelegate.setupRootViewControllers()
-//                }
-         //   }
         }
     }
     
@@ -385,6 +376,8 @@ class MasterSyncVC : UIViewController {
                                 default:
                                     print("Yet to implement")
                                 }
+                                
+                                self.setLoader(pageType: .navigate)
                             }
                         }else if let responseDic = apiResponse as? [String : Any] {
                             DBManager.shared.saveMasterData(type: type, Values: [responseDic],id: self.getSFCode)

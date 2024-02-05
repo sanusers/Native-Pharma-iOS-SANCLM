@@ -17,6 +17,7 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
         let params = model[index]
          let data = data
             params.slideData = data ?? Data()
+            params.isDownloadCompleted = true
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
             delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index + 1) {_ in}
@@ -66,23 +67,22 @@ class SlideDownloaderCell : UITableViewCell  {
     // var arrayOfAllSlideObjects = [SlidesModel]()
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+      //  NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         lblName.setFont(font: .medium(size: .BODY))
         lblDataBytes.setFont(font: .medium(size: .SMALL))
-       // progressView.setProgress(0, animated: false)
+       
         lblName.textColor = .appTextColor
         lblDataBytes.textColor = .appLightTextColor
         btnRetry.isHidden = true
+        self.isUserInteractionEnabled = false
     }
-    //    func animateProgressView() {
-    //        let finalProgress: Float = 1.0
-    //        UIView.animate(withDuration: 2.0, animations: {
-    //            self.progressView.setProgress(finalProgress, animated: true)
-    //        }) { (_) in
-    //            // Animation completion code, if needed
-    //            print("Animation completed!")
-    //        }
-    //    }
+    
+    func toSetupDoenloadedCell(_ istoHide: Bool) {
+        self.btnRetry.isHidden = istoHide
+        isUserInteractionEnabled = istoHide ? false : true
+        progressView.setProgress(1, animated: false)
+        lblDataBytes.text = "Download completed"
+    }
     
     
     func toSendParamsToAPISerially(index: Int, items: [SlidesModel]) {

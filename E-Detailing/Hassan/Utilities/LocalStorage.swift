@@ -33,6 +33,7 @@ class LocalStorage {
         case LoadedSlideData
         case LoadedBrandSlideData
         case SavedPresentations
+        case isSlidesLoaded
     }
     
     enum Offsets: String {

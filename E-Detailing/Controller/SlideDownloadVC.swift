@@ -17,7 +17,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
 
     
     func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, completion: @escaping (Bool) -> Void) {
-       
+        self.loadingIndex = index
         self.arrayOfAllSlideObjects = arrayOfAllSlideObjects
         self.countLbl.text = "\(index)/\( self.arrayOfAllSlideObjects .count)"
         guard index < arrayOfAllSlideObjects.count else {
@@ -37,9 +37,10 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             }
             toGroupSlidesBrandWise() {_ in
                 completion(true)
+               
             }
             
-            self.tableView.isUserInteractionEnabled = true
+          
             return
         }
         
@@ -70,26 +71,73 @@ class SlideDownloadVC : UIViewController {
     var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
     var arrayOfAllSlideObjects = [SlidesModel]()
     var extractedFileName: String?
-    
+    var loadingIndex: Int = 0
+    var isSlideDownloadCompleted: Bool = false
     @IBOutlet weak var tableView: UITableView!
     
     var slidesModel = [SlidesModel]()
-    var slides = [ProductSlides]()
-    var loadingIndex : Int? = nil
-    var loadedIndex: [Int] = []
+
     func setupuUI() {
-        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
         self.tableView.register(UINib(nibName: "SlideDownloaderCell", bundle: nil), forCellReuseIdentifier: "SlideDownloaderCell")
         titleLbl.setFont(font: .bold(size: .BODY))
         lblStatus.setFont(font: .bold(size: .BODY))
         slideHolderVIew.layer.cornerRadius = 5
         // slideHolderVIew.elevate(2)
-        self.tableView.isUserInteractionEnabled = false
+        self.tableView.isScrollEnabled = false
     }
     
     func initVIew() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+        
         closeHolderView.addTap {
             self.dismiss(animated: false)
+        }
+    }
+    
+    
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+               if let status = dict["Type"] as? String{
+                   DispatchQueue.main.async {
+                       if status == "No Connection" {
+                        //   self.toSetPageType(.notconnected)
+                           self.toCreateToast("Please check your internet connection.")
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                           self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: false)
+                       } else if  status == "WiFi" || status ==  "Cellular"   {
+                           LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                           self.toCreateToast("You are now connected.")
+                           //self.toDownloadMedia(index: self.loadingIndex, items: self.arrayOfAllSlideObjects)
+                           self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: true)
+                       }
+                   }
+               }
+           }
+    }
+    
+    func toSetupRetryAction(index: Int, items : [SlidesModel], isConnected: Bool) {
+        guard index >= 0, index < items.count else {
+            
+            return
+        }
+        
+        let indexPath = IndexPath(row: index, section: 0) // Assuming single section
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
+           // cell.toSendParamsToAPISerially(index: index, items: items)
+            cell.btnRetry.isHidden = false
+            cell.delegate = self
+            scrollToItem(at: index + 1, animated: true)
+            cell.isUserInteractionEnabled = true
+
+            cell.lblDataBytes.text = isSlideDownloadCompleted ? "Download Complete." : isConnected ? "Retry now" : "Unable to connect to network.."
+        } else {
+            //  completion(false) // Couldn't get the cell
+            print("Cant able to retrive cell.")
         }
     }
     
@@ -111,57 +159,13 @@ class SlideDownloadVC : UIViewController {
     @IBAction func CloseAction(_ sender: UIButton) {
         self.dismiss(animated: true)
     }
-    
-    
-    func getFileValue(int: Int, data : [String : Any],callback : @escaping SlidesCallBack) {
-        
-        let url = URL(string: AppDefaults.shared.webUrl + AppDefaults.shared.slideUrl + "\(self.slides[int].filePath!.replacingOccurrences(of: " ", with: "%20"))")!
-        
-        
-        print(url)
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request , completionHandler: { (data, response, error) in
-            
-            if error != nil {
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse {
-                print(response.statusCode)
-                if response.statusCode == 200 {
-                    
-                    DispatchQueue.main.async {
-                        
-                        // self.data = data
-                    }
-                }
-                
-                var slides = AppDefaults.shared.getSlides()
-                if !slides.isEmpty {
-                    slides.removeFirst()
-                    AppDefaults.shared.save(key: .slide, value: slides)
-                    callback(true)
-                }
-            }
-        }).resume()
-    }
-    
-    
-    func downloadSlideData() {
-        DispatchQueue.global(qos: .background).async {
-            let slides = AppDefaults.shared.getSlides()
-            
-            guard let slide = slides.first else{
-                return
-            }
-            self.getFileValue(int: 0, data: slide){ (_) in
-                self.downloadSlideData()
-            }
+
+    func toCheckNetworkStatus() -> Bool {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+          return true
+        } else {
+          return false
         }
-        
-        
     }
     
     func toSetTableVIewDataSource() {
@@ -229,19 +233,42 @@ class SlideDownloadVC : UIViewController {
         
         
         if type == .slides {
-            //            toSendParamsToAPISerially(index: 0, items:  arrayOfAllSlideObjects) { _ in
-            //
-            //            }
-            toSetTableVIewDataSource()
-            self.countLbl.text = "1/\(arrayOfAllSlideObjects.count)"
-            toDownloadMedia(index: 0, items: arrayOfAllSlideObjects)
+            let isNewSlideExists = toCheckExistenceOfNewSlides()
+            if isNewSlideExists {
+                toSetTableVIewDataSource()
+                self.countLbl.text = "1/\(arrayOfAllSlideObjects.count)"
+                toDownloadMedia(index: 0, items: arrayOfAllSlideObjects)
+            } else {
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+                self.isSlideDownloadCompleted = true
+                toSetTableVIewDataSource()
+                self.countLbl.text = ""
+                tableView.isScrollEnabled = true
+            }
+
         }
         
     }
     
     
-    func toDownloadMedia(index: Int, items: [SlidesModel]) {
+    func toCheckExistenceOfNewSlides() -> Bool {
+        let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
+        let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
+
+        // Extract slideId values from each array
+        let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
+
+        // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
+        let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
+
+        // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
         
+        return !nonExistingSlides.isEmpty
+        
+    }
+    
+    func toDownloadMedia(index: Int, items: [SlidesModel]) {
+    
         guard index >= 0, index < items.count else {
             
             return
@@ -359,13 +386,10 @@ class SlideDownloadVC : UIViewController {
                         //   dataArr.forEach { aData in
                         let aGroupedSlide = SlidesModel()
                         aGroupedSlide.code = (aSlidesModel.code)
-                        
+                        aGroupedSlide.isDownloadCompleted = true
                         aGroupedSlide.code =   (aSlidesModel.code)
                         aGroupedSlide.camp = (aSlidesModel.camp)
                         aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
-                        
-                        
-                        
                         //  aGroupedSlide.filePath = extractedfileURL ?? ""
                         aGroupedSlide.group = (aSlidesModel.group)
                         aGroupedSlide.specialityCode = aSlidesModel.specialityCode
@@ -429,9 +453,6 @@ class SlideDownloadVC : UIViewController {
             
             
         }
-        
-        
-        
     }
     
     
@@ -440,9 +461,13 @@ class SlideDownloadVC : UIViewController {
     
     
     func checkifSyncIsCompleted(){
-        self.delegate?.didDownloadCompleted()
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+        self.tableView.isScrollEnabled = true
+        isSlideDownloadCompleted = true
         DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: false)
+            self.dismiss(animated: false) {
+                self.delegate?.didDownloadCompleted()
+            }
         }
         
         
@@ -629,9 +654,6 @@ class SlideDownloadVC : UIViewController {
 }
 
 
-
-
-
 extension SlideDownloadVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -640,10 +662,16 @@ extension SlideDownloadVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SlideDownloaderCell", for: indexPath) as! SlideDownloaderCell
+        let model = arrayOfAllSlideObjects[indexPath.row]
         cell.lblName.text = arrayOfAllSlideObjects[indexPath.row].filePath
+        if model.isDownloadCompleted || self.isSlideDownloadCompleted {
+            cell.toSetupDoenloadedCell(indexPath.row == 0 ? false : true)
+        }
         cell.btnRetry.addTap { [weak self] in
             guard let welf = self else {return}
-            welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel]())
+            if welf.toCheckNetworkStatus() {
+                welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel]())
+            }
         }
         cell.selectionStyle = .none
         return cell

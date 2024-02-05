@@ -138,7 +138,7 @@ import MobileCoreServices
        var filePath: String
        var group: Int
        var specialityCode: String
-        var uuid: UUID
+       var uuid: UUID
        var slideId: Int
        var fileType: String
        var effFrom: DateInfo
@@ -151,8 +151,8 @@ import MobileCoreServices
        var slideData: Data
        var utType : String
        var isSelected : Bool
-        var fileName: String
-        
+       var fileName: String
+    var isDownloadCompleted: Bool
         enum CodingKeys: String, CodingKey {
             case code              = "Code"
             case camp               = "Camp"
@@ -174,6 +174,7 @@ import MobileCoreServices
             case isSelected
             case uuid
             case fileName
+            case isDownloadCompleted
         }
         
         required init(from decoder: Decoder) throws {
@@ -198,7 +199,7 @@ import MobileCoreServices
             self.isSelected         = container.safeDecodeValue(forKey: .isSelected)
             self.uuid               = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
             self.fileName               = try container.decodeIfPresent(String.self, forKey: .fileName) ?? String()
-            
+            self.isDownloadCompleted     = try container.decodeIfPresent(Bool.self, forKey: .isDownloadCompleted) ?? Bool()
             
         }
         
@@ -206,7 +207,6 @@ import MobileCoreServices
         
         
         override init() {
-            
             code              = Int()
             camp              = Int()
             productDetailCode = String()
@@ -227,6 +227,7 @@ import MobileCoreServices
             isSelected          = Bool()
             uuid                = UUID()
             fileName = String()
+            isDownloadCompleted = Bool()
         }
     }
     

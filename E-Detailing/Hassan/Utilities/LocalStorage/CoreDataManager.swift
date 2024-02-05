@@ -257,7 +257,6 @@ class CoreDataManager {
                 cdSlidesModel.code =   Int16(slidesModel.code)
                 cdSlidesModel.camp = Int16(slidesModel.camp)
                 cdSlidesModel.productDetailCode = slidesModel.productDetailCode
-                cdSlidesModel.filePath = slidesModel.filePath
                 cdSlidesModel.group = Int16(slidesModel.group)
                 cdSlidesModel.specialityCode = slidesModel.specialityCode
                 cdSlidesModel.slideId = Int16(slidesModel.slideId)
