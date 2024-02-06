@@ -160,7 +160,7 @@ class SlideDownloadVC : UIViewController {
             if existingCDSlides.count == apiFetchedSlide.count {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
             } else {
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
             }
             
             if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) && !self.isFromlaunch {
@@ -168,8 +168,8 @@ class SlideDownloadVC : UIViewController {
                 self.dismiss(animated: false)
                 
             } else if self.isFromlaunch {
-                self.toSetupAlert()
-       
+               // self.toSetupAlert()
+                self.toCreateToast("Slides data download initiated please wait..")
             } else {
                 self.dismiss(animated: false)
             }

@@ -19,6 +19,7 @@ extension CreatePresentationView: UITextFieldDelegate {
 class CreatePresentationView : BaseView {
     
 
+    @IBOutlet var editView: UIView!
     var createPresentationVC : CreatePresentationVC!
     
     @IBOutlet var navigationVIew: UIView!
@@ -30,6 +31,7 @@ class CreatePresentationView : BaseView {
     
     @IBOutlet var slidesCountHolder: UIView!
     
+    @IBOutlet var editVxview: UIVisualEffectView!
     @IBOutlet var selectedSlidesTableHolder: UIView!
     
     @IBOutlet var playView: UIView!
@@ -63,6 +65,9 @@ class CreatePresentationView : BaseView {
     var selectedSlides: [SlidesModel]?
     var selectedBrandsIndex: Int = 0
     var selectedPresentationIndex: Int? = nil
+    var isEditing: Bool = false
+    
+    @IBOutlet var editLbl: UILabel!
     
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
@@ -89,14 +94,30 @@ class CreatePresentationView : BaseView {
     }
     
     func toLoadNewPresentationData() {
-
+        self.editView.isHidden = true
+        self.slidesCountHolder.isHidden = true
         toLoadBrandsTable()
         toLoadSelectedSlidesCollection()
     }
     
 
+    func setEdit() {
+        editLbl.text = isEditing ? "save" : "swap"
+        editView.isHidden =  self.sledeCountLbl.text == "0" ||  self.sledeCountLbl.text == "" || self.sledeCountLbl.text == "1" ? true : false
+        slidesCountHolder.isHidden = self.sledeCountLbl.text == "0" ||  self.sledeCountLbl.text == "" ? true : false
+        selectedSlidesTable.isEditing = isEditing
+    }
     
     func initView() {
+        
+        editView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.isEditing = !welf.isEditing
+            welf.setEdit()
+          
+        }
+
+        
         addNameTF.delegate = self
         
         playView.addTap { [weak self] in
@@ -298,7 +319,11 @@ class CreatePresentationView : BaseView {
     }
     
     func setupUI() {
+        editView.layer.cornerRadius = 5
+        editVxview.backgroundColor = .appTextColor
+        editLbl.textColor = .appTextColor
         brandsTable.separatorStyle = .none
+        editLbl.setFont(font: .bold(size: .BODY))
         selectedSlidesTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         navigationVIew.backgroundColor = .appTextColor
@@ -310,13 +335,14 @@ class CreatePresentationView : BaseView {
         slidesTutle.setFont(font: .bold(size: .BODY))
         slidesTutle.textColor = .appTextColor
         slidesCountHolder.layer.cornerRadius = 3
-        sledesCountVxView.backgroundColor = .appGreyColor
+        sledesCountVxView.backgroundColor = .appTextColor.withAlphaComponent(0.2)
         sledeCountLbl.setFont(font: .bold(size: .BODY))
         sledeCountLbl.text = ""
         playView.backgroundColor = .appTextColor
         playView.layer.cornerRadius = 5
         playLbl.setFont(font: .bold(size: .BODY))
         calcelView.layer.cornerRadius = 5
+        calcelView.backgroundColor = .appTextColor.withAlphaComponent(0.2)
         cancelLbl.setFont(font: .bold(size: .BODY))
         calcelView.backgroundColor = .appLightTextColor
         calcelView.layer.borderWidth = 0.5
@@ -329,10 +355,6 @@ class CreatePresentationView : BaseView {
         addNameTFHolderView.layer.cornerRadius = 5
         addNameTFHolderView.layer.borderColor =  UIColor.appSelectionColor.cgColor
         addNameTFHolderView.layer.borderWidth = 0.5
-        
-        
-        
-        
     }
     
     func toLoadBrandsTable() {
@@ -342,13 +364,11 @@ class CreatePresentationView : BaseView {
     }
     
     func toLoadselectedSlidesTable() {
-        // createPresentationVC.navigationItem.rightBarButtonItem
-        //  self.selectedSlidesModel = SelectedSlidesModel()
-        selectedSlidesTable.isEditing = true
+
+        //selectedSlidesTable.isEditing = true
         selectedSlidesTable.delegate = self
         selectedSlidesTable.dataSource = self
-        //selectedSlidesTable.dragDelegate = self
-        // selectedSlidesTable.dropDelegate = self
+
         selectedSlidesTable.dragInteractionEnabled = true
         selectedSlidesTable.reloadData()
     }
@@ -385,6 +405,8 @@ class CreatePresentationView : BaseView {
         //   self.selectedSlides = slideModel
         if  slideModel.isEmpty {
             self.sledeCountLbl.text = ""
+            self.editView.isHidden = true
+            self.slidesCountHolder.isHidden = true
         } else {
            toSetCount()
         }
@@ -439,6 +461,8 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
     func toSetCount() {
         let selectedSlidesCount = self.selectedSlides?.reduce(0) { $1.isSelected ? $0 + 1 : $0 } ?? 0
         self.sledeCountLbl.text = "\(selectedSlidesCount)"
+        editView.isHidden =  self.sledeCountLbl.text == "0" || self.sledeCountLbl.text == "" || self.sledeCountLbl.text == "1" ? true : false
+        slidesCountHolder.isHidden = self.sledeCountLbl.text == "0" || self.sledeCountLbl.text == "" ? true : false
     }
     
     func toManageSelectedSlides() {

@@ -1470,7 +1470,7 @@ extension MainVC : collectionViewProtocols {
     
     func toSetupAlert() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please do try syncing slides!.", okAction: "Ok")
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please do try syncing All slides!.", okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
         }

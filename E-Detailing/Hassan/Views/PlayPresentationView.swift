@@ -65,6 +65,7 @@ class  PlayPresentationView: BaseView {
     
     @IBOutlet var viewMInimize: UIView!
     
+    @IBOutlet var navigationBackground: UIView!
     
     @IBOutlet var backHolderView: UIView!
     
@@ -136,6 +137,7 @@ class  PlayPresentationView: BaseView {
     }
     
     func  setupUI() {
+        navigationBackground.backgroundColor = .appTextColor
         self.selectedSlideModel = playPresentationVC.selectedSlideModel
         loadedcollectionVxView.backgroundColor = .appTextColor
         self.setPageType(self.pageState)

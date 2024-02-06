@@ -39,11 +39,11 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
-        if progress >= 0.0 && progress < 0.4 {
+        if progress >= 0.0 && progress < 0.25 {
             progressView.progressTintColor = .appLightPink
-        } else if progress >= 0.4 && progress < 0.7 {
+        } else if progress >= 0.25 && progress < 0.65 {
             progressView.progressTintColor = .systemYellow
-        } else if progress >= 0.7 && progress <= 1.0 {
+        } else if progress >= 0.65 && progress <= 1.0 {
             progressView.progressTintColor = .appGreen
         }
         self.progressView.progress = progress
