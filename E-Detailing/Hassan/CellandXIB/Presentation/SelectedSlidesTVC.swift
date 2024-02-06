@@ -27,7 +27,7 @@ class SelectedSlidesTVC: UITableViewCell {
         titleLbl.setFont(font: .bold(size: .BODY))
         descriptionLbl.setFont(font: .medium(size: .SMALL))
         titleLbl.textColor = .appTextColor
-       
+        showsReorderControl = false
         descriptionLbl.textColor = .appLightTextColor
         
         
@@ -41,10 +41,14 @@ class SelectedSlidesTVC: UITableViewCell {
     
     func toPopulateCell(model: SlidesModel) {
         titleLbl.text = model.name
-        descriptionLbl.text = model.fileName
-        //extractFileName(from: model.slideData)
-        //"Yet to be added"
-        descriptionLbl.text = model.filePath
+        if model.utType == "text/html" {
+            descriptionLbl.text = model.fileName
+        } else {
+            descriptionLbl.text = model.filePath
+        }
+       
+
+       // descriptionLbl.text = model.filePath
         let data =  model.slideData
         let utType = model.utType
         presentationIV.toSetImageFromData(utType: utType, data: data)

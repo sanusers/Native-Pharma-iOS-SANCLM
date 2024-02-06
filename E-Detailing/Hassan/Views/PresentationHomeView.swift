@@ -15,9 +15,10 @@ extension PresentationHomeView: PopOverVCDelegate {
         if let savePresentationArr = self.savePresentationArr {
             let selectedPresentation = savePresentationArr[index]
             selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
-               let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+               var selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                     aSlidesModel.isSelected == true
                 }
+                selectedSlidesModelElement.sort { $0.index < $1.index }
                 selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
             })
          
@@ -184,7 +185,7 @@ class PresentationHomeView : BaseView {
 //
 //        }
         
-        noPresentationsLbl.setFont(font: .medium(size: .BODY))
+        noPresentationsLbl.setFont(font: .bold(size: .BODY))
         noPresentationsLbl.textColor = .appTextColor
         addPresentationLbl.setFont(font: .bold(size: .BODY))
         addPresentationLbl.textColor = .appWhiteColor

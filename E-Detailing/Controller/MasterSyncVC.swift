@@ -54,6 +54,7 @@ class MasterSyncVC : UIViewController {
             if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.count >= 2 {
                 if self.loadedSlideInfo.count >= 2 {
                     let vc = SlideDownloadVC.initWithStory()
+                    vc.isFromlaunch = isFromLaunch
                     vc.delegate = self
                     vc.modalPresentationStyle = .overCurrentContext
                     self.present(vc, animated: true)
@@ -290,6 +291,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.slideSpeciality)
         self.masterData.append(MasterInfo.holidays)
         self.masterData.append(MasterInfo.weeklyOff)
+        self.masterData.append(MasterInfo.tableSetup)
         self.masterData.append(MasterInfo.getTP)
         self.masterData.append(MasterInfo.homeSetup)
       //  self.tableView.reloadData()

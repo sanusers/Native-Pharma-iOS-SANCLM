@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import MobileCoreServices
+
 
 
 extension CreatePresentationView: UITextFieldDelegate {
@@ -18,18 +18,7 @@ extension CreatePresentationView: UITextFieldDelegate {
 
 class CreatePresentationView : BaseView {
     
-//    override func didDisappear(baseVC: BaseViewController) {
-//        super.didDisappear(baseVC: baseVC)
-//        arrayOfBrandSlideObjects = nil
-//        arrayOfAllSlideObjects = nil
-//        groupedBrandsSlideModel = nil
-//        savedPresentation = nil
-//        selectedSlides = nil
-//        createPresentationVC.savedPresentation = nil
-//    }
-    
-    
-    
+
     var createPresentationVC : CreatePresentationVC!
     
     @IBOutlet var navigationVIew: UIView!
@@ -74,7 +63,6 @@ class CreatePresentationView : BaseView {
     var selectedSlides: [SlidesModel]?
     var selectedBrandsIndex: Int = 0
     var selectedPresentationIndex: Int? = nil
-    var selectedSlidesModel : SelectedSlidesModel?
     
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
@@ -94,7 +82,7 @@ class CreatePresentationView : BaseView {
         self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
         if let groupedBrandsSlideModel = groupedBrandsSlideModel {
             self.selectedSlides = [SlidesModel]()
-            self.selectedSlidesModel = SelectedSlidesModel()
+            
             createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
         }
      
@@ -164,9 +152,7 @@ class CreatePresentationView : BaseView {
 //            })
             
             welf.selectedSlides =  [SlidesModel]()
-            
-            welf.selectedSlidesModel?.slideNames =  [SlidesModel]()
-                             
+            welf.toLoadBrandsTable()
             welf.toLoadselectedSlidesTable()
             welf.toLoadSelectedSlidesCollection()
             welf.sledeCountLbl.text = ""
@@ -196,19 +182,42 @@ class CreatePresentationView : BaseView {
     }
     
     
+//    func toSetupPlayerModel() -> [SlidesModel] {
+//
+//
+//        var selectedSlidesModelArr = [SlidesModel]()
+//
+//        self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
+//            let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+//                aSlidesModel.isSelected == true
+//            }
+//            selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
+//        })
+//
+//        selectedSlidesModelArr.sort { $0.index < $1.index }
+//
+//        return selectedSlidesModelArr
+//
+//    }
+    
     func toSetupPlayerModel() -> [SlidesModel] {
-        
-        
         var selectedSlidesModelArr = [SlidesModel]()
-        
-        self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
+
+        self.groupedBrandsSlideModel?.forEach { aGroupedBrandsSlideModel in
             let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                 aSlidesModel.isSelected == true
             }
             selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
-        })
-        return selectedSlidesModelArr
+        }
+
+        selectedSlidesModelArr.sort { $0.index < $1.index }
         
+        // Update the index property based on the sorted order
+        for (index, selectedSlide) in selectedSlidesModelArr.enumerated() {
+            selectedSlide.index = index
+        }
+
+        return selectedSlidesModelArr
     }
     
     
@@ -335,10 +344,11 @@ class CreatePresentationView : BaseView {
     func toLoadselectedSlidesTable() {
         // createPresentationVC.navigationItem.rightBarButtonItem
         //  self.selectedSlidesModel = SelectedSlidesModel()
+        selectedSlidesTable.isEditing = true
         selectedSlidesTable.delegate = self
         selectedSlidesTable.dataSource = self
-        selectedSlidesTable.dragDelegate = self
-         selectedSlidesTable.dropDelegate = self
+        //selectedSlidesTable.dragDelegate = self
+        // selectedSlidesTable.dropDelegate = self
         selectedSlidesTable.dragInteractionEnabled = true
         selectedSlidesTable.reloadData()
     }
@@ -353,7 +363,7 @@ class CreatePresentationView : BaseView {
     }
     
     func toEditPresentationData() {
-        self.selectedSlidesModel = SelectedSlidesModel()
+     
         self.savedPresentation = createPresentationVC.savedPresentation
         self.groupedBrandsSlideModel = self.savedPresentation?.groupedBrandsSlideModel
         self.addNameTF.text = self.savedPresentation?.name
@@ -368,17 +378,15 @@ class CreatePresentationView : BaseView {
         self.selectedSlides = slideModel.filter({ aSlideModel in
             aSlideModel.isSelected
         })
-        self.selectedSlidesModel?.slideNames = slideModel
+        
+        self.selectedSlides?.sort { $0.index < $1.index }
+        
+      
         //   self.selectedSlides = slideModel
         if  slideModel.isEmpty {
             self.sledeCountLbl.text = ""
         } else {
-            
-            if let selectedSlidesModel = selectedSlidesModel {
-                self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
-            }
-            
-            
+           toSetCount()
         }
         
         
@@ -410,37 +418,35 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
         
         
         
-        cell.addTap {
-            //self.selectedPresentationIndex = indexPath.row
+        cell.addTap { [weak self] in
+            guard let welf = self else {return}
             model.isSelected = model.isSelected == true ? false : true
-            if model.isSelected  {
-                    self.selectedSlides?.append(model)
-            } else {
-                self.selectedSlides = self.selectedSlides?.filter({ aslideModel in
-                    aslideModel.isSelected
-                })
 
-            }
-            self.selectedSlides = Array(Set(self.selectedSlides ?? [SlidesModel]()))
-            if self.createPresentationVC.isToedit {
-                self.selectedSlidesModel?.slideNames.removeAll()
-                self.selectedSlidesModel?.slideNames.append(contentsOf: self.selectedSlides ?? [SlidesModel]())
-            } else {
-                self.selectedSlidesModel?.slideNames =  self.selectedSlides ?? [SlidesModel]()
-            }
-          //  self.selectedSlidesModel = SelectedSlidesModel()
-        
-            self.selectSlidesCollection.reloadData()
-            if let selectedSlidesModel = self.selectedSlidesModel {
-                self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
-            }
-           
-            self.toLoadselectedSlidesTable()
-            self.brandsTable.reloadData()
+            welf.toManageSelectedSlides()
+
+            welf.selectSlidesCollection.reloadData()
+
+            welf.toSetCount()
+
+            welf.toLoadselectedSlidesTable()
+            welf.brandsTable.reloadData()
             
         }
         
         return cell
+    }
+    
+    func toSetCount() {
+        let selectedSlidesCount = self.selectedSlides?.reduce(0) { $1.isSelected ? $0 + 1 : $0 } ?? 0
+        self.sledeCountLbl.text = "\(selectedSlidesCount)"
+    }
+    
+    func toManageSelectedSlides() {
+        self.selectedSlides = self.groupedBrandsSlideModel?.flatMap { aGroupedBrandsSlideModel in
+            aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                aSlidesModel.isSelected
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -469,7 +475,14 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
         case brandsTable:
             return self.groupedBrandsSlideModel?.count ?? 0
         case selectedSlidesTable:
-            return  selectedSlidesModel?.slideNames.count ?? 0
+//            let selectedSlides = self.groupedBrandsSlideModel?.flatMap { aGroupedBrandsSlideModel in
+//                aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+//                    aSlidesModel.isSelected
+//                }
+//            }
+            return self.selectedSlides?.count ?? 0
+            //selectedSlides?.count ?? 0
+            //selectedSlidesModel?.slideNames.count ?? 0
         default:
             return 1
         }
@@ -497,10 +510,11 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
        
             }
             
-            cell.addTap {
-                self.selectedBrandsIndex = indexPath.row
-                self.brandsTable.reloadData()
-                self.selectSlidesCollection.reloadData()
+            cell.addTap {[weak self] in
+                guard let welf = self else {return}
+                welf.selectedBrandsIndex = indexPath.row
+                welf.brandsTable.reloadData()
+                welf.selectSlidesCollection.reloadData()
             }
             
      return cell
@@ -508,37 +522,40 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             
         case selectedSlidesTable:
             let cell: SelectedSlidesTVC = selectedSlidesTable.dequeueReusableCell(withIdentifier: "SelectedSlidesTVC", for: indexPath) as! SelectedSlidesTVC
-            
+            cell.showsReorderControl = false
             cell.selectionStyle = .none
-            let model = self.selectedSlidesModel?.slideNames[indexPath.row]
+            //self.selectedSlidesModel?.slideNames[indexPath.row]
+//            let selectedSlides = self.groupedBrandsSlideModel?.flatMap { aGroupedBrandsSlideModel in
+//                aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+//                    aSlidesModel.isSelected
+//                }
+//            }
+            var model: SlidesModel?
+            if let slides = self.selectedSlides?.sorted(by: { $0.index < $1.index }) {
+                let slidesmodel = slides[indexPath.row]
+                model = slidesmodel
+                // Use the 'model' here
+            } else {
+                // Handle the case when 'selectedSlides' is nil
+            }
             cell.toPopulateCell(model: model ?? SlidesModel())
-            cell.deleteoptionView.addTap {
-                self.selectedSlidesModel?.slideNames = self.selectedSlidesModel?.slideNames.filter { aSlideModel in
-                    aSlideModel.slideId != model?.slideId
-                } ?? [SlidesModel]()
-                self.groupedBrandsSlideModel?[self.selectedBrandsIndex].groupedSlide.forEach({ aSlideModel in
-                    if  aSlideModel.slideId == model?.slideId {
-                        aSlideModel.isSelected = false
-                    }
-                })
-                
-                self.selectedSlides?.forEach({ aSlideModel in
+            cell.deleteoptionView.addTap { [weak self] in
+                guard let welf = self else {return}
+
+                welf.groupedBrandsSlideModel?[welf.selectedBrandsIndex].groupedSlide.forEach({ aSlideModel in
                     if  aSlideModel.slideId == model?.slideId {
                         aSlideModel.isSelected = false
                     }
                 })
                 
                 
-                self.selectedSlides = self.selectedSlides?.filter({ aslideModel in
-                    aslideModel.isSelected
-                })
-                if let selectedSlidesModel = self.selectedSlidesModel {
-                    self.sledeCountLbl.text = "\(selectedSlidesModel.slideNames.count)"
-                }
-               
-                self.selectedSlidesTable.reloadData()
-                self.selectSlidesCollection.reloadData()
-                self.brandsTable.reloadData()
+                model?.isSelected = false
+
+                welf.toSetCount()
+                welf.toManageSelectedSlides()
+                welf.selectedSlidesTable.reloadData()
+                welf.selectSlidesCollection.reloadData()
+                welf.brandsTable.reloadData()
             }
             return cell
         default:
@@ -564,12 +581,46 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
         return true
     }
     
-     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-         selectedSlidesModel?.moveItem(at: sourceIndexPath.row, to: destinationIndexPath.row)
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        var selectedSlides = self.groupedBrandsSlideModel?.flatMap { aGroupedBrandsSlideModel in
+            aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                aSlidesModel.isSelected
+            }
+        }
+        
+        selectedSlides?.sort {$0.index < $1.index}
+        
+        selectedSlides?.swapAt(sourceIndexPath.row, destinationIndexPath.row)
+        
+        // Set the index property based on the rearranged order
+        if let unwrappedSelectedSlides = selectedSlides {
+            for (index, selectedSlide) in unwrappedSelectedSlides.enumerated() {
+                selectedSlide.index = index
+            }
+        }
+
+        // Update the groupedBrandsSlideModel with the modified selectedSlides
+        for groupedBrandsSlideModel in self.groupedBrandsSlideModel ?? [] {
+            for selectedSlide in selectedSlides! {
+                if var groupedSlide = groupedBrandsSlideModel.groupedSlide.first(where: { $0.uuid == selectedSlide.uuid }) {
+                    groupedSlide.index = selectedSlide.index
+                }
+            }
+        }
+
+        // Save the reordered slides
+        //let reorderedSlides = toSetupPlayerModel()
+        // You can now save reorderedSlides to your data store
+
+        self.selectedSlides = selectedSlides
+        self.selectedSlidesTable.reloadData()
     }
     
+    
+    
      func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .none
+         return .none
     }
     
      func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
@@ -577,99 +628,5 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-
-extension CreatePresentationView: UITableViewDragDelegate {
-    // MARK: - UITableViewDragDelegate
-
-    /**
-         The `tableView(_:itemsForBeginning:at:)` method is the essential method
-         to implement for allowing dragging from a table.
-    */
-    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        return selectedSlidesModel!.dragItems(for: indexPath)
-        //?? SelectedSlidesModel()
-    }
-
-    func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
-       // navigationItem.rightBarButtonItem?.isEnabled = false
-    }
-
-    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
-     //   navigationItem.rightBarButtonItem?.isEnabled = true
-    }
-}
-
-
-extension CreatePresentationView: UITableViewDropDelegate {
-    // MARK: - UITableViewDropDelegate
-
-    /**
-         Ensure that the drop session contains a drag item with a data representation
-         that the view can consume.
-    */
-    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-        return selectedSlidesModel!.canHandle(session)
-    }
-
-    /**
-         A drop proposal from a table view includes two items: a drop operation,
-         typically .move or .copy; and an intent, which declares the action the
-         table view will take upon receiving the items. (A drop proposal from a
-         custom view does includes only a drop operation, not an intent.)
-    */
-    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
-        var dropProposal = UITableViewDropProposal(operation: .cancel)
-
-        // Accept only one drag item.
-        guard session.items.count == 1 else { return dropProposal }
-
-        // The .move drag operation is available only for dragging within this app and while in edit mode.
-        if tableView.hasActiveDrag {
-            if tableView.isEditing {
-                dropProposal = UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
-            }
-        } else {
-            // Drag is coming from outside the app.
-            dropProposal = UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
-        }
-
-        return dropProposal
-    }
-
-    /**
-         This delegate method is the only opportunity for accessing and loading
-         the data representations offered in the drag item. The drop coordinator
-         supports accessing the dropped items, updating the table view, and specifying
-         optional animations. Local drags with one item go through the existing
-         `tableView(_:moveRowAt:to:)` method on the data source.
-    */
-    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-        let destinationIndexPath: IndexPath
-
-        if let indexPath = coordinator.destinationIndexPath {
-            destinationIndexPath = indexPath
-        } else {
-            // Get last index path of table view.
-            let section = tableView.numberOfSections - 1
-            let row = tableView.numberOfRows(inSection: section)
-            destinationIndexPath = IndexPath(row: row, section: section)
-        }
-
-        coordinator.session.loadObjects(ofClass: NSString.self) { items in
-            // Consume drag items.
-            let stringItems = items as! [SlidesModel]
-
-            var indexPaths = [IndexPath]()
-            for (index, item) in stringItems.enumerated() {
-                let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
-                self.selectedSlidesModel!.addItem(item, at: indexPath.row)
-                indexPaths.append(indexPath)
-            }
-
-            tableView.insertRows(at: indexPaths, with: .automatic)
-        }
-    }
-}
-
 
 

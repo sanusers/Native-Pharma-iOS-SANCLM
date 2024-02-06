@@ -2892,7 +2892,7 @@
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bfw-zI-Eby">
                                                                 <rect key="frame" x="400.5" y="0.0" width="114.5" height="57.5"/>
                                                                 <subviews>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="17/14" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6sB-E9-Btm">
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6sB-E9-Btm">
                                                                         <rect key="frame" x="0.0" y="0.0" width="114.5" height="57.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <nil key="textColor"/>
@@ -3013,7 +3013,7 @@
         <image name="checkBoxEmpty" width="32" height="32"/>
         <image name="checkmark.square.fill" catalog="system" width="128" height="114"/>
         <image name="chevron.left" catalog="system" width="97" height="128"/>
-        <image name="chevron.right" catalog="system" width="97" height="128"/>
+        <image name="chevron.right" catalog="system" width="32" height="32"/>
         <image name="chevron.up" catalog="system" width="128" height="70"/>
         <image name="empty" width="1571" height="1381"/>
         <image name="filterSort" width="64" height="64"/>

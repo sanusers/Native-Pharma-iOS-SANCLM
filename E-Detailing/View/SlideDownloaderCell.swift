@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SlideDownloaderCellDelegate: AnyObject {
-    func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, completion: @escaping (Bool) -> Void)
+    func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, isForSingleSelection: Bool, completion: @escaping (Bool) -> Void)
 }
 
 extension SlideDownloaderCell: MediaDownloaderDelegate {
@@ -18,21 +18,34 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
          let data = data
             params.slideData = data ?? Data()
             params.isDownloadCompleted = true
+            params.isFailed = false
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
-            delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index + 1) {_ in}
+        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false) {_ in}
         
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: Error) {
        let error = error
+            let params = model[index]
+            params.slideData =  Data()
+            params.isDownloadCompleted = false
+            params.isFailed = true
+           progressView.progressTintColor = .appLightPink
             print("Error downloading media: \(error)")
+            lblDataBytes.text = "Error downloading media"
             btnRetry.isHidden = false
-            delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index + 1) {_ in}
-        
+        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false) {_ in}
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
+        if progress >= 0.0 && progress < 0.4 {
+            progressView.progressTintColor = .appLightPink
+        } else if progress >= 0.4 && progress < 0.7 {
+            progressView.progressTintColor = .systemYellow
+        } else if progress >= 0.7 && progress <= 1.0 {
+            progressView.progressTintColor = .appGreen
+        }
         self.progressView.progress = progress
         let progressPercentage = Int(progress * 100)
         lblDataBytes.text = "Downloading: \(progressPercentage)%"
@@ -64,6 +77,7 @@ class SlideDownloaderCell : UITableViewCell  {
     weak var delegate: SlideDownloaderCellDelegate?
     var model = [SlidesModel]()
     var index: Int = 0
+    var isForSingleSelection: Bool? = false
     // var arrayOfAllSlideObjects = [SlidesModel]()
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -81,12 +95,37 @@ class SlideDownloaderCell : UITableViewCell  {
         self.btnRetry.isHidden = istoHide
         isUserInteractionEnabled = istoHide ? false : true
         progressView.setProgress(1, animated: false)
+        progressView.progressTintColor = .appGreen
         lblDataBytes.text = "Download completed"
     }
     
+    func toSetupErrorCell(_ istoHide: Bool) {
+        self.btnRetry.isHidden = istoHide
+        isUserInteractionEnabled = true
+        progressView.setProgress(1, animated: false)
+        progressView.progressTintColor = .appLightPink
+        lblDataBytes.text = "Download failed."
+    }
     
-    func toSendParamsToAPISerially(index: Int, items: [SlidesModel]) {
-     
+    
+    func toSetupDownloadingCell(_ istoHide: Bool) {
+        self.btnRetry.isHidden = istoHide
+        isUserInteractionEnabled = istoHide ? false : true
+        progressView.setProgress(1, animated: false)
+        progressView.progressTintColor = .systemYellow
+        lblDataBytes.text = "Waiting to download.."
+    }
+    
+    func toSetupNoNetworkCell() {
+        self.btnRetry.isHidden = true
+        isUserInteractionEnabled = false
+        progressView.setProgress(0.2, animated: false)
+        progressView.progressTintColor = .appLightPink
+        lblDataBytes.text = "Unable to connect to network"
+    }
+    
+    func toSendParamsToAPISerially(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false) {
+        self.isForSingleSelection = isForsingleRetry
         // self.arrayOfAllSlideObjects = items
         self.model = items
         self.index = index
@@ -101,30 +140,14 @@ class SlideDownloaderCell : UITableViewCell  {
         // https://sanffa.info/Edetailing_files/DP/download/CC_VA_2021_.jpg
         
         self.downloadData(mediaURL : url)
-//        { [weak self]  data ,error  in
-//            guard let welf = self else {return}
-//            if let error = error {
-//                print("Error downloading media: \(error)")
-//                welf.btnRetry.isHidden = false
-//                return
-//            }
-//            if let data = data {
-//                params.slideData = data
-//                welf.lblDataBytes.text = "Download completed"
-//                welf.btnRetry.isHidden = true
-//                welf.delegate?.didDownloadCompleted(arrayOfAllSlideObjects: items, index: index + 1) {_ in}
-//                //  completion(true)
-//            }
-//
-//
-//        }
+
         
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         progressView.setProgress(0, animated: false)
-        self.lblDataBytes.text = "Download operation on queue..."
+        self.lblDataBytes.text = "Yet to download.."
     }
     
     func downloadData(mediaURL: String) {
@@ -169,14 +192,41 @@ protocol MediaDownloaderDelegate: AnyObject {
 
 
 extension MediaDownloader: URLSessionDownloadDelegate {
+    
+
+    
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        do {
-            let data = try Data(contentsOf: location)
-            delegate?.mediaDownloader(self, didFinishDownloadingData: data)
-        } catch {
-            print("Error reading downloaded data: \(error.localizedDescription)")
+        
+        guard let httpResponse = downloadTask.response as? HTTPURLResponse else {
+            // Handle the case where the response is not an HTTP response
+            return
+        }
+
+        if (200...299).contains(httpResponse.statusCode) {
+            // The HTTP status code is in the success range, proceed with processing the downloaded file
+            do {
+                let data = try Data(contentsOf: location)
+                delegate?.mediaDownloader(self, didFinishDownloadingData: data)
+            } catch {
+                print("Error reading downloaded data: \(error.localizedDescription)")
+                delegate?.mediaDownloader(self, didEncounterError: error)
+            }
+        } else {
+            // The HTTP status code indicates an error, handle it accordingly
+            let error = NSError(domain: "HTTPError", code: httpResponse.statusCode, userInfo: nil)
             delegate?.mediaDownloader(self, didEncounterError: error)
         }
+        
+        
+        
+        
+//        do {
+//            let data = try Data(contentsOf: location)
+//            delegate?.mediaDownloader(self, didFinishDownloadingData: data)
+//        } catch {
+//            print("Error reading downloaded data: \(error.localizedDescription)")
+//            delegate?.mediaDownloader(self, didEncounterError: error)
+//        }
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {

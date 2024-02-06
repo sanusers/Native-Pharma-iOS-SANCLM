@@ -7,8 +7,6 @@
 
 import UIKit
 import PDFKit
-import AVFoundation
-
 
 class SelectPresentationCVC: UICollectionViewCell {
     
@@ -25,7 +23,7 @@ class SelectPresentationCVC: UICollectionViewCell {
     @IBOutlet var selectionView: UIView!
     @IBOutlet var presentationIV: UIImageView!
     @IBOutlet var contentsHolderView: UIView!
-    let pdfView = PDFView()
+   
     //var player = AVPlayer()
     var type : CellType = .image
     

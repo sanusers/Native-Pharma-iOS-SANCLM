@@ -134,6 +134,7 @@ import MobileCoreServices
         
        var code: Int
        var camp: Int
+       var index: Int
        var productDetailCode: String
        var filePath: String
        var group: Int
@@ -152,7 +153,8 @@ import MobileCoreServices
        var utType : String
        var isSelected : Bool
        var fileName: String
-    var isDownloadCompleted: Bool
+       var isDownloadCompleted: Bool
+        var isFailed: Bool
         enum CodingKeys: String, CodingKey {
             case code              = "Code"
             case camp               = "Camp"
@@ -175,6 +177,8 @@ import MobileCoreServices
             case uuid
             case fileName
             case isDownloadCompleted
+            case isFailed
+            case index
         }
         
         required init(from decoder: Decoder) throws {
@@ -200,7 +204,8 @@ import MobileCoreServices
             self.uuid               = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
             self.fileName               = try container.decodeIfPresent(String.self, forKey: .fileName) ?? String()
             self.isDownloadCompleted     = try container.decodeIfPresent(Bool.self, forKey: .isDownloadCompleted) ?? Bool()
-            
+            self.isFailed = try container.decodeIfPresent(Bool.self, forKey: .isFailed) ?? Bool()
+            self.index = try container.decodeIfPresent(Int.self, forKey: .index) ?? Int()
         }
         
         
@@ -228,6 +233,8 @@ import MobileCoreServices
             uuid                = UUID()
             fileName = String()
             isDownloadCompleted = Bool()
+            isFailed = Bool()
+            index = Int()
         }
     }
     

@@ -226,7 +226,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                 let cell: PlayPDFCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayPDFCVC", for: indexPath) as! PlayPDFCVC
                 cell.toLoadData(data: model?.slideData ?? Data())
                 cell.addTap {
-                    self.pageState = .expanded
+                    self.pageState = self.pageState == .expanded ?  .minimized :  .expanded
                     self.setPageType(self.pageState)
                 }
              //   cell.presentationIV.backgroundColor = colors[indexPath.row]
@@ -239,7 +239,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                 }
               
                 cell.addTap {
-                    self.pageState = .expanded
+                    self.pageState = self.pageState == .expanded ?  .minimized :  .expanded
                     self.setPageType(self.pageState)
                 }
                // cell.presentationIV.backgroundColor = colors[indexPath.row]
@@ -266,7 +266,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                 cell.loadURL(fileURL)
                 
                 cell.addTap {
-                    self.pageState = .expanded
+                    self.pageState = self.pageState == .expanded ?  .minimized :  .expanded
                     self.setPageType(self.pageState)
                 }
                 //cell.presentationIV.backgroundColor = colors[indexPath.row]

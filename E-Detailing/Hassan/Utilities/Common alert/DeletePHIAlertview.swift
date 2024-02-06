@@ -86,9 +86,9 @@ class CommonAlert:NSObject {
     {
     
         let alertView = self.addAlert()
-       // alertView.message_titleLb.setFont(font: .bold(size: .BODY))
+        alertView.message_titleLb.setFont(font: .bold(size: .BODY))
         alertView.message_titleLb.textAlignment = .center
-       // alertView.messageDescriptionLbl.setFont(font: .medium(size: .BODY))
+        alertView.messageDescriptionLbl.setFont(font: .medium(size: .BODY))
         alertView.messageDescriptionLbl.textAlignment = .center
         alertView.userImageView.tintColor = .black
         alertView.message_titleLb.text = title
@@ -104,22 +104,24 @@ class CommonAlert:NSObject {
 
         if cancelAction != nil {
             //        MARK: set for single Button UI
+            alertView.PHI_DeleteYesBtn.setTitle(okAction, for: .normal)
+            alertView.PHI_DeleteNoBtn.setTitle(cancelAction, for: .normal)
             alertView.deletePHI_popupOneOption.isHidden = true
             alertView.deletePHI_popupTwoOption.isHidden = false
             
             alertView.PHI_DeleteYesBtn.titleLabel?.adjustsFontSizeToFitWidth = true
-            alertView.PHI_DeleteYesBtn.titleLabel?.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
+            alertView.PHI_DeleteYesBtn.titleLabel?.setFont(font: .bold(size: .BODY))
+            //font =  UIFont.systemFont(ofSize: 14, weight: .regular)
             alertView.PHI_DeleteYesBtn.backgroundColor = .white
-            alertView.PHI_DeleteYesBtn.setTitle(okAction, for: .normal)
-            alertView.PHI_DeleteYesBtn.setTitleColor(.black, for: .normal)
-     
-            
+          
+            alertView.PHI_DeleteYesBtn.setTitleColor(.appLightPink, for: .normal)
             alertView.PHI_DeleteNoBtn.backgroundColor = .white
             alertView.PHI_DeleteNoBtn.titleLabel?.adjustsFontSizeToFitWidth = true
-            alertView.PHI_DeleteNoBtn.setTitle(cancelAction, for: .normal)
+        
           //  alertView.PHI_DeleteNoBtn.layer.borderWidth = 1
           //  alertView.PHI_DeleteNoBtn.layer.cornerRadius = 5
-            alertView.PHI_DeleteNoBtn.titleLabel?.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
+            alertView.PHI_DeleteNoBtn.titleLabel?.setFont(font: .bold(size: .BODY))
+                //.font =  UIFont.systemFont(ofSize: 14, weight: .regular)
             alertView.PHI_DeleteNoBtn.setTitleColor(.black, for: .normal)
             
             alertView.PHI_DeleteNoBtn.addTap {
@@ -131,13 +133,14 @@ class CommonAlert:NSObject {
         }
         else {
             //        MARK: set for dual Button UI
+            alertView.PHI_FinalMessage_OK.setTitle(okAction, for: .normal)
             alertView.deletePHI_popupOneOption.isHidden = false
             alertView.deletePHI_popupTwoOption.isHidden = true
             alertView.PHI_FinalMessage_OK.setTitleColor(okColor, for: .normal)
-           // alertView.PHI_FinalMessage_OK.titleLabel?.setFont(font: .medium(size: .BODY))
+            alertView.PHI_FinalMessage_OK.titleLabel?.setFont(font: .bold(size: .BODY))
             alertView.PHI_FinalMessage_OK.backgroundColor = .clear
             alertView.PHI_FinalMessage_OK.titleLabel?.adjustsFontSizeToFitWidth = true
-            alertView.PHI_FinalMessage_OK.setTitle(okAction, for: .normal)
+         
             alertView.PHI_FinalMessage_OK.addTap {
                 self.removeAlert()
             }

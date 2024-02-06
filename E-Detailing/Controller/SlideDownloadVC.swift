@@ -14,37 +14,96 @@ import SSZipArchive
 
 
 extension SlideDownloadVC : SlideDownloaderCellDelegate {
+    func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, isForSingleSelection: Bool, completion: @escaping (Bool) -> Void) {
+        
+        
+      self.loadingIndex = index + 1
+      self.arrayOfAllSlideObjects = arrayOfAllSlideObjects
 
-    
-    func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, completion: @escaping (Bool) -> Void) {
-        self.loadingIndex = index
-        self.arrayOfAllSlideObjects = arrayOfAllSlideObjects
-        self.countLbl.text = "\(index)/\( self.arrayOfAllSlideObjects .count)"
-        guard index < arrayOfAllSlideObjects.count else {
-            self.toCreateToast("Download completed")
-            // All items processed, exit the recursion
-
-            //   LocalStorage.shared.saveObjectToUserDefaults(items, forKey: LocalStorage.LocalValue.LoadedSlideData)
-            CoreDataManager.shared.removeAllSlides()
-            arrayOfAllSlideObjects.forEach { aSlidesModel in
-                CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
-                    if isInstanceSaved {
-
-                    } else {
-
+     
+        switch isForSingleSelection {
+            
+        case true:
+            
+            let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
+            self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+            let element = arrayOfAllSlideObjects[index]
+            CoreDataManager.shared.updateSlidesInCoreData(savedSlides: element) {isUpdated in
+                if isUpdated {
+                    self.toGroupSlidesBrandWise() {_ in
+                        self.tableView.reloadData()
+                        self.tableView.isUserInteractionEnabled = true
+                        completion(true)
+                       
                     }
                 }
             }
-            toGroupSlidesBrandWise() {_ in
-                completion(true)
-               
+            
+        case false:
+            
+            let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
+            self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+            let aSlidesModel = arrayOfAllSlideObjects[index]
+            CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
+                if isInstanceSaved {
+                    toGroupSlidesBrandWise() {_ in
+                        self.tableView.reloadData()
+                        self.tableView.isUserInteractionEnabled = true
+                        completion(true)
+                       
+                    }
+                } else {
+
+                }
             }
             
+ 
+            
+//            guard index + 1 < arrayOfAllSlideObjects.count else {
+//                self.toCreateToast("Download completed")
+//                // All items processed, exit the recursion
+//
+//                //   LocalStorage.shared.saveObjectToUserDefaults(items, forKey: LocalStorage.LocalValue.LoadedSlideData)
+//                CoreDataManager.shared.removeAllSlides()
+//                arrayOfAllSlideObjects.forEach { aSlidesModel in
+//                    CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
+//                        if isInstanceSaved {
+//
+//                        } else {
+//
+//                        }
+//                    }
+//                }
+//
+//
+//                toGroupSlidesBrandWise() {_ in
+//                    self.tableView.reloadData()
+//                    completion(true)
+//
+//                }
+//
+//
+//                return
+//            }
+            guard index + 1 < arrayOfAllSlideObjects.count else {
+                checkifSyncIsCompleted(self.isFromlaunch)
+                return
+            }
+            
+            if isFromlaunch {
+                toDownloadMedia(index: index + 1, items: arrayOfAllSlideObjects)
+            } else {
+                self.tableView.isUserInteractionEnabled = true
+            }
           
-            return
         }
-        
-        toDownloadMedia(index: index, items: arrayOfAllSlideObjects)
+    }
+    
+
+    
+    func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, completion: @escaping (Bool) -> Void) {
+
+
     }
     
     
@@ -73,6 +132,8 @@ class SlideDownloadVC : UIViewController {
     var extractedFileName: String?
     var loadingIndex: Int = 0
     var isSlideDownloadCompleted: Bool = false
+    var isFromlaunch: Bool = false
+    var isConnected = Bool()
     @IBOutlet weak var tableView: UITableView!
     
     var slidesModel = [SlidesModel]()
@@ -84,7 +145,8 @@ class SlideDownloadVC : UIViewController {
         lblStatus.setFont(font: .bold(size: .BODY))
         slideHolderVIew.layer.cornerRadius = 5
         // slideHolderVIew.elevate(2)
-        self.tableView.isScrollEnabled = false
+      //  self.tableView.isScrollEnabled = true
+     
     }
     
     func initVIew() {
@@ -92,10 +154,41 @@ class SlideDownloadVC : UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         
         closeHolderView.addTap {
-            self.dismiss(animated: false)
+            let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
+            let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
+            
+            if existingCDSlides.count == apiFetchedSlide.count {
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+            } else {
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+            }
+            
+            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) && !self.isFromlaunch {
+              //  self.toSetupAlert()
+                self.dismiss(animated: false)
+                
+            } else if self.isFromlaunch {
+                self.toSetupAlert()
+       
+            } else {
+                self.dismiss(animated: false)
+            }
+
         }
     }
     
+
+    
+    func toSetupAlert() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Slides will be downloaded in background..", okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("no action")
+            self.dismiss(animated: false) {
+                self.delegate?.didDownloadCompleted()
+            }
+        }
+    }
     
     @objc func networkModified(_ notification: NSNotification) {
         
@@ -106,13 +199,17 @@ class SlideDownloadVC : UIViewController {
                        if status == "No Connection" {
                         //   self.toSetPageType(.notconnected)
                            self.toCreateToast("Please check your internet connection.")
+                           self.isConnected = false
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                           self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: false)
+                           self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
+                           
+                           
                        } else if  status == "WiFi" || status ==  "Cellular"   {
+                           self.isConnected = true
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
                            //self.toDownloadMedia(index: self.loadingIndex, items: self.arrayOfAllSlideObjects)
-                           self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: true)
+                           self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
                        }
                    }
                }
@@ -121,24 +218,28 @@ class SlideDownloadVC : UIViewController {
     
     func toSetupRetryAction(index: Int, items : [SlidesModel], isConnected: Bool) {
         guard index >= 0, index < items.count else {
-            
+
             return
         }
-        
-        let indexPath = IndexPath(row: index, section: 0) // Assuming single section
-        
-        if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
-           // cell.toSendParamsToAPISerially(index: index, items: items)
-            cell.btnRetry.isHidden = false
-            cell.delegate = self
-            scrollToItem(at: index + 1, animated: true)
-            cell.isUserInteractionEnabled = true
 
-            cell.lblDataBytes.text = isSlideDownloadCompleted ? "Download Complete." : isConnected ? "Retry now" : "Unable to connect to network.."
-        } else {
-            //  completion(false) // Couldn't get the cell
-            print("Cant able to retrive cell.")
-        }
+        self.arrayOfAllSlideObjects[index].isFailed = true
+        self.tableView.reloadData()
+        
+//
+//        let indexPath = IndexPath(row: index, section: 0) // Assuming single section
+//
+//        if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
+//           // cell.toSendParamsToAPISerially(index: index, items: items)
+//            cell.btnRetry.isHidden = false
+//            cell.delegate = self
+//            scrollToItem(at: index + 1, animated: true)
+//            cell.isUserInteractionEnabled = true
+//
+//            cell.lblDataBytes.text = isSlideDownloadCompleted ? "Download Complete." : isConnected ? "Retry now" : "Unable to connect to network.."
+//        } else {
+//            //  completion(false) // Couldn't get the cell
+//            print("Cant able to retrive cell.")
+//        }
     }
     
     override func viewDidLoad() {
@@ -236,14 +337,19 @@ class SlideDownloadVC : UIViewController {
             let isNewSlideExists = toCheckExistenceOfNewSlides()
             if isNewSlideExists {
                 toSetTableVIewDataSource()
-                self.countLbl.text = "1/\(arrayOfAllSlideObjects.count)"
-                toDownloadMedia(index: 0, items: arrayOfAllSlideObjects)
+               // self.countLbl.text = "1/\(arrayOfAllSlideObjects.count)"
+                if isFromlaunch {
+                    toDownloadMedia(index: 0, items: arrayOfAllSlideObjects)
+                   
+                } else {
+                    self.tableView.isUserInteractionEnabled = true
+                }
+              
             } else {
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+               // LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
                 self.isSlideDownloadCompleted = true
                 toSetTableVIewDataSource()
                 self.countLbl.text = ""
-                tableView.isScrollEnabled = true
             }
 
         }
@@ -262,13 +368,18 @@ class SlideDownloadVC : UIViewController {
         let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 
         // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
-        
+        self.arrayOfAllSlideObjects.removeAll()
+        self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
+        self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
+        let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
+        self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
         return !nonExistingSlides.isEmpty
         
     }
     
-    func toDownloadMedia(index: Int, items: [SlidesModel]) {
-    
+    func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false) {
+     //   self.tableView.isScrollEnabled = false
+        self.tableView.isUserInteractionEnabled = false
         guard index >= 0, index < items.count else {
             
             return
@@ -277,7 +388,7 @@ class SlideDownloadVC : UIViewController {
         let indexPath = IndexPath(row: index, section: 0) // Assuming single section
         
         if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
-            cell.toSendParamsToAPISerially(index: index, items: items)
+            cell.toSendParamsToAPISerially(index: index, items: items, isForsingleRetry: isForsingleRetry)
             cell.delegate = self
             scrollToItem(at: index + 1, animated: true)
         } else {
@@ -322,13 +433,13 @@ class SlideDownloadVC : UIViewController {
             CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aBrandGroup) { isSaved in
                 if !isSaved {
                     print("Error saving groupedBrandSlide to core data")
-                    self.checkifSyncIsCompleted()
+                    //self.checkifSyncIsCompleted(self.isFromlaunch)
                 } else {
                     print("Saved successfully")
                     self.tounArchiveData { _ in
                         if index == arrayOfBrandSlideObjects.count - 1 {
                             completion(true)
-                            self.checkifSyncIsCompleted()
+                          //  self.checkifSyncIsCompleted(self.isFromlaunch)
                         }
                     }
                 }
@@ -337,13 +448,14 @@ class SlideDownloadVC : UIViewController {
         }
     }
     
+    
     func tounArchiveData(completion: @escaping (Bool) -> Void) {
         var zipContentsSlides = [SlidesModel]()
         var zipgropedBrandModels = [GroupedBrandsSlideModel]()
         groupedBrandsSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
-        
+
         CoreDataManager.shared.removeAllGeneralGroupedSlides()
-        
+
         //  CoreDataManager.shared.removeAllGeneralGroupedSlides()
         if  let groupedBrandsSlideModel = groupedBrandsSlideModel {
             var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
@@ -352,25 +464,25 @@ class SlideDownloadVC : UIViewController {
                 zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
                     aSlideModel.utType == "application/zip"
                 }
-                
+
                 // Update groupedSlideModel by removing slides with utType equal to "application/zip"
                 self.groupedBrandsSlideModel?[aGroupedBrandsSlideModelIndex].groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
                     aSlideModel.utType != "application/zip"
                 }
-                
+
                 // Append to zipgropedBrandModels if there are zipContentsSlides
                 if !zipContentsSlides.isEmpty {
-                    
+
                     zipgropedBrandModels.append(aGroupedBrandsSlideModel)
                 } else {
                     tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
                 }
             }
-            
+
             self.groupedBrandsSlideModel = tempGroupedBrandsSlideModel
-            
+
             var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
-            
+
             zipgropedBrandModels.forEach { aGroupedBrandsSlideModel in
                 let tempGroupedBrandsSlideModel = GroupedBrandsSlideModel()
                 //              let zipContentsSlides =  aGroupedBrandsSlideModel.groupedSlide.filter { aGroupedSlide in
@@ -378,50 +490,15 @@ class SlideDownloadVC : UIViewController {
                 //                }
                 var aGroupedSlideArr = [SlidesModel]()
                 // var dataArr = [Data]()
-                var data = HTMLinfo()
+                var data = UnzippedDataInfo()
                 if !zipContentsSlides.isEmpty {
-                    zipContentsSlides.forEach { aSlidesModel in
+                    zipContentsSlides.enumerated().forEach { aSlidesModelIndex, aSlidesModel in
                         //  dataArr.append(contentsOf: unarchiveAndGetData(from: aSlidesModel.slideData) ?? [Data]())
                         data = unarchiveAndGetData(from: aSlidesModel.slideData)
-                        //   dataArr.forEach { aData in
-                        let aGroupedSlide = SlidesModel()
-                        aGroupedSlide.code = (aSlidesModel.code)
-                        aGroupedSlide.isDownloadCompleted = true
-                        aGroupedSlide.code =   (aSlidesModel.code)
-                        aGroupedSlide.camp = (aSlidesModel.camp)
-                        aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
-                        //  aGroupedSlide.filePath = extractedfileURL ?? ""
-                        aGroupedSlide.group = (aSlidesModel.group)
-                        aGroupedSlide.specialityCode = aSlidesModel.specialityCode
-                        aGroupedSlide.slideId = (aSlidesModel.slideId)
-                        aGroupedSlide.fileType = aSlidesModel.fileType
-                        // aGroupedSlidedel.effFrom = effFrom = DateI
-                        aGroupedSlide.categoryCode = aSlidesModel.categoryCode
-                        aGroupedSlide.name = aSlidesModel.name
-                        aGroupedSlide.fileName = data.fileName ?? "No name"
-                        if let url = data.htmlFileURL {
-                            //htmlFileURL
-                            aGroupedSlide.filePath = "\(url)"
-                            //.absoluteString
-                        } else {
-                            // Handle the case when data.htmlFileURL is nil
-                            print("htmlFileURL is nil")
-                        }
-                        
-                        
-                        // self.extractedFileName ?? "Unknown file"
-                        aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
-                        // aGroupedSlidedel.effTo = effTo = DateI
-                        aGroupedSlide.ordNo = (aSlidesModel.ordNo)
-                        aGroupedSlide.priority = (aSlidesModel.priority)
-                        aGroupedSlide.slideData = data.fileData ?? Data()
-                        // let type = mimeTypeForData(data: data.fileData ?? Data())
-                        aGroupedSlide.utType = "text/html"
-                        //"text/html"
-                        aGroupedSlide.isSelected = aSlidesModel.isSelected
-                        aGroupedSlideArr.append(aGroupedSlide)
-                        //  }
-                        
+
+                       let aGroupedSlide = toExtractSlidesFromUnzippedContent(data: data, aSlidesModel: aSlidesModel)
+                        aGroupedSlideArr.append(contentsOf: aGroupedSlide)
+
                     }
                 }
                 tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
@@ -435,46 +512,339 @@ class SlideDownloadVC : UIViewController {
                 tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
                 modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
             }
-            
+
             self.groupedBrandsSlideModel?.append(contentsOf: modifiedZipgropedBrandModels)
-            
-            
+
+
             var completedTaskCount = 0
             self.groupedBrandsSlideModel?.enumerated().forEach({ index, aGroupedBrandsSlideModel in
                 CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) { isSaved in
                     completedTaskCount += 1
-                    
+
                     if completedTaskCount == groupedBrandsSlideModel.count {
                         completion(true)
                     }
                 }
-                
+
             })
-            
-            
+
+
         }
     }
     
+    func toExtractSlidesFromUnzippedContent(data: UnzippedDataInfo, aSlidesModel: SlidesModel) -> [SlidesModel] {
+        if !data.videofiles.isEmpty {
+            var slidesModelArr = [SlidesModel]()
+            data.imagefiles.enumerated().forEach { enumeratedIndex, data in
+                let aGroupedSlide = SlidesModel()
+                aGroupedSlide.code = (aSlidesModel.code)
+                aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+                aGroupedSlide.isFailed = aSlidesModel.isFailed
+                aGroupedSlide.code =   (aSlidesModel.code)
+                aGroupedSlide.camp = (aSlidesModel.camp)
+                aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
+                //  aGroupedSlide.filePath = extractedfileURL ?? ""
+                aGroupedSlide.group = (aSlidesModel.group)
+                aGroupedSlide.specialityCode = aSlidesModel.specialityCode
+                aGroupedSlide.slideId = (aSlidesModel.slideId)
+                aGroupedSlide.fileType = aSlidesModel.fileType
+                // aGroupedSlidedel.effFrom = effFrom = DateI
+                aGroupedSlide.categoryCode = aSlidesModel.categoryCode
+                aGroupedSlide.name = aSlidesModel.name
+                aGroupedSlide.fileName = aSlidesModel.filePath
+                aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
+                aGroupedSlide.ordNo = (aSlidesModel.ordNo)
+                aGroupedSlide.priority = (aSlidesModel.priority)
+                aGroupedSlide.slideData = data.fileData ?? Data()
+                aGroupedSlide.utType = data.filetype ?? "image/jpeg"
+                aGroupedSlide.isSelected = aSlidesModel.isSelected
+                aGroupedSlide.isFailed = aSlidesModel.isFailed
+                aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+                slidesModelArr.append(aGroupedSlide)
+            }
+
+            return slidesModelArr
+           } else if !data.imagefiles.isEmpty {
+               var slidesModelArr = [SlidesModel]()
+               data.imagefiles.enumerated().forEach { enumeratedIndex, data in
+                   let aGroupedSlide = SlidesModel()
+                   aGroupedSlide.code = (aSlidesModel.code)
+                   aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+                   aGroupedSlide.isFailed = aSlidesModel.isFailed
+                   aGroupedSlide.code =   (aSlidesModel.code)
+                   aGroupedSlide.camp = (aSlidesModel.camp)
+                   aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
+                   //  aGroupedSlide.filePath = extractedfileURL ?? ""
+                   aGroupedSlide.group = (aSlidesModel.group)
+                   aGroupedSlide.specialityCode = aSlidesModel.specialityCode
+                   aGroupedSlide.slideId = (aSlidesModel.slideId)
+                   aGroupedSlide.fileType = aSlidesModel.fileType
+                   // aGroupedSlidedel.effFrom = effFrom = DateI
+                   aGroupedSlide.categoryCode = aSlidesModel.categoryCode
+                   aGroupedSlide.name = aSlidesModel.name
+                   aGroupedSlide.fileName = aSlidesModel.filePath
+                   aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
+                   aGroupedSlide.ordNo = (aSlidesModel.ordNo)
+                   aGroupedSlide.priority = (aSlidesModel.priority)
+                   aGroupedSlide.slideData = data.fileData ?? Data()
+                   aGroupedSlide.utType = data.filetype ?? "image/jpeg"
+                   aGroupedSlide.isSelected = aSlidesModel.isSelected
+                   aGroupedSlide.isFailed = aSlidesModel.isFailed
+                   aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+                   slidesModelArr.append(aGroupedSlide)
+               }
+               return slidesModelArr
+           } else if !data.htmlfiles.isEmpty {
+               var slidesModelArr = [SlidesModel]()
+               data.htmlfiles.enumerated().forEach { enumeratedIndex, data in
+                   let aGroupedSlide = SlidesModel()
+                   aGroupedSlide.code = (aSlidesModel.code)
+                   aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+                   aGroupedSlide.isFailed = aSlidesModel.isFailed
+                   aGroupedSlide.code =   (aSlidesModel.code)
+                   aGroupedSlide.camp = (aSlidesModel.camp)
+                   aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
+                   //  aGroupedSlide.filePath = extractedfileURL ?? ""
+                   aGroupedSlide.group = (aSlidesModel.group)
+                   aGroupedSlide.specialityCode = aSlidesModel.specialityCode
+                   aGroupedSlide.slideId = (aSlidesModel.slideId)
+                   aGroupedSlide.fileType = aSlidesModel.fileType
+                   // aGroupedSlidedel.effFrom = effFrom = DateI
+                   aGroupedSlide.categoryCode = aSlidesModel.categoryCode
+                   aGroupedSlide.name = aSlidesModel.name
+                   aGroupedSlide.fileName = data.fileName ?? "No name"
+                   if let url = data.htmlFileURL {
+                       //htmlFileURL
+                       aGroupedSlide.filePath = "\(url)"
+                       //.absoluteString
+                   } else {
+
+                       print("htmlFileURL is nil")
+                   }
+                   aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
+
+                   aGroupedSlide.ordNo = (aSlidesModel.ordNo)
+                   aGroupedSlide.priority = (aSlidesModel.priority)
+                   aGroupedSlide.slideData = data.fileData ?? Data()
+                   aGroupedSlide.utType = "text/html"
+                   aGroupedSlide.isFailed = aSlidesModel.isFailed
+                   aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+                   aGroupedSlide.isSelected = aSlidesModel.isSelected
+                   slidesModelArr.append(aGroupedSlide)
+
+               }
+               return slidesModelArr
+           } else   {
+               var slidesModelArr = [SlidesModel]()
+               let aGroupedSlide = SlidesModel()
+               aGroupedSlide.code = (aSlidesModel.code)
+               aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+               aGroupedSlide.isFailed = aSlidesModel.isFailed
+               aGroupedSlide.code =   (aSlidesModel.code)
+               aGroupedSlide.camp = (aSlidesModel.camp)
+               aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
+               //  aGroupedSlide.filePath = extractedfileURL ?? ""
+               aGroupedSlide.group = (aSlidesModel.group)
+               aGroupedSlide.specialityCode = aSlidesModel.specialityCode
+               aGroupedSlide.slideId = (aSlidesModel.slideId)
+               aGroupedSlide.fileType = aSlidesModel.fileType
+               // aGroupedSlidedel.effFrom = effFrom = DateI
+               aGroupedSlide.categoryCode = aSlidesModel.categoryCode
+               aGroupedSlide.name = aSlidesModel.name
+               aGroupedSlide.fileName = aSlidesModel.filePath
+               aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
+               aGroupedSlide.ordNo = (aSlidesModel.ordNo)
+               aGroupedSlide.priority = (aSlidesModel.priority)
+               aGroupedSlide.slideData =  Data()
+               aGroupedSlide.utType = ""
+               aGroupedSlide.isSelected = aSlidesModel.isSelected
+               aGroupedSlide.isFailed = aSlidesModel.isFailed
+               aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted
+               slidesModelArr.append(aGroupedSlide)
+               return slidesModelArr
+           }
+               
+            
+
+
+    }
+    
+//    func tounArchiveData(completion: @escaping (Bool) -> Void) {
+//        var zipContentsSlides = [SlidesModel]()
+//        var zipgropedBrandModels = [GroupedBrandsSlideModel]()
+//        groupedBrandsSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
+//
+//        CoreDataManager.shared.removeAllGeneralGroupedSlides()
+//
+//        //  CoreDataManager.shared.removeAllGeneralGroupedSlides()
+//        if  let groupedBrandsSlideModel = groupedBrandsSlideModel {
+//            var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
+//            groupedBrandsSlideModel.enumerated().forEach { aGroupedBrandsSlideModelIndex, aGroupedBrandsSlideModel in
+//                // Filter out slides with utType equal to "application/zip"
+//                zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+//                    aSlideModel.utType == "application/zip"
+//                }
+//
+//                // Update groupedSlideModel by removing slides with utType equal to "application/zip"
+//                self.groupedBrandsSlideModel?[aGroupedBrandsSlideModelIndex].groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+//                    aSlideModel.utType != "application/zip"
+//                }
+//
+//                // Append to zipgropedBrandModels if there are zipContentsSlides
+//                if !zipContentsSlides.isEmpty {
+//
+//                    zipgropedBrandModels.append(aGroupedBrandsSlideModel)
+//                } else {
+//                    tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
+//                }
+//            }
+//
+//            self.groupedBrandsSlideModel = tempGroupedBrandsSlideModel
+//
+//            var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
+//
+//            zipgropedBrandModels.forEach { aGroupedBrandsSlideModel in
+//                let tempGroupedBrandsSlideModel = GroupedBrandsSlideModel()
+//                //              let zipContentsSlides =  aGroupedBrandsSlideModel.groupedSlide.filter { aGroupedSlide in
+//                //                  aGroupedSlide.utType == "application/zip"
+//                //                }
+//                var aGroupedSlideArr = [SlidesModel]()
+//                // var dataArr = [Data]()
+//                var data = HTMLinfo()
+//                if !zipContentsSlides.isEmpty {
+//                    zipContentsSlides.forEach { aSlidesModel in
+//                        //  dataArr.append(contentsOf: unarchiveAndGetData(from: aSlidesModel.slideData) ?? [Data]())
+//                        data = unarchiveAndGetData(from: aSlidesModel.slideData)
+//                        //   dataArr.forEach { aData in
+//                        let aGroupedSlide = SlidesModel()
+//                        aGroupedSlide.code = (aSlidesModel.code)
+//                        aGroupedSlide.isDownloadCompleted = true
+//                        aGroupedSlide.code =   (aSlidesModel.code)
+//                        aGroupedSlide.camp = (aSlidesModel.camp)
+//                        aGroupedSlide.productDetailCode = aSlidesModel.productDetailCode
+//                        //  aGroupedSlide.filePath = extractedfileURL ?? ""
+//                        aGroupedSlide.group = (aSlidesModel.group)
+//                        aGroupedSlide.specialityCode = aSlidesModel.specialityCode
+//                        aGroupedSlide.slideId = (aSlidesModel.slideId)
+//                        aGroupedSlide.fileType = aSlidesModel.fileType
+//                        // aGroupedSlidedel.effFrom = effFrom = DateI
+//                        aGroupedSlide.categoryCode = aSlidesModel.categoryCode
+//                        aGroupedSlide.name = aSlidesModel.name
+//                        aGroupedSlide.fileName = data.fileName ?? "No name"
+//                        if let url = data.htmlFileURL {
+//                            //htmlFileURL
+//                            aGroupedSlide.filePath = "\(url)"
+//                            //.absoluteString
+//                        } else {
+//                            // Handle the case when data.htmlFileURL is nil
+//                            print("htmlFileURL is nil")
+//                        }
+//
+//
+//                        // self.extractedFileName ?? "Unknown file"
+//                        aGroupedSlide.noofSamples = (aSlidesModel.noofSamples)
+//                        // aGroupedSlidedel.effTo = effTo = DateI
+//                        aGroupedSlide.ordNo = (aSlidesModel.ordNo)
+//                        aGroupedSlide.priority = (aSlidesModel.priority)
+//                        aGroupedSlide.slideData = data.fileData ?? Data()
+//                        // let type = mimeTypeForData(data: data.fileData ?? Data())
+//                        aGroupedSlide.utType = "text/html"
+//                        //"text/html"
+//                        aGroupedSlide.isSelected = aSlidesModel.isSelected
+//                        aGroupedSlideArr.append(aGroupedSlide)
+//                        //  }
+//
+//                    }
+//                }
+//                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+//                tempGroupedBrandsSlideModel.groupedSlide = aGroupedSlideArr
+//                tempGroupedBrandsSlideModel.priority   = aGroupedBrandsSlideModel.priority
+//                tempGroupedBrandsSlideModel.updatedDate = aGroupedBrandsSlideModel.updatedDate
+//                tempGroupedBrandsSlideModel.divisionCode = aGroupedBrandsSlideModel.divisionCode
+//                tempGroupedBrandsSlideModel.productBrdCode = aGroupedBrandsSlideModel.productBrdCode
+//                tempGroupedBrandsSlideModel.subdivisionCode = aGroupedBrandsSlideModel.subdivisionCode
+//                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+//                tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
+//                modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
+//            }
+//
+//            self.groupedBrandsSlideModel?.append(contentsOf: modifiedZipgropedBrandModels)
+//
+//
+//            var completedTaskCount = 0
+//            self.groupedBrandsSlideModel?.enumerated().forEach({ index, aGroupedBrandsSlideModel in
+//                CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) { isSaved in
+//                    completedTaskCount += 1
+//
+//                    if completedTaskCount == groupedBrandsSlideModel.count {
+//                        completion(true)
+//                    }
+//                }
+//
+//            })
+//
+//
+//        }
+//    }
     
     
     
     
     
-    func checkifSyncIsCompleted(){
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
-        self.tableView.isScrollEnabled = true
+    
+    func checkifSyncIsCompleted(_ isFromLaunch: Bool){
+        let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
+        let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
+        
+        if existingCDSlides.count == apiFetchedSlide.count {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+        }
         isSlideDownloadCompleted = true
-        DispatchQueue.main.async {
-            self.dismiss(animated: false) {
-                self.delegate?.didDownloadCompleted()
+        self.tableView.isScrollEnabled = true
+        if isFromLaunch {
+            DispatchQueue.main.async {
+                self.dismiss(animated: false) {
+                    self.delegate?.didDownloadCompleted()
+                }
             }
         }
-        
-        
     }
     
     
-    
+    struct UnzippedDataInfo {
+        var videofiles: [Videoinfo]
+        var imagefiles: [Imageinfo]
+        var htmlfiles: [HTMLinfo]
+        
+        init() {
+            self.videofiles = [Videoinfo]()
+            self.imagefiles = [Imageinfo]()
+            self.htmlfiles = [HTMLinfo]()
+        }
+    }
+
+    struct Videoinfo {
+
+        var fileData:  Data?
+        var filetype: String?
+        init() {
+
+            self.fileData = Data()
+            self.filetype = String()
+        }
+    }
+
+
+    struct Imageinfo {
+
+        var fileData:  Data?
+        var filetype: String?
+        init() {
+
+            self.fileData = Data()
+            self.filetype = String()
+        }
+    }
     
     struct HTMLinfo {
         var htmlString: String?
@@ -489,29 +859,29 @@ class SlideDownloadVC : UIViewController {
         }
     }
     
-    func unarchiveAndGetData(from zipData: Data) -> HTMLinfo {
-        
+    func unarchiveAndGetData(from zipData: Data) -> UnzippedDataInfo {
+
         // Create a unique temporary directory URL
         let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        
+
         // Ensure the temporary directory exists
         do {
             try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
         } catch {
             print("Error creating temporary directory: \(error.localizedDescription)")
         }
-        
+
         // Path to the ZIP file data
         // let zipData: Data // Replace with your actual zip data
         let zipFilePath = temporaryDirectoryURL.appendingPathComponent("temp.zip")
-        
+
         // Save the zip data to a temporary file
         do {
             try zipData.write(to: zipFilePath)
         } catch {
             print("Error saving zip data to temporary file: \(error.localizedDescription)")
         }
-        
+
         // Unzip the file
         do {
             // Get the app's Documents directory
@@ -519,40 +889,43 @@ class SlideDownloadVC : UIViewController {
                 // Append a subdirectory for your extracted content
                 let extractedFolderName = "ExtractedContent"
                 let extractedFolderPath = documentsDirectory.appendingPathComponent(extractedFolderName)
-                
+
                 // Ensure the directory exists, create it if needed
                 do {
                     try FileManager.default.createDirectory(at: extractedFolderPath, withIntermediateDirectories: true, attributes: nil)
                 } catch {
                     print("Error creating directory: \(error.localizedDescription)")
                 }
-                
-                
+
+
                 // Unzip the file from the temporary directory to the Documents directory
-                
+
                 SSZipArchive.unzipFile(atPath: zipFilePath.path, toDestination: extractedFolderPath.path)
                 print("File unzipped successfully.")
-                
-                var aHTMLinfo = HTMLinfo()
+                var unzippedDataInfo = UnzippedDataInfo()
+                var aHTMLinfoArr = [HTMLinfo]()
                 var dataArray: Data = Data()
-                
+
                 // Get the contents of the extracted folder
                 if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
                     // Enumerate through the contents
                     for fileURL in contents {
+                        var aHTMLinfo = HTMLinfo()
                         print("File URL: \(fileURL)")
                         print("File Name: \(fileURL.lastPathComponent)")
                         let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
                         print("File Name (without extension): \(fileNameWithoutExtension)")
-                        
+
                         // Create a valid file URL
                         let validFileURL = URL(fileURLWithPath: fileURL.path)
-                        
                         let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
                         guard result.htmlFileURL != nil, result.htmlString != nil else {
-                             return HTMLinfo()
+
+                            let unzippedFolderURL = URL(fileURLWithPath: extractedFolderPath.absoluteString)
+                            let unzippedDataInfo = extractUnzippedDataInfo(from: unzippedFolderURL)
+
+                             return unzippedDataInfo
                         }
-                        
                         extractedFileName = fileNameWithoutExtension
                         dataArray = findImageData(inDirectory: validFileURL) ?? Data()
                         aHTMLinfo.fileData = dataArray
@@ -561,25 +934,144 @@ class SlideDownloadVC : UIViewController {
                         //validFileURL
                         aHTMLinfo.htmlString = result.htmlString
                         aHTMLinfo.fileName = extractedFileName
-                        
-                        return aHTMLinfo
+                        aHTMLinfoArr.append(aHTMLinfo)
+                        unzippedDataInfo.htmlfiles.append(contentsOf: aHTMLinfoArr)
+                        return unzippedDataInfo
                     }
                 } else {
                     print("Error getting contents of the extracted folder.")
                 }
-                
+
             }
-                
+
                 do {
                     try FileManager.default.removeItem(at: temporaryDirectoryURL)
                 } catch {
                     print("Error removing temporary directory: \(error.localizedDescription)")
                 }
-            
+
         }
-        return HTMLinfo()
+        return UnzippedDataInfo()
     }
     
+    
+//    func unarchiveAndGetData(from zipData: Data) -> HTMLinfo {
+//
+//        // Create a unique temporary directory URL
+//        let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+//
+//        // Ensure the temporary directory exists
+//        do {
+//            try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+//        } catch {
+//            print("Error creating temporary directory: \(error.localizedDescription)")
+//        }
+//
+//        // Path to the ZIP file data
+//        // let zipData: Data // Replace with your actual zip data
+//        let zipFilePath = temporaryDirectoryURL.appendingPathComponent("temp.zip")
+//
+//        // Save the zip data to a temporary file
+//        do {
+//            try zipData.write(to: zipFilePath)
+//        } catch {
+//            print("Error saving zip data to temporary file: \(error.localizedDescription)")
+//        }
+//
+//        // Unzip the file
+//        do {
+//            // Get the app's Documents directory
+//            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//                // Append a subdirectory for your extracted content
+//                let extractedFolderName = "ExtractedContent"
+//                let extractedFolderPath = documentsDirectory.appendingPathComponent(extractedFolderName)
+//
+//                // Ensure the directory exists, create it if needed
+//                do {
+//                    try FileManager.default.createDirectory(at: extractedFolderPath, withIntermediateDirectories: true, attributes: nil)
+//                } catch {
+//                    print("Error creating directory: \(error.localizedDescription)")
+//                }
+//
+//
+//                // Unzip the file from the temporary directory to the Documents directory
+//
+//                SSZipArchive.unzipFile(atPath: zipFilePath.path, toDestination: extractedFolderPath.path)
+//                print("File unzipped successfully.")
+//
+//                var aHTMLinfo = HTMLinfo()
+//                var dataArray: Data = Data()
+//
+//                // Get the contents of the extracted folder
+//                if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
+//                    // Enumerate through the contents
+//                    for fileURL in contents {
+//                        print("File URL: \(fileURL)")
+//                        print("File Name: \(fileURL.lastPathComponent)")
+//                        let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
+//                        print("File Name (without extension): \(fileNameWithoutExtension)")
+//
+//                        // Create a valid file URL
+//                        let validFileURL = URL(fileURLWithPath: fileURL.path)
+//
+//                        let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
+//                        guard result.htmlFileURL != nil, result.htmlString != nil else {
+//                             return HTMLinfo()
+//                        }
+//
+//                        extractedFileName = fileNameWithoutExtension
+//                        dataArray = findImageData(inDirectory: validFileURL) ?? Data()
+//                        aHTMLinfo.fileData = dataArray
+//                        let fileName = "index.html"
+//                        aHTMLinfo.htmlFileURL = extractedFolderPath.appendingPathComponent(fileNameWithoutExtension).appendingPathComponent(fileName)
+//                        //validFileURL
+//                        aHTMLinfo.htmlString = result.htmlString
+//                        aHTMLinfo.fileName = extractedFileName
+//
+//                        return aHTMLinfo
+//                    }
+//                } else {
+//                    print("Error getting contents of the extracted folder.")
+//                }
+//
+//            }
+//
+//                do {
+//                    try FileManager.default.removeItem(at: temporaryDirectoryURL)
+//                } catch {
+//                    print("Error removing temporary directory: \(error.localizedDescription)")
+//                }
+//
+//        }
+//        return HTMLinfo()
+//    }
+    func extractUnzippedDataInfo(from folderURL: URL) -> UnzippedDataInfo {
+        var unzippedDataInfo = UnzippedDataInfo()
+
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil, options: [])
+            
+            for fileURL in contents {
+                let mimeType = mimeTypeForPath(path: fileURL.path)
+                
+                if mimeType.hasPrefix("video") {
+                    var videoInfo = Videoinfo()
+                    videoInfo.fileData = try? Data(contentsOf: fileURL)
+                    videoInfo.filetype = mimeType
+                    unzippedDataInfo.videofiles.append(videoInfo)
+                } else if mimeType.hasPrefix("image") {
+                    var imageInfo = Imageinfo()
+                    imageInfo.fileData = try? Data(contentsOf: fileURL)
+                    imageInfo.filetype = mimeType
+                    unzippedDataInfo.imagefiles.append(imageInfo)
+                }
+            }
+        } catch {
+            print("Error reading contents of the unzipped folder: \(error)")
+        }
+
+        return unzippedDataInfo
+    }
     
     func readHTMLFile(inDirectory directoryPath: String) -> (htmlString: String?, htmlFileURL: URL?) {
         do {
@@ -664,13 +1156,18 @@ extension SlideDownloadVC : tableViewProtocols {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SlideDownloaderCell", for: indexPath) as! SlideDownloaderCell
         let model = arrayOfAllSlideObjects[indexPath.row]
         cell.lblName.text = arrayOfAllSlideObjects[indexPath.row].filePath
-        if model.isDownloadCompleted || self.isSlideDownloadCompleted {
-            cell.toSetupDoenloadedCell(indexPath.row == 0 ? false : true)
+        if model.isDownloadCompleted  {
+            cell.toSetupDoenloadedCell(true)
+            //indexPath.row == 0 ? false : true
+        } else if model.isFailed {
+            cell.toSetupErrorCell(false)
+        } else {
+            cell.toSetupDownloadingCell(false)
         }
         cell.btnRetry.addTap { [weak self] in
             guard let welf = self else {return}
             if welf.toCheckNetworkStatus() {
-                welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel]())
+                welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)
             }
         }
         cell.selectionStyle = .none

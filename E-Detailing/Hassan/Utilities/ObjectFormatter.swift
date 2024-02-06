@@ -13,20 +13,22 @@ import AVFoundation
 extension UIImageView {
     
     func toSetImageFromData(utType: String, data: Data)  {
-        let pdfView = PDFView()
+       
         self.contentMode = .scaleAspectFill
         switch utType {
         case "application/pdf":
-
+            var pdfView : PDFView?
             let pdfData = data
             if let pdfDocument = PDFDocument(data: pdfData) {
-                pdfView.document = pdfDocument
+                pdfView = PDFView()
+                pdfView?.document = pdfDocument
                 
                 let pdfPage = pdfDocument.page(at: 0)
                 // Convert the PDF page to an image
                 if let pdfImage = pdfPage?.thumbnail(of: CGSize(width: pdfPage?.bounds(for: .mediaBox).width ?? 0, height: pdfPage?.bounds(for: .mediaBox).height ?? 0), for: .mediaBox) {
                     // Display the image in the UIImageView
                     self.image = pdfImage
+                    pdfView = nil
                 }
                 
             } else {
@@ -77,6 +79,7 @@ extension UIImageView {
             let thumbnailImage = UIImage(cgImage: cgImage)
             self.image = thumbnailImage
           //  self.contentMode = .scaleAspectFill
+            deleteTemporaryFile(at: videoURL)
         } catch {
             print("Error generating thumbnail: \(error.localizedDescription)")
         }
@@ -93,6 +96,15 @@ extension UIImageView {
             return nil
         }
         
+    }
+    
+    func deleteTemporaryFile(at url: URL) {
+        do {
+            try FileManager.default.removeItem(at: url)
+            print("Temporary file deleted successfully.")
+        } catch {
+            print("Error deleting temporary file: \(error.localizedDescription)")
+        }
     }
 
 }
