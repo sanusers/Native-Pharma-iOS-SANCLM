@@ -205,9 +205,8 @@ class CoreDataManager {
         for slidesModel in slidesModels {
             if let entityDescription = NSEntityDescription.entity(forEntityName: "SavedSlidesCDModel", in: context) {
                 let cdSlidesModel = SavedSlidesCDModel(entity: entityDescription, insertInto: context)
-                
-                if Int16(slidesModel.index) == 5 {
-                    dump(slidesModel)
+                if slidesModel.utType == "video/mp4" || slidesModel.utType == "application/pdf" || slidesModel.utType == "text/html" {
+                    print(slidesModel.index)
                 }
                 // Convert properties of SlidesModel
                 cdSlidesModel.code = Int16(slidesModel.code)
@@ -341,6 +340,7 @@ class CoreDataManager {
                                 agroupedSlide.isSelected = slidesCDModel.isSelected
                                 agroupedSlide.isFailed = slidesCDModel.isFailed
                                 agroupedSlide.isDownloadCompleted = slidesCDModel.isDownloadCompleted
+                                agroupedSlide.index = Int(slidesCDModel.index)
                                 groupedSlideArr.append(agroupedSlide)
                             }
                             

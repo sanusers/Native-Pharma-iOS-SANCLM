@@ -18,13 +18,13 @@ extension PresentationHomeView: PopOverVCDelegate {
                var selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                     aSlidesModel.isSelected == true
                 }
-                selectedSlidesModelElement.sort { $0.index < $1.index }
+              
                 selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
             })
          
         }
       
-
+        selectedSlidesModelArr.sort{$0.index < $1.index}
         return selectedSlidesModelArr
         
     }

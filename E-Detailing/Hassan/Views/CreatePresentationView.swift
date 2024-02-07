@@ -87,7 +87,6 @@ class CreatePresentationView : BaseView {
         self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
         if let groupedBrandsSlideModel = groupedBrandsSlideModel {
             self.selectedSlides = [SlidesModel]()
-            
             createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
         }
      
@@ -233,10 +232,6 @@ class CreatePresentationView : BaseView {
 
         selectedSlidesModelArr.sort { $0.index < $1.index }
         
-        // Update the index property based on the sorted order
-        for (index, selectedSlide) in selectedSlidesModelArr.enumerated() {
-            selectedSlide.index = index
-        }
 
         return selectedSlidesModelArr
     }
@@ -471,6 +466,7 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
                 aSlidesModel.isSelected
             }
         }
+        self.selectedSlides?.sort {$0.index < $1.index}
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -574,7 +570,6 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
                 
                 
                 model?.isSelected = false
-
                 welf.toSetCount()
                 welf.toManageSelectedSlides()
                 welf.selectedSlidesTable.reloadData()
@@ -633,9 +628,6 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             }
         }
 
-        // Save the reordered slides
-        //let reorderedSlides = toSetupPlayerModel()
-        // You can now save reorderedSlides to your data store
 
         self.selectedSlides = selectedSlides
         self.selectedSlidesTable.reloadData()
