@@ -59,7 +59,7 @@ class CreatedPresentationCVC: UICollectionViewCell {
         
         
         
-        let slideElement = slidesModel.last
+        let slideElement = slidesModel.first
         let imageDatatype = slideElement?.utType ?? ""
         self.presentationIV.toSetImageFromData(utType: imageDatatype, data: slideElement?.slideData ?? Data())
         

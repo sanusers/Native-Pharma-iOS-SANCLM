@@ -21,6 +21,14 @@ class MasterSyncCell : UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblName.setFont(font: .bold(size: .BODY))
+        lblName.textColor = .appTextColor
+        
+        lblCount.setFont(font: .bold(size: .BODY))
+        lblCount.textColor = .appLightTextColor
+        
+        
+        btnSync.backgroundColor = .appTextColor
     }
     
 }

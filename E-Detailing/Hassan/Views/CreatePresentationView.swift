@@ -460,14 +460,22 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
         slidesCountHolder.isHidden = self.sledeCountLbl.text == "0" || self.sledeCountLbl.text == "" ? true : false
     }
     
+//    func toManageSelectedSlides() {
+//        self.selectedSlides = self.groupedBrandsSlideModel?.flatMap { aGroupedBrandsSlideModel in
+//            aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+//                aSlidesModel.isSelected
+//            }
+//        }
+//        self.selectedSlides?.sort {$0.index < $1.index}
+//    }
+    
+    
     func toManageSelectedSlides() {
-        self.selectedSlides = self.groupedBrandsSlideModel?.flatMap { aGroupedBrandsSlideModel in
-            aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
-                aSlidesModel.isSelected
-            }
+        self.selectedSlides = self.groupedBrandsSlideModel?.flatMap {
+            $0.groupedSlide.filter { $0.isSelected }.sorted(by: { $0.index < $1.index })
         }
-        self.selectedSlides?.sort {$0.index < $1.index}
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard self.groupedBrandsSlideModel?.count != 0  else {

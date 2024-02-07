@@ -46,12 +46,15 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             let aSlidesModel = arrayOfAllSlideObjects[index]
             CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
                 if isInstanceSaved {
-                    toGroupSlidesBrandWise() {_ in
-                        self.tableView.reloadData()
-                        self.tableView.isUserInteractionEnabled = true
-                        completion(true)
-                       
+                    if !isFromlaunch {
+                        toGroupSlidesBrandWise() {_ in
+                            self.tableView.reloadData()
+                            self.tableView.isUserInteractionEnabled = true
+                            completion(true)
+                           
+                        }
                     }
+    
                 } else {
 
                 }
@@ -86,7 +89,17 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
 //                return
 //            }
             guard index + 1 < arrayOfAllSlideObjects.count else {
-                checkifSyncIsCompleted(self.isFromlaunch)
+                
+                if isFromlaunch {
+                    toGroupSlidesBrandWise() { _ in
+                       
+                        self.tableView.reloadData()
+                        self.tableView.isUserInteractionEnabled = true
+                        self.checkifSyncIsCompleted(self.isFromlaunch)
+                   
+                    }
+                }
+                
                 return
             }
             
@@ -138,6 +151,20 @@ class SlideDownloadVC : UIViewController {
     
     var slidesModel = [SlidesModel]()
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupuUI()
+        initVIew()
+        toLoadPresentationData(type: .slideBrand)
+        toLoadPresentationData(type: .slides)
+        
+        
+        // self.slides = DBManager.shared.getSlide()
+        // self.tableView.reloadData()
+        
+        // self.downloadSlideData()
+    }
+    
     func setupuUI() {
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
         self.tableView.register(UINib(nibName: "SlideDownloaderCell", bundle: nil), forCellReuseIdentifier: "SlideDownloaderCell")
@@ -242,19 +269,7 @@ class SlideDownloadVC : UIViewController {
 //        }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupuUI()
-        initVIew()
-        toLoadPresentationData(type: .slideBrand)
-        toLoadPresentationData(type: .slides)
-        
-        
-        // self.slides = DBManager.shared.getSlide()
-        // self.tableView.reloadData()
-        
-        // self.downloadSlideData()
-    }
+
     
     
     @IBAction func CloseAction(_ sender: UIButton) {

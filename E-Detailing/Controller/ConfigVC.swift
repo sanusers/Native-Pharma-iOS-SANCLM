@@ -369,6 +369,17 @@ class ConfigVC : UIViewController {
                 }
                 
                 AppDefaults.shared.save(key: .config, value: appConfig.toDictionary())
+                let appconfig = AppDefaults.shared.getConfig()
+                iosEndPoint = appconfig.config.iosUrl
+                webEndPoint = appconfig.config.webUrl
+                slideEndPoint = appconfig.config.slideUrl
+                
+                AppMainAPIURL = iosEndPoint
+                AppMainSlideURL = slideEndPoint
+                
+                dump(APIUrl)
+                dump(appMainURL)
+                dump(slideURL)
                 
                 DispatchQueue.main.async {
                     let loginVC = UIStoryboard.loginVC
@@ -383,6 +394,8 @@ class ConfigVC : UIViewController {
             
             print("5")
             print(response)
+        
+          
             print("5")
         }
         

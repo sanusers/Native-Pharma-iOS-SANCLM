@@ -70,9 +70,13 @@ class MasterSyncVC : UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet var tapInfoVIew: ShadowView!
+    @IBOutlet var titleLbl: UILabel!
     @IBOutlet weak var lblHqName: UILabel!
     @IBOutlet weak var lblSyncStatus: UILabel!
     
+    @IBOutlet var backBtn: UIButton!
+
     var pageType: PageType = .loaded
     var loadedSlideInfo = [MasterInfo]()
     var extractedFileName: String?
@@ -150,7 +154,7 @@ class MasterSyncVC : UIViewController {
         super.viewDidLoad()
        // addobservers()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        
+        setupUI()
         collectionView.register(UINib(nibName: "MasterSyncCell", bundle: nil), forCellWithReuseIdentifier: "MasterSyncCell")
         
         collectionView.delegate = self
@@ -184,8 +188,20 @@ class MasterSyncVC : UIViewController {
         let syncTime = AppDefaults.shared.getSyncTime()
         let date = syncTime.toString(format: "dd MMM yyyy hh:mm a")
         self.lblSyncStatus.text = "Last Sync: " + date
+
+        tapInfoVIew.layer.cornerRadius = 5
     }
     
+    
+    func setupUI() {
+        lblHqName.setFont(font: .bold(size: .BODY))
+        lblHqName.textColor = .appLightTextColor
+        lblSyncStatus.textColor = .appLightTextColor
+        lblSyncStatus.setFont(font: .bold(size:   .BODY))
+        titleLbl.setFont(font: .bold(size: .SUBHEADER))
+        titleLbl.textColor = .appWhiteColor
+        backBtn.setTitle("", for: .normal)
+    }
     
     @IBAction func backAction(_ sender: UIButton) {
         
@@ -365,7 +381,7 @@ class MasterSyncVC : UIViewController {
                                     var slides = AppDefaults.shared.getSlides()
                                     slides.removeAll()
                                     slides.append(contentsOf: jsonObjectresponse)
-                                    AppDefaults.shared.save(key: .slide, value: slides)
+                                   // AppDefaults.shared.save(key: .slide, value: slides)
                                     LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
                                     
                                 //    self.toLoadPresentationData(type: MasterInfo.slides)
@@ -424,6 +440,7 @@ extension MasterSyncVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MasterSyncTbCell", for: indexPath) as! MasterSyncTbCell
+        cell.selectionStyle = .none
         cell.lblName.text = self.dcrList[indexPath.row].cellType.name
         cell.btnSyncAll.isHidden = MasterCellType.syncAll.rawValue == self.dcrList[indexPath.row].cellType.rawValue ? false : true
         cell.btnSyncAll.addTarget(self, action: #selector(syncAllAction(_:)), for: .touchUpInside)

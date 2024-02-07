@@ -1496,7 +1496,9 @@ extension MainVC : collectionViewProtocols {
                         self.toSetupAlert()
                     }
                     
-                
+                case "Slide Preview":
+                    let vc = PreviewHomeVC.initWithStory()
+                    self.navigationController?.pushViewController(vc, animated: true)
                 case .none:
                     print("none")
                 case .some(_):

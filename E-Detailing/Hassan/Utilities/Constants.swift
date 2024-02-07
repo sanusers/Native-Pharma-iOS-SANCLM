@@ -51,15 +51,46 @@ var LicenceKey : String  {
     }
 }
 
-var appMainURL : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?axn="
 
 //(infoPlist?.value(for: .App_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
- 
- var APIUrl : String = "http://edetailing.sanffa.info/iOSServer/db_api.php?axn="
- var slideURL : String = "https://sanffa.info/Edetailing_files/DP/download/"
- var licenseKey : String = ""
-//+ "api/"
+var APIUrl : String = ""
+var slideURL : String = ""
+var appMainURL : String = ""
+var licenseKey : String = ""
+
+
+var  webEndPoint: String = ""
+var  iosEndPoint : String = ""
+var  syncEndPoint : String = ""
+var  slideEndPoint: String = ""
+//http://edetailing.sanffa.info/iOSServer/db_api.php?axn=
+
+var AppMainAPIURL : String  {
+    get {
+        webEndPoint
+    }
+    set(newURL){
+        APIUrl = webEndPoint + iosEndPoint
+        appMainURL = webEndPoint + iosEndPoint
+    }
+}
+
+
+var AppMainSlideURL : String  {
+    get {
+        slideEndPoint
+    }
+    set(newURL){
+        slideURL = webEndPoint + slideEndPoint
+    }
+}
+
+
+
+
+
+
 
 
 // Thanks to the author @Hassan
