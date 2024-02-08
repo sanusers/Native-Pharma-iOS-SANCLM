@@ -10,104 +10,7 @@ import UIKit
 import PDFKit
 import AVFoundation
 
-extension UIImageView {
-    
-    func toSetImageFromData(utType: String, data: Data)  {
-       
-        self.contentMode = .scaleAspectFill
-        switch utType {
-        case "application/pdf":
-            var pdfView : PDFView?
-            let pdfData = data
-            if let pdfDocument = PDFDocument(data: pdfData) {
-                pdfView = PDFView()
-                pdfView?.document = pdfDocument
-                
-                let pdfPage = pdfDocument.page(at: 0)
-                // Convert the PDF page to an image
-                if let pdfImage = pdfPage?.thumbnail(of: CGSize(width: pdfPage?.bounds(for: .mediaBox).width ?? 0, height: pdfPage?.bounds(for: .mediaBox).height ?? 0), for: .mediaBox) {
-                    // Display the image in the UIImageView
-                    self.image = pdfImage
-                    pdfView = nil
-                }
-                
-            } else {
-                print("Failed to create PDF document from data.")
-            }
-        case "image/jpeg", "image/png", "image/jpg", "image/bmp", "text/html", "image/gif":
-           
-            if let image = UIImage(data: data) {
-                // The downloaded data represents an image
-                self.image = image
-                print("Downloaded data is an image.")
-            } else {
-                // The downloaded data is not an image
-                print("Downloaded data is of an unknown type.")
-            }
-        case "video/mp4":
-           
-            displayThumbnail(for: data)
-  
-            
-        case  "application/zip":
-              
-                
-                self.image = UIImage(named: "zip")
-           
-                
- 
-        default:
-            print("Unknown type")
-            self.image = UIImage(named: "ic_close")
 
-        }
-    }
-    
-    
-    
-    
-    func displayThumbnail(for videoData: Data) {
-        guard let videoURL = saveVideoDataToTemporaryFile(data: videoData) else {
-            return
-        }
-        
-        let asset = AVAsset(url: videoURL)
-        let generator = AVAssetImageGenerator(asset: asset)
-        
-        do {
-            let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
-            let thumbnailImage = UIImage(cgImage: cgImage)
-            self.image = thumbnailImage
-          //  self.contentMode = .scaleAspectFill
-            deleteTemporaryFile(at: videoURL)
-        } catch {
-            print("Error generating thumbnail: \(error.localizedDescription)")
-        }
-    }
-    
-    func saveVideoDataToTemporaryFile(data: Data) -> URL? {
-        do {
-            let temporaryDirectoryURL = FileManager.default.temporaryDirectory
-            let temporaryFileURL = temporaryDirectoryURL.appendingPathComponent("temp_video.mp4")
-            try data.write(to: temporaryFileURL)
-            return temporaryFileURL
-        } catch {
-            print("Error saving video data to temporary file: \(error.localizedDescription)")
-            return nil
-        }
-        
-    }
-    
-    func deleteTemporaryFile(at url: URL) {
-        do {
-            try FileManager.default.removeItem(at: url)
-            print("Temporary file deleted successfully.")
-        } catch {
-            print("Error deleting temporary file: \(error.localizedDescription)")
-        }
-    }
-
-}
 
 class ObjectFormatter {
     
@@ -169,5 +72,108 @@ class ObjectFormatter {
         return Data()
     }
     
+    func loadImageInBackground(utType: String?, data: Data?, presentationIV: UIImageView, completion: @escaping (UIImage?) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            guard let welf = self else {return}
+            autoreleasepool {
+                var displayImage: UIImage?
+                
+                if let utType = utType, let data = data {
+                    switch utType {
+                    case "image/jpeg", "image/png", "image/jpg", "image/bmp", "text/html", "image/gif":
+                        if let thumbnailImage = UIImage(data: data)?.resize(to: CGSize(width: presentationIV.width, height: presentationIV.height)) {
+                            // Load a thumbnail (adjust the size as needed)
+                            displayImage = thumbnailImage
+                        } else {
+                            // Failed to create a thumbnail
+                            displayImage = nil
+                        }
+                    case "video/mp4":
+                        displayImage = welf.displayThumbnail(for: data)
+                        
+                    case "application/pdf":
+                        var pdfView : PDFView?
+                        let pdfData = data
+                        DispatchQueue.main.async {
+                            if let pdfDocument = PDFDocument(data: pdfData) {
+                                pdfView = PDFView()
+                                pdfView?.document = pdfDocument
+                                let pdfPage = pdfDocument.page(at: 0)
+                                // Convert the PDF page to an image
+                                if let pdfImage = pdfPage?.thumbnail(of: CGSize(width: pdfPage?.bounds(for: .mediaBox).width ?? 0, height: pdfPage?.bounds(for: .mediaBox).height ?? 0), for: .mediaBox) {
+                                    // Display the image in the UIImageView
+                                    
+                                    if let thumbnailImage = pdfImage.resize(to: CGSize(width: presentationIV.width, height: presentationIV.height)) {
+                                        // Load a thumbnail (adjust the size as needed)
+                                        displayImage = thumbnailImage
+                                        
+                                        pdfView = nil
+                                        displayImage = pdfImage
+                                        
+                                    }
+                                }
+                              
+                            } else {
+                                print("Failed to create PDF document from data.")
+                            }
+                        }
+
+                    default:
+                        displayImage = nil
+                    }
+                } else {
+                    displayImage = nil
+                }
+
+                DispatchQueue.main.async {
+                    completion(displayImage)
+                }
+            }
+        }
+    }
     
+    
+    func displayThumbnail(for videoData: Data) -> UIImage {
+        guard let videoURL = saveVideoDataToTemporaryFile(data: videoData) else {
+            return UIImage()
+        }
+        
+        let asset = AVAsset(url: videoURL)
+        let generator = AVAssetImageGenerator(asset: asset)
+        
+        do {
+            let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
+            let thumbnailImage = UIImage(cgImage: cgImage)
+            deleteTemporaryFile(at: videoURL)
+           return thumbnailImage
+          //  self.contentMode = .scaleAspectFill
+      
+        } catch {
+            print("Error generating thumbnail: \(error.localizedDescription)")
+        }
+        return UIImage()
+    }
+    
+    func saveVideoDataToTemporaryFile(data: Data) -> URL? {
+        do {
+            let temporaryDirectoryURL = FileManager.default.temporaryDirectory
+            let temporaryFileURL = temporaryDirectoryURL.appendingPathComponent("temp_video.mp4")
+            try data.write(to: temporaryFileURL)
+            return temporaryFileURL
+        } catch {
+            print("Error saving video data to temporary file: \(error.localizedDescription)")
+            return nil
+        }
+        
+    }
+    
+    func deleteTemporaryFile(at url: URL) {
+        do {
+            try FileManager.default.removeItem(at: url)
+            print("Temporary file deleted successfully.")
+        } catch {
+            print("Error deleting temporary file: \(error.localizedDescription)")
+        }
+    }
+
 }

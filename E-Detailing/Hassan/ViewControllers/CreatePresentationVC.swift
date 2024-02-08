@@ -23,6 +23,21 @@ class CreatePresentationVC: BaseViewController {
     var isToedit: Bool = false
   
     var savedPresentation : SavedPresentation?
+    
+    
+    
+    deinit {
+        
+        createPresentationView.arrayOfBrandSlideObjects = nil
+        createPresentationView.arrayOfAllSlideObjects = nil
+        createPresentationView.groupedBrandsSlideModel = nil
+        createPresentationView.savedPresentation = nil
+        createPresentationView.selectedSlides = nil
+        savedPresentation = nil
+        
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

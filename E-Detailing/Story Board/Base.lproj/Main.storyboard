@@ -816,9 +816,9 @@ VmVyc2lvbiA6IDEuMAM
                                         <rect key="frame" x="0.0" y="74" width="1366" height="852.5"/>
                                         <subviews>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="b1V-6u-7je">
-                                                <rect key="frame" x="397.5" y="83" width="953.5" height="769.5"/>
+                                                <rect key="frame" x="397.5" y="83" width="953.5" height="759.5"/>
                                                 <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hlU-eF-J2D">
+                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hlU-eF-J2D">
                                                     <size key="itemSize" width="128" height="128"/>
                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -946,7 +946,7 @@ VmVyc2lvbiA6IDEuMAM
                                         </subviews>
                                         <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="b1V-6u-7je" secondAttribute="bottom" id="8wG-bJ-JmU"/>
+                                            <constraint firstAttribute="bottom" secondItem="b1V-6u-7je" secondAttribute="bottom" constant="10" id="8wG-bJ-JmU"/>
                                             <constraint firstAttribute="trailing" secondItem="b1V-6u-7je" secondAttribute="trailing" constant="15" id="90t-ZZ-jk4"/>
                                             <constraint firstItem="b1V-6u-7je" firstAttribute="leading" secondItem="vEY-FE-mDb" secondAttribute="trailing" constant="10" id="Abw-AQ-cT5"/>
                                             <constraint firstItem="OFG-h6-2WH" firstAttribute="top" secondItem="nfL-vY-FSt" secondAttribute="top" constant="22" id="Ies-xo-59c"/>

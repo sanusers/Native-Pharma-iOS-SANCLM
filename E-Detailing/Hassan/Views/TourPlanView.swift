@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import FSCalendar
+import CoreData
 
 extension TourPlanView: PopOverVCDelegate {
     func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
@@ -2063,6 +2064,14 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
 }
 
 extension TourPlanView: MenuResponseProtocol {
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+        print("Yet to implement")
+    }
+    
+    func selectedType(_ type: MenuView.CellType, index: Int) {
+        print("Yet to implement")
+    }
+    
     func routeToView(_ view: UIViewController) {
         print("")
     }

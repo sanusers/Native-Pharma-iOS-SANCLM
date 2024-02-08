@@ -19,6 +19,7 @@ extension CreatePresentationView: UITextFieldDelegate {
 class CreatePresentationView : BaseView {
     
 
+
     @IBOutlet var editView: UIView!
     var createPresentationVC : CreatePresentationVC!
     
@@ -421,11 +422,11 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: SelectPresentationCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectPresentationCVC", for: indexPath) as! SelectPresentationCVC
         
-        let model = self.groupedBrandsSlideModel?[selectedBrandsIndex].groupedSlide[indexPath.row] ?? SlidesModel()
-        cell.toPopulateCell(model)
+        let model: SlidesModel? = self.groupedBrandsSlideModel?[selectedBrandsIndex].groupedSlide[indexPath.row] ?? SlidesModel()
+        cell.toPopulateCell(model ?? SlidesModel())
         
         
-        if model.isSelected {
+        if model?.isSelected == true {
             cell.selectionView.isHidden = false
             cell.selectedVxVIew.isHidden = false
         } else {
@@ -437,17 +438,13 @@ extension CreatePresentationView: UICollectionViewDelegate, UICollectionViewData
         
         cell.addTap { [weak self] in
             guard let welf = self else {return}
-            model.isSelected = model.isSelected == true ? false : true
-
+            model?.isSelected = model?.isSelected == true ? false : true
             welf.toManageSelectedSlides()
-
             welf.selectSlidesCollection.reloadData()
-
             welf.toSetCount()
-
             welf.toLoadselectedSlidesTable()
             welf.brandsTable.reloadData()
-            
+           
         }
         
         return cell

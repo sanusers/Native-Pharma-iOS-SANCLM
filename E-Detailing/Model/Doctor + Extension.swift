@@ -13,6 +13,10 @@ import CoreData
 extension DoctorFencing {
     
     func setValues(fromDictionary dictionary: [String:Any],id : String)    {
+        if let mProdValue = dictionary["MProd"] as? String{
+            mProd = mProdValue
+        }
+        
         if let addrsValue = dictionary["Addrs"] as? String{
             addrs = addrsValue
         }

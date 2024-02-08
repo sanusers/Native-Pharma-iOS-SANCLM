@@ -13,7 +13,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
         
         if isFromLaunch {
             self.toCreateToast("Master sync completed")
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 4) {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                     appDelegate.setupRootViewControllers()
                 }
@@ -36,34 +36,9 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
 
 class MasterSyncVC : UIViewController {
     
-    enum PageType {
-        case loading
-        case loaded
-        case navigate
-    }
+
     
-    func setLoader(pageType: PageType, type: MasterInfo? = nil) {
-        switch pageType {
-        case .loading:
-            Shared.instance.showLoaderInWindow()
-        case .loaded:
-            Shared.instance.removeLoaderInWindow()
-        case .navigate:
-            Shared.instance.removeLoaderInWindow()
-            
-            if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.count >= 2 {
-                if self.loadedSlideInfo.count >= 2 {
-                    let vc = SlideDownloadVC.initWithStory()
-                    vc.isFromlaunch = isFromLaunch
-                    vc.delegate = self
-                    vc.modalPresentationStyle = .overCurrentContext
-                    self.present(vc, animated: true)
-                }
-            }
-            
-            self.toCreateToast("Master sync completed")
-        }
-    }
+
     
     static let shared = MasterSyncVC()
     
@@ -159,9 +134,6 @@ class MasterSyncVC : UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        
-        let layout = UICollectionViewFlowLayout()
-        collectionView.collectionViewLayout = layout
         
         self.updateList()
         
@@ -501,10 +473,8 @@ extension MasterSyncVC : collectionViewProtocols{
         if self.masterData[indexPath.row].rawValue == "Holidays" || self.masterData[indexPath.row].rawValue == "Weekly Off" || self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
             return CGSize(width: width - 10, height: 0)
         }
-        
-     
-        let size = CGSize(width: width - 10, height: 80)
-        return size
+            let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
+            return size
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

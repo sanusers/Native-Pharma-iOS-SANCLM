@@ -149,6 +149,14 @@ extension MainVC : HomeLineChartViewDelegate
 }
 
 extension MainVC: MenuResponseProtocol {
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+        print("Yet to implement")
+    }
+    
+    func selectedType(_ type: MenuView.CellType, index: Int) {
+        print("Yet to implement")
+    }
+    
     func callPlanAPI() {
         print("")
     }

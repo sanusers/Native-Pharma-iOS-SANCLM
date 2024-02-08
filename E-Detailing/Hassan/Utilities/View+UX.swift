@@ -316,6 +316,14 @@ extension UIViewController {
         present(viewController, animated: animated, completion: completion)
     }
 }
+extension UIImage {
+    func resize(to size: CGSize) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        draw(in: CGRect(origin: .zero, size: size))
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+}
 
 extension UIImage {
     public class func gifImageWithData(_ data: Data) -> UIImage? {
@@ -493,6 +501,31 @@ extension UIImageView {
 //        self.sd_setImage(with: imageUrl, placeholderImage: UIImage(named: "noImageThumb"))
 //    }
 }
+
+extension UIImageView {
+    private var loaderTag: Int { return 987654 } // Unique tag for the loader view
+    
+    func showLoadingIndicator() {
+        let loaderView = UIActivityIndicatorView(style: .medium)
+        loaderView.tintColor = .appLightPink
+        loaderView.tag = loaderTag
+        loaderView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(loaderView)
+        
+        NSLayoutConstraint.activate([
+            loaderView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            loaderView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+        
+        loaderView.startAnimating()
+    }
+    
+    func hideLoadingIndicator() {
+        // Find and remove the loader subview using the tag
+        self.subviews.first(where: { $0.tag == loaderTag })?.removeFromSuperview()
+    }
+}
+
 extension UIView{
     func shake(_ completion : @escaping ()->()){
         let translationY : CGFloat = self.frame.width * 0.065
@@ -631,7 +664,7 @@ extension AppDelegate {
                             bgColor: UIColor = .white,
                             textColor: UIColor = .white, isFromSearch: Bool? = false, isFromWishList: Bool? = false) {
         var keyWindow = UIWindow()
-    DispatchQueue.main.async {
+
         guard let keyedWindow = UIApplication.shared.connectedScenes
             .filter({$0.activationState == .foregroundActive || $0.activationState == .background || $0.activationState == .foregroundInactive})
             .compactMap({$0 as? UIWindowScene})
@@ -641,7 +674,7 @@ extension AppDelegate {
         else { return }
         
         keyWindow = keyedWindow
-    }
+    
 
         var lblMessage = UILabel()
         var backgroundHolderView=UIView()

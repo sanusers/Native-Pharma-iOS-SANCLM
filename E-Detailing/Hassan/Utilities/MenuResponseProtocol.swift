@@ -1,13 +1,11 @@
 import Foundation
 import UIKit
+import CoreData
 
-protocol MenuResponseProtocol {
+ protocol MenuResponseProtocol: AnyObject {
     func routeToView(_ view : UIViewController)
     func callPlanAPI()
-   // func callAdminForManualBooking()
-   // func openThemeActionSheet()
-   // func changeFont()
-   // func routeToHome(_ view: UIViewController)
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject)
 
 }
 extension MenuResponseProtocol where Self : UIViewController{

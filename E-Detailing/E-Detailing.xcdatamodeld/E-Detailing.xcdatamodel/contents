@@ -72,6 +72,7 @@
         <attribute name="mappProducts" optional="YES" attributeType="String"/>
         <attribute name="maxGeoMap" optional="YES" attributeType="String"/>
         <attribute name="mobile" optional="YES" attributeType="String"/>
+        <attribute name="mProd" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
         <attribute name="plcyAcptFl" optional="YES" attributeType="String"/>

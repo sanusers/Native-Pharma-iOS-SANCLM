@@ -525,8 +525,12 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     modifiedDayNumbers.append(22)
                     callsCount[0].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
+                    
+                    
+                    
                     if date.count == 1 {
                      //   modifiedDayNumbers.append(15)
+                        modifiedDayNumbers.append(31)
                     }
                     else if date.count == 2 {
                         modifiedDayNumbers.append(31)
@@ -545,7 +549,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                         
                         // callsCount.append(daysInRange0to15.count)
                         if date.count == 1 {
-                            modifiedDayNumbers.append(10)
+                            modifiedDayNumbers.append(19)
                         } else {
                             modifiedDayNumbers.append(22)
                         }
@@ -580,7 +584,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                             modifiedDayNumbers.append(33)
                         }
                     } else {
-                        if date.count == 2 {
+                        if date.count == 1 {
+                            modifiedDayNumbers.append(26)
+                        }
+                        
+                       else if date.count == 2 {
                             modifiedDayNumbers.append(31)
                         } else {
                             modifiedDayNumbers.append(33)

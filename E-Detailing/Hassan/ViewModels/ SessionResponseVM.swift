@@ -9,6 +9,10 @@ import Foundation
 import Alamofire
 class  SessionResponseVM {
     
+    enum CallsError: String, Error {
+    case unableConnect = "An issue occured data will be saved to device"
+    }
+    
     enum TPErrors: String, Error {
         case unableConnect = "An issue occured data will be saved to device"
     }
@@ -96,7 +100,7 @@ class  SessionResponseVM {
             dump(json)
         }).responseFailure({ (error) in
             print(error.description)
-            result(.failure(error as! Error))
+            result(.failure(CallsError.unableConnect))
         })
     }
     

@@ -27,10 +27,10 @@ class SelectPresentationCVC: UICollectionViewCell {
     //var player = AVPlayer()
     var type : CellType = .image
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        presentationIV.contentMode = .scaleAspectFill
         contentsHolderView.layer.cornerRadius = 5
         contentsHolderView.layer.borderColor = UIColor.appLightTextColor.cgColor
         contentsHolderView.layer.borderWidth = 1
@@ -49,11 +49,25 @@ class SelectPresentationCVC: UICollectionViewCell {
     
     
     func toPopulateCell(_ model: SlidesModel) {
+    
         let data =  model.slideData
         let utType = model.utType
-        presentationIV.toSetImageFromData(utType: utType, data: data)
-     
+        //presentationIV.toSetImageFromData(utType: utType, data: data)
+        ObjectFormatter.shared.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
+                    guard let welf = self else { return }
+        
+                    welf.presentationIV.image = displayImage ?? UIImage()
+                 
+                }
         
         
+    }
+
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        presentationIV.image = nil
+
     }
     }

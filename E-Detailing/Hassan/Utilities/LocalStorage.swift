@@ -20,7 +20,8 @@ class LocalStorage {
     var sentToApprovalModelArr = [SentToApprovalModel]()
     
     enum LocalValue:String {
-
+case AppMainURL
+        case SlideURL
         case istoEnableApproveBtn
         case TPalldatesAppended
         case TPisForFinalDate

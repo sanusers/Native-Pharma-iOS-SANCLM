@@ -54,9 +54,9 @@ var LicenceKey : String  {
 
 //(infoPlist?.value(for: .App_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
-var APIUrl : String = ""
-var slideURL : String = ""
-var appMainURL : String = ""
+var APIUrl : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
+var slideURL : String =   LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)
+var appMainURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
 var licenseKey : String = ""
 
 
@@ -71,8 +71,7 @@ var AppMainAPIURL : String  {
         webEndPoint
     }
     set(newURL){
-        APIUrl = webEndPoint + iosEndPoint
-        appMainURL = webEndPoint + iosEndPoint
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.AppMainURL, text: webEndPoint + iosEndPoint)
     }
 }
 
@@ -82,7 +81,8 @@ var AppMainSlideURL : String  {
         slideEndPoint
     }
     set(newURL){
-        slideURL = webEndPoint + slideEndPoint
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.SlideURL, text: webEndPoint + slideEndPoint)
+        
     }
 }
 

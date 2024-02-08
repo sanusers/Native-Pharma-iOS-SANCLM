@@ -1,16 +1,16 @@
 //
-//  CreatedPresentationCVC.swift
+//  BrandsPreviewCVC.swift
 //  E-Detailing
 //
-//  Created by San eforce on 23/01/24.
+//  Created by San eforce on 08/02/24.
 //
 
 import UIKit
 import PDFKit
 import AVFoundation
 
-class CreatedPresentationCVC: UICollectionViewCell {
-
+class BrandsPreviewCVC: UICollectionViewCell {
+    
     @IBOutlet var holderView: UIView!
     
     @IBOutlet var optionsHolderView: UIView!
@@ -20,11 +20,11 @@ class CreatedPresentationCVC: UICollectionViewCell {
     
     @IBOutlet var bottomContentsHolder: UIView!
     @IBOutlet var optionsIV: UIImageView!
-    let pdfView = PDFView()
+    let objectFormatter =  ObjectFormatter.shared
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        presentationIV.contentMode = .scaleAspectFill
+        
         holderView.backgroundColor = .appWhiteColor
         bottomContentsHolder.backgroundColor = .appTextColor
         holderView.layer.cornerRadius = 5
@@ -35,13 +35,32 @@ class CreatedPresentationCVC: UICollectionViewCell {
         slideTitleLbl.textColor = .appWhiteColor
         slideDescriptionLbl.setFont(font: .medium(size: .SMALL))
         slideDescriptionLbl.textColor = .appWhiteColor
-        optionsIV.transform =  optionsIV.transform.rotated(by: .pi  * 1.5)
+        //optionsIV.transform =  optionsIV.transform.rotated(by: .pi  * 1.5)
+        optionsIV.backgroundColor = .appGreen
         optionsIV.tintColor = .appWhiteColor
+        optionsIV.layer.cornerRadius =  optionsIV.height / 2
     }
     
-    func populateCell(model: SavedPresentation) {
+    func toPopulateCell(_ model: GroupedBrandsSlideModel) {
+        if !model.groupedSlide.isEmpty {
+            slideTitleLbl.text = model.groupedSlide[0].name
+        }
         
+        slideDescriptionLbl.text = "\(model.groupedSlide.count) Asserts"
         
+        let aslide = model.groupedSlide.first
+        
+        let data =  aslide?.slideData ?? Data()
+        let utType = aslide?.utType ?? ""
+        objectFormatter.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
+                    guard let welf = self else { return }
+                    welf.presentationIV.image = displayImage ?? UIImage()
+                }
+        
+
+    }
+    
+    func toPopulateCell(model: SavedPresentation) {
         var slidesModel = [SlidesModel]()
         model.groupedBrandsSlideModel.forEach { aGroupedBrandsSlideModel in
           let aslidesModel = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
@@ -67,16 +86,18 @@ class CreatedPresentationCVC: UICollectionViewCell {
                     guard let welf = self else { return }
                     welf.presentationIV.image = displayImage ?? UIImage()
                 }
-        
-        
     }
-
+    
     
     override func prepareForReuse() {
         super.prepareForReuse()
+
+        // Reset or clear properties, images, or resources
+        slideTitleLbl.text = nil
         slideDescriptionLbl.text = nil
         presentationIV.image = nil
-        slideTitleLbl.text = nil
     }
-
+    
 }
+
+

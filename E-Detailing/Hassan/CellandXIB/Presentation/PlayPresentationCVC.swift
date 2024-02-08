@@ -27,8 +27,9 @@ class PlayPresentationCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        presentationIV.contentMode = .scaleAspectFill
         holderIV.backgroundColor = .clear
-        formatIV.isHidden = true
+        formatVIew.isHidden = true
         formatVIew.layer.cornerRadius = formatVIew.height / 2
     }
     
@@ -36,44 +37,23 @@ class PlayPresentationCVC: UICollectionViewCell {
         
             let data =  model.slideData
             let utType = model.utType
-            presentationIV.toSetImageFromData(utType: utType, data: data)
+            //presentationIV.toSetImageFromData(utType: utType, data: data)
       
         
+        ObjectFormatter.shared.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
+                    guard let welf = self else { return }
+                    welf.presentationIV.image = displayImage ?? UIImage()
+                }
         
-        
-        
-//        if model.utType == "application/pdf" {
-//
-//            formatIV.image = UIImage(named: "pdf")
-//        } else  if model.utType == "image/jpeg" {
-//            formatIV.image = UIImage(named: "image")
-//
-//        } else if model.utType == "video/mp4" {
-//
-//            formatIV.image = UIImage(named: "video")
-//
-//        } else if model.utType == "application/zip" {
-//
-//            print(model.utType)
-//            presentationIV.image = UIImage(named: "zip")
-//        } else {
-//
-//            print(model.utType)
-//
-//        }
-        
-       // layoutSubviews()
-       // setupVIews()
         
     }
-    
-    
 
     
-
-    
-    
-
-    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+       
+        presentationIV.image = nil
+   
+    }
 
 }

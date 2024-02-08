@@ -20,6 +20,7 @@ class SelectedSlidesTVC: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        presentationIV.contentMode = .scaleAspectFill
         presentationIV.layer.cornerRadius = 5
         contentsHolderVIew.layer.cornerRadius = 5
         contentsHolderVIew.backgroundColor = .appGreyColor
@@ -51,7 +52,20 @@ class SelectedSlidesTVC: UITableViewCell {
        // descriptionLbl.text = model.filePath
         let data =  model.slideData
         let utType = model.utType
-        presentationIV.toSetImageFromData(utType: utType, data: data)
+        ObjectFormatter.shared.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
+                    guard let welf = self else { return }
+                    welf.presentationIV.image = displayImage ?? UIImage()
+                }
+        
+        
+    }
+
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+       
+        presentationIV.image = nil
+   
     }
 
 }

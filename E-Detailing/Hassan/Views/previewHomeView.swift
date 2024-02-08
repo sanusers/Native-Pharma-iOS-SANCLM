@@ -7,6 +7,67 @@
 
 import Foundation
 import UIKit
+import CoreData
+
+extension PreviewHomeView: MenuResponseProtocol {
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+        print("Yet to implement")
+        switch type {
+            
+
+        case .listedDoctor:
+            dump(selectedObject)
+            self.fetchedObject = selectedObject as? DoctorFencing
+            dump(fetchedObject?.mappProducts)
+            self.selectDoctorsLbl.text = fetchedObject?.name ?? ""
+            let mapProd = fetchedObject?.mappProducts ?? ""
+            let mProd = fetchedObject?.mProd ?? ""
+            if mapProd != "" {
+                do {
+                    let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
+                    let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
+
+                    let numbers = matches.map { match in
+                        return (mapProd as NSString).substring(with: match.range)
+                    }
+
+                    print(numbers)
+                } catch {
+                    print("Error creating regular expression: \(error.localizedDescription)")
+                }
+            }
+   
+            
+           // dump(fetchedObject?.m)
+        default:
+            print("Yet to implement")
+        }
+       
+    }
+    
+    func selectedType(_ type: MenuView.CellType, index: Int) {
+        self.selectedTypesIndex = index
+    }
+    
+    func routeToView(_ view: UIViewController) {
+        print("Yet to implement")
+    }
+    
+    func callPlanAPI() {
+        print("Yet to implement")
+    }
+    
+    
+}
+
+extension PreviewHomeView:  SelectedPreviewTypesCVCDelegate {
+    func didPlayTapped(playerModel: [SlidesModel]) {
+        let vc = PlayPresentationVC.initWithStory(model:  playerModel)
+        self.previewHomeVC.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+}
 
 extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -22,21 +83,59 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
         
             cell.selectionView.isHidden =  previewTypeIndex == indexPath.row ? false : true
             cell.titleLbl.textColor =  previewTypeIndex == indexPath.row ? .appTextColor : .appLightTextColor
-            cell.titleLbl.text = previewType[indexPath.row]
+            cell.titleLbl.text = previewType[indexPath.row].rawValue
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
                 welf.previewTypeIndex  = indexPath.row
+                welf.setPreviewType(welf.previewType[indexPath.row])
                 welf.previewTypeCollection.reloadData()
-            }
+                if !welf.presentationCollectionVIew.visibleCells.isEmpty {
+                    welf.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+                }
+                }
+               
             return cell
         case presentationCollectionVIew:
-            return UICollectionViewCell()
+            let cell: SelectedPreviewTypesCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectedPreviewTypesCVC", for: indexPath) as! SelectedPreviewTypesCVC
+            cell.delegate = self
+            switch self.previewType[previewTypeIndex] {
+        
+            case .home:
+                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .home)
+            case .brand:
+                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .brand)
+            case .speciality:
+                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .speciality)
+            case .customPresentation:
+                cell.toPopulateCell(model: savePresentationArr ?? [SavedPresentation](), type: .customPresentation)
+            }
+
+            return cell
         default:
             return UICollectionViewCell()
         }
+
+    }
+    
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        // Calculate the index based on the current content offset and item size
         
-      
+        if let collect = scrollView as? UICollectionView {
+            if collect == self.presentationCollectionVIew {
+                let pageWidth = collect.frame.size.width
+                let currentPage = Int(collect.contentOffset.x / pageWidth)
+                print("Current Page: \(currentPage)")
+                self.previewTypeIndex = Int(currentPage)
+                self.setPreviewType(previewType[currentPage])
+                self.previewTypeCollection.reloadData()
+                let indexPath: IndexPath = IndexPath(item: Int(currentPage), section: 0)
+                self.previewTypeCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+             //   self.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                
+            }
+        }
     }
     
     
@@ -44,10 +143,10 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch collectionView {
         case previewTypeCollection:
-            return CGSize(width: previewType[indexPath.item].size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
+            return CGSize(width: previewType[indexPath.item].rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
           //  return CGSize(width: collectionView.width / 9, height: collectionView.height)
         case presentationCollectionVIew:
-            return CGSize(width: collectionView.width / 4, height: collectionView.height / 2.5)
+            return CGSize(width: collectionView.width , height: collectionView.height)
 
         default:
             return CGSize()
@@ -59,9 +158,52 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
 
 class PreviewHomeView : BaseView {
     
+    enum PreviewType: String {
+        case home = "Home"
+        case brand = "Brand"
+        case speciality = "Speciality"
+        case customPresentation = "Custom Presentation"
+    }
+    
     enum PageType {
         case exists
         case empty
+    }
+    
+    func setPreviewType(_ previewType: PreviewType) {
+    
+        switch previewType {
+           
+        case .home:
+           
+            doctorSelectorVIewHeight.constant = 0
+            self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
+            if groupedBrandsSlideModel?.count == 0 {
+                self.toSetPageType(pageType: .empty)
+            } else {
+                self.toSetPageType(pageType: .exists)
+            }
+        case .brand:
+            self.selectNotifyLbl.text = "Select listed doctors to view content"
+            doctorSelectorVIewHeight.constant = 50
+            groupedBrandsSlideModel  = nil
+            self.toSetPageType(pageType: .empty)
+            //toLoadNewPresentationData()
+          
+        case .speciality:
+            self.selectNotifyLbl.text = "Select listed doctors to view content"
+            doctorSelectorVIewHeight.constant = 50
+            groupedBrandsSlideModel  = nil
+            self.toSetPageType(pageType: .empty)
+          
+            //toLoadNewPresentationData()
+        case .customPresentation:
+            
+            self.selectNotifyLbl.text = "No saved presentation found!"
+            doctorSelectorVIewHeight.constant = 0
+            retriveSavedPresentations()
+            //toLoadPreviewLoadedCollection()
+        }
     }
     
     @IBOutlet var presentationHolderVIew: UIView!
@@ -74,7 +216,7 @@ class PreviewHomeView : BaseView {
     
     @IBOutlet var presentationCollectionVIew: UICollectionView!
     var previewTypeIndex: Int = 0
-    var previewType: [String] = []
+    var previewType: [PreviewType] = []
     @IBOutlet var selectDoctorsLbl: UILabel!
     @IBOutlet var selectNotifyLbl: UILabel!
     @IBOutlet var noPresentationView: UIView!
@@ -85,25 +227,37 @@ class PreviewHomeView : BaseView {
     @IBOutlet var sortSwitchStack: UIStackView!
     @IBOutlet var seperatorView: UIView!
     
+    @IBOutlet var doctorSelectorVIewHeight: NSLayoutConstraint!
     @IBOutlet var decendingIV: UIImageView!
     @IBOutlet var ascendingIV: UIImageView!
+    var fetchedObject:  DoctorFencing?
     enum SortState {
         case ascending
         case decending
     }
-    
+    var selectedTypesIndex: Int? = nil
+    var  listedDocArr : [DoctorFencing]?
+    var savePresentationArr : [SavedPresentation]?
+    var selectedSlides: [SlidesModel]?
+    var groupedBrandsSlideModel : [GroupedBrandsSlideModel]?
     var sortState: SortState = .ascending
+    
+    func setBrandsData() {
+        self.listedDocArr = DBManager.shared.getDoctor()
+    }
     
     func toSetPageType(pageType: PageType) {
         switch pageType {
 
         case .exists:
-            self.presentationCollectionVIew.isHidden = false
+        
             self.noPresentationView.isHidden = true
-            //cellRegistration()
-            //toLoadPresentationCollection()
+            noPresentationView.backgroundColor = .clear
+            toLoadPreviewLoadedCollection()
+
         case .empty:
-            self.presentationCollectionVIew.isHidden = true
+         
+            toLoadPreviewLoadedCollection()
            self.noPresentationView.isHidden = false
         }
     }
@@ -115,11 +269,51 @@ class PreviewHomeView : BaseView {
         self.previewHomeVC = baseVC as? PreviewHomeVC
         setupUI()
         initView()
-        
-       // retriveSavedPresentations()
+        setPreviewType(.home)
+       
         
      
     }
+    
+    func retriveSavedPresentations()  {
+        
+        self.savePresentationArr = CoreDataManager.shared.retriveSavedPresentations()
+        
+        if let savePresentationArr =   self.savePresentationArr {
+            dump(savePresentationArr)
+            if savePresentationArr.count == 0 {
+                toSetPageType(pageType: .empty)
+            } else {
+                toSetPageType(pageType: .exists)
+                //self.setPreviewType(previewType[previewTypeIndex])
+            }
+        }
+        
+       
+ 
+    }
+    
+    func toSetupPlayerModel(_ index: Int) -> [SlidesModel] {
+        var selectedSlidesModelArr = [SlidesModel]()
+        if let savePresentationArr = self.savePresentationArr {
+            let selectedPresentation = savePresentationArr[index]
+            selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
+               var selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                    aSlidesModel.isSelected == true
+                }
+              
+                selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
+            })
+         
+        }
+      
+        selectedSlidesModelArr.sort{$0.index < $1.index}
+        return selectedSlidesModelArr
+        
+    }
+    
+    
+ 
     
     func toLoadPreviewCollection() {
         previewTypeCollection.delegate = self
@@ -127,16 +321,26 @@ class PreviewHomeView : BaseView {
         previewTypeCollection.reloadData()
     }
     
+    
+    func toLoadPreviewLoadedCollection() {
+        presentationCollectionVIew.delegate = self
+        presentationCollectionVIew.dataSource = self
+        presentationCollectionVIew.reloadData()
+    }
+    
+    func toUnloadPreviewLoadedCollection() {
+        presentationCollectionVIew.delegate = nil
+        presentationCollectionVIew.dataSource = nil
+    }
+    
     func cellRegistration() {
-//        if let layout = self.previewTypeCollection.collectionViewLayout as? UICollectionViewFlowLayout {
-//            layout.collectionView?.isScrollEnabled = false
-//            layout.scrollDirection = .horizontal
-//            layout.minimumInteritemSpacing = 0
-//            layout.minimumLineSpacing = 5
-//            layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-//
-//        }
+        if let layout = self.presentationCollectionVIew.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.collectionView?.isScrollEnabled = true
+            layout.scrollDirection = .horizontal
+        }
      
+        
+        presentationCollectionVIew.register(UINib(nibName: "SelectedPreviewTypesCVC", bundle: nil), forCellWithReuseIdentifier: "SelectedPreviewTypesCVC")
         
         previewTypeCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
     }
@@ -162,6 +366,12 @@ class PreviewHomeView : BaseView {
     
     func initView() {
         
+        self.doctorSelectionVIew.addTap {
+            let menuvc = SpecifiedMenuVC.initWithStory(self, celltype: .listedDoctor)
+            self.previewHomeVC.modalPresentationStyle = .custom
+            self.previewHomeVC.navigationController?.present(menuvc, animated: false)
+        }
+        
         backHolderView.addTap {
             self.previewHomeVC.navigationController?.popViewController(animated: true)
         }
@@ -178,12 +388,12 @@ class PreviewHomeView : BaseView {
             welf.sortState = .decending
                 welf.setSortVIew()
         }
-        doctorSelectionVIew.addTap {
-            print("Tapped")
-        }
+  
     }
     
     func setupUI() {
+        presentationCollectionVIew.backgroundColor = .clear
+        presentationCollectionVIew.isPagingEnabled = true
         sortSwitchStack.layer.cornerRadius = 3
         sortSwitchStack.layer.borderWidth = 1
         sortSwitchStack.layer.borderColor = UIColor.appLightTextColor.cgColor
@@ -200,10 +410,11 @@ class PreviewHomeView : BaseView {
         doctorSelectionVIew.layer.borderColor = UIColor.appLightTextColor.cgColor
         selectDoctorsLbl.setFont(font: .medium(size: .BODY))
         selectDoctorsLbl.textColor = .appTextColor
-        toSetPageType(pageType: .empty)
-        previewType = ["Home", "Brand", "Speciality", "Custom presentation"]
+        toSetPageType(pageType: .exists)
+        previewType = [.home, .brand, .speciality, .customPresentation]
         setSortVIew()
         cellRegistration()
         toLoadPreviewCollection()
+        //toLoadPreviewLoadedCollection()
     }
 }
