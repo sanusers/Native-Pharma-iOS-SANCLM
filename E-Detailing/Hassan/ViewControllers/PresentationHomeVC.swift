@@ -17,7 +17,6 @@ class PresentationHomeVC: BaseViewController {
     }
     class func initWithStory() -> PresentationHomeVC {
         let reportsVC : PresentationHomeVC = UIStoryboard.Hassan.instantiateViewController()
-
         return reportsVC
     }
 }

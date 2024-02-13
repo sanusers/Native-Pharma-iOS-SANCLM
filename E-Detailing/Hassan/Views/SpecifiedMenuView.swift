@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-
+import CoreData
 
 extension SpecifiedMenuView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -169,7 +169,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
 
             case .listedDoctor:
                 if newText.isEmpty {
-                    self.toLoadRequiredData()
+                    self.toLoadRequiredData(isfromTF: true)
                     toLOadData()
                 }
                 var filteredWorkType = [DoctorFencing]()
@@ -366,35 +366,47 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             cell.lblName.text = model?.name
             cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
             
-            if self.isSearched {
-                if self.selectedSpecifiedTypeID ==  model?.code {
+            if self.selectedObject != nil {
+               let doctorObj = self.selectedObject as! DoctorFencing
+                if doctorObj.code == model?.code {
                     cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                } else {
-                    cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
                 }
             } else {
-                if indexPath.row == self.selectecIndex {
-                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                if self.isSearched {
+                    if self.selectedSpecifiedTypeID ==  model?.code {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    } else {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                    }
                 } else {
-                    cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                    if indexPath.row == self.selectecIndex {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    } else {
+                        cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                    }
                 }
             }
             
+
+            
    
             
-            cell.addTap {
-                if self.isSearched {
-                    self.selectedSpecifiedTypeID = model?.code ?? ""
-                   // self.selectecIndex = nil
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.selectedObject = nil
+                welf.specifiedMenuVC.selectedObject = nil
+                if welf.isSearched {
+                    welf.selectedSpecifiedTypeID = model?.code ?? ""
+               
                 } else {
-                    self.selectecIndex = indexPath.row
-                    //self.selectedSpecifiedTypeID = ""
+                    welf.selectecIndex = indexPath.row
+                  
                 }
                
               
-                self.specifiedMenuVC.menuDelegate?.selectedType(self.cellType, selectedObject: model ?? DoctorFencing())
-                self.endEditing(true)
-                self.hideMenuAndDismiss()
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.endEditing(true)
+                welf.hideMenuAndDismiss()
             }
         case .chemist:
             print("Yet to omplement")
@@ -438,6 +450,8 @@ class SpecifiedMenuView: BaseView {
     var unlisteedDocArr : [UnListedDoctor]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
+    var selectedObject: NSManagedObject?
+    var selectedCode: Int?
     //MARK: UDF, gestures  and animations
     
     private var animationDuration : Double = 1.0
@@ -583,7 +597,7 @@ class SpecifiedMenuView: BaseView {
         menuTable.reloadData()
     }
     
-   func toLoadRequiredData() {
+    func toLoadRequiredData(isfromTF: Bool? = false) {
        switch self.cellType {
            
        case .workType:
@@ -596,6 +610,14 @@ class SpecifiedMenuView: BaseView {
            self.jointWorkArr = DBManager.shared.getJointWork()
        case .listedDoctor:
            self.listedDocArr = DBManager.shared.getDoctor()
+           if specifiedMenuVC.selectedObject != nil {
+               self.selectedObject = specifiedMenuVC.selectedObject as! DoctorFencing
+               let docObj =  self.selectedObject as! DoctorFencing
+               if !(isfromTF ?? false) {
+                   self.searchTF.text = docObj.name
+               }
+             
+           }
        case .chemist:
            self.chemistArr = DBManager.shared.getChemist()
        case .stockist:

@@ -40,10 +40,22 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
                 welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
             }
         case .brand:
-            print("Yet to implement")
+            let model: GroupedBrandsSlideModel = groupedBrandsSlideModel?[indexPath.row] ?? GroupedBrandsSlideModel()
+            cell.toPopulateCell(model)
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+            }
            
         case .speciality:
-            print("Yet to implement")
+            let model: GroupedBrandsSlideModel = groupedBrandsSlideModel?[indexPath.row] ?? GroupedBrandsSlideModel()
+            cell.toPopulateCell(model)
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+            }
         case .customPresentation:
             let model: SavedPresentation = self.savedPresentationArr?[indexPath.row] ?? SavedPresentation()
             cell.toPopulateCell(model: model)
@@ -117,15 +129,60 @@ class SelectedPreviewTypesCVC: UICollectionViewCell {
     }
     
     
-    func toPopulateCell(_ model: [GroupedBrandsSlideModel], type: PreviewHomeView.PreviewType) {
+    func toPopulateCell(_ model: [GroupedBrandsSlideModel], type: PreviewHomeView.PreviewType, state: PreviewHomeView.SortState) {
         self.previewType = type
         self.groupedBrandsSlideModel = model
+        
+        switch state {
+            
+        case .ascending:
+            groupedBrandsSlideModel?.sort { (firstGroup, secondGroup) -> Bool in
+                // Assuming the first and second groups have at least one slide
+                guard let firstName = firstGroup.groupedSlide.first?.name,
+                      let secondName = secondGroup.groupedSlide.first?.name else {
+                    return false
+                }
+                
+                return firstName.localizedCaseInsensitiveCompare(secondName) == .orderedAscending
+            }
+        case .decending:
+            groupedBrandsSlideModel?.sort { (firstGroup, secondGroup) -> Bool in
+                // Assuming the first and second groups have at least one slide
+                guard let firstName = firstGroup.groupedSlide.first?.name,
+                      let secondName = secondGroup.groupedSlide.first?.name else {
+                    return false
+                }
+                
+                return firstName.localizedCaseInsensitiveCompare(secondName) == .orderedDescending
+            }
+        }
+
+        
         toLoadData()
     }
     
     
-    func toPopulateCell(model: [SavedPresentation], type: PreviewHomeView.PreviewType) {
+    func toPopulateCell(model: [SavedPresentation], type: PreviewHomeView.PreviewType, state:  PreviewHomeView.SortState) {
         self.savedPresentationArr = model
+        switch state {
+        case .ascending:
+            self.savedPresentationArr?.sort { (firstGroup, secondGroup) -> Bool in
+                // Assuming the first and second groups have at least one slide
+                 let firstName = firstGroup.name
+                 let secondName = secondGroup.name
+                
+                return firstName.localizedCaseInsensitiveCompare(secondName) == .orderedAscending
+            }
+        case .decending:
+            self.savedPresentationArr?.sort { (firstGroup, secondGroup) -> Bool in
+                // Assuming the first and second groups have at least one slide
+                 let firstName = firstGroup.name
+                 let secondName = secondGroup.name
+                
+                return firstName.localizedCaseInsensitiveCompare(secondName) == .orderedDescending
+            }
+        }
+        
         self.previewType = type
         if  model.count > 0 {
             toLoadData()

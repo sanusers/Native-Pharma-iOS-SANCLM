@@ -7,10 +7,12 @@
 
 import Foundation
 import UIKit
+import CoreData
 class SpecifiedMenuVC : BaseViewController {
     @IBOutlet var specifiedMenuView: SpecifiedMenuView!
     var menuDelegate : MenuResponseProtocol?
     var celltype: MenuView.CellType = .listedDoctor
+    var selectedObject: NSManagedObject?
     override func viewDidLoad() {
         super.viewDidLoad()
 

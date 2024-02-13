@@ -3164,7 +3164,7 @@
                                         </constraints>
                                     </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8qo-9G-6U7">
-                                        <rect key="frame" x="11.5" y="15.5" width="1122" height="594"/>
+                                        <rect key="frame" x="11.5" y="70" width="1122" height="540"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="78B-IR-yeg">
@@ -3231,7 +3231,7 @@
                                                 </constraints>
                                             </stackView>
                                         </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="nWR-Vm-RIN" secondAttribute="bottom" id="8VN-fU-xwf"/>
                                             <constraint firstItem="nWR-Vm-RIN" firstAttribute="leading" secondItem="pBo-Ll-cKd" secondAttribute="leading" id="IhK-J3-5qw"/>
@@ -3279,17 +3279,17 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="pBo-Ll-cKd" firstAttribute="width" secondItem="Jr0-9L-b3n" secondAttribute="width" multiplier="0.3" id="2Vh-s2-CSn"/>
-                                    <constraint firstItem="8qo-9G-6U7" firstAttribute="height" secondItem="Jr0-9L-b3n" secondAttribute="height" multiplier="0.95" id="3h8-C7-gQ4"/>
                                     <constraint firstItem="pBo-Ll-cKd" firstAttribute="leading" secondItem="Jr0-9L-b3n" secondAttribute="leading" constant="15" id="Ahi-Cm-f1Q"/>
+                                    <constraint firstAttribute="bottom" secondItem="8qo-9G-6U7" secondAttribute="bottom" constant="15" id="GyK-kx-QQN"/>
                                     <constraint firstItem="8qo-9G-6U7" firstAttribute="centerX" secondItem="Jr0-9L-b3n" secondAttribute="centerX" id="ONL-nB-rrP"/>
                                     <constraint firstItem="Cd0-Wt-NTC" firstAttribute="width" secondItem="Jr0-9L-b3n" secondAttribute="width" multiplier="0.1" id="TqX-5H-Ism"/>
                                     <constraint firstAttribute="trailing" secondItem="Cd0-Wt-NTC" secondAttribute="trailing" constant="15" id="Uee-mX-wh2"/>
                                     <constraint firstItem="E1n-xH-dOe" firstAttribute="width" secondItem="Jr0-9L-b3n" secondAttribute="width" multiplier="0.5" id="VKh-74-AN9"/>
                                     <constraint firstItem="pBo-Ll-cKd" firstAttribute="top" secondItem="Jr0-9L-b3n" secondAttribute="top" constant="15" id="XTd-Kl-cvL"/>
                                     <constraint firstItem="Cd0-Wt-NTC" firstAttribute="top" secondItem="Jr0-9L-b3n" secondAttribute="top" constant="15" id="amg-wz-cr4"/>
-                                    <constraint firstItem="8qo-9G-6U7" firstAttribute="centerY" secondItem="Jr0-9L-b3n" secondAttribute="centerY" id="ank-3P-wYr"/>
                                     <constraint firstItem="E1n-xH-dOe" firstAttribute="height" secondItem="Jr0-9L-b3n" secondAttribute="height" multiplier="0.6" id="dYk-P2-fV1"/>
                                     <constraint firstItem="E1n-xH-dOe" firstAttribute="centerX" secondItem="Jr0-9L-b3n" secondAttribute="centerX" id="eYd-U3-ytC"/>
+                                    <constraint firstItem="8qo-9G-6U7" firstAttribute="top" secondItem="pBo-Ll-cKd" secondAttribute="bottom" constant="5" id="fOw-V6-KlS"/>
                                     <constraint firstItem="E1n-xH-dOe" firstAttribute="centerY" secondItem="Jr0-9L-b3n" secondAttribute="centerY" id="kog-pi-puj"/>
                                     <constraint firstItem="Cd0-Wt-NTC" firstAttribute="height" secondItem="Jr0-9L-b3n" secondAttribute="height" multiplier="0.05" id="ky9-sg-4B2"/>
                                     <constraint firstItem="8qo-9G-6U7" firstAttribute="width" secondItem="Jr0-9L-b3n" secondAttribute="width" multiplier="0.98" id="waO-I9-dW1"/>

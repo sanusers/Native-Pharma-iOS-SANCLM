@@ -69,11 +69,13 @@ extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSo
             }
             
       
-        cell.addTap {
-            self.createdPresentationSelectedIndex = indexPath.row
+        cell.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.createdPresentationSelectedIndex = indexPath.row
             let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 120), on: cell.optionsIV, onframe: CGRect(), pagetype: .presentation)
             vc.delegate = self
-            self.presentationHomeVC.navigationController?.present(vc, animated: true)
+            welf.presentationHomeVC.navigationController?.present(vc, animated: true)
+            
         }
         return cell
     }
@@ -86,6 +88,8 @@ extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 class PresentationHomeView : BaseView {
+    
+
     
     enum PageType {
         case exists
@@ -137,22 +141,18 @@ class PresentationHomeView : BaseView {
     }
     
     
-    override func willDisappear(baseVC: BaseViewController) {
-        super.willDisappear(baseVC: baseVC)
-      //  self.savePresentationArr = nil
-       
-    }
-    
-    override func willAppear(baseVC: BaseViewController) {
-        super.willAppear(baseVC: baseVC)
-      //  retriveSavedPresentations()
-        
-    }
     
     func retriveSavedPresentations()  {
-        
-        self.savePresentationArr = CoreDataManager.shared.retriveSavedPresentations()
-        
+      //  Shared.instance.showLoaderInWindow()
+        CoreDataManager.shared.retriveSavedPresentations{ savedPresentationArr in
+           // Shared.instance.removeLoaderInWindow()
+            self.savePresentationArr = savedPresentationArr
+            self.toLoadDataSource()
+        }
+ 
+    }
+    
+    func toLoadDataSource() {
         if let savePresentationArr =   self.savePresentationArr {
             dump(savePresentationArr)
             if savePresentationArr.count == 0 {
@@ -161,9 +161,6 @@ class PresentationHomeView : BaseView {
                 toSetPageType(pageType: .exists)
             }
         }
-        
-       
- 
     }
     
     func toLoadPresentationCollection() {
@@ -204,12 +201,14 @@ class PresentationHomeView : BaseView {
     
     
     func initView() {
-        backHolderView.addTap {
-            self.presentationHomeVC.navigationController?.popViewController(animated: true)
+        backHolderView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.presentationHomeVC.navigationController?.popViewController(animated: true)
         }
         
-        addpresentationView.addTap {
-            self.moveToCreatePresentationVC()
+        addpresentationView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.moveToCreatePresentationVC()
         }
     }
     

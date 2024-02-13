@@ -22,23 +22,86 @@ extension PreviewHomeView: MenuResponseProtocol {
             self.selectDoctorsLbl.text = fetchedObject?.name ?? ""
             let mapProd = fetchedObject?.mappProducts ?? ""
             let mProd = fetchedObject?.mProd ?? ""
-            if mapProd != "" {
-                do {
-                    let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
-                    let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
-
-                    let numbers = matches.map { match in
-                        return (mapProd as NSString).substring(with: match.range)
-                    }
-
-                    print(numbers)
-                } catch {
-                    print("Error creating regular expression: \(error.localizedDescription)")
-                }
-            }
-   
+            let specialityCode = fetchedObject?.specialityCode ?? ""
+//            if mapProd != "" {
+//                do {
+//                    let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
+//                    let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
+//
+//                    let numbers = matches.map { match in
+//                        return (mapProd as NSString).substring(with: match.range)
+//                    }
+//
+//                    print(numbers)
+//                } catch {
+//                    print("Error creating regular expression: \(error.localizedDescription)")
+//                }
+//            }
             
-           // dump(fetchedObject?.m)
+
+   
+            switch self.previewType[previewTypeIndex] {
+                
+            case .home:
+                print("Implemented")
+                
+            case .brand:
+                self.brandsMatrixSlideModel = self.groupedBrandsSlideModel
+                
+                var mProdCodeArr : [String] = []
+                if mapProd != "" {
+                    do {
+                        let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
+                        let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
+
+                       // var numbers: [String] = []
+                        for i in stride(from: 0, to: matches.count, by: 2) {
+                            let match = matches[i]
+                            let number = (mapProd as NSString).substring(with: match.range)
+                            mProdCodeArr.append(number)
+                        }
+
+                        print(mProdCodeArr)
+                    } catch {
+                        print("Error creating regular expression: \(error.localizedDescription)")
+                    }
+                }
+                
+                
+                // Split the includedIDs string into an array of individual IDs
+                let includedmProdsIDArray = mProd.components(separatedBy: ",").compactMap { Int($0) }
+
+                // Filter out groupedSlide with slideId in includedIDsArray
+                self.brandsMatrixSlideModel?.forEach { brandModel in
+                    brandModel.groupedSlide = brandModel.groupedSlide.filter { mProdCodeArr.contains("\($0.code)") }
+                    
+                 //   brandModel.groupedSlide = brandModel.groupedSlide.filter { includedmProdsIDArray.contains($0.slideId) }
+                }
+                
+                
+               // self.brandsMatrixSlideModel?.forEach{ $0.groupedSlide = $0.groupedSlide.filter { $0.slideId == Int(mProd) } }
+                self.setPreviewType(.brand)
+            case .speciality:
+        
+                self.specialitySlideModel = self.groupedBrandsSlideModel
+                
+                self.specialitySlideModel?.forEach { brandModel in
+                    
+                        brandModel.groupedSlide = brandModel.groupedSlide.filter {
+                            
+                        let specialityCodes = $0.specialityCode
+                        
+                        let specialityCodesArray = specialityCodes.components(separatedBy: ",").compactMap { String($0) }
+                        
+                        return specialityCodesArray.contains(specialityCode)}
+                }
+                
+                self.setPreviewType(.speciality)
+            case .customPresentation:
+                print("Implemented")
+            }
+                        
+
         default:
             print("Yet to implement")
         }
@@ -100,6 +163,9 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
                 welf.previewTypeCollection.reloadData()
                 if !welf.presentationCollectionVIew.visibleCells.isEmpty {
                     welf.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+                    if welf.fetchedObject != nil {
+                        welf.selectedType(.listedDoctor, selectedObject: welf.fetchedObject ?? NSManagedObject())
+                    }
                 }
                 }
                
@@ -110,13 +176,13 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
             switch self.previewType[previewTypeIndex] {
         
             case .home:
-                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .home)
+                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .home, state: self.sortState)
             case .brand:
-                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .brand)
+                cell.toPopulateCell(brandsMatrixSlideModel ?? [GroupedBrandsSlideModel](), type: .brand,  state: self.sortState)
             case .speciality:
-                cell.toPopulateCell(groupedBrandsSlideModel ?? [GroupedBrandsSlideModel](), type: .speciality)
+                cell.toPopulateCell(specialitySlideModel ?? [GroupedBrandsSlideModel](), type: .speciality,  state: self.sortState)
             case .customPresentation:
-                cell.toPopulateCell(model: savePresentationArr ?? [SavedPresentation](), type: .customPresentation)
+                cell.toPopulateCell(model: savePresentationArr ?? [SavedPresentation](), type: .customPresentation,  state: self.sortState)
             }
 
             return cell
@@ -192,18 +258,49 @@ class PreviewHomeView : BaseView {
                 self.toSetPageType(pageType: .exists)
             }
         case .brand:
-            self.selectNotifyLbl.text = "Select listed doctors to view content"
+            if self.fetchedObject == nil {
+                self.selectNotifyLbl.text = "Select listed doctors to view content"
+            } else {
+                self.selectNotifyLbl.text = "No brands preview found for selected doctor"
+            }
+          
             doctorSelectorVIewHeight.constant = 50
-            groupedBrandsSlideModel  = nil
-            self.toSetPageType(pageType: .empty)
+           // groupedBrandsSlideModel  = brandsMatrixSlideModel
+            if brandsMatrixSlideModel != nil {
+                brandsMatrixSlideModel =  brandsMatrixSlideModel?.filter{
+                    !$0.groupedSlide.isEmpty
+                }
+               if brandsMatrixSlideModel?.count == 0 {
+                   self.toSetPageType(pageType: .empty)
+               } else {
+                   self.toSetPageType(pageType: .exists)
+               }
+            
+            } else {
+                self.toSetPageType(pageType: .empty)
+            }
           
           
         case .speciality:
-            self.selectNotifyLbl.text = "Select listed doctors to view content"
+            if self.fetchedObject == nil {
+                self.selectNotifyLbl.text = "Select listed doctors to view content"
+            } else {
+                self.selectNotifyLbl.text = "No brands preview found for selected doctor"
+            }
             doctorSelectorVIewHeight.constant = 50
-            groupedBrandsSlideModel  = nil
-            self.toSetPageType(pageType: .empty)
-          
+            if specialitySlideModel != nil {
+                specialitySlideModel =  specialitySlideModel?.filter{
+                    !$0.groupedSlide.isEmpty
+                }
+               if specialitySlideModel?.count == 0 {
+                   self.toSetPageType(pageType: .empty)
+               } else {
+                   self.toSetPageType(pageType: .exists)
+               }
+            
+            } else {
+                self.toSetPageType(pageType: .empty)
+            }
           
         case .customPresentation:
             
@@ -248,6 +345,8 @@ class PreviewHomeView : BaseView {
     var savePresentationArr : [SavedPresentation]?
     var selectedSlides: [SlidesModel]?
     var groupedBrandsSlideModel : [GroupedBrandsSlideModel]?
+    var brandsMatrixSlideModel : [GroupedBrandsSlideModel]?
+    var specialitySlideModel : [GroupedBrandsSlideModel]?
     var sortState: SortState = .ascending
     
     func setBrandsData() {
@@ -279,14 +378,14 @@ class PreviewHomeView : BaseView {
         setupUI()
         initView()
         setPreviewType(.home)
-       
-        
-     
     }
     
     func retriveSavedPresentations()  {
-        
-        self.savePresentationArr = CoreDataManager.shared.retriveSavedPresentations()
+      //  Shared.instance.showLoaderInWindow()
+        CoreDataManager.shared.retriveSavedPresentations { savedPresentationArr in
+            self.savePresentationArr = savedPresentationArr
+           // Shared.instance.removeLoaderInWindow()
+        }
         
         if let savePresentationArr =   self.savePresentationArr {
             dump(savePresentationArr)
@@ -362,6 +461,7 @@ class PreviewHomeView : BaseView {
             z2aView.backgroundColor =  .appWhiteColor
             ascendingIV.tintColor = .appWhiteColor
             decendingIV.tintColor = .appTextColor
+
         case .decending:
             a2zView.backgroundColor =  .appWhiteColor
             z2aView.backgroundColor =  .appTextColor
@@ -370,13 +470,14 @@ class PreviewHomeView : BaseView {
         }
     
         
-      
+        setPreviewType(self.previewType[selectedTypesIndex ?? 0])
     }
     
     func initView() {
         
         self.doctorSelectionVIew.addTap {
             let menuvc = SpecifiedMenuVC.initWithStory(self, celltype: .listedDoctor)
+            menuvc.selectedObject = self.fetchedObject 
             self.previewHomeVC.modalPresentationStyle = .custom
             self.previewHomeVC.navigationController?.present(menuvc, animated: false)
         }

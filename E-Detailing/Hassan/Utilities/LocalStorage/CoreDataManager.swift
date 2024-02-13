@@ -296,8 +296,8 @@ class CoreDataManager {
     
     /// function fetches core data objet and returns as codable objet
     /// - Returns: object of type [SavedPresentation]
-    func retriveSavedPresentations() -> [SavedPresentation] {
-        
+    func retriveSavedPresentations(completion: @escaping ([SavedPresentation]) -> ())  {
+        //-> [SavedPresentation]
         var savePresentationArr = [SavedPresentation]()
         
         CoreDataManager.shared.fetchPresentations { savedCDPresentationArr in
@@ -354,8 +354,8 @@ class CoreDataManager {
                 savePresentationArr.append(aSavedPresentation)
             }
         }
-        
-        return savePresentationArr
+        completion (savePresentationArr)
+        //return savePresentationArr
     }
     // MARK: - functionalities for presentation flow Ends
 }

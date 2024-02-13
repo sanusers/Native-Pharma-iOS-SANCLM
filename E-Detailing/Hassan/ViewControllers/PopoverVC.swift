@@ -166,6 +166,7 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.dismiss(animated: true) {
             self.delegate?.didTapRow(indexPath.row, self.selectedIndex)
+            self.delegate = nil
         }
 
     }
