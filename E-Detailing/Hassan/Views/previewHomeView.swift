@@ -71,7 +71,15 @@ extension PreviewHomeView:  SelectedPreviewTypesCVCDelegate {
 
 extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return previewType.count
+        switch collectionView {
+        case previewTypeCollection:
+            return previewType.count
+            case presentationCollectionVIew:
+            return 1
+        default:
+            return 0
+        }
+   
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -188,7 +196,7 @@ class PreviewHomeView : BaseView {
             doctorSelectorVIewHeight.constant = 50
             groupedBrandsSlideModel  = nil
             self.toSetPageType(pageType: .empty)
-            //toLoadNewPresentationData()
+          
           
         case .speciality:
             self.selectNotifyLbl.text = "Select listed doctors to view content"
@@ -196,13 +204,13 @@ class PreviewHomeView : BaseView {
             groupedBrandsSlideModel  = nil
             self.toSetPageType(pageType: .empty)
           
-            //toLoadNewPresentationData()
+          
         case .customPresentation:
             
             self.selectNotifyLbl.text = "No saved presentation found!"
             doctorSelectorVIewHeight.constant = 0
             retriveSavedPresentations()
-            //toLoadPreviewLoadedCollection()
+          
         }
     }
     
@@ -252,13 +260,14 @@ class PreviewHomeView : BaseView {
         case .exists:
         
             self.noPresentationView.isHidden = true
-            noPresentationView.backgroundColor = .clear
+            presentationCollectionVIew.isHidden = false
             toLoadPreviewLoadedCollection()
 
         case .empty:
-         
-            toLoadPreviewLoadedCollection()
+
+           toLoadPreviewLoadedCollection()
            self.noPresentationView.isHidden = false
+            presentationCollectionVIew.isHidden = true
         }
     }
     
@@ -336,7 +345,7 @@ class PreviewHomeView : BaseView {
     func cellRegistration() {
         if let layout = self.presentationCollectionVIew.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.collectionView?.isScrollEnabled = true
-            layout.scrollDirection = .horizontal
+            layout.scrollDirection = .vertical
         }
      
         
@@ -393,7 +402,7 @@ class PreviewHomeView : BaseView {
     
     func setupUI() {
         presentationCollectionVIew.backgroundColor = .clear
-        presentationCollectionVIew.isPagingEnabled = true
+        presentationCollectionVIew.isPagingEnabled = false
         sortSwitchStack.layer.cornerRadius = 3
         sortSwitchStack.layer.borderWidth = 1
         sortSwitchStack.layer.borderColor = UIColor.appLightTextColor.cgColor

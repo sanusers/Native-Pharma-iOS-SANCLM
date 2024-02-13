@@ -522,7 +522,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             switch dayNumbersIndex {
             case 0:
                 if isMonthAdded && addedIndex == 0 {
-                    modifiedDayNumbers.append(22)
+                   // modifiedDayNumbers.append(22)
                     callsCount[0].insert(contentsOf: [], at: 0)
                     eacSectorCounrArr[0].insert(contentsOf: [], at: 0)
                     
@@ -530,7 +530,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     
                     if date.count == 1 {
                      //   modifiedDayNumbers.append(15)
-                        modifiedDayNumbers.append(31)
+                        modifiedDayNumbers.append(22)
                     }
                     else if date.count == 2 {
                         modifiedDayNumbers.append(31)
