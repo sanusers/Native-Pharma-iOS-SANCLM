@@ -59,7 +59,7 @@ var slideURL : String =   LocalStorage.shared.getString(key: LocalStorage.LocalV
 var appMainURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
 var licenseKey : String = ""
 
-
+var  attachmentsUrl : String = ""
 var  webEndPoint: String = ""
 var  iosEndPoint : String = ""
 var  syncEndPoint : String = ""
@@ -81,7 +81,7 @@ var AppMainSlideURL : String  {
         slideEndPoint
     }
     set(newURL){
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.SlideURL, text: webEndPoint + slideEndPoint)
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.SlideURL, text: attachmentsUrl + "/" + slideEndPoint)
         
     }
 }

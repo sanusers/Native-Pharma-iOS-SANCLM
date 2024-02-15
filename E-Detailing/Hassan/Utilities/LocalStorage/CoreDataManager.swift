@@ -11,6 +11,9 @@ import Foundation
 import CoreData
 import UIKit
 
+
+
+
 class CoreDataManager {
     static let shared = CoreDataManager()
     // var savedSlideBrand: [SlideBrand]?
@@ -361,6 +364,8 @@ class CoreDataManager {
 }
 
 
+
+
 extension CoreDataManager {
     
 
@@ -433,12 +438,24 @@ extension CoreDataManager {
     }
     
     
-    
-    
-    
-    
-
-    
+    func toCheckGeneralGroupedSlidesExistance(_ productBrdCode: Int, completion: (Bool) -> ()) {
+        
+        do {
+            let request = GeneralSlideGroupsCDModel.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "productBrdCode == '\(productBrdCode)'")
+            //LIKE
+            request.predicate = pred
+           let films = try context.fetch(request)
+            if films.isEmpty {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+    }
     
     func toCheckGroupedSlidesExistance(_ id: UUID, completion: (Bool) -> ()) {
         
@@ -458,6 +475,7 @@ extension CoreDataManager {
             completion(false)
         }
     }
+    
     
     
     
@@ -541,11 +559,11 @@ extension CoreDataManager {
     }
 
     
-    func toCheckBrandExistance(_ id: UUID, completion: (Bool) -> ()) {
+    func toCheckBrandExistance(_ productBrdCode: Int, completion: (Bool) -> ()) {
         
         do {
             let request = SlideBrand.fetchRequest() as NSFetchRequest
-            let pred = NSPredicate(format: "uuid == '\(id)'")
+            let pred = NSPredicate(format: "productBrandCode == '\(productBrdCode)'")
             //LIKE
             request.predicate = pred
            let films = try context.fetch(request)
@@ -742,7 +760,7 @@ extension CoreDataManager {
     
     
     func saveBrandSlidesToCoreData(savedBrandSlides: BrandSlidesModel  , completion: (Bool) -> ()) {
-        toCheckBrandExistance(savedBrandSlides.uuid) { isExists in
+        toCheckBrandExistance(savedBrandSlides.productBrdCode) { isExists in
             if !isExists {
                 let context = self.context
                 
@@ -841,7 +859,7 @@ extension CoreDataManager {
 
 extension CoreDataManager {
     func toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: GroupedBrandsSlideModel  , completion: @escaping (Bool) -> ()) {
-        toCheckGroupedSlidesExistance(groupedBrandSlide.uuid) { isExists in
+        toCheckGeneralGroupedSlidesExistance(groupedBrandSlide.productBrdCode) { isExists in
             if !isExists {
                 let context = self.context
                 // Create a new managed object

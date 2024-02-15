@@ -23,21 +23,6 @@ extension PreviewHomeView: MenuResponseProtocol {
             let mapProd = fetchedObject?.mappProducts ?? ""
             let mProd = fetchedObject?.mProd ?? ""
             let specialityCode = fetchedObject?.specialityCode ?? ""
-//            if mapProd != "" {
-//                do {
-//                    let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
-//                    let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
-//
-//                    let numbers = matches.map { match in
-//                        return (mapProd as NSString).substring(with: match.range)
-//                    }
-//
-//                    print(numbers)
-//                } catch {
-//                    print("Error creating regular expression: \(error.localizedDescription)")
-//                }
-//            }
-            
 
    
             switch self.previewType[previewTypeIndex] {
@@ -46,22 +31,22 @@ extension PreviewHomeView: MenuResponseProtocol {
                 print("Implemented")
                 
             case .brand:
-                self.brandsMatrixSlideModel = self.groupedBrandsSlideModel
+                self.brandsMatrixSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
                 
-                var mProdCodeArr : [String] = []
+                var mapProdCodeArr : [String] = []
                 if mapProd != "" {
                     do {
                         let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
                         let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
 
-                       // var numbers: [String] = []
+                
                         for i in stride(from: 0, to: matches.count, by: 2) {
                             let match = matches[i]
                             let number = (mapProd as NSString).substring(with: match.range)
-                            mProdCodeArr.append(number)
+                            mapProdCodeArr.append(number)
                         }
 
-                        print(mProdCodeArr)
+                        print(mapProdCodeArr)
                     } catch {
                         print("Error creating regular expression: \(error.localizedDescription)")
                     }
@@ -69,13 +54,20 @@ extension PreviewHomeView: MenuResponseProtocol {
                 
                 
                 // Split the includedIDs string into an array of individual IDs
-                let includedmProdsIDArray = mProd.components(separatedBy: ",").compactMap { Int($0) }
+                let includedmProdsIDArray = mProd.components(separatedBy: ",").compactMap { ($0) }
 
                 // Filter out groupedSlide with slideId in includedIDsArray
                 self.brandsMatrixSlideModel?.forEach { brandModel in
-                    brandModel.groupedSlide = brandModel.groupedSlide.filter { mProdCodeArr.contains("\($0.code)") }
-                    
-                 //   brandModel.groupedSlide = brandModel.groupedSlide.filter { includedmProdsIDArray.contains($0.slideId) }
+                    brandModel.groupedSlide = brandModel.groupedSlide.filter { slide in
+                        let cleanedProductDetailCode = slide.productDetailCode.trimmingCharacters(in: CharacterSet(charactersIn: ","))
+                        if slide.productDetailCode == "" {
+                            return false
+                        } else {
+                            return mapProdCodeArr.contains("\(slide.code)") || includedmProdsIDArray.contains(cleanedProductDetailCode)
+                        }
+                      
+                        
+                    }
                 }
                 
                 
@@ -83,7 +75,7 @@ extension PreviewHomeView: MenuResponseProtocol {
                 self.setPreviewType(.brand)
             case .speciality:
         
-                self.specialitySlideModel = self.groupedBrandsSlideModel
+                self.specialitySlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
                 
                 self.specialitySlideModel?.forEach { brandModel in
                     
@@ -159,14 +151,27 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
                 welf.previewTypeIndex  = indexPath.row
-                welf.setPreviewType(welf.previewType[indexPath.row])
+              
                 welf.previewTypeCollection.reloadData()
-                if !welf.presentationCollectionVIew.visibleCells.isEmpty {
-                    welf.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+               
+                
+                switch welf.previewType[welf.previewTypeIndex] {
+                    
+                case .home:
+                    welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
+                case .brand , .speciality:
                     if welf.fetchedObject != nil {
                         welf.selectedType(.listedDoctor, selectedObject: welf.fetchedObject ?? NSManagedObject())
+                    } else {
+                        welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
                     }
+        
+                case .customPresentation:
+                    welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
                 }
+                
+              //  welf.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+   
                 }
                
             return cell
@@ -193,24 +198,24 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
     }
     
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        // Calculate the index based on the current content offset and item size
-        
-        if let collect = scrollView as? UICollectionView {
-            if collect == self.presentationCollectionVIew {
-                let pageWidth = collect.frame.size.width
-                let currentPage = Int(collect.contentOffset.x / pageWidth)
-                print("Current Page: \(currentPage)")
-                self.previewTypeIndex = Int(currentPage)
-                self.setPreviewType(previewType[currentPage])
-                self.previewTypeCollection.reloadData()
-                let indexPath: IndexPath = IndexPath(item: Int(currentPage), section: 0)
-                self.previewTypeCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-             //   self.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-                
-            }
-        }
-    }
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        // Calculate the index based on the current content offset and item size
+//
+//        if let collect = scrollView as? UICollectionView {
+//            if collect == self.presentationCollectionVIew {
+//                let pageWidth = collect.frame.size.width
+//                let currentPage = Int(collect.contentOffset.x / pageWidth)
+//                print("Current Page: \(currentPage)")
+//                self.previewTypeIndex = Int(currentPage)
+//                self.setPreviewType(previewType[currentPage])
+//                self.previewTypeCollection.reloadData()
+//                let indexPath: IndexPath = IndexPath(item: Int(currentPage), section: 0)
+//                self.previewTypeCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+//             //   self.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+//
+//            }
+//        }
+//    }
     
     
     
@@ -234,7 +239,7 @@ class PreviewHomeView : BaseView {
     
     enum PreviewType: String {
         case home = "Home"
-        case brand = "Brand"
+        case brand = "Brand Matrix"
         case speciality = "Speciality"
         case customPresentation = "Custom Presentation"
     }
@@ -289,15 +294,7 @@ class PreviewHomeView : BaseView {
             }
             doctorSelectorVIewHeight.constant = 50
             if specialitySlideModel != nil {
-                specialitySlideModel =  specialitySlideModel?.filter{
-                    !$0.groupedSlide.isEmpty
-                }
-               if specialitySlideModel?.count == 0 {
-                   self.toSetPageType(pageType: .empty)
-               } else {
                    self.toSetPageType(pageType: .exists)
-               }
-            
             } else {
                 self.toSetPageType(pageType: .empty)
             }
@@ -331,7 +328,7 @@ class PreviewHomeView : BaseView {
     @IBOutlet var a2zView: UIView!
     @IBOutlet var sortSwitchStack: UIStackView!
     @IBOutlet var seperatorView: UIView!
-    
+  
     @IBOutlet var doctorSelectorVIewHeight: NSLayoutConstraint!
     @IBOutlet var decendingIV: UIImageView!
     @IBOutlet var ascendingIV: UIImageView!
@@ -470,16 +467,19 @@ class PreviewHomeView : BaseView {
         }
     
         
-        setPreviewType(self.previewType[selectedTypesIndex ?? 0])
+        setPreviewType(self.previewType[previewTypeIndex])
     }
     
     func initView() {
         
-        self.doctorSelectionVIew.addTap {
-            let menuvc = SpecifiedMenuVC.initWithStory(self, celltype: .listedDoctor)
-            menuvc.selectedObject = self.fetchedObject 
-            self.previewHomeVC.modalPresentationStyle = .custom
-            self.previewHomeVC.navigationController?.present(menuvc, animated: false)
+        self.doctorSelectionVIew.addTap { [weak self] in
+            guard let welf = self else {return}
+
+            let menuvc = SpecifiedMenuVC.initWithStory(welf, celltype: .listedDoctor)
+            menuvc.selectedObject = welf.fetchedObject
+            menuvc.previewType = welf.previewType[welf.previewTypeIndex]
+            welf.previewHomeVC.modalPresentationStyle = .custom
+            welf.previewHomeVC.navigationController?.present(menuvc, animated: false)
         }
         
         backHolderView.addTap {

@@ -11,7 +11,7 @@ class DetailedReportVC: BaseViewController {
 
     
     @IBOutlet var reportsView: DetailedReportView!
-    var sessionResponseVM : SessionResponseVM?
+    var reportsVM : ReportsVM?
     var appdefaultSetup : AppSetUp? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +22,8 @@ class DetailedReportVC: BaseViewController {
 
     class func initWithStory() -> DetailedReportVC {
         let tourPlanVC : DetailedReportVC = UIStoryboard.Hassan.instantiateViewController()
-      //  tourPlanVC.homeVM = HomeViewModal()
-        tourPlanVC.sessionResponseVM = SessionResponseVM()
+        tourPlanVC.reportsVM = ReportsVM()
+     
         return tourPlanVC
     }
     
@@ -101,7 +101,7 @@ class DetailedReportVC: BaseViewController {
 
     func getReporsAPIResponse(_ param: [String: Any], paramData: JSON){
         Shared.instance.showLoader(in: reportsView)
-        sessionResponseVM?.getReportsData(params: param, api: .getReports, paramData: paramData) { result in
+        reportsVM?.getReportsData(params: param, api: .getReports, paramData: paramData) { result in
             switch result {
             case .success(let response):
                 print(response)

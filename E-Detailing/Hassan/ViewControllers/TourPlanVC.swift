@@ -9,7 +9,8 @@ import Foundation
 import UIKit
 class TourPlanVC: BaseViewController {
     
-    var homeVM: HomeViewModal?
+  //  var homeVM: HomeViewModal?
+    var tourplanVM: TourPlanVM?
    
     @IBOutlet var tourPlanView: TourPlanView!
     
@@ -22,14 +23,14 @@ class TourPlanVC: BaseViewController {
     
     class func initWithStory() -> TourPlanVC {
         let tourPlanVC : TourPlanVC = UIStoryboard.Hassan.instantiateViewController()
-        tourPlanVC.homeVM = HomeViewModal()
+        tourPlanVC.tourplanVM = TourPlanVM()
         return tourPlanVC
     }
     
     
     func getAllPlansData(_ param: [String: Any], paramData: JSON, completion: @escaping (Result<SessionResponseModel,Error>) -> Void){
-        let sessionResponseVM = SessionResponseVM()
-        sessionResponseVM.getTourPlanData(params: param, api: .getAllPlansData, paramData: paramData) { result in
+      
+        tourplanVM?.getTourPlanData(params: param, api: .getAllPlansData, paramData: paramData) { result in
             switch result {
             case .success(let response):
                 print(response)

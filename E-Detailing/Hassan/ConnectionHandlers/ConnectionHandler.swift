@@ -11,6 +11,15 @@ import UIKit
 import Alamofire
 
 final class ConnectionHandler : NSObject {
+    
+    enum TableName: String {
+        case getDayPlan = "gettodaytpnew"
+        case reports = "getdayrpt"
+        case detailedReport = "getvwvstdet"
+        case getToadyCalls = "gettodycalls"
+        
+    }
+    
     static let shared = ConnectionHandler()
     private let alamofireManager : Session
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -268,14 +277,13 @@ final class ConnectionHandler : NSObject {
                     //                                       self.appDelegate.createToastMessage(err.localizedDescription, bgColor: .black, textColor: .white)
                     return
                 }
-                
 
-                
-                if api == .getReports || api == .getTodayCalls {
+                if api == .getReports || api == .getTodayCalls || api == .masterData {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
+                    var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
                     var encodedAdayCalls: [TodayCallsModel]?
-                    if data["tableName"] as! String == "getdayrpt" {
+                    if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
                             encodedReportsModelData = decodecObj
                             do {
@@ -290,7 +298,7 @@ final class ConnectionHandler : NSObject {
                                 print("Error encoding JSON: \(error)")
                             }
                         }
-                    } else if data["tableName"] as! String == "gettodycalls" {
+                    } else if data["tableName"] as! String == TableName.getToadyCalls.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TodayCallsModel].self) { decodecObj in
                             encodedAdayCalls = decodecObj
                             do {
@@ -309,7 +317,7 @@ final class ConnectionHandler : NSObject {
                             
                         }
                     }
-                    else if data["tableName"] as! String == "getvwvstdet" {
+                    else if data["tableName"] as! String == TableName.detailedReport.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DetailedReportsModel].self) { decodecObj in
                             encodedDetailedReportsModelData = decodecObj
                             do {
@@ -327,8 +335,25 @@ final class ConnectionHandler : NSObject {
                             
                             
                         }
-                        
-                 
+                    }
+                    else if data["tableName"] as! String == TableName.getDayPlan.rawValue {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [MyDayPlanResponseModel].self) { decodecObj in
+                            encodedMyDayPlanResponseModelData = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(encodedMyDayPlanResponseModelData)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedMyDayPlanResponseModelData) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                            } catch {
+                                print("Error encoding JSON: \(error)")
+                            }
+                            
+                            
+                            
+                        }
                     }
  
                 } else   {

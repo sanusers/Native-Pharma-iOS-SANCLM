@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 class ViewDayReportVC: BaseViewController {
-    var sessionResponseVM : SessionResponseVM?
+    var reportsVM : ReportsVM?
     var reportsModel : ReportsModel?
     var isToReduceLocationHeight : Bool = false
     var appdefaultSetup : AppSetUp? = nil
@@ -23,7 +23,7 @@ class ViewDayReportVC: BaseViewController {
         let tourPlanVC : ViewDayReportVC = UIStoryboard.Hassan.instantiateViewController()
       //  tourPlanVC.homeVM = HomeViewModal()
         tourPlanVC.reportsModel = model
-        tourPlanVC.sessionResponseVM = SessionResponseVM()
+        tourPlanVC.reportsVM = ReportsVM()
         return tourPlanVC
     }
     
@@ -101,7 +101,7 @@ class ViewDayReportVC: BaseViewController {
 
     func getReporsAPIResponse(_ param: [String: Any], paramData: JSON){
         Shared.instance.showLoader(in: dayReportView)
-        sessionResponseVM?.getDetailedReportsData(params: param, api: .getReports, paramData: paramData) { result in
+        reportsVM?.getDetailedReportsData(params: param, api: .getReports, paramData: paramData) { result in
             switch result {
             case .success(let response):
                 dump(response)

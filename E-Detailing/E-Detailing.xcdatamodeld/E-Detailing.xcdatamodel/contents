@@ -85,12 +85,27 @@
         <attribute name="townName" optional="YES" attributeType="String"/>
         <attribute name="uRwId" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="EachDayPlan" representedClassName="EachDayPlan" syncable="YES" codeGenerationType="class">
+        <attribute name="isRejected" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="planDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="rejectionReason" optional="YES" attributeType="String"/>
+        <attribute name="remarks" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="eachPlan" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EachPlan"/>
+    </entity>
+    <entity name="EachPlan" representedClassName="EachPlan" syncable="YES" codeGenerationType="class">
+        <attribute name="planDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="remarks" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="cluster" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Territory"/>
+        <relationship name="headQuarters" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subordinate"/>
+        <relationship name="workType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkType"/>
+    </entity>
     <entity name="Efff" representedClassName="Efff" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="timeZone" optional="YES" attributeType="String"/>
         <attribute name="timeZoneType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
     <entity name="Feedback" representedClassName="Feedback" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

@@ -21,5 +21,7 @@ class PreviewTypeCVC: UICollectionViewCell {
         titleLbl.setFont(font: .bold(size:  .BODY))
         selectionView.backgroundColor = .appTextColor
     }
+    
+    
 
 }

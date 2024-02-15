@@ -422,130 +422,250 @@ class SlideDownloadVC : UIViewController {
     }
     
     
+//    func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
+//        let  arrayOfAllSlideObjects =  CoreDataManager.shared.retriveSavedSlides()
+//        let arrayOfBrandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
+//
+//        CoreDataManager.shared.removeAllGeneralGroupedSlides()
+//
+//        //   var groupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
+//        arrayOfBrandSlideObjects.enumerated().forEach {index, brandSlideModel in
+//            let aBrandData =  arrayOfAllSlideObjects.filter({ aSlideModel in
+//                print("iterated Brand code : \(brandSlideModel.productBrdCode), iterated slide \(aSlideModel.code)")
+//               return aSlideModel.code == brandSlideModel.productBrdCode
+//
+//            })
+//
+//            if !aBrandData.isEmpty {
+//                let aBrandGroup = GroupedBrandsSlideModel()
+//
+//                aBrandGroup.groupedSlide = aBrandData
+//                aBrandGroup.priority = brandSlideModel.priority
+//                // aBrandGroup.updatedDate = brandSlideModel.updatedDate
+//                aBrandGroup.divisionCode = brandSlideModel.divisionCode
+//                aBrandGroup.productBrdCode = brandSlideModel.productBrdCode
+//                aBrandGroup.subdivisionCode = brandSlideModel.subdivisionCode
+//                //  aBrandGroup.createdDate = brandSlideModel.createdDate
+//                aBrandGroup.id = brandSlideModel.id
+//
+//
+//                    self.tounArchiveData(aGroupedBrandsSlideModel: aBrandGroup) {isSaved in
+//                        if isSaved {
+//                            completion(true)
+//                        }
+//                    }
+//            } else {
+//                print("no slides found for iterated Brand code : <--\(brandSlideModel.productBrdCode)-->")
+//            }
+//
+//
+//
+//
+//        }
+//    }
+    
     func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
-        let  arrayOfAllSlideObjects =  CoreDataManager.shared.retriveSavedSlides()
-        let arrayOfBrandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
-        //  CoreDataManager.shared.removeAllGroupedSlides()
-        
+        Shared.instance.showLoaderInWindow()
+        let allSlideObjects = CoreDataManager.shared.retriveSavedSlides()
+        let brandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
+
         CoreDataManager.shared.removeAllGeneralGroupedSlides()
-        //   var groupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
-        arrayOfBrandSlideObjects.enumerated().forEach {index, brandSlideModel in
-            let aBrandData =  arrayOfAllSlideObjects.filter({ aSlideModel in
-                aSlideModel.code == brandSlideModel.productBrdCode
-            })
-            
-            let aBrandGroup = GroupedBrandsSlideModel()
-            
-            aBrandGroup.groupedSlide = aBrandData
-            aBrandGroup.priority = brandSlideModel.priority
-            // aBrandGroup.updatedDate = brandSlideModel.updatedDate
-            aBrandGroup.divisionCode = brandSlideModel.divisionCode
-            aBrandGroup.productBrdCode = brandSlideModel.productBrdCode
-            aBrandGroup.subdivisionCode = brandSlideModel.subdivisionCode
-            //  aBrandGroup.createdDate = brandSlideModel.createdDate
-            aBrandGroup.id = brandSlideModel.id
-            
-            CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aBrandGroup) { isSaved in
-                if !isSaved {
-                    print("Error saving groupedBrandSlide to core data")
-                    //self.checkifSyncIsCompleted(self.isFromlaunch)
-                } else {
-                    print("Saved successfully")
-                    self.tounArchiveData { _ in
-                        if index == arrayOfBrandSlideObjects.count - 1 {
-                            completion(true)
-                          //  self.checkifSyncIsCompleted(self.isFromlaunch)
-                        }
-                    }
+
+        let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
+            let brandSlides = allSlideObjects.filter { $0.code == brandSlideModel.productBrdCode }
+
+            guard !brandSlides.isEmpty else {
+                print("No slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
+                return nil
+            }
+            print("slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
+            let groupedBrandModel = GroupedBrandsSlideModel()
+            groupedBrandModel.groupedSlide = brandSlides
+            groupedBrandModel.priority = brandSlideModel.priority
+            groupedBrandModel.divisionCode = brandSlideModel.divisionCode
+            groupedBrandModel.productBrdCode = brandSlideModel.productBrdCode
+            groupedBrandModel.subdivisionCode = brandSlideModel.subdivisionCode
+            groupedBrandModel.id = brandSlideModel.id
+
+            return groupedBrandModel
+        }
+
+        let dispatchGroup = DispatchGroup()
+
+        for groupedBrandModel in groupedBrandsSlideModels {
+            dispatchGroup.enter()
+
+            tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
+                dispatchGroup.leave()
+
+                if isSaved {
+                    completion(true)
                 }
             }
-            
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            // All async tasks are completed
+            completion(true)
+            Shared.instance.removeLoaderInWindow()
         }
     }
     
-    
-    func tounArchiveData(completion: @escaping (Bool) -> Void) {
+    func tounArchiveData(aGroupedBrandsSlideModel: GroupedBrandsSlideModel, completion: @escaping (Bool) -> Void) {
         var zipContentsSlides = [SlidesModel]()
         var zipgropedBrandModels = [GroupedBrandsSlideModel]()
-        groupedBrandsSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
-
-        CoreDataManager.shared.removeAllGeneralGroupedSlides()
-
-        //  CoreDataManager.shared.removeAllGeneralGroupedSlides()
-        if  let groupedBrandsSlideModel = groupedBrandsSlideModel {
-            var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
-            groupedBrandsSlideModel.enumerated().forEach { aGroupedBrandsSlideModelIndex, aGroupedBrandsSlideModel in
-                // Filter out slides with utType equal to "application/zip"
-                zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
-                    aSlideModel.utType == "application/zip"
-                }
-
-                // Update groupedSlideModel by removing slides with utType equal to "application/zip"
-                self.groupedBrandsSlideModel?[aGroupedBrandsSlideModelIndex].groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
-                    aSlideModel.utType != "application/zip"
-                }
-
-                // Append to zipgropedBrandModels if there are zipContentsSlides
-                if !zipContentsSlides.isEmpty {
-
-                    zipgropedBrandModels.append(aGroupedBrandsSlideModel)
-                } else {
-                    tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
-                }
-            }
-
-            self.groupedBrandsSlideModel = tempGroupedBrandsSlideModel
-
+        var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
+        
+        zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+            aSlideModel.utType == "application/zip" ||  aSlideModel.fileType == "H"
+        }
+        
+        // Update groupedSlideModel by removing slides with utType equal to "application/zip"
+        aGroupedBrandsSlideModel.groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+            !(aSlideModel.utType == "application/zip" && aSlideModel.fileType == "H")
+        }
+        
+      
+        
+        // Append to zipgropedBrandModels if there are zipContentsSlides
+        if !zipContentsSlides.isEmpty {
+           
+            zipgropedBrandModels.append(aGroupedBrandsSlideModel)
             var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
-
             zipgropedBrandModels.forEach { aGroupedBrandsSlideModel in
                 let tempGroupedBrandsSlideModel = GroupedBrandsSlideModel()
-                //              let zipContentsSlides =  aGroupedBrandsSlideModel.groupedSlide.filter { aGroupedSlide in
-                //                  aGroupedSlide.utType == "application/zip"
-                //                }
+
                 var aGroupedSlideArr = [SlidesModel]()
-                // var dataArr = [Data]()
+            
                 var data = UnzippedDataInfo()
-                if !zipContentsSlides.isEmpty {
+             
                     zipContentsSlides.enumerated().forEach { aSlidesModelIndex, aSlidesModel in
-                        //  dataArr.append(contentsOf: unarchiveAndGetData(from: aSlidesModel.slideData) ?? [Data]())
+                        
+                        
                         data = unarchiveAndGetData(from: aSlidesModel.slideData)
 
                        let aGroupedSlide = toExtractSlidesFromUnzippedContent(data: data, aSlidesModel: aSlidesModel)
                         aGroupedSlideArr.append(contentsOf: aGroupedSlide)
-
                     }
-                }
-                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
-                tempGroupedBrandsSlideModel.groupedSlide = aGroupedSlideArr
-                tempGroupedBrandsSlideModel.priority   = aGroupedBrandsSlideModel.priority
-                tempGroupedBrandsSlideModel.updatedDate = aGroupedBrandsSlideModel.updatedDate
-                tempGroupedBrandsSlideModel.divisionCode = aGroupedBrandsSlideModel.divisionCode
-                tempGroupedBrandsSlideModel.productBrdCode = aGroupedBrandsSlideModel.productBrdCode
-                tempGroupedBrandsSlideModel.subdivisionCode = aGroupedBrandsSlideModel.subdivisionCode
-                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
-                tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
-                modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
+                    tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+                    tempGroupedBrandsSlideModel.groupedSlide = aGroupedSlideArr
+                    tempGroupedBrandsSlideModel.priority   = aGroupedBrandsSlideModel.priority
+                    tempGroupedBrandsSlideModel.updatedDate = aGroupedBrandsSlideModel.updatedDate
+                    tempGroupedBrandsSlideModel.divisionCode = aGroupedBrandsSlideModel.divisionCode
+                    tempGroupedBrandsSlideModel.productBrdCode = aGroupedBrandsSlideModel.productBrdCode
+                    tempGroupedBrandsSlideModel.subdivisionCode = aGroupedBrandsSlideModel.subdivisionCode
+                    tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+                    tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
+                    modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
             }
-
-            self.groupedBrandsSlideModel?.append(contentsOf: modifiedZipgropedBrandModels)
-
-
-            var completedTaskCount = 0
-            self.groupedBrandsSlideModel?.enumerated().forEach({ index, aGroupedBrandsSlideModel in
-                CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) { isSaved in
-                    completedTaskCount += 1
-
-                    if completedTaskCount == groupedBrandsSlideModel.count {
-                        completion(true)
-                    }
-                }
-
-            })
-
-
+            tempGroupedBrandsSlideModel.append(contentsOf: modifiedZipgropedBrandModels)
+        } else {
+            tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
         }
+        
+       // aGroupedBrandsSlideModel = tempGroupedBrandsSlideModel
+        
+       
+
+
+      
+         
+        
+      
+        
+        tempGroupedBrandsSlideModel.forEach { aGroupedBrandsSlideModel in
+            CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) {isSaved in
+                if isSaved {
+                    completion(true)
+                }
+            }
+        }
+        
+
     }
+    
+//    func tounArchiveData(completion: @escaping (Bool) -> Void) {
+//        var zipContentsSlides = [SlidesModel]()
+//        var zipgropedBrandModels = [GroupedBrandsSlideModel]()
+//        groupedBrandsSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
+//
+//        CoreDataManager.shared.removeAllGeneralGroupedSlides()
+//
+//        //  CoreDataManager.shared.removeAllGeneralGroupedSlides()
+//        if  let groupedBrandsSlideModel = groupedBrandsSlideModel {
+//            var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
+//            groupedBrandsSlideModel.enumerated().forEach { aGroupedBrandsSlideModelIndex, aGroupedBrandsSlideModel in
+//                // Filter out slides with utType equal to "application/zip"
+//                zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+//                    aSlideModel.utType == "application/zip"
+//                }
+//
+//                // Update groupedSlideModel by removing slides with utType equal to "application/zip"
+//                self.groupedBrandsSlideModel?[aGroupedBrandsSlideModelIndex].groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
+//                    aSlideModel.utType != "application/zip"
+//                }
+//
+//                // Append to zipgropedBrandModels if there are zipContentsSlides
+//                if !zipContentsSlides.isEmpty {
+//
+//                    zipgropedBrandModels.append(aGroupedBrandsSlideModel)
+//                } else {
+//                    tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
+//                }
+//            }
+//
+//            self.groupedBrandsSlideModel = tempGroupedBrandsSlideModel
+//
+//            var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
+//
+//            zipgropedBrandModels.forEach { aGroupedBrandsSlideModel in
+//                let tempGroupedBrandsSlideModel = GroupedBrandsSlideModel()
+//                //              let zipContentsSlides =  aGroupedBrandsSlideModel.groupedSlide.filter { aGroupedSlide in
+//                //                  aGroupedSlide.utType == "application/zip"
+//                //                }
+//                var aGroupedSlideArr = [SlidesModel]()
+//                // var dataArr = [Data]()
+//                var data = UnzippedDataInfo()
+//                if !zipContentsSlides.isEmpty {
+//                    zipContentsSlides.enumerated().forEach { aSlidesModelIndex, aSlidesModel in
+//                        //  dataArr.append(contentsOf: unarchiveAndGetData(from: aSlidesModel.slideData) ?? [Data]())
+//                        data = unarchiveAndGetData(from: aSlidesModel.slideData)
+//
+//                       let aGroupedSlide = toExtractSlidesFromUnzippedContent(data: data, aSlidesModel: aSlidesModel)
+//                        aGroupedSlideArr.append(contentsOf: aGroupedSlide)
+//
+//                    }
+//                }
+//                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+//                tempGroupedBrandsSlideModel.groupedSlide = aGroupedSlideArr
+//                tempGroupedBrandsSlideModel.priority   = aGroupedBrandsSlideModel.priority
+//                tempGroupedBrandsSlideModel.updatedDate = aGroupedBrandsSlideModel.updatedDate
+//                tempGroupedBrandsSlideModel.divisionCode = aGroupedBrandsSlideModel.divisionCode
+//                tempGroupedBrandsSlideModel.productBrdCode = aGroupedBrandsSlideModel.productBrdCode
+//                tempGroupedBrandsSlideModel.subdivisionCode = aGroupedBrandsSlideModel.subdivisionCode
+//                tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
+//                tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
+//                modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
+//            }
+//
+//            self.groupedBrandsSlideModel?.append(contentsOf: modifiedZipgropedBrandModels)
+//
+//
+//            var completedTaskCount = 0
+//            self.groupedBrandsSlideModel?.enumerated().forEach({ index, aGroupedBrandsSlideModel in
+//                CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) { isSaved in
+//                    completedTaskCount += 1
+//
+//                    if completedTaskCount == groupedBrandsSlideModel.count {
+//                        completion(true)
+//                    }
+//                }
+//
+//            })
+//
+//
+//        }
+//    }
     
     func toExtractSlidesFromUnzippedContent(data: UnzippedDataInfo, aSlidesModel: SlidesModel) -> [SlidesModel] {
         if !data.videofiles.isEmpty {

@@ -150,7 +150,20 @@ extension MainVC : HomeLineChartViewDelegate
 
 extension MainVC: MenuResponseProtocol {
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
-        print("Yet to implement")
+        switch type {
+
+        case .workType:
+            self.fetchedWorkTypeObject = selectedObject as? WorkType
+        case .cluster:
+            self.fetchedClusterObject = selectedObject as? Territory
+        case .headQuater:
+            self.fetchedHQObject = selectedObject as? Subordinate
+
+        default:
+            print("Yet to implement.")
+        }
+        
+        self.toLoadWorktypeTable()
     }
     
     func selectedType(_ type: MenuView.CellType, index: Int) {
@@ -287,6 +300,14 @@ class MainVC : UIViewController {
     @IBOutlet weak var sideMenuTableView: UITableView!
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
+    
+    
+    //my day plan
+    
+    @IBOutlet var btnAddplan: ShadowButton!
+    
+    @IBOutlet var btnFinalSubmit: ShadowButton!
+    @IBOutlet var btnSavePlan: ShadowButton!
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
@@ -303,8 +324,12 @@ class MainVC : UIViewController {
     var totalFWCount: Int = 0
     var cacheINdex: Int = 0
     var selectedCallIndex: Int = 0
-    var sessionResponseVM : SessionResponseVM?
+    var userststisticsVM : UserStatisticsVM?
     let dispatchGroup = DispatchGroup()
+    var fetchedWorkTypeObject: WorkType?
+    var fetchedClusterObject: Territory?
+    var fetchedHQObject: Subordinate?
+    
     var selectedWorktype : WorkType? {
         didSet {
             guard let selectedWorktype = self.selectedWorktype else{
@@ -429,6 +454,19 @@ class MainVC : UIViewController {
     
     func setupUI() {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+        
+        btnAddplan.backgroundColor = .appGreyColor
+        btnAddplan.layer.borderWidth = 1
+        btnAddplan.layer.borderColor = UIColor.appLightTextColor.cgColor
+        
+      
+        
+        btnSavePlan.backgroundColor = .appGreyColor
+        btnSavePlan.layer.borderWidth = 1
+        btnSavePlan.layer.borderColor = UIColor.appLightTextColor.cgColor
+        
+        btnFinalSubmit.backgroundColor = .appTextColor
+        
         outboxCountVIew.isHidden = true
         outboxCallsCountLabel.setFont(font: .medium(size: .BODY))
         outboxCallsCountLabel.textColor = .appWhiteColor
@@ -524,7 +562,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.sessionResponseVM = SessionResponseVM()
+        self.userststisticsVM = UserStatisticsVM()
         //self.toSeperateDCR()
         self.updateLinks()
         
@@ -565,7 +603,9 @@ class MainVC : UIViewController {
         self.outboxTableView.register(UINib(nibName: "OutboxDetailsTVC", bundle: nil), forCellReuseIdentifier: "OutboxDetailsTVC")
         
         
-        self.worktypeTable.register(UINib(nibName: "HomeWorktypeTVC", bundle: nil), forCellReuseIdentifier: "HomeWorktypeTVC")
+    //    self.worktypeTable.register(UINib(nibName: "HomeWorktypeTVC", bundle: nil), forCellReuseIdentifier: "HomeWorktypeTVC")
+        
+        self.worktypeTable.register(UINib(nibName: "MyDayPlanTVC", bundle: nil), forCellReuseIdentifier: "MyDayPlanTVC")
         
         
         
@@ -726,12 +766,12 @@ class MainVC : UIViewController {
             self.viewWorkPlan.isHidden = true
             self.viewCalls.isHidden = false
             self.viewOutBox.isHidden = true
-            //   self.callTableView.reloadData()
+            toloadCallsTable()
         case 2:
             self.viewWorkPlan.isHidden = true
             self.viewCalls.isHidden = true
             self.viewOutBox.isHidden = false
-            //toLoadOutboxTable()
+            toLoadOutboxTable()
         default:
             break
         }
@@ -1115,7 +1155,7 @@ class MainVC : UIViewController {
     
     func getTodayCalls(_ param: [String: Any], paramData: JSON) {
         Shared.instance.showLoaderInWindow()
-        sessionResponseVM?.getTodayCallsData(params: param, api: .getTodayCalls, paramData: paramData) { result in
+        userststisticsVM?.getTodayCallsData(params: param, api: .getTodayCalls, paramData: paramData) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -1137,7 +1177,7 @@ class MainVC : UIViewController {
     
     
     func setupCalls(response: [TodayCallsModel]) {
-        callsCountLbl.text = "Call Count: 0\(response.count)"
+        callsCountLbl.text = "Call Count: \(response.count)"
         toloadCallsTable()
     }
     
@@ -1654,19 +1694,22 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if tableView == self.outboxTableView {
-            
-            print("riigjroo  \(obj_sections.count)")
+        
+        switch tableView  {
+        case outboxTableView:
             return obj_sections.count
             
+            
+        case worktypeTable:
+            return 1
+            
+        default:
+            return 1
         }
-        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        if tableView == self.outboxTableView {
-        //            return obj_sections[section].collapsed ? 0 : obj_sections[section].items.count
-        //        }
+ 
         switch tableView {
         case self.sideMenuTableView :
             return menuList.count
@@ -1680,7 +1723,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             
         case self.worktypeTable:
-            return 3
+            return 1
         default :
             return 10
         }
@@ -1755,14 +1798,67 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             return cell
             
         case worktypeTable:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "HomeWorktypeTVC", for: indexPath) as! HomeWorktypeTVC
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MyDayPlanTVC", for: indexPath) as! MyDayPlanTVC
+            cell.setupHeight(true)
             cell.selectionStyle = .none
+            var cacheObjects : [NSManagedObject] = []
+            
+            if let afetchedHQObject =  fetchedHQObject  {
+                cacheObjects.append(afetchedHQObject)
+            }
+            
+            if let afetchedClusterObject =  fetchedClusterObject  {
+                cacheObjects.append(afetchedClusterObject)
+            }
+            
+            if let afetchedWorkTypeObject =  fetchedWorkTypeObject  {
+                cacheObjects.append(afetchedWorkTypeObject)
+            }
+            
+  
+            
+            cell.setupUI(model: cacheObjects)
+            
+            
+            cell.wtBorderView.addTap {
+                self.navigateToSpecifiedMenu(type: .workType)
+            }
+            
+            cell.hqBorderView.addTap {
+                self.navigateToSpecifiedMenu(type: .headQuater)
+            }
+            
+            cell.clusterBorderView.addTap {
+                self.navigateToSpecifiedMenu(type: .cluster)
+            }
+            
             return cell
             
         default :
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SideMenuCell", for: indexPath) as! SideMenuCell
-            return cell
+            return UITableViewCell()
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "SideMenuCell", for: indexPath) as! SideMenuCell
+//            return cell
         }
+    }
+    
+    func navigateToSpecifiedMenu(type: MenuView.CellType) {
+        let vc = SpecifiedMenuVC.initWithStory(self, celltype: type)
+        
+        switch type {
+            
+        case .workType:
+            vc.selectedObject = self.fetchedWorkTypeObject
+        case .cluster:
+            vc.selectedObject = self.fetchedClusterObject
+        case .headQuater:
+            vc.selectedObject = self.fetchedHQObject
+        default:
+            print("Yet to implement")
+  
+        }
+        
+        self.modalPresentationStyle = .custom
+        self.navigationController?.present(vc, animated: false)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -1784,7 +1880,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         } else if tableView == self.callTableView {
             return 75
         } else if tableView == self.worktypeTable {
-            return 60
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                return 150 + 10
+            } else {
+                return 200 + 10
+            }
         }
         else {
             return 95
@@ -1979,7 +2079,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (Bool) -> Void) {
         Shared.instance.showLoaderInWindow()
-        sessionResponseVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
+        userststisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -2280,22 +2380,22 @@ private enum Constants {
 }
 
 
-struct QuicKLink {
-    
-    var color : UIColor!
-    var name : String!
-    var image : UIImage!
-}
-
-
-struct DcrCount {
-    
-    var name : String
-    var color : UIColor
-    var count : String
-    var image: UIImage
-    var callsCount : Int
-}
+//struct QuicKLink {
+//
+//    var color : UIColor!
+//    var name : String!
+//    var image : UIImage!
+//}
+//
+//
+//struct DcrCount {
+//
+//    var name : String
+//    var color : UIColor
+//    var count : String
+//    var image: UIImage
+//    var callsCount : Int
+//}
 
 enum AppColorForBackground {
     

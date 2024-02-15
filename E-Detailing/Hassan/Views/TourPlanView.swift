@@ -204,8 +204,8 @@ extension TourPlanView {
         
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
-        self.sessionResponseVM = SessionResponseVM()
-        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
+       
+        tourplanVM?.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -307,7 +307,7 @@ class TourPlanView: BaseView {
     var isCurrentMonth = false
     var arrOfPlan : [SessionDetailsArr]?
     var tempArrofPlan: [SessionDetailsArr]?
-    var sessionResponseVM: SessionResponseVM?
+    var tourplanVM: TourPlanVM?
     var  weeklyOff : Weeklyoff?
     var  holidays : [Holidays]?
    // var tableSetupmodel: TableSetupModel?
@@ -465,6 +465,7 @@ class TourPlanView: BaseView {
     }
     
     func initialSetups() {
+        self.tourplanVM = TourPlanVM()
         self.toSetPagetype(ofType: .general)
         self.setupUI()
         self.initViews()
@@ -1241,8 +1242,8 @@ class TourPlanView: BaseView {
         
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
-        self.sessionResponseVM = SessionResponseVM()
-        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .sendToApproval, paramData: param) { result in
+       
+        tourplanVM?.uploadTPmultipartFormData(params: toSendData, api: .sendToApproval, paramData: param) { result in
             switch result {
             case .success(let response):
                 Shared.instance.removeLoader(in: self)

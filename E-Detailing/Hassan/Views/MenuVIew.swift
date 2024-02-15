@@ -443,7 +443,7 @@ extension MenuView {
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
         
-        sessionResponseVM!.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
+        toutplanVM?.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
             switch result {
             case .success(let response):
                 print(response)
@@ -555,7 +555,7 @@ class MenuView : BaseView{
     var chemistArr : [Chemist]?
     var stockistArr : [Stockist]?
     var unlisteedDocArr : [UnListedDoctor]?
-    var sessionResponseVM: SessionResponseVM?
+    var toutplanVM: TourPlanVM?
     ///properties to hold session contents
     var sessionDetailsArr = SessionDetailsArr()
     var sessionDetail = SessionDetail()
@@ -632,7 +632,7 @@ class MenuView : BaseView{
     
     //MARK: - function to initialize view
     func initView(){
-        self.sessionResponseVM = SessionResponseVM()
+        self.toutplanVM = TourPlanVM()
       // tableSetupAPI()
       //  self.tableSetup = NSKeyedUnarchiver.unarchiveObject(withFile: TableSetupModel.ArchiveURL.path) as? TableSetupModel ?? TableSetupModel()
       

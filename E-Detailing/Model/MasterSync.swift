@@ -377,15 +377,42 @@ struct MasterSyncParams {
         return ["data" : paramString]
     }
     
+    
     static var myDayPlanParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
         let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
+        var param = [String: Any]()
         
-        let paramString = "{\"tableName\":\"gettodaytpnew\",\"ReqDt\":\"\(date)\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
-        return ["data" : paramString]
+        param["tableName"] = "gettodaytpnew"
+        param["ReqDt"] = date
+        param["sfcode"] = "\(appsetup.sfCode!)"
+        param["division_code"] = "\(appsetup.divisionCode!)"
+        param["Rsf"] = "\(appsetup.sfCode!)"
+        param["sf_type"] = "\(appsetup.sfType!)"
+        param["Designation"] = "\(appsetup.dsName!)"
+        param["state_code"] = "\(appsetup.stateCode!)"
+        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+        
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+
+        
+        return toSendData
     }
+    
+//    static var myDayPlanParams : [String : Any] {
+//        let appsetup = AppDefaults.shared.getAppSetUp()
+//
+//        let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
+//
+//        let paramString = "{\"tableName\":\"gettodaytpnew\",\"ReqDt\":\"\(date)\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+//
+//        return ["data" : paramString]
+//    }
     
     static var jointWorkParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
@@ -629,22 +656,7 @@ struct MasterSyncParams {
       //  param["tp_year"] = "2023,"
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
-//        var jsonDatum = Data()
-//
-//        do {
-//            let jsonData = try JSONSerialization.data(withJSONObject: param, options: [])
-//            jsonDatum = jsonData
-//            // Convert JSON data to a string
-//            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-//                print(tempjsonString)
-//
-//            }
-//
-//
-//        } catch {
-//            print("Error converting parameter to JSON: \(error)")
-//        }
-        
+
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
 

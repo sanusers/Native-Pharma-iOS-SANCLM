@@ -13,6 +13,7 @@ class SpecifiedMenuVC : BaseViewController {
     var menuDelegate : MenuResponseProtocol?
     var celltype: MenuView.CellType = .listedDoctor
     var selectedObject: NSManagedObject?
+    var previewType: PreviewHomeView.PreviewType?
     override func viewDidLoad() {
         super.viewDidLoad()
 

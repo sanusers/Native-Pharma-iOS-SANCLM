@@ -131,7 +131,7 @@ class ProductVC : UIViewController {
     
     private var SampleInputSegmentControl : UISegmentedControl!
     
-    var sessionResponseVM : SessionResponseVM?
+    var userStatisticsVM : UserStatisticsVM?
     
     var dcrCall : CallViewModel!
     
@@ -164,7 +164,7 @@ class ProductVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
-        self.sessionResponseVM = SessionResponseVM()
+        self.userStatisticsVM = UserStatisticsVM()
         self.registerTableViewCell()
         
     //    self.updateDisplay()
@@ -760,9 +760,9 @@ class ProductVC : UIViewController {
         
     }
     
-    func postDCTdata(_ param: [String: Any], paramData: JSON, _ completion : @escaping (Result<DCRCallesponseModel,Error>) -> Void)  {
+    func postDCTdata(_ param: [String: Any], paramData: JSON, _ completion : @escaping (Result<DCRCallesponseModel, UserStatisticsError>) -> Void)  {
        
-        sessionResponseVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
+        userStatisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
             completion(result)
         }
     }

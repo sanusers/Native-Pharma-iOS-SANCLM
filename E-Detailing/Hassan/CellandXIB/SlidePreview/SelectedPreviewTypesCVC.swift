@@ -123,7 +123,7 @@ class SelectedPreviewTypesCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        selectedPreviewTypeCollection.isPagingEnabled = true
+        //selectedPreviewTypeCollection.isPagingEnabled = true
       
         cellRegistration()
     }

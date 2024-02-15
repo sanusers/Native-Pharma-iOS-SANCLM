@@ -186,6 +186,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                 if newText.isEmpty {
         
                     self.noresultsView.isHidden = true
+                    noresultsLbl.text = ""
                     isSearched = false
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
@@ -193,11 +194,13 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     listedDocArr = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
+                    noresultsLbl.text = ""
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
                     print("Not matched")
                     self.noresultsView.isHidden = false
+                    noresultsLbl.text = "No results found"
                     isSearched = false
                     self.menuTable.isHidden = true
                 }
@@ -293,7 +296,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                 if newText.isEmpty {
 
                     self.noresultsView.isHidden = true
-
+                    noresultsLbl.text = "No results found"
                     isSearched = false
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
@@ -301,11 +304,13 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                  unlisteedDocArr = filteredWorkType
                     isSearched = true
                     self.noresultsView.isHidden = true
+                    noresultsLbl.text = ""
                     self.menuTable.isHidden = false
                     self.menuTable.reloadData()
                 } else {
                     print("Not matched")
                     self.noresultsView.isHidden = false
+                    noresultsLbl.text = "No results found"
                     isSearched = false
                     self.menuTable.isHidden = true
                 }
@@ -324,11 +329,11 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         switch cellType {
     
         case .workType:
-            print("Yet to omplement")
+            return self.workTypeArr?.count ?? 0
         case .cluster:
-            print("Yet to omplement")
+            return self.clusterArr?.count ?? 0
         case .headQuater:
-            print("Yet to omplement")
+            return self.headQuatersArr?.count ?? 0
         case .jointCall:
             print("Yet to omplement")
         case .listedDoctor:
@@ -347,42 +352,219 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: MenuTCell = tableView.dequeueReusableCell(withIdentifier: "MenuTCell", for: indexPath) as!  MenuTCell
+        let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
         cell.selectionStyle = .none
         switch cellType {
     
         case .workType:
             titleLbl.text = "Select Worktype"
-            print("Yet to omplement")
+            let model =  self.workTypeArr?[indexPath.row]
+            cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            if self.selectedObject != nil {
+               let doctorObj = self.selectedObject as! WorkType
+                if doctorObj.id == model?.id {
+                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    cell.lblName.textColor = .appGreen
+                }
+            } else {
+                if self.isSearched {
+                    if self.selectedSpecifiedTypeID ==  model?.code {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                } else {
+                    if indexPath.row == self.selectecIndex {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                }
+            }
+            
+
+            
+   
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.selectedObject = nil
+                welf.specifiedMenuVC.selectedObject = nil
+                if welf.isSearched {
+                    welf.selectedSpecifiedTypeID = model?.code ?? ""
+               
+                } else {
+                    welf.selectecIndex = indexPath.row
+                  
+                }
+               
+              
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.endEditing(true)
+                welf.hideMenuAndDismiss()
+            }
         case .cluster:
-            print("Yet to omplement")
+       
+            
+            titleLbl.text = "Select Cluster"
+            let model =  self.clusterArr?[indexPath.row]
+            cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            if self.selectedObject != nil {
+               let doctorObj = self.selectedObject as! Territory
+                if doctorObj.id == model?.id {
+                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    cell.lblName.textColor = .appGreen
+                }
+            } else {
+                if self.isSearched {
+                    if self.selectedSpecifiedTypeID ==  model?.code {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                } else {
+                    if indexPath.row == self.selectecIndex {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                }
+            }
+            
+
+            
+   
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.selectedObject = nil
+                welf.specifiedMenuVC.selectedObject = nil
+                if welf.isSearched {
+                    welf.selectedSpecifiedTypeID = model?.code ?? ""
+               
+                } else {
+                    welf.selectecIndex = indexPath.row
+                  
+                }
+               
+              
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.endEditing(true)
+                welf.hideMenuAndDismiss()
+            }
+            
+            
         case .headQuater:
             print("Yet to omplement")
+            
+            titleLbl.text = "Select HQ"
+            let model =  self.headQuatersArr?[indexPath.row]
+            cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            if self.selectedObject != nil {
+               let doctorObj = self.selectedObject as! Subordinate
+                if doctorObj.id == model?.id {
+                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    cell.lblName.textColor = .appGreen
+                }
+            } else {
+                if self.isSearched {
+                    if self.selectedSpecifiedTypeID ==  model?.id {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                } else {
+                    if indexPath.row == self.selectecIndex {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                }
+            }
+            
+
+            
+   
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.selectedObject = nil
+                welf.specifiedMenuVC.selectedObject = nil
+                if welf.isSearched {
+                    welf.selectedSpecifiedTypeID = model?.id ?? ""
+               
+                } else {
+                    welf.selectecIndex = indexPath.row
+                  
+                }
+               
+              
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.endEditing(true)
+                welf.hideMenuAndDismiss()
+            }
+            
+            
         case .jointCall:
             print("Yet to omplement")
         case .listedDoctor:
             titleLbl.text = "Select Doctor"
             let model =  self.listedDocArr?[indexPath.row]
             cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
             cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+            cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
             
             if self.selectedObject != nil {
                let doctorObj = self.selectedObject as! DoctorFencing
                 if doctorObj.code == model?.code {
-                    cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    cell.lblName.textColor = .appGreen
                 }
             } else {
                 if self.isSearched {
                     if self.selectedSpecifiedTypeID ==  model?.code {
-                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
                     } else {
-                        cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
                     }
                 } else {
                     if indexPath.row == self.selectecIndex {
-                        cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
                     } else {
-                        cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
                     }
                 }
             }
@@ -432,11 +614,13 @@ class SpecifiedMenuView: BaseView {
     @IBOutlet weak var contentBgView: UIView!
     @IBOutlet weak var closeTapView: UIView!
     @IBOutlet weak var saveView: UIView!
-    
+    @IBOutlet var clearTFView: UIView!
     @IBOutlet var titleLbl: UILabel!
     @IBOutlet var searchHolderVIew: UIView!
     @IBOutlet var searchTF: UITextField!
     @IBOutlet var noresultsView: UIView!
+    
+    @IBOutlet var noresultsLbl: UILabel!
     var selectedSpecifiedTypeID : String = ""
     var cellType : MenuView.CellType = .listedDoctor
     var specifiedMenuVC :  SpecifiedMenuVC!
@@ -452,6 +636,7 @@ class SpecifiedMenuView: BaseView {
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
     var selectedCode: Int?
+    var previewType: String?
     //MARK: UDF, gestures  and animations
     
     private var animationDuration : Double = 1.0
@@ -503,6 +688,15 @@ class SpecifiedMenuView: BaseView {
     }
     
     func initGestures() {
+        
+        clearTFView.addTap {
+            self.selectedObject = nil
+            self.selectecIndex = nil
+            self.searchTF.text = ""
+            self.isSearched = false
+            self.endEditing(true)
+            self.toLOadData()
+        }
         
         closeTapView.addTap {
             self.hideMenuAndDismiss()
@@ -598,17 +792,74 @@ class SpecifiedMenuView: BaseView {
     }
     
     func toLoadRequiredData(isfromTF: Bool? = false) {
+        var selectedIndex : Int?
        switch self.cellType {
            
        case .workType:
            self.workTypeArr = DBManager.shared.getWorkType()
+           if specifiedMenuVC.selectedObject != nil {
+               self.selectedObject = specifiedMenuVC.selectedObject as! WorkType
+               let docObj =  self.selectedObject as! WorkType
+               if !(isfromTF ?? false) {
+                   self.searchTF.text = docObj.name
+               }
+              
+               self.listedDocArr?.enumerated().forEach({ index, doctor in
+                   if doctor.id  == docObj.id {
+                       selectedIndex = index
+                   }
+               })
+              
+      
+           }
        case .cluster:
            self.clusterArr = DBManager.shared.getTerritory()
+           if specifiedMenuVC.selectedObject != nil {
+               self.selectedObject = specifiedMenuVC.selectedObject as! Territory
+               let docObj =  self.selectedObject as! Territory
+               if !(isfromTF ?? false) {
+                   self.searchTF.text = docObj.name
+               }
+              
+               self.listedDocArr?.enumerated().forEach({ index, doctor in
+                   if doctor.id  == docObj.id {
+                       selectedIndex = index
+                   }
+               })
+              
+      
+           }
        case .headQuater:
            self.headQuatersArr =  DBManager.shared.getSubordinate()
+           if specifiedMenuVC.selectedObject != nil {
+               self.selectedObject = specifiedMenuVC.selectedObject as! Subordinate
+               let docObj =  self.selectedObject as! Subordinate
+               if !(isfromTF ?? false) {
+                   self.searchTF.text = docObj.name
+               }
+              
+               self.listedDocArr?.enumerated().forEach({ index, doctor in
+                   if doctor.id  == docObj.id {
+                       selectedIndex = index
+                   }
+               })
+              
+      
+           }
+        
        case .jointCall:
            self.jointWorkArr = DBManager.shared.getJointWork()
        case .listedDoctor:
+           if specifiedMenuVC.previewType != nil {
+               switch specifiedMenuVC.previewType {
+               case .speciality  :
+                   print("Yet to implement")
+                   self.previewType = specifiedMenuVC.previewType?.rawValue
+               
+               default:
+                   print("Yet to implement")
+               }
+           }
            self.listedDocArr = DBManager.shared.getDoctor()
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! DoctorFencing
@@ -616,10 +867,18 @@ class SpecifiedMenuView: BaseView {
                if !(isfromTF ?? false) {
                    self.searchTF.text = docObj.name
                }
-             
+              
+               self.listedDocArr?.enumerated().forEach({ index, doctor in
+                   if doctor.code  == docObj.code {
+                       selectedIndex = index
+                   }
+               })
+              
+      
            }
        case .chemist:
            self.chemistArr = DBManager.shared.getChemist()
+           
        case .stockist:
            self.stockistArr =  DBManager.shared.getStockist()
        case .unlistedDoctor:
@@ -627,12 +886,60 @@ class SpecifiedMenuView: BaseView {
        default:
            print("Yet to implement")
        }
-       toLOadData()
+        toLOadData()
+        guard let selectedIndex = selectedIndex else {
+            return
+        }
+        let toScrollIndex: IndexPath = IndexPath(row: selectedIndex, section: 0)
+        self.menuTable.scrollToRow(at: toScrollIndex, at: .middle, animated: true)
     }
     
     func cellRegistration() {
-        menuTable.register(UINib(nibName: "MenuTCell", bundle: nil), forCellReuseIdentifier: "MenuTCell")
+        menuTable.register(UINib(nibName: "SpecifiedMenuTCell", bundle: nil), forCellReuseIdentifier: "SpecifiedMenuTCell")
         
+    }
+    
+}
+
+
+class SpecifiedMenuTCell: UITableViewCell
+{
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var menuIcon: UIImageView!
+    @IBOutlet weak var holderView: UIView!
+    static let identifier = "SpecifiedMenuTCell"
+  
+    @IBOutlet var brandMatrisIndicator: UIView!
+    
+    @IBOutlet var specialityLbl: UILabel!
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        menuIcon.isHidden = true
+        lblName.textColor = .appTextColor
+        lblName.setFont(font: .medium(size: .SMALL))
+        brandMatrisIndicator.layer.cornerRadius = brandMatrisIndicator.height / 2
+        brandMatrisIndicator.backgroundColor = .appGreen
+        brandMatrisIndicator.isHidden = true
+        specialityLbl.isHidden = true
+    }
+    
+    
+    func setupUI(model: DoctorFencing, isForspecialty: Bool) {
+        
+        if isForspecialty {
+            specialityLbl.isHidden = false
+            specialityLbl.setFont(font: .bold(size: .BODY))
+            specialityLbl.textColor = .appLightTextColor
+            specialityLbl.text = model.speciality
+        } else {
+            if model.mappProducts == "" {
+                brandMatrisIndicator.isHidden = true
+            } else {
+                brandMatrisIndicator.isHidden = false
+            }
+        }
+        
+
     }
     
 }

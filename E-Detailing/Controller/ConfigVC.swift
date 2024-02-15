@@ -373,7 +373,14 @@ class ConfigVC : UIViewController {
                 iosEndPoint = appconfig.config.iosUrl
                 webEndPoint = appconfig.config.webUrl
                 slideEndPoint = appconfig.config.slideUrl
-                
+                // Example usage:
+                if let formattedURL = self.convertToURLFormat(userEnteredText: webUrl) {
+                    print(formattedURL)
+                    attachmentsUrl = formattedURL
+                } else {
+                    print("Invalid input.")
+                }
+               
                 AppMainAPIURL = iosEndPoint
                 AppMainSlideURL = slideEndPoint
                 
@@ -402,7 +409,31 @@ class ConfigVC : UIViewController {
         
     }
 
-    
+    func convertToURLFormat(userEnteredText: String) -> String? {
+        // Check if the user entered text is not empty
+        guard !userEnteredText.isEmpty else {
+            return nil
+        }
+
+        // Check if the user entered text contains a period
+        guard userEnteredText.contains(".") else {
+            return nil
+        }
+
+        // Add "https://" if it's not already present
+        var formattedText = userEnteredText
+        if !formattedText.lowercased().hasPrefix("http://") && !formattedText.lowercased().hasPrefix("https://") {
+            formattedText = "https://" + formattedText
+        }
+
+        // Check if the formatted text ends with a period
+        if formattedText.hasSuffix(".") {
+            formattedText.removeLast() // Remove the trailing period
+        }
+
+        return formattedText
+    }
+
     
     func showToast(controller: UIViewController, message : String, seconds: Double) {
         
