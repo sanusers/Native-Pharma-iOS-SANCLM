@@ -676,6 +676,7 @@ class SpecifiedMenuView: BaseView {
     func setupUI() {
       //  searchTF.textColor = .appTextColor
      //   titleSeperator.backgroundColor = .appSelectionColor
+        menuTable.separatorStyle = .singleLine
         self.titleLbl.setFont(font: .bold(size:  .BODY))
         self.titleLbl.textColor = .appTextColor
         searchTF.delegate = self

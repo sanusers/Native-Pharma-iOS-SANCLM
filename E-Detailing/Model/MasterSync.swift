@@ -371,8 +371,8 @@ struct MasterSyncParams {
     
     static var territoryParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getterritory\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let paramString = "{\"tableName\":\"getterritory\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
     }
@@ -384,7 +384,7 @@ struct MasterSyncParams {
         var param = [String: Any]()
         
         
-        param["tableName"] = "gettodaytpnew"
+        param["tableName"] = "getmydayplan"
         param["ReqDt"] = date
         param["sfcode"] = "\(appsetup.sfCode!)"
         param["division_code"] = "\(appsetup.divisionCode!)"
@@ -400,7 +400,7 @@ struct MasterSyncParams {
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
 
-        
+      //  "tableName":"getmydayplan","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-15 15:27:16"}"
         return toSendData
     }
     

@@ -98,7 +98,7 @@
         <attribute name="remarks" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="cluster" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Territory"/>
-        <relationship name="headQuarters" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Subordinate"/>
+        <relationship name="headQuarters" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SelectedHQ"/>
         <relationship name="workType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkType"/>
     </entity>
     <entity name="Efff" representedClassName="Efff" syncable="YES" codeGenerationType="class">
@@ -354,6 +354,15 @@
         <attribute name="specialityCode" optional="YES" attributeType="String"/>
         <attribute name="utType" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="SelectedHQ" representedClassName="SelectedHQ" syncable="YES" codeGenerationType="class">
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="mapId" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="reportingToSF" optional="YES" attributeType="String"/>
+        <attribute name="sfHq" optional="YES" attributeType="String"/>
+        <attribute name="steps" optional="YES" attributeType="String"/>
     </entity>
     <entity name="SessionDetailArrCDM" representedClassName="SessionDetailArrCDM" syncable="YES" codeGenerationType="class">
         <attribute name="sessionDetailArr" optional="YES" attributeType="Transformable" customClassName="SessionDetailsArr"/>

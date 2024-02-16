@@ -16,6 +16,7 @@ class DayPlan: Codable {
         self.sfcode = container.safeDecodeValue(forKey: .sfcode)
         self.divisionCode = container.safeDecodeValue(forKey: .divisionCode)
         self.rsf = container.safeDecodeValue(forKey: .rsf)
+        self.rsf2 = container.safeDecodeValue(forKey: .rsf2)
         self.sfType = container.safeDecodeValue(forKey: .sfType)
         self.designation = container.safeDecodeValue(forKey: .designation)
         self.stateCode = container.safeDecodeValue(forKey: .stateCode)
@@ -43,6 +44,7 @@ class DayPlan: Codable {
         isRejected = try container.decodeIfPresent(Bool.self, forKey: .isRejected) ?? Bool()
         rejectionReason = try container.decodeIfPresent(String.self, forKey: .rejectionReason) ?? ""
         uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
+        
     }
     
     
@@ -50,6 +52,7 @@ class DayPlan: Codable {
    var sfcode: String
    var divisionCode: String
    var rsf: String
+    var rsf2: String
    var sfType: String
    var designation: String
    var stateCode: String
@@ -82,6 +85,7 @@ class DayPlan: Codable {
         case sfcode = "sfcode"
         case divisionCode = "division_code"
         case rsf = "Rsf"
+ case rsf2 = "Rsf2"
         case sfType = "sf_type"
         case designation = "Designation"
         case stateCode = "state_code"
@@ -144,5 +148,6 @@ class DayPlan: Codable {
         isRejected = Bool()
         rejectionReason = String()
         uuid = UUID()
+        rsf2 = String()
     }
 }

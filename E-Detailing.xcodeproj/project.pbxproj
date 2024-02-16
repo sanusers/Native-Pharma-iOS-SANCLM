@@ -275,6 +275,7 @@
 		38FAA16F2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA16E2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift */; };
 		38FAA1722B7F263500714AA2 /* MyDayPlanTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */; };
 		38FAA1732B7F263500714AA2 /* MyDayPlanTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */; };
+		38FAA1772B7F5CB200714AA2 /* HQModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1762B7F5CB200714AA2 /* HQModel.swift */; };
 		38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */; };
 		38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */; };
 		38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */; };
@@ -575,6 +576,7 @@
 		38FAA16E2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC + DayPlanEX.swift"; sourceTree = "<group>"; };
 		38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MyDayPlanTVC.xib; path = MyDayPlan/MyDayPlanTVC.xib; sourceTree = "<group>"; };
 		38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyDayPlanTVC.swift; path = MyDayPlan/MyDayPlanTVC.swift; sourceTree = "<group>"; };
+		38FAA1762B7F5CB200714AA2 /* HQModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HQModel.swift; sourceTree = "<group>"; };
 		38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTypeCell.swift; sourceTree = "<group>"; };
 		38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkTypeCell.xib; sourceTree = "<group>"; };
 		38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionHeader.swift; sourceTree = "<group>"; };
@@ -860,8 +862,7 @@
 		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				38FAA1682B7F254D00714AA2 /* MyDayPlanModel.swift */,
-				38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */,
+				38FAA1752B7F5C8100714AA2 /* MyDayPlan */,
 				38FAA16C2B7F255600714AA2 /* CommonStructs.swift */,
 				38CA1FE62B6107E700AFCFD2 /* Presentation */,
 				38F5558D2B57B776000D9294 /* Calls */,
@@ -1129,6 +1130,16 @@
 				38C661442B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift */,
 			);
 			path = "MasterSync+Ex";
+			sourceTree = "<group>";
+		};
+		38FAA1752B7F5C8100714AA2 /* MyDayPlan */ = {
+			isa = PBXGroup;
+			children = (
+				38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */,
+				38FAA1682B7F254D00714AA2 /* MyDayPlanModel.swift */,
+				38FAA1762B7F5CB200714AA2 /* HQModel.swift */,
+			);
+			path = MyDayPlan;
 			sourceTree = "<group>";
 		};
 		A8343534F7C81EDB68431942 /* Pods */ = {
@@ -1614,6 +1625,7 @@
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
 				38DAADED2B59505C00966B33 /* CalldetailsCVC.swift in Sources */,
 				38E3C3592AF9F98C00623C33 /* ConnectionHandler.swift in Sources */,
+				38FAA1772B7F5CB200714AA2 /* HQModel.swift in Sources */,
 				38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */,
 				38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */,
 				38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */,

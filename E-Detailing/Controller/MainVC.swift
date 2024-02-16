@@ -144,8 +144,6 @@ extension MainVC : HomeLineChartViewDelegate
         }
         
     }
-    
-
 }
 
 extension MainVC: MenuResponseProtocol {
@@ -158,7 +156,34 @@ extension MainVC: MenuResponseProtocol {
             self.fetchedClusterObject = selectedObject as? Territory
         case .headQuater:
             self.fetchedHQObject = selectedObject as? Subordinate
+           
+            
+            let aHQobj = HQModel()
+            aHQobj.code = self.fetchedHQObject?.id ?? String()
+            aHQobj.mapId = self.fetchedHQObject?.mapId ?? String()
+            aHQobj.name = self.fetchedHQObject?.name ?? String()
+            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? String()
+            aHQobj.steps = self.fetchedHQObject?.steps ?? String()
+            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? String()
+            CoreDataManager.shared.removeHQ()
+            CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+            }
+            
+         
+            let config = AppDefaults.shared.getAppSetUp()
+            
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+            
+            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code) { _ in
+                
+                self.toCreateToast("Clusters synced successfully")
+                
+            }
+            
+          //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
 
+
+            
         default:
             print("Yet to implement.")
         }
@@ -367,7 +392,7 @@ class MainVC : UIViewController {
     var links = [QuicKLink]()
     
     var dcrCount = [DcrCount]()
-    
+    var masterVM : MasterSyncVM?
     let eventArr = ["Weekly off","Field Work","Non-Field Work","Holiday","Missed Released","Missed","Re Entry","Leave","TP Devition Released","TP Devition"]//,"Leave Aprroval Pending","Approval Pending"]
     
     
@@ -496,6 +521,12 @@ class MainVC : UIViewController {
         viewCalls.layer.cornerRadius = 5
         viewCalls.backgroundColor = .appWhiteColor
         lblDate.setFont(font: .bold(size: .SUBHEADER))
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM d, yyyy"
+        lblDate.text = dateFormatter.string(from: Date())
+        
+        
         btnCall.layer.borderColor = UIColor.appSelectionColor.cgColor
         btnCall.layer.borderWidth = 0.5
         btnCall.tintColor = .appTextColor
@@ -576,6 +607,7 @@ class MainVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.userststisticsVM = UserStatisticsVM()
+        self.masterVM = MasterSyncVM()
         //self.toSeperateDCR()
         self.updateLinks()
         
@@ -1597,6 +1629,7 @@ extension MainVC : collectionViewProtocols {
                 case .workPlan:
                     
                     welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                    
                 case .calls :
             
                     welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
@@ -1886,7 +1919,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
         case worktypeTable:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MyDayPlanTVC", for: indexPath) as! MyDayPlanTVC
-            cell.setupHeight(true)
+            
+            
+            
+           // cell.setupHeight(true)
             cell.selectionStyle = .none
             var cacheObjects : [NSManagedObject] = []
             
@@ -1904,19 +1940,34 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
   
             
-            cell.setupUI(model: cacheObjects)
+            cell.setupUI(model: cacheObjects, istoDelete: indexPath.row == 0 ? true : false)
             
             
-            cell.wtBorderView.addTap {
-                self.navigateToSpecifiedMenu(type: .workType)
+            cell.wtBorderView.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.navigateToSpecifiedMenu(type: .workType)
             }
             
-            cell.hqBorderView.addTap {
-                self.navigateToSpecifiedMenu(type: .headQuater)
+            cell.hqBorderView.addTap { [weak self] in
+                guard let welf = self else {return}
+                if welf.fetchedWorkTypeObject != nil {
+                    welf.navigateToSpecifiedMenu(type: .headQuater)
+                } else {
+                    welf.toCreateToast("Please select worktype")
+                }
+                
             }
             
-            cell.clusterBorderView.addTap {
-                self.navigateToSpecifiedMenu(type: .cluster)
+            cell.clusterBorderView.addTap { [weak self] in
+                guard let welf = self else {return}
+                
+                if welf.fetchedHQObject != nil {
+                    welf.navigateToSpecifiedMenu(type: .cluster)
+                } else {
+                    welf.toCreateToast("Please select HQ")
+                }
+                
+               
             }
             
             return cell

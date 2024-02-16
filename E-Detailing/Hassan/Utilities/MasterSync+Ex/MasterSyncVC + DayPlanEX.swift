@@ -7,10 +7,67 @@
 
 import Foundation
 import CoreData
+import UIKit
 
+
+extension MasterSyncVC: MenuResponseProtocol {
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+        switch type {
+//
+//        case .workType:
+//            self.fetchedWorkTypeObject = selectedObject as? WorkType
+//        case .cluster:
+//            self.fetchedClusterObject = selectedObject as? Territory
+        case .headQuater:
+            self.fetchedHQObject = selectedObject as? Subordinate
+          
+            let aHQobj = HQModel()
+            aHQobj.code = self.fetchedHQObject?.id ?? String()
+            aHQobj.mapId = self.fetchedHQObject?.mapId ?? String()
+            aHQobj.name = self.fetchedHQObject?.name ?? String()
+            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? String()
+            aHQobj.steps = self.fetchedHQObject?.steps ?? String()
+            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? String()
+            CoreDataManager.shared.removeHQ()
+            CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+            }
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+            
+            let masterVM = MasterSyncVM()
+            //let config = AppDefaults.shared.getAppSetUp()
+            masterVM.fetchMasterData(type: .clusters, sfCode: aHQobj.code) { _ in
+                
+                self.toCreateToast("Clusters synced successfully")
+                
+            }
+            
+          //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
+
+            self.setHQlbl()
+            
+        default:
+            print("Yet to implement.")
+        }
+        
+       // self.setHQlbl()
+    }
+    
+    func selectedType(_ type: MenuView.CellType, index: Int) {
+        print("Yet to implement")
+    }
+    
+    func callPlanAPI() {
+        print("")
+    }
+    func routeToView(_ view : UIViewController) {
+        self.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(view, animated: true)
+    }
+    
+}
 
 extension MasterSyncVC {
-    func toGetMyDayPlan(type: MasterInfo) {
+    func toGetMyDayPlan(type: MasterInfo, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
         
         let appsetup = AppDefaults.shared.getAppSetUp()
         let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
@@ -41,9 +98,12 @@ extension MasterSyncVC {
             case .success(let model):
                 dump(model)
                 welf.toUpdateDataBase(aDayplan: welf.toConvertResponseToDayPlan(model: model))
+                
             case .failure(let error):
                 print(error)
             }
+            
+            completion(result)
         })
         
     }
@@ -52,22 +112,39 @@ extension MasterSyncVC {
     func toConvertResponseToDayPlan(model: [MyDayPlanResponseModel]) -> DayPlan  {
         let aDayPlan = DayPlan()
         let userConfig = AppDefaults.shared.getAppSetUp()
-        let aDayResponseModel = model.first
         aDayPlan.tableName = "gettodaytpnew"
-        aDayPlan.sfcode = aDayResponseModel?.SFCode ?? ""
+        aDayPlan.uuid = UUID()
         aDayPlan.divisionCode = userConfig.divisionCode
-        aDayPlan.rsf = userConfig.sfCode
         aDayPlan.sfType = "\(userConfig.sfType!)"
         aDayPlan.designation = "\(userConfig.desig!)"
         aDayPlan.stateCode = "\(userConfig.stateCode!)"
         aDayPlan.subdivisionCode = userConfig.subDivisionCode
-        aDayPlan.wtCode = aDayResponseModel?.WT ?? ""
-        aDayPlan.wtName = aDayResponseModel?.WTNm ?? ""
-        aDayPlan.fwFlg = aDayResponseModel?.FWFlg ?? ""
-        aDayPlan.townCode = aDayResponseModel?.Pl ?? ""
-        aDayPlan.townName = aDayResponseModel?.PlNm ?? ""
-        aDayPlan.rsf = aDayResponseModel?.SFMem ?? ""
-        aDayPlan.uuid = UUID()
+        model.enumerated().forEach {index, aMyDayPlanResponseModel in
+            switch index {
+            case 0:
+                aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
+                aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
+                aDayPlan.wtCode = aMyDayPlanResponseModel.WT
+                aDayPlan.wtName = aMyDayPlanResponseModel.WTNm
+                aDayPlan.fwFlg = aMyDayPlanResponseModel.FWFlg
+                aDayPlan.townCode = aMyDayPlanResponseModel.Pl
+                aDayPlan.townName = aMyDayPlanResponseModel.PlNm
+            case 1:
+                aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
+                aDayPlan.wtCode2 = aMyDayPlanResponseModel.WT
+                aDayPlan.wtName2 = aMyDayPlanResponseModel.WTNm
+                aDayPlan.fwFlg2 = aMyDayPlanResponseModel.FWFlg
+                aDayPlan.townCode2 = aMyDayPlanResponseModel.Pl
+                aDayPlan.townName2 = aMyDayPlanResponseModel.PlNm
+                
+                
+            default:
+                print("Yet to implement")
+            }
+        }
+        
+
+      
         return aDayPlan
         
     }
@@ -88,6 +165,82 @@ extension MasterSyncVC {
 
 
 extension CoreDataManager {
+    //SelectedHQ
+    
+    func fetchSavedHQ(completion: ([SelectedHQ]) -> () )  {
+        do {
+            let savedHQ = try  context.fetch(SelectedHQ.fetchRequest())
+            completion(savedHQ)
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+        
+    }
+    
+    
+    func toRetriveSavedHQ(completion: @escaping ([HQModel]) -> ()) {
+        var retrivedHq : [HQModel] = []
+        CoreDataManager.shared.fetchSavedHQ(completion: { selectedHQArr in
+            selectedHQArr.forEach { selectedHQ in
+                let aHQ = HQModel()
+                aHQ.code                 = selectedHQ.code ?? ""
+                aHQ.name               = selectedHQ.name ?? ""
+                aHQ.reportingToSF      = selectedHQ.reportingToSF ?? ""
+                aHQ.steps                = selectedHQ.steps ?? ""
+                aHQ.sfHQ                = selectedHQ.sfHq ?? ""
+                aHQ.mapId               = selectedHQ.mapId ?? ""
+                retrivedHq.append(aHQ)
+            }
+            completion(retrivedHq)
+        })
+    }
+    
+    func removeHQ() {
+        //completion: @escaping () -> Void
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SelectedHQ.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+            // completion()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+            //  completion()
+        }
+    }
+    
+    
+    
+    func saveToHQCoreData(hqModel: HQModel  , completion: (Bool) -> ()) {
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context) {
+            let savedCDHq = SelectedHQ(entity: entityDescription, insertInto: context)
+            
+            // Convert properties
+            savedCDHq.code                  = hqModel.code
+            savedCDHq.name                 = hqModel.name
+            savedCDHq.reportingToSF       = hqModel.reportingToSF
+            savedCDHq.steps                 = hqModel.steps
+            savedCDHq.sfHq                   = hqModel.sfHQ
+            savedCDHq.mapId                  = hqModel.mapId
+            // Convert and add groupedBrandsSlideModel
+            // Save to Core Data
+            do {
+                try context.save()
+                completion(true)
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                completion(false)
+            }
+        }
+        
+    }
+    
+    
+    
     
     func fetchEachDayPlan(completion: ([EachDayPlan]) -> () )  {
         do {
@@ -123,15 +276,11 @@ extension CoreDataManager {
     private func convertEachDyPlan(_ eachDayPlan : DayPlan, context: NSManagedObjectContext) -> NSSet {
         
         struct Sessions {
-            var cluster : [Territory]
-            var headQuarters: Subordinate
-            var workType: WorkType
+            var cluster : [Territory]?
+            var workType: WorkType?
+            var headQuarters: SelectedHQ?
             
-            init() {
-                self.cluster = [Territory]()
-                self.headQuarters = Subordinate()
-                self.workType = WorkType()
-            }
+    
         }
         
         var aDaysessions : [Sessions] = []
@@ -142,9 +291,10 @@ extension CoreDataManager {
         let headQuatersArr =  DBManager.shared.getSubordinate()
         let workTypeArr = DBManager.shared.getWorkType()
         if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-            var aDaySession = Sessions()
-            
-            
+           
+            var selectedterritories: [Territory]?
+            var selectedheadQuarters : SelectedHQ?
+            var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode
             let codesArray = codes.components(separatedBy: ",")
             
@@ -154,30 +304,51 @@ extension CoreDataManager {
                     return aTerritory.code?.contains(code) ?? false
                 }
             }
-            aDaySession.cluster = filteredTerritories
+            selectedterritories = filteredTerritories
             
             workTypeArr.forEach { aWorkType in
                 if aWorkType.fwFlg == eachDayPlan.fwFlg  {
-                    aDaySession.workType = aWorkType
+                    selectedWorkTypes = aWorkType
                 }
             }
             
             headQuatersArr.forEach { aheadQuater in
                 if aheadQuater.id == eachDayPlan.rsf  {
-                    aDaySession.headQuarters = aheadQuater
+                    
+                 let hqModel =   HQModel()
+                    hqModel.code = aheadQuater.id ?? ""
+                    hqModel.name = aheadQuater.name ?? ""
+                    hqModel.reportingToSF = aheadQuater.reportingToSF ?? ""
+                    hqModel.steps = aheadQuater.steps ?? ""
+                    hqModel.sfHQ = aheadQuater.sfHq ?? ""
+                    hqModel.mapId = aheadQuater.mapId ?? ""
+                    
+                    CoreDataManager.shared.removeHQ()
+                    
+                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
+                        if isSaved {
+                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+                                let aSavedHQ = selectedHQArr.first
+                                selectedheadQuarters = aSavedHQ
+                            }
+                        }
+                    }
+                    
+                    
+                 
                 }
+                
             }
-            aDaysessions.append(aDaySession)
+            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? SelectedHQ())
+          
+            aDaysessions.append(tempSession)
         }
         
         if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
-            var aDaySession = Sessions()
-            //            clusterArr.forEach { aTerritory in
-            //                if aTerritory.code == eachDayPlan.townCode {
-            //                    aDaySession.cluster = aTerritory
-            //                }
-            //            }
-            
+           
+            var selectedterritories: [Territory]?
+            var selectedheadQuarters : SelectedHQ?
+            var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode
             let codesArray = codes.components(separatedBy: ",")
             
@@ -187,21 +358,44 @@ extension CoreDataManager {
                     return aTerritory.code?.contains(code) ?? false
                 }
             }
-            aDaySession.cluster = filteredTerritories
-            
+            selectedterritories = filteredTerritories
             
             workTypeArr.forEach { aWorkType in
                 if aWorkType.fwFlg == eachDayPlan.fwFlg  {
-                    aDaySession.workType = aWorkType
+                    selectedWorkTypes = aWorkType
                 }
             }
             
             headQuatersArr.forEach { aheadQuater in
                 if aheadQuater.id == eachDayPlan.rsf  {
-                    aDaySession.headQuarters = aheadQuater
+                    
+                 let hqModel =   HQModel()
+                    hqModel.code = aheadQuater.id ?? ""
+                    hqModel.name = aheadQuater.name ?? ""
+                    hqModel.reportingToSF = aheadQuater.reportingToSF ?? ""
+                    hqModel.steps = aheadQuater.steps ?? ""
+                    hqModel.sfHQ = aheadQuater.sfHq ?? ""
+                    hqModel.mapId = aheadQuater.mapId ?? ""
+                    
+                    CoreDataManager.shared.removeHQ()
+                    
+                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
+                        if isSaved {
+                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+                                let aSavedHQ = selectedHQArr.first
+                                selectedheadQuarters = aSavedHQ
+                            }
+                        }
+                    }
+                    
+                    
+                 
                 }
+                
             }
-            aDaysessions.append(aDaySession)
+            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? SelectedHQ())
+          //selectedheadQuarters ?? SelectedHQ()
+            aDaysessions.append(tempSession)
         }
         
         
@@ -209,9 +403,12 @@ extension CoreDataManager {
             if let entityDescription = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) {
                 let entitydayPlan = EachPlan(entity: entityDescription, insertInto: context)
                 
-                entitydayPlan.cluster = convertClustersToCDM(aDaysession.cluster, context: context)
-                entitydayPlan.workType = convertWorkTypeToCDM(aDaysession.workType, context: context)
-                entitydayPlan.headQuarters = convertHeadQuartersToCDM(aDaysession.headQuarters, context: context)
+                entitydayPlan.cluster = convertClustersToCDM(aDaysession.cluster ?? [Territory](), context: context)
+                entitydayPlan.workType = convertWorkTypeToCDM(aDaysession.workType ?? WorkType(), context: context)
+                if let headQuarters = aDaysession.headQuarters {
+                   // entitydayPlan.headQuarters = convertHeadQuartersToCDM(headQuarters, context: context)
+                }
+            
                 
                 // Add to set
                 cdDayPlans.add(entitydayPlan)
@@ -224,21 +421,21 @@ extension CoreDataManager {
         return cdDayPlans
     }
     
-    private func convertHeadQuartersToCDM(_ headQuarters: Subordinate, context: NSManagedObjectContext) -> Subordinate {
-        var subordinate = Subordinate()
-        if let entityHQ = NSEntityDescription.entity(forEntityName: "Subordinate", in: context) {
-            let cdHeadQuarters = Subordinate(entity: entityHQ, insertInto: context)
+    private func convertHeadQuartersToCDM(_ headQuarters: SelectedHQ, context: NSManagedObjectContext) -> SelectedHQ {
+        
+      
+            let cdHeadQuarters = SelectedHQ(context: context)
             // Convert properties of Subordinate
-            cdHeadQuarters.id = headQuarters.id
+            cdHeadQuarters.code = headQuarters.code
             cdHeadQuarters.name = headQuarters.name
             cdHeadQuarters.mapId = headQuarters.mapId
             cdHeadQuarters.reportingToSF = headQuarters.reportingToSF
             cdHeadQuarters.sfHq = headQuarters.sfHq
             cdHeadQuarters.steps = headQuarters.steps
-            subordinate = cdHeadQuarters
-            return subordinate
-        }
-        return subordinate
+          
+          
+        
+        return cdHeadQuarters
     }
     
     private func convertWorkTypeToCDM(_ workType: WorkType, context: NSManagedObjectContext) -> WorkType {
@@ -329,7 +526,8 @@ extension CoreDataManager {
                 aDayPlan.tableName = "dayplan"
                 aDayPlan.sfcode = userConfig.sfCode
                 aDayPlan.divisionCode = userConfig.divisionCode
-                aDayPlan.rsf = userConfig.sfCode
+               // aDayPlan.rsf =
+                //userConfig.sfCode
                 aDayPlan.sfType = "\(userConfig.sfType!)"
                 aDayPlan.designation = userConfig.desig
                 aDayPlan.stateCode =  "\(userConfig.stateCode!)"
@@ -354,6 +552,7 @@ extension CoreDataManager {
                         // let agroupedSlide = SlidesModel()
                         switch index {
                         case 0 :
+                            aDayPlan.rsf = eachPlan.headQuarters?.code ?? ""
                             aDayPlan.wtCode = eachPlan.workType?.code ?? ""
                             aDayPlan.wtName = eachPlan.workType?.name ?? ""
                             aDayPlan.location = ""
@@ -364,6 +563,7 @@ extension CoreDataManager {
                             //eachPlan.workType
                             aDayPlan.fwFlg = eachPlan.workType?.fwFlg ?? ""
                         case 1:
+                            aDayPlan.rsf2 = eachPlan.headQuarters?.code ?? ""
                             aDayPlan.wtCode2 = eachPlan.workType?.code ?? ""
                             aDayPlan.wtName2 = eachPlan.workType?.name ?? ""
                             aDayPlan.location2 = ""

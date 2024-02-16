@@ -35,6 +35,8 @@ case AppMainURL
         case LoadedBrandSlideData
         case SavedPresentations
         case isSlidesLoaded
+        case rsfID
+        case selectedHQObj
     }
     
     enum Offsets: String {

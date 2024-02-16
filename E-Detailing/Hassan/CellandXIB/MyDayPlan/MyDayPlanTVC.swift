@@ -78,7 +78,8 @@ class MyDayPlanTVC: UITableViewCell {
 //        }
 //    }
     
-    func setupUI(model: [NSManagedObject]) {
+    func setupUI(model: [NSManagedObject], istoDelete: Bool) {
+        var isForFW: Bool = false
         model.forEach { anObject in
             switch anObject {
             case let territoryObj as Territory:
@@ -101,6 +102,14 @@ class MyDayPlanTVC: UITableViewCell {
                 
                 if let hqName = wtObj.name {
                      self.selectWTlbl.text = hqName
+                    if wtObj.fwFlg == "F" {
+                        isForFW = true
+               
+                    } else {
+                        isForFW = false
+            
+                    }
+                    
                  } else {
                      self.selectWTlbl.text = "Select Worktype"
                  }
@@ -109,9 +118,10 @@ class MyDayPlanTVC: UITableViewCell {
                 print("Yet to implement")
             }
         }
+        setupHeight(istoDelete, isForFW: isForFW)
     }
     
-    func setupHeight(_ isTodelete: Bool) {
+    func setupHeight(_ isTodelete: Bool, isForFW: Bool) {
         if isTodelete {
             deleteHolderView.isHidden = true
             deleteHolderHeight.constant = 0
@@ -120,12 +130,29 @@ class MyDayPlanTVC: UITableViewCell {
             deleteHolderHeight.constant = 40
         }
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-            self.holderStackHeight.constant = 150
-            self.clusterHolderVIew.isHidden = true
-        } else {
-            self.holderStackHeight.constant = 200
+//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//            self.holderStackHeight.constant = 150
+//            self.clusterHolderVIew.isHidden = true
+//        } else {
+//            self.holderStackHeight.constant = 200
+//            self.clusterHolderVIew.isHidden = false
+//        }
+        
+        if isForFW {
+            self.hqHolderView.isHidden = false
             self.clusterHolderVIew.isHidden = false
+            self.holderStackHeight.constant = 200
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                self.holderStackHeight.constant = 150
+                self.clusterHolderVIew.isHidden = true
+            } else {
+                self.holderStackHeight.constant = 200
+                self.clusterHolderVIew.isHidden = false
+            }
+        } else {
+            self.hqHolderView.isHidden = true
+            self.clusterHolderVIew.isHidden = true
+            self.holderStackHeight.constant = 66
         }
     }
     
