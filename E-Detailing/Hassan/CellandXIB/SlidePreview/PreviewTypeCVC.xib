@@ -24,7 +24,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vFz-ZX-YoW">
-                        <rect key="frame" x="11" y="66.5" width="349" height="2"/>
+                        <rect key="frame" x="159.5" y="66.5" width="52" height="2"/>
                         <color key="backgroundColor" red="0.20636317130000001" green="0.22223290800000001" blue="0.30229836700000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="2" id="TVr-S1-E4b"/>
@@ -38,7 +38,7 @@
                 <constraint firstItem="j1O-55-tBe" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="52a-wW-mSL"/>
                 <constraint firstItem="j1O-55-tBe" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="Jrq-yq-9rR"/>
                 <constraint firstItem="vFz-ZX-YoW" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Lls-DO-sbU"/>
-                <constraint firstItem="vFz-ZX-YoW" firstAttribute="width" secondItem="j1O-55-tBe" secondAttribute="width" multiplier="8.725" id="Sgf-8s-i0z"/>
+                <constraint firstItem="vFz-ZX-YoW" firstAttribute="width" secondItem="j1O-55-tBe" secondAttribute="width" multiplier="1.3" id="Sgf-8s-i0z"/>
                 <constraint firstItem="vFz-ZX-YoW" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" multiplier="1.8" id="pne-wj-qAj"/>
             </constraints>
             <size key="customSize" width="371" height="75"/>

@@ -184,11 +184,17 @@ typealias collectionViewProtocols = UICollectionViewDelegate & UICollectionViewD
 typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 
 class MainVC : UIViewController {
-    
+    var segmentType: [SegmentType] = []
+    var selectedSegmentsIndex: Int = 0
+    enum SegmentType : String {
+        case workPlan = "Work plan"
+        case calls = "Calls"
+        case outbox = "Outbox"
+    }
     
     @IBOutlet weak var imgProfile: UIImageView!
     
-    
+    @IBOutlet var segmentsCollection: UICollectionView!
     @IBOutlet var monthRangeLbl: UILabel!
     @IBOutlet var lblAverageDocCalls: UILabel!
     @IBOutlet weak var lblAnalysisName: UILabel!
@@ -431,8 +437,8 @@ class MainVC : UIViewController {
                         //   self.toSetPageType(.notconnected)
                         self.toCreateToast("Please check your internet connection.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                        self.segmentControlForDcr.selectedSegmentIndex = 2
-                        self.segmentControlForDcr.sendActions(for: .valueChanged)
+                     //   self.segmentControlForDcr.selectedSegmentIndex = 2
+                      //  self.segmentControlForDcr.sendActions(for: .valueChanged)
                     } else if  status == "WiFi" || status ==  "Cellular"   {
                         
                         self.toCreateToast("You are now connected.")
@@ -450,9 +456,16 @@ class MainVC : UIViewController {
         }
     }
     
-    
+    func toLoadSegments() {
+        segmentsCollection.delegate = self
+        segmentsCollection.dataSource = self
+        segmentsCollection.reloadData()
+    }
     
     func setupUI() {
+       
+        segmentType = [.workPlan, .calls, .outbox]
+        toLoadSegments()
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         
         btnAddplan.backgroundColor = .appGreyColor
@@ -608,7 +621,9 @@ class MainVC : UIViewController {
         self.worktypeTable.register(UINib(nibName: "MyDayPlanTVC", bundle: nil), forCellReuseIdentifier: "MyDayPlanTVC")
         
         
+        self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
         
+    //
         
         
         let layout = UICollectionViewFlowLayout()
@@ -698,8 +713,8 @@ class MainVC : UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.homeLineChartView?.frame = lineChatrtView.bounds
-        let attr = NSDictionary(object: UIFont(name: "Satoshi-Bold", size: 16)!, forKey: NSAttributedString.Key.font as NSCopying)
-        segmentControlForDcr.setTitleTextAttributes(attr as? [NSAttributedString.Key : Any] , for: .normal)
+       // let attr = NSDictionary(object: UIFont(name: "Satoshi-Bold", size: 16)!, forKey: NSAttributedString.Key.font as NSCopying)
+       // segmentControlForDcr.setTitleTextAttributes(attr as? [NSAttributedString.Key : Any] , for: .normal)
     }
     
     deinit {
@@ -1354,7 +1369,7 @@ class MainVC : UIViewController {
         
         //  let font = UIFont(name: "Satoshi-Bold", size: 14)!
         //  self.segmentControlForDcr.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-        self.segmentControlForDcr.highlightSelectedSegment()
+      //  self.segmentControlForDcr.highlightSelectedSegment()
         
     }
     
@@ -1496,6 +1511,34 @@ class MainVC : UIViewController {
             break
         }
     }
+    
+    func setSegment(_ segmentType: SegmentType) {
+        switch segmentType {
+            
+        case .workPlan:
+            viewWorkPlan.isHidden = false
+            viewCalls.isHidden = true
+            viewOutBox.isHidden = true
+          //  outboxSegmentHolderView.isHidden = true
+          //  callsSegmentHolderVIew.isHidden = true
+         toLoadWorktypeTable()
+        case .calls:
+           // callsSegmentHolderVIew.isHidden = false
+           // outboxSegmentHolderView.isHidden = true
+            viewWorkPlan.isHidden = true
+            viewCalls.isHidden = false
+            viewOutBox.isHidden = true
+            toloadCallsTable()
+        case .outbox:
+           // outboxSegmentHolderView.isHidden = false
+            viewWorkPlan.isHidden = true
+            viewCalls.isHidden = true
+            viewOutBox.isHidden = false
+           // callsSegmentHolderVIew.isHidden = true
+            toLoadOutboxTable()
+        }
+    }
+    
 }
 
 
@@ -1503,6 +1546,8 @@ extension MainVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         switch collectionView {
+        case self.segmentsCollection:
+            return segmentType.count
         case self.quickLinkCollectionView :
             return self.links.count
         case self.dcrCallsCollectionView:
@@ -1529,6 +1574,45 @@ extension MainVC : collectionViewProtocols {
         let color = [UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.7))].randomElement()
         
         switch collectionView {
+        case self.segmentsCollection:
+            let cell: PreviewTypeCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PreviewTypeCVC", for: indexPath) as! PreviewTypeCVC
+            
+        
+            cell.selectionView.isHidden =  selectedSegmentsIndex == indexPath.row ? false : true
+            cell.titleLbl.textColor =  selectedSegmentsIndex == indexPath.row ? .appTextColor : .appLightTextColor
+            cell.titleLbl.text = segmentType[indexPath.row].rawValue
+            
+            
+            
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.selectedSegmentsIndex  = indexPath.row
+              
+                welf.segmentsCollection.reloadData()
+               
+                
+                switch welf.segmentType[welf.selectedSegmentsIndex] {
+                    
+                case .workPlan:
+                    
+                    welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                case .calls :
+            
+                    welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                  
+        
+                case .outbox:
+                    
+                    welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                }
+                
+
+   
+                }
+            
+            
+            return cell
         case self.quickLinkCollectionView :
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "QuickLinkCell", for: indexPath) as! QuickLinkCell
             cell.link = self.links[indexPath.row]
@@ -1638,6 +1722,9 @@ extension MainVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         switch collectionView {
+        case segmentsCollection:
+           // return CGSize(width:segmentType[indexPath.item].rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
+            return CGSize(width: collectionView.width / 3, height: collectionView.height)
         case self.quickLinkCollectionView :
             let width = self.quickLinkCollectionView.frame.width / 3
             let size = CGSize(width: width - 10, height: 60)

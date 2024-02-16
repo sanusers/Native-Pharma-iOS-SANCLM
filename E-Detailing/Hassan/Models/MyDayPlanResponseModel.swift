@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 class MyDayPlanResponseModel: Codable {
     let SFCode: String
     let TPDt: DateInfo

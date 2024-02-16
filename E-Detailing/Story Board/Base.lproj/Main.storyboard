@@ -2861,11 +2861,28 @@ VmVyc2lvbiA6IDEuMAM
                                                             <constraint firstAttribute="width" constant="25" id="wZd-06-mGn"/>
                                                         </constraints>
                                                     </view>
-                                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="V31-xn-yiS">
+                                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="kOo-W3-m0O">
+                                                        <rect key="frame" x="10" y="0.0" width="424" height="67.5"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="66L-vB-RBC">
+                                                            <size key="itemSize" width="128" height="128"/>
+                                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        </collectionViewFlowLayout>
+                                                        <cells>
+                                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="pXo-EU-mfO">
+                                                                <rect key="frame" x="0.0" y="-30.5" width="128" height="128"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="XeI-un-aQi">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                </collectionViewCellContentView>
+                                                            </collectionViewCell>
+                                                        </cells>
+                                                    </collectionView>
+                                                    <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="V31-xn-yiS">
                                                         <rect key="frame" x="10" y="16.5" width="424" height="51"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="50" id="6i2-gh-TBE"/>
-                                                        </constraints>
                                                         <segments>
                                                             <segment title="Work Plan"/>
                                                             <segment title="Calls"/>
@@ -2873,13 +2890,10 @@ VmVyc2lvbiA6IDEuMAM
                                                         </segments>
                                                         <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <color key="selectedSegmentTintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <connections>
-                                                            <action selector="dcrSegmentControlAction:" destination="ZtD-UP-Um1" eventType="valueChanged" id="NRy-56-J3c"/>
-                                                        </connections>
                                                     </segmentedControl>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xpz-jM-mdb">
-                                                        <rect key="frame" x="10" y="66.5" width="424" height="1"/>
-                                                        <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                        <rect key="frame" x="0.0" y="62.5" width="444" height="1"/>
+                                                        <color key="backgroundColor" systemColor="systemGray4Color"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="ElO-qj-Nlb"/>
                                                         </constraints>
@@ -2890,14 +2904,17 @@ VmVyc2lvbiA6IDEuMAM
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
+                                                    <constraint firstItem="kOo-W3-m0O" firstAttribute="width" secondItem="Bqz-Py-qbp" secondAttribute="width" multiplier="0.954955" id="1fC-2p-LbS"/>
                                                     <constraint firstItem="U94-Ke-YjO" firstAttribute="centerX" secondItem="Bqz-Py-qbp" secondAttribute="centerX" multiplier="1.85" id="5Vs-AT-Qp5"/>
                                                     <constraint firstItem="U94-Ke-YjO" firstAttribute="centerY" secondItem="Bqz-Py-qbp" secondAttribute="centerY" multiplier="0.5" constant="1" id="Ol3-Tr-wps"/>
+                                                    <constraint firstItem="Xpz-jM-mdb" firstAttribute="width" secondItem="Bqz-Py-qbp" secondAttribute="width" id="PYa-Sg-BLT"/>
+                                                    <constraint firstItem="kOo-W3-m0O" firstAttribute="centerX" secondItem="Bqz-Py-qbp" secondAttribute="centerX" id="TdR-qa-ibf"/>
                                                     <constraint firstAttribute="trailing" secondItem="V31-xn-yiS" secondAttribute="trailing" constant="10" id="YBx-Bx-Wab"/>
-                                                    <constraint firstItem="Xpz-jM-mdb" firstAttribute="top" secondItem="V31-xn-yiS" secondAttribute="bottom" id="coX-rf-M55"/>
+                                                    <constraint firstItem="kOo-W3-m0O" firstAttribute="centerY" secondItem="Bqz-Py-qbp" secondAttribute="centerY" id="ZZy-xU-aT3"/>
+                                                    <constraint firstItem="Xpz-jM-mdb" firstAttribute="centerX" secondItem="Bqz-Py-qbp" secondAttribute="centerX" id="eau-BL-Z05"/>
                                                     <constraint firstItem="V31-xn-yiS" firstAttribute="leading" secondItem="Bqz-Py-qbp" secondAttribute="leading" constant="10" id="hSC-PM-vlb"/>
-                                                    <constraint firstAttribute="trailing" secondItem="Xpz-jM-mdb" secondAttribute="trailing" constant="10" id="jtJ-Iz-qEH"/>
-                                                    <constraint firstItem="Xpz-jM-mdb" firstAttribute="leading" secondItem="Bqz-Py-qbp" secondAttribute="leading" constant="10" id="v86-it-uVJ"/>
-                                                    <constraint firstAttribute="bottom" secondItem="Xpz-jM-mdb" secondAttribute="bottom" id="vOk-wd-zbC"/>
+                                                    <constraint firstItem="kOo-W3-m0O" firstAttribute="height" secondItem="Bqz-Py-qbp" secondAttribute="height" id="sJa-EA-EzG"/>
+                                                    <constraint firstItem="Xpz-jM-mdb" firstAttribute="centerY" secondItem="Bqz-Py-qbp" secondAttribute="centerY" multiplier="1.87" id="znl-ze-S2K"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qeV-dl-mlW" userLabel="Work Plan View" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
@@ -4959,7 +4976,7 @@ VmVyc2lvbiA6IDEuMAM
                         <outlet property="salesStackView" destination="9r7-rh-fnu" id="A0d-c3-4uT"/>
                         <outlet property="segmentBorderLbl" destination="Xpz-jM-mdb" id="1Lz-gn-XBB"/>
                         <outlet property="segmentControlForAnalysis" destination="FJl-k7-BZ4" id="hwH-Pg-Uca"/>
-                        <outlet property="segmentControlForDcr" destination="V31-xn-yiS" id="6wn-li-meD"/>
+                        <outlet property="segmentsCollection" destination="kOo-W3-m0O" id="5dX-aE-zNe"/>
                         <outlet property="sideMenuTableView" destination="2qh-35-0r3" id="fJc-xZ-MSr"/>
                         <outlet property="slideStackView" destination="mtK-iY-AyS" id="mRN-0G-IeQ"/>
                         <outlet property="txtViewRemarks" destination="wjW-aO-8WX" id="nCX-p2-FXh"/>
@@ -5048,6 +5065,9 @@ VmVyc2lvbiA6IDEuMAM
         </systemColor>
         <systemColor name="systemGray3Color">
             <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray4Color">
+            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray5Color">
             <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

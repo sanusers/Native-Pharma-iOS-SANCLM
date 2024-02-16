@@ -265,6 +265,16 @@
 		38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E512A55A4650051BFEA /* Speciality + Extension.swift */; };
 		38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38F8431D2A5E8493009018AB /* SideMenu.storyboard */; };
 		38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */; };
+		38FAA15B2B7F229200714AA2 /* TourPlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1572B7F229200714AA2 /* TourPlanVM.swift */; };
+		38FAA15C2B7F229200714AA2 /* MasterSyncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1582B7F229200714AA2 /* MasterSyncVM.swift */; };
+		38FAA15D2B7F229200714AA2 /* UserStstisticsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1592B7F229200714AA2 /* UserStstisticsVM.swift */; };
+		38FAA15E2B7F229200714AA2 /* ReportsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA15A2B7F229200714AA2 /* ReportsVM.swift */; };
+		38FAA1692B7F254D00714AA2 /* MyDayPlanModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1682B7F254D00714AA2 /* MyDayPlanModel.swift */; };
+		38FAA16B2B7F255100714AA2 /* MyDayPlanResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */; };
+		38FAA16D2B7F255600714AA2 /* CommonStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA16C2B7F255600714AA2 /* CommonStructs.swift */; };
+		38FAA16F2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA16E2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift */; };
+		38FAA1722B7F263500714AA2 /* MyDayPlanTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */; };
+		38FAA1732B7F263500714AA2 /* MyDayPlanTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */; };
 		38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */; };
 		38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */; };
 		38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */; };
@@ -555,6 +565,16 @@
 		38F72E512A55A4650051BFEA /* Speciality + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Speciality + Extension.swift"; sourceTree = "<group>"; };
 		38F8431D2A5E8493009018AB /* SideMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SideMenu.storyboard; sourceTree = "<group>"; };
 		38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApplicationVC.swift; sourceTree = "<group>"; };
+		38FAA1572B7F229200714AA2 /* TourPlanVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TourPlanVM.swift; sourceTree = "<group>"; };
+		38FAA1582B7F229200714AA2 /* MasterSyncVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterSyncVM.swift; sourceTree = "<group>"; };
+		38FAA1592B7F229200714AA2 /* UserStstisticsVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStstisticsVM.swift; sourceTree = "<group>"; };
+		38FAA15A2B7F229200714AA2 /* ReportsVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportsVM.swift; sourceTree = "<group>"; };
+		38FAA1682B7F254D00714AA2 /* MyDayPlanModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanModel.swift; sourceTree = "<group>"; };
+		38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanResponseModel.swift; sourceTree = "<group>"; };
+		38FAA16C2B7F255600714AA2 /* CommonStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStructs.swift; sourceTree = "<group>"; };
+		38FAA16E2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC + DayPlanEX.swift"; sourceTree = "<group>"; };
+		38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MyDayPlanTVC.xib; path = MyDayPlan/MyDayPlanTVC.xib; sourceTree = "<group>"; };
+		38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyDayPlanTVC.swift; path = MyDayPlan/MyDayPlanTVC.swift; sourceTree = "<group>"; };
 		38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTypeCell.swift; sourceTree = "<group>"; };
 		38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkTypeCell.xib; sourceTree = "<group>"; };
 		38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionHeader.swift; sourceTree = "<group>"; };
@@ -702,6 +722,8 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */,
+				38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */,
 				386BEA0A2B7353B60083D61F /* SlidePreview */,
 				388546452B5FE617005FC9FC /* Presentation */,
 				3885463C2B5FC739005FC9FC /* WorktypeCells */,
@@ -780,6 +802,7 @@
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				38FAA1742B7F265D00714AA2 /* MasterSync+Ex */,
 				38E42B202B67D226001E0F07 /* LocalStorage */,
 				38C25E9E2B64D7C900A8E076 /* Common alert */,
 				38DD14B22B4FBB6C0036384F /* Loaders */,
@@ -798,8 +821,6 @@
 				380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */,
 				3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */,
 				38EC6FB12B6242D10065A707 /* Media.swift */,
-				38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */,
-				38C661442B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -826,6 +847,10 @@
 		38BFB7832AFB61CD005E141E /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				38FAA1582B7F229200714AA2 /* MasterSyncVM.swift */,
+				38FAA15A2B7F229200714AA2 /* ReportsVM.swift */,
+				38FAA1572B7F229200714AA2 /* TourPlanVM.swift */,
+				38FAA1592B7F229200714AA2 /* UserStstisticsVM.swift */,
 				38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */,
 				38E8B5D92B0B703000C40042 /*  SessionResponseVM.swift */,
 			);
@@ -835,6 +860,9 @@
 		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				38FAA1682B7F254D00714AA2 /* MyDayPlanModel.swift */,
+				38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */,
+				38FAA16C2B7F255600714AA2 /* CommonStructs.swift */,
 				38CA1FE62B6107E700AFCFD2 /* Presentation */,
 				38F5558D2B57B776000D9294 /* Calls */,
 				38BA66862B4685A8008C6D2C /* DCR */,
@@ -1093,6 +1121,16 @@
 			path = Calls;
 			sourceTree = "<group>";
 		};
+		38FAA1742B7F265D00714AA2 /* MasterSync+Ex */ = {
+			isa = PBXGroup;
+			children = (
+				38FAA16E2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift */,
+				38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */,
+				38C661442B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift */,
+			);
+			path = "MasterSync+Ex";
+			sourceTree = "<group>";
+		};
 		A8343534F7C81EDB68431942 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1349,6 +1387,7 @@
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */,
 				38CA1FE52B6102AB00AFCFD2 /* SelectPresentationCVC.xib in Resources */,
+				38FAA1722B7F263500714AA2 /* MyDayPlanTVC.xib in Resources */,
 				386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */,
 				38107C562B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib in Resources */,
 				38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */,
@@ -1490,10 +1529,12 @@
 				38D569052B3570E3007CB86D /* ListedWorkTypesTVC.swift in Sources */,
 				38CA1FE02B60EDF400AFCFD2 /* SelectedSlidesTVC.swift in Sources */,
 				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
+				38FAA15D2B7F229200714AA2 /* UserStstisticsVM.swift in Sources */,
 				38CA1FEF2B611CBF00AFCFD2 /* PlayPresentationCVC.swift in Sources */,
 				38E659882B33088200E7BF42 /* ReportsView.swift in Sources */,
 				38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
+				38FAA15E2B7F229200714AA2 /* ReportsVM.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,
@@ -1510,6 +1551,7 @@
 				38E659832B33075200E7BF42 /* ReportTypesCVC.swift in Sources */,
 				B287E6C229F2BC9C0097974D /* TableCell.swift in Sources */,
 				3801D4972B4ECFB700A9740F /* HomeSideMenuMenuView.swift in Sources */,
+				38FAA15B2B7F229200714AA2 /* TourPlanVM.swift in Sources */,
 				38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */,
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
 				38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */,
@@ -1525,6 +1567,7 @@
 				38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */,
 				38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */,
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
+				38FAA16D2B7F255600714AA2 /* CommonStructs.swift in Sources */,
 				B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */,
 				38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */,
 				38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */,
@@ -1577,6 +1620,7 @@
 				B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,
 				38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */,
+				38FAA1692B7F254D00714AA2 /* MyDayPlanModel.swift in Sources */,
 				38D568FD2B3560C6007CB86D /* VisitsCountCVC.swift in Sources */,
 				38F289B42B0CA70200045D4F /* CustomCalenderCell.swift in Sources */,
 				38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */,
@@ -1599,6 +1643,7 @@
 				38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
+				38FAA15C2B7F229200714AA2 /* MasterSyncVM.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,
@@ -1609,6 +1654,7 @@
 				38E3C3692AFA033C00623C33 /* ConfigModel.swift in Sources */,
 				38C600D82A93331700C733AF /* InputSampleTableViewCell.swift in Sources */,
 				38C600DC2A93392100C733AF /* Color.swift in Sources */,
+				38FAA16F2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift in Sources */,
 				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				3801D4952B4ECF4800A9740F /* HomeSideMenuVC.swift in Sources */,
 				38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */,
@@ -1648,6 +1694,7 @@
 				38E8B5DA2B0B703000C40042 /*  SessionResponseVM.swift in Sources */,
 				38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */,
 				38E8B5D62B0B3BB100C40042 /* Fonts and Colors.swift in Sources */,
+				38FAA16B2B7F255100714AA2 /* MyDayPlanResponseModel.swift in Sources */,
 				38C7F0E12A5D663800363E24 /* VisitControl + Extension.swift in Sources */,
 				38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */,
 				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
@@ -1670,6 +1717,7 @@
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,
+				38FAA1732B7F263500714AA2 /* MyDayPlanTVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
 				38CA1FE42B6102AB00AFCFD2 /* SelectPresentationCVC.swift in Sources */,
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,

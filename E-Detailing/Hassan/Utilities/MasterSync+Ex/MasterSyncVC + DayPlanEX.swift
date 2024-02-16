@@ -228,7 +228,7 @@ extension CoreDataManager {
         var subordinate = Subordinate()
         if let entityHQ = NSEntityDescription.entity(forEntityName: "Subordinate", in: context) {
             let cdHeadQuarters = Subordinate(entity: entityHQ, insertInto: context)
-           //  Convert properties of Subordinate
+            // Convert properties of Subordinate
             cdHeadQuarters.id = headQuarters.id
             cdHeadQuarters.name = headQuarters.name
             cdHeadQuarters.mapId = headQuarters.mapId
