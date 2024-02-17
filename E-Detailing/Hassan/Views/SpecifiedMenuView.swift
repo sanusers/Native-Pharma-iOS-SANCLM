@@ -417,7 +417,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                
               
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: [NSManagedObject]())
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Territory(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
@@ -528,8 +528,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
          //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
             
             if self.selectedObject != nil {
-               let doctorObj = self.selectedObject as! Subordinate
-                if doctorObj.id == model?.id {
+               let doctorObj = self.selectedObject as! SelectedHQ
+                if doctorObj.code == model?.id {
                    // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                     cell.lblName.textColor = .appGreen
                 }
@@ -570,7 +570,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                
               
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: [NSManagedObject]())
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Subordinate(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
@@ -880,8 +880,8 @@ class SpecifiedMenuView: BaseView {
        case .headQuater:
            self.headQuatersArr =  DBManager.shared.getSubordinate()
            if specifiedMenuVC.selectedObject != nil {
-               self.selectedObject = specifiedMenuVC.selectedObject as! Subordinate
-               let docObj =  self.selectedObject as! Subordinate
+               self.selectedObject = specifiedMenuVC.selectedObject as! SelectedHQ
+               let docObj =  self.selectedObject as! SelectedHQ
                if !(isfromTF ?? false) {
                    self.searchTF.text = docObj.name
                }

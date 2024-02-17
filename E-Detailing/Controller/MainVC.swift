@@ -153,14 +153,18 @@ extension MainVC: MenuResponseProtocol {
         case .workType:
             self.fetchedWorkTypeObject = selectedObject as? WorkType
             self.tableCellheight =  setupHeight(true, index: 0)
+            self.sessions[selectedSessionIndex ?? 0].workType = fetchedWorkTypeObject
             self.toLoadWorktypeTable()
         case .cluster:
             self.fetchedClusterObject = selectedObjects as? [Territory]
+            self.sessions[selectedSessionIndex ?? 0].cluster = fetchedClusterObject
             self.toLoadWorktypeTable()
         case .headQuater:
             
             self.fetchedHQObject = selectedObject as? Subordinate
-           
+  
+            
+          
             
             let aHQobj = HQModel()
             aHQobj.code = self.fetchedHQObject?.id ?? String()
@@ -176,13 +180,20 @@ extension MainVC: MenuResponseProtocol {
             
             LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
             Shared.instance.showLoaderInWindow()
-            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { _ in
+            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { [weak self] _  in
                 
+                guard let welf = self else {return}
                 
-                self.toLoadWorktypeTable()
+                CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+                    if let aEntity = selectedHQArr.first {
+                        welf.sessions[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
+                    }
+                }
+                
+                welf.toLoadWorktypeTable()
                 
                 Shared.instance.removeLoaderInWindow()
-                self.toCreateToast("Clusters synced successfully")
+                welf.toCreateToast("Clusters synced successfully")
               //  let clustersCount =  DBManager.shared.getTerritory().count
                 
             }
@@ -218,6 +229,7 @@ typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 class MainVC : UIViewController {
     var segmentType: [SegmentType] = []
     var selectedSegmentsIndex: Int = 0
+    var selectedSessionIndex : Int?
     enum SegmentType : String {
         case workPlan = "Work plan"
         case calls = "Calls"
@@ -226,6 +238,19 @@ class MainVC : UIViewController {
     
     var tableCellheight: CGFloat = 0
     
+    
+    func getSubordinate(hqCode: String) -> Subordinate? {
+        let hqArr = DBManager.shared.getSubordinate()
+        var aSubordinateobj = NSManagedObject()
+        hqArr.forEach { aSubordinate in
+            if aSubordinate.id == hqCode {
+                aSubordinateobj = aSubordinate
+            }
+                
+        }
+        return aSubordinateobj as? Subordinate
+    }
+    
     func toConfigureMydayPlan() {
         self.sessions = toFetchExistingPlan()
         
@@ -233,13 +258,15 @@ class MainVC : UIViewController {
             self.sessions.forEach { aSession in
                 
                 
-                let hqArr = DBManager.shared.getSubordinate()
-                hqArr.forEach { aSubordinate in
-                    if aSubordinate.id == aSession.headQuarters?.code ?? "" {
-                        self.fetchedHQObject = aSubordinate
-                    }
-                        
-                }
+                self.fetchedHQObject =  getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                
+//                let hqArr = DBManager.shared.getSubordinate()
+//                hqArr.forEach { aSubordinate in
+//                    if aSubordinate.id == aSession.headQuarters?.code ?? "" {
+//                        self.fetchedHQObject = aSubordinate
+//                    }
+//
+//                }
                
                 self.fetchedWorkTypeObject = aSession.workType
                 self.fetchedClusterObject = aSession.cluster
@@ -399,6 +426,9 @@ class MainVC : UIViewController {
     
     func setupHeight(_ isTodelete: Bool, index: Int) -> CGFloat {
         
+        
+        let model = self.sessions[index]
+        
         var cellHeight: CGFloat = 0
         
         if isTodelete {
@@ -409,7 +439,7 @@ class MainVC : UIViewController {
             cellHeight = 0
         }
 
-        if self.fetchedWorkTypeObject?.fwFlg  == "F" {
+        if model.workType?.fwFlg  == "F" {
   
           
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
@@ -554,10 +584,57 @@ class MainVC : UIViewController {
         segmentsCollection.reloadData()
     }
     
+    @IBAction func didTapAddplan(_ sender: Any) {
+        
+        if sessions.count == 2 {
+            return
+        } else {
+            var aSession = Sessions()
+            
+            aSession.cluster  = nil
+            aSession.workType = nil
+            aSession.headQuarters = nil
+            aSession.isRetrived = Bool()
+            
+            
+            self.sessions.append(aSession)
+        }
+        configureAddplanBtn()
+        self.toLoadWorktypeTable()
+    }
+    func configureAddplanBtn() {
+
+        if self.sessions.count >= 2 {
+            self.btnAddplan.isUserInteractionEnabled = false
+            self.btnAddplan.alpha = 0.5
+        } else {
+            self.btnAddplan.isUserInteractionEnabled = true
+            self.btnAddplan.alpha = 1
+        }
+    }
+    
     func setupUI() {
-       
+        self.viewWorkPlan.addAction(for: .swipe_left) {
+            self.setSegment(.calls, isfromSwipe: true)
+        }
+        
+        self.viewCalls.addAction(for: .swipe_left) {
+            self.setSegment(.outbox, isfromSwipe: true)
+        }
+        
+        self.viewCalls.addAction(for: .swipe_right) {
+            self.setSegment(.workPlan, isfromSwipe: true)
+        }
+        
+        
+        self.viewOutBox.addAction(for: .swipe_right) {
+            self.setSegment(.calls, isfromSwipe: true)
+        }
+        
+        
         segmentType = [.workPlan, .calls, .outbox]
         toLoadSegments()
+        worktypeTable.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         toConfigureMydayPlan()
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         
@@ -1612,7 +1689,7 @@ class MainVC : UIViewController {
         }
     }
     
-    func setSegment(_ segmentType: SegmentType) {
+    func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
         switch segmentType {
             
         case .workPlan:
@@ -1622,6 +1699,12 @@ class MainVC : UIViewController {
           //  outboxSegmentHolderView.isHidden = true
           //  callsSegmentHolderVIew.isHidden = true
          toLoadWorktypeTable()
+          if isfromSwipe ?? false {
+                self.selectedSegmentsIndex = 0
+                self.segmentsCollection.reloadData()
+            }
+          
+
         case .calls:
            // callsSegmentHolderVIew.isHidden = false
            // outboxSegmentHolderView.isHidden = true
@@ -1629,6 +1712,12 @@ class MainVC : UIViewController {
             viewCalls.isHidden = false
             viewOutBox.isHidden = true
             toloadCallsTable()
+           if isfromSwipe ?? false {
+                self.selectedSegmentsIndex = 1
+                self.segmentsCollection.reloadData()
+            }
+     
+            
         case .outbox:
            // outboxSegmentHolderView.isHidden = false
             viewWorkPlan.isHidden = true
@@ -1636,6 +1725,11 @@ class MainVC : UIViewController {
             viewOutBox.isHidden = false
            // callsSegmentHolderVIew.isHidden = true
             toLoadOutboxTable()
+           if isfromSwipe ?? false {
+                self.selectedSegmentsIndex = 2
+                self.segmentsCollection.reloadData()
+            }
+     
         }
     }
     
@@ -1991,38 +2085,56 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
         case worktypeTable:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MyDayPlanTVC", for: indexPath) as! MyDayPlanTVC
+            var cacheObjects : [NSManagedObject] = []
             
             let model = self.sessions[indexPath.row]
             
-           // cell.setupHeight(true)
-            cell.selectionStyle = .none
-            var cacheObjects : [NSManagedObject] = []
-            
-            if let afetchedHQObject =  fetchedHQObject  {
-                cacheObjects.append(afetchedHQObject)
+            if let afetchedHQObject =  model.headQuarters  {
+               let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+               let subordinateObj = CoreDataManager.shared.convertHeadQuartersToSubordinate(afetchedHQObject, context: context)
+                
+                
+                cacheObjects.append(subordinateObj)
             }
             
-            if let afetchedClusterObject =  fetchedClusterObject  {
+            if let afetchedClusterObject =  model.cluster  {
                 cacheObjects = afetchedClusterObject
             }
             
-            if let afetchedWorkTypeObject =  fetchedWorkTypeObject  {
+            if let afetchedWorkTypeObject =  model.workType  {
                 cacheObjects.append(afetchedWorkTypeObject)
             }
+          //  let model = self.sessions[indexPath.row]
+            if model.isRetrived == true {
+                cell.contentHolderVIew.backgroundColor = .appGreyColor
+                cell.isUserInteractionEnabled = false
+                cell.setupUI(model: cacheObjects, istoDelete: false)
+            } else {
+                cell.countsHolderVIew.backgroundColor = .appWhiteColor
+                cell.isUserInteractionEnabled = true
+                cell.setupUI(model: cacheObjects, istoDelete: false)
+            }
+            
+           // cell.setupHeight(true)
+            cell.selectionStyle = .none
+
             
   
             
-            cell.setupUI(model: cacheObjects, istoDelete: indexPath.row == 0 ? true : false)
+           
             
             
             cell.wtBorderView.addTap { [weak self] in
+            
                 guard let welf = self else {return}
+                welf.selectedSessionIndex = indexPath.row
                 welf.navigateToSpecifiedMenu(type: .workType)
             }
             
             cell.hqBorderView.addTap { [weak self] in
                 guard let welf = self else {return}
-                if welf.fetchedWorkTypeObject != nil {
+                welf.selectedSessionIndex = indexPath.row
+                if model.workType != nil {
                     welf.navigateToSpecifiedMenu(type: .headQuater)
                 } else {
                     welf.toCreateToast("Please select worktype")
@@ -2032,8 +2144,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
             cell.clusterBorderView.addTap { [weak self] in
                 guard let welf = self else {return}
-                
-                if welf.fetchedHQObject != nil {
+                welf.selectedSessionIndex = indexPath.row
+                if model.headQuarters != nil {
                     welf.navigateToSpecifiedMenu(type: .cluster)
                 } else {
                     welf.toCreateToast("Please select HQ")
@@ -2053,17 +2165,19 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func navigateToSpecifiedMenu(type: MenuView.CellType) {
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: type)
-        
+        let model = sessions[selectedSessionIndex ?? 0]
         switch type {
             
         case .workType:
-            vc.selectedObject = self.fetchedWorkTypeObject
+            vc.selectedObject = model.workType
+            //self.fetchedWorkTypeObject
         case .cluster:
             vc.selectedClusterID = self.fetchedClusterObject?.reduce(into: [String: Bool]()) { result, aTerritory in
                 result[aTerritory.code ?? ""] = true
             }
         case .headQuater:
-            vc.selectedObject = self.fetchedHQObject
+            vc.selectedObject = model.headQuarters
+            //self.fetchedHQObject
         default:
             print("Yet to implement")
   
@@ -2097,7 +2211,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 //            } else {
 //                return 200 + 10
 //            }
-          return  setupHeight(true, index: indexPath.row)
+            let model = self.sessions[indexPath.row]
+            if model.isRetrived ?? false {
+                return  setupHeight(false, index: indexPath.row)
+            } else {
+                return  setupHeight(false, index: indexPath.row)
+            }
+     
             
         }
         else {

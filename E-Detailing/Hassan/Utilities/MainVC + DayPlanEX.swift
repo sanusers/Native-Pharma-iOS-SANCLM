@@ -11,11 +11,13 @@ class DayPlanSessions {
     var worktype: WorkType
     var headQuarters: SelectedHQ
     var cluster: [Territory]
+    var isSavedSession: Bool
     
     init() {
         worktype = WorkType()
         headQuarters = SelectedHQ()
         cluster = [Territory]()
+        isSavedSession = false
     }
 }
 
@@ -23,6 +25,7 @@ struct Sessions {
     var cluster : [Territory]?
     var workType: WorkType?
     var headQuarters: SelectedHQ?
+    var isRetrived : Bool?
     
 
 }
@@ -88,7 +91,7 @@ extension MainVC {
                         }
                         
                     }
-                    let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil)
+                    let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil, isRetrived: true)
                   
                     aDaysessions.append(tempSession)
                 }
@@ -139,7 +142,7 @@ extension MainVC {
                         }
                         
                     }
-                    let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil)
+                    let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil, isRetrived: true)
                   //selectedheadQuarters ?? SelectedHQ()
                     aDaysessions.append(tempSession)
                 }

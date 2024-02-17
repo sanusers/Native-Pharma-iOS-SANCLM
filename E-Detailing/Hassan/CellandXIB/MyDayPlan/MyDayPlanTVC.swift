@@ -153,6 +153,7 @@ class MyDayPlanTVC: UITableViewCell {
 //        }
         
         if isForFW {
+            self.wtBorderView.backgroundColor = .appTextColor.withAlphaComponent(0.65)
             self.hqHolderView.isHidden = false
             self.clusterHolderVIew.isHidden = false
             self.holderStackHeight.constant = 200
@@ -164,6 +165,7 @@ class MyDayPlanTVC: UITableViewCell {
                 self.clusterHolderVIew.isHidden = false
             }
         } else {
+            self.wtBorderView.backgroundColor = .appWhiteColor
             self.hqHolderView.isHidden = true
             self.clusterHolderVIew.isHidden = true
             self.holderStackHeight.constant = 66
