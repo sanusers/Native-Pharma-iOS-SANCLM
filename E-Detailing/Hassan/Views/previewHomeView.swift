@@ -12,7 +12,9 @@ import UIKit
 import CoreData
 
 extension PreviewHomeView: MenuResponseProtocol {
-    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+
+    
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         print("Yet to implement")
         switch type {
             
@@ -163,7 +165,7 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
                     welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
                 case .brand , .speciality:
                     if welf.fetchedObject != nil {
-                        welf.selectedType(.listedDoctor, selectedObject: welf.fetchedObject ?? NSManagedObject())
+                        welf.selectedType(.listedDoctor, selectedObject: welf.fetchedObject ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
                     } else {
                         welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
                     }

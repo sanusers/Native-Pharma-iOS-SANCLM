@@ -13,7 +13,7 @@ import UIKit
 
 
 extension MasterSyncVC: MenuResponseProtocol {
-    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         switch type {
 //
 //        case .workType:
@@ -35,15 +35,17 @@ extension MasterSyncVC: MenuResponseProtocol {
             }
             LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
             
-            let masterVM = MasterSyncVM()
+         
             //let config = AppDefaults.shared.getAppSetUp()
-            masterVM.fetchMasterData(type: .clusters, sfCode: aHQobj.code) { _ in
+            Shared.instance.showLoaderInWindow()
+            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { _ in
                 
                 self.toCreateToast("Clusters synced successfully")
-                
+                self.collectionView.reloadData()
+                Shared.instance.removeLoaderInWindow()
                 
             }
-            
+           
             
             
           //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
@@ -280,13 +282,7 @@ extension CoreDataManager {
 
     private func convertEachDyPlan(_ eachDayPlan : DayPlan, context: NSManagedObjectContext) -> NSSet {
         
-        struct Sessions {
-            var cluster : [Territory]?
-            var workType: WorkType?
-            var headQuarters: SelectedHQ?
-            
-    
-        }
+
         
         var aDaysessions : [Sessions] = []
         

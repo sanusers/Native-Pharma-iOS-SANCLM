@@ -2067,7 +2067,9 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
 }
 
 extension TourPlanView: MenuResponseProtocol {
-    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+
+    
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         print("Yet to implement")
     }
     

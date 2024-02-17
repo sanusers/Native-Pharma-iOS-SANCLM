@@ -57,7 +57,7 @@ class MasterSyncVC : UIViewController {
     var loadedSlideInfo = [MasterInfo]()
     var extractedFileName: String?
     var isFromLaunch : Bool = false
-    
+    var masterVM: MasterSyncVM?
     var masterData = [MasterInfo]()
     
     var dcrList = [MasterCellData]()
@@ -131,6 +131,7 @@ class MasterSyncVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // addobservers()
+        masterVM = MasterSyncVM()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         setupUI()
         collectionView.register(UINib(nibName: "MasterSyncCell", bundle: nil), forCellWithReuseIdentifier: "MasterSyncCell")
@@ -411,7 +412,7 @@ class MasterSyncVC : UIViewController {
             }
           
         default:
-            mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getSFCode) {[weak self] (response) in
+            mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getSFCode, istoUpdateDCRlist: false) {[weak self] (response) in
                 guard let welf = self else {return}
                 let date1 = Date().toString(format: "yyyy-MM-dd HH:mm:ss ZZZ")
                 

@@ -16,6 +16,7 @@ class SpecifiedMenuVC : BaseViewController {
     var celltype: MenuView.CellType = .listedDoctor
     var selectedObject: NSManagedObject?
     var previewType: PreviewHomeView.PreviewType?
+    var selectedClusterID: [String : Bool]?
     override func viewDidLoad() {
         super.viewDidLoad()
 

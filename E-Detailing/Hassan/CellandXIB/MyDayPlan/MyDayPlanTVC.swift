@@ -63,7 +63,7 @@ class MyDayPlanTVC: UITableViewCell {
         selectClusterLbl.setFont(font: .medium(size: .BODY))
         selectHQlbl.setFont(font: .medium(size: .BODY))
         selectWTlbl.setFont(font: .medium(size: .BODY))
-        
+        self.countsHolderVIew.isHidden = true
         
         
     }
@@ -104,10 +104,10 @@ class MyDayPlanTVC: UITableViewCell {
             case let hqObj as Subordinate:
                 
                 if let hqName = hqObj.name {
-                    self.countsHolderVIew.isHidden = false
+                  //  self.countsHolderVIew.isHidden = false
                      self.selectHQlbl.text = hqName
                  } else {
-                     self.countsHolderVIew.isHidden = true
+                    // self.countsHolderVIew.isHidden = true
                      self.selectHQlbl.text = "Select HQ"
                  }
             case let wtObj as WorkType:

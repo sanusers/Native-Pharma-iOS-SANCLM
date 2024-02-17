@@ -5,7 +5,7 @@ import CoreData
  protocol MenuResponseProtocol: AnyObject {
     func routeToView(_ view : UIViewController)
     func callPlanAPI()
-    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject)
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject])
 
 }
 extension MenuResponseProtocol where Self : UIViewController{

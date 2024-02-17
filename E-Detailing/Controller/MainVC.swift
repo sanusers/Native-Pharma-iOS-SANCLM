@@ -147,17 +147,18 @@ extension MainVC : HomeLineChartViewDelegate
 }
 
 extension MainVC: MenuResponseProtocol {
-    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject) {
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         switch type {
 
         case .workType:
             self.fetchedWorkTypeObject = selectedObject as? WorkType
-            
             self.tableCellheight =  setupHeight(true, index: 0)
-            
+            self.toLoadWorktypeTable()
         case .cluster:
-            self.fetchedClusterObject = selectedObject as? Territory
+            self.fetchedClusterObject = selectedObjects as? [Territory]
+            self.toLoadWorktypeTable()
         case .headQuater:
+            
             self.fetchedHQObject = selectedObject as? Subordinate
            
             
@@ -172,13 +173,15 @@ extension MainVC: MenuResponseProtocol {
             CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
             }
             
-         
-            let config = AppDefaults.shared.getAppSetUp()
             
             LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
-            
-            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code) { _ in
+            Shared.instance.showLoaderInWindow()
+            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { _ in
                 
+                
+                self.toLoadWorktypeTable()
+                
+                Shared.instance.removeLoaderInWindow()
                 self.toCreateToast("Clusters synced successfully")
               //  let clustersCount =  DBManager.shared.getTerritory().count
                 
@@ -192,7 +195,7 @@ extension MainVC: MenuResponseProtocol {
             print("Yet to implement.")
         }
         
-        self.toLoadWorktypeTable()
+        
     }
     
     func selectedType(_ type: MenuView.CellType, index: Int) {
@@ -222,6 +225,31 @@ class MainVC : UIViewController {
     }
     
     var tableCellheight: CGFloat = 0
+    
+    func toConfigureMydayPlan() {
+        self.sessions = toFetchExistingPlan()
+        
+        if !sessions.isEmpty {
+            self.sessions.forEach { aSession in
+                
+                
+                let hqArr = DBManager.shared.getSubordinate()
+                hqArr.forEach { aSubordinate in
+                    if aSubordinate.id == aSession.headQuarters?.code ?? "" {
+                        self.fetchedHQObject = aSubordinate
+                    }
+                        
+                }
+               
+                self.fetchedWorkTypeObject = aSession.workType
+                self.fetchedClusterObject = aSession.cluster
+            }
+        }
+        
+        setSegment(.workPlan)
+    }
+    
+
     
     @IBOutlet weak var imgProfile: UIImageView!
     
@@ -364,9 +392,9 @@ class MainVC : UIViewController {
     var userststisticsVM : UserStatisticsVM?
     let dispatchGroup = DispatchGroup()
     var fetchedWorkTypeObject: WorkType?
-    var fetchedClusterObject: Territory?
+    var fetchedClusterObject: [Territory]?
     var fetchedHQObject: Subordinate?
-    
+    var sessions: [Sessions] = []
     
     
     func setupHeight(_ isTodelete: Bool, index: Int) -> CGFloat {
@@ -530,6 +558,7 @@ class MainVC : UIViewController {
        
         segmentType = [.workPlan, .calls, .outbox]
         toLoadSegments()
+        toConfigureMydayPlan()
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         
         btnAddplan.backgroundColor = .appGreyColor
@@ -838,30 +867,30 @@ class MainVC : UIViewController {
     }
     
     
-    @IBAction func dcrSegmentControlAction(_ sender: UISegmentedControl) {
-        
-        self.segmentControlForDcr.underlinePosition()
-        
-        switch self.segmentControlForDcr.selectedSegmentIndex {
-        case 0:
-            self.viewWorkPlan.isHidden = false
-            self.viewCalls.isHidden = true
-            self.viewOutBox.isHidden = true
-            toLoadWorktypeTable()
-        case 1:
-            self.viewWorkPlan.isHidden = true
-            self.viewCalls.isHidden = false
-            self.viewOutBox.isHidden = true
-            toloadCallsTable()
-        case 2:
-            self.viewWorkPlan.isHidden = true
-            self.viewCalls.isHidden = true
-            self.viewOutBox.isHidden = false
-            toLoadOutboxTable()
-        default:
-            break
-        }
-    }
+//    @IBAction func dcrSegmentControlAction(_ sender: UISegmentedControl) {
+//
+//        self.segmentControlForDcr.underlinePosition()
+//
+//        switch self.segmentControlForDcr.selectedSegmentIndex {
+//        case 0:
+//            self.viewWorkPlan.isHidden = false
+//            self.viewCalls.isHidden = true
+//            self.viewOutBox.isHidden = true
+//            toLoadWorktypeTable()
+//        case 1:
+//            self.viewWorkPlan.isHidden = true
+//            self.viewCalls.isHidden = false
+//            self.viewOutBox.isHidden = true
+//            toloadCallsTable()
+//        case 2:
+//            self.viewWorkPlan.isHidden = true
+//            self.viewCalls.isHidden = true
+//            self.viewOutBox.isHidden = false
+//            toLoadOutboxTable()
+//        default:
+//            break
+//        }
+//    }
     
     func toLoadOutboxTable() {
         toSetupOutBoxDataSource()
@@ -1882,7 +1911,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             
         case self.worktypeTable:
-            return 1
+          if self.sessions.isEmpty {
+                return 1
+            } else {
+                return sessions.count
+            }
         default :
             return 10
         }
@@ -1959,7 +1992,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         case worktypeTable:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MyDayPlanTVC", for: indexPath) as! MyDayPlanTVC
             
-            
+            let model = self.sessions[indexPath.row]
             
            // cell.setupHeight(true)
             cell.selectionStyle = .none
@@ -1970,7 +2003,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             
             if let afetchedClusterObject =  fetchedClusterObject  {
-                cacheObjects.append(afetchedClusterObject)
+                cacheObjects = afetchedClusterObject
             }
             
             if let afetchedWorkTypeObject =  fetchedWorkTypeObject  {
@@ -2026,7 +2059,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         case .workType:
             vc.selectedObject = self.fetchedWorkTypeObject
         case .cluster:
-            vc.selectedObject = self.fetchedClusterObject
+            vc.selectedClusterID = self.fetchedClusterObject?.reduce(into: [String: Bool]()) { result, aTerritory in
+                result[aTerritory.code ?? ""] = true
+            }
         case .headQuater:
             vc.selectedObject = self.fetchedHQObject
         default:

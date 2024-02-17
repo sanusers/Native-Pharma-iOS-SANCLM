@@ -131,6 +131,7 @@
 		38CA1FF32B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FF12B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift */; };
 		38CA1FF42B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */; };
 		38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */; };
+		38CA58D32B80AAFB00E28C3D /* MainVC + DayPlanEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */; };
 		38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */; };
 		38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */; };
 		38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */; };
@@ -432,6 +433,7 @@
 		38CA1FF12B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayLoadedPresentationCVC.swift; sourceTree = "<group>"; };
 		38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayLoadedPresentationCVC.xib; sourceTree = "<group>"; };
 		38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesModel.swift; sourceTree = "<group>"; };
+		38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + DayPlanEX.swift"; sourceTree = "<group>"; };
 		38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subordinate + Extension.swift"; sourceTree = "<group>"; };
 		38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCell.swift; sourceTree = "<group>"; };
 		38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCell.xib; sourceTree = "<group>"; };
@@ -823,6 +825,7 @@
 				380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */,
 				3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */,
 				38EC6FB12B6242D10065A707 /* Media.swift */,
+				38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1638,6 +1641,7 @@
 				38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */,
 				38C7F0DF2A5D630100363E24 /* LeaveType + Extension.swift in Sources */,
 				3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */,
+				38CA58D32B80AAFB00E28C3D /* MainVC + DayPlanEX.swift in Sources */,
 				38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */,
 				384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */,
 				38E3C3662AF9FB4400623C33 /* plistReader.swift in Sources */,

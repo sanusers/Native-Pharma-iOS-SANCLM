@@ -417,13 +417,13 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                
               
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
         case .cluster:
        
-            
+            cell.setCheckBox(isToset: true)
             titleLbl.text = "Select Cluster"
             let model =  self.clusterArr?[indexPath.row]
             cell.lblName.text = model?.name
@@ -432,53 +432,88 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
          //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
             
-            if self.selectedObject != nil {
-               let doctorObj = self.selectedObject as! Territory
-                if doctorObj.id == model?.id {
-                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                    cell.lblName.textColor = .appGreen
+            self.clusterArr?.forEach({ cluster in
+                //  dump(cluster.code)
+                    specifiedMenuVC.selectedClusterID?.forEach { id, isSelected in
+                    if id == cluster.code {
+
+                        if isSelected  {
+                            if cluster.name ==  cell.lblName?.text {
+                                cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                            }
+                            
+                        } else {
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        }
+                    } else {
+                    }
                 }
-            } else {
-                if self.isSearched {
-                    if self.selectedSpecifiedTypeID ==  model?.code {
-                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                        cell.lblName.textColor = .appGreen
-                    } else {
-                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                        cell.lblName.textColor = .appTextColor
+            })
+            
+            
+//            if self.selectedObject != nil {
+//               let doctorObj = self.selectedObject as! Territory
+//                if doctorObj.id == model?.id {
+//                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+//                    cell.lblName.textColor = .appGreen
+//                }
+//            } else {
+//                if self.isSearched {
+//                    if self.selectedSpecifiedTypeID ==  model?.code {
+//                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+//                        cell.lblName.textColor = .appGreen
+//                    } else {
+//                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+//                        cell.lblName.textColor = .appTextColor
+//                    }
+//                } else {
+//                    if indexPath.row == self.selectecIndex {
+//                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+//                        cell.lblName.textColor = .appGreen
+//                    } else {
+//                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+//                        cell.lblName.textColor = .appTextColor
+//                    }
+//                }
+//            }
+            
+
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                if let _ = welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] {
+                    
+                    welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] =  welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] == true ? false : true
+                    
+                    if welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] == false {
+                        welf.specifiedMenuVC.selectedClusterID?.removeValue(forKey: model?.code ?? "")
+                 
                     }
+                    
                 } else {
-                    if indexPath.row == self.selectecIndex {
-                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                        cell.lblName.textColor = .appGreen
-                    } else {
-                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-                        cell.lblName.textColor = .appTextColor
-                    }
+                    welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] = true
                 }
             }
             
-
             
    
             
-            cell.addTap { [weak self] in
-                guard let welf = self else {return}
-                welf.selectedObject = nil
-                welf.specifiedMenuVC.selectedObject = nil
-                if welf.isSearched {
-                    welf.selectedSpecifiedTypeID = model?.code ?? ""
-               
-                } else {
-                    welf.selectecIndex = indexPath.row
-                  
-                }
-               
-              
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
-                welf.endEditing(true)
-                welf.hideMenuAndDismiss()
-            }
+//            cell.addTap { [weak self] in
+//                guard let welf = self else {return}
+//                welf.selectedObject = nil
+//                welf.specifiedMenuVC.selectedObject = nil
+//                if welf.isSearched {
+//                    welf.selectedSpecifiedTypeID = model?.code ?? ""
+//
+//                } else {
+//                    welf.selectecIndex = indexPath.row
+//
+//                }
+//
+//
+//                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: <#[NSManagedObject]#>)
+//                welf.endEditing(true)
+//                welf.hideMenuAndDismiss()
+//            }
             
             
         case .headQuater:
@@ -535,7 +570,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                
               
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
@@ -595,7 +630,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                
               
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing())
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
@@ -646,6 +681,7 @@ class SpecifiedMenuView: BaseView {
     var selectedObject: NSManagedObject?
     var selectedCode: Int?
     var previewType: String?
+ 
     //MARK: UDF, gestures  and animations
     
     private var animationDuration : Double = 1.0
@@ -681,6 +717,8 @@ class SpecifiedMenuView: BaseView {
         //cellRegistration()
         toLoadRequiredData()
     }
+    
+
     
     func setupUI() {
       //  searchTF.textColor = .appTextColor
@@ -919,11 +957,14 @@ class SpecifiedMenuTCell: UITableViewCell
     @IBOutlet weak var holderView: UIView!
     static let identifier = "SpecifiedMenuTCell"
   
+    @IBOutlet var lblNameLeadingConstraint: NSLayoutConstraint!
     @IBOutlet var brandMatrisIndicator: UIView!
     
     @IBOutlet var specialityLbl: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblNameLeadingConstraint.constant = 15
+        menuIcon.isHidden = true
         menuIcon.isHidden = true
         lblName.textColor = .appTextColor
         lblName.setFont(font: .medium(size: .SMALL))
@@ -950,6 +991,12 @@ class SpecifiedMenuTCell: UITableViewCell
         }
         
 
+    }
+    
+    
+   func setCheckBox(isToset: Bool) {
+       lblNameLeadingConstraint.constant = 15 + 30
+       menuIcon.isHidden = false
     }
     
 }

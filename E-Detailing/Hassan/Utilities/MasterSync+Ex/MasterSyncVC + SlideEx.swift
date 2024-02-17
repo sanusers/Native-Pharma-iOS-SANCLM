@@ -31,16 +31,21 @@ extension MasterSyncVC {
             Shared.instance.removeLoaderInWindow()
             if isFromLaunch {
                 if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.count >= 2 {
-                    if self.loadedSlideInfo.count >= 2 {
+                   
                         moveToDownloadSlide()
-                    }
+                    
                 }
             
             } else {
-                let isNewSlideExists =  self.toCheckExistenceOfNewSlides()
-                if isNewSlideExists {
-                    moveToDownloadSlide()
+                if (type == .slides || type == .slideBrand) {
+                   
+                    let isNewSlideExists =  self.toCheckExistenceOfNewSlides()
+                    if isNewSlideExists {
+                        moveToDownloadSlide()
+                    }
+                    
                 }
+           
             }
 
             

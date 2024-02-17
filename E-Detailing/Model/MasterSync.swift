@@ -331,8 +331,8 @@ struct MasterSyncParams {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         let sfCode = MasterSyncVC.shared.getSFCode
-        
-        let paramString = "{\"tableName\":\"getdoctors\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(sfCode)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let paramString = "{\"tableName\":\"getdoctors\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
     }
@@ -340,23 +340,25 @@ struct MasterSyncParams {
     static var chemistParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getchemist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
+             let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let paramString = "{\"tableName\":\"getchemist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
         
         return ["data" : paramString]
     }
     
     static var stockistParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getstockist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
+   
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let paramString = "{\"tableName\":\"getstockist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
         
         return ["data" : paramString]
     }
     
     static var unListedDoctorParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getunlisteddr\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let paramString = "{\"tableName\":\"getunlisteddr\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
         
         return ["data" : paramString]
     }
@@ -416,8 +418,8 @@ struct MasterSyncParams {
     
     static var jointWorkParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getjointwork\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let paramString = "{\"tableName\":\"getjointwork\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
     }
