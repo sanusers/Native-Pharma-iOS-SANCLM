@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import Alamofire
-import Toast_Swift
+//import Toast_Swift
 import CoreData
 
 class ProductVC : UIViewController {
