@@ -2,7 +2,9 @@
 //  SpecifiedTypeMenuVC.swift
 //  E-Detailing
 //
-//  Created by San eforce on 08/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 08/02/24.
 //
 
 import Foundation

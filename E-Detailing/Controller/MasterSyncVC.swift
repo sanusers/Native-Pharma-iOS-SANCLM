@@ -219,15 +219,27 @@ class MasterSyncVC : UIViewController {
         guard self.fetchedHQObject != nil else {
             CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
                 let savedEntity = hqModelArr.first
-                self.lblHqName.text = savedEntity?.name == "" ? "Select HQ" : savedEntity?.name
+                guard let savedEntity = savedEntity else{
+                    
+                    self.lblHqName.text = "Select HQ"
+                    
+                    return
+                    
+                }
+                
+                self.lblHqName.text = savedEntity.name == "" ? "Select HQ" : savedEntity.name
                 
                 let subordinates = DBManager.shared.getSubordinate()
                 
-                let asubordinate = subordinates.filter{$0.id == savedEntity?.code ?? ""}
+                let asubordinate = subordinates.filter{$0.id == savedEntity.code}
                 
                 if !asubordinate.isEmpty {
                     self.fetchedHQObject = asubordinate.first
                 }
+            
+              
+  
+ 
                 
             }
             // Retrieve Data from local storage
@@ -367,11 +379,30 @@ class MasterSyncVC : UIViewController {
                     let model: [MyDayPlanResponseModel] = responseModel
                     if model.count > 0 {
                         let aDayArr = model.first
-                       
-                        welf.lblHqName.text = aDayArr?.HQNm ?? "Select HQ"
-                        
+                      let subordinateArr =  DBManager.shared.getSubordinate()
+                       let filteredHQ = subordinateArr.filter {  $0.id == aDayArr?.SFMem }
+                        if !filteredHQ.isEmpty {
+                            let cacheHQ = filteredHQ.first
+                            welf.fetchedHQObject = cacheHQ
+                            welf.setHQlbl()
+                        }
                     } else {
-                        welf.lblHqName.text = "Select HQ"
+                        
+                        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+                            if !selectedHQArr.isEmpty {
+                                let aSelectedHQ = selectedHQArr.first
+                                let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+                                if let aSelectedHQ = aSelectedHQ {
+                                    welf.fetchedHQObject =  CoreDataManager.shared.convertHeadQuartersToSubordinate(aSelectedHQ, context: context)
+                                }
+                                welf.lblHqName.text = aSelectedHQ?.name
+                            } else {
+                                welf.lblHqName.text =  "Select HQ"
+                            }
+                            
+                        }
+                        
+                       
                     }
                 
                 case .failure(let error):

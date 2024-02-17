@@ -2,7 +2,9 @@
 //  SelectedPreviewTypesCVC.swift
 //  E-Detailing
 //
-//  Created by San eforce on 07/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 07/02/24.
 //
 
 import UIKit

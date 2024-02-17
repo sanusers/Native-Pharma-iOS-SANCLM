@@ -2,7 +2,9 @@
 //  CommonStructs.swift
 //  E-Detailing
 //
-//  Created by San eforce on 14/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 14/02/24.
 //
 
 import Foundation

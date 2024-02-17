@@ -152,6 +152,9 @@ extension MainVC: MenuResponseProtocol {
 
         case .workType:
             self.fetchedWorkTypeObject = selectedObject as? WorkType
+            
+            self.tableCellheight =  setupHeight(true, index: 0)
+            
         case .cluster:
             self.fetchedClusterObject = selectedObject as? Territory
         case .headQuater:
@@ -177,6 +180,7 @@ extension MainVC: MenuResponseProtocol {
             masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code) { _ in
                 
                 self.toCreateToast("Clusters synced successfully")
+              //  let clustersCount =  DBManager.shared.getTerritory().count
                 
             }
             
@@ -216,6 +220,8 @@ class MainVC : UIViewController {
         case calls = "Calls"
         case outbox = "Outbox"
     }
+    
+    var tableCellheight: CGFloat = 0
     
     @IBOutlet weak var imgProfile: UIImageView!
     
@@ -360,6 +366,39 @@ class MainVC : UIViewController {
     var fetchedWorkTypeObject: WorkType?
     var fetchedClusterObject: Territory?
     var fetchedHQObject: Subordinate?
+    
+    
+    
+    func setupHeight(_ isTodelete: Bool, index: Int) -> CGFloat {
+        
+        var cellHeight: CGFloat = 0
+        
+        if isTodelete {
+            
+            cellHeight = 40
+        } else {
+            
+            cellHeight = 0
+        }
+
+        if self.fetchedWorkTypeObject?.fwFlg  == "F" {
+  
+          
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                cellHeight = cellHeight + 160
+                
+            } else {
+                cellHeight = cellHeight +  210
+               
+            }
+        } else {
+            cellHeight = cellHeight +  76
+        }
+        return cellHeight
+    }
+    
+    
+
     
     var selectedWorktype : WorkType? {
         didSet {
@@ -2018,11 +2057,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         } else if tableView == self.callTableView {
             return 75
         } else if tableView == self.worktypeTable {
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                return 150 + 10
-            } else {
-                return 200 + 10
-            }
+//            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                return 150 + 10
+//            } else {
+//                return 200 + 10
+//            }
+          return  setupHeight(true, index: indexPath.row)
+            
         }
         else {
             return 95

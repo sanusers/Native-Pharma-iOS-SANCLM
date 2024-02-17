@@ -2,7 +2,9 @@
 //  Fonts and Colore.swift
 //  E-Detailing
 //
-//  Created by San eforce on 20/11/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 20/11/23.
 //
 
 import Foundation

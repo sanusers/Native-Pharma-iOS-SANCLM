@@ -2,7 +2,9 @@
 //  TableSetupModel.swift
 //  E-Detailing
 //
-//  Created by San eforce on 25/11/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 25/11/23.
 //
 
 import Foundation

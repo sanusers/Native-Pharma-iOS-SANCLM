@@ -2,7 +2,9 @@
 //  MasterSyncVC + DayPlanEX.swift
 //  E-Detailing
 //
-//  Created by San eforce on 15/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 15/02/24.
 //
 
 import Foundation
@@ -39,7 +41,10 @@ extension MasterSyncVC: MenuResponseProtocol {
                 
                 self.toCreateToast("Clusters synced successfully")
                 
+                
             }
+            
+            
             
           //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
 
@@ -339,7 +344,7 @@ extension CoreDataManager {
                 }
                 
             }
-            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? SelectedHQ())
+            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil)
           
             aDaysessions.append(tempSession)
         }
@@ -393,7 +398,7 @@ extension CoreDataManager {
                 }
                 
             }
-            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? SelectedHQ())
+            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil)
           //selectedheadQuarters ?? SelectedHQ()
             aDaysessions.append(tempSession)
         }
@@ -405,8 +410,8 @@ extension CoreDataManager {
                 
                 entitydayPlan.cluster = convertClustersToCDM(aDaysession.cluster ?? [Territory](), context: context)
                 entitydayPlan.workType = convertWorkTypeToCDM(aDaysession.workType ?? WorkType(), context: context)
-                if let headQuarters = aDaysession.headQuarters {
-                   // entitydayPlan.headQuarters = convertHeadQuartersToCDM(headQuarters, context: context)
+                if let headQuarters = aDaysession.headQuarters, headQuarters != nil {
+                    entitydayPlan.headQuarters = convertHeadQuartersToCDM(headQuarters, context: context)
                 }
             
                 
@@ -437,6 +442,24 @@ extension CoreDataManager {
         
         return cdHeadQuarters
     }
+    
+    public func convertHeadQuartersToSubordinate(_ headQuarters: SelectedHQ, context: NSManagedObjectContext) ->  Subordinate{
+        
+      
+            let cdHeadQuarters = Subordinate(context: context)
+            // Convert properties of Subordinate
+            cdHeadQuarters.id = headQuarters.code
+            cdHeadQuarters.name = headQuarters.name
+            cdHeadQuarters.mapId = headQuarters.mapId
+            cdHeadQuarters.reportingToSF = headQuarters.reportingToSF
+            cdHeadQuarters.sfHq = headQuarters.sfHq
+            cdHeadQuarters.steps = headQuarters.steps
+          
+          
+        
+        return cdHeadQuarters
+    }
+    
     
     private func convertWorkTypeToCDM(_ workType: WorkType, context: NSManagedObjectContext) -> WorkType {
         let cdWorkType = WorkType(context: context)

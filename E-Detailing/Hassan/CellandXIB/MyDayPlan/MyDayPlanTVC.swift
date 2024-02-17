@@ -2,7 +2,9 @@
 //  MyDayPlanTVC.swift
 //  E-Detailing
 //
-//  Created by San eforce on 15/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 15/02/24.
 //
 
 import UIKit
@@ -10,7 +12,10 @@ import CoreData
 
 class MyDayPlanTVC: UITableViewCell {
     
+    @IBOutlet var coountsLbl: UILabel!
+    @IBOutlet var countsVxview: UIVisualEffectView!
     
+    @IBOutlet var countsHolderVIew: UIView!
     
     @IBOutlet var deleteHolderView: UIView!
     
@@ -22,6 +27,7 @@ class MyDayPlanTVC: UITableViewCell {
     @IBOutlet var holderStackHeight: NSLayoutConstraint! //150
     @IBOutlet var deleteIV: UIImageView!
     
+    @IBOutlet var lblDelete: UILabel!
     @IBOutlet var selectClusterLbl: UILabel!
     
     @IBOutlet var clusterHolderVIew: UIView!
@@ -51,6 +57,8 @@ class MyDayPlanTVC: UITableViewCell {
         
         contentHolderVIew.layer.cornerRadius = 5
         contentHolderVIew.backgroundColor = .appWhiteColor
+        lblDelete.textColor = .appLightPink
+        lblDelete.setFont(font: .bold(size: .BODY))
         contentHolderVIew.elevate(2)
         selectClusterLbl.setFont(font: .medium(size: .BODY))
         selectHQlbl.setFont(font: .medium(size: .BODY))
@@ -79,6 +87,8 @@ class MyDayPlanTVC: UITableViewCell {
 //    }
     
     func setupUI(model: [NSManagedObject], istoDelete: Bool) {
+        
+        
         var isForFW: Bool = false
         model.forEach { anObject in
             switch anObject {
@@ -86,15 +96,18 @@ class MyDayPlanTVC: UITableViewCell {
 
                 if let hqName = territoryObj.name {
                      self.selectClusterLbl.text = hqName
+                    
                  } else {
-                     self.selectClusterLbl.text = "Select Worktype"
+                     self.selectClusterLbl.text = "Select Cluster"
                  }
                 
             case let hqObj as Subordinate:
                 
                 if let hqName = hqObj.name {
+                    self.countsHolderVIew.isHidden = false
                      self.selectHQlbl.text = hqName
                  } else {
+                     self.countsHolderVIew.isHidden = true
                      self.selectHQlbl.text = "Select HQ"
                  }
             case let wtObj as WorkType:
@@ -111,6 +124,7 @@ class MyDayPlanTVC: UITableViewCell {
                     }
                     
                  } else {
+                     
                      self.selectWTlbl.text = "Select Worktype"
                  }
                 
@@ -123,11 +137,11 @@ class MyDayPlanTVC: UITableViewCell {
     
     func setupHeight(_ isTodelete: Bool, isForFW: Bool) {
         if isTodelete {
-            deleteHolderView.isHidden = true
-            deleteHolderHeight.constant = 0
-        } else {
             deleteHolderView.isHidden = false
             deleteHolderHeight.constant = 40
+        } else {
+            deleteHolderView.isHidden = true
+            deleteHolderHeight.constant = 0
         }
         
 //        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {

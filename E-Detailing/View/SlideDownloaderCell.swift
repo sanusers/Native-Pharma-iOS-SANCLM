@@ -2,8 +2,11 @@
 //  SlideDownloaderCell.swift
 //  E-Detailing
 //
-//  Created by NAGAPRASATH on 21/06/23.
+//  Created by Hassan
 //
+//  Copyright © 2024 san eforce. All rights reserved. 08/10/23.
+//
+
 
 import UIKit
 

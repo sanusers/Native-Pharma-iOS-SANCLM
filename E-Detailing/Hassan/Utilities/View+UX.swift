@@ -1,10 +1,15 @@
 
 //
 //  ViewUX.swift
-//  Watchit
+//  E-Detailing
 //
-//  Created by HASSAN on 08/10/23.
+//  Created by Hassan
 //
+//  Copyright © 2024 san eforce. All rights reserved. 08/10/23.
+//
+
+
+
 
 import Foundation
 import UIKit

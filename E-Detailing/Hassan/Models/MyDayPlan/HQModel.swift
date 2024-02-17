@@ -2,7 +2,9 @@
 //  SavedHQModel.swift
 //  E-Detailing
 //
-//  Created by San eforce on 16/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 16/02/24.
 //
 
 import Foundation
