@@ -10,6 +10,10 @@
 import Foundation
 import CoreData
 import UIKit
+protocol MasterSyncVCDelegate: AnyObject {
+    func isHQModified(hqDidChanged: Bool)
+}
+
 
 
 extension MasterSyncVC: MenuResponseProtocol {
@@ -24,14 +28,17 @@ extension MasterSyncVC: MenuResponseProtocol {
             self.fetchedHQObject = selectedObject as? Subordinate
           
             let aHQobj = HQModel()
-            aHQobj.code = self.fetchedHQObject?.id ?? String()
-            aHQobj.mapId = self.fetchedHQObject?.mapId ?? String()
-            aHQobj.name = self.fetchedHQObject?.name ?? String()
-            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? String()
-            aHQobj.steps = self.fetchedHQObject?.steps ?? String()
-            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? String()
+            aHQobj.code = self.fetchedHQObject?.id ?? ""
+            aHQobj.mapId = self.fetchedHQObject?.mapId ?? ""
+            aHQobj.name = self.fetchedHQObject?.name ?? ""
+            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? ""
+            aHQobj.steps = self.fetchedHQObject?.steps ?? ""
+            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? ""
             CoreDataManager.shared.removeHQ()
             CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                CoreDataManager.shared.toRetriveSavedHQ { HQModelarr in
+                    dump(HQModelarr)
+                }
             }
             LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
             
@@ -41,6 +48,7 @@ extension MasterSyncVC: MenuResponseProtocol {
             masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { _ in
                 
                 self.toCreateToast("Clusters synced successfully")
+              //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
                 self.collectionView.reloadData()
                 Shared.instance.removeLoaderInWindow()
                 
@@ -291,6 +299,18 @@ extension CoreDataManager {
         let clusterArr = DBManager.shared.getTerritory()
         let headQuatersArr =  DBManager.shared.getSubordinate()
         let workTypeArr = DBManager.shared.getWorkType()
+        
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+         let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+        let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+        
         if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
            
             var selectedterritories: [Territory]?
@@ -305,10 +325,11 @@ extension CoreDataManager {
                     return aTerritory.code?.contains(code) ?? false
                 }
             }
+            
             selectedterritories = filteredTerritories
             
             workTypeArr.forEach { aWorkType in
-                if aWorkType.fwFlg == eachDayPlan.fwFlg  {
+                if aWorkType.code == eachDayPlan.wtCode  {
                     selectedWorkTypes = aWorkType
                 }
             }
@@ -340,7 +361,10 @@ extension CoreDataManager {
                 }
                 
             }
-            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil)
+            
+
+            
+            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj)
           
             aDaysessions.append(tempSession)
         }
@@ -394,7 +418,9 @@ extension CoreDataManager {
                 }
                 
             }
-            let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil)
+
+            
+            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj)
           //selectedheadQuarters ?? SelectedHQ()
             aDaysessions.append(tempSession)
         }
@@ -404,11 +430,11 @@ extension CoreDataManager {
             if let entityDescription = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) {
                 let entitydayPlan = EachPlan(entity: entityDescription, insertInto: context)
                 
-                entitydayPlan.cluster = convertClustersToCDM(aDaysession.cluster ?? [Territory](), context: context)
-                entitydayPlan.workType = convertWorkTypeToCDM(aDaysession.workType ?? WorkType(), context: context)
-                if let headQuarters = aDaysession.headQuarters, headQuarters != nil {
-                    entitydayPlan.headQuarters = convertHeadQuartersToCDM(headQuarters, context: context)
-                }
+                entitydayPlan.cluster = convertClustersToCDM(aDaysession.cluster ?? [temporaryselectedClusterobj], context: context)
+                entitydayPlan.workType = convertWorkTypeToCDM(aDaysession.workType ?? temporaryselectedWTobj, context: context)
+         
+                entitydayPlan.headQuarters = convertHeadQuartersToCDM(aDaysession.headQuarters ?? temporaryselectedHqobj, context: context)
+                
             
                 
                 // Add to set

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 class DayPlanSessions {
     var worktype: WorkType
@@ -41,6 +42,19 @@ extension MainVC {
                 let clusterArr = DBManager.shared.getTerritory()
                 let headQuatersArr =  DBManager.shared.getSubordinate()
                 let workTypeArr = DBManager.shared.getWorkType()
+                
+                
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+                 let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+                let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+                else {
+                    fatalError("Entity not found")
+                }
+
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+                let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+                
                 
                 if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
                    
@@ -91,7 +105,9 @@ extension MainVC {
                         }
                         
                     }
-                    let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil, isRetrived: true)
+                    
+                    let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
+                  
                   
                     aDaysessions.append(tempSession)
                 }
@@ -142,7 +158,7 @@ extension MainVC {
                         }
                         
                     }
-                    let tempSession = Sessions(cluster: selectedterritories ?? [Territory](), workType: selectedWorkTypes ?? WorkType(), headQuarters: selectedheadQuarters ?? nil, isRetrived: true)
+                    let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
                   //selectedheadQuarters ?? SelectedHQ()
                     aDaysessions.append(tempSession)
                 }

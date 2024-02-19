@@ -19,6 +19,7 @@ class MyDayPlanTVC: UITableViewCell {
     
     @IBOutlet var deleteHolderView: UIView!
     
+    @IBOutlet var deleteTapStack: UIStackView!
     @IBOutlet var contentHolderVIew: UIView!
     @IBOutlet var deleteHolderHeight: NSLayoutConstraint! // 40
     
@@ -56,7 +57,7 @@ class MyDayPlanTVC: UITableViewCell {
         wtBorderView.layer.borderColor = UIColor.appSelectionColor.cgColor
         
         contentHolderVIew.layer.cornerRadius = 5
-        contentHolderVIew.backgroundColor = .appWhiteColor
+        //contentHolderVIew.backgroundColor = .appWhiteColor
         lblDelete.textColor = .appLightPink
         lblDelete.setFont(font: .bold(size: .BODY))
         contentHolderVIew.elevate(2)
@@ -129,7 +130,9 @@ class MyDayPlanTVC: UITableViewCell {
                  }
                 
             default:
-                print("Yet to implement")
+                self.selectHQlbl.text = "Select HQ"
+                self.selectWTlbl.text = "Select Worktype"
+                self.selectClusterLbl.text = "Select Cluster"
             }
         }
         setupHeight(istoDelete, isForFW: isForFW)
@@ -153,7 +156,7 @@ class MyDayPlanTVC: UITableViewCell {
 //        }
         
         if isForFW {
-            self.wtBorderView.backgroundColor = .appTextColor.withAlphaComponent(0.65)
+           
             self.hqHolderView.isHidden = false
             self.clusterHolderVIew.isHidden = false
             self.holderStackHeight.constant = 200
@@ -165,7 +168,7 @@ class MyDayPlanTVC: UITableViewCell {
                 self.clusterHolderVIew.isHidden = false
             }
         } else {
-            self.wtBorderView.backgroundColor = .appWhiteColor
+ 
             self.hqHolderView.isHidden = true
             self.clusterHolderVIew.isHidden = true
             self.holderStackHeight.constant = 66

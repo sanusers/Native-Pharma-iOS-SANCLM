@@ -93,7 +93,8 @@ enum MasterCellType : Int {
 //                   MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
 
 enum `MasterInfo` : String {
-
+    
+    case myDayPlan = "My Day Plan"
     case worktype = "Work Types"
     case headquartes = "Headquarters"
     case competitors = "Competitors"
@@ -128,7 +129,7 @@ enum `MasterInfo` : String {
     
     case doctorFencing = "Listed Doctor"
     case docFeedback = "Doctor Feedback"
-    case myDayPlan = "My Day Plan"
+    
     case customSetup = "Custom Setup"
     case leaveType = "Leave Type"
     case tourPlanStatus = "Tour Plan Status"

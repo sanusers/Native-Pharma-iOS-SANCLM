@@ -42,7 +42,7 @@ class MasterSyncVC : UIViewController {
     
     
     static let shared = MasterSyncVC()
-    
+    var delegate : MasterSyncVCDelegate?
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -104,11 +104,11 @@ class MasterSyncVC : UIViewController {
                 self.collectionView.reloadData()
             }
             
-            self.fetchmasterData(type: MasterInfo.doctorFencing)
-            self.fetchmasterData(type: MasterInfo.chemists)
-            self.fetchmasterData(type: MasterInfo.stockists)
-            self.fetchmasterData(type: MasterInfo.unlistedDoctors)
-            self.fetchmasterData(type: MasterInfo.clusters)
+            self.fetchmasterData(type: MasterInfo.doctorFencing) {_ in}
+            self.fetchmasterData(type: MasterInfo.chemists) {_ in}
+            self.fetchmasterData(type: MasterInfo.stockists) {_ in}
+            self.fetchmasterData(type: MasterInfo.unlistedDoctors) {_ in}
+            self.fetchmasterData(type: MasterInfo.clusters) {_ in}
             
         }
     }
@@ -153,7 +153,30 @@ class MasterSyncVC : UIViewController {
         }else {
             self.setLoader(pageType: .loading)
             animations = (0...(masterData.count - 1)).map{_ in true}
-            _ = masterData.map{self.fetchmasterData(type: $0)}
+            
+            
+            let dispatchgroup = DispatchGroup()
+            for masterType in masterData {
+          
+                dispatchgroup.enter()
+
+            
+                fetchmasterData(type: masterType) { _ in
+                
+                    dispatchgroup.leave()
+                }
+
+            
+          
+            }
+            
+            dispatchgroup.notify(queue: .main) {
+
+                print("DCR list sync completed")
+             
+           
+            }
+           // _ = masterData.map{self.fetchmasterData(type: $0)}
         }
         
         print(DBManager.shared.getSlide())
@@ -180,7 +203,7 @@ class MasterSyncVC : UIViewController {
     }
     
     @IBAction func backAction(_ sender: UIButton) {
-        
+        delegate?.isHQModified(hqDidChanged: self.fetchedHQObject != nil ? true : false)
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -193,13 +216,13 @@ class MasterSyncVC : UIViewController {
     
     @objc func hqModified() {
         print("Tapped")
-        self.fetchmasterData(type: .clusters)
+        self.fetchmasterData(type: .clusters) {_ in }
     }
     
     @objc func syncTapped() {
         print("Tapped")
         self.setLoader(pageType: .loading)
-        self.fetchmasterData(type: .getTP)
+        self.fetchmasterData(type: .getTP) {_ in}
     }
     
     
@@ -273,8 +296,31 @@ class MasterSyncVC : UIViewController {
     @IBAction func syncAll(_ sender: UIButton) {
         self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
-     //   self.collectionView.reloadData()
-        _ = masterData.map{self.fetchmasterData(type: $0)}
+
+      //  _ = masterData.map{self.fetchmasterData(type: $0)}
+        
+        let dispatchgroup = DispatchGroup()
+        for masterType in masterData {
+      
+            dispatchgroup.enter()
+
+        
+            fetchmasterData(type: masterType) { _ in
+            
+                dispatchgroup.leave()
+            }
+
+        
+      
+        }
+        
+        dispatchgroup.notify(queue: .main) {
+
+            print("DCR list sync completed")
+         
+       
+        }
+        
     }
     
     
@@ -363,13 +409,14 @@ class MasterSyncVC : UIViewController {
     
 
     
-    func fetchmasterData(type : MasterInfo) {
+    func fetchmasterData(type : MasterInfo, completion: @escaping (Bool) -> ()) {
        // self.setLoader(pageType: .loading)
         
         switch type {
         case .getTP :
             toPostDataToserver(type : type)
         case .myDayPlan:
+            
             toGetMyDayPlan(type: type) { [weak self] (result) in
                 
                 guard let welf = self else {return}
@@ -377,9 +424,13 @@ class MasterSyncVC : UIViewController {
                 switch result {
                     
                 case .success(let responseModel):
+                    
                     let model: [MyDayPlanResponseModel] = responseModel
+                   
                     if model.count > 0 {
                         let aDayArr = model.first
+                        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+                      LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aDayArr?.SFMem ?? appdefaultSetup.sfCode!)
                       let subordinateArr =  DBManager.shared.getSubordinate()
                        let filteredHQ = subordinateArr.filter {  $0.id == aDayArr?.SFMem }
                         if !filteredHQ.isEmpty {
@@ -405,9 +456,10 @@ class MasterSyncVC : UIViewController {
                         
                        
                     }
-                
+                    completion(true)
                 case .failure(let error):
                     welf.toCreateToast(error.rawValue)
+                    completion(true)
                 }
             }
           
@@ -613,8 +665,31 @@ extension MasterSyncVC : tableViewProtocols {
                            MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
-      //  self.collectionView.reloadData()
-        _ = masterData.map{self.fetchmasterData(type: $0)}
+    
+     //   _ = masterData.map{self.fetchmasterData(type: $0)}
+        
+        let dispatchgroup = DispatchGroup()
+        for masterType in masterData {
+      
+            dispatchgroup.enter()
+
+        
+            fetchmasterData(type: masterType) { _ in
+            
+                dispatchgroup.leave()
+            }
+
+        
+      
+        }
+        
+        dispatchgroup.notify(queue: .main) {
+
+            print("DCR list sync completed")
+         
+       
+        }
+        
         
     }
     
@@ -740,13 +815,35 @@ extension MasterSyncVC : collectionViewProtocols{
         self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
         self.collectionView.reloadData()
-        _ = masterData.map{self.fetchmasterData(type: $0)}
+      //  _ = masterData.map{self.fetchmasterData(type: $0)}
+        let dispatchgroup = DispatchGroup()
+        for masterType in masterData {
+      
+            dispatchgroup.enter()
+
+        
+            fetchmasterData(type: masterType) { _ in
+            
+                dispatchgroup.leave()
+            }
+
+        
+      
+        }
+        
+        dispatchgroup.notify(queue: .main) {
+
+            print("DCR list sync completed")
+         
+       
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         animations[indexPath.row] = true
         self.collectionView.reloadData()
-        self.fetchmasterData(type: self.masterData[indexPath.row])
+        self.fetchmasterData(type: self.masterData[indexPath.row]) {_ in}
     }
 }
 

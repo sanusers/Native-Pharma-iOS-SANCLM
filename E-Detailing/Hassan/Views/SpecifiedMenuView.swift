@@ -528,8 +528,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
          //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
             
             if self.selectedObject != nil {
-               let doctorObj = self.selectedObject as! SelectedHQ
-                if doctorObj.code == model?.id {
+               let doctorObj = self.selectedObject as! Subordinate
+                if doctorObj.id == model?.id {
                    // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                     cell.lblName.textColor = .appGreen
                 }
@@ -880,8 +880,8 @@ class SpecifiedMenuView: BaseView {
        case .headQuater:
            self.headQuatersArr =  DBManager.shared.getSubordinate()
            if specifiedMenuVC.selectedObject != nil {
-               self.selectedObject = specifiedMenuVC.selectedObject as! SelectedHQ
-               let docObj =  self.selectedObject as! SelectedHQ
+               self.selectedObject = specifiedMenuVC.selectedObject as! Subordinate
+               let docObj =  self.selectedObject as! Subordinate
                if !(isfromTF ?? false) {
                    self.searchTF.text = docObj.name
                }

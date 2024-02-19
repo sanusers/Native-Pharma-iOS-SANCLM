@@ -31,6 +31,7 @@ class MasterSyncVM {
             case .success(_):
                 guard let apiResponse = try? JSONSerialization.jsonObject(with: response.data!, options: []) as? [[String: Any]] else {
                     print("Unable to serialize")
+                    completionHandler(response)
                     return
                 }
 
