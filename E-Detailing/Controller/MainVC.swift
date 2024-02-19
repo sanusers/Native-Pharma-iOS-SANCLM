@@ -15,6 +15,7 @@ import CoreData
 
 extension MainVC : MasterSyncVCDelegate {
     func isHQModified(hqDidChanged: Bool) {
+       
         if hqDidChanged {
             toConfigureMydayPlan()
             guard var nonemptysession = sessions, !nonemptysession.isEmpty  else {

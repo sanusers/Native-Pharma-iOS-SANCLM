@@ -169,6 +169,7 @@ extension MasterSyncVC {
         CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan) { isComleted in
             if isComleted {
                 self.toCreateToast("Saved successfully")
+
                 let dayPlans = CoreDataManager.shared.retriveSavedDayPlans()
                 dump(dayPlans)
             } else {
@@ -287,6 +288,18 @@ extension CoreDataManager {
         }
     }
     
+    
+    func getSubordinate(hqCode: String) -> Subordinate? {
+        let hqArr = DBManager.shared.getSubordinate()
+        var aSubordinateobj = NSManagedObject()
+        hqArr.forEach { aSubordinate in
+            if aSubordinate.id == hqCode {
+                aSubordinateobj = aSubordinate
+            }
+                
+        }
+        return aSubordinateobj as? Subordinate
+    }
 
     private func convertEachDyPlan(_ eachDayPlan : DayPlan, context: NSManagedObjectContext) -> NSSet {
         
@@ -352,6 +365,7 @@ extension CoreDataManager {
                             CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
                                 let aSavedHQ = selectedHQArr.first
                                 selectedheadQuarters = aSavedHQ
+                                
                             }
                         }
                     }

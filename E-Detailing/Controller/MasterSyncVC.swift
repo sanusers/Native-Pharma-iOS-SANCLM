@@ -40,7 +40,7 @@ class MasterSyncVC : UIViewController {
     
     
     
-    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     static let shared = MasterSyncVC()
     var delegate : MasterSyncVCDelegate?
     @IBOutlet weak var tableView: UITableView!
@@ -280,6 +280,19 @@ class MasterSyncVC : UIViewController {
 
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
         
+        
+        CoreDataManager.shared.fetchSavedHQ{ [weak self] hqArr in
+            guard let welf = self else {return}
+            let savedEntity = hqArr.first
+            guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: welf.context)
+     
+            else {
+                fatalError("Entity not found")
+            }
+            let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+            
+            welf.fetchedHQObject = CoreDataManager.shared.convertHeadQuartersToSubordinate(savedEntity ?? temporaryselectedHqobj, context: welf.context)
+        }
         vc.selectedObject = self.fetchedHQObject
         
         self.modalPresentationStyle = .custom
