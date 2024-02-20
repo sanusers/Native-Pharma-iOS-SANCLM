@@ -685,11 +685,21 @@ class MainVC : UIViewController {
     
     
     @IBAction func didTapSaveBtn(_ sender: Any) {
-        guard let yetToSaveSession = sessions else {return}
+        guard var yetToSaveSession = sessions else {return}
+        
+        yetToSaveSession.indices.forEach { index in
+            yetToSaveSession[index].isRetrived = true
+        }
+        
+        CoreDataManager.shared.removeAllDayPlans()
         CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) {[weak self] isCompleted in
             guard let welf = self else {return}
             if isCompleted {
-                welf.callSavePlanAPI()
+              //  welf.callSavePlanAPI()
+                welf.toConfigureMydayPlan()
+                
+           //    let toDayplans = CoreDataManager.shared.retriveSavedDayPlans()
+            //    dump(toDayplans)
             }
         }
         
@@ -956,6 +966,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CoreDataManager.shared.removeAllDayPlans()
         self.userststisticsVM = UserStatisticsVM()
         self.masterVM = MasterSyncVM()
         self.updateLinks()

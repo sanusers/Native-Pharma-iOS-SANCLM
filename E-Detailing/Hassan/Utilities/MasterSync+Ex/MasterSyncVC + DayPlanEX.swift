@@ -603,7 +603,7 @@ extension CoreDataManager {
                 aDayPlan.designation = userConfig.desig
                 aDayPlan.stateCode =  "\(userConfig.stateCode!)"
                 aDayPlan.subdivisionCode = userConfig.subDivisionCode
-                
+              
                 aDayPlan.remarks = eachDayPlan.remarks ?? ""
                 aDayPlan.isRejected = eachDayPlan.isRejected
                 aDayPlan.rejectionReason = eachDayPlan.rejectionReason ?? String()
@@ -627,19 +627,40 @@ extension CoreDataManager {
                             aDayPlan.wtCode = eachPlan.workType?.code ?? ""
                             aDayPlan.wtName = eachPlan.workType?.name ?? ""
                             aDayPlan.location = ""
-                            //eachPlan.cluster?.name ?? ""
-                            aDayPlan.townCode = ""
+                            aDayPlan.isRetrived = eachPlan.isRetrived
+                            if let clusterSet = eachPlan.cluster as? Set<Territory> {
+                               // let territoryCodes = clusterSet.map { $0.code ?? "" }
+                                
+                                let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
+                                let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
+                                aDayPlan.townCode =  territoryCodesString
+                                aDayPlan.townName = territoryNamesString
+                                print("Territory Codes: \(territoryCodesString)")
+                            }
+                         
+                            //eachPlan.cluster.
                             //eachPlan.cluster?
-                            aDayPlan.townName = ""
+                          
                             //eachPlan.workType
                             aDayPlan.fwFlg = eachPlan.workType?.fwFlg ?? ""
                         case 1:
                             aDayPlan.rsf2 = eachPlan.headQuarters?.code ?? ""
                             aDayPlan.wtCode2 = eachPlan.workType?.code ?? ""
                             aDayPlan.wtName2 = eachPlan.workType?.name ?? ""
+                            aDayPlan.isRetrived = eachPlan.isRetrived
+                            if let clusterSet = eachPlan.cluster as? Set<Territory> {
+                               // let territoryCodes = clusterSet.map { $0.code ?? "" }
+                                
+                                let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
+                                let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
+                                aDayPlan.townCode2 =  territoryCodesString
+                                aDayPlan.townName2 =  territoryNamesString
+                                print("Territory Codes: \(territoryCodesString)")
+                            }
+                            
                             aDayPlan.location2 = ""
-                            aDayPlan.townCode2 = ""
-                            aDayPlan.townName2 = ""
+                       
+                         
                             aDayPlan.fwFlg2 = eachPlan.workType?.fwFlg ?? ""
                         default:
                             print("Yet to implement")
@@ -693,9 +714,11 @@ extension CoreDataManager {
         eachDayPlan.planDate = Date() // Set the planDate as needed
 
         // Set other properties based on the session
+        eachDayPlan.uuid = UUID()
         eachDayPlan.remarks = session[0].remarks ?? ""
         eachDayPlan.isRejected = session[0].isRejected ?? false
         eachDayPlan.rejectionReason = session[0].rejectionReason
+        
         // Convert and add EachPlan objects
         
         
@@ -705,22 +728,33 @@ extension CoreDataManager {
         
         let eachPlanSet = NSMutableSet()
         // Add EachPlan for the first index
-        let firstEachPlan = EachPlan(context: context)
+      //  let firstEachPlan = EachPlan(context: context)
+        
+        guard let firstPlanEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
+            fatalError("Entity not found")
+        }
+        let firstEachPlan = EachPlan(entity: firstPlanEntity, insertInto: context)
 
-        // Add EachPlan for the second index
-        let secondEachPlan = EachPlan(context: context)
+        
+        
+        guard let secondPlanEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
+            fatalError("Entity not found")
+        }
+        let secondEachPlan = EachPlan(entity: secondPlanEntity, insertInto: context)
+
+ 
 
         session.enumerated().forEach { index, aSession in
             switch index {
             case 0:
-
+                firstEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 firstEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
                 firstEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
                 firstEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
                 eachPlanSet.add(firstEachPlan)
             case 1:
-
+                secondEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 secondEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
                 secondEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
@@ -733,17 +767,9 @@ extension CoreDataManager {
             }
         }
         
-        if var  eachDayPlansSet = eachDayPlan.eachPlan as? Set<EachPlan>  {
-            //let eachDayPlansArray = Array(eachDayPlansSet)
-            
-            eachDayPlansSet = eachPlanSet as! Set<EachPlan>
-            
-            eachDayPlan.eachPlan = eachDayPlansSet as NSSet
-        }
 
-
-
-       
+            eachDayPlan.eachPlan = eachPlanSet
+        
 
         // Save to Core Data
         do {

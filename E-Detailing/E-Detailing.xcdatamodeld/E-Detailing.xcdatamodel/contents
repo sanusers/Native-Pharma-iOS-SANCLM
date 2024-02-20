@@ -94,6 +94,7 @@
         <relationship name="eachPlan" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EachPlan"/>
     </entity>
     <entity name="EachPlan" representedClassName="EachPlan" syncable="YES" codeGenerationType="class">
+        <attribute name="isRetrived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="planDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="remarks" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>

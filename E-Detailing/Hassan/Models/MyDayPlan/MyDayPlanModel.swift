@@ -46,7 +46,7 @@ class DayPlan: Codable {
         isRejected = try container.decodeIfPresent(Bool.self, forKey: .isRejected) ?? Bool()
         rejectionReason = try container.decodeIfPresent(String.self, forKey: .rejectionReason) ?? ""
         uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
-        
+        isRetrived = try container.decodeIfPresent(Bool.self, forKey: .isRetrived) ?? Bool()
     }
     
     
@@ -82,6 +82,7 @@ class DayPlan: Codable {
     var isRejected: Bool
     var rejectionReason: String
     var uuid: UUID
+    var isRetrived: Bool
     enum CodingKeys: String, CodingKey {
         case tableName = "tableName"
         case sfcode = "sfcode"
@@ -115,7 +116,7 @@ class DayPlan: Codable {
         case isRejected
         case rejectionReason
         case uuid
-        
+        case isRetrived
     }
     
     init() {
@@ -151,5 +152,6 @@ class DayPlan: Codable {
         rejectionReason = String()
         uuid = UUID()
         rsf2 = String()
+        isRetrived = Bool()
     }
 }
