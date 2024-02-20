@@ -59,7 +59,7 @@ class MasterSyncVC : UIViewController {
     var isFromLaunch : Bool = false
     var masterVM: MasterSyncVM?
     var masterData = [MasterInfo]()
-    
+    var isDayPlanSynced: Bool = false
     var dcrList = [MasterCellData]()
     
     var fetchedHQObject: Subordinate?
@@ -203,7 +203,7 @@ class MasterSyncVC : UIViewController {
     }
     
     @IBAction func backAction(_ sender: UIButton) {
-        delegate?.isHQModified(hqDidChanged: self.fetchedHQObject != nil ? true : false)
+        delegate?.isHQModified(hqDidChanged: isDayPlanSynced)
         self.navigationController?.popViewController(animated: true)
     }
     

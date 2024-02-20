@@ -38,4 +38,22 @@ class UserStatisticsVM {
             result(.failure(UserStatisticsError.unableConnect))
         })
     }
+    
+    
+    
+    func saveMyDayPlan(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: GeneralResponseModal.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
 }
+
+
+
+

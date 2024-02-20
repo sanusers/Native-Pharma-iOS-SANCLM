@@ -27,6 +27,11 @@ extension MasterSyncVC: MenuResponseProtocol {
         case .headQuater:
             self.fetchedHQObject = selectedObject as? Subordinate
           
+            if self.fetchedHQObject == selectedObject {
+                
+                return
+            }
+            
             let aHQobj = HQModel()
             aHQobj.code = self.fetchedHQObject?.id ?? ""
             aHQobj.mapId = self.fetchedHQObject?.mapId ?? ""
@@ -49,6 +54,7 @@ extension MasterSyncVC: MenuResponseProtocol {
                 
                 self.toCreateToast("Clusters synced successfully")
               //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
+                self.isDayPlanSynced = true
                 self.collectionView.reloadData()
                 Shared.instance.removeLoaderInWindow()
                 
@@ -89,17 +95,20 @@ extension MasterSyncVC {
         var param = [String: Any]()
         
         
-        param["tableName"] = "gettodaytpnew"
+//    http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=table/dcrmasterdata
+//    {"tableName":"getmydayplan","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-15 15:27:16"}
+        
+        param["tableName"] = "getmydayplan"
         param["ReqDt"] = date
         param["sfcode"] = "\(appsetup.sfCode!)"
         param["division_code"] = "\(appsetup.divisionCode!)"
-        param["Rsf"] = "\(appsetup.sfCode!)"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == "" ? "\(appsetup.sfCode!)" : LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        param["Rsf"] = rsf
         param["sf_type"] = "\(appsetup.sfType!)"
         param["Designation"] = "\(appsetup.dsName!)"
         param["state_code"] = "\(appsetup.stateCode!)"
         param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
-        
-        
+         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
         
         var toSendData = [String: Any]()
@@ -139,6 +148,7 @@ extension MasterSyncVC {
             case 0:
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
                 aDayPlan.wtCode = aMyDayPlanResponseModel.WT
                 aDayPlan.wtName = aMyDayPlanResponseModel.WTNm
                 aDayPlan.fwFlg = aMyDayPlanResponseModel.FWFlg
@@ -146,6 +156,7 @@ extension MasterSyncVC {
                 aDayPlan.townName = aMyDayPlanResponseModel.PlNm
             case 1:
                 aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
                 aDayPlan.wtCode2 = aMyDayPlanResponseModel.WT
                 aDayPlan.wtName2 = aMyDayPlanResponseModel.WTNm
                 aDayPlan.fwFlg2 = aMyDayPlanResponseModel.FWFlg
@@ -171,6 +182,7 @@ extension MasterSyncVC {
                 self.toCreateToast("Saved successfully")
 
                 let dayPlans = CoreDataManager.shared.retriveSavedDayPlans()
+                self.isDayPlanSynced = true
                 dump(dayPlans)
             } else {
                 
@@ -400,7 +412,7 @@ extension CoreDataManager {
             selectedterritories = filteredTerritories
             
             workTypeArr.forEach { aWorkType in
-                if aWorkType.fwFlg == eachDayPlan.fwFlg  {
+                if aWorkType.code == eachDayPlan.wtCode  {
                     selectedWorkTypes = aWorkType
                 }
             }
@@ -658,4 +670,90 @@ extension CoreDataManager {
         }
     }
     
+    
+    func saveSessionAsEachDayPlan(session: [Sessions], completion: @escaping (Bool) -> ()) {
+        let context = self.context
+
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+         let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+        let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+
+        guard let eachDayPlanEntity = NSEntityDescription.entity(forEntityName: "EachDayPlan", in: context) else {
+            fatalError("Entity not found")
+        }
+
+        let eachDayPlan = EachDayPlan(entity: eachDayPlanEntity, insertInto: context)
+        eachDayPlan.planDate = Date() // Set the planDate as needed
+
+        // Set other properties based on the session
+        eachDayPlan.remarks = session[0].remarks ?? ""
+        eachDayPlan.isRejected = session[0].isRejected ?? false
+        eachDayPlan.rejectionReason = session[0].rejectionReason
+        // Convert and add EachPlan objects
+        
+        
+        
+  
+        
+        
+        let eachPlanSet = NSMutableSet()
+        // Add EachPlan for the first index
+        let firstEachPlan = EachPlan(context: context)
+
+        // Add EachPlan for the second index
+        let secondEachPlan = EachPlan(context: context)
+
+        session.enumerated().forEach { index, aSession in
+            switch index {
+            case 0:
+
+                // Set properties based on session or adjust as needed
+                firstEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
+                firstEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
+                firstEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+                eachPlanSet.add(firstEachPlan)
+            case 1:
+
+                // Set properties based on session or adjust as needed
+                secondEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
+                secondEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
+                secondEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+                eachPlanSet.add(secondEachPlan)
+                
+
+            default:
+                print("Yet to implement")
+            }
+        }
+        
+        if var  eachDayPlansSet = eachDayPlan.eachPlan as? Set<EachPlan>  {
+            //let eachDayPlansArray = Array(eachDayPlansSet)
+            
+            eachDayPlansSet = eachPlanSet as! Set<EachPlan>
+            
+            eachDayPlan.eachPlan = eachDayPlansSet as NSSet
+        }
+
+
+
+       
+
+        // Save to Core Data
+        do {
+            try context.save()
+            completion(true)
+        } catch {
+            print("Failed to save EachDayPlan to Core Data: \(error)")
+            completion(false)
+        }
+    }
 }
+    
+

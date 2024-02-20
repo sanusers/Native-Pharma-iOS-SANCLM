@@ -15,7 +15,7 @@ import Alamofire
 final class ConnectionHandler : NSObject {
     
     enum TableName: String {
-        case getDayPlan = "gettodaytpnew"
+        case getDayPlan = "getmydayplan"
         case reports = "getdayrpt"
         case detailedReport = "getvwvstdet"
         case getToadyCalls = "gettodycalls"
@@ -234,7 +234,7 @@ final class ConnectionHandler : NSObject {
                        data:JSON, imageName:String = "image")-> APIResponseProtocol {
         let startTime = Date()
         let responseHandler = APIResponseHandler()
-        var param = params
+        let param = params
        // param["token"] = LocalStorage.shared.getString(key: .accessToken)
         dump(param["tableName"])
  
@@ -255,7 +255,7 @@ final class ConnectionHandler : NSObject {
               
                 
                 multipartFormData.append(multipartData, withName: key as String)
-                let jsonStringWithoutEscapes = String(data: multipartData, encoding: .utf8)
+                _ = String(data: multipartData, encoding: .utf8)
             }
             //"\(value)".data(using: String.Encoding.utf8)!
             

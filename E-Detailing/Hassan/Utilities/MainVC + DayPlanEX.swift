@@ -13,12 +13,13 @@ class DayPlanSessions {
     var headQuarters: SelectedHQ
     var cluster: [Territory]
     var isSavedSession: Bool
-    
+
     init() {
         worktype = WorkType()
         headQuarters = SelectedHQ()
         cluster = [Territory]()
         isSavedSession = false
+       
     }
 }
 
@@ -27,17 +28,94 @@ struct Sessions {
     var workType: WorkType?
     var headQuarters: SelectedHQ?
     var isRetrived : Bool?
-    
-
+    var  remarks : String?
+    var isRejected: Bool?
+    var rejectionReason: String?
+    var isFirstCell : Bool?
 }
 
 extension MainVC {
+    
+    func callSavePlanAPI() {
+        let dayEntities = CoreDataManager.shared.retriveSavedDayPlans()
+         
+        
+         
+         guard let aDayplan = dayEntities.first  else {return}
+         
+         do {
+             let encoder = JSONEncoder()
+             let jsonData = try encoder.encode(aDayplan)
+             
+
+             if let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                 print("JSON Dictionary: \(jsonObject)")
+                 
+                 var toSendData = [String: Any]()
+                 
+                 let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: jsonObject)
+                 
+                 toSendData["data"] = jsonDatum
+                 
+                 
+                 userststisticsVM?.saveMyDayPlan(params: toSendData, api: .myDayPlan, paramData: jsonObject, { [ weak self ] result in
+                     guard let welf = self else {return}
+                     switch result {
+                         
+                     case .success(let response):
+                         dump(response)
+                         
+                         guard var nonNilSession = welf.sessions else {
+                             return
+                         }
+                         nonNilSession.indices.forEach { index in
+                             nonNilSession[index].isRetrived = true
+                         }
+                         
+                         CoreDataManager.shared.removeAllDayPlans()
+                         CoreDataManager.shared.saveSessionAsEachDayPlan(session: nonNilSession) { isSaved in
+                             print("Day session successfully saved to core data")
+                             welf.sessions =  welf.toFetchExistingPlan()
+                             welf.toLoadWorktypeTable()
+                             
+                         }
+                         
+                         welf.toCreateToast(response.msg ?? "")
+                     case .failure(let error):
+                         welf.toCreateToast(error.localizedDescription)
+                     }
+                     
+                 })
+                 
+                 
+                 
+             } else {
+                 print("Failed to convert data to JSON dictionary")
+             }
+             
+             
+             // jsonData now contains the JSON representation of yourObject
+         } catch {
+             print("Error encoding object to JSON: \(error)")
+         }
+    }
+    
+    func updatePlansToCoreData() {
+        
+    }
+    
     func toFetchExistingPlan() -> [Sessions]{
       let todayPlans =  CoreDataManager.shared.retriveSavedDayPlans()
         var aDaysessions : [Sessions] = []
         if !todayPlans.isEmpty {
             if let eachDayPlan = todayPlans.first {
                 
+//                CoreDataManager.shared.removeAllDayPlans()
+//                CoreDataManager.shared.toSaveDayPlan(aDayPlan: eachDayPlan) { isComleted in
+//                    if isComleted {
+//                        self.toCreateToast("Saved successfully")
+//                    }
+//                }
                 
                 let clusterArr = DBManager.shared.getTerritory()
                 let headQuatersArr =  DBManager.shared.getSubordinate()
@@ -73,7 +151,7 @@ extension MainVC {
                     selectedterritories = filteredTerritories
                     
                     workTypeArr.forEach { aWorkType in
-                        if aWorkType.fwFlg == eachDayPlan.fwFlg  {
+                        if aWorkType.code == eachDayPlan.wtCode  {
                             selectedWorkTypes = aWorkType
                         }
                     }
@@ -152,6 +230,7 @@ extension MainVC {
                                     CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
                                         let aSavedHQ = selectedHQArr.first
                                         selectedheadQuarters = aSavedHQ
+                                        
                                     }
                                 }
                             }
@@ -164,6 +243,10 @@ extension MainVC {
                 }
             }
         }
+        
+        
+
+            
         return aDaysessions
     }
 

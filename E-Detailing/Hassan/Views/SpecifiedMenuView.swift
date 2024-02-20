@@ -406,8 +406,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.selectedObject = nil
-                welf.specifiedMenuVC.selectedObject = nil
+                welf.selectedObject = model
+                welf.specifiedMenuVC.selectedObject = model
                 if welf.isSearched {
                     welf.selectedSpecifiedTypeID = model?.code ?? ""
                
@@ -417,7 +417,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 }
                
               
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Territory(), selectedObjects: [NSManagedObject]())
+              //  welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Territory(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
@@ -432,9 +432,10 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
          //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
             
+            
             self.clusterArr?.forEach({ cluster in
                 //  dump(cluster.code)
-                    specifiedMenuVC.selectedClusterID?.forEach { id, isSelected in
+                selectedClusterID?.forEach { id, isSelected in
                     if id == cluster.code {
 
                         if isSelected  {
@@ -449,71 +450,27 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             })
-            
-            
-//            if self.selectedObject != nil {
-//               let doctorObj = self.selectedObject as! Territory
-//                if doctorObj.id == model?.id {
-//                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-//                    cell.lblName.textColor = .appGreen
-//                }
-//            } else {
-//                if self.isSearched {
-//                    if self.selectedSpecifiedTypeID ==  model?.code {
-//                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-//                        cell.lblName.textColor = .appGreen
-//                    } else {
-//                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-//                        cell.lblName.textColor = .appTextColor
-//                    }
-//                } else {
-//                    if indexPath.row == self.selectecIndex {
-//                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-//                        cell.lblName.textColor = .appGreen
-//                    } else {
-//                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-//                        cell.lblName.textColor = .appTextColor
-//                    }
-//                }
-//            }
-            
 
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                if let _ = welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] {
-                    
-                    welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] =  welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] == true ? false : true
-                    
-                    if welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] == false {
-                        welf.specifiedMenuVC.selectedClusterID?.removeValue(forKey: model?.code ?? "")
-                 
+                guard var selectedClusterID = welf.selectedClusterID else {return}
+                
+                if let _ = selectedClusterID[model?.code ?? ""] {
+
+                    selectedClusterID[model?.code ?? ""] =
+                        !(selectedClusterID[model?.code ?? ""] ?? false)
+
+                    if selectedClusterID[model?.code ?? ""] == false {
+                        selectedClusterID.removeValue(forKey: model?.code ?? "")
                     }
-                    
+
                 } else {
-                    welf.specifiedMenuVC.selectedClusterID?[model?.code ?? ""] = true
+                    selectedClusterID[model?.code ?? ""] = true
                 }
+                
+                welf.selectedClusterID = selectedClusterID
+                tableView.reloadData()
             }
-            
-            
-   
-            
-//            cell.addTap { [weak self] in
-//                guard let welf = self else {return}
-//                welf.selectedObject = nil
-//                welf.specifiedMenuVC.selectedObject = nil
-//                if welf.isSearched {
-//                    welf.selectedSpecifiedTypeID = model?.code ?? ""
-//
-//                } else {
-//                    welf.selectecIndex = indexPath.row
-//
-//                }
-//
-//
-//                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: <#[NSManagedObject]#>)
-//                welf.endEditing(true)
-//                welf.hideMenuAndDismiss()
-//            }
             
             
         case .headQuater:
@@ -559,8 +516,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.selectedObject = nil
-                welf.specifiedMenuVC.selectedObject = nil
+                welf.selectedObject = model
+                welf.specifiedMenuVC.selectedObject = model
                 if welf.isSearched {
                     welf.selectedSpecifiedTypeID = model?.id ?? ""
                
@@ -568,9 +525,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                     welf.selectecIndex = indexPath.row
                   
                 }
-               
-              
-                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Subordinate(), selectedObjects: [NSManagedObject]())
+
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
@@ -619,8 +574,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.selectedObject = nil
-                welf.specifiedMenuVC.selectedObject = nil
+                welf.selectedObject = model
+                welf.specifiedMenuVC.selectedObject = model
                 if welf.isSearched {
                     welf.selectedSpecifiedTypeID = model?.code ?? ""
                
@@ -628,7 +583,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                     welf.selectecIndex = indexPath.row
                   
                 }
-               
+
               
                 welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? DoctorFencing(), selectedObjects: [NSManagedObject]())
                 welf.endEditing(true)
@@ -652,7 +607,14 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
 
 class SpecifiedMenuView: BaseView {
     
+    @IBOutlet var saveLbl: UILabel!
     
+    @IBOutlet var clearLbl: UILabel!
+    
+    @IBOutlet var clearView: UIView!
+    
+    @IBOutlet var bottomHolderHeight: NSLayoutConstraint!
+    @IBOutlet var bottomContentsView: UIView!
     @IBOutlet weak var sideMenuHolderView : UIView!
     @IBOutlet weak var menuTable : UITableView!
     @IBOutlet weak var contentBgView: UIView!
@@ -665,6 +627,7 @@ class SpecifiedMenuView: BaseView {
     @IBOutlet var noresultsView: UIView!
     
     @IBOutlet var noresultsLbl: UILabel!
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var selectedSpecifiedTypeID : String = ""
     var cellType : MenuView.CellType = .listedDoctor
     var specifiedMenuVC :  SpecifiedMenuVC!
@@ -676,12 +639,13 @@ class SpecifiedMenuView: BaseView {
     var chemistArr : [Chemist]?
     var stockistArr : [Stockist]?
     var unlisteedDocArr : [UnListedDoctor]?
+    var filteredTerritories: [Territory]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
     var selectedCode: Int?
     var previewType: String?
- 
+    var selectedClusterID : [String: Bool]?
     //MARK: UDF, gestures  and animations
     
     private var animationDuration : Double = 1.0
@@ -723,6 +687,18 @@ class SpecifiedMenuView: BaseView {
     func setupUI() {
       //  searchTF.textColor = .appTextColor
      //   titleSeperator.backgroundColor = .appSelectionColor
+        saveLbl.setFont(font: .bold(size: .BODY))
+        clearLbl.setFont(font: .bold(size: .BODY))
+        saveView.layer.cornerRadius = 5
+        saveView.backgroundColor = .appTextColor
+        
+        
+        clearView.layer.cornerRadius = 5
+        clearView.layer.borderColor = UIColor.gray.cgColor
+        clearView.layer.borderWidth = 1
+       
+        
+        
         menuTable.separatorStyle = .singleLine
         self.titleLbl.setFont(font: .bold(size:  .BODY))
         self.titleLbl.textColor = .appTextColor
@@ -736,18 +712,47 @@ class SpecifiedMenuView: BaseView {
     }
     
     func initGestures() {
-        
-        clearTFView.addTap {
-            self.selectedObject = nil
-            self.selectecIndex = nil
-            self.searchTF.text = ""
-            self.isSearched = false
-            self.endEditing(true)
-            self.toLOadData()
+        clearView.addTap {
+            self.specifiedMenuVC.selectedClusterID = nil
+            self.selectedClusterID = nil
+            self.menuTable.reloadData()
         }
         
-        closeTapView.addTap {
-            self.hideMenuAndDismiss()
+        saveView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.filteredTerritories = welf.clusterArr?.filter { territory in
+                guard let code = territory.code else {
+                    return false
+                }
+                return welf.selectedClusterID?[code] == true
+            }
+            
+
+            
+    
+            
+            welf.hideMenuAndDismiss()
+        }
+        
+        clearTFView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.selectedObject = nil
+            welf.selectecIndex = nil
+            welf.searchTF.text = ""
+            welf.isSearched = false
+            welf.endEditing(true)
+            welf.toLOadData()
+        }
+        
+        closeTapView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.filteredTerritories = welf.clusterArr?.filter { territory in
+                guard let code = territory.code else {
+                    return false
+                }
+                return welf.selectedClusterID?[code] == true
+            }
+            welf.hideMenuAndDismiss()
         }
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handleMenuPan(_:)))
@@ -780,6 +785,18 @@ class SpecifiedMenuView: BaseView {
                 self.sideMenuHolderView.transform = .identity
                 self.backgroundColor = UIColor.black.withAlphaComponent(self.viewOpacity)
             }else{//hide
+                
+             
+                filteredTerritories = clusterArr?.filter { territory in
+                    guard let code = territory.code else {
+                        return false
+                    }
+                    return selectedClusterID?[code] == true
+                }
+                
+
+                
+                
                 self.hideMenuAndDismiss()
             }
             
@@ -827,7 +844,36 @@ class SpecifiedMenuView: BaseView {
                         self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
                        }) { (val) in
             
-                           self.specifiedMenuVC.dismiss(animated: true, completion: nil) 
+                           self.specifiedMenuVC.dismiss(animated: true) { [weak self] in
+
+                               guard let welf = self  else {return}
+                               
+                               
+                               guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: welf.context),
+                                     let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: welf.context),
+                                     let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: welf.context)
+                               else {
+                                   fatalError("Entity not found")
+                               }
+                               
+                               
+                               let temporaryselectedSubordinateobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! Subordinate
+                               let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+                               let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+                               
+                               switch welf.cellType {
+                               case .headQuater:
+                                   welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: [temporaryselectedClusterobj])
+                               case .cluster:
+                                   welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: welf.filteredTerritories ?? [temporaryselectedClusterobj])
+                                   
+                               case .workType:
+                                   welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedWTobj, selectedObjects: [temporaryselectedClusterobj])
+                               default:
+                                   print("Yet to implement")
+                               }
+                           
+                           }
         }
         
         
@@ -841,9 +887,11 @@ class SpecifiedMenuView: BaseView {
     
     func toLoadRequiredData(isfromTF: Bool? = false) {
         var selectedIndex : Int?
+        self.selectedClusterID = specifiedMenuVC.selectedClusterID
        switch self.cellType {
            
        case .workType:
+           bottomHolderHeight.constant = 0
            self.workTypeArr = DBManager.shared.getWorkType()
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! WorkType
@@ -861,6 +909,7 @@ class SpecifiedMenuView: BaseView {
       
            }
        case .cluster:
+           bottomHolderHeight.constant = 60
            self.clusterArr = DBManager.shared.getTerritory()
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! Territory
@@ -878,6 +927,7 @@ class SpecifiedMenuView: BaseView {
       
            }
        case .headQuater:
+           bottomHolderHeight.constant = 0
            self.headQuatersArr =  DBManager.shared.getSubordinate()
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! Subordinate
@@ -896,6 +946,7 @@ class SpecifiedMenuView: BaseView {
            }
         
        case .jointCall:
+           bottomHolderHeight.constant = 0
            self.jointWorkArr = DBManager.shared.getJointWork()
        case .listedDoctor:
            if specifiedMenuVC.previewType != nil {
@@ -925,6 +976,7 @@ class SpecifiedMenuView: BaseView {
       
            }
        case .chemist:
+           bottomHolderHeight.constant = 0
            self.chemistArr = DBManager.shared.getChemist()
            
        case .stockist:

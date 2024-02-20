@@ -187,8 +187,8 @@
                                                         <color key="tintColor" systemColor="labelColor"/>
                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                     </imageView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Cluster" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onP-Pb-uaH">
-                                                        <rect key="frame" x="10" y="12" width="85.5" height="16"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Cluster" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onP-Pb-uaH">
+                                                        <rect key="frame" x="10" y="12" width="274" height="16"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -202,6 +202,7 @@
                                                     <constraint firstItem="onP-Pb-uaH" firstAttribute="leading" secondItem="XRg-eI-tue" secondAttribute="leading" constant="10" id="MYN-O3-yAl"/>
                                                     <constraint firstItem="f2s-Oe-fy3" firstAttribute="centerY" secondItem="Smg-sn-kxI" secondAttribute="centerY" id="NSl-iC-KhS"/>
                                                     <constraint firstItem="f2s-Oe-fy3" firstAttribute="height" secondItem="Smg-sn-kxI" secondAttribute="height" id="O0y-I5-OTe"/>
+                                                    <constraint firstItem="Smg-sn-kxI" firstAttribute="leading" secondItem="onP-Pb-uaH" secondAttribute="trailing" constant="5" id="QKx-cy-PUA"/>
                                                     <constraint firstItem="Smg-sn-kxI" firstAttribute="centerY" secondItem="XRg-eI-tue" secondAttribute="centerY" id="cZs-q2-BTF"/>
                                                     <constraint firstItem="onP-Pb-uaH" firstAttribute="centerY" secondItem="XRg-eI-tue" secondAttribute="centerY" id="jgE-3X-gty"/>
                                                     <constraint firstAttribute="trailing" secondItem="Smg-sn-kxI" secondAttribute="trailing" constant="5" id="kZN-21-Ecr"/>
@@ -271,7 +272,7 @@
     </objects>
     <resources>
         <image name="DeleteBinIcon" width="24" height="24"/>
-        <image name="chevron.right" catalog="system" width="97" height="128"/>
+        <image name="chevron.right" catalog="system" width="32" height="32"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

@@ -19,7 +19,7 @@ class GeneralResponseModal : Codable {
     let isSuccess: Bool?
     enum CodingKeys: String, CodingKey {
         case success = "success"
-        case msg = "msg"
+        case msg = "Msg"
     }
     
     required init(from decoder: Decoder) throws {

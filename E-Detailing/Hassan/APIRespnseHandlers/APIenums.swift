@@ -23,6 +23,7 @@ enum APIEnums : String{
     case getTodayCalls = "table/additionaldcrmasterdata"
     case saveDCR = "save/dcr"
     case masterData = "table/dcrmasterdata"
+    case myDayPlan = "edetsave/dayplan"
 }
 
 

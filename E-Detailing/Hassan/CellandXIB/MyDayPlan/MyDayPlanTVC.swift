@@ -90,13 +90,16 @@ class MyDayPlanTVC: UITableViewCell {
     func setupUI(model: [NSManagedObject], istoDelete: Bool) {
         
         
+        
+        var namesArr: [String] = []
         var isForFW: Bool = false
         model.forEach { anObject in
             switch anObject {
             case let territoryObj as Territory:
 
                 if let hqName = territoryObj.name {
-                     self.selectClusterLbl.text = hqName
+                    namesArr.append(hqName)
+                    self.selectClusterLbl.text = namesArr.joined(separator: ", ")
                     
                  } else {
                      self.selectClusterLbl.text = "Select Cluster"
@@ -162,10 +165,10 @@ class MyDayPlanTVC: UITableViewCell {
             self.holderStackHeight.constant = 200
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                 self.holderStackHeight.constant = 150
-                self.clusterHolderVIew.isHidden = true
+                self.hqHolderView.isHidden = true
             } else {
                 self.holderStackHeight.constant = 200
-                self.clusterHolderVIew.isHidden = false
+                self.hqHolderView.isHidden = false
             }
         } else {
  

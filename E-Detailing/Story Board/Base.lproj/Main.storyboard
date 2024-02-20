@@ -2968,6 +2968,9 @@ VmVyc2lvbiA6IDEuMAM
                                                                                                 <real key="value" value="5"/>
                                                                                             </userDefinedRuntimeAttribute>
                                                                                         </userDefinedRuntimeAttributes>
+                                                                                        <connections>
+                                                                                            <action selector="didTapSaveBtn:" destination="ZtD-UP-Um1" eventType="touchUpInside" id="w0R-id-O7r"/>
+                                                                                        </connections>
                                                                                     </button>
                                                                                 </subviews>
                                                                             </stackView>
