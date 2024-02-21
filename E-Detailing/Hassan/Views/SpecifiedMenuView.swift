@@ -7,13 +7,6 @@
 //  Copyright © 2024 san eforce. All rights reserved. 08/02/24.
 //
 
-
-//  E-Detailing
-//
-//  Created by Hassan
-//
-//  Copyright © 2024 san eforce. All rights reserved.
-
 import Foundation
 import UIKit
 import CoreData
@@ -435,7 +428,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             self.clusterArr?.forEach({ cluster in
                 //  dump(cluster.code)
-                selectedClusterID?.forEach { id, isSelected in
+                selectedClusterID.forEach { id, isSelected in
                     if id == cluster.code {
 
                         if isSelected  {
@@ -453,7 +446,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
 
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                guard var selectedClusterID = welf.selectedClusterID else {return}
+                 var selectedClusterID = welf.selectedClusterID
                 
                 if let _ = selectedClusterID[model?.code ?? ""] {
 
@@ -645,7 +638,7 @@ class SpecifiedMenuView: BaseView {
     var selectedObject: NSManagedObject?
     var selectedCode: Int?
     var previewType: String?
-    var selectedClusterID : [String: Bool]?
+    var selectedClusterID = [String: Bool]()
     //MARK: UDF, gestures  and animations
     
     private var animationDuration : Double = 1.0
@@ -714,7 +707,7 @@ class SpecifiedMenuView: BaseView {
     func initGestures() {
         clearView.addTap {
             self.specifiedMenuVC.selectedClusterID = nil
-            self.selectedClusterID = nil
+            self.selectedClusterID = [String: Bool]()
             self.menuTable.reloadData()
         }
         
@@ -724,7 +717,7 @@ class SpecifiedMenuView: BaseView {
                 guard let code = territory.code else {
                     return false
                 }
-                return welf.selectedClusterID?[code] == true
+                return welf.selectedClusterID[code] == true
             }
             
 
@@ -750,7 +743,7 @@ class SpecifiedMenuView: BaseView {
                 guard let code = territory.code else {
                     return false
                 }
-                return welf.selectedClusterID?[code] == true
+                return welf.selectedClusterID[code] == true
             }
             welf.hideMenuAndDismiss()
         }
@@ -791,7 +784,7 @@ class SpecifiedMenuView: BaseView {
                     guard let code = territory.code else {
                         return false
                     }
-                    return selectedClusterID?[code] == true
+                    return selectedClusterID[code] == true
                 }
                 
 
@@ -887,7 +880,7 @@ class SpecifiedMenuView: BaseView {
     
     func toLoadRequiredData(isfromTF: Bool? = false) {
         var selectedIndex : Int?
-        self.selectedClusterID = specifiedMenuVC.selectedClusterID
+        self.selectedClusterID = specifiedMenuVC.selectedClusterID ?? [String: Bool]()
        switch self.cellType {
            
        case .workType:

@@ -41,7 +41,7 @@ extension MainVC {
          
         
          
-         guard let aDayplan = dayEntities.first  else {return}
+        let aDayplan = dayEntities
          
          do {
              let encoder = JSONEncoder()
@@ -140,7 +140,7 @@ extension MainVC {
                     var selectedheadQuarters : SelectedHQ?
                     var selectedWorkTypes: WorkType?
                     let codes = eachDayPlan.townCode
-                    let codesArray = codes.components(separatedBy: ",")
+                    let codesArray = codes.components(separatedBy: ", ")
                     
                     let filteredTerritories = clusterArr.filter { aTerritory in
                         // Check if any code in codesArray is contained in aTerritory
@@ -184,6 +184,15 @@ extension MainVC {
                         
                     }
                     
+                    let resultSet = CoreDataManager.shared.convertClustersToCDM(selectedterritories ?? [temporaryselectedClusterobj], context: context)
+
+                
+                    let convertedTerritories = resultSet.allObjects as? [Territory] ?? []
+                    
+                    self.cacheTerritory = convertedTerritories
+                    
+                
+                    
                     let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
                   
                   
@@ -195,8 +204,8 @@ extension MainVC {
                     var selectedterritories: [Territory]?
                     var selectedheadQuarters : SelectedHQ?
                     var selectedWorkTypes: WorkType?
-                    let codes = eachDayPlan.townCode
-                    let codesArray = codes.components(separatedBy: ",")
+                    let codes = eachDayPlan.townCode2
+                    let codesArray = codes.components(separatedBy: ", ")
                     
                     let filteredTerritories = clusterArr.filter { aTerritory in
                         // Check if any code in codesArray is contained in aTerritory
@@ -207,13 +216,13 @@ extension MainVC {
                     selectedterritories = filteredTerritories
                     
                     workTypeArr.forEach { aWorkType in
-                        if aWorkType.fwFlg == eachDayPlan.fwFlg  {
+                        if aWorkType.code == eachDayPlan.wtCode2  {
                             selectedWorkTypes = aWorkType
                         }
                     }
                     
                     headQuatersArr.forEach { aheadQuater in
-                        if aheadQuater.id == eachDayPlan.rsf  {
+                        if aheadQuater.id == eachDayPlan.rsf2  {
                             
                          let hqModel =   HQModel()
                             hqModel.code = aheadQuater.id ?? ""

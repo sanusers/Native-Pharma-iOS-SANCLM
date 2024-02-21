@@ -527,7 +527,7 @@ extension CoreDataManager {
     }
 
     
-    private func convertClustersToCDM(_ clusters: [Territory], context: NSManagedObjectContext) -> NSSet {
+    public func convertClustersToCDM(_ clusters: [Territory], context: NSManagedObjectContext) -> NSSet {
         let cdTerritortModels = NSMutableSet()
         
         for cluster in clusters {

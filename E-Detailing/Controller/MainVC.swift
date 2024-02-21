@@ -34,7 +34,7 @@ extension MainVC : MasterSyncVCDelegate {
         } else {
        
         }
-        self.configureAddplanBtn(false)
+        self.configureAddplanBtn(false, isSessionSaved: false)
         self.toLoadWorktypeTable()
        
     }
@@ -197,7 +197,15 @@ extension MainVC: MenuResponseProtocol {
             self.toLoadWorktypeTable()
         case .cluster:
             self.fetchedClusterObject = selectedObjects as? [Territory]
-            self.sessions?[selectedSessionIndex ?? 0].cluster = fetchedClusterObject
+            
+            sessions?.enumerated().forEach({index, aSessions in
+                if !(aSessions.isRetrived ?? false) {
+                    self.sessions?[index].cluster = fetchedClusterObject
+                } else {
+                    self.sessions?[index].cluster = cacheTerritory ?? [temporaryselectedClusterobj]
+                }
+            })
+        
             self.toLoadWorktypeTable()
         case .headQuater:
             
@@ -209,7 +217,22 @@ extension MainVC: MenuResponseProtocol {
             
             if self.fetchedHQObject?.id != (selectedObject as? Subordinate)?.id {
                 self.fetchedHQObject = selectedObject as? Subordinate
-                sessions?[selectedSessionIndex ?? 0].cluster = [temporaryselectedClusterobj]
+                
+                sessions?.enumerated().forEach({index, aSessions in
+                    if !(aSessions.isRetrived ?? false) {
+                        sessions?[index].cluster = [temporaryselectedClusterobj]
+                    }
+                })
+
+            } else {
+                sessions?.enumerated().forEach({index, aSessions in
+                    if !(aSessions.isRetrived ?? false) {
+                        self.sessions?[index ].cluster = fetchedClusterObject
+                    }
+                })
+                
+       
+               
             }
             
             
@@ -373,6 +396,7 @@ class MainVC : UIViewController {
             }
         }
         setSegment(.workPlan)
+        configureAddplanBtn(self.sessions?.count ?? 0 >= 2 ?  false : true, isSessionSaved: false)
     }
     
 
@@ -521,7 +545,7 @@ class MainVC : UIViewController {
     var fetchedClusterObject: [Territory]?
     var fetchedHQObject: Subordinate?
     var sessions: [Sessions]?
-    
+    var cacheTerritory: [Territory]?
     
     func setupHeight(_ isTodelete: Bool, index: Int) -> CGFloat {
         
@@ -697,7 +721,8 @@ class MainVC : UIViewController {
             if isCompleted {
               //  welf.callSavePlanAPI()
                 welf.toConfigureMydayPlan()
-                
+                welf.configureAddplanBtn(true, isSessionSaved: true)
+                welf.configureSaveplanBtn(false)
            //    let toDayplans = CoreDataManager.shared.retriveSavedDayPlans()
             //    dump(toDayplans)
             }
@@ -795,22 +820,33 @@ class MainVC : UIViewController {
 
 
             }
-            self.configureAddplanBtn(false)
+            self.configureAddplanBtn(false, isSessionSaved: false)
             self.toLoadWorktypeTable()
 
             //(aSession)
         }
 
     }
-    func configureAddplanBtn(_ isToEnable: Bool) {
+    func configureAddplanBtn(_ isToEnable: Bool, isSessionSaved: Bool) {
 
-        if self.sessions?.count ?? 0 >= 2  {
-            self.btnAddplan.isUserInteractionEnabled = false
-            self.btnAddplan.alpha = 0.5
-        } else {
+        if isToEnable {
             self.btnAddplan.isUserInteractionEnabled = true
             self.btnAddplan.alpha = 1
+        } else if isSessionSaved {
+            if self.sessions?.count ?? 0 >= 2  {
+                self.btnAddplan.isUserInteractionEnabled = false
+                self.btnAddplan.alpha = 0.5
+            } else {
+                self.btnAddplan.isUserInteractionEnabled = true
+                self.btnAddplan.alpha = 1
+            }
+        } else {
+           
+            self.btnAddplan.isUserInteractionEnabled = false
+            self.btnAddplan.alpha = 0.5
         }
+        
+
     }
     
     
@@ -827,6 +863,7 @@ class MainVC : UIViewController {
     
     func setupUI() {
         toConfigureMydayPlan()
+    
         self.viewWorkPlan.addAction(for: .swipe_left) {
             self.setSegment(.calls, isfromSwipe: true)
         }
@@ -966,7 +1003,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        CoreDataManager.shared.removeAllDayPlans()
+       CoreDataManager.shared.removeAllDayPlans()
         self.userststisticsVM = UserStatisticsVM()
         self.masterVM = MasterSyncVM()
         self.updateLinks()
@@ -2428,7 +2465,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 welf.selectedSessionIndex = indexPath.row
                 welf.sessions?.remove(at: welf.selectedSessionIndex ?? 0)
                 welf.selectedSessionIndex = nil
-                welf.configureAddplanBtn(false)
+                welf.configureAddplanBtn(true, isSessionSaved: false)
                 welf.toLoadWorktypeTable()
             }
             
