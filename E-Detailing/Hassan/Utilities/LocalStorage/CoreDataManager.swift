@@ -593,19 +593,34 @@ extension CoreDataManager {
     }
     
     func removeAllSlideBrands() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SlideBrand.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        let fetchRequest: NSFetchRequest<SlideBrand> = NSFetchRequest(entityName: "SlideBrand")
 
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-           // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-          //  completion()
         }
     }
+    
+//    func removeAllSlideBrands() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SlideBrand.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//           // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//          //  completion()
+//        }
+//    }
     
     
     func removeAllSavedSlides() {

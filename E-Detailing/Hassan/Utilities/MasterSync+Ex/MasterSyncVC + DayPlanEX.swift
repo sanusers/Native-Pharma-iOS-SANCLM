@@ -88,107 +88,12 @@ extension MasterSyncVC: MenuResponseProtocol {
 }
 
 extension MasterSyncVC {
-    func toGetMyDayPlan(type: MasterInfo, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
-        
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
-        var param = [String: Any]()
-        
-        
-//    http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=table/dcrmasterdata
-//    {"tableName":"getmydayplan","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-15 15:27:16"}
-        
-        param["tableName"] = "getmydayplan"
-        param["ReqDt"] = date
-        param["sfcode"] = "\(appsetup.sfCode!)"
-        param["division_code"] = "\(appsetup.divisionCode!)"
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == "" ? "\(appsetup.sfCode!)" : LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
-        param["Rsf"] = rsf
-        param["sf_type"] = "\(appsetup.sfType!)"
-        param["Designation"] = "\(appsetup.dsName!)"
-        param["state_code"] = "\(appsetup.stateCode!)"
-        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
-         
-        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
-        
-        var toSendData = [String: Any]()
-        toSendData["data"] = jsonDatum
-        
-        
-        mastersyncVM?.getTodayPlans(params: toSendData, api: .masterData, paramData: param, {[weak self] result in
-            guard let welf = self else {return}
-            switch result {
-                
-            case .success(let model):
-                dump(model)
-                welf.toUpdateDataBase(aDayplan: welf.toConvertResponseToDayPlan(model: model))
-                
-            case .failure(let error):
-                print(error)
-            }
-            
-            completion(result)
-        })
-        
-    }
-    
-    
-    func toConvertResponseToDayPlan(model: [MyDayPlanResponseModel]) -> DayPlan  {
-        let aDayPlan = DayPlan()
-        let userConfig = AppDefaults.shared.getAppSetUp()
-        aDayPlan.tableName = "gettodaytpnew"
-        aDayPlan.uuid = UUID()
-        aDayPlan.divisionCode = userConfig.divisionCode
-        aDayPlan.sfType = "\(userConfig.sfType!)"
-        aDayPlan.designation = "\(userConfig.desig!)"
-        aDayPlan.stateCode = "\(userConfig.stateCode!)"
-        aDayPlan.subdivisionCode = userConfig.subDivisionCode
-        model.enumerated().forEach {index, aMyDayPlanResponseModel in
-            switch index {
-            case 0:
-                aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
-                aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
-                aDayPlan.wtCode = aMyDayPlanResponseModel.WT
-                aDayPlan.wtName = aMyDayPlanResponseModel.WTNm
-                aDayPlan.fwFlg = aMyDayPlanResponseModel.FWFlg
-                aDayPlan.townCode = aMyDayPlanResponseModel.Pl
-                aDayPlan.townName = aMyDayPlanResponseModel.PlNm
-            case 1:
-                aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
-                aDayPlan.wtCode2 = aMyDayPlanResponseModel.WT
-                aDayPlan.wtName2 = aMyDayPlanResponseModel.WTNm
-                aDayPlan.fwFlg2 = aMyDayPlanResponseModel.FWFlg
-                aDayPlan.townCode2 = aMyDayPlanResponseModel.Pl
-                aDayPlan.townName2 = aMyDayPlanResponseModel.PlNm
-                
-                
-            default:
-                print("Yet to implement")
-            }
-        }
-        
 
-      
-        return aDayPlan
-        
-    }
     
-    func toUpdateDataBase(aDayplan: DayPlan) {
-        CoreDataManager.shared.removeAllDayPlans()
-        CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan) { isComleted in
-            if isComleted {
-                self.toCreateToast("Saved successfully")
+    
 
-                let dayPlans = CoreDataManager.shared.retriveSavedDayPlans()
-                self.isDayPlanSynced = true
-                dump(dayPlans)
-            } else {
-                
-            }
-        }
-    }
+    
+
 }
 
 
@@ -225,19 +130,35 @@ extension CoreDataManager {
     }
     
     func removeHQ() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SelectedHQ.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        
+        let fetchRequest: NSFetchRequest<SelectedHQ> = NSFetchRequest(entityName: "SelectedHQ")
+
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-            // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-            //  completion()
         }
     }
+    
+    
+//    func removeHQ() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SelectedHQ.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//            // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//            //  completion()
+//        }
+//    }
     
     
     
@@ -342,7 +263,7 @@ extension CoreDataManager {
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode
-            let codesArray = codes.components(separatedBy: ",")
+            let codesArray = codes.components(separatedBy: ", ")
             
             let filteredTerritories = clusterArr.filter { aTerritory in
                 // Check if any code in codesArray is contained in aTerritory
@@ -370,17 +291,34 @@ extension CoreDataManager {
                     hqModel.sfHQ = aheadQuater.sfHq ?? ""
                     hqModel.mapId = aheadQuater.mapId ?? ""
                     
-                    CoreDataManager.shared.removeHQ()
+//                    CoreDataManager.shared.removeHQ()
+//
+//                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
+//                        if isSaved {
+//                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+//                                let aSavedHQ = selectedHQArr.first
+//                                selectedheadQuarters = aSavedHQ
+//
+//                            }
+//                        }
+//                    }
                     
-                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-                        if isSaved {
-                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-                                let aSavedHQ = selectedHQArr.first
-                                selectedheadQuarters = aSavedHQ
-                                
-                            }
-                        }
+                    
+                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+               
+                    else {
+                        fatalError("Entity not found")
                     }
+
+                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+           
+                    temporaryselectedHqobj.code                  = aheadQuater.id
+                    temporaryselectedHqobj.name                 = aheadQuater.name
+                    temporaryselectedHqobj.reportingToSF       = aheadQuater.reportingToSF
+                    temporaryselectedHqobj.steps                 = aheadQuater.steps
+                    temporaryselectedHqobj.sfHq                   = aheadQuater.sfHq
+                    temporaryselectedHqobj.mapId                  = aheadQuater.mapId
+                    selectedheadQuarters = temporaryselectedHqobj
                     
                     
                  
@@ -400,8 +338,8 @@ extension CoreDataManager {
             var selectedterritories: [Territory]?
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
-            let codes = eachDayPlan.townCode
-            let codesArray = codes.components(separatedBy: ",")
+            let codes = eachDayPlan.townCode2
+            let codesArray = codes.components(separatedBy: ", ")
             
             let filteredTerritories = clusterArr.filter { aTerritory in
                 // Check if any code in codesArray is contained in aTerritory
@@ -412,13 +350,13 @@ extension CoreDataManager {
             selectedterritories = filteredTerritories
             
             workTypeArr.forEach { aWorkType in
-                if aWorkType.code == eachDayPlan.wtCode  {
+                if aWorkType.code == eachDayPlan.wtCode2  {
                     selectedWorkTypes = aWorkType
                 }
             }
             
             headQuatersArr.forEach { aheadQuater in
-                if aheadQuater.id == eachDayPlan.rsf  {
+                if aheadQuater.id == eachDayPlan.rsf2  {
                     
                  let hqModel =   HQModel()
                     hqModel.code = aheadQuater.id ?? ""
@@ -428,16 +366,34 @@ extension CoreDataManager {
                     hqModel.sfHQ = aheadQuater.sfHq ?? ""
                     hqModel.mapId = aheadQuater.mapId ?? ""
                     
-                    CoreDataManager.shared.removeHQ()
+//                    CoreDataManager.shared.removeHQ()
+//
+//                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
+//                        if isSaved {
+//                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+//                                let aSavedHQ = selectedHQArr.first
+//                                selectedheadQuarters = aSavedHQ
+//
+//                            }
+//                        }
+//                    }
                     
-                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-                        if isSaved {
-                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-                                let aSavedHQ = selectedHQArr.first
-                                selectedheadQuarters = aSavedHQ
-                            }
-                        }
+                    
+                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+               
+                    else {
+                        fatalError("Entity not found")
                     }
+
+                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+           
+                    temporaryselectedHqobj.code                  = aheadQuater.id
+                    temporaryselectedHqobj.name                 = aheadQuater.name
+                    temporaryselectedHqobj.reportingToSF       = aheadQuater.reportingToSF
+                    temporaryselectedHqobj.steps                 = aheadQuater.steps
+                    temporaryselectedHqobj.sfHq                   = aheadQuater.sfHq
+                    temporaryselectedHqobj.mapId                  = aheadQuater.mapId
+                    selectedheadQuarters = temporaryselectedHqobj
                     
                     
                  
@@ -628,35 +584,50 @@ extension CoreDataManager {
                             aDayPlan.wtName = eachPlan.workType?.name ?? ""
                             aDayPlan.location = ""
                             aDayPlan.isRetrived = eachPlan.isRetrived
-                            if let clusterSet = eachPlan.cluster as? Set<Territory> {
-                               // let territoryCodes = clusterSet.map { $0.code ?? "" }
-                                
-                                let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
-                                let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
-                                aDayPlan.townCode =  territoryCodesString
-                                aDayPlan.townName = territoryNamesString
-                                print("Territory Codes: \(territoryCodesString)")
-                            }
+                            
+//                            if let clusterSet = eachPlan.cluster as? Set<Territory> {
+//
+//
+//                               // let territoryCodes = clusterSet.map { $0.code ?? "" }
+//
+//                                let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
+//                                let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
+//                                aDayPlan.townCode =  territoryCodesString
+//                                aDayPlan.townName = territoryNamesString
+//                                print("Territory Codes: \(territoryCodesString)")
+//                            }
                          
-                            //eachPlan.cluster.
-                            //eachPlan.cluster?
-                          
-                            //eachPlan.workType
+               
+                            
+                            guard let clusterEntity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
+                                  let clusterSet = eachPlan.cluster as? Set<Territory> else {
+                                fatalError("Entity or clusterSet not found")
+                            }
+
+                            let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
+                            let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
+                            aDayPlan.townCode =  territoryCodesString
+                            aDayPlan.townName = territoryNamesString
+                            print("Territory Codes: \(territoryCodesString)")
+                            
+                            
+                            
                             aDayPlan.fwFlg = eachPlan.workType?.fwFlg ?? ""
                         case 1:
                             aDayPlan.rsf2 = eachPlan.headQuarters?.code ?? ""
                             aDayPlan.wtCode2 = eachPlan.workType?.code ?? ""
                             aDayPlan.wtName2 = eachPlan.workType?.name ?? ""
                             aDayPlan.isRetrived = eachPlan.isRetrived
-                            if let clusterSet = eachPlan.cluster as? Set<Territory> {
-                               // let territoryCodes = clusterSet.map { $0.code ?? "" }
-                                
-                                let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
-                                let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
-                                aDayPlan.townCode2 =  territoryCodesString
-                                aDayPlan.townName2 =  territoryNamesString
-                                print("Territory Codes: \(territoryCodesString)")
+                            guard let clusterEntity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
+                                  let clusterSet = eachPlan.cluster as? Set<Territory> else {
+                                fatalError("Entity or clusterSet not found")
                             }
+
+                            let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
+                            let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
+                            aDayPlan.townCode2 =  territoryCodesString
+                            aDayPlan.townName2 = territoryNamesString
+                            print("Territory Codes: \(territoryCodesString)")
                             
                             aDayPlan.location2 = ""
                        
@@ -677,19 +648,35 @@ extension CoreDataManager {
     
     
     func removeAllDayPlans() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = EachDayPlan.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        
+        let fetchRequest: NSFetchRequest<EachDayPlan> = NSFetchRequest(entityName: "EachDayPlan")
+
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-            // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-            //  completion()
         }
     }
+    
+    
+//    func removeAllDayPlans() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = EachDayPlan.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//            // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//            //  completion()
+//        }
+//    }
     
     
     func saveSessionAsEachDayPlan(session: [Sessions], completion: @escaping (Bool) -> ()) {

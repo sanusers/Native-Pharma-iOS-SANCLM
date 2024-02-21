@@ -20,6 +20,109 @@ class MasterSyncVM {
     var isUpdating: Bool = false
     var isSyncCompleted: Bool = false
     
+    func toGetMyDayPlan(type: MasterInfo, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
+        
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
+        var param = [String: Any]()
+        
+        
+//    http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=table/dcrmasterdata
+//    {"tableName":"getmydayplan","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-15 15:27:16"}
+        
+        param["tableName"] = "getmydayplan"
+        param["ReqDt"] = date
+        param["sfcode"] = "\(appsetup.sfCode!)"
+        param["division_code"] = "\(appsetup.divisionCode!)"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == "" ? "\(appsetup.sfCode!)" : LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        param["Rsf"] = rsf
+        param["sf_type"] = "\(appsetup.sfType!)"
+        param["Designation"] = "\(appsetup.dsName!)"
+        param["state_code"] = "\(appsetup.stateCode!)"
+        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+         
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        
+        
+        self.getTodayPlans(params: toSendData, api: .masterData, paramData: param, {[weak self] result in
+            guard let welf = self else {return}
+            switch result {
+                
+            case .success(let model):
+                dump(model)
+                welf.toUpdateDataBase(aDayplan: welf.toConvertResponseToDayPlan(model: model))
+                
+            case .failure(let error):
+                print(error)
+            }
+            
+            completion(result)
+        })
+        
+    }
+    
+    func toUpdateDataBase(aDayplan: DayPlan) {
+        CoreDataManager.shared.removeAllDayPlans()
+        CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan) { isComleted in
+            if isComleted {
+               // self.toCreateToast("Saved successfully")
+
+                let dayPlans = CoreDataManager.shared.retriveSavedDayPlans()
+            
+                dump(dayPlans)
+            } else {
+                
+            }
+        }
+    }
+    
+    func toConvertResponseToDayPlan(model: [MyDayPlanResponseModel]) -> DayPlan  {
+        let aDayPlan = DayPlan()
+        let userConfig = AppDefaults.shared.getAppSetUp()
+        aDayPlan.tableName = "gettodaytpnew"
+        aDayPlan.uuid = UUID()
+        aDayPlan.divisionCode = userConfig.divisionCode
+        aDayPlan.sfType = "\(userConfig.sfType!)"
+        aDayPlan.designation = "\(userConfig.desig!)"
+        aDayPlan.stateCode = "\(userConfig.stateCode!)"
+        aDayPlan.subdivisionCode = userConfig.subDivisionCode
+        model.enumerated().forEach {index, aMyDayPlanResponseModel in
+            switch index {
+            case 0:
+                aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
+                aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
+               // LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
+                aDayPlan.wtCode = aMyDayPlanResponseModel.WT
+                aDayPlan.wtName = aMyDayPlanResponseModel.WTNm
+                aDayPlan.fwFlg = aMyDayPlanResponseModel.FWFlg
+                aDayPlan.townCode = aMyDayPlanResponseModel.Pl
+                aDayPlan.townName = aMyDayPlanResponseModel.PlNm
+            case 1:
+                aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
+                aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
+               // LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
+                aDayPlan.wtCode2 = aMyDayPlanResponseModel.WT
+                aDayPlan.wtName2 = aMyDayPlanResponseModel.WTNm
+                aDayPlan.fwFlg2 = aMyDayPlanResponseModel.FWFlg
+                aDayPlan.townCode2 = aMyDayPlanResponseModel.Pl
+                aDayPlan.townName2 = aMyDayPlanResponseModel.PlNm
+                
+                
+            default:
+                print("Yet to implement")
+            }
+        }
+        
+
+      
+        return aDayPlan
+        
+    }
+    
+    
     func fetchMasterData(type: MasterInfo, sfCode: String, istoUpdateDCRlist: Bool, completionHandler: @escaping (AFDataResponse<Data>) -> Void) {
         dump(type.getUrl)
         dump(type.getParams)
@@ -102,6 +205,9 @@ class MasterSyncVM {
         let dispatchgroup = DispatchGroup()
         isUpdating = true
         let dcrEntries : [MasterInfo] = [.doctorFencing, .chemists, .unlistedDoctors, .stockists]
+        
+        
+        //Doctor,Chemist,Stokiest,Unlistered,Cip,Hospital,Cluste
      
         dcrEntries.forEach { aMasterInfo in
             dispatchgroup.enter()

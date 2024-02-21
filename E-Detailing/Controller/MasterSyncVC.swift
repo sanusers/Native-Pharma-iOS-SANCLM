@@ -430,7 +430,7 @@ class MasterSyncVC : UIViewController {
             toPostDataToserver(type : type)
         case .myDayPlan:
             
-            toGetMyDayPlan(type: type) { [weak self] (result) in
+            mastersyncVM?.toGetMyDayPlan(type: type) { [weak self] (result) in
                 
                 guard let welf = self else {return}
                 
@@ -439,7 +439,7 @@ class MasterSyncVC : UIViewController {
                 case .success(let responseModel):
                     
                     let model: [MyDayPlanResponseModel] = responseModel
-                   
+                    welf.isDayPlanSynced = true
                     if model.count > 0 {
                         let aDayArr = model.first
                         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
@@ -475,6 +475,8 @@ class MasterSyncVC : UIViewController {
                     completion(true)
                 }
             }
+            
+
           
         default:
             mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getSFCode, istoUpdateDCRlist: false) {[weak self] (response) in

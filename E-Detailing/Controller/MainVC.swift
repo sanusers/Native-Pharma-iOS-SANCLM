@@ -191,80 +191,196 @@ extension MainVC: MenuResponseProtocol {
         switch type {
             
         case .workType:
-            self.fetchedWorkTypeObject = selectedObject as? WorkType
+            if self.selectedSessionIndex == 0 {
+                self.fetchedWorkTypeObject1 = selectedObject as? WorkType
+                self.sessions?[selectedSessionIndex ?? 0].workType = fetchedWorkTypeObject1
+            } else {
+                self.fetchedWorkTypeObject2 = selectedObject as? WorkType
+                self.sessions?[selectedSessionIndex ?? 0].workType = fetchedWorkTypeObject2
+            }
+         
             self.tableCellheight =  setupHeight(true, index: 0)
-            self.sessions?[selectedSessionIndex ?? 0].workType = fetchedWorkTypeObject
+          
             self.toLoadWorktypeTable()
         case .cluster:
-            self.fetchedClusterObject = selectedObjects as? [Territory]
+            if self.selectedSessionIndex == 0 {
+                self.fetchedClusterObject1 = selectedObjects as? [Territory]
+            } else {
+                self.fetchedClusterObject2 = selectedObjects as? [Territory]
+            }
+        
             
             sessions?.enumerated().forEach({index, aSessions in
-                if !(aSessions.isRetrived ?? false) {
-                    self.sessions?[index].cluster = fetchedClusterObject
-                } else {
-                    self.sessions?[index].cluster = cacheTerritory ?? [temporaryselectedClusterobj]
+                switch index {
+                case 0:
+                    if !(aSessions.isRetrived ?? false) {
+                        self.sessions?[index].cluster = fetchedClusterObject1
+                    } else {
+                        self.sessions?[index].cluster = cacheTerritory ?? [temporaryselectedClusterobj]
+                    }
+                case 1:
+                    if !(aSessions.isRetrived ?? false) {
+                        self.sessions?[index].cluster = fetchedClusterObject2
+                    } else {
+                        self.sessions?[index].cluster = cacheTerritory ?? [temporaryselectedClusterobj]
+                    }
+                    
+                default:
+                    print("Yet to implement")
                 }
+
             })
         
             self.toLoadWorktypeTable()
         case .headQuater:
             
-            if  self.fetchedHQObject == nil {
-                self.fetchedHQObject = selectedObject as? Subordinate
-            }
-            
-
-            
-            if self.fetchedHQObject?.id != (selectedObject as? Subordinate)?.id {
-                self.fetchedHQObject = selectedObject as? Subordinate
+            switch self.selectedSessionIndex {
                 
-                sessions?.enumerated().forEach({index, aSessions in
-                    if !(aSessions.isRetrived ?? false) {
-                        sessions?[index].cluster = [temporaryselectedClusterobj]
-                    }
-                })
-
-            } else {
-                sessions?.enumerated().forEach({index, aSessions in
-                    if !(aSessions.isRetrived ?? false) {
-                        self.sessions?[index ].cluster = fetchedClusterObject
-                    }
-                })
-                
-       
-               
-            }
-            
-            
-            
-            let aHQobj = HQModel()
-            aHQobj.code = self.fetchedHQObject?.id ?? String()
-            aHQobj.mapId = self.fetchedHQObject?.mapId ?? String()
-            aHQobj.name = self.fetchedHQObject?.name ?? String()
-            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? String()
-            aHQobj.steps = self.fetchedHQObject?.steps ?? String()
-            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? String()
-            
-            
-            
-            self.saveHQentitiesToCoreData(aHQobj: aHQobj) { [weak self] _ in
-                guard let welf = self else {return}
-                DispatchQueue.main.async {
-                    welf.toLoadWorktypeTable()
+            case 0:
+                if  self.fetchedHQObject1 == nil {
+                    self.fetchedHQObject1 = selectedObject as? Subordinate
                 }
+                
+               // self.sessions?[selectedSessionIndex ?? 0].headQuarters = fetchedHQObject1
+                
+                if self.fetchedHQObject1?.id != (selectedObject as? Subordinate)?.id {
+                    self.fetchedHQObject1 = selectedObject as? Subordinate
+                    
+                    if !(self.sessions?[selectedSessionIndex ?? 0].isRetrived ?? false) {
+                        sessions?[selectedSessionIndex ?? 0].cluster = [temporaryselectedClusterobj]
+                        //self.sessions?[selectedSessionIndex].cluster =
+                        
+                    }
+                  
+
+                } else {
+                    
+                    if  (sessions?[selectedSessionIndex ?? 0].isRetrived ?? false) {
+                        sessions?[selectedSessionIndex ?? 0].cluster = fetchedClusterObject1
+                        }
+                   
+         
+                   
+                }
+                let aHQobj = HQModel()
+                aHQobj.code = self.fetchedHQObject1?.id ?? String()
+                aHQobj.mapId = self.fetchedHQObject1?.mapId ?? String()
+                aHQobj.name = self.fetchedHQObject1?.name ?? String()
+                aHQobj.reportingToSF = self.fetchedHQObject1?.reportingToSF ?? String()
+                aHQobj.steps = self.fetchedHQObject1?.steps ?? String()
+                aHQobj.sfHQ = self.fetchedHQObject1?.sfHq ?? String()
+                
+                
+                
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+           
+                else {
+                    fatalError("Entity not found")
+                }
+
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+       
+                temporaryselectedHqobj.code                  = aHQobj.code
+                temporaryselectedHqobj.name                 = aHQobj.name
+                temporaryselectedHqobj.reportingToSF       = aHQobj.reportingToSF
+                temporaryselectedHqobj.steps                 = aHQobj.steps
+                temporaryselectedHqobj.sfHq                   = aHQobj.sfHQ
+                temporaryselectedHqobj.mapId                  = aHQobj.mapId
+            
+                sessions?[selectedSessionIndex ?? 0].headQuarters = temporaryselectedHqobj
+                
+                
+                
+//                self.saveHQentitiesToCoreData(aHQobj: aHQobj) { [weak self] _ in
+//                    guard let welf = self else {return}
+//                    DispatchQueue.main.async {
+//                        welf.toLoadWorktypeTable()
+//                    }
+//                }
+                toLoadWorktypeTable()
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+                Shared.instance.showLoaderInWindow()
+                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { [weak self] _  in
+                    
+                    guard let welf = self else {return}
+                    
+                    Shared.instance.removeLoaderInWindow()
+                    welf.toCreateToast("Clusters synced successfully")
+                }
+                
+            case 1:
+                
+                if  self.fetchedHQObject2 == nil {
+                    self.fetchedHQObject2 = selectedObject as? Subordinate
+                }
+                
+               // self.sessions?[selectedSessionIndex ?? 0].headQuarters = self.getSubordinate(hqCode: <#T##String#>)
+                
+                if self.fetchedHQObject2?.id != (selectedObject as? Subordinate)?.id {
+                    self.fetchedHQObject2 = selectedObject as? Subordinate
+                    
+           
+                    if !(self.sessions?[selectedSessionIndex ?? 0].isRetrived ?? false) {
+                        sessions?[selectedSessionIndex ?? 0].cluster = [temporaryselectedClusterobj]
+                        //self.sessions?[selectedSessionIndex].cluster =
+                    }
+
+                } else {
+                
+                    if  (sessions?[selectedSessionIndex ?? 0].isRetrived ?? false) {
+                        sessions?[selectedSessionIndex ?? 0].cluster =  fetchedClusterObject2
+                        }
+ 
+                }
+                let aHQobj = HQModel()
+                aHQobj.code = self.fetchedHQObject2?.id ?? String()
+                aHQobj.mapId = self.fetchedHQObject2?.mapId ?? String()
+                aHQobj.name = self.fetchedHQObject2?.name ?? String()
+                aHQobj.reportingToSF = self.fetchedHQObject2?.reportingToSF ?? String()
+                aHQobj.steps = self.fetchedHQObject2?.steps ?? String()
+                aHQobj.sfHQ = self.fetchedHQObject2?.sfHq ?? String()
+                
+                
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+           
+                else {
+                    fatalError("Entity not found")
+                }
+
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+       
+                temporaryselectedHqobj.code                  = aHQobj.code
+                temporaryselectedHqobj.name                 = aHQobj.name
+                temporaryselectedHqobj.reportingToSF       = aHQobj.reportingToSF
+                temporaryselectedHqobj.steps                 = aHQobj.steps
+                temporaryselectedHqobj.sfHq                   = aHQobj.sfHQ
+                temporaryselectedHqobj.mapId                  = aHQobj.mapId
+                sessions?[selectedSessionIndex ?? 0].headQuarters = temporaryselectedHqobj
+                
+             
+                
+//                self.saveHQentitiesToCoreData(aHQobj: aHQobj) { [weak self] _ in
+//                    guard let welf = self else {return}
+//                    DispatchQueue.main.async {
+//                        welf.toLoadWorktypeTable()
+//                    }
+//                }
+                toLoadWorktypeTable()
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+                Shared.instance.showLoaderInWindow()
+                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { [weak self] _  in
+                    
+                    guard let welf = self else {return}
+                    
+                    Shared.instance.removeLoaderInWindow()
+                    welf.toCreateToast("Clusters synced successfully")
+                }
+                
+            default:
+                print("Yet to implement")
             }
             
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
-            Shared.instance.showLoaderInWindow()
-            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { [weak self] _  in
-                
-                guard let welf = self else {return}
-                
-                Shared.instance.removeLoaderInWindow()
-                welf.toCreateToast("Clusters synced successfully")
-                
-                
-            }
+
             
             
             
@@ -274,24 +390,44 @@ extension MainVC: MenuResponseProtocol {
             print("Yet to implement.")
         }
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-            
-            if (self.fetchedHQObject ==  nil || self.fetchedClusterObject == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject == nil ||  self.fetchedWorkTypeObject == temporaryselectedWTobj)  {
-                configureSaveplanBtn(false)
-            } else {
-                configureSaveplanBtn(true)
+    
+            switch self.selectedSessionIndex {
+            case 0:
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+                        configureSaveplanBtn(false)
+                    } else {
+                        configureSaveplanBtn(true)
+                    }
+                    
+                } else {
+                    if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+                        configureSaveplanBtn(false)
+                    } else {
+                        configureSaveplanBtn(true)
+                    }
+                }
+            case 1:
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                        configureSaveplanBtn(false)
+                    } else {
+                        configureSaveplanBtn(true)
+                    }
+                    
+                } else {
+                    if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                        configureSaveplanBtn(false)
+                    } else {
+                        configureSaveplanBtn(true)
+                    }
+                }
+            default:
+                print("Yet to implement")
             }
-            
-        } else {
-            if (self.fetchedHQObject ==  nil || self.fetchedHQObject == temporaryselectedHqobj) || (self.fetchedClusterObject == nil || self.fetchedClusterObject == [temporaryselectedClusterobj]) || self.fetchedClusterObject == [Territory]() || (self.fetchedWorkTypeObject == nil ||  self.fetchedWorkTypeObject == temporaryselectedWTobj)  {
-                configureSaveplanBtn(false)
-            } else {
-                configureSaveplanBtn(true)
-            }
-        }
-        
 
         
+
 
         
         
@@ -326,7 +462,7 @@ class MainVC : UIViewController {
             guard let welf = self else {return}
             CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
                 if let aEntity = selectedHQArr.first {
-                    welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
+                   // welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
                     completion(true)
                 }
             }
@@ -364,39 +500,55 @@ class MainVC : UIViewController {
     }
     
     func toConfigureMydayPlan() {
-        self.sessions = toFetchExistingPlan()
-        
-        if !(sessions?.isEmpty ?? false) {
-            self.sessions?.forEach { aSession in
-                dump(aSession.headQuarters?.code)
-                self.fetchedHQObject =  getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
-                self.fetchedWorkTypeObject = aSession.workType
-                self.fetchedClusterObject = aSession.cluster
-            }
-        } else {
-            var aSession = Sessions()
-            
-            aSession.cluster  = nil
-            aSession.workType = nil
-            aSession.headQuarters = nil
-            aSession.isRetrived = Bool()
-            aSession.isFirstCell = true
-            sessions?.insert(aSession, at: 0)
-        }
-        
-        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-            if let aEntity = selectedHQArr.first {
-              //  welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
-               let subordinateArr =  DBManager.shared.getSubordinate()
-                subordinateArr.forEach { aSubordinate in
-                    if aSubordinate.id == aEntity.code {
-                        self.fetchedHQObject = aSubordinate
+        toFetchExistingPlan() { existingSessions in
+            self.sessions = existingSessions
+            if !(self.sessions?.isEmpty ?? false) {
+                self.sessions?.enumerated().forEach { index, aSession in
+                    switch index {
+                    case 0:
+                        dump(aSession.headQuarters?.code)
+                        self.fetchedHQObject1 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                        self.fetchedWorkTypeObject1 = aSession.workType
+                        self.fetchedClusterObject1 = aSession.cluster
+                    case 1:
+                        dump(aSession.headQuarters?.code)
+                        self.fetchedHQObject2 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                        self.fetchedWorkTypeObject2 = aSession.workType
+                        self.fetchedClusterObject2 = aSession.cluster
+                    default:
+                        print("<----->")
                     }
+
                 }
+            } else {
+                var aSession = Sessions()
+                
+                aSession.cluster  = nil
+                aSession.workType = nil
+                aSession.headQuarters = nil
+                aSession.isRetrived = Bool()
+                aSession.isFirstCell = true
+                self.sessions?.insert(aSession, at: 0)
             }
+            
+           
+            
+    //        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+    //            if let aEntity = selectedHQArr.first {
+    //              //  welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
+    //               let subordinateArr =  DBManager.shared.getSubordinate()
+    //                subordinateArr.forEach { aSubordinate in
+    //                    if aSubordinate.id == aEntity.code {
+    //                        self.fetchedHQObject = aSubordinate
+    //                    }
+    //                }
+    //            }
+    //        }
+            self.setSegment(.workPlan)
+            self.configureAddplanBtn(self.sessions?.count ?? 0 >= 2 ?  false : true, isSessionSaved: false)
+
         }
-        setSegment(.workPlan)
-        configureAddplanBtn(self.sessions?.count ?? 0 >= 2 ?  false : true, isSessionSaved: false)
+        
     }
     
 
@@ -540,10 +692,16 @@ class MainVC : UIViewController {
     var cacheINdex: Int = 0
     var selectedCallIndex: Int = 0
     var userststisticsVM : UserStatisticsVM?
+    
     let dispatchGroup = DispatchGroup()
-    var fetchedWorkTypeObject: WorkType?
-    var fetchedClusterObject: [Territory]?
-    var fetchedHQObject: Subordinate?
+    var fetchedWorkTypeObject1: WorkType?
+    var fetchedClusterObject1: [Territory]?
+    var fetchedHQObject1: Subordinate?
+    
+    var fetchedHQObject2: Subordinate?
+    var fetchedClusterObject2: [Territory]?
+    var fetchedWorkTypeObject2: WorkType?
+    
     var sessions: [Sessions]?
     var cacheTerritory: [Territory]?
     
@@ -715,16 +873,23 @@ class MainVC : UIViewController {
             yetToSaveSession[index].isRetrived = true
         }
         
+      
+        
         CoreDataManager.shared.removeAllDayPlans()
         CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) {[weak self] isCompleted in
             guard let welf = self else {return}
             if isCompleted {
+             
+              
               //  welf.callSavePlanAPI()
-                welf.toConfigureMydayPlan()
+                
+                ///note: - conmment these on callng api
+               welf.toConfigureMydayPlan()
                 welf.configureAddplanBtn(true, isSessionSaved: true)
                 welf.configureSaveplanBtn(false)
-           //    let toDayplans = CoreDataManager.shared.retriveSavedDayPlans()
-            //    dump(toDayplans)
+               
+           
+
             }
         }
         
@@ -1003,7 +1168,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       CoreDataManager.shared.removeAllDayPlans()
+      // CoreDataManager.shared.removeAllDayPlans()
         self.userststisticsVM = UserStatisticsVM()
         self.masterVM = MasterSyncVM()
         self.updateLinks()
@@ -2487,12 +2652,33 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             vc.selectedObject = model?.workType
             //self.fetchedWorkTypeObject
         case .cluster:
-            vc.selectedClusterID = self.fetchedClusterObject?.reduce(into: [String: Bool]()) { result, aTerritory in
-                result[aTerritory.code ?? ""] = true
+            
+            switch self.selectedSessionIndex {
+            case 0:
+                vc.selectedClusterID = self.fetchedClusterObject1?.reduce(into: [String: Bool]()) { result, aTerritory in
+                    result[aTerritory.code ?? ""] = true
+                }
+            case 1:
+                vc.selectedClusterID = self.fetchedClusterObject2?.reduce(into: [String: Bool]()) { result, aTerritory in
+                    result[aTerritory.code ?? ""] = true
+                }
+            default:
+                print("Yet to implement")
             }
+                
+            
+      
             
         case .headQuater:
-            vc.selectedObject = self.fetchedHQObject
+            switch self.selectedSessionIndex {
+            case 0:
+                vc.selectedObject = self.fetchedHQObject1
+            case 1:
+                vc.selectedObject = self.fetchedHQObject2
+            default:
+                print("---->>")
+            }
+           // vc.selectedObject = self.fetchedHQObject
             //self.fetchedHQObject
         default:
             print("Yet to implement")
