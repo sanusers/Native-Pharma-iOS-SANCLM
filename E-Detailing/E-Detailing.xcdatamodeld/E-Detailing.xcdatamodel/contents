@@ -5,15 +5,6 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="CacheTerritories" representedClassName="CacheTerritories" syncable="YES" codeGenerationType="class">
-        <attribute name="code" optional="YES" attributeType="String"/>
-        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="lat" optional="YES" attributeType="String"/>
-        <attribute name="long" optional="YES" attributeType="String"/>
-        <attribute name="mapId" optional="YES" attributeType="String"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="sfCode" optional="YES" attributeType="String"/>
-    </entity>
     <entity name="Chemist" representedClassName="Chemist" syncable="YES" codeGenerationType="class">
         <attribute name="addr" optional="YES" attributeType="String"/>
         <attribute name="chemistContact" optional="YES" attributeType="String"/>
@@ -41,11 +32,6 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="ourProductCode" optional="YES" attributeType="String"/>
         <attribute name="ourProductName" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="DayPlanSessionTerritories" representedClassName="DayPlanSessionTerritories" syncable="YES" codeGenerationType="class">
-        <attribute name="hqID" optional="YES" attributeType="String"/>
-        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="selectedTerriories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CacheTerritories"/>
     </entity>
     <entity name="Departs" representedClassName="Departs" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
@@ -111,10 +97,10 @@
         <attribute name="isRetrived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="planDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="remarks" optional="YES" attributeType="String"/>
+        <attribute name="rsfID" optional="YES" attributeType="String"/>
+        <attribute name="townCodes" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="cluster" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Territory"/>
-        <relationship name="headQuarters" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SelectedHQ"/>
-        <relationship name="workType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkType"/>
+        <attribute name="wortTypeCode" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Efff" representedClassName="Efff" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="String"/>

@@ -1044,13 +1044,29 @@ class DBManager {
         self.saveContext()
     }
     
-    func deleteTerritoryData(id : String) {
+    
+    
+    func deleteTerritoryData(id: String) {
         let masterData = self.getMasterData()
-        if let prevList = masterData.territory?.allObjects as? [Territory]{
-            _ = prevList.map{self.managedContext().delete($0)}
+
+        if let territories = masterData.territory?.allObjects as? [Territory] {
+            let territoriesToDelete = territories.filter { $0.mapId == id }
+
+            for territory in territoriesToDelete {
+                self.managedContext().delete(territory)
+            }
+
+            self.saveContext()
         }
-        self.saveContext()
     }
+    
+//    func deleteTerritoryData(id : String) {
+//        let masterData = self.getMasterData()
+//        if let prevList = masterData.territory?.allObjects as? [Territory]{
+//            _ = prevList.map{self.managedContext().delete($0)}
+//        }
+//        self.saveContext()
+//    }
     
     func saveMyDayPlanData(values : [[String : Any]]) {
         self.deleteMyDayPlanData()
@@ -1679,6 +1695,21 @@ class DBManager {
             return item1.index < item2.index
         }
         return array
+    }
+    
+    
+    func getTerritory(mapID: String) -> [Territory] {
+        let masterData = self.getMasterData()
+
+        guard let territoryArray = masterData.territory?.allObjects as? [Territory] else {
+            return []
+        }
+
+        let filteredArray = territoryArray.filter { $0.mapId == mapID }
+
+        let sortedArray = filteredArray.sorted { $0.index < $1.index }
+
+        return sortedArray
     }
     
     func getMyDayPlan() -> [MyDayPlan]{

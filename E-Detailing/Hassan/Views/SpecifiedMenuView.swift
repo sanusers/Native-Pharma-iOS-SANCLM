@@ -923,7 +923,7 @@ class SpecifiedMenuView: BaseView {
            }
        case .cluster:
            bottomHolderHeight.constant = 80
-           self.clusterArr = DBManager.shared.getTerritory()
+           self.clusterArr = DBManager.shared.getTerritory(mapID: self.specifiedMenuVC.clusterMapID)
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! Territory
                let docObj =  self.selectedObject as! Territory

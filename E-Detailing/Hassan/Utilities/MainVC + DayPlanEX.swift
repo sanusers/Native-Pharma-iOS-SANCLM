@@ -14,6 +14,7 @@ class DayPlanSessions {
     var headQuarters: SelectedHQ
     var cluster: [Territory]
     var isSavedSession: Bool
+    
 
     init() {
         worktype = WorkType()
@@ -129,27 +130,27 @@ extension MainVC {
         if !todayPlans.isEmpty {
             if let eachDayPlan = todayPlans.first {
                 
-                
-                let clusterArr = DBManager.shared.getTerritory()
+            
+            
                 let headQuatersArr =  DBManager.shared.getSubordinate()
                 let workTypeArr = DBManager.shared.getWorkType()
                 
                 
                 guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
-                      let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
-                      let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+                      let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context)
+                     // let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
                 else {
                     fatalError("Entity not found")
                 }
                 
                 let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
                 let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-                let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+              //  let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
                 
                 
                 if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-             
-                    var selectedterritories: [Territory]?
+                    let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
+               
                     var selectedheadQuarters : SelectedHQ?
                     var selectedWorkTypes: WorkType?
                     let codes = eachDayPlan.townCode
@@ -161,23 +162,8 @@ extension MainVC {
                             return aTerritory.code?.contains(code) ?? false
                         }
                     }
-                    selectedterritories = filteredTerritories
-                    
-                    
-                    
-                    
-//                    if selectedterritories?.count == 0 {
-//
-//                        dispatchGroup.enter()
-//                        LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: eachDayPlan.rsf)
-//
-//                        makeAPIcall(rsf:  eachDayPlan.rsf, codesArray: codesArray) { filteredArray in
-//                            selectedterritories = filteredArray
-//                            self.dispatchGroup.leave()
-//                        }
-//                     
-//                    }
-                    
+               
+
                     workTypeArr.forEach { aWorkType in
                         if aWorkType.code == eachDayPlan.wtCode  {
                             selectedWorkTypes = aWorkType
@@ -217,22 +203,7 @@ extension MainVC {
                         }
                         
                     }
-                   // var convertedTerritories: [Territory]?
-                   // let resultSet = CoreDataManager.shared.convertClustersToCDM(selectedterritories ?? [temporaryselectedClusterobj], context: context)
-                    
-                   // convertedTerritories  = resultSet.allObjects as? [Territory]
-                    
-                   // self.cacheTerritory = convertedTerritories
-                    
-//                    
-//                    CoreDataManager.shared.fetchDayPlanSessionTerritories { ayPlanSessionTerritoriesArr in
-//                        let afilteredHQSessions = ayPlanSessionTerritoriesArr.filter { $0.hqID == selectedheadQuarters?.code }
-//
-//                        selectedterritories = afilteredHQSessions.first?.selectedTerriories?.allObjects as? [Territory]
-//                    }
-                  let  selectedterritoriesObj = CoreDataManager.shared.retrivesSessionClusters(hqID: selectedheadQuarters?.code ?? "")
-                  
-                    let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
+                    let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true, isRejected: eachDayPlan.isRejected)
                     aDaysessions.append(tempSession)
                     
 
@@ -240,8 +211,8 @@ extension MainVC {
                 }
                 
                 if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
-                 
-                    var selectedterritories: [Territory]?
+                    let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf2)
+                
                     var selectedheadQuarters : SelectedHQ?
                     var selectedWorkTypes: WorkType?
                     let codes = eachDayPlan.townCode2
@@ -253,22 +224,7 @@ extension MainVC {
                             return aTerritory.code?.contains(code) ?? false
                         }
                     }
- //                   selectedterritories = filteredTerritories
-                    
-//                    if selectedterritories?.count == 0 {
-//
-//                        dispatchGroup.enter()
-//                        LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: eachDayPlan.rsf)
-//
-//                        makeAPIcall(rsf:  eachDayPlan.rsf, codesArray: codesArray) { filteredArray in
-//                            selectedterritories = filteredArray
-//                            self.dispatchGroup.leave()
-//                        }
-//                     
-//                    }
-                    
 
-                
                     workTypeArr.forEach { aWorkType in
                         if aWorkType.code == eachDayPlan.wtCode2  {
                             selectedWorkTypes = aWorkType
@@ -309,24 +265,8 @@ extension MainVC {
                         
                     }
                     
-                  // var convertedTerritories: [Territory]?
-                 //   let resultSet = CoreDataManager.shared.convertClustersToCDM(selectedterritories ?? [temporaryselectedClusterobj], context: context)
-                  //  convertedTerritories = resultSet.allObjects as? [Territory]
                     
-                    
-                    
-//                    CoreDataManager.shared.fetchDayPlanSessionTerritories { ayPlanSessionTerritoriesArr in
-//                        let afilteredHQSessions = ayPlanSessionTerritoriesArr.filter { $0.hqID == selectedheadQuarters?.code }
-//
-//                        selectedterritories = afilteredHQSessions.first?.selectedTerriories?.allObjects.compactMap { $0 as? Territory }
-//                        
-//                        
-//                        
-//                    }
-                    
-                  let  selectedterritoriesObj = CoreDataManager.shared.retrivesSessionClusters(hqID: selectedheadQuarters?.code ?? "")
-                    
-                    let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
+                    let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true, isRejected: eachDayPlan.isRejected)
                   
                     aDaysessions.append(tempSession)
                 }
@@ -337,140 +277,7 @@ extension MainVC {
         completion(aDaysessions)
         
     }
-    
-//    func makeAPIcall(rsf: String, codesArray: [String], completion: @escaping ([Territory]) -> ()) {
-//        masterVM?.fetchMasterData(type: MasterInfo.clusters, sfCode: rsf, istoUpdateDCRlist: false) { response in
-//            switch response.result {
-//            case .success(let data):
-//                do {
-//                    let apiResponse = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-//                    print(apiResponse)
-//
-//                    if let jsonObjectresponse = apiResponse as? [[String: Any]] {
-//                        DBManager.shared.saveMasterData(type: .clusters, Values: jsonObjectresponse, id: rsf)
-//                        let updatedclusterArr = DBManager.shared.getTerritory()
-//
-//                        let filteredTerritories = updatedclusterArr.filter { aTerritory in
-//                            // Check if any code in codesArray is contained in aTerritory
-//                            return codesArray.contains { code in
-//                                return aTerritory.code?.contains(code) ?? false
-//                            }
-//                        }
-//
-//                        completion(filteredTerritories)
-//                    }
-//                } catch {
-//                    print("Error decoding JSON: \(error)")
-//                    // Handle the error here if needed
-//                    completion([])
-//                }
-//            case .failure(let error):
-//                print("API request failed with error: \(error)")
-//                // Handle the error here if needed
-//                completion([])
-//            }
-//        }
-//    }
-    
-    
 
 }
 
-extension CoreDataManager {
-    
-    //To Save Session Territories Day plan
-    
-    func fetchDayPlanSessionTerritories(completion: ([DayPlanSessionTerritories]) -> () )  {
-        do {
-           let savedCDpresentations = try  context.fetch(DayPlanSessionTerritories.fetchRequest())
-            completion(savedCDpresentations )
-            
-        } catch {
-            print("unable to fetch movies")
-        }
-       
-    }
-    
-    
-    func retrivesSessionClusters(hqID: String) -> [NSManagedObject] {
-        
-        var saveTerritoryArr = [NSManagedObject]()
-        
-        CoreDataManager.shared.fetchDayPlanSessionTerritories{ fetchDayPlanSessionTerritories in
-            fetchDayPlanSessionTerritories.forEach { fetchDayPlanSessionTerritory in
-                if fetchDayPlanSessionTerritory.hqID == hqID {
-                    saveTerritoryArr = fetchDayPlanSessionTerritory.selectedTerriories?.allObjects as? [NSManagedObject] ?? []
-                  
-                }
-            }
- 
-        }
-        
-       return saveTerritoryArr
-    }
-    
-    func toCheckTerritories(_ hqID: String, completion: (Bool) -> ()) {
-        
-        do {
-            let request = DayPlanSessionTerritories.fetchRequest() as NSFetchRequest
-            let pred = NSPredicate(format: "hqID == '\(hqID)'")
-            //LIKE
-            request.predicate = pred
-           let films = try context.fetch(request)
-            if films.isEmpty {
-                completion(false)
-            } else {
-                completion(true)
-            }
-        } catch {
-            print("unable to fetch")
-            completion(false)
-        }
-    }
-    
-    
-    func removeSessionTerrioriesFromCoreData() {
-        let fetchRequest: NSFetchRequest<DayPlanSessionTerritories> = NSFetchRequest(entityName: "DayPlanSessionTerritories")
 
-        do {
-            let slideBrands = try context.fetch(fetchRequest)
-            for brand in slideBrands {
-                context.delete(brand)
-            }
-
-            try context.save()
-        } catch {
-            print("Error deleting slide brands: \(error)")
-        }
-    }
-    
-    func saveSessionTerrioriesToCoreData(hqID: String, toSaveTerriories: [Territory]  , completion: (Bool) -> ()) {
-        toCheckTerritories(hqID) { isExists in
-            if !isExists {
-                let context = self.context
-                // Create a new managed object
-                if let entityDescription = NSEntityDescription.entity(forEntityName: "DayPlanSessionTerritories", in: context) {
-                    let savedCDPlanSessionTerritories = DayPlanSessionTerritories(entity: entityDescription, insertInto: context)
-
-                    // Convert properties
-                    savedCDPlanSessionTerritories.uuid = UUID()
-                    savedCDPlanSessionTerritories.hqID = hqID
-
-                    // Convert and add groupedBrandsSlideModel
-                    savedCDPlanSessionTerritories.selectedTerriories = convertCacheTerritoriesToCDM(toSaveTerriories, context: context)
-
-                    // Save to Core Data
-                    do {
-                        try context.save()
-                        completion(true)
-                    } catch {
-                        print("Failed to save to Core Data: \(error)")
-                        completion(false)
-                    }
-                }
-            } else {
-                completion(false)
-            }
-        }
-    }
-}

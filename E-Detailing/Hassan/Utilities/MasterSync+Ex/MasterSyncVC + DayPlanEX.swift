@@ -242,7 +242,7 @@ extension CoreDataManager {
         
         let cdDayPlans = NSMutableSet()
         
-        let clusterArr = DBManager.shared.getTerritory()
+     
         let headQuatersArr =  DBManager.shared.getSubordinate()
         let workTypeArr = DBManager.shared.getWorkType()
         
@@ -258,7 +258,7 @@ extension CoreDataManager {
         let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
         
         if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-           
+            let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
             var selectedterritories: [Territory]?
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
@@ -334,7 +334,7 @@ extension CoreDataManager {
         }
         
         if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
-           
+            let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf2)
             var selectedterritories: [Territory]?
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
@@ -408,17 +408,15 @@ extension CoreDataManager {
         }
         
         
-        for aDaysession in aDaysessions {
+        aDaysessions.enumerated().forEach { index, eachDayPlan in
             if let entityDescription = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) {
                 let entitydayPlan = EachPlan(entity: entityDescription, insertInto: context)
                 
-                entitydayPlan.cluster = convertClustersToCDM(aDaysession.cluster ?? [temporaryselectedClusterobj], context: context)
-                entitydayPlan.workType = convertWorkTypeToCDM(aDaysession.workType ?? temporaryselectedWTobj, context: context)
+                entitydayPlan.wortTypeCode = eachDayPlan.workType?.code
+
+                entitydayPlan.townCodes = eachDayPlan.cluster?.map { $0.code ?? "" }.joined(separator: ", ")
          
-                entitydayPlan.headQuarters = convertHeadQuartersToCDM(aDaysession.headQuarters ?? temporaryselectedHqobj, context: context)
-                
-            
-                
+                entitydayPlan.rsfID = eachDayPlan.headQuarters?.code
                 // Add to set
                 cdDayPlans.add(entitydayPlan)
                 
@@ -482,34 +480,6 @@ extension CoreDataManager {
         return cdWorkType
     }
 
-    
-    public func convertCacheTerritoriesToCDM(_ clusters: [Territory], context: NSManagedObjectContext) -> NSSet {
-        let cdTerritortModels = NSMutableSet()
-        
-        for cluster in clusters {
-            if let entityDescription = NSEntityDescription.entity(forEntityName: "CacheTerritories", in: context) {
-                let cdTerritoryModel = CacheTerritories(entity: entityDescription, insertInto: context)
-                
-                // Convert properties of SlidesModel
-                cdTerritoryModel.code = cluster.code
-                cdTerritoryModel.index = cluster.index
-                cdTerritoryModel.lat = cluster.lat
-                cdTerritoryModel.long = cluster.long
-                cdTerritoryModel.mapId = cluster.mapId
-                cdTerritoryModel.name = cluster.name
-                cdTerritoryModel.sfCode = cluster.sfCode
-                // Convert other properties...
-                
-                // Add to set
-                cdTerritortModels.add(cdTerritoryModel)
-                
-            }
-        }
-        
-        return cdTerritortModels
-    }
-    
-    
     public func convertClustersToCDM(_ clusters: [Territory], context: NSManagedObjectContext) -> NSSet {
         let cdTerritortModels = NSMutableSet()
         
@@ -549,7 +519,7 @@ extension CoreDataManager {
                     // Convert properties
                     entityDayPlan.uuid = aDayPlan.uuid
                     entityDayPlan.planDate = aDayPlan.tpDt.toDate()
-                    
+                    entityDayPlan.isRejected = aDayPlan.isRejected
                     entityDayPlan.eachPlan = convertEachDyPlan(aDayPlan , context: context)
                     
                     // Save to Core Data
@@ -598,7 +568,7 @@ extension CoreDataManager {
                 aDayPlan.tpVwFlg = ""
                 aDayPlan.tpCluster = ""
                 aDayPlan.tpWorkType = ""
-                
+
                 
                 if let  eachDayPlansSet = eachDayPlan.eachPlan as? Set<EachPlan>  {
                     let eachDayPlansArray = Array(eachDayPlansSet)
@@ -606,60 +576,48 @@ extension CoreDataManager {
                         // let agroupedSlide = SlidesModel()
                         switch index {
                         case 0 :
-                            aDayPlan.rsf = eachPlan.headQuarters?.code ?? ""
-                            aDayPlan.wtCode = eachPlan.workType?.code ?? ""
-                            aDayPlan.wtName = eachPlan.workType?.name ?? ""
+                            aDayPlan.rsf = eachPlan.rsfID ?? ""
+                            aDayPlan.wtCode = eachPlan.wortTypeCode ?? ""
+                            let workType = DBManager.shared.getWorkType()
+                            let filetedworkType = workType.filter{$0.code ==  aDayPlan.wtCode}
+                            aDayPlan.wtName = filetedworkType.first?.name ?? ""
+                            aDayPlan.fwFlg = filetedworkType.first?.fwFlg ?? ""
                             aDayPlan.location = ""
                             aDayPlan.isRetrived = eachPlan.isRetrived
+                            aDayPlan.townCode = eachPlan.townCodes ?? ""
+                            let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                            let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
                             
-//                            if let clusterSet = eachPlan.cluster as? Set<Territory> {
-//
-//
-//                               // let territoryCodes = clusterSet.map { $0.code ?? "" }
-//
-//                                let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
-//                                let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
-//                                aDayPlan.townCode =  territoryCodesString
-//                                aDayPlan.townName = territoryNamesString
-//                                print("Territory Codes: \(territoryCodesString)")
-//                            }
-                         
-               
-                            
-                            guard let clusterEntity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
-                                  let clusterSet = eachPlan.cluster as? Set<Territory> else {
-                                fatalError("Entity or clusterSet not found")
+                            // Filter territories based on codes
+                            let filteredTerritories = territories.filter { territory in
+                                return territoryCodes.contains(territory.code ?? "")
                             }
-
-                            let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
-                            let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
-                            aDayPlan.townCode =  territoryCodesString
-                            aDayPlan.townName = territoryNamesString
-                            print("Territory Codes: \(territoryCodesString)")
+                            // Extract names as a comma-separated string
+                            aDayPlan.townName = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
+     
                             
                             
-                            
-                            aDayPlan.fwFlg = eachPlan.workType?.fwFlg ?? ""
                         case 1:
-                            aDayPlan.rsf2 = eachPlan.headQuarters?.code ?? ""
-                            aDayPlan.wtCode2 = eachPlan.workType?.code ?? ""
-                            aDayPlan.wtName2 = eachPlan.workType?.name ?? ""
-                            aDayPlan.isRetrived = eachPlan.isRetrived
-                            guard let clusterEntity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
-                                  let clusterSet = eachPlan.cluster as? Set<Territory> else {
-                                fatalError("Entity or clusterSet not found")
-                            }
-
-                            let territoryCodesString = clusterSet.map { $0.code ?? "" }.joined(separator: ", ")
-                            let territoryNamesString = clusterSet.map { $0.name ?? "" }.joined(separator: ", ")
-                            aDayPlan.townCode2 =  territoryCodesString
-                            aDayPlan.townName2 = territoryNamesString
-                            print("Territory Codes: \(territoryCodesString)")
-                            
+                            aDayPlan.rsf2 = eachPlan.rsfID ?? ""
+                            aDayPlan.wtCode2 = eachPlan.wortTypeCode ?? ""
+                            let workType = DBManager.shared.getWorkType()
+                            let filetedworkType = workType.filter{$0.code ==  aDayPlan.wtCode}
+                            aDayPlan.wtName2 = filetedworkType.first?.name ?? ""
+                            aDayPlan.fwFlg2 = filetedworkType.first?.fwFlg ?? ""
                             aDayPlan.location2 = ""
-                       
-                         
-                            aDayPlan.fwFlg2 = eachPlan.workType?.fwFlg ?? ""
+                            aDayPlan.isRetrived = eachPlan.isRetrived
+                            aDayPlan.townCode2 = eachPlan.townCodes ?? ""
+                            let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                            let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
+                            
+                            // Filter territories based on codes
+                            let filteredTerritories = territories.filter { territory in
+                                return territoryCodes.contains(territory.code ?? "")
+                            }
+                            // Extract names as a comma-separated string
+                            aDayPlan.townName2 = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
+     
+                            
                         default:
                             print("Yet to implement")
                         }
@@ -763,21 +721,44 @@ extension CoreDataManager {
             
             switch index {
             case 0:
+                firstEachPlan.planDate = Date()
                 firstEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
-                firstEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
-                firstEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
-                firstEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+                firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+                firstEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
+                let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+                
+                if let territoryArray = SelectedTerritories.allObjects as? [Territory] {
+                    // Now territoryArray contains your Territory core data objects
+                    // Use this array as needed
+                    let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
+                    firstEachPlan.townCodes = territoryCodes
+                } else {
+                    print("Failed to convert NSSet to [Territory]")
+                }
+         
                 
                 eachPlanSet.add(firstEachPlan)
                
             case 1:
+                secondEachPlan.planDate = Date()
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
-                secondEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
-                secondEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
-                secondEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
-
+                secondEachPlan.isRetrived = session[index].isRetrived ?? false
+                // Set properties based on session or adjust as needed
+                secondEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+                secondEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
+                let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+                
+                if let territoryArray = SelectedTerritories.allObjects as? [Territory] {
+                    // Now territoryArray contains your Territory core data objects
+                    // Use this array as needed
+                    let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
+                    secondEachPlan.townCodes = territoryCodes
+                } else {
+                    print("Failed to convert NSSet to [Territory]")
+                }
+         
                 eachPlanSet.add(secondEachPlan)
                 
 
