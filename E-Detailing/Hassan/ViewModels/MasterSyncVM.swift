@@ -19,10 +19,26 @@ class MasterSyncVM {
     var isUpdated: [MasterInfo] = []
     var isUpdating: Bool = false
     var isSyncCompleted: Bool = false
+    let appsetup = AppDefaults.shared.getAppSetUp()
+    var getRSF: String? {
+    
+        let rsfIDPlan1 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
+        let rsfIDPlan2 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan2)
+
+        if !rsfIDPlan1.isEmpty {
+            return rsfIDPlan1
+        } else if !rsfIDPlan2.isEmpty {
+            return rsfIDPlan2
+        } else {
+            return "\(appsetup.sfCode!)"
+        }
+    }
+    
+    var mapID: String?
     
     func toGetMyDayPlan(type: MasterInfo, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
         
-        let appsetup = AppDefaults.shared.getAppSetUp()
+ 
         let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
         var param = [String: Any]()
         
@@ -34,8 +50,9 @@ class MasterSyncVM {
         param["ReqDt"] = date
         param["sfcode"] = "\(appsetup.sfCode!)"
         param["division_code"] = "\(appsetup.divisionCode!)"
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == "" ? "\(appsetup.sfCode!)" : LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
-        param["Rsf"] = rsf
+
+       // let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
+        param["Rsf"] = getRSF
         param["sf_type"] = "\(appsetup.sfType!)"
         param["Designation"] = "\(appsetup.dsName!)"
         param["state_code"] = "\(appsetup.stateCode!)"
@@ -94,7 +111,8 @@ class MasterSyncVM {
             case 0:
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
-               // LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: aMyDayPlanResponseModel.SFMem)
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aMyDayPlanResponseModel.SFMem)
                 aDayPlan.wtCode = aMyDayPlanResponseModel.WT
                 aDayPlan.wtName = aMyDayPlanResponseModel.WTNm
                 aDayPlan.fwFlg = aMyDayPlanResponseModel.FWFlg
@@ -103,7 +121,8 @@ class MasterSyncVM {
             case 1:
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
-               // LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aMyDayPlanResponseModel.SFMem)
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan2, text: aMyDayPlanResponseModel.SFMem)
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aMyDayPlanResponseModel.SFMem)
                 aDayPlan.wtCode2 = aMyDayPlanResponseModel.WT
                 aDayPlan.wtName2 = aMyDayPlanResponseModel.WTNm
                 aDayPlan.fwFlg2 = aMyDayPlanResponseModel.FWFlg
@@ -123,7 +142,7 @@ class MasterSyncVM {
     }
     
     
-    func fetchMasterData(type: MasterInfo, sfCode: String, istoUpdateDCRlist: Bool, completionHandler: @escaping (AFDataResponse<Data>) -> Void) {
+    func fetchMasterData(type: MasterInfo, sfCode: String, istoUpdateDCRlist: Bool, mapID: String, completionHandler: @escaping (AFDataResponse<Data>) -> Void) {
         dump(type.getUrl)
         dump(type.getParams)
 
@@ -140,10 +159,10 @@ class MasterSyncVM {
 
                 print(apiResponse)
                 // Save to Core Data or perform any other actions
-                DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: sfCode)
+                DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: mapID)
 
                 if istoUpdateDCRlist && !welf.isUpdating {
-                    welf.updateDCRLists() { _ in
+                    welf.updateDCRLists(mapID: mapID) { _ in
                         completionHandler(response)
                     }
                 } else   {
@@ -201,7 +220,7 @@ class MasterSyncVM {
  
     
     
-    func updateDCRLists(completion: @escaping (Bool) -> ()) {
+    func updateDCRLists(mapID: String, completion: @escaping (Bool) -> ()) {
         let dispatchgroup = DispatchGroup()
         isUpdating = true
         let dcrEntries : [MasterInfo] = [.doctorFencing, .chemists, .unlistedDoctors, .stockists]
@@ -212,7 +231,7 @@ class MasterSyncVM {
         dcrEntries.forEach { aMasterInfo in
             dispatchgroup.enter()
             
-            fetchMasterData(type: aMasterInfo, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID), istoUpdateDCRlist: true) { _ in
+            fetchMasterData(type: aMasterInfo, sfCode: getRSF ?? "", istoUpdateDCRlist: true, mapID: mapID) { _ in
                 print("Syncing \(aMasterInfo.rawValue)")
                
                dispatchgroup.leave()

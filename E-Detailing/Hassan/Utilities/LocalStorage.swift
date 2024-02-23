@@ -37,7 +37,9 @@ case AppMainURL
         case LoadedBrandSlideData
         case SavedPresentations
         case isSlidesLoaded
-        case rsfID
+        case rsfIDPlan1
+        case rsfIDPlan2
+        case selectedRSFID
         case selectedHQObj
     }
     

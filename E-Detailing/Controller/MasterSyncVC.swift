@@ -239,6 +239,7 @@ class MasterSyncVC : UIViewController {
         // let appsetup = AppDefaults.shared.getAppSetUp()
         
         
+
         
         guard self.fetchedHQObject != nil else {
             CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
@@ -268,7 +269,21 @@ class MasterSyncVC : UIViewController {
             }
             // Retrieve Data from local storage
                return
+        }
+            let aHQobj = HQModel()
+            aHQobj.code = self.fetchedHQObject?.id ?? ""
+            aHQobj.mapId = self.fetchedHQObject?.mapId ?? ""
+            aHQobj.name = self.fetchedHQObject?.name ?? ""
+            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? ""
+            aHQobj.steps = self.fetchedHQObject?.steps ?? ""
+            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? ""
+            CoreDataManager.shared.removeHQ()
+            CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                CoreDataManager.shared.toRetriveSavedHQ { HQModelarr in
+                    dump(HQModelarr)
+                }
             }
+        
         
         self.lblHqName.text =   self.fetchedHQObject?.name
         self.collectionView.reloadData()
@@ -441,10 +456,14 @@ class MasterSyncVC : UIViewController {
                     let model: [MyDayPlanResponseModel] = responseModel
                     welf.isDayPlanSynced = true
                     if model.count > 0 {
-                        let aDayArr = model.first
-                        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-                      LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aDayArr?.SFMem ?? appdefaultSetup.sfCode!)
-                      let subordinateArr =  DBManager.shared.getSubordinate()
+                        let aDayArr = model.filter{$0.SFMem != ""}.first
+
+                        
+                        
+                        
+                      let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+                      LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aDayArr?.SFMem ?? appdefaultSetup.sfCode!)
+                       let subordinateArr =  DBManager.shared.getSubordinate()
                        let filteredHQ = subordinateArr.filter {  $0.id == aDayArr?.SFMem }
                         if !filteredHQ.isEmpty {
                             let cacheHQ = filteredHQ.first
@@ -475,11 +494,9 @@ class MasterSyncVC : UIViewController {
                     completion(true)
                 }
             }
-            
-
           
         default:
-            mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getSFCode, istoUpdateDCRlist: false) {[weak self] (response) in
+            mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getSFCode, istoUpdateDCRlist: false, mapID: self.getSFCode) {[weak self] (response) in
                 guard let welf = self else {return}
                 let date1 = Date().toString(format: "yyyy-MM-dd HH:mm:ss ZZZ")
                 

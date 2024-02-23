@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 
+
 class DayPlanSessions {
     var worktype: WorkType
     var headQuarters: SelectedHQ
@@ -80,9 +81,10 @@ extension MainVC {
 //
 //                         }
                          welf.masterVM?.toGetMyDayPlan(type: .myDayPlan) {_ in
-                             welf.toLoadWorktypeTable()
-                             welf.configureAddplanBtn(true, isSessionSaved: true)
-                             welf.configureSaveplanBtn(false)
+                             welf.toConfigureMydayPlan()
+                            // welf.toLoadWorktypeTable()
+                            // welf.configureAddplanBtn(true, isSessionSaved: true)
+                            // welf.configureSaveplanBtn(false)
                              welf.toCreateToast(response.msg ?? "")
                          }
                      case .failure(let error):
@@ -108,6 +110,18 @@ extension MainVC {
         
     }
     
+    //                            CoreDataManager.shared.removeHQ()
+    //
+    //                            CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
+    //                                if isSaved {
+    //                                    CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+    //                                        let aSavedHQ = selectedHQArr.first
+    //                                        selectedheadQuarters = aSavedHQ
+    //                                    }
+    //                                }
+    //                            }
+    
+
     func toFetchExistingPlan(completion: @escaping ([Sessions]) -> ())  {
     
       let todayPlans =  CoreDataManager.shared.retriveSavedDayPlans()
@@ -115,12 +129,6 @@ extension MainVC {
         if !todayPlans.isEmpty {
             if let eachDayPlan = todayPlans.first {
                 
-                //                CoreDataManager.shared.removeAllDayPlans()
-                //                CoreDataManager.shared.toSaveDayPlan(aDayPlan: eachDayPlan) { isComleted in
-                //                    if isComleted {
-                //                        self.toCreateToast("Saved successfully")
-                //                    }
-                //                }
                 
                 let clusterArr = DBManager.shared.getTerritory()
                 let headQuatersArr =  DBManager.shared.getSubordinate()
@@ -140,7 +148,7 @@ extension MainVC {
                 
                 
                 if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-                    
+             
                     var selectedterritories: [Territory]?
                     var selectedheadQuarters : SelectedHQ?
                     var selectedWorkTypes: WorkType?
@@ -156,44 +164,18 @@ extension MainVC {
                     selectedterritories = filteredTerritories
                     
                     
+                    
+                    
 //                    if selectedterritories?.count == 0 {
 //
 //                        dispatchGroup.enter()
-//                        LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: eachDayPlan.rsf)
-//                        masterVM?.fetchMasterData(type: MasterInfo.clusters, sfCode: eachDayPlan.rsf, istoUpdateDCRlist: false) { response in
-//                            switch response.result {
-//                            case .success(let data):
-//                                do {
-//                                    let apiResponse = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-//                                    print(apiResponse)
+//                        LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: eachDayPlan.rsf)
 //
-//                                    if let jsonObjectresponse = apiResponse as? [[String: Any]] {
-//                                        DBManager.shared.saveMasterData(type: .clusters, Values: jsonObjectresponse,id: eachDayPlan.rsf2)
-//                                    }
-//
-//
-//                                    let updatedclusterArr = DBManager.shared.getTerritory()
-//
-//                                    let filteredTerritories = updatedclusterArr.filter { aTerritory in
-//                                        // Check if any code in codesArray is contained in aTerritory
-//                                        return codesArray.contains { code in
-//                                            return aTerritory.code?.contains(code) ?? false
-//                                        }
-//                                    }
-//                                    selectedterritories = filteredTerritories
-//
-//
-//                                } catch {
-//                                    print("Error decoding JSON: \(error)")
-//                                    // Handle the error here if needed
-//                                }
-//                            case .failure(let error):
-//                                print("API request failed with error: \(error)")
-//                                // Handle the error here if needed
-//                            }
-//
+//                        makeAPIcall(rsf:  eachDayPlan.rsf, codesArray: codesArray) { filteredArray in
+//                            selectedterritories = filteredArray
+//                            self.dispatchGroup.leave()
 //                        }
-//                        self.dispatchGroup.leave()
+//                     
 //                    }
                     
                     workTypeArr.forEach { aWorkType in
@@ -213,16 +195,7 @@ extension MainVC {
                             hqModel.sfHQ = aheadQuater.sfHq ?? ""
                             hqModel.mapId = aheadQuater.mapId ?? ""
                             
-                            //                            CoreDataManager.shared.removeHQ()
-                            //
-                            //                            CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-                            //                                if isSaved {
-                            //                                    CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-                            //                                        let aSavedHQ = selectedHQArr.first
-                            //                                        selectedheadQuarters = aSavedHQ
-                            //                                    }
-                            //                                }
-                            //                            }
+
                             guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
                                     
                             else {
@@ -244,24 +217,30 @@ extension MainVC {
                         }
                         
                     }
+                   // var convertedTerritories: [Territory]?
+                   // let resultSet = CoreDataManager.shared.convertClustersToCDM(selectedterritories ?? [temporaryselectedClusterobj], context: context)
                     
-                    let resultSet = CoreDataManager.shared.convertClustersToCDM(selectedterritories ?? [temporaryselectedClusterobj], context: context)
+                   // convertedTerritories  = resultSet.allObjects as? [Territory]
                     
+                   // self.cacheTerritory = convertedTerritories
                     
-                    let convertedTerritories = resultSet.allObjects as? [Territory] ?? []
-                    
-                    self.cacheTerritory = convertedTerritories
-                    
-                    
-                    
+//                    
+//                    CoreDataManager.shared.fetchDayPlanSessionTerritories { ayPlanSessionTerritoriesArr in
+//                        let afilteredHQSessions = ayPlanSessionTerritoriesArr.filter { $0.hqID == selectedheadQuarters?.code }
+//
+//                        selectedterritories = afilteredHQSessions.first?.selectedTerriories?.allObjects as? [Territory]
+//                    }
+                  let  selectedterritoriesObj = CoreDataManager.shared.retrivesSessionClusters(hqID: selectedheadQuarters?.code ?? "")
+                  
                     let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
-                    
-                    
                     aDaysessions.append(tempSession)
+                    
+
+                    
                 }
                 
                 if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
-                    
+                 
                     var selectedterritories: [Territory]?
                     var selectedheadQuarters : SelectedHQ?
                     var selectedWorkTypes: WorkType?
@@ -274,52 +253,22 @@ extension MainVC {
                             return aTerritory.code?.contains(code) ?? false
                         }
                     }
-                    selectedterritories = filteredTerritories
+ //                   selectedterritories = filteredTerritories
                     
 //                    if selectedterritories?.count == 0 {
-//                        LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: eachDayPlan.rsf)
+//
 //                        dispatchGroup.enter()
+//                        LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: eachDayPlan.rsf)
 //
-//                        masterVM?.fetchMasterData(type: MasterInfo.clusters, sfCode: eachDayPlan.rsf, istoUpdateDCRlist: false) { response in
-//                            switch response.result {
-//                            case .success(let data):
-//                                do {
-//                                    let apiResponse = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-//                                    print(apiResponse)
-//
-//                                    if let jsonObjectresponse = apiResponse as? [[String: Any]] {
-//                                        DBManager.shared.saveMasterData(type: .clusters, Values: jsonObjectresponse,id: eachDayPlan.rsf2)
-//                                    }
-//
-//                                    let updatedclusterArr = DBManager.shared.getTerritory()
-//
-//                                    let filteredTerritories = updatedclusterArr.filter { aTerritory in
-//                                        // Check if any code in codesArray is contained in aTerritory
-//                                        return codesArray.contains { code in
-//                                            return aTerritory.code?.contains(code) ?? false
-//                                        }
-//                                    }
-//                                    selectedterritories = filteredTerritories
-//
-//
-//
-//                                } catch {
-//                                    print("Error decoding JSON: \(error)")
-//                                    // Handle the error here if needed
-//                                }
-//                            case .failure(let error):
-//                                print("API request failed with error: \(error)")
-//                                // Handle the error here if needed
-//                            }
-//
+//                        makeAPIcall(rsf:  eachDayPlan.rsf, codesArray: codesArray) { filteredArray in
+//                            selectedterritories = filteredArray
+//                            self.dispatchGroup.leave()
 //                        }
-//
-//                        self.dispatchGroup.leave()
+//                     
 //                    }
+                    
+
                 
-            
-                    
-                    
                     workTypeArr.forEach { aWorkType in
                         if aWorkType.code == eachDayPlan.wtCode2  {
                             selectedWorkTypes = aWorkType
@@ -355,34 +304,173 @@ extension MainVC {
                         
                             selectedheadQuarters   = temporaryselectedHqobj
                             
-                            
-//                            CoreDataManager.shared.removeHQ()
-//
-//                            CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-//                                if isSaved {
-//                                    CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-//                                        let aSavedHQ = selectedHQArr.first
-//                                        selectedheadQuarters = aSavedHQ
-//
-//                                    }
-//                                }
-//                            }
+
                         }
                         
                     }
+                    
+                  // var convertedTerritories: [Territory]?
+                 //   let resultSet = CoreDataManager.shared.convertClustersToCDM(selectedterritories ?? [temporaryselectedClusterobj], context: context)
+                  //  convertedTerritories = resultSet.allObjects as? [Territory]
+                    
+                    
+                    
+//                    CoreDataManager.shared.fetchDayPlanSessionTerritories { ayPlanSessionTerritoriesArr in
+//                        let afilteredHQSessions = ayPlanSessionTerritoriesArr.filter { $0.hqID == selectedheadQuarters?.code }
+//
+//                        selectedterritories = afilteredHQSessions.first?.selectedTerriories?.allObjects.compactMap { $0 as? Territory }
+//                        
+//                        
+//                        
+//                    }
+                    
+                  let  selectedterritoriesObj = CoreDataManager.shared.retrivesSessionClusters(hqID: selectedheadQuarters?.code ?? "")
+                    
                     let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true)
-                  //selectedheadQuarters ?? SelectedHQ()
+                  
                     aDaysessions.append(tempSession)
                 }
+                
+    
             }
         }
-        
-        
-       // dispatchGroup.notify(queue: .main) {
-            completion(aDaysessions)
-      //  }
-            
+        completion(aDaysessions)
         
     }
+    
+//    func makeAPIcall(rsf: String, codesArray: [String], completion: @escaping ([Territory]) -> ()) {
+//        masterVM?.fetchMasterData(type: MasterInfo.clusters, sfCode: rsf, istoUpdateDCRlist: false) { response in
+//            switch response.result {
+//            case .success(let data):
+//                do {
+//                    let apiResponse = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
+//                    print(apiResponse)
+//
+//                    if let jsonObjectresponse = apiResponse as? [[String: Any]] {
+//                        DBManager.shared.saveMasterData(type: .clusters, Values: jsonObjectresponse, id: rsf)
+//                        let updatedclusterArr = DBManager.shared.getTerritory()
+//
+//                        let filteredTerritories = updatedclusterArr.filter { aTerritory in
+//                            // Check if any code in codesArray is contained in aTerritory
+//                            return codesArray.contains { code in
+//                                return aTerritory.code?.contains(code) ?? false
+//                            }
+//                        }
+//
+//                        completion(filteredTerritories)
+//                    }
+//                } catch {
+//                    print("Error decoding JSON: \(error)")
+//                    // Handle the error here if needed
+//                    completion([])
+//                }
+//            case .failure(let error):
+//                print("API request failed with error: \(error)")
+//                // Handle the error here if needed
+//                completion([])
+//            }
+//        }
+//    }
+    
+    
 
+}
+
+extension CoreDataManager {
+    
+    //To Save Session Territories Day plan
+    
+    func fetchDayPlanSessionTerritories(completion: ([DayPlanSessionTerritories]) -> () )  {
+        do {
+           let savedCDpresentations = try  context.fetch(DayPlanSessionTerritories.fetchRequest())
+            completion(savedCDpresentations )
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+    
+    
+    func retrivesSessionClusters(hqID: String) -> [NSManagedObject] {
+        
+        var saveTerritoryArr = [NSManagedObject]()
+        
+        CoreDataManager.shared.fetchDayPlanSessionTerritories{ fetchDayPlanSessionTerritories in
+            fetchDayPlanSessionTerritories.forEach { fetchDayPlanSessionTerritory in
+                if fetchDayPlanSessionTerritory.hqID == hqID {
+                    saveTerritoryArr = fetchDayPlanSessionTerritory.selectedTerriories?.allObjects as? [NSManagedObject] ?? []
+                  
+                }
+            }
+ 
+        }
+        
+       return saveTerritoryArr
+    }
+    
+    func toCheckTerritories(_ hqID: String, completion: (Bool) -> ()) {
+        
+        do {
+            let request = DayPlanSessionTerritories.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "hqID == '\(hqID)'")
+            //LIKE
+            request.predicate = pred
+           let films = try context.fetch(request)
+            if films.isEmpty {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+    }
+    
+    
+    func removeSessionTerrioriesFromCoreData() {
+        let fetchRequest: NSFetchRequest<DayPlanSessionTerritories> = NSFetchRequest(entityName: "DayPlanSessionTerritories")
+
+        do {
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    func saveSessionTerrioriesToCoreData(hqID: String, toSaveTerriories: [Territory]  , completion: (Bool) -> ()) {
+        toCheckTerritories(hqID) { isExists in
+            if !isExists {
+                let context = self.context
+                // Create a new managed object
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "DayPlanSessionTerritories", in: context) {
+                    let savedCDPlanSessionTerritories = DayPlanSessionTerritories(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+                    savedCDPlanSessionTerritories.uuid = UUID()
+                    savedCDPlanSessionTerritories.hqID = hqID
+
+                    // Convert and add groupedBrandsSlideModel
+                    savedCDPlanSessionTerritories.selectedTerriories = convertCacheTerritoriesToCDM(toSaveTerriories, context: context)
+
+                    // Save to Core Data
+                    do {
+                        try context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+            } else {
+                completion(false)
+            }
+        }
+    }
 }

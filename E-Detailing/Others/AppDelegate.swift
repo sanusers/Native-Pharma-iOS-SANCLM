@@ -33,10 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func setupRootViewControllers() {
         
-        
-      //  let tourplanVC = TourPlanVC.initWithStory()
-     //   self.window?.rootViewController = UINavigationController.init(rootViewController: tourplanVC)
-        
         if !AppDefaults.shared.isConfigAdded() {
             self.window?.rootViewController = UIStoryboard.apiconfigNavigationVC
         } else {
@@ -44,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = AppDefaults.shared.getConfig()
 
             if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
-                self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.mainVC)
+                self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory())
 
             }else if AppDefaults.shared.isLoggedIn() {
                 let mastersyncVC = UIStoryboard.masterSyncVC

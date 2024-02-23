@@ -15,27 +15,27 @@ import CoreData
 
 extension MainVC : MasterSyncVCDelegate {
     func isHQModified(hqDidChanged: Bool) {
-      
-        if hqDidChanged {
-            toConfigureMydayPlan()
-            guard var nonemptysession = sessions, !nonemptysession.isEmpty  else {
-                return
-            }
-            
-            
-            for (index, var session) in nonemptysession.enumerated() {
-                if session.isRetrived == false {
-                    session.headQuarters = nil
-                    nonemptysession[index] = session
-                }
-            }
-            self.sessions = nonemptysession
-          
-        } else {
-       
-        }
-        self.configureAddplanBtn(false, isSessionSaved: false)
-        self.toLoadWorktypeTable()
+//      
+//        if hqDidChanged {
+//            toConfigureMydayPlan()
+//            guard var nonemptysession = sessions, !nonemptysession.isEmpty  else {
+//                return
+//            }
+//            
+//            
+//            for (index, var session) in nonemptysession.enumerated() {
+//                if session.isRetrived == false {
+//                    session.headQuarters = nil
+//                    nonemptysession[index] = session
+//                }
+//            }
+//            self.sessions = nonemptysession
+//          
+//        } else {
+//       
+//        }
+//        self.configureAddplanBtn(false, isSessionSaved: false)
+//        self.toLoadWorktypeTable()
        
     }
 }
@@ -298,9 +298,9 @@ extension MainVC: MenuResponseProtocol {
 //                    }
 //                }
                 toLoadWorktypeTable()
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
                 Shared.instance.showLoaderInWindow()
-                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { [weak self] _  in
+                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { [weak self] _  in
                     
                     guard let welf = self else {return}
                     
@@ -366,9 +366,9 @@ extension MainVC: MenuResponseProtocol {
 //                    }
 //                }
                 toLoadWorktypeTable()
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
                 Shared.instance.showLoaderInWindow()
-                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { [weak self] _  in
+                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { [weak self] _  in
                     
                     guard let welf = self else {return}
                     
@@ -390,41 +390,42 @@ extension MainVC: MenuResponseProtocol {
             print("Yet to implement.")
         }
         
+        self.configureSaveplanBtn(self.toEnableSaveBtn())
     
-            switch self.selectedSessionIndex {
-            case 0:
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                    if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
-                        configureSaveplanBtn(false)
-                    } else {
-                        configureSaveplanBtn(true)
-                    }
-                    
-                } else {
-                    if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
-                        configureSaveplanBtn(false)
-                    } else {
-                        configureSaveplanBtn(true)
-                    }
-                }
-            case 1:
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                    if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-                        configureSaveplanBtn(false)
-                    } else {
-                        configureSaveplanBtn(true)
-                    }
-                    
-                } else {
-                    if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-                        configureSaveplanBtn(false)
-                    } else {
-                        configureSaveplanBtn(true)
-                    }
-                }
-            default:
-                print("Yet to implement")
-            }
+//            switch self.selectedSessionIndex {
+//            case 0:
+//                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                    if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+//                        configureSaveplanBtn(false)
+//                    } else {
+//                        configureSaveplanBtn(true)
+//                    }
+//                    
+//                } else {
+//                    if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+//                        configureSaveplanBtn(false)
+//                    } else {
+//                        configureSaveplanBtn(true)
+//                    }
+//                }
+//            case 1:
+//                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                    if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+//                        configureSaveplanBtn(false)
+//                    } else {
+//                        configureSaveplanBtn(true)
+//                    }
+//                    
+//                } else {
+//                    if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+//                        configureSaveplanBtn(false)
+//                    } else {
+//                        configureSaveplanBtn(true)
+//                    }
+//                }
+//            default:
+//                print("Yet to implement")
+//            }
 
         
 
@@ -456,21 +457,82 @@ typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 
 class MainVC : UIViewController {
     
+    
+    class func initWithStory() -> MainVC {
+        let mainVC : MainVC = UIStoryboard.Hassan.instantiateViewController()
+        mainVC.userststisticsVM = UserStatisticsVM()
+        mainVC.userststisticsVM = UserStatisticsVM()
+        mainVC.masterVM = MasterSyncVM()
+        return mainVC
+    }
+    
     func saveHQentitiesToCoreData(aHQobj: HQModel, completion: (Bool) -> Void) {
         CoreDataManager.shared.removeHQ()
-        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { [weak self]  _ in
-            guard let welf = self else {return}
-            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-                if let aEntity = selectedHQArr.first {
-                   // welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
-                    completion(true)
-                }
-            }
+        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) {  _ in
+           // guard let welf = self else {return}
+//            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+//                if let aEntity = selectedHQArr.first {
+//                   // welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
+//                    completion(true)
+//                }
+//            }
      
             completion(true)
         }
     }
+
     
+    func setupRejectionVIew() {
+        
+        guard let _ = sessions else {return}
+        
+        isRejected =  true
+        //nonNillSessions[0].isRejected ?? false
+        if isRejected {
+           // var isTodisableApproval = true
+            self.rejectionReason.text = "A project archive refers to the systematic storing of project artifacts (e.g., project charter, working documents, models, deliverables, etc.) at the close of a project. Retaining project documents and artifacts is important for administrative closure."
+            //self.sessions?[0].rejectionReason
+            self.rejectionVIew.isHidden = false
+            toConfigureDynamicHeader(false)
+            
+        } else {
+            self.rejectionVIew.isHidden = true
+            self.rejectionVIew.frame.size.height = 0
+          //  worktypeTable.reloadData()
+        }
+    }
+    
+    func toConfigureDynamicHeader(_ istoHide : Bool) {
+        if istoHide {
+            self.rejectionReason.text = ""
+            self.rejectionTitle.text = ""
+            self.rejectionVIew.frame.size.height = 0
+             self.rejectionVIew.isHidden = true
+             } else {
+                self.rejectionVIew.isHidden = false
+              }
+        let tempHeader = self.getViewExactHeight(view: self.rejectionVIew)
+        self.rejectionVIew.frame.size.height = tempHeader.frame.height
+            
+            // worktypeTable.reloadData()
+        }
+    
+    
+    
+    func getViewExactHeight(view:UIView)->UIView {
+       
+        let height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        var frame = view.frame
+        if height != frame.size.height {
+            frame.size.height = height
+            view.frame = frame
+        }
+        return view
+    }
+    
+    @IBOutlet var closeRejectionVIew: UIView!
+    
+    var isRejected = Bool()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     //var selectedSubordinate: Subordinate?
     var segmentType: [SegmentType] = []
@@ -500,6 +562,9 @@ class MainVC : UIViewController {
     }
     
     func toConfigureMydayPlan() {
+        
+
+        
         toFetchExistingPlan() { existingSessions in
             self.sessions = existingSessions
             if !(self.sessions?.isEmpty ?? false) {
@@ -544,11 +609,99 @@ class MainVC : UIViewController {
     //                }
     //            }
     //        }
+            var isToenableSavePlan: Bool = false
+            
+            if self.sessions?.count == 0 {
+                isToenableSavePlan = false
+            } else {
+                self.sessions?.forEach({ aSession in
+                    isToenableSavePlan = aSession.isRetrived == false &&  (aSession.cluster == nil || aSession.workType == nil  || aSession.headQuarters == nil)
+                    
+                })
+            }
+ 
             self.setSegment(.workPlan)
-            self.configureAddplanBtn(self.sessions?.count ?? 0 >= 2 ?  false : true, isSessionSaved: false)
+            self.configureAddplanBtn(self.sessions?.count ?? 0 >= 2 || self.sessions?.count ?? 0 == 0 ?  false : true, isSessionSaved: isToenableSavePlan)
+           // self.configureSaveplanBtn(isToenableSavePlan)
+            
+            self.configureSaveplanBtn(self.toEnableSaveBtn())
+            self.setupRejectionVIew()
+            
+            
 
+            
+            
         }
         
+    }
+    
+    func toEnableSaveBtn() -> Bool {
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+         let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+        let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+        
+        guard let nonNillSession = self.sessions else {return false}
+        
+        switch self.selectedSessionIndex {
+        case 0:
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
+                    return false
+                } else {
+                    if nonNillSession[self.selectedSessionIndex ?? 0].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                    
+                   
+                }
+                
+            } else {
+                if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+            }
+        case 1:
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                
+            } else {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+            }
+        default:
+            print("Yet to implement")
+        }
+        return false
     }
     
 
@@ -675,6 +828,13 @@ class MainVC : UIViewController {
     
     @IBOutlet var btnFinalSubmit: ShadowButton!
     @IBOutlet var btnSavePlan: ShadowButton!
+    
+    @IBOutlet var rejectionTitle: UILabel!
+    @IBOutlet var rejectionReason: UILabel!
+    @IBOutlet var rejectionVIew: UIView!
+    
+    @IBOutlet var rejectionVXview: UIVisualEffectView!
+    @IBOutlet var rejectionHeight: NSLayoutConstraint!
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
@@ -866,35 +1026,83 @@ class MainVC : UIViewController {
     }
     
     
+    func saveClusterstoCoreData(yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
+        CoreDataManager.shared.removeSessionTerrioriesFromCoreData()
+
+        // Create a placeholder Territory object for sessions without territories
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "Territory", in: context),
+           let cdTerritoryModel = NSManagedObject(entity: entityDescription, insertInto: nil) as? Territory {
+
+            // Use DispatchGroup to wait for all territories to be saved
+           
+
+            // Save territories for each session
+            yetToSaveSession.forEach { aSession in
+                dispatchGroup.enter()
+                let hqID = aSession.headQuarters?.code ?? ""
+                let toSaveTerriories = aSession.cluster ?? [cdTerritoryModel]
+
+                CoreDataManager.shared.saveSessionTerrioriesToCoreData(hqID: hqID, toSaveTerriories: toSaveTerriories) { isSaved in
+                    dump(isSaved)
+                    
+                    CoreDataManager.shared.fetchDayPlanSessionTerritories { aDayPlanSessionTerritoriesArr in
+                        dump(aDayPlanSessionTerritoriesArr)
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+
+            // Wait for all territories to be saved before proceeding
+            dispatchGroup.wait()
+
+
+
+            // Notify when both territories and day plans are saved
+            dispatchGroup.notify(queue: .main) {
+
+                completion(true)
+            }
+        }
+    }
+    
+    
+    func updateEachDayPlan(yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
+        // Remove all existing day plans
+        CoreDataManager.shared.removeAllDayPlans()
+
+        // Save sessions as day plans
+        CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) { [weak self] isCompleted in
+            guard let welf = self else { return }
+            if isCompleted {
+              
+
+                completion(true)
+            }
+        }
+    }
+    
+    
     @IBAction func didTapSaveBtn(_ sender: Any) {
-        guard var yetToSaveSession = sessions else {return}
-        
+        // Ensure you have sessions to save
+        guard var yetToSaveSession = sessions else { return }
+
+        // Mark all sessions as retrieved
         yetToSaveSession.indices.forEach { index in
             yetToSaveSession[index].isRetrived = true
         }
         
-      
-        
-        CoreDataManager.shared.removeAllDayPlans()
-        CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) {[weak self] isCompleted in
+        saveClusterstoCoreData(yetToSaveSession: yetToSaveSession) { [weak self] _ in
             guard let welf = self else {return}
-            if isCompleted {
-             
-              
-              //  welf.callSavePlanAPI()
-                
-                ///note: - conmment these on callng api
-               welf.toConfigureMydayPlan()
-                welf.configureAddplanBtn(true, isSessionSaved: true)
-                welf.configureSaveplanBtn(false)
-               
-           
-
+            welf.updateEachDayPlan(yetToSaveSession: yetToSaveSession) { _ in
+                welf.callSavePlanAPI()
+                              //  welf.toConfigureMydayPlan()
+                             //  welf.configureAddplanBtn(true, isSessionSaved: true)
+                             //   welf.configureSaveplanBtn(false)
             }
         }
-        
-       
-        
+
+        // Remove existing session territories from Core Data
+   
     }
     
     
@@ -993,7 +1201,7 @@ class MainVC : UIViewController {
 
     }
     func configureAddplanBtn(_ isToEnable: Bool, isSessionSaved: Bool) {
-
+//self.sessions?.count ?? 0 >= 2 ?  false
         if isToEnable {
             self.btnAddplan.isUserInteractionEnabled = true
             self.btnAddplan.alpha = 1
@@ -1026,9 +1234,21 @@ class MainVC : UIViewController {
         }
     }
     
-    func setupUI() {
-        toConfigureMydayPlan()
     
+    
+    func setupUI() {
+        rejectionVXview.backgroundColor = .appLightPink
+        closeRejectionVIew.addTap {
+            self.toConfigureDynamicHeader(true)
+            
+        }
+        closeRejectionVIew.layer.cornerRadius =  closeRejectionVIew.height / 2
+        rejectionTitle.setFont(font: .medium(size: .BODY))
+        rejectionTitle.textColor = .appLightPink
+        rejectionReason.setFont(font: .medium(size: .BODY))
+        rejectionReason.textColor = .appTextColor
+        rejectionVIew.layer.cornerRadius = 5
+        
         self.viewWorkPlan.addAction(for: .swipe_left) {
             self.setSegment(.calls, isfromSwipe: true)
         }
@@ -1136,13 +1356,15 @@ class MainVC : UIViewController {
         month1Lbl.setFont(font: .bold(size: .BODY))
         month2Lbl.setFont(font: .bold(size: .BODY))
         month3Lbl.setFont(font: .bold(size: .BODY))
-        configureSaveplanBtn(false)
+       // configureSaveplanBtn(false)
     }
     
 
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+      //  CoreDataManager.shared.removeAllDayPlans()
+        toConfigureMydayPlan()
         self.toSeperateDCR()
         self.updateDcr()
         self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
@@ -1168,24 +1390,12 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      // CoreDataManager.shared.removeAllDayPlans()
-        self.userststisticsVM = UserStatisticsVM()
-        self.masterVM = MasterSyncVM()
+   
+
         self.updateLinks()
-        
-        self.updateSegmentForDcr()
         setupUI()
         LocationManager.shared.locationUpdate()
-        
-//        outboxTableView.estimatedRowHeight = 80
-//        outboxTableView.rowHeight = UITableView.automaticDimension
-        
-//        if #available(iOS 15.0, *) {
-//            outboxTableView.sectionHeaderTopPadding = 0
-//        } else {
-//            // Fallback on earlier versions
-//        }
-        
+
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
         
         [btnNotification,btnSync,btnProfile].forEach({$0?.Border_Radius(border_height: 0, isborder: true, radius: 25)})

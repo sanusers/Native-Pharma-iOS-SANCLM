@@ -510,6 +510,13 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
                 welf.selectedObject = model
+                if welf.specifiedMenuVC.selectedObject != nil {
+                    if  (welf.specifiedMenuVC.selectedObject as! Subordinate).id ==   (welf.selectedObject as! Subordinate).id {
+                        welf.toCreateToast("Please select diffent HQ")
+                        return
+                    }
+                }
+
                 welf.specifiedMenuVC.selectedObject = model
                 if welf.isSearched {
                     welf.selectedSpecifiedTypeID = model?.id ?? ""
@@ -620,6 +627,11 @@ class SpecifiedMenuView: BaseView {
     @IBOutlet var noresultsView: UIView!
     
     @IBOutlet var noresultsLbl: UILabel!
+    
+    @IBOutlet var rejectionTitle: UILabel!
+    @IBOutlet var rejectionReason: UILabel!
+    @IBOutlet var rejectionVIew: UIView!
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var selectedSpecifiedTypeID : String = ""
     var cellType : MenuView.CellType = .listedDoctor
@@ -639,6 +651,7 @@ class SpecifiedMenuView: BaseView {
     var selectedCode: Int?
     var previewType: String?
     var selectedClusterID = [String: Bool]()
+    var isRejected = Bool()
     //MARK: UDF, gestures  and animations
     
     private var animationDuration : Double = 1.0
@@ -675,6 +688,7 @@ class SpecifiedMenuView: BaseView {
         toLoadRequiredData()
     }
     
+
 
     
     func setupUI() {
@@ -856,6 +870,12 @@ class SpecifiedMenuView: BaseView {
                                
                                switch welf.cellType {
                                case .headQuater:
+                                   
+                                   if welf.selectedSpecifiedTypeID == "" &&  welf.selectecIndex  == nil {
+                                       return
+                                   }
+                                  
+                                   
                                    welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: [temporaryselectedClusterobj])
                                case .cluster:
                                    welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: welf.filteredTerritories ?? [temporaryselectedClusterobj])
@@ -902,7 +922,7 @@ class SpecifiedMenuView: BaseView {
       
            }
        case .cluster:
-           bottomHolderHeight.constant = 60
+           bottomHolderHeight.constant = 80
            self.clusterArr = DBManager.shared.getTerritory()
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! Territory

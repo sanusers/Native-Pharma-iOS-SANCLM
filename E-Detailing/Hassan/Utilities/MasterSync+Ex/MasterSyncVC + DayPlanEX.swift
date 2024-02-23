@@ -25,12 +25,11 @@ extension MasterSyncVC: MenuResponseProtocol {
 //        case .cluster:
 //            self.fetchedClusterObject = selectedObject as? Territory
         case .headQuater:
+            
             self.fetchedHQObject = selectedObject as? Subordinate
-          
-            if self.fetchedHQObject == selectedObject {
-                
-                return
-            }
+//            if self.fetchedHQObject == nil {
+//                
+//            }
             
             let aHQobj = HQModel()
             aHQobj.code = self.fetchedHQObject?.id ?? ""
@@ -45,12 +44,13 @@ extension MasterSyncVC: MenuResponseProtocol {
                     dump(HQModelarr)
                 }
             }
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfID, text: aHQobj.code)
+            
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
             
          
             //let config = AppDefaults.shared.getAppSetUp()
             Shared.instance.showLoaderInWindow()
-            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true) { _ in
+            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { _ in
                 
                 self.toCreateToast("Clusters synced successfully")
               //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
@@ -483,6 +483,33 @@ extension CoreDataManager {
     }
 
     
+    public func convertCacheTerritoriesToCDM(_ clusters: [Territory], context: NSManagedObjectContext) -> NSSet {
+        let cdTerritortModels = NSMutableSet()
+        
+        for cluster in clusters {
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "CacheTerritories", in: context) {
+                let cdTerritoryModel = CacheTerritories(entity: entityDescription, insertInto: context)
+                
+                // Convert properties of SlidesModel
+                cdTerritoryModel.code = cluster.code
+                cdTerritoryModel.index = cluster.index
+                cdTerritoryModel.lat = cluster.lat
+                cdTerritoryModel.long = cluster.long
+                cdTerritoryModel.mapId = cluster.mapId
+                cdTerritoryModel.name = cluster.name
+                cdTerritoryModel.sfCode = cluster.sfCode
+                // Convert other properties...
+                
+                // Add to set
+                cdTerritortModels.add(cdTerritoryModel)
+                
+            }
+        }
+        
+        return cdTerritortModels
+    }
+    
+    
     public func convertClustersToCDM(_ clusters: [Territory], context: NSManagedObjectContext) -> NSSet {
         let cdTerritortModels = NSMutableSet()
         
@@ -680,6 +707,7 @@ extension CoreDataManager {
     
     
     func saveSessionAsEachDayPlan(session: [Sessions], completion: @escaping (Bool) -> ()) {
+      
         let context = self.context
 
         guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
@@ -730,8 +758,9 @@ extension CoreDataManager {
         let secondEachPlan = EachPlan(entity: secondPlanEntity, insertInto: context)
 
  
-
+      //  CoreDataManager.shared.removeSessionTerrioriesFromCoreData()
         session.enumerated().forEach { index, aSession in
+            
             switch index {
             case 0:
                 firstEachPlan.isRetrived = session[index].isRetrived ?? false
@@ -739,13 +768,16 @@ extension CoreDataManager {
                 firstEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
                 firstEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
                 firstEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+                
                 eachPlanSet.add(firstEachPlan)
+               
             case 1:
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 secondEachPlan.headQuarters =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context)
                 secondEachPlan.workType = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context)
                 secondEachPlan.cluster = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+
                 eachPlanSet.add(secondEachPlan)
                 
 
@@ -766,6 +798,7 @@ extension CoreDataManager {
             print("Failed to save EachDayPlan to Core Data: \(error)")
             completion(false)
         }
+
     }
 }
     

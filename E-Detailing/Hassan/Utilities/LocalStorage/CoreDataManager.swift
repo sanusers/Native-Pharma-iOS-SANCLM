@@ -39,6 +39,9 @@ class CoreDataManager {
        
     }
     
+
+    
+    
     
 
     
@@ -481,23 +484,36 @@ extension CoreDataManager {
     
     
     
-
-    
-    
     func removeAllGroupedSlides() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = GroupedBrandsSlideCDModel.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        let fetchRequest: NSFetchRequest<GroupedBrandsSlideCDModel> = NSFetchRequest(entityName: "GroupedBrandsSlideCDModel")
 
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-           // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-          //  completion()
         }
     }
+    
+//    
+//    func removeAllGroupedSlides() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = GroupedBrandsSlideCDModel.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//           // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//          //  completion()
+//        }
+//    }
     
     
 
@@ -624,35 +640,65 @@ extension CoreDataManager {
     
     
     func removeAllSavedSlides() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedSlidesCDModel.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        let fetchRequest: NSFetchRequest<SavedSlidesCDModel> = NSFetchRequest(entityName: "SavedSlidesCDModel")
 
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-           // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-          //  completion()
         }
     }
+    
+//    func removeAllSavedSlides() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedSlidesCDModel.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//           // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//          //  completion()
+//        }
+//    }
     
     
     func removeAllSlides() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SlidesCDModel.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        let fetchRequest: NSFetchRequest<SlidesCDModel> = NSFetchRequest(entityName: "SlidesCDModel")
 
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-           // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-          //  completion()
         }
     }
+    
+//    func removeAllSlides() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SlidesCDModel.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//           // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//          //  completion()
+//        }
+//    }
     
     
     
@@ -907,20 +953,38 @@ extension CoreDataManager {
             }
         }
     }
+    
+    
     func removeAllGeneralGroupedSlides() {
-        //completion: @escaping () -> Void
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = GeneralSlideGroupsCDModel.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        
+        let fetchRequest: NSFetchRequest<GeneralSlideGroupsCDModel> = NSFetchRequest(entityName: "GeneralSlideGroupsCDModel")
+
         do {
-            try context.execute(batchDeleteRequest)
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
             try context.save()
-            // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-            //  completion()
         }
     }
+    
+    
+//    func removeAllGeneralGroupedSlides() {
+//        //completion: @escaping () -> Void
+//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = GeneralSlideGroupsCDModel.fetchRequest()
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//        
+//        do {
+//            try context.execute(batchDeleteRequest)
+//            try context.save()
+//            // completion()
+//        } catch {
+//            print("Error deleting slide brands: \(error)")
+//            //  completion()
+//        }
+//    }
 
     func toCheckGeneralGroupedSlidesExistance(_ id: UUID, completion: (Bool) -> ()) {
         

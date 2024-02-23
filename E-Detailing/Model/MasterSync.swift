@@ -331,8 +331,8 @@ struct MasterSyncParams {
     static var doctorFencingParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let sfCode = MasterSyncVC.shared.getSFCode
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+//        let sfCode = MasterSyncVC.shared.getSFCode
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         let paramString = "{\"tableName\":\"getdoctors\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
@@ -341,7 +341,7 @@ struct MasterSyncParams {
     static var chemistParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-             let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         let paramString = "{\"tableName\":\"getchemist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
         
         return ["data" : paramString]
@@ -350,7 +350,7 @@ struct MasterSyncParams {
     static var stockistParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
    
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         let paramString = "{\"tableName\":\"getstockist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
         
         return ["data" : paramString]
@@ -358,7 +358,7 @@ struct MasterSyncParams {
     
     static var unListedDoctorParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         let paramString = "{\"tableName\":\"getunlisteddr\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
         
         return ["data" : paramString]
@@ -374,7 +374,7 @@ struct MasterSyncParams {
     
     static var territoryParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         let paramString = "{\"tableName\":\"getterritory\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
@@ -419,7 +419,7 @@ struct MasterSyncParams {
     
     static var jointWorkParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfID)
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         let paramString = "{\"tableName\":\"getjointwork\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
