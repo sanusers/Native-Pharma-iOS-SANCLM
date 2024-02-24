@@ -106,9 +106,11 @@ class MasterSyncVM {
         aDayPlan.designation = "\(userConfig.desig!)"
         aDayPlan.stateCode = "\(userConfig.stateCode!)"
         aDayPlan.subdivisionCode = userConfig.subDivisionCode
+        
         model.enumerated().forEach {index, aMyDayPlanResponseModel in
             switch index {
             case 0:
+                aDayPlan.isRetrived  =  true
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: aMyDayPlanResponseModel.SFMem)
@@ -119,6 +121,7 @@ class MasterSyncVM {
                 aDayPlan.townCode = aMyDayPlanResponseModel.Pl
                 aDayPlan.townName = aMyDayPlanResponseModel.PlNm
             case 1:
+                aDayPlan.isRetrived2  =  true
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan2, text: aMyDayPlanResponseModel.SFMem)

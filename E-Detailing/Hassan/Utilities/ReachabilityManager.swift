@@ -5,6 +5,14 @@ class ReachabilityManager : NSObject {
     static let sharedInstance: ReachabilityManager = {
         return ReachabilityManager() }()
     var reachability: Reachability!
+    
+    
+    enum ReachabilityStatus: String {
+        case wifi         = "WiFi"
+        case cellular     = "Cellular"
+        case notConnected = "No Connection"
+    }
+    
     override init() {
         super.init()
         reachability = try! Reachability()

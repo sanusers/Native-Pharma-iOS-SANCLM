@@ -371,7 +371,7 @@ extension MainVC: MenuResponseProtocol {
             print("Yet to implement.")
         }
         
-        self.configureSaveplanBtn(self.toEnableSaveBtn())
+        self.configureSaveplanBtn(self.toEnableSaveBtn(index: self.selectedSessionIndex ?? 0))
     
 //            switch self.selectedSessionIndex {
 //            case 0:
@@ -490,7 +490,7 @@ class MainVC : UIViewController {
             self.rejectionReason.text = ""
             self.rejectionTitle.text = ""
             self.rejectionVIew.frame.size.height = 0
-             self.rejectionVIew.isHidden = true
+            self.rejectionVIew.isHidden = true
              } else {
                 self.rejectionVIew.isHidden = false
               }
@@ -579,55 +579,156 @@ class MainVC : UIViewController {
                 self.sessions?.insert(aSession, at: 0)
             }
             
-           
+
             
-    //        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-    //            if let aEntity = selectedHQArr.first {
-    //              //  welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
-    //               let subordinateArr =  DBManager.shared.getSubordinate()
-    //                subordinateArr.forEach { aSubordinate in
-    //                    if aSubordinate.id == aEntity.code {
-    //                        self.fetchedHQObject = aSubordinate
-    //                    }
-    //                }
-    //            }
-    //        }
-            var isToenableSavePlan: Bool = false
-            
-            if self.sessions?.count == 0 {
-                isToenableSavePlan = false
-            } else {
-                self.sessions?.forEach({ aSession in
-                    isToenableSavePlan = aSession.isRetrived == false &&  (aSession.cluster != nil || aSession.workType != nil  || aSession.headQuarters != nil)
-                    
-                })
+            guard let nonNilSessons = self.sessions else {
+                self.configureAddplanBtn(false)
+                self.configureSaveplanBtn(false)
+                return
             }
+            var isPlan1filled : Bool = false
+            var isPlan2filled : Bool = false
+            
+            var istoEnableSaveBtn: Bool = false
+            var istoEnableAddPlanBtn: Bool = false
+            
+            nonNilSessons.enumerated().forEach { index, aSession in
+                switch index {
+                case 0:
+                    
+                    if aSession.isRetrived == true {
+                        isPlan1filled =  true
+                        
+                        if nonNilSessons.count == 1 {
+                            istoEnableAddPlanBtn = true
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableAddPlanBtn = false
+                            istoEnableSaveBtn = false
+                        }
+                        
+                    } else {
+    
+                        isPlan1filled = self.toEnableSaveBtn(index: index)
+                        //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
+                    }
+                    
+                    if isPlan1filled {
+                        
+                        if aSession.isRetrived == true {
+                            
+                            if nonNilSessons.count == 1 {
+                                istoEnableAddPlanBtn = true
+                            } else {
+                                istoEnableAddPlanBtn = false
+                            }
+                         
+                        } else {
+                            istoEnableAddPlanBtn = false
+                        }
+                        
+                        
+                     
+                       if aSession.isRetrived == true {
+                           istoEnableSaveBtn = false
+                       } else {
+                           istoEnableSaveBtn = true
+                       }
+                       
+                    } else {
+                        istoEnableAddPlanBtn = false
+                        istoEnableSaveBtn = false
+                    }
+                    
+                case 1:
+                    if aSession.isRetrived == true {
+                        isPlan2filled =  true
+                        
+                        if nonNilSessons.count == 1 {
+                            istoEnableAddPlanBtn = true
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableAddPlanBtn = false
+                            istoEnableSaveBtn = false
+                        }
+                        
+                    } else {
+                        isPlan2filled = self.toEnableSaveBtn(index: index)
+                    }
+                    
+                    if isPlan2filled {
+                        if aSession.isRetrived == true {
+                            
+                            if nonNilSessons.count == 1 {
+                                istoEnableAddPlanBtn = true
+                            } else {
+                                istoEnableAddPlanBtn = false
+                            }
+                         
+                        } else {
+                            istoEnableAddPlanBtn = false
+                        }
+                        if aSession.isRetrived == true {
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableSaveBtn = true
+                        }
+                    } else {
+                        istoEnableAddPlanBtn = false
+                        istoEnableSaveBtn = false
+                    }
+                    
+                default:
+                    isPlan1filled = false
+                    isPlan2filled = false
+                }
+                
+
+            }
+            
+     self.configureAddplanBtn(istoEnableAddPlanBtn)
+            
+     self.configureSaveplanBtn(istoEnableSaveBtn)
+            
+            
+            
+         
+            
+//            if self.sessions?.count == 0 {
+//                isToenableSavePlan = false
+//            } else {
+//                self.sessions?.forEach({ aSession in
+//                    isToenableSavePlan = aSession.isRetrived == false &&  (aSession.cluster != nil || aSession.workType != nil  || aSession.headQuarters != nil)
+//
+//                })
+//            }
  
    
          
-            
-            let isSessionUnfilled: Bool = {
-                return self.sessions?.allSatisfy { aSession in
-                    return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
-                } ?? false
-            }()
-            self.configureAddplanBtn(self.sessions?.count ?? 0 >= 2 || isSessionUnfilled ?  false : true, isSessionSaved: isToenableSavePlan)
-           // self.configureSaveplanBtn(isToenableSavePlan)
-            
-            self.configureSaveplanBtn(self.toEnableSaveBtn())
+//            
+//            let isSessionUnfilled: Bool = {
+//                return self.sessions?.allSatisfy { aSession in
+//                    return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
+//                } ?? false
+//            }()
+//            
+//            var isConnected = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
+//            
+//            self.configureAddplanBtn( isConnected ? isSessionUnfilled : !isSessionUnfilled, isSessionSaved: isConnected ? isToenableSavePlan : !isToenableSavePlan)
+//           // self.configureSaveplanBtn(isToenableSavePlan)
+//            
+//            self.configureSaveplanBtn(self.toEnableSaveBtn())
             self.setupRejectionVIew()
             
             DispatchQueue.main.async {
                 self.setSegment(.workPlan)
             }
 
-            
-            
         }
         
     }
     
-    func toEnableSaveBtn() -> Bool {
+    func toEnableSaveBtn(index: Int) -> Bool {
         guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
          let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
         let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
@@ -641,7 +742,7 @@ class MainVC : UIViewController {
         
         guard let nonNillSession = self.sessions else {return false}
         
-        switch self.selectedSessionIndex {
+        switch index {
         case 0:
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                 if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
@@ -691,9 +792,38 @@ class MainVC : UIViewController {
                 }
             }
         default:
-            print("Yet to implement")
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                
+            } else {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    
+                    let isSessionUnfilled: Bool = {
+                        return self.sessions?.allSatisfy { aSession in
+                            return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
+                        } ?? false
+                    }()
+                    
+                    return !isSessionUnfilled
+                } else {
+                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+            }
+            
         }
-        return false
+      //  return false
     }
     
 
@@ -988,20 +1118,22 @@ class MainVC : UIViewController {
         if let dict = notification.userInfo as NSDictionary? {
             if let status = dict["Type"] as? String{
                 DispatchQueue.main.async {
-                    if status == "No Connection" {
-                        //   self.toSetPageType(.notconnected)
+                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
+                        
                         self.toCreateToast("Please check your internet connection.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                     //   self.segmentControlForDcr.selectedSegmentIndex = 2
-                      //  self.segmentControlForDcr.sendActions(for: .valueChanged)
-                    } else if  status == "WiFi" || status ==  "Cellular"   {
+                      //  self.toConfigureMydayPlan()
+            
+                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
                         self.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                        self.toretryDCRupload( date: "") {isCompleted in
-                            if isCompleted {
-                               // self.toSetParams()
-                            }
+                        self.toretryDCRupload( date: "") {_ in
+ 
+                           // self.callSavePlanAPI() {_ in
+                                self.toSetParams()
+                          //  }
+                            
                         }
                         
                         
@@ -1025,8 +1157,12 @@ class MainVC : UIViewController {
         CoreDataManager.shared.removeAllDayPlans()
 
         // Save sessions as day plans
-        CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) { [weak self] isCompleted in
-            guard let welf = self else { return }
+        
+        
+        
+        CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) { isCompleted in
+            // [weak self]
+         //   guard let welf = self else { return }
             if isCompleted {
               
 
@@ -1041,18 +1177,31 @@ class MainVC : UIViewController {
         guard var yetToSaveSession = sessions else { return }
 
         // Mark all sessions as retrieved
-        yetToSaveSession.indices.forEach { index in
-            yetToSaveSession[index].isRetrived = true
+        
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            yetToSaveSession.indices.forEach { index in
+                if  yetToSaveSession[index].isRetrived == true {
+                    
+                } else {
+                    yetToSaveSession[index].isRetrived = false
+                }
+            }
         }
         
-   
-          
             updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
                 guard let welf = self else {return}
-                welf.callSavePlanAPI()
+                
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                    welf.callSavePlanAPI() {_ in }
+                 
+                } else {
+                    welf.toConfigureMydayPlan()
+                    self?.toCreateToast("You are not connected to internet")
+                }
+                
+              
                         //    welf.toConfigureMydayPlan()
-                        //    welf.configureAddplanBtn(true, isSessionSaved: true)
-                         //   welf.configureSaveplanBtn(false)
+      
             }
         
 
@@ -1150,31 +1299,20 @@ class MainVC : UIViewController {
 
 
             }
-            self.configureAddplanBtn(false, isSessionSaved: false)
+            self.configureAddplanBtn(false)
             self.toLoadWorktypeTable()
 
             //(aSession)
         }
 
     }
-    func configureAddplanBtn(_ isToEnable: Bool, isSessionSaved: Bool) {
+    func configureAddplanBtn(_ isToEnable: Bool) {
 //self.sessions?.count ?? 0 >= 2 ?  false
         if isToEnable {
             self.btnAddplan.isUserInteractionEnabled = true
             self.btnAddplan.alpha = 1
             return
-        } else if isSessionSaved {
-            if self.sessions?.count ?? 0 >= 2  {
-                self.btnAddplan.isUserInteractionEnabled = false
-                self.btnAddplan.alpha = 0.5
-                return
-            }
-            else {
-                self.btnAddplan.isUserInteractionEnabled = true
-                self.btnAddplan.alpha = 1
-                return
-            }
-        } else {
+        }  else {
            
             self.btnAddplan.isUserInteractionEnabled = false
             self.btnAddplan.alpha = 0.5
@@ -1325,20 +1463,21 @@ class MainVC : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        CoreDataManager.shared.removeAllDayPlans()
-        toConfigureMydayPlan()
+     //   CoreDataManager.shared.removeAllDayPlans()
+        rejectionVIew.isHidden = true
+     //   toConfigureDynamicHeader(false)
         self.toSeperateDCR()
         self.updateDcr()
         self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
         
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-           // toSetParams()
-          
+            masterVM?.toGetMyDayPlan(type: .myDayPlan) {_ in
+                self.toConfigureMydayPlan()
+                self.toSetParams()
+            }
         } else {
-    
-            
+            self.toConfigureMydayPlan()
         }
-
         toLoadDcrCollection()
         toLoadOutboxTable()
     }
@@ -1353,7 +1492,7 @@ class MainVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
    
-
+        toSetParams()
         self.updateLinks()
         setupUI()
         LocationManager.shared.locationUpdate()
@@ -2802,7 +2941,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 welf.selectedSessionIndex = indexPath.row
                 welf.sessions?.remove(at: welf.selectedSessionIndex ?? 0)
                 welf.selectedSessionIndex = nil
-                welf.configureAddplanBtn(true, isSessionSaved: false)
+                welf.configureAddplanBtn(true)
                 welf.toLoadWorktypeTable()
             }
             
@@ -2970,7 +3109,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
             dump(localParamArr)
         } catch {
-            self.toCreateToast("unable to retrive")
+          //  self.toCreateToast("unable to retrive")
+            completion(false)
         }
         
         var specificDateParams : [[String: Any]] = [[:]]
@@ -3013,10 +3153,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         guard index < items.count else {
             // All items processed, exit the recursion
+            
             DispatchQueue.main.async {
                 self.toLoadOutboxTable()
             }
-            
+            completion(true)
             return
         }
         

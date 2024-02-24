@@ -328,7 +328,7 @@ extension CoreDataManager {
             
 
             
-            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj)
+            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected)
           
             aDaysessions.append(tempSession)
         }
@@ -402,7 +402,7 @@ extension CoreDataManager {
             }
 
             
-            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj)
+            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected)
           //selectedheadQuarters ?? SelectedHQ()
             aDaysessions.append(tempSession)
         }
@@ -411,6 +411,8 @@ extension CoreDataManager {
         aDaysessions.enumerated().forEach { index, eachDayPlan in
             if let entityDescription = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) {
                 let entitydayPlan = EachPlan(entity: entityDescription, insertInto: context)
+                
+                entitydayPlan.isRetrived = eachDayPlan.isRetrived ?? false
                 
                 entitydayPlan.wortTypeCode = eachDayPlan.workType?.code
 
@@ -576,6 +578,7 @@ extension CoreDataManager {
                         // let agroupedSlide = SlidesModel()
                         switch index {
                         case 0 :
+                            aDayPlan.isRetrived = eachPlan.isRetrived
                             aDayPlan.rsf = eachPlan.rsfID ?? ""
                             aDayPlan.wtCode = eachPlan.wortTypeCode ?? ""
                             let workType = DBManager.shared.getWorkType()
@@ -583,7 +586,7 @@ extension CoreDataManager {
                             aDayPlan.wtName = filetedworkType.first?.name ?? ""
                             aDayPlan.fwFlg = filetedworkType.first?.fwFlg ?? ""
                             aDayPlan.location = ""
-                            aDayPlan.isRetrived = eachPlan.isRetrived
+                         
                             aDayPlan.townCode = eachPlan.townCodes ?? ""
                             let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
                             let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
@@ -598,6 +601,7 @@ extension CoreDataManager {
                             
                             
                         case 1:
+                            aDayPlan.isRetrived2 = eachPlan.isRetrived
                             aDayPlan.rsf2 = eachPlan.rsfID ?? ""
                             aDayPlan.wtCode2 = eachPlan.wortTypeCode ?? ""
                             let workType = DBManager.shared.getWorkType()
@@ -736,7 +740,6 @@ extension CoreDataManager {
                 } else {
                     print("Failed to convert NSSet to [Territory]")
                 }
-         
                 
                 eachPlanSet.add(firstEachPlan)
                

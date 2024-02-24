@@ -38,7 +38,7 @@ struct Sessions {
 
 extension MainVC {
     
-    func callSavePlanAPI() {
+    func callSavePlanAPI(completion: @escaping (Bool) -> Void) {
         let dayEntities = CoreDataManager.shared.retriveSavedDayPlans()
          
         
@@ -86,9 +86,11 @@ extension MainVC {
                             // welf.toLoadWorktypeTable()
                             // welf.configureAddplanBtn(true, isSessionSaved: true)
                             // welf.configureSaveplanBtn(false)
+                             completion(true)
                              welf.toCreateToast(response.msg ?? "")
                          }
                      case .failure(let error):
+                         completion(false)
                          welf.toCreateToast(error.localizedDescription)
                      }
                      
@@ -203,7 +205,7 @@ extension MainVC {
                         }
                         
                     }
-                    let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true, isRejected: eachDayPlan.isRejected)
+                    let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isFirstCell: true)
                     aDaysessions.append(tempSession)
                     
 
@@ -266,7 +268,7 @@ extension MainVC {
                     }
                     
                     
-                    let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: true, isRejected: eachDayPlan.isRejected)
+                    let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isFirstCell: false)
                   
                     aDaysessions.append(tempSession)
                 }
