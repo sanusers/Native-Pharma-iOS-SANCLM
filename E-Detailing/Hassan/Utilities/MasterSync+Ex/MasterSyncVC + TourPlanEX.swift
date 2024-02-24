@@ -184,7 +184,7 @@ extension MasterSyncVC {
                                      }
                     
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
-                    self.toPostDataToserver(type: .getTP)
+                    self.toPostDataToserver(type: .getTP) {_ in}
                 case .failure(let error):
                     print(error)
                 }
@@ -196,7 +196,7 @@ extension MasterSyncVC {
 
     }
     
-    func toPostDataToserver(type : MasterInfo) {
+    func toPostDataToserver(type : MasterInfo, completion: @escaping (Bool) -> ()) {
 
 
         
@@ -257,8 +257,10 @@ extension MasterSyncVC {
                          }
                      }
                      self.setLoader(pageType: .loaded)
+                     completion(true)
                  case .failure( let error):
                   dump(error)
+                     completion(false)
                      self.setLoader(pageType: .loaded)
                     self.toCreateToast("Failed connecting to server!")
                  }

@@ -87,9 +87,11 @@ class MasterSyncVM {
             if isComleted {
                // self.toCreateToast("Saved successfully")
 
-                let dayPlans = CoreDataManager.shared.retriveSavedDayPlans()
+                CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+                    dump(dayplans)
+                }
             
-                dump(dayPlans)
+              
             } else {
                 
             }

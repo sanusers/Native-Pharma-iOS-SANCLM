@@ -15,14 +15,20 @@ enum MasterCellType : Int {
     case chemist = 2
     case stockist = 3
     case unLstDoctor = 4
-    case cip = 5
-    case hospital = 6
-    case subordinate = 7
-    case slides = 8
-    case Product = 9
-    case input = 10
-    case cluster = 11
-    case stockBalance = 12
+    case cluster = 5
+    case input = 6
+    case Product = 7
+    case leave = 8
+    case dcr = 9
+    case tourPlan = 10
+    case workType = 11
+    case slides = 12
+    case subordinate = 13
+    case other = 14
+    case setup = 15
+    case hospital = 16
+    case cip = 17
+
     
     var name : String {
         switch self {
@@ -36,7 +42,7 @@ enum MasterCellType : Int {
         case .stockist:
             return "Stockist"
         case .unLstDoctor:
-            return "UnListed Doctor"
+            return "Unlisted Doctor"
         case .cip:
             return "CIP"
         case .hospital:
@@ -51,8 +57,19 @@ enum MasterCellType : Int {
             return "input"
         case .cluster:
             return "Cluster"
-        case .stockBalance:
-            return "Stock Balance"
+
+        case .dcr:
+            return "DCR"
+        case .tourPlan:
+            return "Tour plan"
+        case .leave:
+            return "Leave"
+        case .workType:
+            return "Work type"
+        case .other:
+            return "Other"
+        case .setup:
+            return "Setup"
         }
     }
     
@@ -78,13 +95,24 @@ enum MasterCellType : Int {
         case .slides:
             return [MasterInfo.slides,MasterInfo.slideBrand,MasterInfo.slideSpeciality,MasterInfo.syncAll]
         case .Product:
-            return [MasterInfo.products,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+            return [MasterInfo.products, MasterInfo.category, MasterInfo.brands, MasterInfo.syncAll]
         case .input:
-            return [MasterInfo.inputs,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+            return [MasterInfo.inputs,   MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .cluster:
             return [MasterInfo.clusters,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
-        case .stockBalance:
-            return [MasterInfo.stockBalance,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+
+        case .dcr:
+            return [MasterInfo.homeSetup, MasterInfo.myDayPlan, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.empty, MasterInfo.empty,  MasterInfo.syncAll]
+        case .tourPlan:
+            return [MasterInfo.tourPlanSetup , MasterInfo.getTP, MasterInfo.empty ,MasterInfo.syncAll]
+        case .leave:
+            return [MasterInfo.leaveType,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+        case .workType:
+            return [MasterInfo.worktype,MasterInfo.holidays,MasterInfo.weeklyOff,MasterInfo.syncAll]
+        case .other:
+            return [MasterInfo.syncAll]
+        case .setup:
+            return [MasterInfo.setups, MasterInfo.customSetup , MasterInfo.empty, MasterInfo.syncAll]
         }
     }
 }
@@ -141,8 +169,13 @@ enum `MasterInfo` : String {
     case getTP = "Tour Plan"
     case holidays = "Holidays"
     case weeklyOff = "Weekly Off"
-    case tableSetup = "Table Setup"
-    case homeSetup = "Charts"
+    case apptableSetup = "Table Setup"
+    case tourPlanSetup = "Tour plan setup"
+    case homeSetup = "DCR"
+    case mydayPlan = "My day plan"
+    case callSync = "Call Sync"
+    case dataSync = "Data Sync"
+   
  ///note: Don't add types at last it affects page loading algorithm.
     var getUrl : String {
         
@@ -181,7 +214,7 @@ enum `MasterInfo` : String {
             return String(format: "%@table/subordinates", mainUrl)
         case .doctorFencing ,.chemists ,.stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.speciality,.departments,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
             return String(format: "%@table/dcrmasterdata", mainUrl)
-        case .tableSetup:
+        case .tourPlanSetup:
             return String(format: "%@table/setups", mainUrl)
             
         case .weeklyOff:
@@ -286,8 +319,9 @@ enum `MasterInfo` : String {
             return MasterSyncParams.mapCompdetParams
         case .empty:
             return [String : Any]()
-        case .tableSetup:
-            return MasterSyncParams.tableSetupParams
+        case .apptableSetup:
+           // return MasterSyncParams.tableSetupParams
+            return [String: Any]()
         case .weeklyOff:
             return MasterSyncParams.weelyoffSetupParams
         case .holidays:
@@ -296,6 +330,14 @@ enum `MasterInfo` : String {
             return MasterSyncParams.tourPlanSetupParams
         case .homeSetup:
             return MasterSyncParams.homeDataSetupParams
+        case .mydayPlan:
+            return [String : Any]()
+        case .callSync:
+            return [String : Any]()
+        case .dataSync:
+            return [String : Any]()
+        case .tourPlanSetup:
+            return MasterSyncParams.tourplanSetupParams
         }
  
     }
@@ -586,7 +628,7 @@ struct MasterSyncParams {
         return ["data" : paramString]
     }
     
-    static var tableSetupParams : [String : Any] {
+    static var tourplanSetupParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         let paramString = "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"

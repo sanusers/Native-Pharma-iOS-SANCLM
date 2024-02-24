@@ -26,7 +26,7 @@ class MenuVC: BaseViewController {
 
     
 //    @IBOutlet weak var menuHeaderHeight: NSLayoutConstraint!
-    
+    var masterVM: MasterSyncVM?
     var sessionDetailsArr : SessionDetailsArr?
     var menuDelegate : MenuResponseProtocol?
     var selectedDate : Date?
@@ -65,6 +65,7 @@ class MenuVC: BaseViewController {
         let view : MenuVC = UIStoryboard.Hassan.instantiateViewController()
         view.modalPresentationStyle = .overCurrentContext
         view.selectedDate = date
+        view.masterVM = MasterSyncVM()
         view.isForWeekoff = isForWeekOff ?? false
         view.isForHoliday = isForHoliday ?? false
         view.menuDelegate = delegate
@@ -74,7 +75,19 @@ class MenuVC: BaseViewController {
         return view
     }
 
-    
+    func toUpdateDCR(mapID: String,  completion: @escaping (Bool) -> ()) {
+        
+        Shared.instance.showLoaderInWindow()
+        masterVM?.fetchMasterData(type: .clusters, sfCode: mapID, istoUpdateDCRlist: true, mapID: mapID) { [weak self] _  in
+            
+            guard let welf = self else {return}
+            completion(true)
+            Shared.instance.removeLoaderInWindow()
+            welf.toCreateToast("Clusters synced successfully")
+            
+        }
+    }
+
     
     func removeAllNotication() {
 

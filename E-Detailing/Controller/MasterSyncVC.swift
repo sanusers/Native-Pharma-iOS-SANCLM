@@ -61,7 +61,7 @@ class MasterSyncVC : UIViewController {
     var masterData = [MasterInfo]()
     var isDayPlanSynced: Bool = false
     var dcrList = [MasterCellData]()
-    
+    var selectedMasterGroupIndex: Int? = nil
     var fetchedHQObject: Subordinate?
     
     var animations = [Bool](){
@@ -125,6 +125,25 @@ class MasterSyncVC : UIViewController {
         }
         return login.sfCode!
     }
+
+    
+    let appsetup = AppDefaults.shared.getAppSetUp()
+    var getRSF: String? {
+     
+        let selectedRSF = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        let rsfIDPlan1 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
+        let rsfIDPlan2 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan2)
+        if !selectedRSF.isEmpty{
+            return selectedRSF
+        }
+        if !rsfIDPlan1.isEmpty {
+            return rsfIDPlan1
+        } else if !rsfIDPlan2.isEmpty {
+            return rsfIDPlan2
+        } else {
+            return "\(appsetup.sfCode!)"
+        }
+    }
     
     var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
     
@@ -149,33 +168,16 @@ class MasterSyncVC : UIViewController {
         
         
         if !isFromLaunch {
+            selectedMasterGroupIndex = 0
             animations = (0...(masterData.count - 1)).map{_ in false}
         }else {
-            self.setLoader(pageType: .loading)
+            selectedMasterGroupIndex = nil
+           // self.setLoader(pageType: .loading)
             animations = (0...(masterData.count - 1)).map{_ in true}
-            
-            
-            let dispatchgroup = DispatchGroup()
-            for masterType in masterData {
-          
-                dispatchgroup.enter()
 
+                fetchMasterDataRecursively(index: 0)
             
-                fetchmasterData(type: masterType) { _ in
-                
-                    dispatchgroup.leave()
-                }
-
-            
-          
-            }
-            
-            dispatchgroup.notify(queue: .main) {
-
-                print("DCR list sync completed")
-             
-           
-            }
+   
            // _ = masterData.map{self.fetchmasterData(type: $0)}
         }
         
@@ -221,7 +223,7 @@ class MasterSyncVC : UIViewController {
     
     @objc func syncTapped() {
         print("Tapped")
-        self.setLoader(pageType: .loading)
+       // self.setLoader(pageType: .loading)
         self.fetchmasterData(type: .getTP) {_ in}
     }
     
@@ -321,33 +323,30 @@ class MasterSyncVC : UIViewController {
     }
     
     
-    @IBAction func syncAll(_ sender: UIButton) {
-        self.setLoader(pageType: .loading)
-        animations = (0...(masterData.count - 1)).map{_ in true}
-
-      //  _ = masterData.map{self.fetchmasterData(type: $0)}
-        
-        let dispatchgroup = DispatchGroup()
-        for masterType in masterData {
-      
-            dispatchgroup.enter()
-
-        
-            fetchmasterData(type: masterType) { _ in
-            
-                dispatchgroup.leave()
-            }
-
-        
-      
-        }
-        
-        dispatchgroup.notify(queue: .main) {
-
+    func fetchMasterDataRecursively(index: Int) {
+        guard index < masterData.count else {
+            // All tasks completed
             print("DCR list sync completed")
-         
-       
+            
+            return
         }
+
+        let masterType = masterData[index]
+        fetchmasterData(type: masterType) { _ in
+            // Continue with the next task
+            self.fetchMasterDataRecursively(index: index + 1)
+        }
+    }
+    
+    @IBAction func syncAll(_ sender: UIButton) {
+       // self.setLoader(pageType: .loading)
+        animations = (0...(masterData.count - 1)).map{_ in true}
+        selectedMasterGroupIndex = nil
+        self.tableView.reloadData()
+        fetchMasterDataRecursively(index: 0)
+        
+
+        
         
     }
     
@@ -355,11 +354,7 @@ class MasterSyncVC : UIViewController {
     func updateList() {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        if isFromLaunch {
-            self.dcrList.append(MasterCellData(cellType: MasterCellType.slides,isSelected: false))
-        }else{
-            self.dcrList.append(MasterCellData(cellType: MasterCellType.slides,isSelected: true))
-        }
+
         
         self.dcrList.append(MasterCellData(cellType: MasterCellType.listedDoctor,isSelected: false))
         
@@ -369,6 +364,8 @@ class MasterSyncVC : UIViewController {
         if appsetup.stkNeed == 0 {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.stockist,isSelected: false))
         }
+        
+        
         if appsetup.unlNeed == 0 {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.unLstDoctor,isSelected: false))
         }
@@ -379,18 +376,25 @@ class MasterSyncVC : UIViewController {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.hospital,isSelected: false))
         }
         
-        self.dcrList.append(MasterCellData(cellType: MasterCellType.Product,isSelected: false))
-        self.dcrList.append(MasterCellData(cellType: MasterCellType.input,isSelected: false))
-        self.dcrList.append(MasterCellData(cellType: MasterCellType.subordinate,isSelected: false))
         self.dcrList.append(MasterCellData(cellType: MasterCellType.cluster,isSelected: false))
-        self.dcrList.append(MasterCellData(cellType: MasterCellType.stockBalance,isSelected: false))
-        self.dcrList.append(MasterCellData(cellType: MasterCellType.syncAll,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.input,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.Product,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.leave,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.dcr,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.tourPlan,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.workType,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.slides,isSelected: false))
     
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.subordinate,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.other,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.setup,isSelected: false))
+        self.dcrList.append(MasterCellData(cellType: MasterCellType.syncAll,isSelected: false))
+        
+        self.masterData.append(MasterInfo.myDayPlan)
         self.masterData.append(MasterInfo.doctorFencing)
         self.masterData.append(MasterInfo.chemists)
         self.masterData.append(MasterInfo.stockists)
         self.masterData.append(MasterInfo.unlistedDoctors)
-        
         self.masterData.append(MasterInfo.setups)
         self.masterData.append(MasterInfo.customSetup)
         self.masterData.append(MasterInfo.tourPlanStatus)
@@ -398,33 +402,30 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.visitControl)
         self.masterData.append(MasterInfo.mapCompDet)
         self.masterData.append(MasterInfo.stockBalance)
-        self.masterData.append(MasterInfo.slideBrand)
-        self.masterData.append(MasterInfo.slides)
         self.masterData.append(MasterInfo.subordinate)
         self.masterData.append(MasterInfo.subordinateMGR)
-        
         self.masterData.append(MasterInfo.speciality)
         self.masterData.append(MasterInfo.departments)
         self.masterData.append(MasterInfo.category)
         self.masterData.append(MasterInfo.qualifications)
         self.masterData.append(MasterInfo.doctorClass)
-        
         self.masterData.append(MasterInfo.worktype)
         self.masterData.append(MasterInfo.clusters)
-        self.masterData.append(MasterInfo.myDayPlan)
         self.masterData.append(MasterInfo.jointWork)
         self.masterData.append(MasterInfo.products)
         self.masterData.append(MasterInfo.inputs)
         self.masterData.append(MasterInfo.brands)
         self.masterData.append(MasterInfo.competitors)
-        self.masterData.append(MasterInfo.slideSpeciality)
+      
         self.masterData.append(MasterInfo.holidays)
         self.masterData.append(MasterInfo.weeklyOff)
-        self.masterData.append(MasterInfo.tableSetup)
+        self.masterData.append(MasterInfo.tourPlanSetup)
         self.masterData.append(MasterInfo.getTP)
         self.masterData.append(MasterInfo.homeSetup)
-      //  self.tableView.reloadData()
-     //   self.collectionView.reloadData()
+        self.masterData.append(MasterInfo.slideSpeciality)
+        self.masterData.append(MasterInfo.slideBrand)
+        self.masterData.append(MasterInfo.slides)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -442,7 +443,15 @@ class MasterSyncVC : UIViewController {
         
         switch type {
         case .getTP :
-            toPostDataToserver(type : type)
+            toPostDataToserver(type : type) {[weak self] _ in
+                guard let welf = self else {return}
+                if let index = welf.masterData.firstIndex(of: type){
+                    welf.animations[index] = false
+                    welf.collectionView.reloadData()
+                }
+                completion(true)
+            }
+           
         case .myDayPlan:
             
             mastersyncVM?.toGetMyDayPlan(type: type) { [weak self] (result) in
@@ -470,6 +479,7 @@ class MasterSyncVC : UIViewController {
                             welf.fetchedHQObject = cacheHQ
                             welf.setHQlbl()
                         }
+                        completion(true)
                     } else {
                         
                         CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
@@ -483,20 +493,29 @@ class MasterSyncVC : UIViewController {
                             } else {
                                 welf.lblHqName.text =  "Select HQ"
                             }
-                            
+                            completion(true)
                         }
                         
-                       
+                      
                     }
-                    completion(true)
+                    if let index = welf.masterData.firstIndex(of: type){
+                        welf.animations[index] = false
+                        welf.collectionView.reloadData()
+                    }
                 case .failure(let error):
                     welf.toCreateToast(error.rawValue)
+                    
+                    if let index = welf.masterData.firstIndex(of: type){
+                        welf.animations[index] = false
+                        welf.collectionView.reloadData()
+                    }
+                    
                     completion(true)
                 }
             }
           
         default:
-            mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getSFCode, istoUpdateDCRlist: false, mapID: self.getSFCode) {[weak self] (response) in
+            mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getRSF ?? "", istoUpdateDCRlist: false, mapID: self.getRSF ?? "") {[weak self] (response) in
                 guard let welf = self else {return}
                 let date1 = Date().toString(format: "yyyy-MM-dd HH:mm:ss ZZZ")
                 
@@ -509,7 +528,7 @@ class MasterSyncVC : UIViewController {
                             let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
                             print(apiResponse)
                             if let jsonObjectresponse = apiResponse as? [[String : Any]] {
-                                DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: welf.getSFCode)
+                                DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: welf.getRSF ?? "")
                                 if type == MasterInfo.slides || type == MasterInfo.slideBrand {
                                     welf.loadedSlideInfo.append(type)
                                     switch type {
@@ -539,18 +558,25 @@ class MasterSyncVC : UIViewController {
                     welf.lblSyncStatus.text = "Last Sync: " + date
                     welf.setLoader(pageType: .navigate, type: type)
                    // welf.setHQlbl()
+                    
+                    if let index = welf.masterData.firstIndex(of: type){
+                        welf.animations[index] = false
+                        welf.collectionView.reloadData()
+                    }
+                    completion(true)
                     case .failure(let error):
                     
-                    welf.setLoader(pageType: .loaded)
+                   // welf.setLoader(pageType: .loaded)
                     welf.toCreateToast("\(error.localizedDescription)")
-                        print(error)
-                        return
+                    print(error)
+                    
+                    if let index = welf.masterData.firstIndex(of: type){
+                        welf.animations[index] = false
+                        welf.collectionView.reloadData()
+                    }
+                    completion(false)
                 }
-                
-                if let index = welf.masterData.firstIndex(of: type){
-                    welf.animations[index] = false
-                    welf.collectionView.reloadData()
-                }
+
               
 
             }
@@ -660,14 +686,31 @@ extension MasterSyncVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MasterSyncTbCell", for: indexPath) as! MasterSyncTbCell
         cell.selectionStyle = .none
+        if indexPath.row == selectedMasterGroupIndex {
+            cell.contentHolderView.backgroundColor = .appTextColor
+            cell.lblName.textColor = .appWhiteColor
+            cell.selectedIV.image = UIImage(named:   "Vector1")
+            cell.selectedIV.tintColor = .appWhiteColor
+           // cell.btnArrow.ima
+        } else {
+            cell.contentHolderView.backgroundColor = .appWhiteColor
+            cell.lblName.textColor = .appTextColor
+            cell.selectedIV.image = UIImage(named:   "Vector")
+           
+          
+            cell.selectedIV.tintColor = .appTextColor
+        }
+        
         cell.lblName.text = self.dcrList[indexPath.row].cellType.name
         cell.btnSyncAll.isHidden = MasterCellType.syncAll.rawValue == self.dcrList[indexPath.row].cellType.rawValue ? false : true
         cell.btnSyncAll.addTarget(self, action: #selector(syncAllAction(_:)), for: .touchUpInside)
-        if self.dcrList[indexPath.row].isSelected == true {
-            cell.btnArrow.isSelected = true
-        }else {
-            cell.btnArrow.isSelected = false
-        }
+//        if self.dcrList[indexPath.row].isSelected == true {
+//            cell.lblName.textColor = .appWhiteColor
+//            cell.selectedIV.image = UIImage(named:   "Vector1")
+//        }else {
+//            cell.selectedIV.image = UIImage(named:   "Vector")
+//            cell.selectedIV.tintColor = .appTextColor
+//        }
         return cell
     }
     
@@ -677,13 +720,15 @@ extension MasterSyncVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        
+        self.selectedMasterGroupIndex = indexPath.row
         for i in 0..<self.dcrList.count {
             self.dcrList[i].isSelected = false
         }
         self.tableView.reloadData()
         if let cell = tableView.cellForRow(at: indexPath) as? MasterSyncTbCell {
-            cell.btnArrow.isSelected = true
+//            cell.lblName.textColor = .appWhiteColor
+//            cell.selectedIV.image = UIImage(named:   "Vector1")
+          
         }
         
         self.masterData = self.dcrList[indexPath.row].cellType.groupDetail
@@ -692,9 +737,9 @@ extension MasterSyncVC : tableViewProtocols {
     
     @objc func syncAllAction (_ sender : UIButton) {
         self.loadedSlideInfo = []
-        self.setLoader(pageType: .loading)
-        self.masterData = [MasterInfo.slides,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.myDayPlan,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-                           MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tableSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup]
+       // self.setLoader(pageType: .loading)
+        self.masterData = [MasterInfo.myDayPlan,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
+                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup,MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
     
@@ -822,12 +867,63 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text = String(DBManager.shared.getHolidays().count)
         case .weeklyOff:
             cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
-        case .tableSetup:
+        case .tourPlanSetup:
             cell.lblCount.text = String(DBManager.shared.getTableSetUp().count)
+         
         case .getTP:
             cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
-        default:
-            cell.lblCount.text = "0"
+
+
+        case   .headquartes:
+            cell.lblCount.text = "Yet to"
+        case   .departments:
+            cell.lblCount.text = "Yet to"
+        case   .docTypes:
+            cell.lblCount.text = "Yet to"
+        case   .ratingDetails:
+            cell.lblCount.text = "Yet to"
+        case   .ratingFeedbacks:
+            cell.lblCount.text = "Yet to"
+        case   .speakerList:
+            cell.lblCount.text = "Yet to"
+        case   .participantList:
+            cell.lblCount.text = "Yet to"
+        case   .indicationList:
+            cell.lblCount.text = "Yet to"
+        case   .setups:
+            cell.lblCount.text = "Yet to"
+        case   .doctors:
+            cell.lblCount.text = "Yet to"
+        case   .institutions:
+            cell.lblCount.text = "Yet to"
+        case   .customSetup:
+            cell.lblCount.text = "Yet to"
+        case   .tourPlanStatus:
+            cell.lblCount.text = "sync All"
+        case   .stockBalance:
+            let balance = DBManager.shared.getStockBalance()
+            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
+        case   .empty:
+            cell.lblCount.text = "Yet to"
+        case   .syncAll:
+            cell.lblCount.text = "sync All"
+        case   .apptableSetup:
+            cell.lblCount.text =  "Yet to"
+        case   .homeSetup:
+            cell.lblCount.text =  "\(DBManager.shared.getHomeData().count)"
+        case   .mydayPlan:
+            
+            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+                cell.lblCount.text =  "\(dayplans.count)"
+            }
+            
+           
+        case   .callSync:
+            cell.lblCount.text = "Yet to"
+        case   .dataSync:
+            cell.lblCount.text = "Yet to"
+        case .none:
+            cell.lblCount.text = "Yet to"
         }
         
         if MasterInfo.syncAll.rawValue == self.masterData[indexPath.row].rawValue {
@@ -844,7 +940,7 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     @objc func groupSyncAll(_ sender : UIButton){
-        self.setLoader(pageType: .loading)
+       // self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
         self.collectionView.reloadData()
       //  _ = masterData.map{self.fetchmasterData(type: $0)}

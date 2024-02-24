@@ -153,8 +153,8 @@ class DBManager {
             self.saveMapCompDetData(values: Values)
         case .empty:
             break
-        case .tableSetup:
-            saveTableSetup(values: Values)
+        case .tourPlanSetup:
+            saveTPSetup(values: Values)
         case .weeklyOff:
             saveWeeklyoff(values: Values)
         case .holidays:
@@ -899,7 +899,7 @@ class DBManager {
         self.saveContext()
     }
     
-    func saveTableSetup(values : [[String : Any]]){
+    func saveTPSetup(values : [[String : Any]]){
         self.deleteTableSetupData()
         let masterData = self.getMasterData()
         var TableSetupArray = [TableSetup]()

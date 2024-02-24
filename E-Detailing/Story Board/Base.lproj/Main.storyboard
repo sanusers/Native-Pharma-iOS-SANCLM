@@ -872,25 +872,18 @@ VmVyc2lvbiA6IDEuMAM
                                                             <rect key="frame" x="0.0" y="0.0" width="382.5" height="50"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
-                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="04q-2T-nap" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
+                                                                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="04q-2T-nap">
                                                                     <rect key="frame" x="10" y="5" width="362.5" height="40"/>
                                                                     <subviews>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l1Z-jr-7GO">
-                                                                            <rect key="frame" x="20" y="9" width="292.5" height="22.5"/>
+                                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l1Z-jr-7GO">
+                                                                            <rect key="frame" x="20" y="9" width="45.5" height="22.5"/>
                                                                             <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
                                                                             <color key="textColor" red="0.15686274509803921" green="0.16470588235294117" blue="0.23529411764705882" alpha="1" colorSpace="calibratedRGB"/>
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X7J-CP-VNH">
-                                                                            <rect key="frame" x="327.5" y="20" width="20" height="20"/>
-                                                                            <constraints>
-                                                                                <constraint firstAttribute="width" constant="20" id="GE2-P4-v8p"/>
-                                                                                <constraint firstAttribute="height" constant="20" id="vVT-aO-WzX"/>
-                                                                            </constraints>
-                                                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                                            <state key="normal" image="Vector"/>
-                                                                            <state key="selected" image="Vector1"/>
-                                                                        </button>
+                                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Vector" translatesAutoresizingMaskIntoConstraints="NO" id="LMQ-6v-emg">
+                                                                            <rect key="frame" x="332.5" y="10" width="20" height="20"/>
+                                                                        </imageView>
                                                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xvz-C0-twz">
                                                                             <rect key="frame" x="0.0" y="0.0" width="362.5" height="40"/>
                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -905,15 +898,16 @@ VmVyc2lvbiA6IDEuMAM
                                                                     </subviews>
                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <constraints>
-                                                                        <constraint firstItem="X7J-CP-VNH" firstAttribute="top" secondItem="04q-2T-nap" secondAttribute="top" constant="20" id="6eo-4m-eOJ"/>
+                                                                        <constraint firstItem="LMQ-6v-emg" firstAttribute="centerY" secondItem="04q-2T-nap" secondAttribute="centerY" id="1Xm-RT-t40"/>
                                                                         <constraint firstItem="l1Z-jr-7GO" firstAttribute="leading" secondItem="04q-2T-nap" secondAttribute="leading" constant="20" id="6qO-9X-zKL"/>
-                                                                        <constraint firstAttribute="trailing" secondItem="X7J-CP-VNH" secondAttribute="trailing" constant="15" id="HZh-gM-f9V"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="LMQ-6v-emg" secondAttribute="trailing" constant="10" id="735-aa-zHo"/>
+                                                                        <constraint firstItem="LMQ-6v-emg" firstAttribute="width" secondItem="04q-2T-nap" secondAttribute="height" multiplier="0.5" id="8vl-iS-j6k"/>
                                                                         <constraint firstItem="xvz-C0-twz" firstAttribute="top" secondItem="04q-2T-nap" secondAttribute="top" id="O4q-Ig-nLp"/>
                                                                         <constraint firstAttribute="height" constant="60" id="crk-Il-GTS"/>
                                                                         <constraint firstItem="l1Z-jr-7GO" firstAttribute="centerY" secondItem="04q-2T-nap" secondAttribute="centerY" id="ixE-Ys-EXH"/>
                                                                         <constraint firstAttribute="trailing" secondItem="xvz-C0-twz" secondAttribute="trailing" id="kGT-15-GrG"/>
                                                                         <constraint firstItem="xvz-C0-twz" firstAttribute="leading" secondItem="04q-2T-nap" secondAttribute="leading" id="oca-uu-pl1"/>
-                                                                        <constraint firstItem="X7J-CP-VNH" firstAttribute="leading" secondItem="l1Z-jr-7GO" secondAttribute="trailing" constant="15" id="rlJ-QV-9hy"/>
+                                                                        <constraint firstItem="LMQ-6v-emg" firstAttribute="height" secondItem="04q-2T-nap" secondAttribute="height" multiplier="0.5" id="vFy-uC-fFi"/>
                                                                         <constraint firstAttribute="bottom" secondItem="xvz-C0-twz" secondAttribute="bottom" id="zKf-FD-pa3"/>
                                                                     </constraints>
                                                                     <userDefinedRuntimeAttributes>
@@ -932,9 +926,10 @@ VmVyc2lvbiA6IDEuMAM
                                                         </tableViewCellContentView>
                                                         <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <connections>
-                                                            <outlet property="btnArrow" destination="X7J-CP-VNH" id="rEV-TT-pMG"/>
                                                             <outlet property="btnSyncAll" destination="xvz-C0-twz" id="M3C-32-ghW"/>
+                                                            <outlet property="contentHolderView" destination="04q-2T-nap" id="4W1-pv-sVL"/>
                                                             <outlet property="lblName" destination="l1Z-jr-7GO" id="3TD-P6-qXi"/>
+                                                            <outlet property="selectedIV" destination="LMQ-6v-emg" id="8nt-kK-Wnb"/>
                                                         </connections>
                                                     </tableViewCell>
                                                 </prototypes>
@@ -2792,7 +2787,6 @@ VmVyc2lvbiA6IDEuMAM
         <image name="Bell" width="19.666666030883789" height="21.333333969116211"/>
         <image name="Menu" width="26.666666030883789" height="23.666666030883789"/>
         <image name="Vector" width="16" height="8"/>
-        <image name="Vector1" width="8" height="16"/>
         <image name="activity" width="21.333333969116211" height="21.333333969116211"/>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
         <image name="arrow.right" catalog="system" width="128" height="95"/>

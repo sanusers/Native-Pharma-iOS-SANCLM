@@ -233,6 +233,21 @@ extension CoreDataManager {
         }
         return aSubordinateobj as? Subordinate
     }
+    
+    
+    func toUpdateDCR(mapID: String,  completion: @escaping (Bool) -> ()) {
+        
+        Shared.instance.showLoaderInWindow()
+        let masterSyncVM = MasterSyncVM()
+        masterSyncVM.fetchMasterData(type: .clusters, sfCode: mapID, istoUpdateDCRlist: false, mapID: mapID) { [weak self] _  in
+            
+            guard let welf = self else {return}
+            completion(true)
+            Shared.instance.removeLoaderInWindow()
+          //  welf.toCreateToast("Clusters synced successfully")
+            
+        }
+    }
 
     private func convertEachDyPlan(_ eachDayPlan : DayPlan, context: NSManagedObjectContext) -> NSSet {
         
@@ -258,12 +273,14 @@ extension CoreDataManager {
         let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
         
         if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-            let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
+            var clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
             var selectedterritories: [Territory]?
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode
-            let codesArray = codes.components(separatedBy: ", ")
+            let codesArray = codes.components(separatedBy: ",")
+            
+
             
             let filteredTerritories = clusterArr.filter { aTerritory in
                 // Check if any code in codesArray is contained in aTerritory
@@ -339,7 +356,7 @@ extension CoreDataManager {
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode2
-            let codesArray = codes.components(separatedBy: ", ")
+            let codesArray = codes.components(separatedBy: ",")
             
             let filteredTerritories = clusterArr.filter { aTerritory in
                 // Check if any code in codesArray is contained in aTerritory
@@ -540,10 +557,10 @@ extension CoreDataManager {
     }
     
     
-    func retriveSavedDayPlans() -> [DayPlan] {
+    func retriveSavedDayPlans(completion: @escaping ([DayPlan] ) -> ()) {
         let userConfig = AppDefaults.shared.getAppSetUp()
         var retrivedPlansArr = [DayPlan]()
-        
+        let dispatchGroup = DispatchGroup()
         CoreDataManager.shared.fetchEachDayPlan { eachDayPlanArr in
             eachDayPlanArr.forEach { eachDayPlan in
                 let aDayPlan = DayPlan()
@@ -571,10 +588,11 @@ extension CoreDataManager {
                 aDayPlan.tpCluster = ""
                 aDayPlan.tpWorkType = ""
 
-                
+           
                 if let  eachDayPlansSet = eachDayPlan.eachPlan as? Set<EachPlan>  {
                     let eachDayPlansArray = Array(eachDayPlansSet)
                     eachDayPlansArray.enumerated().forEach { index, eachPlan in
+                        dispatchGroup.enter()
                         // let agroupedSlide = SlidesModel()
                         switch index {
                         case 0 :
@@ -588,17 +606,29 @@ extension CoreDataManager {
                             aDayPlan.location = ""
                          
                             aDayPlan.townCode = eachPlan.townCodes ?? ""
-                            let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                            var territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
                             let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
                             
-                            // Filter territories based on codes
-                            let filteredTerritories = territories.filter { territory in
-                                return territoryCodes.contains(territory.code ?? "")
+                            if territories.isEmpty {
+                                let masterSyncVM = MasterSyncVM()
+                                masterSyncVM.fetchMasterData(type: .clusters, sfCode: eachPlan.rsfID ?? "" , istoUpdateDCRlist: false, mapID: eachPlan.rsfID ?? "") {  _ in
+                                    territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                                    dispatchGroup.leave()
+                                 
+                                }
+                            } else {
+                                // Filter territories based on codes
+                                let filteredTerritories = territories.filter { territory in
+                                    return territoryCodes.contains(territory.code ?? "")
+                                }
+                                // Extract names as a comma-separated string
+                                aDayPlan.townName = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
+                                dispatchGroup.leave()
                             }
-                            // Extract names as a comma-separated string
-                            aDayPlan.townName = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
-     
                             
+
+     
+                            dispatchGroup.wait()
                             
                         case 1:
                             aDayPlan.isRetrived2 = eachPlan.isRetrived
@@ -611,15 +641,35 @@ extension CoreDataManager {
                             aDayPlan.location2 = ""
                             aDayPlan.isRetrived = eachPlan.isRetrived
                             aDayPlan.townCode2 = eachPlan.townCodes ?? ""
-                            let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                            var territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
                             let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
                             
-                            // Filter territories based on codes
-                            let filteredTerritories = territories.filter { territory in
-                                return territoryCodes.contains(territory.code ?? "")
+                            if territories.isEmpty {
+                                let masterSyncVM = MasterSyncVM()
+                                masterSyncVM.fetchMasterData(type: .clusters, sfCode: eachPlan.rsfID ?? "" , istoUpdateDCRlist: false, mapID: eachPlan.rsfID ?? "") {  _ in
+                                    territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                                    // Filter territories based on codes
+                                    let filteredTerritories = territories.filter { territory in
+                                        return territoryCodes.contains(territory.code ?? "")
+                                    }
+                                    // Extract names as a comma-separated string
+                                    aDayPlan.townName2 = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
+                                    dispatchGroup.leave()
+                                 
+                                }
+                            } else {
+                                // Filter territories based on codes
+                                let filteredTerritories = territories.filter { territory in
+                                    return territoryCodes.contains(territory.code ?? "")
+                                }
+                                // Extract names as a comma-separated string
+                                aDayPlan.townName2 = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
+                                dispatchGroup.leave()
                             }
-                            // Extract names as a comma-separated string
-                            aDayPlan.townName2 = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
+                            
+                            
+                            
+
      
                             
                         default:
@@ -632,7 +682,12 @@ extension CoreDataManager {
                 retrivedPlansArr.append(aDayPlan)
             }
         }
-        return retrivedPlansArr
+        
+        dispatchGroup.notify(queue: .main) {
+            completion(retrivedPlansArr)
+        }
+        
+       
     }
     
     

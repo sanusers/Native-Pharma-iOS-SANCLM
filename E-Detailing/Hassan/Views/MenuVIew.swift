@@ -542,7 +542,7 @@ class MenuView : BaseView{
     
     @IBOutlet var titleSeperator: UIView!
     
-    
+
     var isSearched: Bool = false
     var isSearchedWorkTypeSelected: Bool = false
     ///properties to hold array elements
@@ -739,7 +739,7 @@ class MenuView : BaseView{
       
         self.headQuatersArr =  DBManager.shared.getSubordinate()
      
-        self.clusterArr = DBManager.shared.getTerritory()
+     //   self.clusterArr = DBManager.shared.getTerritory()
      
         self.jointWorkArr = DBManager.shared.getJointWork()
       
@@ -2417,7 +2417,26 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.clusterView.addTap { [weak self] in
                 guard let welf = self else {return}
-               
+                let cacheIndex =  welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedHQIndex
+                let searchedCacheIndex = welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].searchedHQIndex
+                var id: String = ""
+                if searchedCacheIndex != nil {
+                    id = welf.headQuatersArr?[searchedCacheIndex ?? 0].id ?? ""
+                } else {
+                    id = welf.headQuatersArr?[cacheIndex ?? 0].id ?? ""
+                }
+                
+                
+                if welf.clusterArr?.count == 0 {
+                    print("Call api")
+                    
+                    welf.menuVC.toUpdateDCR(mapID: id) { _ in
+                        welf.clusterArr = DBManager.shared.getTerritory(mapID:  id);
+                    }
+                    
+                }
+                
+                
                 welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
                 if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
                     isToproceed = true
