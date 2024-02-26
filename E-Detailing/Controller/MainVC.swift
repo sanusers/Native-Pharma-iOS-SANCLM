@@ -371,7 +371,19 @@ extension MainVC: MenuResponseProtocol {
             print("Yet to implement.")
         }
         
-        self.configureSaveplanBtn(self.toEnableSaveBtn(index: self.selectedSessionIndex ?? 0))
+        guard let tempSessionIndex = self.selectedSessionIndex   else {return}
+        var index : Int = 0
+        if sessions?.count == 2 {
+            index = tempSessionIndex == 0 ? 1 : 0
+            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: index))
+        } else {
+            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: tempSessionIndex))
+        }
+        
+    
+        
+        
+      
     
 //            switch self.selectedSessionIndex {
 //            case 0:
@@ -609,7 +621,7 @@ class MainVC : UIViewController {
                         
                     } else {
     
-                        isPlan1filled = self.toEnableSaveBtn(index: index)
+                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index)
                         //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
                     }
                     
@@ -653,7 +665,7 @@ class MainVC : UIViewController {
                         }
                         
                     } else {
-                        isPlan2filled = self.toEnableSaveBtn(index: index)
+                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index)
                     }
                     
                     if isPlan2filled {
@@ -728,13 +740,17 @@ class MainVC : UIViewController {
         
     }
     
-    func toEnableSaveBtn(index: Int) -> Bool {
+    func toEnableSaveBtn(sessionindex: Int) -> Bool {
         guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
          let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
         let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
         else {
             fatalError("Entity not found")
         }
+        var index: Int = 0
+//        if sessions?.count == 2 {
+//            index = sessionindex == 0 ? 1 : 0
+//        }
 
         let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
         let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
@@ -748,7 +764,7 @@ class MainVC : UIViewController {
                 if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
                     return false
                 } else {
-                    if nonNillSession[self.selectedSessionIndex ?? 0].isRetrived ?? false {
+                    if nonNillSession[index].isRetrived ?? false {
                         return false
                     } else {
                         return true
@@ -761,7 +777,7 @@ class MainVC : UIViewController {
                 if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
                     return false
                 } else {
-                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                    if nonNillSession[index].isRetrived ?? false {
                         return false
                     } else {
                         return true
@@ -773,7 +789,7 @@ class MainVC : UIViewController {
                 if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
                     return false
                 } else {
-                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                    if nonNillSession[index].isRetrived ?? false {
                         return false
                     } else {
                         return true
@@ -784,7 +800,7 @@ class MainVC : UIViewController {
                 if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
                     return false
                 } else {
-                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                    if nonNillSession[index].isRetrived ?? false {
                         return false
                     } else {
                         return true
@@ -796,7 +812,7 @@ class MainVC : UIViewController {
                 if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
                     return false
                 } else {
-                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                    if nonNillSession[index].isRetrived ?? false {
                         return false
                     } else {
                         return true
@@ -814,7 +830,7 @@ class MainVC : UIViewController {
                     
                     return !isSessionUnfilled
                 } else {
-                    if nonNillSession[selectedSessionIndex ?? 0].isRetrived ?? false {
+                    if nonNillSession[index].isRetrived ?? false {
                         return false
                     } else {
                         return true
@@ -823,7 +839,7 @@ class MainVC : UIViewController {
             }
             
         }
-      //  return false
+        return false
     }
     
 
@@ -1174,11 +1190,18 @@ class MainVC : UIViewController {
     
     @IBAction func didTapSaveBtn(_ sender: Any) {
         // Ensure you have sessions to save
-        guard var yetToSaveSession = sessions else { return }
+     
+        guard var yetToSaveSession = self.sessions else {
+            return
+        }
 
         // Mark all sessions as retrieved
         
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            yetToSaveSession.indices.forEach { index in
+                yetToSaveSession[index].isRetrived = true
+            }
+        } else {
             yetToSaveSession.indices.forEach { index in
                 if  yetToSaveSession[index].isRetrived == true {
                     
@@ -1192,7 +1215,9 @@ class MainVC : UIViewController {
                 guard let welf = self else {return}
                 
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                    welf.callSavePlanAPI() {_ in }
+                    welf.callSavePlanAPI() { _ in
+                        welf.toConfigureMydayPlan()
+                    }
                  
                 } else {
                     welf.toConfigureMydayPlan()
@@ -1463,7 +1488,8 @@ class MainVC : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-     //   CoreDataManager.shared.removeAllDayPlans()
+      //  CoreDataManager.shared.removeAllDayPlans()
+     //  self.toConfigureMydayPlan()
         rejectionVIew.isHidden = true
      //   toConfigureDynamicHeader(false)
         self.toSeperateDCR()
@@ -2941,6 +2967,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 welf.selectedSessionIndex = indexPath.row
                 welf.sessions?.remove(at: welf.selectedSessionIndex ?? 0)
                 welf.selectedSessionIndex = nil
+                welf.configureSaveplanBtn(false)
                 welf.configureAddplanBtn(true)
                 welf.toLoadWorktypeTable()
             }

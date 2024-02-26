@@ -334,6 +334,13 @@ class DBManager {
         let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
         if !initialsavefinish {
             print("Error")
+            
+
+            
+        } else {
+            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+            
+            dump(AppDefaults.shared.eachDatePlan)
         }
         
         
@@ -1031,7 +1038,7 @@ class DBManager {
             let contextNew = self.managedContext()
             let territoryEntity = NSEntityDescription.entity(forEntityName: "Territory", in: contextNew)
             let territoryItem = Territory(entity: territoryEntity!, insertInto: contextNew)
-            territoryItem.setValues(fromDictionary: territory, id: id)
+            territoryItem.setValues(fromDictionary: territory, mapID: id)
             territoryItem.index = Int16(index)
             territoryArray.append(territoryItem)
         }

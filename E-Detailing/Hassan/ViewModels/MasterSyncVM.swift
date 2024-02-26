@@ -65,6 +65,7 @@ class MasterSyncVM {
         
         
         self.getTodayPlans(params: toSendData, api: .masterData, paramData: param, {[weak self] result in
+            completion(result)
             guard let welf = self else {return}
             switch result {
                 
@@ -76,7 +77,7 @@ class MasterSyncVM {
                 print(error)
             }
             
-            completion(result)
+          
         })
         
     }

@@ -2417,6 +2417,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             cell.clusterView.addTap { [weak self] in
                 guard let welf = self else {return}
+                welf.clusterArr = []
                 let cacheIndex =  welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedHQIndex
                 let searchedCacheIndex = welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].searchedHQIndex
                 var id: String = ""
@@ -2426,28 +2427,44 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     id = welf.headQuatersArr?[cacheIndex ?? 0].id ?? ""
                 }
                 
-                
-                if welf.clusterArr?.count == 0 {
+                welf.clusterArr = DBManager.shared.getTerritory(mapID:  id)
+                if welf.clusterArr?.count == 0 || welf.clusterArr == nil {
+                    Shared.instance.showLoaderInWindow()
                     print("Call api")
                     
                     welf.menuVC.toUpdateDCR(mapID: id) { _ in
                         welf.clusterArr = DBManager.shared.getTerritory(mapID:  id);
+                        
+                        welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
+                        if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
+                            isToproceed = true
+                        }
+                        if isToproceed {
+                            welf.cellType = .cluster
+                            welf.selectedSession = indexPath.row
+                            welf.setPageType(.cluster)
+                        } else {
+                            welf.toCreateToast("Please select work type")
+                        }
+                        Shared.instance.removeLoaderInWindow()
                     }
                     
-                }
-                
-                
-                welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
-                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
-                    isToproceed = true
-                }
-                if isToproceed {
-                    welf.cellType = .cluster
-                    welf.selectedSession = indexPath.row
-                    welf.setPageType(.cluster)
                 } else {
-                    welf.toCreateToast("Please select work type")
+                    welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
+                    if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
+                        isToproceed = true
+                    }
+                    if isToproceed {
+                        welf.cellType = .cluster
+                        welf.selectedSession = indexPath.row
+                        welf.setPageType(.cluster)
+                    } else {
+                        welf.toCreateToast("Please select work type")
+                    }
                 }
+                
+                
+
                 
                 
             }

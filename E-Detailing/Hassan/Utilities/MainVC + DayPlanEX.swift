@@ -83,7 +83,7 @@ extension MainVC {
     //
     //                         }
                              welf.masterVM?.toGetMyDayPlan(type: .myDayPlan) {_ in
-                                 welf.toConfigureMydayPlan()
+                            
                                 // welf.toLoadWorktypeTable()
                                 // welf.configureAddplanBtn(true, isSessionSaved: true)
                                 // welf.configureSaveplanBtn(false)

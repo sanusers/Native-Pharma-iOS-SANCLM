@@ -174,11 +174,9 @@ class MasterSyncVC : UIViewController {
             selectedMasterGroupIndex = nil
            // self.setLoader(pageType: .loading)
             animations = (0...(masterData.count - 1)).map{_ in true}
-
-                fetchMasterDataRecursively(index: 0)
+            self.setLoader(pageType: .loading)
+            fetchMasterDataRecursively(index: 0)
             
-   
-           // _ = masterData.map{self.fetchmasterData(type: $0)}
         }
         
         print(DBManager.shared.getSlide())
@@ -324,10 +322,13 @@ class MasterSyncVC : UIViewController {
     
     
     func fetchMasterDataRecursively(index: Int) {
+        
+      
+        
         guard index < masterData.count else {
             // All tasks completed
             print("DCR list sync completed")
-            
+            self.setLoader(pageType: .loaded)
             return
         }
 
@@ -339,6 +340,7 @@ class MasterSyncVC : UIViewController {
     }
     
     @IBAction func syncAll(_ sender: UIButton) {
+        self.setLoader(pageType: .loading)
        // self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
         selectedMasterGroupIndex = nil
@@ -444,18 +446,19 @@ class MasterSyncVC : UIViewController {
         switch type {
         case .getTP :
             toPostDataToserver(type : type) {[weak self] _ in
+                completion(true)
                 guard let welf = self else {return}
                 if let index = welf.masterData.firstIndex(of: type){
                     welf.animations[index] = false
                     welf.collectionView.reloadData()
                 }
-                completion(true)
+              
             }
            
         case .myDayPlan:
             
             mastersyncVM?.toGetMyDayPlan(type: type) { [weak self] (result) in
-                
+              //  completion(true)
                 guard let welf = self else {return}
                 
                 switch result {
@@ -502,6 +505,8 @@ class MasterSyncVC : UIViewController {
                         welf.animations[index] = false
                         welf.collectionView.reloadData()
                     }
+                    
+                    completion(true)
                 case .failure(let error):
                     welf.toCreateToast(error.rawValue)
                     
@@ -539,15 +544,17 @@ class MasterSyncVC : UIViewController {
                                         slides.append(contentsOf: jsonObjectresponse)
                                       
                                         LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
-  
+                                        
+                                        welf.setLoader(pageType: .navigate, type: .slides)
                                     case MasterInfo.slideBrand:
                                         
                                         LocalStorage.shared.setData(LocalStorage.LocalValue.BrandSlideResponse, data: response.data!)
-                                    
+                                        
+                                        welf.setLoader(pageType: .navigate, type: .slides)
                                     default:
                                         print("Yet to implement")
                                     }
-                                    welf.setLoader(pageType: .navigate)
+                                 
                                 }
                             }
                         }catch {
@@ -556,9 +563,6 @@ class MasterSyncVC : UIViewController {
                     AppDefaults.shared.save(key: .syncTime, value: Date())
                     let date = Date().toString(format: "dd MMM yyyy hh:mm a")
                     welf.lblSyncStatus.text = "Last Sync: " + date
-                    welf.setLoader(pageType: .navigate, type: type)
-                   // welf.setHQlbl()
-                    
                     if let index = welf.masterData.firstIndex(of: type){
                         welf.animations[index] = false
                         welf.collectionView.reloadData()
@@ -577,104 +581,12 @@ class MasterSyncVC : UIViewController {
                     completion(false)
                 }
 
-              
-
             }
             
-//            print(type.getUrl)
-//            print(type.getParams)
-//
-//            let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss ZZZ")
-//
-//            print("date === \(date)")
-//            AF.request(type.getUrl,method: .post,parameters: type.getParams).responseData(){ (response) in
-//
-//                let date1 = Date().toString(format: "yyyy-MM-dd HH:mm:ss ZZZ")
-//
-//                print("date1 === \(date1)")
-//
-//                switch response.result {
-//
-//                    case .success(_):
-//                        do {
-//                            let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-//
-//                            let date1 = Date()
-//                            print(date1)
-//
-//                            print("ssususnbjbo")
-//                            print(apiResponse)
-//                            print("ssusus")
-//
-//
-//                            if let jsonObjectresponse = apiResponse as? [[String : Any]] {
-//                                DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: self.getSFCode)
-//
-//                                if type == MasterInfo.slides || type == MasterInfo.slideBrand {
-//
-//                                    self.loadedSlideInfo.append(type)
-//                                    switch type {
-//                                    case MasterInfo.slides:
-//
-//                                        var slides = AppDefaults.shared.getSlides()
-//                                        slides.removeAll()
-//                                        slides.append(contentsOf: jsonObjectresponse)
-//                                       // AppDefaults.shared.save(key: .slide, value: slides)
-//                                        LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
-//
-//                                    //    self.toLoadPresentationData(type: MasterInfo.slides)
-//
-//
-//                                    case MasterInfo.slideBrand:
-//
-//                                        LocalStorage.shared.setData(LocalStorage.LocalValue.BrandSlideResponse, data: response.data!)
-//                                     //   self.toLoadPresentationData(type: MasterInfo.slideBrand)
-//                                    default:
-//                                        print("Yet to implement")
-//                                    }
-//
-//                                    self.setLoader(pageType: .navigate)
-//                                }
-//                            }else if let responseDic = apiResponse as? [String : Any] {
-//                                DBManager.shared.saveMasterData(type: type, Values: [responseDic],id: self.getSFCode)
-//                            }
-//                        }catch {
-//                            print(error)
-//                        }
-//                    AppDefaults.shared.save(key: .syncTime, value: Date())
-//                    let date = Date().toString(format: "dd MMM yyyy hh:mm a")
-//                    self.lblSyncStatus.text = "Last Sync: " + date
-//                    self.setLoader(pageType: .navigate, type: type)
-//                    case .failure(let error):
-//                    self.setLoader(pageType: .loaded)
-//                        //ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-//                    self.toCreateToast("\(error.localizedDescription)")
-//                        print(error)
-//                        return
-//                }
-//
-//                if let index = self.masterData.firstIndex(of: type){
-//                    self.animations[index] = false
-//                    self.collectionView.reloadData()
-//
-//                 //   self.collectionView.reloadSections(NSIndexSet(index: index) as IndexSet) //, with: .automatic)
-//                }
-//
-//
-//                print("2")
-//                print(response)
-//                print("2")
-//            }
         }
         
-   
-        
-        
-        
-
     }
     
-    // checkifSyncIsCompleted()
 }
 
 
@@ -742,30 +654,16 @@ extension MasterSyncVC : tableViewProtocols {
                            MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup,MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
-    
-     //   _ = masterData.map{self.fetchmasterData(type: $0)}
         
-        let dispatchgroup = DispatchGroup()
-        for masterType in masterData {
-      
-            dispatchgroup.enter()
+            self.setLoader(pageType: .loading)
 
-        
-            fetchmasterData(type: masterType) { _ in
-            
-                dispatchgroup.leave()
-            }
+            fetchMasterDataRecursively(index: 0)
 
-        
-      
-        }
-        
-        dispatchgroup.notify(queue: .main) {
 
             print("DCR list sync completed")
          
        
-        }
+
         
         
     }
@@ -944,27 +842,14 @@ extension MasterSyncVC : collectionViewProtocols{
         animations = (0...(masterData.count - 1)).map{_ in true}
         self.collectionView.reloadData()
       //  _ = masterData.map{self.fetchmasterData(type: $0)}
-        let dispatchgroup = DispatchGroup()
-        for masterType in masterData {
-      
-            dispatchgroup.enter()
-
+        fetchMasterDataRecursively(index: 0)
         
-            fetchmasterData(type: masterType) { _ in
-            
-                dispatchgroup.leave()
-            }
+      //  dispatchgroup.notify(queue: .main) {
 
-        
-      
-        }
-        
-        dispatchgroup.notify(queue: .main) {
-
-            print("DCR list sync completed")
+   //         print("DCR list sync completed")
          
        
-        }
+     //   }
         
     }
     

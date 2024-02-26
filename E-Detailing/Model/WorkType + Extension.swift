@@ -237,7 +237,7 @@ extension WorkType {
 
 extension Territory {
     
-    func setValues(fromDictionary dictionary: [String:Any],id : String)    {
+    func setValues(fromDictionary dictionary: [String:Any],mapID : String)    {
         if let codeValue = dictionary["Code"] as? String{
             code = codeValue
         }
@@ -253,6 +253,6 @@ extension Territory {
         if let sfCodeValue = dictionary["SF_Code"] as? String{
             sfCode = sfCodeValue
         }
-        mapId = id
+        mapId = mapID
     }
 }

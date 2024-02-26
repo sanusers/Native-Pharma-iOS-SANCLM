@@ -651,11 +651,13 @@ class TourPlanView: BaseView {
         
         self.tempArrofPlan = thisMonthPaln
         
-      
-        worksPlanTable.delegate = self
-        worksPlanTable.dataSource = self
-        worksPlanTable.reloadData()
-        self.tourPlanCalander.collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.worksPlanTable.delegate = self
+            self.worksPlanTable.dataSource = self
+            self.worksPlanTable.reloadData()
+            self.tourPlanCalander.collectionView.reloadData()
+        }
+
       //  let indexpath = IndexPath(row: 0, section: 0)
       //  worksPlanTable.scrollToRow(at: indexpath, at: .top, animated: false)
         
@@ -955,7 +957,7 @@ class TourPlanView: BaseView {
             dump(includedSessionArr)
            // let  temptpArray =  TourPlanArr()
            // temptpArray.arrOfPlan = includedSessionArr
-        AppDefaults.shared.tpArry.arrOfPlan.removeAll()
+             AppDefaults.shared.tpArry.arrOfPlan.removeAll()
             AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
         if AppDefaults.shared.eachDatePlan.tourPlanArr.count == 0 {
             AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
@@ -965,21 +967,14 @@ class TourPlanView: BaseView {
         }
    
         let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-//        toSetParams(temptpArray.arrOfPlan) { result in
-//            switch result {
-//
-//            case .success(_):
-//                print("Uploaded")
-//            case .failure(_):
-//                print("Not uploaded")
-//            }
-//        }
         if !savefinish {
             print("Error")
          
         } else {
-           
-            toLoadData()
+            DispatchQueue.main.async {
+                self.toLoadData()
+            }
+          
         }
     }
     
@@ -1469,7 +1464,7 @@ class TourPlanView: BaseView {
 
         let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
 
-        if !isAlldatesAppended {
+        if isAlldatesAppended {
             
             let dateString = self.responseHolidaydates
 
@@ -1567,7 +1562,7 @@ class TourPlanView: BaseView {
         } else {
             toLoadData()
         }
-       // toAppendWeeklyoffs(date: holidayDateStr, rawDate: holidayDates, isForHoliday: true)
+     
 
         
         self.selectedDate = ""

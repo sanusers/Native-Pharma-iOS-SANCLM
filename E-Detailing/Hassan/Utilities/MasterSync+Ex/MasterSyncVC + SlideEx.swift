@@ -30,7 +30,7 @@ extension MasterSyncVC {
         case .navigate:
             Shared.instance.removeLoaderInWindow()
             if isFromLaunch {
-                if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.count >= 2 {
+                if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.contains(.slideBrand) && self.loadedSlideInfo.contains(.slides) {
                    
                         moveToDownloadSlide()
                     
