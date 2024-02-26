@@ -36,6 +36,8 @@
 		38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */; };
 		38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */; };
 		38145ECB2B345C6400DD7B4E /* VisitInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC92B345C6400DD7B4E /* VisitInfoTVC.xib */; };
+		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
+		38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */; };
 		384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384ED2BC2A39F8B900285B02 /* AppDefaults.swift */; };
 		385A424A2AFB840600C0A58A /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */; };
 		385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424C2AFBAB6400C0A58A /* View+UX.swift */; };
@@ -338,6 +340,8 @@
 		38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WTsheetCVC.xib; sourceTree = "<group>"; };
 		38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoTVC.swift; sourceTree = "<group>"; };
 		38145EC92B345C6400DD7B4E /* VisitInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VisitInfoTVC.xib; sourceTree = "<group>"; };
+		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
+		38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderCell.swift; sourceTree = "<group>"; };
 		384ED2BC2A39F8B900285B02 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Extensions.swift"; sourceTree = "<group>"; };
 		385A424C2AFBAB6400C0A58A /* View+UX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+UX.swift"; sourceTree = "<group>"; };
@@ -719,6 +723,7 @@
 				38CA1FE92B61163C00AFCFD2 /* PlayPresentationView.swift */,
 				386BEA112B7383830083D61F /* previewHomeView.swift */,
 				38EF4C6A2B74D7B700F78F2E /* SpecifiedMenuView.swift */,
+				38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -737,6 +742,7 @@
 				38E659802B33072D00E7BF42 /* Reports */,
 				38E48D332B14AA9A00878DA9 /* TourPlan */,
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
+				38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -1567,6 +1573,7 @@
 				3801D4972B4ECFB700A9740F /* HomeSideMenuMenuView.swift in Sources */,
 				38FAA15B2B7F229200714AA2 /* TourPlanVM.swift in Sources */,
 				38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */,
+				38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */,
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
 				38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */,
 				38D528AA2A9A0AE600AD3F78 /* NearMeVC.swift in Sources */,
@@ -1706,6 +1713,7 @@
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
 				38EF4C662B749DAE00F78F2E /* BrandsPreviewCVC.swift in Sources */,
 				38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */,
+				38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */,
 				385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */,
 				38E8B5DA2B0B703000C40042 /*  SessionResponseVM.swift in Sources */,
 				38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */,

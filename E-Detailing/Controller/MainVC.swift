@@ -449,8 +449,13 @@ typealias collectionViewProtocols = UICollectionViewDelegate & UICollectionViewD
 typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 
 class MainVC : UIViewController {
-    
-    
+    private lazy var today: Date = {
+        return Date()
+    }()
+    private var currentPage: Date?
+    var isNextMonth = false
+    var isPrevMonth = false
+    var isCurrentMonth = false
     class func initWithStory() -> MainVC {
         let mainVC : MainVC = UIStoryboard.Hassan.instantiateViewController()
         mainVC.userststisticsVM = UserStatisticsVM()
@@ -530,6 +535,8 @@ class MainVC : UIViewController {
     var isRejected = Bool()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     //var selectedSubordinate: Subordinate?
+    var selectedDate: String?
+    var selectedSegment : SegmentType = .workPlan
     var segmentType: [SegmentType] = []
     var selectedSegmentsIndex: Int = 0
     var selectedSessionIndex : Int?
@@ -539,6 +546,7 @@ class MainVC : UIViewController {
         case workPlan = "Work plan"
         case calls = "Calls"
         case outbox = "Outbox"
+        case calender = "Date"
     }
     
     var tableCellheight: CGFloat = 0
@@ -899,7 +907,7 @@ class MainVC : UIViewController {
     
     //@IBOutlet weak var viewRemarks: UIView!
     
-    @IBOutlet weak var calendar: FSCalendar!
+    @IBOutlet weak var tourPlanCalander: FSCalendar!
     
     @IBOutlet weak var viewPcpmChart: UICircularProgressRing!
     
@@ -973,9 +981,35 @@ class MainVC : UIViewController {
     
     @IBOutlet var rejectionVXview: UIVisualEffectView!
     @IBOutlet var rejectionHeight: NSLayoutConstraint!
+    
+    @IBOutlet var viewCallstatus: UIView!
+    
+    @IBOutlet var lblCallStatus: UILabel!
+    
+    @IBOutlet var dateInfoLbl: UILabel!
+    @IBOutlet var calenderHolderVIew: UIView!
+    
+    @IBOutlet var fsCalenderView: UIView!
+    @IBOutlet var btnNext: UIButton!
+    @IBOutlet var prevBtn: UIButton!
+    
+    
+    @IBAction func didTapPrevBtn(_ sender: Any) {
+        self.moveCurrentPage(moveUp: false)
+    }
+    
+    @IBAction func didTapCalNextBtn(_ sender: Any) {
+        self.moveCurrentPage(moveUp: true)
+    }
+    
+    @IBAction func btnCalenderSync(_ sender: Any) {
+        
+    }
+    
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
+    @IBOutlet weak var dayplancalenderVIew: FSCalendar!
     var chartType: ChartType = .doctor
     var cacheDCRindex: Int = 0
     var doctorArr = [HomeData]()
@@ -1362,6 +1396,10 @@ class MainVC : UIViewController {
     
     
     func setupUI() {
+        viewDayPlanStatus.layer.cornerRadius = 5
+        dateInfoLbl.setFont(font: .medium(size: .BODY))
+        dateInfoLbl.textColor = .appTextColor
+        toLoadCalenderData()
         rejectionVXview.backgroundColor = .appLightPink
         closeRejectionVIew.addTap {
             self.toConfigureDynamicHeader(true)
@@ -1590,7 +1628,7 @@ class MainVC : UIViewController {
         
         self.imgProfile.Border_Radius(border_height: 0.0, isborder: false, radius: 50)
         
-        self.updateCalender()
+    //    self.updateCalender()
         
         self.updatePCPMChart()
         
@@ -1601,8 +1639,35 @@ class MainVC : UIViewController {
         
     }
     
-    
-    
+    func toLoadCalenderData() {
+      
+        self.tourPlanCalander.register(MyDayPlanCalenderCell.self, forCellReuseIdentifier: "MyDayPlanCalenderCell")
+        
+        tourPlanCalander.scrollEnabled = false
+        tourPlanCalander.calendarHeaderView.isHidden = true
+        tourPlanCalander.headerHeight = 0 // this makes some extra spacing, but you can try 0 or 1
+        //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
+        tourPlanCalander.rowHeight =  tourPlanCalander.height / 5
+        tourPlanCalander.layer.borderColor = UIColor.appSelectionColor.cgColor
+      //  tourPlanCalander.calendarWeekdayView.weekdayLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+        tourPlanCalander.calendarWeekdayView.weekdayLabels.forEach { label in
+            label.setFont(font: .medium(size: .BODY))
+            label.textColor = .appLightTextColor
+        }
+      //  tourPlanCalander.layer.borderWidth = 1
+      //  tourPlanCalander.layer.cornerRadius = 5
+      //  tourPlanCalander.clipsToBounds = true
+        tourPlanCalander.placeholderType = .none
+        tourPlanCalander.calendarWeekdayView.backgroundColor = .clear
+        self.tourPlanCalander.scrollDirection = .horizontal
+        self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
+        tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
+        tourPlanCalander.delegate = self
+        tourPlanCalander.dataSource = self
+        tourPlanCalander.reloadData()
+     //   mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
+
+    }
     
     
     func toIntegrateChartView(_ type: ChartType, _ index: Int) {
@@ -1636,7 +1701,7 @@ class MainVC : UIViewController {
         
         self.homeLineChartView = ahomeLineChartView
         
-        
+        dateInfoLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
         lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
         
     }
@@ -1644,8 +1709,8 @@ class MainVC : UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.homeLineChartView?.frame = lineChatrtView.bounds
-       // let attr = NSDictionary(object: UIFont(name: "Satoshi-Bold", size: 16)!, forKey: NSAttributedString.Key.font as NSCopying)
-       // segmentControlForDcr.setTitleTextAttributes(attr as? [NSAttributedString.Key : Any] , for: .normal)
+        
+        
     }
     
     deinit {
@@ -1653,22 +1718,6 @@ class MainVC : UIViewController {
     }
     
     @IBAction func sideMenuAction(_ sender: UIButton) {
-        
-        //        if btnHome.isSelected == true {
-        //            self.btnHome.isSelected = false
-        //            UIView.animate(withDuration: 0.5) { [self] in
-        //                self.viewSideMenu.alpha = 0
-        //                self.viewSideMenu.isHidden = true
-        //            }
-        //            return
-        //        }
-        //
-        //        self.viewSideMenu.isHidden = false
-        //        self.viewSideMenu.alpha = 0
-        //        UIView.animate(withDuration: 0.5) {
-        //            self.viewSideMenu.alpha = 1
-        //        }
-        //        self.btnHome.isSelected = true
         
         print("Tapped")
         let menuvc =   HomeSideMenuVC.initWithStory(self)
@@ -1680,21 +1729,11 @@ class MainVC : UIViewController {
     
     @IBAction func dateAction(_ sender: UIButton) {
         
-        //        if btnDate.isSelected == true {
-        //            UIView.animate(withDuration: 0.5) { [self] in
-        //                self.viewDayPlanStatus.alpha = 0
-        //                self.viewDayPlanStatus.isHidden = true
-        //            }
-        //            self.btnDate.isSelected = false
-        //            return
-        //        }
+    
+        self.selectedSegment  = self.selectedSegment  != .calender ?   .calender :   segmentType[selectedSegmentsIndex]
+        self.setSegment(self.selectedSegment)
         
-        self.viewDayPlanStatus.isHidden = false
-        self.viewDayPlanStatus.alpha = 0
-        UIView.animate(withDuration: 0.5) {
-            self.viewDayPlanStatus.alpha = 1
-        }
-        self.btnDate.isSelected = true
+
     }
     
     
@@ -2305,23 +2344,23 @@ class MainVC : UIViewController {
         
     }
     
-    private func updateCalender () {
-        
-        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
-        
-        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
-        
-        self.calendar.appearance.todayColor = UIColor.clear
-        self.calendar.appearance.weekdayTextColor = color
-        self.calendar.appearance.headerTitleColor = headerColor
-        self.calendar.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 18)
-        self.calendar.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 16)
-        self.calendar.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 16)
-        self.calendar.appearance.borderRadius = 0
-        self.calendar.scrollDirection = .vertical
-        self.calendar.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
-        self.calendar.reloadData()
-    }
+//    private func updateCalender () {
+//        
+//        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
+//        
+//        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
+//        
+//        self.calendar.appearance.todayColor = UIColor.clear
+//        self.calendar.appearance.weekdayTextColor = color
+//        self.calendar.appearance.headerTitleColor = headerColor
+//        self.calendar.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 18)
+//        self.calendar.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 16)
+//        self.calendar.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 16)
+//        self.calendar.appearance.borderRadius = 0
+//        self.calendar.scrollDirection = .vertical
+//        self.calendar.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
+//        self.calendar.reloadData()
+//    }
     
     private func updateLinks () {
         
@@ -2451,6 +2490,7 @@ class MainVC : UIViewController {
             viewWorkPlan.isHidden = false
             viewCalls.isHidden = true
             viewOutBox.isHidden = true
+            viewDayPlanStatus.isHidden = true
           //  outboxSegmentHolderView.isHidden = true
           //  callsSegmentHolderVIew.isHidden = true
          toLoadWorktypeTable()
@@ -2466,6 +2506,7 @@ class MainVC : UIViewController {
             viewWorkPlan.isHidden = true
             viewCalls.isHidden = false
             viewOutBox.isHidden = true
+            viewDayPlanStatus.isHidden = true
             toloadCallsTable()
            if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 1
@@ -2478,6 +2519,7 @@ class MainVC : UIViewController {
             viewWorkPlan.isHidden = true
             viewCalls.isHidden = true
             viewOutBox.isHidden = false
+            viewDayPlanStatus.isHidden = true
            // callsSegmentHolderVIew.isHidden = true
             toLoadOutboxTable()
            if isfromSwipe ?? false {
@@ -2485,7 +2527,102 @@ class MainVC : UIViewController {
                 self.segmentsCollection.reloadData()
             }
      
+        case .calender:
+            viewWorkPlan.isHidden = true
+            viewCalls.isHidden = true
+            viewOutBox.isHidden = true
+            viewDayPlanStatus.isHidden = false
         }
+    }
+    
+    private func moveCurrentPage(moveUp: Bool) {
+     
+        let calendar = Calendar.current
+        var dateComponents = DateComponents()
+        dateComponents.month = moveUp ? 1 : -1
+
+      //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
+
+      
+        if moveUp {
+            var isToMoveindex: Int? = nil
+            self.isNextMonth = true
+            if isPrevMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isNextMonth && isCurrentMonth {
+                isToMoveindex = 0
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                isCurrentMonth = false
+            } else {
+                isToMoveindex = 1
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+            }
+            
+            if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+                  print("Next Month:", nextMonth)
+                self.currentPage = nextMonth
+                self.isPrevMonth = false
+              }
+        } else if !moveUp{
+            // Calculate the previous month
+            var isToMoveindex: Int? = nil
+            self.isPrevMonth = true
+            if isNextMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isPrevMonth && isCurrentMonth {
+                isToMoveindex = 0
+                isCurrentMonth = false
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+            } else {
+                isToMoveindex = -1
+                toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+            }
+            if let previousMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+                print("Previous Month:", previousMonth)
+                self.currentPage = previousMonth
+                self.isNextMonth = false
+               
+            }
+        } else {
+            if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
+                print("Previous Month:", currentMonth)
+                self.currentPage = currentMonth
+               
+            }
+        }
+
+        self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
+      //  monthWiseSeperationofSessions(self.currentPage ?? Date())
+    }
+    
+    func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
+        
+        if enableprevBtn && enablenextBtn {
+            prevBtn.alpha = 1
+            prevBtn.isUserInteractionEnabled = true
+            
+            btnNext.alpha = 1
+            btnNext.isUserInteractionEnabled = true
+        } else  if enableprevBtn {
+            prevBtn.alpha = 1
+            prevBtn.isUserInteractionEnabled = true
+            
+            btnNext.alpha = 0.3
+            btnNext.isUserInteractionEnabled = false
+            
+        } else if enablenextBtn {
+            prevBtn.alpha = 0.3
+            prevBtn.isUserInteractionEnabled = false
+            
+            btnNext.alpha = 1
+            btnNext.isUserInteractionEnabled = true
+        }
+        
+     
     }
     
 }
@@ -2555,6 +2692,8 @@ extension MainVC : collectionViewProtocols {
                 case .outbox:
                     
                     welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                case .calender:
+                    print("Yet to implement")
                 }
                 
 
@@ -3489,42 +3628,73 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 
 extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance {
     
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        print(date)
+    
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         
-        self.lblDate.text = date.toString(format: "yyyy-MM-dd HH:mm:")
-        
-        
-        
-        let dateformatter = DateFormatter()
-        let month = DateFormatter()
-        dateformatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM dd, yyyy", options: 0, locale: calendar.locale)
-        month.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM yyyy", options: 0, locale: calendar.locale)
-        
-        
-        self.lblDate.text = dateformatter.string(from: date)
+        print(calendar.currentPage)
+        dateInfoLbl.text = toTrimDate(date: calendar.currentPage , isForMainLabel: true)
+        self.selectedDate = ""
+        //"\(values.month!) \(values.year!)"
+        //
+    }
+    
+    func toTrimDate(date : Date, isForMainLabel: Bool = false) -> String {
         
         
-        UIView.animate(withDuration: 0.5) { [self] in
-            self.viewDayPlanStatus.alpha = 0
-            self.viewDayPlanStatus.isHidden = true
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = isForMainLabel == true ? "MMMM yyyy" : "d"
+        return dateFormatter.string(from: date)
+    }
+    func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
+        // let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
+        let cell = calendar.dequeueReusableCell(withIdentifier: "MyDayPlanCalenderCell", for: date, at: position) as! MyDayPlanCalenderCell
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMMM yyyy"
+        cell.addedIV.backgroundColor = .appLightPink
+      //  let toCompareDate = dateFormatter.string(from: date)
+        cell.addedIV.isHidden = false
+
+        
+        
+        
+      
+        let currentDate = date  // Replace this with your desired date
+        let calendar = Calendar.current
+      //  let components = calendar.dateComponents([.weekday], from: currentDate)
+
+
+        
+      //  cell.addedIV.isHidden = isExist || isForHoliday  ? false : true
+
+        cell.customLabel.text = toTrimDate(date: date)
+        cell.customLabel.textColor = .appTextColor
+        cell.customLabel.setFont(font: .medium(size: .BODY))
+        cell.customLabel.textColor = .appTextColor
+       // cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        cell.titleLabel.isHidden = true
+        cell.shapeLayer.isHidden = true
+    
+        cell.layer.borderColor = UIColor.appSelectionColor.cgColor
+          cell.layer.borderWidth = 0.5
+
+        
+        
+        if selectedDate ==  toTrimDate(date: date, isForMainLabel: true)  {
+            cell.contentHolderView.backgroundColor = .appTextColor
+            cell.customLabel.textColor = .appWhiteColor
+        } else {
+            cell.contentHolderView.backgroundColor = .clear
+            cell.customLabel.textColor = .appTextColor
         }
         
-    }
-    
-    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
-        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.65))
-        return color
-    }
-    
-    
-    func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
-        let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
+
+        cell.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: true)
+            welf.tourPlanCalander.reloadData()
+        }
         
-        let cell = calendar.dequeueReusableCell(withIdentifier: "DateCell", for: date, at: position)
-        cell.layer.borderColor = borderColor.cgColor
-        cell.layer.borderWidth = 1
-        cell.layer.masksToBounds = true
         return cell
     }
     

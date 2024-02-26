@@ -2862,7 +2862,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 
                 cell.addTap { [self] in
-                    
+                    sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID = [String: Bool]()
                     if self.isSearched {
                         var isToremove: Bool = false
                       //  let cacheIndex = sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex
