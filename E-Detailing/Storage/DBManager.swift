@@ -14,7 +14,8 @@ class DBManager {
     static let shared = DBManager()
     
     var existingDates = [String]()
-    
+    var  weeklyOff : Weeklyoff?
+    var  holidays : [Holidays]?
     
     // MARK: - Core Data stack
 
@@ -283,33 +284,6 @@ class DBManager {
                 sessiondetArr.sessionDetails.append(sessionDetail)
            }
             
-//            if ApisessionDetails.wtCode3 != "" {
-//                let sessionDetail = SessionDetail()
-//                sessionDetail.FWFlg = ApisessionDetails.fwFlg3
-//                sessionDetail.isForFieldWork = ApisessionDetails.fwFlg3 == "Y" || ApisessionDetails.fwFlg3 == "F" ? true : false
-//                sessionDetail.WTCode = ApisessionDetails.wtCode3
-//                sessionDetail.WTName = ApisessionDetails.wtName3
-//                sessionDetail.clusterCode = ApisessionDetails.clusterCode3
-//                //== "" ?  ApisessionDetails.clusterSFS : ApisessionDetails.clusterCode3
-//                sessionDetail.clusterName = ApisessionDetails.clusterName3
-//                //== "" ?  ApisessionDetails.clusterSFNms : ApisessionDetails.clusterName3
-//                sessionDetail.drCode = ApisessionDetails.drThreeCode
-//                sessionDetail.drName = ApisessionDetails.drThreeName
-//               // sessionDetail.hospCode = ApisessionDetails.h
-//              //  sessionDetail.hospName = ApisessionDetails.h
-//                sessionDetail.HQCodes = ApisessionDetails.hqCodes3
-//                sessionDetail.HQNames = ApisessionDetails.hqNames3
-//                sessionDetail.jwCode = ApisessionDetails.jwCodes3
-//                sessionDetail.jwName = ApisessionDetails.jwNames3
-//                sessionDetail.remarks = ApisessionDetails.dayRemarks3
-//                sessionDetail.stockistCode = ApisessionDetails.stockistThreeCode
-//                sessionDetail.stockistName = ApisessionDetails.stockistThreeName
-//                sessionDetail.chemName = ApisessionDetails.chemThreeName
-//                sessionDetail.chemCode = ApisessionDetails.chemThreeCode
-//              //  sessionDetail.unListedDrCode = ApisessionDetails.unListedDrCode
-//               // sessionDetail.unListedDrName = ApisessionDetails.unListedDrName
-//                sessiondetArr.sessionDetails.append(sessionDetail)
-//           }
             allDayPlans.append(sessiondetArr)
             
  
@@ -323,6 +297,7 @@ class DBManager {
         AppDefaults.shared.tpArry.arrOfPlan = allDayPlans
  
         
+        
         AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
         
         
@@ -330,18 +305,7 @@ class DBManager {
         AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
         
         
-        
-        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-        if !initialsavefinish {
-            print("Error")
-            
 
-            
-        } else {
-            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-            
-            dump(AppDefaults.shared.eachDatePlan)
-        }
         
         
         if !(modal.current.isEmpty) {
@@ -406,13 +370,363 @@ class DBManager {
            let missingIndices = findMissingMonths(apiMonths: apiMnths, currentMonthRange: currentMnthRange)
             LocalStorage.shared.storeOffset(getOffsetType(for: missingIndices))
         }
+        var offsets: LocalStorage.Offsets = .all
+       // var months = [String]()
+        var weeklyOffDates = [String]()
+        var weeklyOffRawDates = [Date]()
+        var responseHolidaydates = [String]()
+      //  var existingDates = [String]()
+
+        if let storedOffset = LocalStorage.shared.retrieveOffset() {
+            print("Stored offset:", storedOffset)
+            offsets = storedOffset
+        } else {
+            print("Offset not found.")
+        }
         
-      //  LocalStorage
-        completion(true)
+       // self.offsets = LocalStorage.shared.getOffset(key: LocalStorage.LocalValue.offsets)
+        let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
+        weeklyOff = weeklyoffSetupArr[0]
+//        let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0")
+//        let weekoffDates = getDatesForDayIndex(weekoffIndex ?? 0, numberOfMonths: 3)
+        
+        let holidaysSetupArr = DBManager.shared.getHolidays()
+        holidays = holidaysSetupArr
+       
+        responseHolidaydates.removeAll()
+        
+
+        holidays?.forEach({ aholiday in
+            responseHolidaydates.append(aholiday.holiday_Date ?? "")
+           
+        })
+        
+        
+        let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
+
+        if !isAlldatesAppended {
+            
+            let dateString = responseHolidaydates
+            
+            var holidayDates = [Date]()
+            var holidayDateStr = [String]()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            holidayDates.removeAll()
+            dateString.forEach { aDate in
+                if let date = dateFormatter.date(from: aDate) {
+                    // Now 'date' contains the Date object
+                    print(date)
+                    dateFormatter.dateFormat = "yyyy"
+                    let holidayYear = dateFormatter.string(from: date)
+                    let thisYear = dateFormatter.string(from:  Date())
+                    
+                    dateFormatter.dateFormat = "MMMM"
+                    
+                    let toRemoveMonth =  dateFormatter.string(from: date)
+                    
+                    if holidayYear == thisYear && toRemoveMonth != "January" {
+                        holidayDates.append(date)
+                    }
+                    
+                } else {
+                    print("Failed to convert string to Date.")
+                }
+            }
+            holidayDateStr.removeAll()
+            holidayDates.forEach { rawDate in
+                holidayDateStr.append(toModifyDate(date: rawDate))
+            }
+            var isHolidayDict = [String: Bool]()
+            holidayDates.forEach { aDate in
+                
+                let dateStr = toModifyDate(date: aDate)
+                
+                isHolidayDict[dateStr] = true
+            }
+            dump(isHolidayDict)
+            
+            
+            
+            let weekoffIndex = Int(weeklyOff?.holiday_Mode ?? "0") ?? 0
+            
+            var monthIndex : [Int] = []
+            
+            switch offsets {
+                
+            case .all:
+                monthIndex =  [-1, 0, 1]
+            case .current:
+                monthIndex =  [0]
+            case .next:
+                monthIndex =  [1]
+            case .previous:
+                monthIndex =  [-1]
+                
+            case .nextAndPrevious:
+                monthIndex =  [-1, 1]
+            case .currentAndNext:
+                monthIndex =  [0, 1]
+            case .currentAndPrevious:
+                monthIndex =  [-1, 0]
+            case .none:
+                monthIndex =  []
+            }
+            
+            let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex + 1)
+            
+            // let weekoffDates = getDatesForDayIndex(weekoffIndex + 1, self.offsets)
+            weeklyOffRawDates.append(contentsOf: weekoffDates)
+            weeklyOffDates.removeAll()
+            weeklyOffRawDates.forEach { rawDate in
+                weeklyOffDates.append(toModifyDate(date: rawDate))
+            }
+            weeklyOffRawDates.forEach { aWeekoffDate in
+                let aweekoffStrr = toModifyDate(date: aWeekoffDate)
+                isHolidayDict[aweekoffStrr] = false
+            }
+            
+            dump(isHolidayDict)
+            
+            holidayDates.forEach { aHoliday in
+                weeklyOffRawDates.append(aHoliday)
+            }
+            
+            holidayDateStr.forEach { aholidayStr in
+                weeklyOffDates.append(aholidayStr)
+            }
+            
+            AppDefaults.shared.eachDatePlan.weekoffsDates.append(contentsOf:  holidayDates)
+            AppDefaults.shared.eachDatePlan.weekoffsDates.append(contentsOf:  weekoffDates)
+            
+            toAppendWeeklyoffs(date: weeklyOffDates, rawDate: weeklyOffRawDates, isHolidayDict: isHolidayDict, eachDatePlan:   AppDefaults.shared.eachDatePlan)
+            completion(true)
+        } else {
+            
+            
+            let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+            if !initialsavefinish {
+                print("Error")
+                
+                
+                
+            } else {
+                AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+                
+                dump(AppDefaults.shared.eachDatePlan)
+            }
+            
+            completion(true)
+        }
+
+       
         
         
         
     }
+    
+    func getFirstDayOfCurrentMonth() -> Date? {
+        let calendar = Calendar.current
+        let currentDate = Date()
+
+        // Get the components (year, month, day) of the current date
+        let components = calendar.dateComponents([.year, .month], from: currentDate)
+
+        // Create a new date using the components for the first day of the current month
+        if let firstDayOfMonth = calendar.date(from: components) {
+            return firstDayOfMonth
+        } else {
+            return nil
+        }
+    }
+    
+    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
+        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
+        let calendar = Calendar.current
+        
+        var saturdays: [Date] = []
+        
+        for monthOffset in months {
+            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
+                continue
+            }
+            
+            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
+            
+            for day in monthRange.lowerBound..<monthRange.upperBound {
+                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
+                    continue
+                }
+                
+                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+                    saturdays.append(date)
+                }
+            }
+        }
+        
+        return saturdays
+    }
+    
+    
+    func toAppendWeeklyoffs(date: [String], rawDate: [Date], isHolidayDict: [String: Bool], eachDatePlan: EachDatePlan) {
+        
+        
+        
+        let includedSessionArr = eachDatePlan.tourPlanArr[0].arrOfPlan
+        
+        var  dates = [String]()
+        
+        
+        guard var includedSessionArr = includedSessionArr else {return}
+        includedSessionArr.forEach { SessionDetailsArr in
+            dates.append(SessionDetailsArr.date)
+        }
+        
+        
+        eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
+            
+            
+          //  let dateArray = [/* Your Date array */]
+          //  let dateBoolDictionary = [Date: Bool](/* Your [Date: Bool] dictionary */)
+            let aSessionDetArr = SessionDetailsArr()
+            var isTrue = Bool()
+            let dateStr = toModifyDate(date: adate)
+            
+            let aSession = SessionDetail()
+            aSession.isForFieldWork = false
+            
+            
+            isHolidayDict.forEach { (key, value) in
+                if key == dateStr && value == true {
+                    isTrue = true
+                    
+                    self.holidays?.forEach({ aholiday in
+                        var toCompareStr = ""
+                        let dateString = aholiday.holiday_Date
+
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+                        if let date = dateFormatter.date(from: dateString ?? "") {
+                            let outputFormatter = DateFormatter()
+                            outputFormatter.dateFormat = "d MMMM yyyy"
+                            
+                            let formattedString = outputFormatter.string(from: date)
+                            print(formattedString) // Output: "1 January 2023"
+                            toCompareStr = formattedString
+                        } else {
+                            print("Failed to convert string to Date.")
+                        }
+                        
+                        if toCompareStr == dateStr {
+                            aSession.WTCode = aholiday.wtcode
+                            //self.weeklyOff?.wtcode ?? ""
+                            aSession.WTName =  aholiday.wtname
+                        }
+                    })
+                    aSessionDetArr.isForWeekoff = false
+                    aSessionDetArr.isForHoliday = true
+                } else {
+                    aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+                    aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+                    aSessionDetArr.isForWeekoff = true
+                    aSessionDetArr.isForHoliday = false
+                }
+                
+                
+                
+                
+            }
+        
+
+          
+            
+          // let isTrue = isHolidayDict[dateStr]
+
+
+      
+
+//            
+//            if isTrue {
+//                
+//                self.holidays?.forEach({ aholiday in
+//                    var toCompareStr = ""
+//                    let dateString = aholiday.holiday_Date
+//
+//                    let dateFormatter = DateFormatter()
+//                    dateFormatter.dateFormat = "yyyy-MM-dd"
+//
+//                    if let date = dateFormatter.date(from: dateString ?? "") {
+//                        let outputFormatter = DateFormatter()
+//                        outputFormatter.dateFormat = "d MMMM yyyy"
+//                        
+//                        let formattedString = outputFormatter.string(from: date)
+//                        print(formattedString) // Output: "1 January 2023"
+//                        toCompareStr = formattedString
+//                    } else {
+//                        print("Failed to convert string to Date.")
+//                    }
+//                    
+//                    if toCompareStr == dateStr {
+//                        aSession.WTCode = aholiday.wtcode
+//                        //self.weeklyOff?.wtcode ?? ""
+//                        aSession.WTName =  aholiday.wtname
+//                    }
+//                })
+//                
+//
+//                aSessionDetArr.isForWeekoff = false
+//                aSessionDetArr.isForHoliday = true
+//            } else {
+//                aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+//                aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+//                aSessionDetArr.isForWeekoff = true
+//                aSessionDetArr.isForHoliday = false
+//            }
+            
+    
+            aSessionDetArr.date = toModifyDate(date: adate)
+            aSessionDetArr.rawDate = adate
+            
+            aSessionDetArr.isDataSentToApi = false
+            aSessionDetArr.sessionDetails.append(aSession)
+            
+            if !dates.contains(aSessionDetArr.date) {
+                includedSessionArr.append(aSessionDetArr)
+            }
+            
+           
+        }
+        
+        dump(includedSessionArr)
+        
+        AppDefaults.shared.tpArry.arrOfPlan = includedSessionArr
+ 
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr.removeAll()
+        
+        
+        
+        AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
+        
+        
+        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+        if !initialsavefinish {
+            print("Error")
+            
+
+            
+        } else {
+            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+            
+            dump(AppDefaults.shared.eachDatePlan)
+        }
+        
+    }
+    
+    
+
+    
     
     func findMissingMonths(apiMonths: [Int], currentMonthRange: [Int]) -> [Int] {
         let allMonths = Set(apiMonths)

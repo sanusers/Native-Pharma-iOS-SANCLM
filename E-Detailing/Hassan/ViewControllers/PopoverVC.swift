@@ -4,6 +4,10 @@ import UIKit
 
 protocol PopOverVCDelegate: AnyObject {
     func didTapRow(_ index: Int, _ SelectedArrIndex: Int)
+    
+    func logoutAction()
+    func changePasswordAction()
+    
 }
 
 
@@ -15,6 +19,7 @@ class PopOverVC: UIViewController {
         case HomeGraph
         case calls
         case presentation
+        case profile
     }
     
     
@@ -26,22 +31,49 @@ class PopOverVC: UIViewController {
         case .TP:
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
+            userProfileInfoView.isHidden = true
             toLOadData()
         case .HomeGraph:
+            userProfileInfoView.isHidden = true
             self.contentTable.isHidden = true
             graphInfoView.isHidden = false
             setupUI()
             
         case .calls:
+            userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             toLOadData()
         case .presentation:
+            userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             toLOadData()
+        case .profile:
+            userProfileInfoView.isHidden = false
+          
+            self.contentTable.isHidden = true
+            graphInfoView.isHidden = true
+            setProfileInfo()
         }
     }
+    
+    @IBOutlet var userProfileInfoView: UIView!
+    
+    @IBOutlet var userDesignationLbl: UILabel!
+    
+    @IBOutlet var userHQlbl: UILabel!
+    
+    @IBOutlet var lblChangePassword: UILabel!
+    
+    @IBOutlet var lblLogout: UILabel!
+    @IBOutlet var userNameLbl: UILabel!
+    @IBOutlet var userIV: UIImageView!
+    
+    @IBOutlet var seperatorView: UIView!
+    @IBOutlet var viewChangePassword: UIView!
+    
+    @IBOutlet var viewLogout: UIView!
     
     @IBOutlet var graphInfoView: UIView!
     
@@ -62,7 +94,7 @@ class PopOverVC: UIViewController {
     var pageType: PageType = .TP
     var totalCalls: Int = 0
     var avgCalls: Int = 0
-    var color : UIColor? = .appGreen
+    var color : UIColor? = .appWhiteColor
     override func viewDidLoad() {
         super.viewDidLoad()
        
@@ -71,7 +103,52 @@ class PopOverVC: UIViewController {
 
     
     
+    func setProfileInfo() {
+        seperatorView.backgroundColor = .appSelectionColor
+        userIV.layer.cornerRadius = userIV.height / 2
+        lblChangePassword.setFont(font: .medium(size: .BODY))
+        lblLogout.setFont(font: .medium(size: .BODY))
+        
+        lblLogout.textColor = .appTextColor
+        lblChangePassword.textColor = .appTextColor
+        
+        userNameLbl.setFont(font: .bold(size: .BODY))
+        userNameLbl.textColor = .appTextColor
+        userDesignationLbl.setFont(font: .medium(size: .SMALL))
+        userDesignationLbl.textColor = .appLightTextColor
+        userHQlbl.setFont(font: .medium(size: .SMALL))
+        userHQlbl.textColor = .appGreen
+        
+       let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        userNameLbl.text = appsetup.sfName
+        userDesignationLbl.text = appsetup.dsName
+        userHQlbl.text = appsetup.hqName
+        
+        viewChangePassword.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.dismissPopover()
+          
+        }
+        
+        
+        
+        viewLogout.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.delegate?.logoutAction()
+        }
+        
+    }
+    
+    func dismissPopover() {
+        dismiss(animated: true) { [weak self] in
+            guard let welf = self else {return}
+            welf.delegate?.changePasswordAction()
+        }
+    }
+    
     func setupUI() {
+
         
         graphInfoView.backgroundColor = color
         graphInfoView.layer.cornerRadius = 5
@@ -118,7 +195,7 @@ class PopOverVC: UIViewController {
         }
     
      
-        popover.backgroundColor = .appGreen
+        popover.backgroundColor = .appWhiteColor
         popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
         
         
@@ -183,6 +260,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
             return 40
         case .presentation:
             return 40
+        case .profile:
+            return 0
         }
         
    

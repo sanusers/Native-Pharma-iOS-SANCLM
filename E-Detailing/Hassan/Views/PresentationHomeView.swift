@@ -11,6 +11,14 @@ import Foundation
 import UIKit
 
 extension PresentationHomeView: PopOverVCDelegate {
+    func logoutAction() {
+        print("Log out")
+    }
+    
+    func changePasswordAction() {
+        print("Change password")
+    }
+    
     
     func toSetupPlayerModel(_ index: Int) -> [SlidesModel] {
         var selectedSlidesModelArr = [SlidesModel]()

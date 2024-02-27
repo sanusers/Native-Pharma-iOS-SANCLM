@@ -81,6 +81,8 @@
 		38C1C43B2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C1C43A2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib */; };
 		38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C25E9F2B64D7E300A8E076 /* DeletePHIAlertview.swift */; };
 		38C25EA22B64D88E00A8E076 /* DeletePHIAlertview.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C25EA12B64D88E00A8E076 /* DeletePHIAlertview.xib */; };
+		38C41C2B2B8E06F40013361E /* ChangePasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C41C2A2B8E06F40013361E /* ChangePasswordView.xib */; };
+		38C41C2D2B8E0AFA0013361E /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C41C2C2B8E0AFA0013361E /* ChangePasswordView.swift */; };
 		38C4245E2A2B4DB1004A89EF /* MasterSyncCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4245D2A2B4DB1004A89EF /* MasterSyncCell.xib */; };
 		38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4245F2A2B4DC5004A89EF /* MasterSyncCell.swift */; };
 		38C44CC42A404DB6009D7B68 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C44CC32A404DB6009D7B68 /* DBManager.swift */; };
@@ -384,6 +386,8 @@
 		38C1C43A2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleInputTableViewCell.xib; sourceTree = "<group>"; };
 		38C25E9F2B64D7E300A8E076 /* DeletePHIAlertview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePHIAlertview.swift; sourceTree = "<group>"; };
 		38C25EA12B64D88E00A8E076 /* DeletePHIAlertview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeletePHIAlertview.xib; sourceTree = "<group>"; };
+		38C41C2A2B8E06F40013361E /* ChangePasswordView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChangePasswordView.xib; sourceTree = "<group>"; };
+		38C41C2C2B8E0AFA0013361E /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		38C4245D2A2B4DB1004A89EF /* MasterSyncCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MasterSyncCell.xib; sourceTree = "<group>"; };
 		38C4245F2A2B4DC5004A89EF /* MasterSyncCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncCell.swift; sourceTree = "<group>"; };
 		38C44CC32A404DB6009D7B68 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -580,8 +584,8 @@
 		38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanResponseModel.swift; sourceTree = "<group>"; };
 		38FAA16C2B7F255600714AA2 /* CommonStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStructs.swift; sourceTree = "<group>"; };
 		38FAA16E2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC + DayPlanEX.swift"; sourceTree = "<group>"; };
-		38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MyDayPlanTVC.xib; path = MyDayPlan/MyDayPlanTVC.xib; sourceTree = "<group>"; };
-		38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyDayPlanTVC.swift; path = MyDayPlan/MyDayPlanTVC.swift; sourceTree = "<group>"; };
+		38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyDayPlanTVC.xib; sourceTree = "<group>"; };
+		38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyDayPlanTVC.swift; sourceTree = "<group>"; };
 		38FAA1762B7F5CB200714AA2 /* HQModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HQModel.swift; sourceTree = "<group>"; };
 		38FADFA82B3BE11400632C2F /* WorkTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTypeCell.swift; sourceTree = "<group>"; };
 		38FADFA92B3BE11400632C2F /* WorkTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkTypeCell.xib; sourceTree = "<group>"; };
@@ -731,8 +735,8 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
-				38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */,
-				38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */,
+				38C41C292B8E06D30013361E /* ChangePassword */,
+				38843A092B8DE21400D39E16 /* MyDayPlanCells */,
 				386BEA0A2B7353B60083D61F /* SlidePreview */,
 				388546452B5FE617005FC9FC /* Presentation */,
 				3885463C2B5FC739005FC9FC /* WorktypeCells */,
@@ -742,7 +746,6 @@
 				38E659802B33072D00E7BF42 /* Reports */,
 				38E48D332B14AA9A00878DA9 /* TourPlan */,
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
-				38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -758,6 +761,16 @@
 				38EF4C652B749DAE00F78F2E /* BrandsPreviewCVC.xib */,
 			);
 			path = SlidePreview;
+			sourceTree = "<group>";
+		};
+		38843A092B8DE21400D39E16 /* MyDayPlanCells */ = {
+			isa = PBXGroup;
+			children = (
+				38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */,
+				38FAA1702B7F263500714AA2 /* MyDayPlanTVC.xib */,
+				38FAA1712B7F263500714AA2 /* MyDayPlanTVC.swift */,
+			);
+			path = MyDayPlanCells;
 			sourceTree = "<group>";
 		};
 		3885463C2B5FC739005FC9FC /* WorktypeCells */ = {
@@ -890,6 +903,15 @@
 				38C25E9F2B64D7E300A8E076 /* DeletePHIAlertview.swift */,
 			);
 			path = "Common alert";
+			sourceTree = "<group>";
+		};
+		38C41C292B8E06D30013361E /* ChangePassword */ = {
+			isa = PBXGroup;
+			children = (
+				38C41C2A2B8E06F40013361E /* ChangePasswordView.xib */,
+				38C41C2C2B8E0AFA0013361E /* ChangePasswordView.swift */,
+			);
+			path = ChangePassword;
 			sourceTree = "<group>";
 		};
 		38C4245C2A2B4D1F004A89EF /* View */ = {
@@ -1389,6 +1411,7 @@
 				B287E68029F2A20F0097974D /* Satoshi-BoldItalic.otf in Resources */,
 				38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */,
 				38DD14B82B4FEEF60036384F /* HomeSideMenuTVC.xib in Resources */,
+				38C41C2B2B8E06F40013361E /* ChangePasswordView.xib in Resources */,
 				B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */,
 				38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */,
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
@@ -1555,6 +1578,7 @@
 				38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
 				38FAA15E2B7F229200714AA2 /* ReportsVM.swift in Sources */,
+				38C41C2D2B8E0AFA0013361E /* ChangePasswordView.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,

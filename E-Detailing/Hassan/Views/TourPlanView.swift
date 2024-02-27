@@ -13,6 +13,15 @@ import FSCalendar
 import CoreData
 
 extension TourPlanView: PopOverVCDelegate {
+    
+    func logoutAction() {
+        print("Log out")
+    }
+    
+    func changePasswordAction() {
+        print("Change password")
+    }
+    
     func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
         if index == 0 {
             let modal = self.tempArrofPlan?[SelectedArrIndex]
@@ -1464,104 +1473,104 @@ class TourPlanView: BaseView {
 
         let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
 
-        if isAlldatesAppended {
-            
-            let dateString = self.responseHolidaydates
-
-            var holidayDates = [Date]()
-            var holidayDateStr = [String]()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            holidayDates.removeAll()
-            dateString.forEach { aDate in
-                if let date = dateFormatter.date(from: aDate) {
-                    // Now 'date' contains the Date object
-                    print(date)
-                    dateFormatter.dateFormat = "yyyy"
-                    let holidayYear = dateFormatter.string(from: date)
-                    let thisYear = dateFormatter.string(from: self.currentPage ?? Date())
-                    
-                    dateFormatter.dateFormat = "MMMM"
-                    
-                    let toRemoveMonth =  dateFormatter.string(from: date)
-                    
-                    if holidayYear == thisYear && toRemoveMonth != "January" {
-                        holidayDates.append(date)
-                    }
-                   
-                } else {
-                    print("Failed to convert string to Date.")
-                }
-            }
-            holidayDateStr.removeAll()
-            holidayDates.forEach { rawDate in
-                holidayDateStr.append(toModifyDate(date: rawDate))
-            }
-            var isHolidayDict = [String: Bool]()
-            holidayDates.forEach { aDate in
-                
-                let dateStr = toModifyDate(date: aDate)
-                
-                isHolidayDict[dateStr] = true
-            }
-            dump(isHolidayDict)
-            
-            
-            
-            let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0") ?? 0
-            
-           var monthIndex : [Int] = []
-            
-            switch self.offsets {
-                
-            case .all:
-                monthIndex =  [-1, 0, 1]
-            case .current:
-                monthIndex =  [0]
-            case .next:
-                monthIndex =  [1]
-            case .previous:
-                monthIndex =  [-1]
-                
-            case .nextAndPrevious:
-                monthIndex =  [-1, 1]
-            case .currentAndNext:
-                monthIndex =  [0, 1]
-            case .currentAndPrevious:
-                monthIndex =  [-1, 0]
-            case .none:
-                monthIndex =  []
-            }
-            
-            let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex + 1)
-            
-           // let weekoffDates = getDatesForDayIndex(weekoffIndex + 1, self.offsets)
-            self.weeklyOffRawDates.append(contentsOf: weekoffDates)
-            weeklyOffDates.removeAll()
-            self.weeklyOffRawDates.forEach { rawDate in
-                weeklyOffDates.append(toModifyDate(date: rawDate))
-            }
-            weeklyOffRawDates.forEach { aWeekoffDate in
-                let aweekoffStrr = toModifyDate(date: aWeekoffDate)
-                isHolidayDict[aweekoffStrr] = false
-            }
-           
-            dump(isHolidayDict)
-            
-            holidayDates.forEach { aHoliday in
-                weeklyOffRawDates.append(aHoliday)
-            }
-            
-            holidayDateStr.forEach { aholidayStr in
-                weeklyOffDates.append(aholidayStr)
-            }
-            
-            
-            
-            toAppendWeeklyoffs(date: self.weeklyOffDates, rawDate: self.weeklyOffRawDates, isHolidayDict: isHolidayDict)
-        } else {
+//        if isAlldatesAppended {
+//            
+//            let dateString = self.responseHolidaydates
+//
+//            var holidayDates = [Date]()
+//            var holidayDateStr = [String]()
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd"
+//            holidayDates.removeAll()
+//            dateString.forEach { aDate in
+//                if let date = dateFormatter.date(from: aDate) {
+//                    // Now 'date' contains the Date object
+//                    print(date)
+//                    dateFormatter.dateFormat = "yyyy"
+//                    let holidayYear = dateFormatter.string(from: date)
+//                    let thisYear = dateFormatter.string(from: self.currentPage ?? Date())
+//                    
+//                    dateFormatter.dateFormat = "MMMM"
+//                    
+//                    let toRemoveMonth =  dateFormatter.string(from: date)
+//                    
+//                    if holidayYear == thisYear && toRemoveMonth != "January" {
+//                        holidayDates.append(date)
+//                    }
+//                   
+//                } else {
+//                    print("Failed to convert string to Date.")
+//                }
+//            }
+//            holidayDateStr.removeAll()
+//            holidayDates.forEach { rawDate in
+//                holidayDateStr.append(toModifyDate(date: rawDate))
+//            }
+//            var isHolidayDict = [String: Bool]()
+//            holidayDates.forEach { aDate in
+//                
+//                let dateStr = toModifyDate(date: aDate)
+//                
+//                isHolidayDict[dateStr] = true
+//            }
+//            dump(isHolidayDict)
+//            
+//            
+//            
+//            let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0") ?? 0
+//            
+//           var monthIndex : [Int] = []
+//            
+//            switch self.offsets {
+//                
+//            case .all:
+//                monthIndex =  [-1, 0, 1]
+//            case .current:
+//                monthIndex =  [0]
+//            case .next:
+//                monthIndex =  [1]
+//            case .previous:
+//                monthIndex =  [-1]
+//                
+//            case .nextAndPrevious:
+//                monthIndex =  [-1, 1]
+//            case .currentAndNext:
+//                monthIndex =  [0, 1]
+//            case .currentAndPrevious:
+//                monthIndex =  [-1, 0]
+//            case .none:
+//                monthIndex =  []
+//            }
+//            
+//            let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex + 1)
+//            
+//           // let weekoffDates = getDatesForDayIndex(weekoffIndex + 1, self.offsets)
+//            self.weeklyOffRawDates.append(contentsOf: weekoffDates)
+//            weeklyOffDates.removeAll()
+//            self.weeklyOffRawDates.forEach { rawDate in
+//                weeklyOffDates.append(toModifyDate(date: rawDate))
+//            }
+//            weeklyOffRawDates.forEach { aWeekoffDate in
+//                let aweekoffStrr = toModifyDate(date: aWeekoffDate)
+//                isHolidayDict[aweekoffStrr] = false
+//            }
+//           
+//            dump(isHolidayDict)
+//            
+//            holidayDates.forEach { aHoliday in
+//                weeklyOffRawDates.append(aHoliday)
+//            }
+//            
+//            holidayDateStr.forEach { aholidayStr in
+//                weeklyOffDates.append(aholidayStr)
+//            }
+//            
+//            
+//            
+//            toAppendWeeklyoffs(date: self.weeklyOffDates, rawDate: self.weeklyOffRawDates, isHolidayDict: isHolidayDict)
+//        } else {
             toLoadData()
-        }
+       // }
      
 
         

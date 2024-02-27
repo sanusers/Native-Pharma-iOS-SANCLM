@@ -468,7 +468,7 @@ class MainVC : UIViewController {
     
     
     
-    @IBOutlet weak var imgProfile: UIImageView!
+   // @IBOutlet weak var imgProfile: UIImageView!
     
     @IBOutlet var segmentsCollection: UICollectionView!
     @IBOutlet var monthRangeLbl: UILabel!
@@ -625,6 +625,8 @@ class MainVC : UIViewController {
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
+    
+    var changePasswordView: ChangePasswordView?
     
     var chartType: ChartType = .doctor
     var cacheDCRindex: Int = 0
@@ -1618,7 +1620,6 @@ class MainVC : UIViewController {
         }
         
         
-        self.imgProfile.Border_Radius(border_height: 0.0, isborder: false, radius: 50)
         
         //    self.updateCalender()
         
@@ -1704,6 +1705,14 @@ class MainVC : UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.homeLineChartView?.frame = lineChatrtView.bounds
+        
+        let width = view.bounds.width / 2.7
+        let height = view.bounds.height / 1.7
+
+        let centerX = view.bounds.midX - (width / 2.7)
+        let centerY = view.bounds.midY - (height / 2)
+
+        self.changePasswordView?.frame = CGRect(x: centerX, y: centerY, width: width, height: height)
         
         
     }
@@ -1911,23 +1920,18 @@ class MainVC : UIViewController {
     
     
     @IBAction func profileAction(_ sender: UIButton) {
+        print("Tapped -->")
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.view.width / 4, height: self.view.height / 2.3), on: btnProfile, onframe: CGRect(), pagetype: .profile)
+         vc.delegate = self
+        //  vc.selectedIndex = indexPath.row
+        self.navigationController?.present(vc, animated: true)
         
-        //        if btnProfile.isSelected == true {
-        //            self.viewProfile.isHidden = true
-        //            self.btnProfile.isSelected = false
-        //            return
-        //        }
-        
-        self.viewProfile.isHidden = false
-        //        self.btnProfile.isSelected = true
+      //  self.viewProfile.isHidden = false
+    
         
     }
     
-    
-    @IBAction func profileCloseAction(_ sender: UIButton) {
-        
-        self.viewProfile.isHidden = true
-    }
+
     
     
     @IBAction func workTypeAction(_ sender: UIButton) {
@@ -3938,3 +3942,75 @@ private enum Constants {
 }
 
 
+extension MainVC: PopOverVCDelegate {
+    
+    private func loadCustomView() -> UIView? {
+        // Load the XIB
+        let nib = UINib(nibName: "ChangePasswordView", bundle: nil)
+        if let customView = nib.instantiate(withOwner: nil, options: nil).first as? UIView {
+            // Configure your custom view if needed
+            return customView
+        }
+
+        // Return a default view if loading fails
+        return nil
+    }
+    
+    
+    func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
+        print("Yet to implement")
+    }
+    
+    func logoutAction() {
+        print("Yet to implement")
+    }
+    
+    func changePasswordAction() {
+        
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case changePasswordView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 1
+            default:
+                print("Yet to implement")
+                
+                aAddedView.alpha = 0.5
+                
+            }
+          
+        }
+        
+        changePasswordView = loadCustomView() as? ChangePasswordView
+        changePasswordView?.delegate = self
+        changePasswordView?.setupUI()
+        view.addSubview(changePasswordView ?? ChangePasswordView())
+    }
+    
+    
+}
+
+
+extension MainVC : ChangePasswordViewDelegate {
+    func didClose() {
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case changePasswordView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0.5
+            default:
+                print("Yet to implement")
+                
+                aAddedView.alpha = 1
+                
+            }
+          
+        }
+    }
+    
+    func didUpdate() {
+        print("Yet to implement")
+    }
+    
+    
+}

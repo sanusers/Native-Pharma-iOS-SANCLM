@@ -126,13 +126,13 @@ extension MasterSyncVC {
             case .success(let response):
                 dump(response)
                 completion(.success(response))
-                self.setLoader(pageType: .loaded)
+              //  self.setLoader(pageType: .loaded)
                 
             case .failure(let error):
                 print(error.localizedDescription)
                 
                 completion(.failure(error))
-                self.setLoader(pageType: .loaded)
+              //  self.setLoader(pageType: .loaded)
             }
         }
     }
