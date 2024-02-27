@@ -108,7 +108,7 @@ enum MasterCellType : Int {
         case .leave:
             return [MasterInfo.leaveType,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .workType:
-            return [MasterInfo.worktype,MasterInfo.holidays,MasterInfo.weeklyOff,MasterInfo.syncAll]
+            return [MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.syncAll]
         case .other:
             return [MasterInfo.syncAll]
         case .setup:
@@ -172,7 +172,6 @@ enum `MasterInfo` : String {
     case apptableSetup = "Table Setup"
     case tourPlanSetup = "Tour plan setup"
     case homeSetup = "DCR"
-    case mydayPlan = "My day plan"
     case callSync = "Call Sync"
     case dataSync = "Data Sync"
    
@@ -330,8 +329,6 @@ enum `MasterInfo` : String {
             return MasterSyncParams.tourPlanSetupParams
         case .homeSetup:
             return MasterSyncParams.homeDataSetupParams
-        case .mydayPlan:
-            return [String : Any]()
         case .callSync:
             return [String : Any]()
         case .dataSync:

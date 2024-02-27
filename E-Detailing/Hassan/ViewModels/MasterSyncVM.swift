@@ -36,7 +36,7 @@ class MasterSyncVM {
     
     var mapID: String?
     
-    func toGetMyDayPlan(type: MasterInfo, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
+    func toGetMyDayPlan(type: MasterInfo, isToloadDB: Bool, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
         
  
         let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
@@ -65,16 +65,26 @@ class MasterSyncVM {
         
         
         self.getTodayPlans(params: toSendData, api: .masterData, paramData: param, {[weak self] result in
-            completion(result)
+          
             guard let welf = self else {return}
             switch result {
                 
             case .success(let model):
                 dump(model)
-                welf.toUpdateDataBase(aDayplan: welf.toConvertResponseToDayPlan(model: model))
+                if isToloadDB {
+                    welf.toUpdateDataBase(aDayplan: welf.toConvertResponseToDayPlan(model: model)) {_ in
+                        
+                        completion(result)
+                    }
+                    
+                } else {
+                    completion(result)
+                }
+         
                 
             case .failure(let error):
                 print(error)
+                completion(result)
             }
             
           
@@ -82,20 +92,21 @@ class MasterSyncVM {
         
     }
     
-    func toUpdateDataBase(aDayplan: DayPlan) {
+    func toUpdateDataBase(aDayplan: DayPlan, completion: @escaping (Bool) -> ()) {
         CoreDataManager.shared.removeAllDayPlans()
         CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan) { isComleted in
-            if isComleted {
-               // self.toCreateToast("Saved successfully")
-
-                CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
-                    dump(dayplans)
-                }
             
-              
-            } else {
-                
-            }
+            completion(true)
+            
+//            if isComleted {
+//               // self.toCreateToast("Saved successfully")
+//
+//                CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+//                    dump(dayplans)
+//                }
+//            
+//              
+//            } 
         }
     }
     

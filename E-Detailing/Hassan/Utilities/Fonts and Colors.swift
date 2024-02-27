@@ -23,11 +23,24 @@ class Themes: NSObject {
     
     static let appGreen = UIColor.init(red: 0, green: 198, blue: 137)
 
-  static let appBrown = UIColor.init(red: 109, green: 84, blue: 113)
+     static let appBrown = UIColor.init(red: 109, green: 84, blue: 113) //Activity. TP deviation
     static let appBlue = UIColor.init(red: 61, green: 165, blue: 244)
    
-
+    static let appDeepBlue = UIColor.init(red: 20, green: 89, blue: 119) //rgba(20, 89, 119, 1)
+    
+    static let appDeepGreen = UIColor.init(red: 7, green: 97, blue: 61) //rgba(7, 97, 69, 0.15)
   
+    
+    static let appPink = UIColor.init(red: 199, green: 55, blue: 150)//rgba(7, 97, 69, 0.15)
+
+
+    static let appViolet = UIColor.init(red: 128, green: 90, blue: 175)
+    
+    
+    static let appYellow = UIColor.init(red: 254, green: 185, blue: 26)
+
+static let appLightGrey = UIColor.init(red: 118, green: 139, blue: 160)
+    
 }
 
 
@@ -44,6 +57,16 @@ extension UIColor {
 
     static var appBrown = Themes.appBrown
     static var appBlue = Themes.appBlue
+    static var appYellow = Themes.appYellow
+    static var appViolet = Themes.appViolet
+    static var appPink = Themes.appPink
+    static var appDeepGreen = Themes.appDeepGreen
+    static var appDeepBlue = Themes.appDeepBlue
+    static var appLightGrey = Themes.appLightGrey
+    
+    
+    
+
     //static var blurredAppBrown = Themes.blurredAppBrown
 }
 

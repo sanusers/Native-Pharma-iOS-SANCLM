@@ -328,6 +328,7 @@ class MasterSyncVC : UIViewController {
         guard index < masterData.count else {
             // All tasks completed
             print("DCR list sync completed")
+            self.collectionView.reloadData()
             self.setLoader(pageType: .loaded)
             return
         }
@@ -439,6 +440,10 @@ class MasterSyncVC : UIViewController {
     }
     
 
+    func toSaveDayplansToDB(model: [MyDayPlanResponseModel]) {
+        masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in}
+    }
+    
     
     func fetchmasterData(type : MasterInfo, completion: @escaping (Bool) -> ()) {
        // self.setLoader(pageType: .loading)
@@ -457,7 +462,7 @@ class MasterSyncVC : UIViewController {
            
         case .myDayPlan:
             
-            mastersyncVM?.toGetMyDayPlan(type: type) { [weak self] (result) in
+            mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
               //  completion(true)
                 guard let welf = self else {return}
                 
@@ -468,21 +473,61 @@ class MasterSyncVC : UIViewController {
                     let model: [MyDayPlanResponseModel] = responseModel
                     welf.isDayPlanSynced = true
                     if model.count > 0 {
-                        let aDayArr = model.filter{$0.SFMem != ""}.first
-
+                        let sessionArray = model.filter{$0.SFMem != ""}
                         
-                        
+                        var dayPlan1: MyDayPlanResponseModel?
+                        var dayPlan2: MyDayPlanResponseModel?
+                        sessionArray.enumerated().forEach { index, aMyDayPlanResponseModel in
+                            switch index {
+                            case 0:
+                                dayPlan1 = aMyDayPlanResponseModel
+                            case 1:
+                                dayPlan2 = aMyDayPlanResponseModel
+                            default:
+                                print("Yet to implement")
+                            }
+                        }
+                       // let aDayArr = model.filter{$0.SFMem != ""}.first
+                 
                         
                       let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-                      LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aDayArr?.SFMem ?? appdefaultSetup.sfCode!)
-                       let subordinateArr =  DBManager.shared.getSubordinate()
-                       let filteredHQ = subordinateArr.filter {  $0.id == aDayArr?.SFMem }
-                        if !filteredHQ.isEmpty {
-                            let cacheHQ = filteredHQ.first
-                            welf.fetchedHQObject = cacheHQ
-                            welf.setHQlbl()
+                      LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
+                        
+                        welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem  ?? "") { _ in
+                            
+                            let subordinateArr =  DBManager.shared.getSubordinate()
+                            let filteredHQ = subordinateArr.filter {  $0.id == dayPlan1?.SFMem }
+                             if !filteredHQ.isEmpty {
+                                 let cacheHQ = filteredHQ.first
+                                 welf.fetchedHQObject = cacheHQ
+                                 welf.setHQlbl()
+                                 
+                                 welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem ?? "") { _ in
+                                     if dayPlan2 != nil {
+                                         welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
+                                         
+                                             welf.toSaveDayplansToDB(model: responseModel)
+                                             
+                                             dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
+                                             
+                                             completion(true)
+                                         }
+                                     } else {
+                                         welf.toSaveDayplansToDB(model: responseModel)
+                                         
+                                         dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
+                                         
+                                         completion(true)
+                                     }
+                                  
+                                 }
+                                 
+                             }
+                         
                         }
-                        completion(true)
+                        
+
+                       
                     } else {
                         
                         CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
@@ -728,7 +773,9 @@ extension MasterSyncVC : collectionViewProtocols{
         case .subordinateMGR:
             cell.lblCount.text = String(DBManager.shared.getSubordinateMGR().count)
         case .myDayPlan:
-            cell.lblCount.text = String(DBManager.shared.getMyDayPlan().count)
+            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+                cell.lblCount.text =  "\(dayplans.count)"
+            }
         case .jointWork:
             cell.lblCount.text = String(DBManager.shared.getJointWork().count)
         case .products:
@@ -809,19 +856,13 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text =  "Yet to"
         case   .homeSetup:
             cell.lblCount.text =  "\(DBManager.shared.getHomeData().count)"
-        case   .mydayPlan:
-            
-            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
-                cell.lblCount.text =  "\(dayplans.count)"
-            }
-            
-           
         case   .callSync:
             cell.lblCount.text = "Yet to"
         case   .dataSync:
             cell.lblCount.text = "Yet to"
         case .none:
             cell.lblCount.text = "Yet to"
+
         }
         
         if MasterInfo.syncAll.rawValue == self.masterData[indexPath.row].rawValue {
@@ -840,7 +881,7 @@ extension MasterSyncVC : collectionViewProtocols{
     @objc func groupSyncAll(_ sender : UIButton){
        // self.setLoader(pageType: .loading)
         animations = (0...(masterData.count - 1)).map{_ in true}
-        self.collectionView.reloadData()
+      
       //  _ = masterData.map{self.fetchmasterData(type: $0)}
         fetchMasterDataRecursively(index: 0)
         
@@ -855,8 +896,11 @@ extension MasterSyncVC : collectionViewProtocols{
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         animations[indexPath.row] = true
-        self.collectionView.reloadData()
-        self.fetchmasterData(type: self.masterData[indexPath.row]) {_ in}
+     
+        self.fetchmasterData(type: self.masterData[indexPath.row]) {_ in
+            
+            self.collectionView.reloadData()
+        }
     }
 }
 

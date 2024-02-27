@@ -82,7 +82,7 @@ extension MainVC {
     //                             welf.toLoadWorktypeTable()
     //
     //                         }
-                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan) {_ in
+                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
                             
                                 // welf.toLoadWorktypeTable()
                                 // welf.configureAddplanBtn(true, isSessionSaved: true)
@@ -160,12 +160,14 @@ extension MainVC {
                     
                     
                     if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
+                        
+                        
                         let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
                    
                         var selectedheadQuarters : SelectedHQ?
                         var selectedWorkTypes: WorkType?
                         let codes = eachDayPlan.townCode
-                        let codesArray = codes.components(separatedBy: ", ")
+                        let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
                         
                         let filteredTerritories = clusterArr.filter { aTerritory in
                             // Check if any code in codesArray is contained in aTerritory
@@ -227,7 +229,7 @@ extension MainVC {
                         var selectedheadQuarters : SelectedHQ?
                         var selectedWorkTypes: WorkType?
                         let codes = eachDayPlan.townCode2
-                        let codesArray = codes.components(separatedBy: ", ")
+                        let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
                         
                         let filteredTerritories = clusterArr.filter { aTerritory in
                             // Check if any code in codesArray is contained in aTerritory

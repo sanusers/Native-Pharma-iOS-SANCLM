@@ -273,12 +273,12 @@ extension CoreDataManager {
         let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
         
         if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-            var clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
+            let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
             var selectedterritories: [Territory]?
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode
-            let codesArray = codes.components(separatedBy: ",")
+            let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
             
 
             
@@ -353,7 +353,7 @@ extension CoreDataManager {
             var selectedheadQuarters : SelectedHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode2
-            let codesArray = codes.components(separatedBy: ",")
+            let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
             
             let filteredTerritories = clusterArr.filter { aTerritory in
                 // Check if any code in codesArray is contained in aTerritory
@@ -603,8 +603,10 @@ extension CoreDataManager {
                             aDayPlan.location = ""
                          
                             aDayPlan.townCode = eachPlan.townCodes ?? ""
-                            var territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
-                            let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
+                            let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                            let territoryCodes =   aDayPlan.townCode.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+                            
+                          
                             
                             if territories.isEmpty {
 //                                let masterSyncVM = MasterSyncVM()
@@ -638,8 +640,8 @@ extension CoreDataManager {
                             aDayPlan.location2 = ""
                             aDayPlan.isRetrived = eachPlan.isRetrived
                             aDayPlan.townCode2 = eachPlan.townCodes ?? ""
-                            var territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
-                            let territoryCodes = aDayPlan.townCode.components(separatedBy: ", ")
+                            let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                            let territoryCodes =   aDayPlan.townCode.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
                             
                             if territories.isEmpty {
 //                                let masterSyncVM = MasterSyncVM()

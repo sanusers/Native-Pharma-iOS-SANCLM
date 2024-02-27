@@ -18,6 +18,7 @@ class DayPlanEventCell : UICollectionViewCell {
     @IBOutlet weak var viewEvent: UIView!
     
     
+    @IBOutlet var vxView: UIVisualEffectView!
     
     @IBOutlet weak var widthEventLblConstrainst: NSLayoutConstraint! {
         didSet {

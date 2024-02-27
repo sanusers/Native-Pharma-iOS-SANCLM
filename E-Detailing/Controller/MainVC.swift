@@ -449,99 +449,11 @@ typealias collectionViewProtocols = UICollectionViewDelegate & UICollectionViewD
 typealias tableViewProtocols = UITableViewDelegate & UITableViewDataSource
 
 class MainVC : UIViewController {
-    private lazy var today: Date = {
-        return Date()
-    }()
-    private var currentPage: Date?
-    var isNextMonth = false
-    var isPrevMonth = false
-    var isCurrentMonth = false
-    class func initWithStory() -> MainVC {
-        let mainVC : MainVC = UIStoryboard.Hassan.instantiateViewController()
-        mainVC.userststisticsVM = UserStatisticsVM()
-        mainVC.userststisticsVM = UserStatisticsVM()
-        mainVC.masterVM = MasterSyncVM()
-        return mainVC
-    }
-    
-    func saveHQentitiesToCoreData(aHQobj: HQModel, completion: (Bool) -> Void) {
-        CoreDataManager.shared.removeHQ()
-        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) {  _ in
-           // guard let welf = self else {return}
-//            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-//                if let aEntity = selectedHQArr.first {
-//                   // welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
-//                    completion(true)
-//                }
-//            }
-     
-            completion(true)
-        }
-    }
-
-    
-    func setupRejectionVIew() {
-        
-        guard let nonNillSessions = sessions else {return}
-
-        isRejected = nonNillSessions.map { $0.isRejected }.contains(true)
-        rejectionTitle.text = "Rejected reason"
-      
-        if isRejected {
-           // var isTodisableApproval = true
-            rejectionReason.text = nonNillSessions.map { $0.rejectionReason ?? "" }.first
-           // self.rejectionReason.text = "A project archive refers to the systematic storing of project artifacts (e.g., project charter, working documents, models, deliverables, etc.) at the close of a project. Retaining project documents and artifacts is important for administrative closure."
-         
-            self.rejectionVIew.isHidden = false
-            toConfigureDynamicHeader(false)
-            
-        } else {
-            self.rejectionVIew.isHidden = true
-            self.toConfigureDynamicHeader(true)
-          //  worktypeTable.reloadData()
-        }
-    }
-    
-    func toConfigureDynamicHeader(_ istoHide : Bool) {
-        if istoHide {
-            self.rejectionReason.text = ""
-            self.rejectionTitle.text = ""
-            self.rejectionVIew.frame.size.height = 0
-            self.rejectionVIew.isHidden = true
-             } else {
-                self.rejectionVIew.isHidden = false
-              }
-        let tempHeader = self.getViewExactHeight(view: self.rejectionVIew)
-        self.rejectionVIew.frame.size.height = tempHeader.frame.height
-            
-            // worktypeTable.reloadData()
-        }
     
     
     
-    func getViewExactHeight(view:UIView)->UIView {
-       
-        let height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        var frame = view.frame
-        if height != frame.size.height {
-            frame.size.height = height
-            view.frame = frame
-        }
-        return view
-    }
     
-    @IBOutlet var closeRejectionVIew: UIView!
     
-    var isRejected = Bool()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    //var selectedSubordinate: Subordinate?
-    var selectedDate: String?
-    var selectedSegment : SegmentType = .workPlan
-    var segmentType: [SegmentType] = []
-    var selectedSegmentsIndex: Int = 0
-    var selectedSessionIndex : Int?
-    var unsavedIndex : Int?
-    var isTohightCell: Bool = false
     enum SegmentType : String {
         case workPlan = "Work plan"
         case calls = "Calls"
@@ -549,308 +461,12 @@ class MainVC : UIViewController {
         case calender = "Date"
     }
     
-    var tableCellheight: CGFloat = 0
     
     
-    func getSubordinate(hqCode: String) -> Subordinate? {
-        let hqArr = DBManager.shared.getSubordinate()
-        var aSubordinateobj = NSManagedObject()
-        hqArr.forEach { aSubordinate in
-            if aSubordinate.id == hqCode {
-                aSubordinateobj = aSubordinate
-            }
-                
-        }
-        return aSubordinateobj as? Subordinate
-    }
     
-    func toConfigureMydayPlan() {
-        
-
-        
-        toFetchExistingPlan() { existingSessions in
-            self.sessions = existingSessions
-            if !(self.sessions?.isEmpty ?? false) {
-                self.sessions?.enumerated().forEach { index, aSession in
-                    switch index {
-                    case 0:
-                        dump(aSession.headQuarters?.code)
-                        self.fetchedHQObject1 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
-                        self.fetchedWorkTypeObject1 = aSession.workType
-                        self.fetchedClusterObject1 = aSession.cluster
-                    case 1:
-                        dump(aSession.headQuarters?.code)
-                        self.fetchedHQObject2 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
-                        self.fetchedWorkTypeObject2 = aSession.workType
-                        self.fetchedClusterObject2 = aSession.cluster
-                    default:
-                        print("<----->")
-                    }
-
-                }
-            } else {
-                var aSession = Sessions()
-                
-                aSession.cluster  = nil
-                aSession.workType = nil
-                aSession.headQuarters = nil
-                aSession.isRetrived = Bool()
-                aSession.isFirstCell = true
-                self.sessions?.insert(aSession, at: 0)
-            }
-            
-
-            
-            guard let nonNilSessons = self.sessions else {
-                self.configureAddplanBtn(false)
-                self.configureSaveplanBtn(false)
-                return
-            }
-            var isPlan1filled : Bool = false
-            var isPlan2filled : Bool = false
-            
-            var istoEnableSaveBtn: Bool = false
-            var istoEnableAddPlanBtn: Bool = false
-            
-            nonNilSessons.enumerated().forEach { index, aSession in
-                switch index {
-                case 0:
-                    
-                    if aSession.isRetrived == true {
-                        isPlan1filled =  true
-                        
-                        if nonNilSessons.count == 1 {
-                            istoEnableAddPlanBtn = true
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableAddPlanBtn = false
-                            istoEnableSaveBtn = false
-                        }
-                        
-                    } else {
     
-                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index)
-                        //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
-                    }
-                    
-                    if isPlan1filled {
-                        
-                        if aSession.isRetrived == true {
-                            
-                            if nonNilSessons.count == 1 {
-                                istoEnableAddPlanBtn = true
-                            } else {
-                                istoEnableAddPlanBtn = false
-                            }
-                         
-                        } else {
-                            istoEnableAddPlanBtn = false
-                        }
-                        
-                        
-                     
-                       if aSession.isRetrived == true {
-                           istoEnableSaveBtn = false
-                       } else {
-                           istoEnableSaveBtn = true
-                       }
-                       
-                    } else {
-                        istoEnableAddPlanBtn = false
-                        istoEnableSaveBtn = false
-                    }
-                    
-                case 1:
-                    if aSession.isRetrived == true {
-                        isPlan2filled =  true
-                        
-                        if nonNilSessons.count == 1 {
-                            istoEnableAddPlanBtn = true
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableAddPlanBtn = false
-                            istoEnableSaveBtn = false
-                        }
-                        
-                    } else {
-                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index)
-                    }
-                    
-                    if isPlan2filled {
-                        if aSession.isRetrived == true {
-                            
-                            if nonNilSessons.count == 1 {
-                                istoEnableAddPlanBtn = true
-                            } else {
-                                istoEnableAddPlanBtn = false
-                            }
-                         
-                        } else {
-                            istoEnableAddPlanBtn = false
-                        }
-                        if aSession.isRetrived == true {
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableSaveBtn = true
-                        }
-                    } else {
-                        istoEnableAddPlanBtn = false
-                        istoEnableSaveBtn = false
-                    }
-                    
-                default:
-                    isPlan1filled = false
-                    isPlan2filled = false
-                }
-                
-
-            }
-            
-     self.configureAddplanBtn(istoEnableAddPlanBtn)
-            
-     self.configureSaveplanBtn(istoEnableSaveBtn)
-            
-            
-            
-         
-            
-//            if self.sessions?.count == 0 {
-//                isToenableSavePlan = false
-//            } else {
-//                self.sessions?.forEach({ aSession in
-//                    isToenableSavePlan = aSession.isRetrived == false &&  (aSession.cluster != nil || aSession.workType != nil  || aSession.headQuarters != nil)
-//
-//                })
-//            }
- 
-   
-         
-//            
-//            let isSessionUnfilled: Bool = {
-//                return self.sessions?.allSatisfy { aSession in
-//                    return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
-//                } ?? false
-//            }()
-//            
-//            var isConnected = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
-//            
-//            self.configureAddplanBtn( isConnected ? isSessionUnfilled : !isSessionUnfilled, isSessionSaved: isConnected ? isToenableSavePlan : !isToenableSavePlan)
-//           // self.configureSaveplanBtn(isToenableSavePlan)
-//            
-//            self.configureSaveplanBtn(self.toEnableSaveBtn())
-            self.setupRejectionVIew()
-            
-            DispatchQueue.main.async {
-                self.setSegment(.workPlan)
-            }
-
-        }
-        
-    }
     
-    func toEnableSaveBtn(sessionindex: Int) -> Bool {
-        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
-         let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
-        let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
-        else {
-            fatalError("Entity not found")
-        }
-        var index: Int = 0
-//        if sessions?.count == 2 {
-//            index = sessionindex == 0 ? 1 : 0
-//        }
-
-        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
-        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
-        
-        guard let nonNillSession = self.sessions else {return false}
-        
-        switch index {
-        case 0:
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
-                    return false
-                } else {
-                    if nonNillSession[index].isRetrived ?? false {
-                        return false
-                    } else {
-                        return true
-                    }
-                    
-                   
-                }
-                
-            } else {
-                if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
-                    return false
-                } else {
-                    if nonNillSession[index].isRetrived ?? false {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-            }
-        case 1:
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-                    return false
-                } else {
-                    if nonNillSession[index].isRetrived ?? false {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-                
-            } else {
-                if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-                    return false
-                } else {
-                    if nonNillSession[index].isRetrived ?? false {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-            }
-        default:
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-                    return false
-                } else {
-                    if nonNillSession[index].isRetrived ?? false {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-                
-            } else {
-                if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-                    
-                    let isSessionUnfilled: Bool = {
-                        return self.sessions?.allSatisfy { aSession in
-                            return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
-                        } ?? false
-                    }()
-                    
-                    return !isSessionUnfilled
-                } else {
-                    if nonNillSession[index].isRetrived ?? false {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-            }
-            
-        }
-        return false
-    }
     
-
     
     @IBOutlet weak var imgProfile: UIImageView!
     
@@ -877,7 +493,7 @@ class MainVC : UIViewController {
     @IBOutlet weak var btnActivity: UIButton!
     
     
-   // @IBOutlet weak var segmentControlForDcr: UISegmentedControl!
+    // @IBOutlet weak var segmentControlForDcr: UISegmentedControl!
     @IBOutlet weak var segmentControlForAnalysis: UISegmentedControl!
     
     @IBOutlet weak var salesStackView: UIStackView!
@@ -992,8 +608,8 @@ class MainVC : UIViewController {
     @IBOutlet var fsCalenderView: UIView!
     @IBOutlet var btnNext: UIButton!
     @IBOutlet var prevBtn: UIButton!
-    
-    
+    @IBOutlet weak var dayplancalenderVIew: FSCalendar!
+    @IBOutlet var closeRejectionVIew: UIView!
     @IBAction func didTapPrevBtn(_ sender: Any) {
         self.moveCurrentPage(moveUp: false)
     }
@@ -1009,7 +625,7 @@ class MainVC : UIViewController {
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var callsCellHeight = 400 + 10 // + 10 padding
     var homeLineChartView : HomeLineChartView?
-    @IBOutlet weak var dayplancalenderVIew: FSCalendar!
+    
     var chartType: ChartType = .doctor
     var cacheDCRindex: Int = 0
     var doctorArr = [HomeData]()
@@ -1036,6 +652,27 @@ class MainVC : UIViewController {
     
     var sessions: [Sessions]?
     var cacheTerritory: [Territory]?
+    var isRejected = Bool()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    //var selectedSubordinate: Subordinate?
+    var selectedDate: String?
+    var selectedSegment : SegmentType = .workPlan
+    var segmentType: [SegmentType] = []
+    var selectedSegmentsIndex: Int = 0
+    var selectedSessionIndex : Int?
+    var unsavedIndex : Int?
+    var isTohightCell: Bool = false
+    
+    private lazy var today: Date = {
+        return Date()
+    }()
+    
+    private var currentPage: Date?
+    var isNextMonth = false
+    var isPrevMonth = false
+    var isCurrentMonth = false
+    var tableCellheight: CGFloat = 0
+    
     
     func setupHeight(_ isTodelete: Bool, index: Int) -> CGFloat {
         
@@ -1051,16 +688,16 @@ class MainVC : UIViewController {
             
             cellHeight = 0
         }
-
+        
         if model?.workType?.fwFlg  == "F" {
-  
-          
+            
+            
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                 cellHeight = cellHeight + 170
                 
             } else {
                 cellHeight = cellHeight +  220
-               
+                
             }
         } else {
             cellHeight = cellHeight +  76
@@ -1068,8 +705,350 @@ class MainVC : UIViewController {
         return cellHeight
     }
     
+    func getSubordinate(hqCode: String) -> Subordinate? {
+        let hqArr = DBManager.shared.getSubordinate()
+        var aSubordinateobj = NSManagedObject()
+        hqArr.forEach { aSubordinate in
+            if aSubordinate.id == hqCode {
+                aSubordinateobj = aSubordinate
+            }
+            
+        }
+        return aSubordinateobj as? Subordinate
+    }
     
-
+    
+    class func initWithStory() -> MainVC {
+        let mainVC : MainVC = UIStoryboard.Hassan.instantiateViewController()
+        mainVC.userststisticsVM = UserStatisticsVM()
+        mainVC.userststisticsVM = UserStatisticsVM()
+        mainVC.masterVM = MasterSyncVM()
+        return mainVC
+    }
+    
+    func saveHQentitiesToCoreData(aHQobj: HQModel, completion: (Bool) -> Void) {
+        CoreDataManager.shared.removeHQ()
+        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) {  _ in
+            // guard let welf = self else {return}
+            //            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+            //                if let aEntity = selectedHQArr.first {
+            //                   // welf.sessions?[welf.selectedSessionIndex ?? 0].headQuarters = aEntity
+            //                    completion(true)
+            //                }
+            //            }
+            
+            completion(true)
+        }
+    }
+    
+    
+    func setupRejectionVIew() {
+        
+        guard let nonNillSessions = sessions else {return}
+        
+        isRejected = nonNillSessions.map { $0.isRejected }.contains(true)
+        rejectionTitle.text = "Rejected reason"
+        
+        if isRejected {
+            // var isTodisableApproval = true
+            rejectionReason.text = nonNillSessions.map { $0.rejectionReason ?? "" }.first
+            // self.rejectionReason.text = "A project archive refers to the systematic storing of project artifacts (e.g., project charter, working documents, models, deliverables, etc.) at the close of a project. Retaining project documents and artifacts is important for administrative closure."
+            
+            self.rejectionVIew.isHidden = false
+            toConfigureDynamicHeader(false)
+            
+        } else {
+            self.rejectionVIew.isHidden = true
+            self.toConfigureDynamicHeader(true)
+            //  worktypeTable.reloadData()
+        }
+    }
+    
+    func toConfigureDynamicHeader(_ istoHide : Bool) {
+        if istoHide {
+            self.rejectionReason.text = ""
+            self.rejectionTitle.text = ""
+            self.rejectionVIew.frame.size.height = 0
+            self.rejectionVIew.isHidden = true
+        } else {
+            self.rejectionVIew.isHidden = false
+        }
+        let tempHeader = self.getViewExactHeight(view: self.rejectionVIew)
+        self.rejectionVIew.frame.size.height = tempHeader.frame.height
+        
+        // worktypeTable.reloadData()
+    }
+    
+    
+    
+    func getViewExactHeight(view:UIView)->UIView {
+        
+        let height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        var frame = view.frame
+        if height != frame.size.height {
+            frame.size.height = height
+            view.frame = frame
+        }
+        return view
+    }
+    
+    
+    func toConfigureMydayPlan() {
+        
+        
+        
+        toFetchExistingPlan() { existingSessions in
+            self.sessions = existingSessions
+            if !(self.sessions?.isEmpty ?? false) {
+                self.sessions?.enumerated().forEach { index, aSession in
+                    switch index {
+                    case 0:
+                        dump(aSession.headQuarters?.code)
+                        self.fetchedHQObject1 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                        self.fetchedWorkTypeObject1 = aSession.workType
+                        self.fetchedClusterObject1 = aSession.cluster
+                    case 1:
+                        dump(aSession.headQuarters?.code)
+                        self.fetchedHQObject2 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                        self.fetchedWorkTypeObject2 = aSession.workType
+                        self.fetchedClusterObject2 = aSession.cluster
+                    default:
+                        print("<----->")
+                    }
+                    
+                }
+            } else {
+                var aSession = Sessions()
+                
+                aSession.cluster  = nil
+                aSession.workType = nil
+                aSession.headQuarters = nil
+                aSession.isRetrived = Bool()
+                aSession.isFirstCell = true
+                self.sessions?.insert(aSession, at: 0)
+            }
+            
+            
+            
+            guard let nonNilSessons = self.sessions else {
+                self.configureAddplanBtn(false)
+                self.configureSaveplanBtn(false)
+                return
+            }
+            var isPlan1filled : Bool = false
+            var isPlan2filled : Bool = false
+            
+            var istoEnableSaveBtn: Bool = false
+            var istoEnableAddPlanBtn: Bool = false
+            
+            nonNilSessons.enumerated().forEach { index, aSession in
+                switch index {
+                case 0:
+                    
+                    if aSession.isRetrived == true {
+                        isPlan1filled =  true
+                        
+                        if nonNilSessons.count == 1 {
+                            istoEnableAddPlanBtn = true
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableAddPlanBtn = false
+                            istoEnableSaveBtn = false
+                        }
+                        
+                    } else {
+                        
+                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index)
+                        //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
+                    }
+                    
+                    if isPlan1filled {
+                        
+                        if aSession.isRetrived == true {
+                            
+                            if nonNilSessons.count == 1 {
+                                istoEnableAddPlanBtn = true
+                            } else {
+                                istoEnableAddPlanBtn = false
+                            }
+                            
+                        } else {
+                            istoEnableAddPlanBtn = false
+                        }
+                        
+                        
+                        
+                        if aSession.isRetrived == true {
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableSaveBtn = true
+                        }
+                        
+                    } else {
+                        istoEnableAddPlanBtn = false
+                        istoEnableSaveBtn = false
+                    }
+                    
+                case 1:
+                    if aSession.isRetrived == true {
+                        isPlan2filled =  true
+                        
+                        if nonNilSessons.count == 1 {
+                            istoEnableAddPlanBtn = true
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableAddPlanBtn = false
+                            istoEnableSaveBtn = false
+                        }
+                        
+                    } else {
+                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index)
+                    }
+                    
+                    if isPlan2filled {
+                        if aSession.isRetrived == true {
+                            
+                            if nonNilSessons.count == 1 {
+                                istoEnableAddPlanBtn = true
+                            } else {
+                                istoEnableAddPlanBtn = false
+                            }
+                            
+                        } else {
+                            istoEnableAddPlanBtn = false
+                        }
+                        if aSession.isRetrived == true {
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableSaveBtn = true
+                        }
+                    } else {
+                        istoEnableAddPlanBtn = false
+                        istoEnableSaveBtn = false
+                    }
+                    
+                default:
+                    isPlan1filled = false
+                    isPlan2filled = false
+                }
+                
+                
+            }
+            
+            self.configureAddplanBtn(istoEnableAddPlanBtn)
+            
+            self.configureSaveplanBtn(istoEnableSaveBtn)
+            self.setupRejectionVIew()
+            
+            self.setSegment(.workPlan)
+            
+            
+        }
+        
+    }
+    
+    func toEnableSaveBtn(sessionindex: Int) -> Bool {
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+              let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+              let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+        var index: Int = 0
+        //        if sessions?.count == 2 {
+        //            index = sessionindex == 0 ? 1 : 0
+        //        }
+        
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+        
+        guard let nonNillSession = self.sessions else {return false}
+        
+        switch index {
+        case 0:
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
+                    return false
+                } else {
+                    if nonNillSession[index].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                    
+                    
+                }
+                
+            } else {
+                if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[index].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+            }
+        case 1:
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[index].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                
+            } else {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[index].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+            }
+        default:
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    return false
+                } else {
+                    if nonNillSession[index].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                
+            } else {
+                if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+                    
+                    let isSessionUnfilled: Bool = {
+                        return self.sessions?.allSatisfy { aSession in
+                            return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
+                        } ?? false
+                    }()
+                    
+                    return !isSessionUnfilled
+                } else {
+                    if nonNillSession[index].isRetrived ?? false {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+            }
+            
+        }
+        return false
+    }
+    
     
     var selectedWorktype : WorkType? {
         didSet {
@@ -1103,8 +1082,9 @@ class MainVC : UIViewController {
     
     var dcrCount = [DcrCount]()
     var masterVM : MasterSyncVM?
-    let eventArr = ["Weekly off","Field Work","Non-Field Work","Holiday","Missed Released","Missed","Re Entry","Leave","TP Devition Released","TP Devition"]//,"Leave Aprroval Pending","Approval Pending"]
     
+    let eventArr = ["Weekly off", "Field Work", "Holiday", "Leave", "Missed Released", "Re Entry", "TP Devition Released", "Non-Field Work", "TP Devition", "Leave Approval Pending"]
+    let colorArr : [UIColor] =  [.appYellow, .appGreen, .appViolet, .appLightPink, .appLightGrey, .appPink, .appDeepGreen, .appBlue, .appBrown, .appDeepBlue]
     
     let menuList = ["Refresh","Tour Plan","Create Presentation","Leave Application","Reports","Activiy","Near Me","Quiz","Survey","Forms","Profiling"]
     
@@ -1172,17 +1152,17 @@ class MainVC : UIViewController {
                         
                         self.toCreateToast("Please check your internet connection.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                      //  self.toConfigureMydayPlan()
-            
+                        //  self.toConfigureMydayPlan()
+                        
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
                         self.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                         self.toretryDCRupload( date: "") {_ in
- 
-                           // self.callSavePlanAPI() {_ in
-                                self.toSetParams()
-                          //  }
+                            
+                            // self.callSavePlanAPI() {_ in
+                            self.toSetParams()
+                            //  }
                             
                         }
                         
@@ -1205,17 +1185,17 @@ class MainVC : UIViewController {
     func updateEachDayPlan(yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
         // Remove all existing day plans
         CoreDataManager.shared.removeAllDayPlans()
-
+        
         // Save sessions as day plans
         
         
         
         CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) { isCompleted in
             // [weak self]
-         //   guard let welf = self else { return }
+            //   guard let welf = self else { return }
             if isCompleted {
-              
-
+                
+                
                 completion(true)
             }
         }
@@ -1224,11 +1204,11 @@ class MainVC : UIViewController {
     
     @IBAction func didTapSaveBtn(_ sender: Any) {
         // Ensure you have sessions to save
-     
+        
         guard var yetToSaveSession = self.sessions else {
             return
         }
-
+        
         // Mark all sessions as retrieved
         
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
@@ -1245,52 +1225,52 @@ class MainVC : UIViewController {
             }
         }
         
-            updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
-                guard let welf = self else {return}
-                
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                    welf.callSavePlanAPI() { _ in
-                        welf.toConfigureMydayPlan()
-                    }
-                 
-                } else {
+        updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
+            guard let welf = self else {return}
+            
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                welf.callSavePlanAPI() { _ in
                     welf.toConfigureMydayPlan()
-                    self?.toCreateToast("You are not connected to internet")
                 }
                 
-              
-                        //    welf.toConfigureMydayPlan()
-      
+            } else {
+                welf.toConfigureMydayPlan()
+                self?.toCreateToast("You are not connected to internet")
             }
+            
+            
+            //    welf.toConfigureMydayPlan()
+            
+        }
         
-
+        
         // Remove existing session territories from Core Data
-   
+        
     }
     
     
-
- 
     
     
-//http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=edetsave/dayplan
-//{"tableName":"dayplan","sfcode":"MR6432","division_code":"22,","Rsf":"MR6432","sf_type":"1","Designation":"MR","state_code":"10","subdivision_code":"19,","town_code":"116780,116777,","Town_name":"Bandipora,Bramulla,","WT_code":"306","WTName":"Field Work","FwFlg":"F","town_code2":"","Town_name2":"","WT_code2":"","WTName2":"","FwFlg2":"","Remarks":"","location":"","location2":"","InsMode":"0","Appver":"M1","Mod":"","TPDt":"2024-02-07 00:00:00.000","TpVwFlg":"","TP_cluster":"","TP_worktype":""}
+    
+    
+    //http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=edetsave/dayplan
+    //{"tableName":"dayplan","sfcode":"MR6432","division_code":"22,","Rsf":"MR6432","sf_type":"1","Designation":"MR","state_code":"10","subdivision_code":"19,","town_code":"116780,116777,","Town_name":"Bandipora,Bramulla,","WT_code":"306","WTName":"Field Work","FwFlg":"F","town_code2":"","Town_name2":"","WT_code2":"","WTName2":"","FwFlg2":"","Remarks":"","location":"","location2":"","InsMode":"0","Appver":"M1","Mod":"","TPDt":"2024-02-07 00:00:00.000","TpVwFlg":"","TP_cluster":"","TP_worktype":""}
     
     
     @IBAction func didTapAddplan(_ sender: Any) {
-     
+        
         if sessions?.count == 2 {
-           
+            
             return
         } else {
             guard var nonEmptySession = self.sessions else  {
                 return
             }
-          
+            
             let unsavedSessionsWithIndices = nonEmptySession.enumerated().filter { index, session in
                 return !(session.isRetrived ?? false)
             }
-
+            
             let unsavedSessions = unsavedSessionsWithIndices.map { index, session in
                 return session
             }
@@ -1299,8 +1279,8 @@ class MainVC : UIViewController {
                 return index
             }
             
-           
-          
+            
+            
             if unsavedSessions.isEmpty {
                 
                 var aSession = Sessions()
@@ -1309,15 +1289,15 @@ class MainVC : UIViewController {
                 aSession.workType = nil
                 aSession.headQuarters = nil
                 aSession.isRetrived = Bool()
-
+                
                 nonEmptySession.insert(aSession, at: 0)
-               // nonEmptySession.append(aSession)
+                // nonEmptySession.append(aSession)
                 self.sessions = nonEmptySession
                 self.unsavedIndex = indices.first
                 self.isTohightCell = true
-              
+                
             } else {
-
+                
                 let unfilledSessionWithIndex = unsavedSessions.enumerated().filter { index, session in
                     return  (session.cluster == nil || session.headQuarters == nil || session.workType == nil)
                 }
@@ -1334,7 +1314,7 @@ class MainVC : UIViewController {
                 if unfilledSessions.isEmpty {
                     
                     let unSentSessions = unfilledSessions.filter {($0.isRetrived ?? false)}
-                       
+                    
                     if !unSentSessions.isEmpty {
                         var aSession = Sessions()
                         
@@ -1342,9 +1322,9 @@ class MainVC : UIViewController {
                         aSession.workType = nil
                         aSession.headQuarters = nil
                         aSession.isRetrived = Bool()
-
+                        
                         nonEmptySession.insert(aSession, at: 0)
-                      //  nonEmptySession.append(aSession)
+                        //  nonEmptySession.append(aSession)
                         self.sessions = nonEmptySession
                     } else {
                         self.toCreateToast("please do save session to add plan")
@@ -1355,35 +1335,35 @@ class MainVC : UIViewController {
                     self.unsavedIndex = unfilledindices.first
                     self.isTohightCell = true
                 }
-
-
+                
+                
             }
             self.configureAddplanBtn(false)
             self.toLoadWorktypeTable()
-
+            
             //(aSession)
         }
-
+        
     }
     func configureAddplanBtn(_ isToEnable: Bool) {
-//self.sessions?.count ?? 0 >= 2 ?  false
+        //self.sessions?.count ?? 0 >= 2 ?  false
         if isToEnable {
             self.btnAddplan.isUserInteractionEnabled = true
             self.btnAddplan.alpha = 1
             return
         }  else {
-           
+            
             self.btnAddplan.isUserInteractionEnabled = false
             self.btnAddplan.alpha = 0.5
             return
         }
-
-
+        
+        
     }
     
     
     func configureSaveplanBtn(_ isToEnable: Bool) {
-
+        
         if !isToEnable {
             self.btnSavePlan.isUserInteractionEnabled = false
             self.btnSavePlan.alpha = 0.5
@@ -1396,10 +1376,12 @@ class MainVC : UIViewController {
     
     
     func setupUI() {
+        dateInfoLbl.textColor = .appTextColor
+        dateInfoLbl.setFont(font: .medium(size: .BODY))
         viewDayPlanStatus.layer.cornerRadius = 5
         dateInfoLbl.setFont(font: .medium(size: .BODY))
         dateInfoLbl.textColor = .appTextColor
-        toLoadCalenderData()
+      
         rejectionVXview.backgroundColor = .appLightPink
         closeRejectionVIew.addTap {
             self.toConfigureDynamicHeader(true)
@@ -1433,16 +1415,16 @@ class MainVC : UIViewController {
         segmentType = [.workPlan, .calls, .outbox]
         toLoadSegments()
         worktypeTable.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
-       
+        
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         
-
-      
+        
+        
         btnAddplan.backgroundColor = .appGreyColor
         btnAddplan.layer.borderWidth = 1
         btnAddplan.layer.borderColor = UIColor.appLightTextColor.cgColor
         
-      
+        
         
         btnSavePlan.backgroundColor = .appGreyColor
         btnSavePlan.layer.borderWidth = 1
@@ -1519,29 +1501,25 @@ class MainVC : UIViewController {
         month1Lbl.setFont(font: .bold(size: .BODY))
         month2Lbl.setFont(font: .bold(size: .BODY))
         month3Lbl.setFont(font: .bold(size: .BODY))
-       // configureSaveplanBtn(false)
+        // configureSaveplanBtn(false)
     }
     
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-      //  CoreDataManager.shared.removeAllDayPlans()
-     //  self.toConfigureMydayPlan()
+        //  CoreDataManager.shared.removeAllDayPlans()
+        //  self.toConfigureMydayPlan()
+        
+        self.toSetDayplan()
         rejectionVIew.isHidden = true
-     //   toConfigureDynamicHeader(false)
+        //   toConfigureDynamicHeader(false)
         self.toSeperateDCR()
         self.updateDcr()
         self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            masterVM?.toGetMyDayPlan(type: .myDayPlan) {_ in
-                self.toConfigureMydayPlan()
-                self.toSetParams()
-            }
-        } else {
-            self.toConfigureMydayPlan()
-        }
+        toLoadCalenderData()
+        
         toLoadDcrCollection()
         toLoadOutboxTable()
     }
@@ -1553,14 +1531,28 @@ class MainVC : UIViewController {
         
     }
     
+    
+    func toSetDayplan() {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
+                self.toConfigureMydayPlan()
+                self.toSetParams()
+            }
+        } else {
+            self.toConfigureMydayPlan()
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-   
+        
         toSetParams()
         self.updateLinks()
         setupUI()
+        //        toSetDayplan()
         LocationManager.shared.locationUpdate()
-
+        
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
         
         [btnNotification,btnSync,btnProfile].forEach({$0?.Border_Radius(border_height: 0, isborder: true, radius: 25)})
@@ -1585,14 +1577,14 @@ class MainVC : UIViewController {
         self.outboxTableView.register(UINib(nibName: "OutboxDetailsTVC", bundle: nil), forCellReuseIdentifier: "OutboxDetailsTVC")
         
         
-    //    self.worktypeTable.register(UINib(nibName: "HomeWorktypeTVC", bundle: nil), forCellReuseIdentifier: "HomeWorktypeTVC")
+        //    self.worktypeTable.register(UINib(nibName: "HomeWorktypeTVC", bundle: nil), forCellReuseIdentifier: "HomeWorktypeTVC")
         
         self.worktypeTable.register(UINib(nibName: "MyDayPlanTVC", bundle: nil), forCellReuseIdentifier: "MyDayPlanTVC")
         
         
         self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
         
-    //
+        //
         
         
         let layout = UICollectionViewFlowLayout()
@@ -1614,11 +1606,11 @@ class MainVC : UIViewController {
         
         self.segmentControlForAnalysis.fillSelectedSegment()
         
-//        [viewWorkType,viewHeadquarter,viewCluster,viewRemarks].forEach { view in
-//            view.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
-//            view.layer.borderWidth = 1.5
-//            view.layer.cornerRadius = 10
-//        }
+        //        [viewWorkType,viewHeadquarter,viewCluster,viewRemarks].forEach { view in
+        //            view.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
+        //            view.layer.borderWidth = 1.5
+        //            view.layer.cornerRadius = 10
+        //        }
         
         [btnCall,btnActivity].forEach { button in
             button.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
@@ -1628,7 +1620,7 @@ class MainVC : UIViewController {
         
         self.imgProfile.Border_Radius(border_height: 0.0, isborder: false, radius: 50)
         
-    //    self.updateCalender()
+        //    self.updateCalender()
         
         self.updatePCPMChart()
         
@@ -1640,7 +1632,7 @@ class MainVC : UIViewController {
     }
     
     func toLoadCalenderData() {
-      
+        returnWeeklyoffDates()
         self.tourPlanCalander.register(MyDayPlanCalenderCell.self, forCellReuseIdentifier: "MyDayPlanCalenderCell")
         
         tourPlanCalander.scrollEnabled = false
@@ -1649,14 +1641,14 @@ class MainVC : UIViewController {
         //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
         tourPlanCalander.rowHeight =  tourPlanCalander.height / 5
         tourPlanCalander.layer.borderColor = UIColor.appSelectionColor.cgColor
-      //  tourPlanCalander.calendarWeekdayView.weekdayLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+        //  tourPlanCalander.calendarWeekdayView.weekdayLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
         tourPlanCalander.calendarWeekdayView.weekdayLabels.forEach { label in
             label.setFont(font: .medium(size: .BODY))
             label.textColor = .appLightTextColor
         }
-      //  tourPlanCalander.layer.borderWidth = 1
-      //  tourPlanCalander.layer.cornerRadius = 5
-      //  tourPlanCalander.clipsToBounds = true
+        //  tourPlanCalander.layer.borderWidth = 1
+        //  tourPlanCalander.layer.cornerRadius = 5
+        //  tourPlanCalander.clipsToBounds = true
         tourPlanCalander.placeholderType = .none
         tourPlanCalander.calendarWeekdayView.backgroundColor = .clear
         self.tourPlanCalander.scrollDirection = .horizontal
@@ -1665,9 +1657,12 @@ class MainVC : UIViewController {
         tourPlanCalander.delegate = self
         tourPlanCalander.dataSource = self
         tourPlanCalander.reloadData()
-     //   mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
-
+        //   mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
+        
     }
+    
+    
+
     
     
     func toIntegrateChartView(_ type: ChartType, _ index: Int) {
@@ -1729,38 +1724,38 @@ class MainVC : UIViewController {
     
     @IBAction func dateAction(_ sender: UIButton) {
         
-    
+        
         self.selectedSegment  = self.selectedSegment  != .calender ?   .calender :   segmentType[selectedSegmentsIndex]
         self.setSegment(self.selectedSegment)
         
-
+        
     }
     
     
-//    @IBAction func dcrSegmentControlAction(_ sender: UISegmentedControl) {
-//
-//        self.segmentControlForDcr.underlinePosition()
-//
-//        switch self.segmentControlForDcr.selectedSegmentIndex {
-//        case 0:
-//            self.viewWorkPlan.isHidden = false
-//            self.viewCalls.isHidden = true
-//            self.viewOutBox.isHidden = true
-//            toLoadWorktypeTable()
-//        case 1:
-//            self.viewWorkPlan.isHidden = true
-//            self.viewCalls.isHidden = false
-//            self.viewOutBox.isHidden = true
-//            toloadCallsTable()
-//        case 2:
-//            self.viewWorkPlan.isHidden = true
-//            self.viewCalls.isHidden = true
-//            self.viewOutBox.isHidden = false
-//            toLoadOutboxTable()
-//        default:
-//            break
-//        }
-//    }
+    //    @IBAction func dcrSegmentControlAction(_ sender: UISegmentedControl) {
+    //
+    //        self.segmentControlForDcr.underlinePosition()
+    //
+    //        switch self.segmentControlForDcr.selectedSegmentIndex {
+    //        case 0:
+    //            self.viewWorkPlan.isHidden = false
+    //            self.viewCalls.isHidden = true
+    //            self.viewOutBox.isHidden = true
+    //            toLoadWorktypeTable()
+    //        case 1:
+    //            self.viewWorkPlan.isHidden = true
+    //            self.viewCalls.isHidden = false
+    //            self.viewOutBox.isHidden = true
+    //            toloadCallsTable()
+    //        case 2:
+    //            self.viewWorkPlan.isHidden = true
+    //            self.viewCalls.isHidden = true
+    //            self.viewOutBox.isHidden = false
+    //            toLoadOutboxTable()
+    //        default:
+    //            break
+    //        }
+    //    }
     
     func toLoadOutboxTable() {
         toSetupOutBoxDataSource()
@@ -2027,7 +2022,7 @@ class MainVC : UIViewController {
                     print(error)
                 }
             case .failure(let error):
-             //   ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                //   ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                 self.toCreateToast(error.localizedDescription)
                 print(error)
                 return
@@ -2227,7 +2222,7 @@ class MainVC : UIViewController {
                     print(error)
                 }
             case .failure(let error):
-              //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                 print(error)
                 self.toCreateToast(error.localizedDescription)
                 return
@@ -2267,7 +2262,7 @@ class MainVC : UIViewController {
                     print(error)
                 }
             case .failure(let error):
-              //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                 self.toCreateToast(error.localizedDescription)
                 print(error)
                 return
@@ -2305,7 +2300,7 @@ class MainVC : UIViewController {
                     print(error)
                 }
             case .failure(let error):
-          //      ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                //      ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                 self.toCreateToast(error.localizedDescription)
                 print(error)
                 return
@@ -2340,27 +2335,27 @@ class MainVC : UIViewController {
         
         //  let font = UIFont(name: "Satoshi-Bold", size: 14)!
         //  self.segmentControlForDcr.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-      //  self.segmentControlForDcr.highlightSelectedSegment()
+        //  self.segmentControlForDcr.highlightSelectedSegment()
         
     }
     
-//    private func updateCalender () {
-//        
-//        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
-//        
-//        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
-//        
-//        self.calendar.appearance.todayColor = UIColor.clear
-//        self.calendar.appearance.weekdayTextColor = color
-//        self.calendar.appearance.headerTitleColor = headerColor
-//        self.calendar.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 18)
-//        self.calendar.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 16)
-//        self.calendar.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 16)
-//        self.calendar.appearance.borderRadius = 0
-//        self.calendar.scrollDirection = .vertical
-//        self.calendar.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
-//        self.calendar.reloadData()
-//    }
+    //    private func updateCalender () {
+    //
+    //        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
+    //
+    //        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
+    //
+    //        self.calendar.appearance.todayColor = UIColor.clear
+    //        self.calendar.appearance.weekdayTextColor = color
+    //        self.calendar.appearance.headerTitleColor = headerColor
+    //        self.calendar.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 18)
+    //        self.calendar.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 16)
+    //        self.calendar.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 16)
+    //        self.calendar.appearance.borderRadius = 0
+    //        self.calendar.scrollDirection = .vertical
+    //        self.calendar.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
+    //        self.calendar.reloadData()
+    //    }
     
     private func updateLinks () {
         
@@ -2491,42 +2486,42 @@ class MainVC : UIViewController {
             viewCalls.isHidden = true
             viewOutBox.isHidden = true
             viewDayPlanStatus.isHidden = true
-          //  outboxSegmentHolderView.isHidden = true
-          //  callsSegmentHolderVIew.isHidden = true
-         toLoadWorktypeTable()
-          if isfromSwipe ?? false {
+            //  outboxSegmentHolderView.isHidden = true
+            //  callsSegmentHolderVIew.isHidden = true
+            toLoadWorktypeTable()
+            if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 0
                 self.segmentsCollection.reloadData()
             }
-          
-
+            
+            
         case .calls:
-           // callsSegmentHolderVIew.isHidden = false
-           // outboxSegmentHolderView.isHidden = true
+            // callsSegmentHolderVIew.isHidden = false
+            // outboxSegmentHolderView.isHidden = true
             viewWorkPlan.isHidden = true
             viewCalls.isHidden = false
             viewOutBox.isHidden = true
             viewDayPlanStatus.isHidden = true
             toloadCallsTable()
-           if isfromSwipe ?? false {
+            if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 1
                 self.segmentsCollection.reloadData()
             }
-     
+            
             
         case .outbox:
-           // outboxSegmentHolderView.isHidden = false
+            // outboxSegmentHolderView.isHidden = false
             viewWorkPlan.isHidden = true
             viewCalls.isHidden = true
             viewOutBox.isHidden = false
             viewDayPlanStatus.isHidden = true
-           // callsSegmentHolderVIew.isHidden = true
+            // callsSegmentHolderVIew.isHidden = true
             toLoadOutboxTable()
-           if isfromSwipe ?? false {
+            if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 2
                 self.segmentsCollection.reloadData()
             }
-     
+            
         case .calender:
             viewWorkPlan.isHidden = true
             viewCalls.isHidden = true
@@ -2536,14 +2531,14 @@ class MainVC : UIViewController {
     }
     
     private func moveCurrentPage(moveUp: Bool) {
-     
+        
         let calendar = Calendar.current
         var dateComponents = DateComponents()
         dateComponents.month = moveUp ? 1 : -1
-
-      //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
-
-      
+        
+        //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
+        
+        
         if moveUp {
             var isToMoveindex: Int? = nil
             self.isNextMonth = true
@@ -2561,10 +2556,10 @@ class MainVC : UIViewController {
             }
             
             if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
-                  print("Next Month:", nextMonth)
+                print("Next Month:", nextMonth)
                 self.currentPage = nextMonth
                 self.isPrevMonth = false
-              }
+            }
         } else if !moveUp{
             // Calculate the previous month
             var isToMoveindex: Int? = nil
@@ -2585,18 +2580,18 @@ class MainVC : UIViewController {
                 print("Previous Month:", previousMonth)
                 self.currentPage = previousMonth
                 self.isNextMonth = false
-               
+                
             }
         } else {
             if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
                 print("Previous Month:", currentMonth)
                 self.currentPage = currentMonth
-               
+                
             }
         }
-
+        
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
-      //  monthWiseSeperationofSessions(self.currentPage ?? Date())
+        //  monthWiseSeperationofSessions(self.currentPage ?? Date())
     }
     
     func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
@@ -2622,7 +2617,7 @@ class MainVC : UIViewController {
             btnNext.isUserInteractionEnabled = true
         }
         
-     
+        
     }
     
 }
@@ -2657,13 +2652,12 @@ extension MainVC : collectionViewProtocols {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let color = [UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.7))].randomElement()
         
         switch collectionView {
         case self.segmentsCollection:
             let cell: PreviewTypeCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PreviewTypeCVC", for: indexPath) as! PreviewTypeCVC
             
-        
+            
             cell.selectionView.isHidden =  selectedSegmentsIndex == indexPath.row ? false : true
             cell.titleLbl.textColor =  selectedSegmentsIndex == indexPath.row ? .appTextColor : .appLightTextColor
             cell.titleLbl.text = segmentType[indexPath.row].rawValue
@@ -2674,9 +2668,9 @@ extension MainVC : collectionViewProtocols {
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
                 welf.selectedSegmentsIndex  = indexPath.row
-              
+                
                 welf.segmentsCollection.reloadData()
-               
+                
                 
                 switch welf.segmentType[welf.selectedSegmentsIndex] {
                     
@@ -2685,10 +2679,10 @@ extension MainVC : collectionViewProtocols {
                     welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
                     
                 case .calls :
-            
+                    
                     welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-                  
-        
+                    
+                    
                 case .outbox:
                     
                     welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
@@ -2696,9 +2690,9 @@ extension MainVC : collectionViewProtocols {
                     print("Yet to implement")
                 }
                 
-
-   
-                }
+                
+                
+            }
             
             
             return cell
@@ -2780,7 +2774,7 @@ extension MainVC : collectionViewProtocols {
         case self.analysisCollectionView:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AnalysisCell", for: indexPath) as! AnalysisCell
             if indexPath.row != 0 {
-                cell.viewAnalysis.backgroundColor = color
+             //   cell.viewAnalysis.backgroundColor = color
                 cell.imgArrow.isHidden = true
             }
             //                if indexPath.row == 1{
@@ -2795,9 +2789,13 @@ extension MainVC : collectionViewProtocols {
             return cell
         case self.eventCollectionView :
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DayPlanEventCell", for: indexPath) as! DayPlanEventCell
+            
+            let model = self.homeDataArr
+            
             cell.lblEvent.text = eventArr[indexPath.row]
-            cell.lblEvent.textColor = ColorArray[indexPath.row]
-            cell.viewEvent.backgroundColor = ColorArrayForBackground[indexPath.row]
+            cell.lblEvent.textColor = colorArr[indexPath.row]
+            cell.vxView.backgroundColor = colorArr[indexPath.row]
+            //cell.viewEvent.backgroundColor = colorArr[indexPath.row]
             
             //     cell.width1 = collectionView.bounds.width - Constants.spacing
             cell.Border_Radius(border_height: 0.0, isborder: false, radius: 5)
@@ -2812,7 +2810,7 @@ extension MainVC : collectionViewProtocols {
         
         switch collectionView {
         case segmentsCollection:
-           // return CGSize(width:segmentType[indexPath.item].rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
+            // return CGSize(width:segmentType[indexPath.item].rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
             return CGSize(width: collectionView.width / 3, height: collectionView.height)
         case self.quickLinkCollectionView :
             let width = self.quickLinkCollectionView.frame.width / 3
@@ -2885,7 +2883,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
- 
+        
         switch tableView {
         case self.sideMenuTableView :
             return menuList.count
@@ -3005,34 +3003,34 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                         })
                     }
                 }
-
+                
             }
-        
-      
+            
+            
             
             let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
             var cacheObjects : [NSManagedObject] = []
             
             guard let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context), let selectedHQentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: context),
-            let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+                  let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
             else {
                 fatalError("Entity not found")
             }
-
+            
             let temporaryHQObj = NSManagedObject(entity: selectedHQentity, insertInto: nil) as! Subordinate
             let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
             let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
             
             
-         
+            
             
             if let afetchedHQObject =  model.headQuarters  {
-             
+                
                 let subordinateObj = CoreDataManager.shared.convertHeadQuartersToSubordinate(afetchedHQObject, context: context)
                 
                 cacheObjects.append(subordinateObj)
             } else {
-        
+                
                 cacheObjects.append(temporaryHQObj)
             }
             
@@ -3041,7 +3039,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             } else {
                 cacheObjects.append(contentsOf: [temporaryselectedClusterobj])
                 
-                 
+                
             }
             
             if let afetchedWorkTypeObject =  model.workType  {
@@ -3049,10 +3047,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             } else {
                 cacheObjects.append(temporaryselectedWTobj)
             }
-          //  let model = self.sessions[indexPath.row]
+            //  let model = self.sessions[indexPath.row]
             if model.isRetrived == true {
                 cell.wtBorderView.backgroundColor = .appLightTextColor.withAlphaComponent(0.15)
-               // cell.contentHolderVIew.backgroundColor = .appGreyColor
+                // cell.contentHolderVIew.backgroundColor = .appGreyColor
                 cell.isUserInteractionEnabled = false
                 cell.setupUI(model: cacheObjects, istoDelete: false)
             } else {
@@ -3062,17 +3060,17 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 cell.setupUI(model: cacheObjects, istoDelete: indexPath.row == 0 && !(model.isFirstCell ?? false) ? true : false)
             }
             
-           // cell.setupHeight(true)
+            // cell.setupHeight(true)
             cell.selectionStyle = .none
-
             
-  
             
-           
+            
+            
+            
             
             
             cell.wtBorderView.addTap { [weak self] in
-            
+                
                 guard let welf = self else {return}
                 welf.selectedSessionIndex = indexPath.row
                 welf.navigateToSpecifiedMenu(type: .workType)
@@ -3098,7 +3096,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     welf.toCreateToast("Please select HQ")
                 }
                 
-               
+                
             }
             
             cell.deleteTapStack.addTap { [weak self] in
@@ -3115,8 +3113,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
         default :
             return UITableViewCell()
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "SideMenuCell", for: indexPath) as! SideMenuCell
-//            return cell
+            //            let cell = tableView.dequeueReusableCell(withIdentifier: "SideMenuCell", for: indexPath) as! SideMenuCell
+            //            return cell
         }
     }
     
@@ -3144,9 +3142,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             default:
                 print("Yet to implement")
             }
-                
             
-      
+            
+            
             
         case .headQuater:
             switch self.selectedSessionIndex {
@@ -3157,11 +3155,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             default:
                 print("---->>")
             }
-           // vc.selectedObject = self.fetchedHQObject
+            // vc.selectedObject = self.fetchedHQObject
             //self.fetchedHQObject
         default:
             print("Yet to implement")
-  
+            
         }
         
         self.modalPresentationStyle = .custom
@@ -3187,11 +3185,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         } else if tableView == self.callTableView {
             return 75
         } else if tableView == self.worktypeTable {
-//            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-//                return 150 + 10
-//            } else {
-//                return 200 + 10
-//            }
+            //            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+            //                return 150 + 10
+            //            } else {
+            //                return 200 + 10
+            //            }
             guard let nonEmptySession = self.sessions , nonEmptySession.count > 0 else  {
                 return 0
             }
@@ -3202,7 +3200,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             } else {
                 return  setupHeight(indexPath.row == 0 ? true : false, index: indexPath.row)
             }
-     
+            
             
         }
         else {
@@ -3240,7 +3238,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             header?.refreshdelegate = self
             
-
+            
             
             let dateString = obj_sections[section].date
             let dateFormatter = DateFormatter()
@@ -3268,14 +3266,14 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func toretryDCRupload( date: String, completion: @escaping (Bool) -> Void) {
-    
+        
         let paramData = LocalStorage.shared.getData(key: .outboxParams)
         var localParamArr = [String: [[String: Any]]]()
         do {
             localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
             dump(localParamArr)
         } catch {
-          //  self.toCreateToast("unable to retrive")
+            //  self.toCreateToast("unable to retrive")
             completion(false)
         }
         
@@ -3628,6 +3626,196 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 
 extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateAppearance {
     
+    func toModifyDate(date: Date, isForHoliday: Bool? = false) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = (isForHoliday ?? false) ? "yyyy-MM-dd" : "d MMMM yyyy"
+        return dateFormatter.string(from: date )
+    }
+    
+    func getFirstDayOfCurrentMonth() -> Date? {
+        let calendar = Calendar.current
+        let currentDate = Date()
+
+        // Get the components (year, month, day) of the current date
+        let components = calendar.dateComponents([.year, .month], from: currentDate)
+
+        // Create a new date using the components for the first day of the current month
+        if let firstDayOfMonth = calendar.date(from: components) {
+            return firstDayOfMonth
+        } else {
+            return nil
+        }
+    }
+    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
+        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
+        let calendar = Calendar.current
+        
+        var saturdays: [Date] = []
+        
+        for monthOffset in months {
+            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
+                continue
+            }
+            
+            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
+            
+            for day in monthRange.lowerBound..<monthRange.upperBound {
+                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
+                    continue
+                }
+                
+                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+                    saturdays.append(date)
+                }
+            }
+        }
+        
+        return saturdays
+    }
+    
+    func returnWeeklyoffDates() {
+        let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
+        let weeklyOff = weeklyoffSetupArr[0]
+        let weekoffIndex = Int(weeklyOff.holiday_Mode ?? "0") ?? 0
+        let weekoffDates = self.getWeekoffDates(forMonths: [-1, 0, 1], weekoffday: weekoffIndex + 1)
+        let dcrWeeklyoffDateStrArr: [String] = {
+            var dateStrings = [String]()
+            
+            weekoffDates.forEach { date in
+                let modifiedDateStr = toModifyDate(date: date, isForHoliday: true)
+                dateStrings.append(modifiedDateStr)
+            }
+            
+            return dateStrings
+        }()
+        
+        var  homeDataWeekoffEntities = [HomeData]()
+        
+        for aWeeklyoffDate in dcrWeeklyoffDateStrArr {
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "HomeData", in: context) {
+                let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
+                
+          
+                entityHomedata.anslNo = ""
+                entityHomedata.custCode =  String()
+                entityHomedata.custName = String()
+                entityHomedata.custType = String()
+                entityHomedata.dcr_dt = aWeeklyoffDate
+                entityHomedata.dcr_flag = String()
+                entityHomedata.fw_Indicator = "W"
+                entityHomedata.index = Int16()
+                entityHomedata.isDataSentToAPI = String()
+                entityHomedata.mnth = String()
+                entityHomedata.month_name = String()
+                entityHomedata.rejectionReason = String()
+                entityHomedata.sf_Code = String()
+                entityHomedata.town_code = String()
+                entityHomedata.town_name = String()
+                entityHomedata.trans_SlNo = String()
+                entityHomedata.yr = String()
+                
+                homeDataWeekoffEntities.append(entityHomedata)
+            }
+            
+            
+        }
+        self.homeDataArr.append(contentsOf: homeDataWeekoffEntities)
+                
+        
+
+        
+    }
+//    func returnHolidaysDates() {
+//        var responseHolidaydates = [String]()
+//        let holidaysSetupArr = DBManager.shared.getHolidays()
+//        
+//        
+//        holidaysSetupArr.forEach({ aholiday in
+//            responseHolidaydates.append(aholiday.holiday_Date ?? "")
+//           
+//        })
+//        
+//        for holidayDate in responseHolidaydates {
+//            if let entityDescription = NSEntityDescription.entity(forEntityName: "HomeData", in: context) {
+//                let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
+//                
+//          
+//                entityHomedata.anslNo = ""
+//                entityHomedata.custCode =  String()
+//                entityHomedata.custName = String()
+//                entityHomedata.custType = String()
+//                entityHomedata.dcr_dt = String() //2023-12-11
+//                entityHomedata.dcr_flag = String()
+//                entityHomedata.fw_Indicator = "H"
+//                entityHomedata.index = Int16()
+//                entityHomedata.isDataSentToAPI = String()
+//                entityHomedata.mnth = String() // 12
+//                entityHomedata.month_name = String() // December
+//                entityHomedata.rejectionReason = String()
+//                entityHomedata.sf_Code = String()
+//                entityHomedata.town_code = String()
+//                entityHomedata.town_name = String()
+//                entityHomedata.trans_SlNo = String()
+//                entityHomedata.yr = String()
+//                
+//                self.homeDataArr.append(entityHomedata)
+//            }
+//            
+//         
+//        }
+//        
+//
+//        
+//        
+//    }
+    
+    
+    func toExtractWorkDetails(date: Date) -> HomeData? {
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+       
+        let dateString = dateFormatter.string(from: date)
+
+        print(dateString)
+        
+        
+      let filteredDetails =   homeDataArr.filter { $0.dcr_dt ?? "" == dateString}
+        
+        if !filteredDetails.isEmpty {
+            return filteredDetails.first
+        } else {
+            return nil
+        }
+        
+    }
+    
+    
+    func toSetDataSource() {
+        var dates = [Date]()
+        homeDataArr.forEach { aHomeData in
+            dates.append(aHomeData.dcr_dt?.toConVertStringToDate() ?? Date())
+        }
+    }
+    
+    func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
+        var result: [Int: [Date]] = [:]
+        
+        let calendar = Calendar.current
+        
+        for date in dates {
+            let month = calendar.component(.month, from: date)
+            
+            if result[month] == nil {
+                result[month] = [date]
+            } else {
+                result[month]?.append(date)
+            }
+        }
+        
+        return result
+    }
     
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         
@@ -3651,48 +3839,66 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         let cell = calendar.dequeueReusableCell(withIdentifier: "MyDayPlanCalenderCell", for: date, at: position) as! MyDayPlanCalenderCell
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
-        cell.addedIV.backgroundColor = .appLightPink
-      //  let toCompareDate = dateFormatter.string(from: date)
+        cell.addedIV.backgroundColor = .clear
+        //  let toCompareDate = dateFormatter.string(from: date)
         cell.addedIV.isHidden = false
+        let model = toExtractWorkDetails(date: date)
+        
+
+        if model?.fw_Indicator ==  "F" {
+            cell.addedIV.backgroundColor = .appGreen
+            
+        } else if  model?.fw_Indicator ==  "W" {
+            cell.addedIV.backgroundColor = .appYellow
+            dump(model)
+        } else if  model?.fw_Indicator ==  "N" {
+            cell.addedIV.backgroundColor = .appBlue
+            dump(model)
+        }  else if  model?.fw_Indicator ==  "L" {
+            cell.addedIV.backgroundColor = .appLightPink
+            dump(model)
+        }   else if  model?.fw_Indicator ==  "H" {
+            cell.addedIV.backgroundColor = .appViolet
+            dump(model)
+        }
+        
+        
 
         
         
         
-      
-        let currentDate = date  // Replace this with your desired date
-        let calendar = Calendar.current
-      //  let components = calendar.dateComponents([.weekday], from: currentDate)
-
-
+       
         
-      //  cell.addedIV.isHidden = isExist || isForHoliday  ? false : true
-
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
         cell.customLabel.setFont(font: .medium(size: .BODY))
         cell.customLabel.textColor = .appTextColor
-       // cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        // cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         cell.titleLabel.isHidden = true
         cell.shapeLayer.isHidden = true
-    
+        
         cell.layer.borderColor = UIColor.appSelectionColor.cgColor
-          cell.layer.borderWidth = 0.5
-
+        cell.layer.borderWidth = 0.5
         
         
-        if selectedDate ==  toTrimDate(date: date, isForMainLabel: true)  {
+        
+        if selectedDate ==  toTrimDate(date: date, isForMainLabel: false)  {
             cell.contentHolderView.backgroundColor = .appTextColor
             cell.customLabel.textColor = .appWhiteColor
         } else {
             cell.contentHolderView.backgroundColor = .clear
-            cell.customLabel.textColor = .appTextColor
+            cell.customLabel.textColor = .appLightTextColor
         }
         
-
+        
         cell.addTap { [weak self] in
             guard let welf = self else {return}
-            welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: true)
-            welf.tourPlanCalander.reloadData()
+            if model == nil {
+                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+                welf.tourPlanCalander.reloadData()
+            }
+            
+    
         }
         
         return cell
@@ -3731,49 +3937,4 @@ private enum Constants {
     static let spacing: CGFloat = 1
 }
 
-
-//struct QuicKLink {
-//
-//    var color : UIColor!
-//    var name : String!
-//    var image : UIImage!
-//}
-//
-//
-//struct DcrCount {
-//
-//    var name : String
-//    var color : UIColor
-//    var count : String
-//    var image: UIImage
-//    var callsCount : Int
-//}
-
-enum AppColorForBackground {
-    
-}
-
-
-let ColorArray = [UIColor(red: CGFloat(254.0/255.0), green: CGFloat(185.0/255.0), blue: CGFloat(26.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(128.0/255.0), green: CGFloat(90.0/255.0), blue: CGFloat(175.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(181.0/255.0), green: CGFloat(139.0/255.0), blue: CGFloat(160.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(199.0/255.0), green: CGFloat(55.0/255.0), blue: CGFloat(150.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(7.0/255.0), green: CGFloat(97.0/255.0), blue: CGFloat(69.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0)),
-                  UIColor(red: CGFloat(20.0/255.0), green: CGFloat(89.0/255.0), blue: CGFloat(119.0/255.0), alpha: CGFloat(1.0))]
-
-
-let ColorArrayForBackground = [UIColor(red: CGFloat(254.0/255.0), green: CGFloat(185.0/255.0), blue: CGFloat(26.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(128.0/255.0), green: CGFloat(90.0/255.0), blue: CGFloat(175.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(181.0/255.0), green: CGFloat(139.0/255.0), blue: CGFloat(160.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(199.0/255.0), green: CGFloat(55.0/255.0), blue: CGFloat(150.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(7.0/255.0), green: CGFloat(97.0/255.0), blue: CGFloat(69.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.15)),
-                  UIColor(red: CGFloat(20.0/255.0), green: CGFloat(89.0/255.0), blue: CGFloat(119.0/255.0), alpha: CGFloat(0.15))]
 
