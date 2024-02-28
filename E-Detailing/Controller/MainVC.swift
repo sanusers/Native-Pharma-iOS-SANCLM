@@ -357,6 +357,23 @@ extension MainVC: MenuResponseProtocol {
                 sessions?[selectedSessionIndex ?? 0].headQuarters = temporaryselectedHqobj
                 
                 
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+                toLoadWorktypeTable()
+                let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
+                
+
+                
+                if territories.isEmpty {
+                    Shared.instance.showLoaderInWindow()
+                    masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { [weak self] _  in
+                        
+                        guard let welf = self else {return}
+                        
+                        Shared.instance.removeLoaderInWindow()
+                        welf.toCreateToast("Clusters synced successfully")
+                    }
+                }
+                
             default:
                 print("Yet to implement")
             }
@@ -375,9 +392,9 @@ extension MainVC: MenuResponseProtocol {
         var index : Int = 0
         if sessions?.count == 2 {
             index = tempSessionIndex == 0 ? 1 : 0
-            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: index))
+            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: tempSessionIndex, istoHandeleAddedSession: true))
         } else {
-            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: tempSessionIndex))
+            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: tempSessionIndex,  istoHandeleAddedSession: false))
         }
         
     
@@ -514,7 +531,7 @@ class MainVC : UIViewController {
     @IBOutlet weak var viewDayPlanStatus: UIView!
     
     @IBOutlet weak var viewSideMenu: UIView!
-    @IBOutlet weak var viewProfile: UIView!
+  //  @IBOutlet weak var viewProfile: UIView!
     
     //@IBOutlet weak var viewWorkType: UIView!
     //@IBOutlet weak var viewHeadquarter: UIView!
@@ -860,7 +877,7 @@ class MainVC : UIViewController {
                         
                     } else {
                         
-                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index)
+                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index, istoHandeleAddedSession: false)
                         //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
                     }
                     
@@ -904,7 +921,7 @@ class MainVC : UIViewController {
                         }
                         
                     } else {
-                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index)
+                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index, istoHandeleAddedSession: false)
                     }
                     
                     if isPlan2filled {
@@ -949,7 +966,7 @@ class MainVC : UIViewController {
         
     }
     
-    func toEnableSaveBtn(sessionindex: Int) -> Bool {
+    func toEnableSaveBtn(sessionindex: Int, istoHandeleAddedSession: Bool) -> Bool {
         guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
               let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
               let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
@@ -960,7 +977,7 @@ class MainVC : UIViewController {
         //        if sessions?.count == 2 {
         //            index = sessionindex == 0 ? 1 : 0
         //        }
-        
+        index = sessionindex
         let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
         let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
         let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
@@ -968,7 +985,7 @@ class MainVC : UIViewController {
         guard let nonNillSession = self.sessions else {return false}
         
         switch index {
-        case 0:
+        case 0 :
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                 if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
                     return false
@@ -987,7 +1004,13 @@ class MainVC : UIViewController {
                     return false
                 } else {
                     if nonNillSession[index].isRetrived ?? false {
-                        return false
+                       if istoHandeleAddedSession {
+                           return true
+                       } else {
+                           return false
+                       }
+                        
+                        
                     } else {
                         return true
                     }
@@ -1048,7 +1071,7 @@ class MainVC : UIViewController {
             }
             
         }
-        return false
+  
     }
     
     
@@ -1207,43 +1230,51 @@ class MainVC : UIViewController {
     @IBAction func didTapSaveBtn(_ sender: Any) {
         // Ensure you have sessions to save
         
+        let isnotToSave = toHighlightAddedCell() ?? true
+        
         guard var yetToSaveSession = self.sessions else {
             return
         }
         
-        // Mark all sessions as retrieved
-        
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            yetToSaveSession.indices.forEach { index in
-                yetToSaveSession[index].isRetrived = true
-            }
+        if isnotToSave {
+            self.toCreateToast("please fill required fields to save plan")
         } else {
-            yetToSaveSession.indices.forEach { index in
-                if  yetToSaveSession[index].isRetrived == true {
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                yetToSaveSession.indices.forEach { index in
+                    yetToSaveSession[index].isRetrived = true
+                }
+            } else {
+                yetToSaveSession.indices.forEach { index in
+                    if  yetToSaveSession[index].isRetrived == true {
+                        
+                    } else {
+                        yetToSaveSession[index].isRetrived = false
+                    }
+                }
+            }
+            
+            updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
+                guard let welf = self else {return}
+                
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                    welf.callSavePlanAPI() { _ in
+                        welf.toConfigureMydayPlan()
+                    }
                     
                 } else {
-                    yetToSaveSession[index].isRetrived = false
+                    welf.toConfigureMydayPlan()
+                    self?.toCreateToast("You are not connected to internet")
                 }
+                
+                
+                //    welf.toConfigureMydayPlan()
+                
             }
         }
         
-        updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
-            guard let welf = self else {return}
-            
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                welf.callSavePlanAPI() { _ in
-                    welf.toConfigureMydayPlan()
-                }
-                
-            } else {
-                welf.toConfigureMydayPlan()
-                self?.toCreateToast("You are not connected to internet")
-            }
-            
-            
-            //    welf.toConfigureMydayPlan()
-            
-        }
+        // Mark all sessions as retrieved
+        
+
         
         
         // Remove existing session territories from Core Data
@@ -1258,16 +1289,26 @@ class MainVC : UIViewController {
     //http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=edetsave/dayplan
     //{"tableName":"dayplan","sfcode":"MR6432","division_code":"22,","Rsf":"MR6432","sf_type":"1","Designation":"MR","state_code":"10","subdivision_code":"19,","town_code":"116780,116777,","Town_name":"Bandipora,Bramulla,","WT_code":"306","WTName":"Field Work","FwFlg":"F","town_code2":"","Town_name2":"","WT_code2":"","WTName2":"","FwFlg2":"","Remarks":"","location":"","location2":"","InsMode":"0","Appver":"M1","Mod":"","TPDt":"2024-02-07 00:00:00.000","TpVwFlg":"","TP_cluster":"","TP_worktype":""}
     
-    
-    @IBAction func didTapAddplan(_ sender: Any) {
-        
-        if sessions?.count == 2 {
-            
-            return
-        } else {
+    func toHighlightAddedCell() -> Bool? {
+//        if sessions?.count == 2 {
+//            
+//            return false
+//        } else {
             guard var nonEmptySession = self.sessions else  {
-                return
+                return false
             }
+        
+        
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+              let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+              let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
             
             let unsavedSessionsWithIndices = nonEmptySession.enumerated().filter { index, session in
                 return !(session.isRetrived ?? false)
@@ -1296,12 +1337,12 @@ class MainVC : UIViewController {
                 // nonEmptySession.append(aSession)
                 self.sessions = nonEmptySession
                 self.unsavedIndex = indices.first
-                self.isTohightCell = true
-                
+                self.isTohightCell = false
+                return false
             } else {
-                
+
                 let unfilledSessionWithIndex = unsavedSessions.enumerated().filter { index, session in
-                    return  (session.cluster == nil || session.headQuarters == nil || session.workType == nil)
+                    return  (session.cluster == nil || session.cluster == [temporaryselectedClusterobj] || session.headQuarters == nil ||  session.headQuarters == temporaryselectedHqobj || session.workType == nil || session.workType == temporaryselectedWTobj)
                 }
                 
                 let  unfilledSessions = unfilledSessionWithIndex.map { index, session in
@@ -1329,24 +1370,35 @@ class MainVC : UIViewController {
                         //  nonEmptySession.append(aSession)
                         self.sessions = nonEmptySession
                     } else {
-                        self.toCreateToast("please do save session to add plan")
+                     //   self.toCreateToast("please do save session to add plan")
                         self.unsavedIndex = unfilledindices.first
-                        self.isTohightCell = true
+                       // self.isTohightCell = true
+                        return false
                     }
                 } else {
                     self.unsavedIndex = unfilledindices.first
-                    self.isTohightCell = true
+                  //  self.isTohightCell = true
+                    return true
                 }
                 
                 
             }
+   // }
+    
+    
+            return true
+        
+    }
+    
+    @IBAction func didTapAddplan(_ sender: Any) {
+        
+            toHighlightAddedCell()
             self.configureAddplanBtn(false)
             self.toLoadWorktypeTable()
             
             //(aSession)
         }
-        
-    }
+    
     func configureAddplanBtn(_ isToEnable: Bool) {
         //self.sessions?.count ?? 0 >= 2 ?  false
         if isToEnable {
@@ -2422,7 +2474,7 @@ class MainVC : UIViewController {
     }
     
     @objc private func swipeAction(_ sender : UISwipeGestureRecognizer) {
-        self.viewProfile.isHidden = true
+       // self.viewProfile.isHidden = true
         self.viewDayPlanStatus.isHidden = true
         
         switch sender.direction {
