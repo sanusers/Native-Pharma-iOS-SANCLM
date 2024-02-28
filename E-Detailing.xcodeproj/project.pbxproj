@@ -217,6 +217,11 @@
 		38E3C3692AFA033C00623C33 /* ConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C3682AFA033C00623C33 /* ConfigModel.swift */; };
 		38E3C36B2AFA047400623C33 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C36A2AFA047400623C33 /* Codable.swift */; };
 		38E3C36D2AFA0BAC00623C33 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C36C2AFA0BAC00623C33 /* BaseViewModel.swift */; };
+		38E3DF6D2B8F16CF0093DF4B /* HomeCheckinView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E3DF6C2B8F16CF0093DF4B /* HomeCheckinView.xib */; };
+		38E3DF6F2B8F23F70093DF4B /* HomeCheckinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3DF6E2B8F23F70093DF4B /* HomeCheckinView.swift */; };
+		38E3DF712B8F2DBA0093DF4B /* Viewcontroller + Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3DF702B8F2DBA0093DF4B /* Viewcontroller + Ex.swift */; };
+		38E3DF732B8F633D0093DF4B /* HomeCheckinDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E3DF722B8F633D0093DF4B /* HomeCheckinDetailsView.xib */; };
+		38E3DF752B8F66F50093DF4B /* HomeCheckinDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3DF742B8F66F50093DF4B /* HomeCheckinDetailsView.swift */; };
 		38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3E5352A80BE7200AE5AF6 /* CallVC.swift */; };
 		38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3E5372A80C75000AE5AF6 /* DoctorCallCell.swift */; };
 		38E3E53A2A80C78700AE5AF6 /* DoctorCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */; };
@@ -523,6 +528,11 @@
 		38E3C3682AFA033C00623C33 /* ConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigModel.swift; sourceTree = "<group>"; };
 		38E3C36A2AFA047400623C33 /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		38E3C36C2AFA0BAC00623C33 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		38E3DF6C2B8F16CF0093DF4B /* HomeCheckinView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeCheckinView.xib; sourceTree = "<group>"; };
+		38E3DF6E2B8F23F70093DF4B /* HomeCheckinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCheckinView.swift; sourceTree = "<group>"; };
+		38E3DF702B8F2DBA0093DF4B /* Viewcontroller + Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Viewcontroller + Ex.swift"; sourceTree = "<group>"; };
+		38E3DF722B8F633D0093DF4B /* HomeCheckinDetailsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeCheckinDetailsView.xib; sourceTree = "<group>"; };
+		38E3DF742B8F66F50093DF4B /* HomeCheckinDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCheckinDetailsView.swift; sourceTree = "<group>"; };
 		38E3E5352A80BE7200AE5AF6 /* CallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallVC.swift; sourceTree = "<group>"; };
 		38E3E5372A80C75000AE5AF6 /* DoctorCallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorCallCell.swift; sourceTree = "<group>"; };
 		38E3E5392A80C78700AE5AF6 /* DoctorCallCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoctorCallCell.xib; sourceTree = "<group>"; };
@@ -735,6 +745,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38E3DF6B2B8F16A60093DF4B /* Checkin */,
 				38C41C292B8E06D30013361E /* ChangePassword */,
 				38843A092B8DE21400D39E16 /* MyDayPlanCells */,
 				386BEA0A2B7353B60083D61F /* SlidePreview */,
@@ -845,6 +856,7 @@
 				3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */,
 				38EC6FB12B6242D10065A707 /* Media.swift */,
 				38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */,
+				38E3DF702B8F2DBA0093DF4B /* Viewcontroller + Ex.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1082,6 +1094,17 @@
 				385A42532AFBB75300C0A58A /* AppSetupModel.swift */,
 			);
 			path = Cofiguration;
+			sourceTree = "<group>";
+		};
+		38E3DF6B2B8F16A60093DF4B /* Checkin */ = {
+			isa = PBXGroup;
+			children = (
+				38E3DF6C2B8F16CF0093DF4B /* HomeCheckinView.xib */,
+				38E3DF6E2B8F23F70093DF4B /* HomeCheckinView.swift */,
+				38E3DF722B8F633D0093DF4B /* HomeCheckinDetailsView.xib */,
+				38E3DF742B8F66F50093DF4B /* HomeCheckinDetailsView.swift */,
+			);
+			path = Checkin;
 			sourceTree = "<group>";
 		};
 		38E42B202B67D226001E0F07 /* LocalStorage */ = {
@@ -1438,11 +1461,13 @@
 				386BEA0E2B7381CF0083D61F /* PreviewTypeCVC.xib in Resources */,
 				38CA1FE12B60EDF400AFCFD2 /* SelectedSlidesTVC.xib in Resources */,
 				38EA3D172AFDED4C00DA7018 /* SessionInfoTVC.xib in Resources */,
+				38E3DF6D2B8F16CF0093DF4B /* HomeCheckinView.xib in Resources */,
 				38DD14B32B4FBB6C0036384F /* Loaders in Resources */,
 				B287E68329F2A20F0097974D /* Satoshi-LightItalic.otf in Resources */,
 				38107C522B36F2A700ACEDF3 /* TimeInfoCVC.xib in Resources */,
 				38DAADEE2B59505C00966B33 /* CalldetailsCVC.xib in Resources */,
 				38107C682B37056600ACEDF3 /* ProductsDescriptionCVC.xib in Resources */,
+				38E3DF732B8F633D0093DF4B /* HomeCheckinDetailsView.xib in Resources */,
 				38CCA2B72A656B92008D5B12 /* LeaveAvailablityCell.xib in Resources */,
 				38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */,
 				38C4245E2A2B4DB1004A89EF /* MasterSyncCell.xib in Resources */,
@@ -1596,6 +1621,7 @@
 				B287E6C229F2BC9C0097974D /* TableCell.swift in Sources */,
 				3801D4972B4ECFB700A9740F /* HomeSideMenuMenuView.swift in Sources */,
 				38FAA15B2B7F229200714AA2 /* TourPlanVM.swift in Sources */,
+				38E3DF6F2B8F23F70093DF4B /* HomeCheckinView.swift in Sources */,
 				38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */,
 				38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */,
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
@@ -1714,6 +1740,7 @@
 				38E5E4612AEBB39B00AF053A /* JointWorkTableViewCell.swift in Sources */,
 				3865F8D12AFCCF62009AB984 /* StoryBoardExtensions.swift in Sources */,
 				3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */,
+				38E3DF752B8F66F50093DF4B /* HomeCheckinDetailsView.swift in Sources */,
 				38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */,
 				38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */,
 				38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */,
@@ -1767,6 +1794,7 @@
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,
 				38FAA1732B7F263500714AA2 /* MyDayPlanTVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
+				38E3DF712B8F2DBA0093DF4B /* Viewcontroller + Ex.swift in Sources */,
 				38CA1FE42B6102AB00AFCFD2 /* SelectPresentationCVC.swift in Sources */,
 				38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */,
 				B291878629FA83B60033DE16 /* Class.swift in Sources */,

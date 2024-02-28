@@ -24,6 +24,7 @@ enum APIEnums : String{
     case saveDCR = "save/dcr"
     case masterData = "table/dcrmasterdata"
     case myDayPlan = "edetsave/dayplan"
+    case checkin = "save/Factivity"
 }
 
 

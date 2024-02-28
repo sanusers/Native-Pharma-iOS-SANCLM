@@ -5,9 +5,10 @@
 //  Created by San eforce on 27/02/24.
 //
 
-protocol ChangePasswordViewDelegate: AnyObject {
+public protocol addedSubViewsDelegate: AnyObject {
     func didClose()
     func didUpdate()
+    func showAlert()
 }
 
 import Foundation
@@ -80,83 +81,7 @@ extension ChangePasswordView: UITextFieldDelegate {
         
         return true
     }
-    
-//    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        
-//        let appsetup = AppDefaults.shared.getAppSetUp()
-//        let userPassword = appsetup.sfPassword
-//        switch textField {
-//        case oldPasswordTF:
-//            guard let passwd = textField.text, !passwd.isEmpty else {
-//                
-//                return}
-//            if passwd == userPassword {
-//         
-//                passwordValidationLbl.isHidden = true
-//                isOldePasswordVerified = true
-//                newPasswordTF.isUserInteractionEnabled = true
-//                repeatPasswordTF.isUserInteractionEnabled = true
-//                
-//                checkButtonStatus()
-//            } else {
-//              
-//                passwordValidationLbl.isHidden = false
-//                passwordValidationLbl.text = "Entered Password is incorrect"
-//                isOldePasswordVerified = false
-//                newPasswordTF.isUserInteractionEnabled = false
-//                repeatPasswordTF.isUserInteractionEnabled = false
-//                checkButtonStatus()
-//            }
-//            
-//     
-//        case newPasswordTF:
-//            guard let passwd = textField.text, !passwd.isEmpty else {
-//                
-//                return}
-//            
-//            if newpasswordStr != passwd {
-//                repeatPasswordTF.text = ""
-//                isRepeatPasswordVerified = false
-//            }
-//            
-//            if passwd.count>7 && passwd.containsSpecialCharacter {
-//                newpasswordStr = passwd
-//                passwordValidationLbl.isHidden = true
-//                isNewPasswordVerified = true
-//                checkButtonStatus()
-//            } else {
-//              
-//                passwordValidationLbl.isHidden = false
-//                passwordValidationLbl.text = "Password should be alphanumeric, special character, min 8 char, combination upper case."
-//                isNewPasswordVerified = false
-//                checkButtonStatus()
-//            }
-//            
-//   
-//        case repeatPasswordTF:
-//          
-//            guard let passwd = textField.text, !passwd.isEmpty else {
-//                
-//                return}
-//            if passwd == newPasswordTF.text {
-//         
-//                passwordValidationLbl.isHidden = true
-//                isRepeatPasswordVerified = true
-//                checkButtonStatus()
-//            } else {
-//              
-//                passwordValidationLbl.isHidden = false
-//                passwordValidationLbl.text = "Repeated password is incorrect"
-//                isRepeatPasswordVerified = false
-//                checkButtonStatus()
-//            }
-//            
-//        default:
-//            viewnewPasswordIV.alpha = 1
-//            viewrepeatPasswordIV.alpha = 1
-//            viewoldPasswordIV.alpha = 1
-//        }
-//    }
+
 }
 
 
@@ -251,7 +176,7 @@ class ChangePasswordView: UIView {
     @IBOutlet var btnUpdate: UIButton!
     
     
-    var delegate: ChangePasswordViewDelegate?
+    var delegate: addedSubViewsDelegate?
     override init(frame: CGRect) {
         super.init(frame: frame)
       
@@ -273,16 +198,16 @@ class ChangePasswordView: UIView {
         
         viewnewPasswordIV.image = newPasswordTF.isSecureTextEntry == true ? UIImage(systemName: "eye") :  UIImage(systemName: "eye.slash")
         
-        viewnewPasswordIV.alpha =  viewnewPasswordIV.image == UIImage(systemName: "eye") ? 0.5 : 1
+        viewnewPasswordIV.alpha =  viewnewPasswordIV.image == UIImage(systemName: "eye") ? 0.3 : 1
         
         viewrepeatPasswordIV.image = repeatPasswordTF.isSecureTextEntry == true ? UIImage(systemName: "eye") :  UIImage(systemName: "eye.slash")
         
-        viewrepeatPasswordIV.alpha =  viewrepeatPasswordIV.image == UIImage(systemName: "eye") ? 0.5 : 1
+        viewrepeatPasswordIV.alpha =  viewrepeatPasswordIV.image == UIImage(systemName: "eye") ? 0.3 : 1
         
         viewoldPasswordIV.image = oldPasswordTF.isSecureTextEntry == true ? UIImage(systemName: "eye") :  UIImage(systemName: "eye.slash")
         
         
-        viewoldPasswordIV.alpha =  viewoldPasswordIV.image == UIImage(systemName: "eye") ? 0.5 : 1
+        viewoldPasswordIV.alpha =  viewoldPasswordIV.image == UIImage(systemName: "eye") ? 0.3 : 1
     }
     
     

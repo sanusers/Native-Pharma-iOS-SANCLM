@@ -17,6 +17,7 @@ class GeneralResponseModal : Codable {
     let success : String?
     let msg : String?
     let isSuccess: Bool?
+    
     enum CodingKeys: String, CodingKey {
         case success = "success"
         case msg = "Msg"

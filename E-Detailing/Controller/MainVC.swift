@@ -645,6 +645,13 @@ class MainVC : UIViewController {
     
     var changePasswordView: ChangePasswordView?
     
+    var checkinVIew: HomeCheckinView?
+    
+    var checkinDetailsView:  HomeCheckinDetailsView?
+    
+    let appSetups = AppDefaults.shared.getAppSetUp()
+    
+    
     var chartType: ChartType = .doctor
     var cacheDCRindex: Int = 0
     var doctorArr = [HomeData]()
@@ -1598,13 +1605,62 @@ class MainVC : UIViewController {
         
     }
     
+    func toHandleCheckins() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        
+        // Assuming you have a storedDateString retrieved from local storage
+        let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
+        let storedDate = dateFormatter.date(from: storedDateString) ?? Date()
+
+            let currentDate = Date()
+
+            // Check if the stored date is different from the current date
+            if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
+                // Reset the lastCheckedInDate to an empty string
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+                
+            }
+        
+        
+        
+        
+        
+      
+        if appSetups.srtNeed == 1 {
+    
+              let lastcheckedinDate =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate) //"2024-02-28 14:19:54"
+                
+         
+              let toDayDate = dateFormatter.string(from: Date())
+                
+                if toDayDate == lastcheckedinDate {
+                    return
+                } else {
+                    if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
+                        return
+                    } else {
+                        checkinAction()
+                    }
+                }
+                
+                
+            
+        } else {
+            return
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         toSetParams()
         self.updateLinks()
         setupUI()
-        //        toSetDayplan()
+        toHandleCheckins()
         LocationManager.shared.locationUpdate()
         
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
@@ -1758,14 +1814,35 @@ class MainVC : UIViewController {
         super.viewDidLayoutSubviews()
         self.homeLineChartView?.frame = lineChatrtView.bounds
         
-        let width = view.bounds.width / 2.7
-        let height = view.bounds.height / 1.7
+        let changePasswordViewwidth = view.bounds.width / 2.7
+        let changePasswordViewheight = view.bounds.height / 1.7
 
-        let centerX = view.bounds.midX - (width / 2.7)
-        let centerY = view.bounds.midY - (height / 2)
+        let changePasswordViewcenterX = view.bounds.midX - (changePasswordViewwidth / 2.7)
+        let changePasswordViewcenterY = view.bounds.midY - (changePasswordViewheight / 2)
 
-        self.changePasswordView?.frame = CGRect(x: centerX, y: centerY, width: width, height: height)
+        self.changePasswordView?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
         
+        let checkinVIewwidth = view.bounds.width / 3
+        let checkinVIewheight = view.bounds.height / 3
+
+        let checkinVIewcenterX = view.bounds.midX - (changePasswordViewwidth / 2.7)
+        let checkinVIewcenterY = view.bounds.midY - (changePasswordViewheight / 3)
+        
+        
+        checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
+        
+        
+        
+        
+        
+        let checkinDetailsVIewwidth = view.bounds.width / 3
+        let checkinDetailsVIewheight = view.bounds.height / 2
+
+        let checkinDetailsVIewcenterX = view.bounds.midX - (changePasswordViewwidth / 3)
+        let checkinDetailsVIewcenterY = view.bounds.midY - (changePasswordViewheight / 2)
+        
+        
+        checkinDetailsView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
         
     }
     
@@ -1947,17 +2024,7 @@ class MainVC : UIViewController {
     
     @IBAction func notificationAction(_ sender: UIButton) {
         
-        //        let vc = UIStoryboard.singleSelectionRightVC
-        //        vc.transitioningDelegate = self
-        //        vc.modalPresentationStyle = .custom
-        ////        vc.modalTransitionStyle = .crossDissolve
-        //        self.navigationController?.pushViewController(vc, animated: true)
-        //
-        //     //   self.present(vc, animated: true)
-        
-        
-        let v = UIStoryboard.slideDownloadVC
-        self.present(v, animated: true)
+       // checkinAction()
         
     }
     
@@ -2165,22 +2232,7 @@ class MainVC : UIViewController {
         params["state_code"] = appsetup.stateCode ?? ""
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
-        
-        //        var jsonDatum = Data()
-        //
-        //        do {
-        //            let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
-        //            jsonDatum = jsonData
-        //            // Convert JSON data to a string
-        //            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-        //                print(tempjsonString)
-        //
-        //            }
-        //
-        //
-        //        } catch {
-        //            print("Error converting parameter to JSON: \(error)")
-        //        }
+
         
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
@@ -2190,7 +2242,7 @@ class MainVC : UIViewController {
     }
     
     
-    func getTodayCalls(_ param: [String: Any], paramData: JSON) {
+    func getTodayCalls(_ param: JSON, paramData: JSON) {
         Shared.instance.showLoaderInWindow()
         userststisticsVM?.getTodayCallsData(params: param, api: .getTodayCalls, paramData: paramData) { result in
             switch result {
@@ -3996,16 +4048,58 @@ private enum Constants {
 
 extension MainVC: PopOverVCDelegate {
     
-    private func loadCustomView() -> UIView? {
-        // Load the XIB
-        let nib = UINib(nibName: "ChangePasswordView", bundle: nil)
-        if let customView = nib.instantiate(withOwner: nil, options: nil).first as? UIView {
-            // Configure your custom view if needed
-            return customView
+    
+    func checkinDetailsAction() {
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case checkinDetailsView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            default:
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                aAddedView.alpha = 0.5
+                
+            }
+          
         }
+        
+        checkinDetailsView = self.loadCustomView(nibname: XIBs.homeCheckinDetailsView) as? HomeCheckinDetailsView
+        checkinDetailsView?.delegate = self
+      //  checkinVIew?.userstrtisticsVM = self.userststisticsVM
+     //   checkinVIew?.appsetup = self.appSetups
+        checkinDetailsView?.setupUI()
+        
+        view.addSubview(checkinDetailsView ?? HomeCheckinDetailsView())
 
-        // Return a default view if loading fails
-        return nil
+    }
+    
+
+    func checkinAction() {
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            default:
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                aAddedView.alpha = 0.5
+                
+            }
+          
+        }
+        
+        checkinVIew = self.loadCustomView(nibname: XIBs.homeCheckinView) as? HomeCheckinView
+        checkinVIew?.delegate = self
+        checkinVIew?.userstrtisticsVM = self.userststisticsVM
+        checkinVIew?.appsetup = self.appSetups
+        checkinVIew?.setupUI()
+        
+        view.addSubview(checkinVIew ?? HomeCheckinView())
+
     }
     
     
@@ -4023,17 +4117,18 @@ extension MainVC: PopOverVCDelegate {
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
             default:
                 print("Yet to implement")
-                
+                aAddedView.isUserInteractionEnabled = false
                 aAddedView.alpha = 0.5
                 
             }
           
         }
         
-        changePasswordView = loadCustomView() as? ChangePasswordView
+        changePasswordView = self.loadCustomView(nibname: XIBs.changePasswordView) as? ChangePasswordView
         changePasswordView?.delegate = self
         changePasswordView?.setupUI()
         view.addSubview(changePasswordView ?? ChangePasswordView())
@@ -4043,17 +4138,85 @@ extension MainVC: PopOverVCDelegate {
 }
 
 
-extension MainVC : ChangePasswordViewDelegate {
+
+
+extension MainVC : addedSubViewsDelegate {
+    
+    func showAlertToEnableLocation() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings to use this feature.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+           // self.toDeletePresentation()
+           
+        }
+        commonAlert.addAdditionalCancelAction {
+            print("yes action")
+            self.redirectToSettings()
+         
+        }
+    }
+    
+    func redirectToSettings() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL)
+        }
+    }
+    
+    
+//    func showAlertToEnableLocation() {
+//        
+//        let alert
+//        
+//            let alertController = UIAlertController(
+//                title: "Location Services Disabled",
+//                message: "Please enable location services in Settings to use this feature.",
+//                preferredStyle: .alert
+//            )
+//
+//            let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
+//                // Redirect the user to the settings page
+//                if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+//                    UIApplication.shared.open(settingsURL)
+//                }
+//            }
+//
+//            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+//
+//            alertController.addAction(settingsAction)
+//            alertController.addAction(cancelAction)
+//
+//      
+//        
+//            present(alertController, animated: true, completion: nil)
+//        }
+    
+    func showAlert() {
+        showAlertToEnableLocation()
+    }
+    
     func didClose() {
         self.view.subviews.forEach { aAddedView in
+        
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0.5
-            default:
-                print("Yet to implement")
                 
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0.5
+             
+                
+            case checkinDetailsView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0.5
+            default:
+                aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+                print("Yet to implement")
+               
+              // aAddedView.alpha = 1
                 
             }
           
@@ -4061,7 +4224,32 @@ extension MainVC : ChangePasswordViewDelegate {
     }
     
     func didUpdate() {
-        print("Yet to implement")
+        self.view.subviews.forEach { aAddedView in
+        
+            switch aAddedView {
+            case changePasswordView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0.5
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0.5
+                
+                checkinDetailsAction()
+                
+                
+            case checkinDetailsView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0.5
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+               
+              // aAddedView.alpha = 1
+                
+            }
+          
+        }
     }
     
     

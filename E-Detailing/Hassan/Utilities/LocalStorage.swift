@@ -41,6 +41,8 @@ case AppMainURL
         case rsfIDPlan2
         case selectedRSFID
         case selectedHQObj
+        case isUserCheckedin
+        case lastCheckedInDate
     }
     
     enum Offsets: String {
