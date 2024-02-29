@@ -181,6 +181,7 @@
 		38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D5690C2B35AFE3007CB86D /* RadioSelectionTVC.xib */; };
 		38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */; };
 		38D6E88B2B34081B003CC4D8 /* BasicReportsInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */; };
+		38D70F0C2B905D400033ED9C /* Pipelines.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D70F0B2B905D400033ED9C /* Pipelines.swift */; };
 		38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D738222B120A6F00162548 /* TableSetupModel.swift */; };
 		38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */; };
 		38D7E1E52B677FD500085293 /* PlayPDFCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */; };
@@ -492,6 +493,7 @@
 		38D5690C2B35AFE3007CB86D /* RadioSelectionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RadioSelectionTVC.xib; sourceTree = "<group>"; };
 		38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicReportsInfoTVC.swift; sourceTree = "<group>"; };
 		38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BasicReportsInfoTVC.xib; sourceTree = "<group>"; };
+		38D70F0B2B905D400033ED9C /* Pipelines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pipelines.swift; sourceTree = "<group>"; };
 		38D738222B120A6F00162548 /* TableSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSetupModel.swift; sourceTree = "<group>"; };
 		38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPDFCVC.swift; sourceTree = "<group>"; };
 		38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayPDFCVC.xib; sourceTree = "<group>"; };
@@ -836,6 +838,7 @@
 		38BFB77F2AFB60A4005E141E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				38D70F0A2B905D230033ED9C /* Pipelines */,
 				38FAA1742B7F265D00714AA2 /* MasterSync+Ex */,
 				38E42B202B67D226001E0F07 /* LocalStorage */,
 				38C25E9E2B64D7C900A8E076 /* Common alert */,
@@ -1038,6 +1041,21 @@
 			path = Reports;
 			sourceTree = "<group>";
 		};
+		38D70F092B9057930033ED9C /* Swift+Cocoatouch */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Swift+Cocoatouch";
+			sourceTree = "<group>";
+		};
+		38D70F0A2B905D230033ED9C /* Pipelines */ = {
+			isa = PBXGroup;
+			children = (
+				38D70F0B2B905D400033ED9C /* Pipelines.swift */,
+			);
+			path = Pipelines;
+			sourceTree = "<group>";
+		};
 		38DAADE22B58FF7C00966B33 /* outboxCallsCells */ = {
 			isa = PBXGroup;
 			children = (
@@ -1227,6 +1245,7 @@
 			isa = PBXGroup;
 			children = (
 				38E3C35A2AF9F99C00623C33 /* Hassan */,
+				38D70F092B9057930033ED9C /* Swift+Cocoatouch */,
 				38C4D33A2A7BD9460029AC12 /* View Model */,
 				38C537D72A21D808007D68C5 /* Extension */,
 				3813B35D2A20E774006F3B78 /* Model */,
@@ -1759,6 +1778,7 @@
 				386BEA102B7383450083D61F /* PreviewHomeVC.swift in Sources */,
 				38F5558F2B57B7BE000D9294 /* TodayCallsModel.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
+				38D70F0C2B905D400033ED9C /* Pipelines.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				388546422B5FDB90005FC9FC /* PresentationHomeVC.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,

@@ -16,18 +16,28 @@ import Foundation
 class GeneralResponseModal : Codable {
     let success : String?
     let msg : String?
-    let isSuccess: Bool?
+    let checkinMasg: String?
+    var isSuccess: Bool? = false
     
     enum CodingKeys: String, CodingKey {
         case success = "success"
         case msg = "Msg"
+        case checkinMasg = "msg"
     }
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.success =  container.safeDecodeValue(forKey: .success)
         self.msg =  container.safeDecodeValue(forKey: .msg)
-        self.isSuccess = success ==  "false" ? false : true
+        self.checkinMasg =  container.safeDecodeValue(forKey: .checkinMasg)
+        if msg != "" || checkinMasg != "" {
+            self.isSuccess =  self.msg == "1" ? true  : self.checkinMasg == "1" ? true : false
+        }
+        
+        if success != "" {
+            self.isSuccess = success ==  "false" ? false : true
+        }
+      
     }
     
     
@@ -35,6 +45,7 @@ class GeneralResponseModal : Codable {
         success = ""
         msg = ""
         self.isSuccess = false
+        self.checkinMasg = ""
     }
 }
 

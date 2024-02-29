@@ -49,14 +49,16 @@ extension ChangePasswordView: UITextFieldDelegate {
                 isRepeatPasswordVerified = false
             }
             
-            if updatedText.count > 7 && updatedText.containsSpecialCharacter {
+            if updatedText.count >= 3 {
+                //&& updatedText.containsSpecialCharacter
                 newpasswordStr = updatedText
                 passwordValidationLbl.isHidden = true
                 isNewPasswordVerified = true
                 checkButtonStatus()
             } else {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = "Password should be alphanumeric, special character, min 8 char, combination upper case."
+                passwordValidationLbl.text = "Password should be minimum 3 characters."
+                //"Password should be alphanumeric, special character, min 8 char, combination upper case."
                 isNewPasswordVerified = false
                 checkButtonStatus()
             }
@@ -142,6 +144,8 @@ class ChangePasswordView: UIView {
     var isOldePasswordVerified = false
     var isNewPasswordVerified = false
     var isRepeatPasswordVerified = false
+    var userStatisticsVM: UserStatisticsVM?
+    var appsetup : AppSetUp?
     @IBOutlet var passwordValidationLbl: UILabel!
     @IBOutlet var lblChangePassword: UILabel!
     
@@ -191,8 +195,65 @@ class ChangePasswordView: UIView {
     
 
     @IBAction func didTapupdate(_ sender: Any) {
-        self.delegate?.didUpdate()
+        
+        
+        updatePassword()
+        
+      
     }
+    
+    func updatePassword() {
+        guard let appsetup = self.appsetup else {return}
+         
+     //  {"tableName":"savechpwd","txOPW":"123","txNPW":"1234","txCPW":"1234","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
+        var param: [String: Any] = [:]
+        param["tableName"] = "savechpwd"
+        param["txOPW"] = oldPasswordTF.text ?? ""
+        param["txNPW"] = newPasswordTF.text ?? ""
+        param["txCPW"] =  repeatPasswordTF.text ?? ""
+        param["sfcode"] = appsetup.sfCode
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["Designation"] = appsetup.desig
+        param["sf_type"] = appsetup.sfType
+        param["state_code"] = appsetup.stateCode
+        param["subdivision_code"] = appsetup.subDivisionCode
+  
+
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        
+        print(param)
+        
+        
+        
+        
+        userStatisticsVM?.updateUserPassword(params: toSendData, api: .updatePassword, paramData: param) {result in
+            
+            switch result {
+                
+            case .success(let response):
+               
+               
+                if response.isSuccess ?? false {
+                    self.toCreateToast(response.checkinMasg ?? "Password updated successfully.")
+                    self.delegate?.didUpdate()
+                } else {
+                    self.toCreateToast(response.checkinMasg ?? "Password updation failed.")
+                  //  self.delegate?.didUpdate()
+                }
+            case .failure(let error):
+               // self.delegate?.didUpdate()
+                self.toCreateToast(error.rawValue)
+                
+            }
+        }
+    }
+    
 
     func setEyeimage() {
         

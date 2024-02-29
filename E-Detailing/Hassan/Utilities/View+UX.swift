@@ -95,7 +95,7 @@ extension UIView {
         self.actionHandleBlocks(.swipe_down)
     }
 
-    open
+    public
     func addAction(for type: closureActions ,
                    Action action:@escaping() -> Void) {
         self.isUserInteractionEnabled = true
@@ -915,3 +915,27 @@ extension UISegmentedControl {
 }
 
 // Thanks to the author @Hassan
+
+//extension UIView {
+//    
+//    
+//    func toAddBlurtoVIew() {
+//        
+//        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterialDark)
+//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+//        blurEffectView.frame = self.bounds
+//        blurEffectView.alpha = 0.5
+//        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        self.addSubview(blurEffectView)
+//        
+//    }
+//    
+//    func toremoveBlurFromView() {
+//        for subview in self.subviews {
+//            if subview is UIVisualEffect {
+//                subview.removeFromSuperview()
+//            }
+//        }
+//    }
+//    
+//}

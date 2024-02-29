@@ -19,7 +19,7 @@ final class ConnectionHandler : NSObject {
         case reports = "getdayrpt"
         case detailedReport = "getvwvstdet"
         case getToadyCalls = "gettodycalls"
-        
+        case checkin = "savetp_attendance"
     }
     
     static let shared = ConnectionHandler()
@@ -280,10 +280,11 @@ final class ConnectionHandler : NSObject {
                     return
                 }
 
-                if api == .getReports || api == .getTodayCalls || api == .masterData {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
                     var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
+                    var checkinModelData : [GeneralResponseModal]?
                     var encodedAdayCalls: [TodayCallsModel]?
                     if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
@@ -297,6 +298,7 @@ final class ConnectionHandler : NSObject {
                                 print("JSON Data:")
                                 print(jsonData)
                             } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
                         }
@@ -312,6 +314,7 @@ final class ConnectionHandler : NSObject {
                                 print("JSON Data:")
                                 print(jsonData)
                             } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
                             
@@ -331,6 +334,7 @@ final class ConnectionHandler : NSObject {
                                 print("JSON Data:")
                                 print(jsonData)
                             } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
                             
@@ -350,19 +354,44 @@ final class ConnectionHandler : NSObject {
                                 print("JSON Data:")
                                 print(jsonData)
                             } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
                             
                             
                             
                         }
+                    } else if data["tableName"] as! String == TableName.checkin.rawValue {
+                        
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [GeneralResponseModal].self) { decodecObj in
+                            checkinModelData = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(checkinModelData)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(checkinModelData) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                            } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        
+                        
                     }
+
  
                 } else   {
                     if let data = anyData,
                        let json = JSON(data){
                         
-                        if api == .getAllPlansData || api == .getReports || api == .saveDCR  {
+                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  {
                            
                             if json.isEmpty {
                                 responseHandler.handleFailure(value: json.status_message)

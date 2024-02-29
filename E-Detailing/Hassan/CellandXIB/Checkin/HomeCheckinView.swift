@@ -166,6 +166,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
         var param: [String: Any] = [:]
         param["tableName"] = "savetp_attendance"
         param["sfcode"] = appsetup.sfCode
+        let divcodeArr = appsetup.divisionCode.components(separatedBy: ",")
         param["division_code"] = appsetup.divisionCode
         param["lat"] = latitude
         param["long"] = longitude
@@ -192,8 +193,17 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
 
             switch result {
 
-            case .success(let response):
-                self.toCreateToast(response.success ?? "Checkin registered successfully")
+            case .success(let responseArr):
+                
+                let aResponse = responseArr[0]
+                
+                if aResponse.isSuccess ?? false {
+                    self.toCreateToast("Checkin registered successfully")
+                } else {
+                    self.toCreateToast("OOPS can't able to check in right now!")
+                }
+                
+               
 
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
 
@@ -209,11 +219,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                 
             case .failure(let error):
                 self.toCreateToast(error.rawValue)
-                
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
-
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
-                
+                              
                 self.saveLogininfoToCoreData() {_ in
                     
                     self.delegate?.didUpdate()

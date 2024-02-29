@@ -22,7 +22,7 @@ class HomeCheckinDetailsView: UIView {
     
     @IBOutlet var localityDesc1: UILabel!
     
-    @IBOutlet var localityDesc2: UILabel!
+    //@IBOutlet var localityDesc2: UILabel!
     
     
     @IBOutlet var closeBtn: ShadowButton!
@@ -43,7 +43,7 @@ class HomeCheckinDetailsView: UIView {
         latitudeLbl.setFont(font: .medium(size: .BODY))
         longitudeLbl.setFont(font: .medium(size: .BODY))
         localityDesc1.setFont(font: .medium(size: .BODY))
-        localityDesc2.setFont(font: .medium(size: .BODY))
+      //  localityDesc2.setFont(font: .medium(size: .BODY))
         
         retriveCheckinInfo()
     }
@@ -54,25 +54,42 @@ class HomeCheckinDetailsView: UIView {
             dateTimeinfoLbl.text = aCheckin.checkinDateTime
             latitudeLbl.text = "\(aCheckin.latitude),"
             longitudeLbl.text = "\(aCheckin.longitude)"
-          
+           // localityDesc1.text =  aCheckin.address
+            
+            
+            let attributedString = NSMutableAttributedString(string: aCheckin.address ?? "")
+
+            // *** Create instance of `NSMutableParagraphStyle`
+            let paragraphStyle = NSMutableParagraphStyle()
+
+            // *** set LineSpacing property in points ***
+            paragraphStyle.lineSpacing = 3 // Whatever line spacing you want in points
+
+            // *** Apply attribute to string ***
+            attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value:paragraphStyle, range:NSMakeRange(0, attributedString.length))
+
+            // *** Set Attributed String to your label ***
+            localityDesc1.attributedText =  attributedString
+            
     
-            let addressArray = aCheckin.address?.components(separatedBy: ", ")
-
-            if let addressArray = addressArray, addressArray.count >= 4 {
-                // Extract the first three components
-                let locality1 = addressArray[0]
-                let locality2 = addressArray[1]
-                let locality3 = addressArray[2]
-
-                // Combine the remaining components into the fourth and fifth components
-                let locality4 = addressArray[3...].joined(separator: ", ")
-
-                localityDesc1.text = "\(locality1), \(locality2),"
-                localityDesc2.text = "\(locality3), \(locality4)"
-            } else {
-                // Handle the case where the address does not have enough components
-                print("Invalid address format")
-            }
+//            let addressArray = aCheckin.address?.components(separatedBy: ", ")
+//
+//            if let addressArray = addressArray, addressArray.count >= 4 {
+//                // Extract the first three components
+//                let locality1 = addressArray[0]
+//                let locality2 = addressArray[1]
+//                let locality3 = addressArray[2]
+//
+//                // Combine the remaining components into the fourth and fifth components
+//                let locality4 = addressArray[3...].joined(separator: ", ")
+//
+//                localityDesc1.text =  aCheckin.address
+//                //"\(locality1), \(locality2),"
+//              //  localityDesc2.text = "\(locality3), \(locality4)"
+//            } else {
+//                // Handle the case where the address does not have enough components
+//                print("Invalid address format")
+//            }
             
         }
     }

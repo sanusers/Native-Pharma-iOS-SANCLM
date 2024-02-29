@@ -487,6 +487,7 @@ class MainVC : UIViewController {
     
    // @IBOutlet weak var imgProfile: UIImageView!
     
+    @IBOutlet var backgroundView: UIView!
     @IBOutlet var segmentsCollection: UICollectionView!
     @IBOutlet var monthRangeLbl: UILabel!
     @IBOutlet var lblAverageDocCalls: UILabel!
@@ -1237,54 +1238,54 @@ class MainVC : UIViewController {
     @IBAction func didTapSaveBtn(_ sender: Any) {
         // Ensure you have sessions to save
         
-        let isnotToSave = toHighlightAddedCell() ?? true
-        
-        guard var yetToSaveSession = self.sessions else {
-            return
-        }
-        
-        if isnotToSave {
-            self.toCreateToast("please fill required fields to save plan")
+        if istoRedirecttoCheckin() {
+            checkinAction()
+          
         } else {
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                yetToSaveSession.indices.forEach { index in
-                    yetToSaveSession[index].isRetrived = true
-                }
-            } else {
-                yetToSaveSession.indices.forEach { index in
-                    if  yetToSaveSession[index].isRetrived == true {
-                        
-                    } else {
-                        yetToSaveSession[index].isRetrived = false
-                    }
-                }
+            let isnotToSave = toHighlightAddedCell() ?? true
+            
+            guard var yetToSaveSession = self.sessions else {
+                return
             }
             
-            updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
-                guard let welf = self else {return}
-                
+            if isnotToSave {
+                self.toCreateToast("please fill required fields to save plan")
+            } else {
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                    welf.callSavePlanAPI() { _ in
-                        welf.toConfigureMydayPlan()
+                    yetToSaveSession.indices.forEach { index in
+                        yetToSaveSession[index].isRetrived = true
                     }
-                    
                 } else {
-                    welf.toConfigureMydayPlan()
-                    self?.toCreateToast("You are not connected to internet")
+                    yetToSaveSession.indices.forEach { index in
+                        if  yetToSaveSession[index].isRetrived == true {
+                            
+                        } else {
+                            yetToSaveSession[index].isRetrived = false
+                        }
+                    }
                 }
                 
-                
-                //    welf.toConfigureMydayPlan()
-                
+                updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
+                    guard let welf = self else {return}
+                    
+                    if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                        welf.callSavePlanAPI() { _ in
+                            welf.toConfigureMydayPlan()
+                        }
+                        
+                    } else {
+                        welf.toConfigureMydayPlan()
+                        self?.toCreateToast("You are not connected to internet")
+                    }
+
+                    
+                }
             }
         }
         
-        // Mark all sessions as retrieved
         
 
-        
-        
-        // Remove existing session territories from Core Data
+
         
     }
     
@@ -1437,6 +1438,8 @@ class MainVC : UIViewController {
     
     
     func setupUI() {
+        backgroundView.isHidden = true
+       // backgroundView.backgroundColor = .appGreyColor
         dateInfoLbl.textColor = .appTextColor
         dateInfoLbl.setFont(font: .medium(size: .BODY))
         viewDayPlanStatus.layer.cornerRadius = 5
@@ -1472,6 +1475,10 @@ class MainVC : UIViewController {
             self.setSegment(.calls, isfromSwipe: true)
         }
         
+        
+        self.backgroundView.addTap {
+            self.didClose()
+        }
         
         segmentType = [.workPlan, .calls, .outbox]
         toLoadSegments()
@@ -1569,10 +1576,10 @@ class MainVC : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //  CoreDataManager.shared.removeAllDayPlans()
-        //  self.toConfigureMydayPlan()
+          CoreDataManager.shared.removeAllDayPlans()
+        self.toConfigureMydayPlan()
         
-        self.toSetDayplan()
+       // self.toSetDayplan()
         rejectionVIew.isHidden = true
         //   toConfigureDynamicHeader(false)
         self.toSeperateDCR()
@@ -1605,7 +1612,11 @@ class MainVC : UIViewController {
         
     }
     
-    func toHandleCheckins() {
+    func istoRedirecttoCheckin() -> Bool {
+
+//        LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+//        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
@@ -1637,19 +1648,20 @@ class MainVC : UIViewController {
               let toDayDate = dateFormatter.string(from: Date())
                 
                 if toDayDate == lastcheckedinDate {
-                    return
+                    return false
                 } else {
                     if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
-                        return
+                        return false
                     } else {
-                        checkinAction()
+                        
+                        return true
                     }
                 }
                 
                 
             
         } else {
-            return
+            return false
         }
     }
     
@@ -1660,7 +1672,9 @@ class MainVC : UIViewController {
         toSetParams()
         self.updateLinks()
         setupUI()
-        toHandleCheckins()
+        if istoRedirecttoCheckin() {
+            checkinAction()
+        }
         LocationManager.shared.locationUpdate()
         
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
@@ -1817,7 +1831,7 @@ class MainVC : UIViewController {
         let changePasswordViewwidth = view.bounds.width / 2.7
         let changePasswordViewheight = view.bounds.height / 1.7
 
-        let changePasswordViewcenterX = view.bounds.midX - (changePasswordViewwidth / 2.7)
+        let changePasswordViewcenterX = view.bounds.midX - (changePasswordViewwidth / 2)
         let changePasswordViewcenterY = view.bounds.midY - (changePasswordViewheight / 2)
 
         self.changePasswordView?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
@@ -1825,8 +1839,8 @@ class MainVC : UIViewController {
         let checkinVIewwidth = view.bounds.width / 3
         let checkinVIewheight = view.bounds.height / 3
 
-        let checkinVIewcenterX = view.bounds.midX - (changePasswordViewwidth / 2.7)
-        let checkinVIewcenterY = view.bounds.midY - (changePasswordViewheight / 3)
+        let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = view.bounds.midY - (checkinVIewheight / 2)
         
         
         checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
@@ -1836,10 +1850,10 @@ class MainVC : UIViewController {
         
         
         let checkinDetailsVIewwidth = view.bounds.width / 3
-        let checkinDetailsVIewheight = view.bounds.height / 2
+        let checkinDetailsVIewheight = view.bounds.height / 2.3
 
-        let checkinDetailsVIewcenterX = view.bounds.midX - (changePasswordViewwidth / 3)
-        let checkinDetailsVIewcenterY = view.bounds.midY - (changePasswordViewheight / 2)
+        let checkinDetailsVIewcenterX = view.bounds.midX - (checkinDetailsVIewwidth / 2)
+        let checkinDetailsVIewcenterY = view.bounds.midY - (checkinDetailsVIewheight / 2)
         
         
         checkinDetailsView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
@@ -1862,38 +1876,17 @@ class MainVC : UIViewController {
     
     @IBAction func dateAction(_ sender: UIButton) {
         
-        
-        self.selectedSegment  = self.selectedSegment  != .calender ?   .calender :   segmentType[selectedSegmentsIndex]
-        self.setSegment(self.selectedSegment)
-        
-        
+        if istoRedirecttoCheckin() {
+            checkinAction()
+          
+        } else {
+            self.selectedSegment  = self.selectedSegment  != .calender ?   .calender :   segmentType[selectedSegmentsIndex]
+            self.setSegment(self.selectedSegment)
+        }
+
     }
     
-    
-    //    @IBAction func dcrSegmentControlAction(_ sender: UISegmentedControl) {
-    //
-    //        self.segmentControlForDcr.underlinePosition()
-    //
-    //        switch self.segmentControlForDcr.selectedSegmentIndex {
-    //        case 0:
-    //            self.viewWorkPlan.isHidden = false
-    //            self.viewCalls.isHidden = true
-    //            self.viewOutBox.isHidden = true
-    //            toLoadWorktypeTable()
-    //        case 1:
-    //            self.viewWorkPlan.isHidden = true
-    //            self.viewCalls.isHidden = false
-    //            self.viewOutBox.isHidden = true
-    //            toloadCallsTable()
-    //        case 2:
-    //            self.viewWorkPlan.isHidden = true
-    //            self.viewCalls.isHidden = true
-    //            self.viewOutBox.isHidden = false
-    //            toLoadOutboxTable()
-    //        default:
-    //            break
-    //        }
-    //    }
+
     
     func toLoadOutboxTable() {
         toSetupOutBoxDataSource()
@@ -2160,60 +2153,11 @@ class MainVC : UIViewController {
         //  obj_sections[section].isLoading = true
         if isConnected {
             toSetParams()
-            //self.toretryDCRupload( date: obj_sections[section].date)
         } else {
             self.toCreateToast("Please connect to internet and try again later.")
         }
         
-        //        let appsetup = AppDefaults.shared.getAppSetUp()
-        //
-        //        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        
-        //   let url =  appMainURL + "table/additionaldcrmasterdata"
-        
-        
-        // "crm.saneforce.in/iOSServer/db_module.php?axn=table/additionaldcrmasterdata"
-        
-        //        let params : [String : Any] = ["tableName" : "gettodycalls",
-        //                                          "sfcode" : appsetup.sfCode ?? "",
-        //                                          "ReqDt" : date,
-        //                                          "division_code" : appsetup.divisionCode ?? "",
-        //                                          "Rsf" : appsetup.sfCode ?? "",
-        //                                          "sf_type" : appsetup.sfType ?? "",
-        //                                       "Designation" : appsetup.dsName ?? "",
-        //                                       "state_code" : appsetup.stateCode ?? "",
-        //                                       "subdivision_code" : appsetup.subDivisionCode ?? ""
-        //        ]
-        //
-        //        let param = ["data" : params.toString()]
-        //
-        //        print(param)
-        //        print(url)
-        
-        // {"tableName":"gettodycalls","sfcode":"MR6028","ReqDt":"2024-01-17 12:54:25""sf_type":"1","divisionCode":"44,","Rsf":"MR6028","Designation":"MR","state_code":"41","subdivision_code":"170,"}
-        
-        
-        
-        
-        //        AF.request(url,method: .post,parameters: param).responseData { responseFeed in
-        //
-        //            switch responseFeed.result {
-        //
-        //            case .success(_):
-        //                do {
-        //
-        //                    let apiResponse = try JSONSerialization.jsonObject(with: responseFeed.data!,options: JSONSerialization.ReadingOptions.allowFragments)
-        //
-        //                    print(apiResponse as Any)
-        //                }catch {
-        //                    print(error)
-        //                }
-        //
-        //            case .failure(let error):
-        //                print(error)
-        //                return
-        //            }
-        //        }
+
         
     }
     
@@ -2283,9 +2227,16 @@ class MainVC : UIViewController {
     
     @IBAction func callAction(_ sender: UIButton) {
         
-        let callVC = UIStoryboard.callVC
+        if istoRedirecttoCheckin() {
+            checkinAction()
+          
+        } else {
+            let callVC = UIStoryboard.callVC
+            
+            self.navigationController?.pushViewController(callVC, animated: true)
+        }
         
-        self.navigationController?.pushViewController(callVC, animated: true)
+
         
         
     }
@@ -2594,8 +2545,6 @@ class MainVC : UIViewController {
             viewCalls.isHidden = true
             viewOutBox.isHidden = true
             viewDayPlanStatus.isHidden = true
-            //  outboxSegmentHolderView.isHidden = true
-            //  callsSegmentHolderVIew.isHidden = true
             toLoadWorktypeTable()
             if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 0
@@ -4050,14 +3999,21 @@ extension MainVC: PopOverVCDelegate {
     
     
     func checkinDetailsAction() {
+        backgroundView.isHidden = false
+      //  backgroundView.toAddBlurtoVIew()
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
             case checkinDetailsView:
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+                
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
             default:
                 print("Yet to implement")
+              //  aAddedView.toAddBlurtoVIew()
+                
                 aAddedView.isUserInteractionEnabled = false
                 aAddedView.alpha = 0.5
                 
@@ -4077,16 +4033,24 @@ extension MainVC: PopOverVCDelegate {
     
 
     func checkinAction() {
+        
+        backgroundView.isHidden = false
+     
+        
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
             case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
             default:
+
                 print("Yet to implement")
+              //  aAddedView.toAddBlurtoVIew()
                 aAddedView.isUserInteractionEnabled = false
-                aAddedView.alpha = 0.5
+              //  aAddedView.alpha = 0.5
                 
             }
           
@@ -4112,17 +4076,20 @@ extension MainVC: PopOverVCDelegate {
     }
     
     func changePasswordAction() {
-        
+        backgroundView.isHidden = false
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
             default:
+             
                 print("Yet to implement")
                 aAddedView.isUserInteractionEnabled = false
-                aAddedView.alpha = 0.5
+              
                 
             }
           
@@ -4130,6 +4097,8 @@ extension MainVC: PopOverVCDelegate {
         
         changePasswordView = self.loadCustomView(nibname: XIBs.changePasswordView) as? ChangePasswordView
         changePasswordView?.delegate = self
+        changePasswordView?.userStatisticsVM = self.userststisticsVM
+        changePasswordView?.appsetup = self.appSetups
         changePasswordView?.setupUI()
         view.addSubview(changePasswordView ?? ChangePasswordView())
     }
@@ -4196,6 +4165,7 @@ extension MainVC : addedSubViewsDelegate {
     }
     
     func didClose() {
+        backgroundView.isHidden = true
         self.view.subviews.forEach { aAddedView in
         
             switch aAddedView {
@@ -4224,12 +4194,16 @@ extension MainVC : addedSubViewsDelegate {
     }
     
     func didUpdate() {
+        backgroundView.isHidden = true
         self.view.subviews.forEach { aAddedView in
         
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0.5
+                
+                Pipelines.shared.doLogout()
+                
             case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0.5

@@ -12,15 +12,33 @@ import Foundation
 public enum UserStatisticsError: String, Error {
 case unableConnect = "An issue occured data will be saved to device"
     case failedTocheckin = "Failed to checkin please try again later"
+    case failedToupdatePassword = "Failed to update password please try again later"
 }
 
 class UserStatisticsVM {
     
  
-    
-    func registerCheckin(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
+    func updateUserPassword(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
             .responseDecode(to: GeneralResponseModal.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            switch api {
+            case .updatePassword:
+                result(.failure(UserStatisticsError.failedToupdatePassword))
+            default:
+                result(.failure(UserStatisticsError.unableConnect))
+            }
+          
+        })
+    }
+    
+    
+    func registerCheckin(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[GeneralResponseModal],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [GeneralResponseModal].self, { (json) in
             result(.success(json))
             dump(json)
         }).responseFailure({ (error) in
