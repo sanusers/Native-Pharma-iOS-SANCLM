@@ -1125,6 +1125,87 @@ extension CoreDataManager {
        
     }
 }
+///tosave DCRdates
+extension CoreDataManager {
+    
+    func fetchDcrDates(completion: @escaping ([DcrDates]) -> Void) {
+        let fetchRequest: NSFetchRequest<DcrDates> = DcrDates.fetchRequest()
+
+        do {
+            let dcrDates = try context.fetch(fetchRequest)
+            completion(dcrDates)
+        } catch {
+            print("Failed to fetch DcrDates: \(error)")
+            completion([])
+        }
+    }
+    
+    func removeAllDcrDates() {
+        let fetchRequest: NSFetchRequest<DcrDates> = NSFetchRequest(entityName: "DcrDates")
+
+        do {
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    
+    func saveDCRDates(fromDcrModel: [DCRdatesModel], completion: @escaping () -> Void) {
+       
+        iterateSaveDCRDates(fromArray: fromDcrModel, index: 0) {
+            completion()
+        }
+    }
+
+    private func iterateSaveDCRDates(fromArray array: [DCRdatesModel], index: Int, completion: @escaping () -> Void) {
+        guard index < array.count else {
+            // All dictionaries processed, call completion
+            completion()
+            return
+        }
+
+        saveDCRDates(model: array[index]) {
+            // Move to the next dictionary in the array
+            self.iterateSaveDCRDates(fromArray: array, index: index + 1, completion: completion)
+        }
+    }
+
+    func saveDCRDates(model dcrModel: DCRdatesModel, completion: @escaping () -> Void) {
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: "DcrDates", in: context) else {
+            // Handle the case where entityDescription is nil
+            completion()
+            return
+        }
+
+        let dcrDates = DcrDates(entity: entityDescription, insertInto: context)
+
+        dcrDates.sfcode = dcrModel.sfCode
+    
+        dcrDates.tbname = dcrModel.tbname
+        dcrDates.flag = "\(dcrModel.flg)"
+    
+             dcrDates.date = dcrModel.dt.date
+            dcrDates.timeZone = dcrModel.dt.timezone
+          
+            dcrDates.timezoneType = "\(dcrModel.dt.timezoneType)"
+        
+
+        do {
+            try context.save()
+            completion()
+        } catch {
+            print("Failed to save to Core Data: \(error)")
+            completion()
+        }
+    }
+}
+
 
     
 

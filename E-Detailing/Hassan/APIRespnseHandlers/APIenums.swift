@@ -26,6 +26,7 @@ enum APIEnums : String{
     case myDayPlan = "edetsave/dayplan"
     case checkin = "save/activity"
     case updatePassword = "save/chpwd"
+    case home = "home"
 }
 
 

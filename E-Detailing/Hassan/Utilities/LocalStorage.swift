@@ -43,6 +43,8 @@ case AppMainURL
         case selectedHQObj
         case isUserCheckedin
         case lastCheckedInDate
+        case isLoginSynced
+        case userCheckedOut
     }
     
     enum Offsets: String {

@@ -61,6 +61,7 @@ class MasterSyncVC : UIViewController {
     var masterData = [MasterInfo]()
     var isDayPlanSynced: Bool = false
     var dcrList = [MasterCellData]()
+    var dcrDates: [DCRdatesModel]?
     var selectedMasterGroupIndex: Int? = nil
     var fetchedHQObject: Subordinate?
     
@@ -174,7 +175,6 @@ class MasterSyncVC : UIViewController {
             selectedMasterGroupIndex = nil
            // self.setLoader(pageType: .loading)
             animations = (0...(masterData.count - 1)).map{_ in true}
-            self.setLoader(pageType: .loading)
             fetchMasterDataRecursively(index: 0)
             
         }
@@ -221,7 +221,6 @@ class MasterSyncVC : UIViewController {
     
     @objc func syncTapped() {
         print("Tapped")
-       // self.setLoader(pageType: .loading)
         self.fetchmasterData(type: .getTP) {_ in}
     }
     
@@ -326,7 +325,6 @@ class MasterSyncVC : UIViewController {
       
         
         guard index < masterData.count else {
-            // All tasks completed
             print("DCR list sync completed")
             self.collectionView.reloadData()
             self.setLoader(pageType: .loaded)
@@ -341,11 +339,11 @@ class MasterSyncVC : UIViewController {
     }
     
     @IBAction func syncAll(_ sender: UIButton) {
-        self.setLoader(pageType: .loading)
-       // self.setLoader(pageType: .loading)
+       
         animations = (0...(masterData.count - 1)).map{_ in true}
         selectedMasterGroupIndex = nil
         self.tableView.reloadData()
+       // self.setLoader(pageType: .loading)
         fetchMasterDataRecursively(index: 0)
         
 
@@ -394,12 +392,16 @@ class MasterSyncVC : UIViewController {
         self.dcrList.append(MasterCellData(cellType: MasterCellType.syncAll,isSelected: false))
         
         self.masterData.append(MasterInfo.myDayPlan)
+       
         self.masterData.append(MasterInfo.doctorFencing)
         self.masterData.append(MasterInfo.chemists)
         self.masterData.append(MasterInfo.stockists)
         self.masterData.append(MasterInfo.unlistedDoctors)
         self.masterData.append(MasterInfo.setups)
         self.masterData.append(MasterInfo.customSetup)
+        
+        self.masterData.append(MasterInfo.dcrDateSync)
+        
         self.masterData.append(MasterInfo.tourPlanStatus)
         self.masterData.append(MasterInfo.leaveType)
         self.masterData.append(MasterInfo.visitControl)
@@ -444,26 +446,90 @@ class MasterSyncVC : UIViewController {
         masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in}
     }
     
+    func tofetchDcrdates(completion: @escaping (Result<([DCRdatesModel]), MasterSyncErrors>) -> ()) {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        
+
+        var param = [String: Any]()
+        param["tableName"] = "getdcrdate"
+        param["sfcode"] = "\(appsetup.sfCode!)"
+        param["division_code"] = "\(appsetup.divisionCode!)"
+        param["Rsf"] = "\(appsetup.sfCode!)"
+        param["sf_type"] = "\(appsetup.sfType!)"
+        param["Designation"] = "\(appsetup.dsName!)"
+        param["state_code"] = "\(appsetup.stateCode!)"
+        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+        param["ReqDt"] = date
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+ 
+        masterVM?.getDCRdates(params: toSendData, api: .home, paramData: param) { result in
+            
+            switch result {
+                
+            case .success(let respnse):
+                completion(result)
+                
+                dump(respnse)
+          
+                
+            case .failure(_):
+                completion(result)
+            }
+             
+        }
+ 
+    }
+    
     
     func fetchmasterData(type : MasterInfo, completion: @escaping (Bool) -> ()) {
-       // self.setLoader(pageType: .loading)
+        
         
         switch type {
         case .getTP :
-            toPostDataToserver(type : type) {[weak self] _ in
-                completion(true)
-                guard let welf = self else {return}
-                if let index = welf.masterData.firstIndex(of: type){
-                    welf.animations[index] = false
-                    welf.collectionView.reloadData()
-                }
-              
+            //            toPostDataToserver(type : type) {_ in
+            //                completion(true)
+            //            }
+            //           // guard let welf = self else {return}
+            //            if let index = masterData.firstIndex(of: type){
+            //                animations[index] = false
+            //                collectionView.reloadData()
+            //            }
+            
+            
+            if let index = masterData.firstIndex(of: type){
+                animations[index] = false
+                collectionView.reloadData()
             }
-           
+            completion(true)
+        case .dcrDateSync:
+            tofetchDcrdates() { result in
+                
+                switch result {
+                case .success(let respnse):
+                    
+                    self.dcrDates = respnse
+                    self.saveDatestoCoreData()
+                    completion(true)
+                case .failure(let error):
+                    completion(false)
+                    print(error.localizedDescription)
+                }
+            }
+            
+            
+            if let index = masterData.firstIndex(of: type){
+                animations[index] = false
+                collectionView.reloadData()
+            }
         case .myDayPlan:
             
             mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
-              //  completion(true)
+                //  completion(true)
                 guard let welf = self else {return}
                 
                 switch result {
@@ -487,47 +553,47 @@ class MasterSyncVC : UIViewController {
                                 print("Yet to implement")
                             }
                         }
-                       // let aDayArr = model.filter{$0.SFMem != ""}.first
-                 
+                        // let aDayArr = model.filter{$0.SFMem != ""}.first
                         
-                      let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-                      LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
+                        
+                        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+                        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
                         
                         welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem  ?? "") { _ in
                             
                             let subordinateArr =  DBManager.shared.getSubordinate()
                             let filteredHQ = subordinateArr.filter {  $0.id == dayPlan1?.SFMem }
-                             if !filteredHQ.isEmpty {
-                                 let cacheHQ = filteredHQ.first
-                                 welf.fetchedHQObject = cacheHQ
-                                 welf.setHQlbl()
-                                 
-                                 welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem ?? "") { _ in
-                                     if dayPlan2 != nil {
-                                         welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
-                                         
-                                             welf.toSaveDayplansToDB(model: responseModel)
-                                             
-                                             dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
-                                             
-                                             completion(true)
-                                         }
-                                     } else {
-                                         welf.toSaveDayplansToDB(model: responseModel)
-                                         
-                                         dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
-                                         
-                                         completion(true)
-                                     }
-                                  
-                                 }
-                                 
-                             }
-                         
+                            if !filteredHQ.isEmpty {
+                                let cacheHQ = filteredHQ.first
+                                welf.fetchedHQObject = cacheHQ
+                                welf.setHQlbl()
+                                
+                                welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem ?? "") { _ in
+                                    if dayPlan2 != nil {
+                                        welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
+                                            
+                                            welf.toSaveDayplansToDB(model: responseModel)
+                                            
+                                            dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
+                                            
+                                            completion(true)
+                                        }
+                                    } else {
+                                        welf.toSaveDayplansToDB(model: responseModel)
+                                        
+                                        dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
+                                        
+                                        completion(true)
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
                         }
                         
-
-                       
+                        
+                        
                     } else {
                         
                         CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
@@ -544,7 +610,7 @@ class MasterSyncVC : UIViewController {
                             completion(true)
                         }
                         
-                      
+                        
                     }
                     if let index = welf.masterData.firstIndex(of: type){
                         welf.animations[index] = false
@@ -563,7 +629,7 @@ class MasterSyncVC : UIViewController {
                     completion(true)
                 }
             }
-          
+            
         default:
             mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getRSF ?? "", istoUpdateDCRlist: false, mapID: self.getRSF ?? "") {[weak self] (response) in
                 guard let welf = self else {return}
@@ -573,38 +639,38 @@ class MasterSyncVC : UIViewController {
                 
                 switch response.result {
                     
-                    case .success(_):
-                        do {
-                            let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                            print(apiResponse)
-                            if let jsonObjectresponse = apiResponse as? [[String : Any]] {
-                                DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: welf.getRSF ?? "")
-                                if type == MasterInfo.slides || type == MasterInfo.slideBrand {
-                                    welf.loadedSlideInfo.append(type)
-                                    switch type {
-                                    case MasterInfo.slides:
-                                        
-                                        var slides = AppDefaults.shared.getSlides()
-                                        slides.removeAll()
-                                        slides.append(contentsOf: jsonObjectresponse)
-                                      
-                                        LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
-                                        
-                                        welf.setLoader(pageType: .navigate, type: .slides)
-                                    case MasterInfo.slideBrand:
-                                        
-                                        LocalStorage.shared.setData(LocalStorage.LocalValue.BrandSlideResponse, data: response.data!)
-                                        
-                                        welf.setLoader(pageType: .navigate, type: .slides)
-                                    default:
-                                        print("Yet to implement")
-                                    }
-                                 
+                case .success(_):
+                    do {
+                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
+                        print(apiResponse)
+                        if let jsonObjectresponse = apiResponse as? [[String : Any]] {
+                            DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: welf.getRSF ?? "")
+                            if type == MasterInfo.slides || type == MasterInfo.slideBrand {
+                                welf.loadedSlideInfo.append(type)
+                                switch type {
+                                case MasterInfo.slides:
+                                    
+                                    var slides = AppDefaults.shared.getSlides()
+                                    slides.removeAll()
+                                    slides.append(contentsOf: jsonObjectresponse)
+                                    
+                                    LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
+                                    
+                                    welf.setLoader(pageType: .navigate, type: .slides)
+                                case MasterInfo.slideBrand:
+                                    
+                                    LocalStorage.shared.setData(LocalStorage.LocalValue.BrandSlideResponse, data: response.data!)
+                                    
+                                    welf.setLoader(pageType: .navigate, type: .slides)
+                                default:
+                                    print("Yet to implement")
                                 }
+                                
                             }
-                        }catch {
-                            print(error)
                         }
+                    }catch {
+                        print(error)
+                    }
                     AppDefaults.shared.save(key: .syncTime, value: Date())
                     let date = Date().toString(format: "dd MMM yyyy hh:mm a")
                     welf.lblSyncStatus.text = "Last Sync: " + date
@@ -613,9 +679,8 @@ class MasterSyncVC : UIViewController {
                         welf.collectionView.reloadData()
                     }
                     completion(true)
-                    case .failure(let error):
+                case .failure(let error):
                     
-                   // welf.setLoader(pageType: .loaded)
                     welf.toCreateToast("\(error.localizedDescription)")
                     print(error)
                     
@@ -625,7 +690,7 @@ class MasterSyncVC : UIViewController {
                     }
                     completion(false)
                 }
-
+                
             }
             
         }
@@ -694,15 +759,13 @@ extension MasterSyncVC : tableViewProtocols {
     
     @objc func syncAllAction (_ sender : UIButton) {
         self.loadedSlideInfo = []
-       // self.setLoader(pageType: .loading)
-        self.masterData = [MasterInfo.myDayPlan,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
+      
+        self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
                            MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup,MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
         
         animations = (0...(masterData.count - 1)).map{_ in true}
-        
-            self.setLoader(pageType: .loading)
-
-            fetchMasterDataRecursively(index: 0)
+      // self.setLoader(pageType: .loading)
+        fetchMasterDataRecursively(index: 0)
 
 
             print("DCR list sync completed")
@@ -858,8 +921,10 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text =  "\(DBManager.shared.getHomeData().count)"
         case   .callSync:
             cell.lblCount.text = "Yet to"
-        case   .dataSync:
-            cell.lblCount.text = "Yet to"
+        case   .dcrDateSync:
+           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
+               cell.lblCount.text = "\(dcrDates.count)"
+            }
         case .none:
             cell.lblCount.text = "Yet to"
 
@@ -879,18 +944,12 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     @objc func groupSyncAll(_ sender : UIButton){
-       // self.setLoader(pageType: .loading)
+  
         animations = (0...(masterData.count - 1)).map{_ in true}
-      
-      //  _ = masterData.map{self.fetchmasterData(type: $0)}
+       // self.setLoader(pageType: .loading)
         fetchMasterDataRecursively(index: 0)
         
-      //  dispatchgroup.notify(queue: .main) {
 
-   //         print("DCR list sync completed")
-         
-       
-     //   }
         
     }
     
@@ -898,8 +957,18 @@ extension MasterSyncVC : collectionViewProtocols{
         animations[indexPath.row] = true
      
         self.fetchmasterData(type: self.masterData[indexPath.row]) {_ in
-            
+            self.saveDatestoCoreData()
             self.collectionView.reloadData()
+        }
+    }
+    
+    func saveDatestoCoreData() {
+        guard let dcrDates = dcrDates else {return}
+        CoreDataManager.shared.removeAllDcrDates()
+        CoreDataManager.shared.saveDCRDates(fromDcrModel: dcrDates) {
+            CoreDataManager.shared.fetchDcrDates() { savedDcrDates in
+                dump(savedDcrDates)
+            }
         }
     }
 }

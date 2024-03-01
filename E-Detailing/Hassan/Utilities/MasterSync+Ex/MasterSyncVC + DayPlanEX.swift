@@ -562,7 +562,7 @@ extension CoreDataManager {
             eachDayPlanArr.forEach { eachDayPlan in
                 let aDayPlan = DayPlan()
                 //  aDayPlan.uuid = eachDayPlan.uuid ?? UUID()
-                aDayPlan.tpDt = eachDayPlan.planDate?.toString(format: "yyyy-MM-dd HH:mm:ss.SSS") ?? ""
+                aDayPlan.tpDt = eachDayPlan.planDate?.toString(format: "yyyy-MM-dd HH:mm:ss") ?? ""
                 aDayPlan.tableName = "dayplan"
                 aDayPlan.sfcode = userConfig.sfCode
                 aDayPlan.divisionCode = userConfig.divisionCode
@@ -722,7 +722,7 @@ extension CoreDataManager {
 //    }
     
     
-    func saveSessionAsEachDayPlan(session: [Sessions], completion: @escaping (Bool) -> ()) {
+    func saveSessionAsEachDayPlan(planDate: Date = Date(), session: [Sessions], completion: @escaping (Bool) -> ()) {
       
         let context = self.context
 
@@ -749,7 +749,7 @@ extension CoreDataManager {
         eachDayPlan.remarks = session[0].remarks ?? ""
         eachDayPlan.isRejected = session[0].isRejected ?? false
         eachDayPlan.rejectionReason = session[0].rejectionReason
-        
+        eachDayPlan.planDate = planDate
         // Convert and add EachPlan objects
         
         
@@ -779,7 +779,7 @@ extension CoreDataManager {
             
             switch index {
             case 0:
-                firstEachPlan.planDate = Date()
+                firstEachPlan.planDate = planDate
                 firstEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
@@ -798,7 +798,7 @@ extension CoreDataManager {
                 eachPlanSet.add(firstEachPlan)
                
             case 1:
-                secondEachPlan.planDate = Date()
+                secondEachPlan.planDate = planDate
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false

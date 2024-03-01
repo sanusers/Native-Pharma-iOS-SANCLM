@@ -10,14 +10,10 @@ import UIKit
 import MapKit
 import CoreLocation
 import CoreData
+import GoogleMaps
 
 
-struct CheckinInfo {
-    let address: String?
-    let checkinDateTime: String?
-    let latitude: Double?
-    let longitude: Double?
-}
+
 
 class HomeCheckinView: UIView, CLLocationManagerDelegate {
     @IBOutlet var checkinBtn: ShadowButton!
@@ -35,11 +31,10 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
     var latitude: Double?
     var longitude: Double?
     var address: String?
+    var chckinInfo:  CheckinInfo?
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override init(frame: CGRect) {
         super.init(frame: frame)
-      
-
     }
     
     
@@ -47,77 +42,6 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
          super.init(coder: aDecoder)
        
      }
-    
-    func requestAuth(completion: @escaping (Bool) -> Void) {
-        guard let locManager = locManager, var currentLocation = currentLocation else {
-            completion(false)
-            return
-        }
-
-        locManager.delegate = self
-
-        locManager.requestWhenInUseAuthorization()
-
-        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
-            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways){
-            currentLocation = locManager.location ?? CLLocation()
-            latitude = (currentLocation.coordinate.latitude)
-            longitude = (currentLocation.coordinate.longitude)
-  completion(true)
-        } else {
-            completion(false)
-            delegate?.showAlert()
-        }
-    }
-    
-    
-
-    
-    
-
-
-    func getAddressString(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
-        let geocoder = CLGeocoder()
-
-        let location = CLLocation(latitude: latitude, longitude: longitude)
-
-        geocoder.reverseGeocodeLocation(location) { (places, error) in
-            if let error = error {
-                print("Reverse geocoding error: \(error.localizedDescription)")
-                completion(nil)
-                return
-            }
-
-            if let place = places?.first {
-                var addressString = ""
-                if let subThoroughfare = place.subThoroughfare {
-                    addressString += "\(subThoroughfare),"
-                }
-                
-                if let thoroughfare = place.thoroughfare {
-                    addressString += " \(thoroughfare),"
-                }
-
-        
-
-                if let locality = place.locality {
-                    addressString += " \(locality),"
-                }
-
-                if let administrativeArea = place.administrativeArea {
-                    addressString += " \(administrativeArea),"
-                }
-
-                if let postalCode = place.postalCode {
-                    addressString += " \(postalCode)"
-                }
-
-                completion(addressString)
-            } else {
-                completion(nil)
-            }
-        }
-    }
     
     func  callAPI() {
         guard let appsetup = self.appsetup else {return}
@@ -162,35 +86,13 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
 
         let timestr = (timeString)
         
+        chckinInfo = CheckinInfo(address: address, checkinDateTime: self.getCurrentFormattedDateString(), checkOutDateTime: "", latitude: latitude ?? Double(), longitude: longitude ?? Double(), dateStr: datestr, checkinTime: timestr, checkOutTime: "")
         
-        var param: [String: Any] = [:]
-        param["tableName"] = "savetp_attendance"
-        param["sfcode"] = appsetup.sfCode
-        let divcodeArr = appsetup.divisionCode.components(separatedBy: ",")
-        param["division_code"] = appsetup.divisionCode
-        param["lat"] = latitude
-        param["long"] = longitude
-        param["address"] = address
-        param["update"] = "0"
-        param["Appver"] = "V2.0.8"
-        param["Mod"] = "iOS-Edet"
-        param["sf_emp_id"] = appsetup.sfEmpId
-        param["sfname"] = appsetup.sfName
-        param["Employee_Id"] = appsetup.sfName
-        param["Check_In"] = timestr
-        param["Check_Out"] = ""
-        param["DateTime"] = datestr
+        guard let ainfo = chckinInfo else {return}
         
-        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
-
-        
-        var toSendData = [String: Any]()
-        toSendData["data"] = jsonDatum
-        
-        print(param)
-        
-        self.userstrtisticsVM?.registerCheckin(params: toSendData, api: .checkin, paramData: param) { result in
-
+        guard let userstrtisticsVM = userstrtisticsVM else {return}
+        Pipelines.shared.callCheckinCheckoutAPI(userstrtisticsVM: userstrtisticsVM, model: ainfo, appsetup: appsetup) { result in
+            
             switch result {
 
             case .success(let responseArr):
@@ -204,7 +106,8 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                 }
                 
                
-
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: true)
+                
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
 
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
@@ -236,13 +139,15 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
     
     
     func saveLogininfoToCoreData(completion: @escaping (Bool) -> Void) {
-        
 
+     
+        guard let chckinInfo = self.chckinInfo else {
+            
+            completion(false)
+            
+            return}
         
-        let checkinInfo =  CheckinInfo(address: self.address, checkinDateTime: self.getCurrentFormattedDateString(), latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double())
-        CoreDataManager.shared.removeAllCheckins()
-        
-        CoreDataManager.shared.saveCheckinsToCoreData(checkinInfo: checkinInfo) {isCompleted in
+        CoreDataManager.shared.saveCheckinsToCoreData(checkinInfo: chckinInfo) {isCompleted in
             completion(true)
         }
     }
@@ -253,29 +158,58 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
         return dateFormatter.string(from: Date())
     }
     
+
+    
     @IBAction func didTapCheckin(_ sender: Any) {
         
         locManager = CLLocationManager()
         currentLocation = CLLocation()
-        requestAuth() {[weak self] isPermissiongranted in
+        
+        
+        Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
-            if isPermissiongranted {
-                welf.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {address in
-                    welf.address = address
-                    
-                    if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                        welf.callAPI()
-                    } else {
-                        self?.toCreateToast("Please connect to network to register login")
-                    }
-                  
-                }
-            } else {
+            guard coordinates != nil else {
+                welf.delegate?.showAlert()
                 return
             }
+            welf.latitude = coordinates?.latitude
+            welf.longitude = coordinates?.longitude
+            
+            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
+                welf.address = address
+                
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                    welf.callAPI()
+                } else {
+                    
+                    let dateFormatter = DateFormatter()
+    
+                    let currentDate = Date()
+                    
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    
+                    let upDatedDateString = dateFormatter.string(from: currentDate)
+                    
+                    
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: false)
+                    
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+                    CoreDataManager.shared.removeAllCheckins()
+                    welf.saveLogininfoToCoreData() {_ in
+                        
+                        welf.delegate?.didUpdate()
+                        
+                    }
+
+                }
+              
+            }
+            
         }
-      //  let appsetup = AppDefaults.shared.getAppSetUp()
         
+
    
         
     }
@@ -343,8 +277,11 @@ extension CoreDataManager {
                     // Convert properties
                     savedCDChekinInfo.address = checkinInfo.address
                     savedCDChekinInfo.checkinDateTime = checkinInfo.checkinDateTime
+                    savedCDChekinInfo.checkOutDateTime = checkinInfo.checkOutDateTime
                     savedCDChekinInfo.latitude = checkinInfo.latitude ?? Double()
                     savedCDChekinInfo.longitude = checkinInfo.longitude ?? Double()
+                    savedCDChekinInfo.checkinTime = checkinInfo.checkinTime
+                    savedCDChekinInfo.checkOutTime = checkinInfo.checkOutTime
                     // Save to Core Data
                     do {
                         try context.save()

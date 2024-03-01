@@ -8,6 +8,9 @@
     <entity name="ChekinInfo" representedClassName="ChekinInfo" syncable="YES" codeGenerationType="class">
         <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="checkinDateTime" optional="YES" attributeType="String"/>
+        <attribute name="checkinTime" optional="YES" attributeType="String"/>
+        <attribute name="checkOutDateTime" optional="YES" attributeType="String"/>
+        <attribute name="checkOutTime" optional="YES" attributeType="String"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
@@ -38,6 +41,14 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="ourProductCode" optional="YES" attributeType="String"/>
         <attribute name="ourProductName" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="DcrDates" representedClassName="DcrDates" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="String"/>
+        <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="sfcode" optional="YES" attributeType="String"/>
+        <attribute name="tbname" optional="YES" attributeType="String"/>
+        <attribute name="timeZone" optional="YES" attributeType="String"/>
+        <attribute name="timezoneType" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Departs" representedClassName="Departs" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
@@ -109,6 +120,7 @@
         <attribute name="wortTypeCode" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Efff" representedClassName="Efff" syncable="YES" codeGenerationType="class">
+        <attribute name="attribute" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="timeZone" optional="YES" attributeType="String"/>
         <attribute name="timeZoneType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

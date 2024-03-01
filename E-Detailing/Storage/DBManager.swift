@@ -162,6 +162,7 @@ class DBManager {
             saveHolidays(values: Values)
         case .homeSetup:
             saveHomeData(values: Values)
+
         default:
             return
         }

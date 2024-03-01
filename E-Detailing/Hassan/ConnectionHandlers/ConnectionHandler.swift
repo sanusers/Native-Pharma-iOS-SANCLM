@@ -20,6 +20,7 @@ final class ConnectionHandler : NSObject {
         case detailedReport = "getvwvstdet"
         case getToadyCalls = "gettodycalls"
         case checkin = "savetp_attendance"
+        case getdcrdate = "getdcrdate"
     }
     
     static let shared = ConnectionHandler()
@@ -280,12 +281,13 @@ final class ConnectionHandler : NSObject {
                     return
                 }
 
-                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
                     var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
                     var checkinModelData : [GeneralResponseModal]?
                     var encodedAdayCalls: [TodayCallsModel]?
+                    var encodedDcrDates: [DCRdatesModel]?
                     if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
                             encodedReportsModelData = decodecObj
@@ -371,6 +373,31 @@ final class ConnectionHandler : NSObject {
                                 // Convert Swift object to JSON string
                               
                                 responseHandler.handleSuccess(value: self.convertToDictionary(checkinModelData) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                            } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        
+                        
+                    } else if data["tableName"] as! String == TableName.getdcrdate.rawValue {
+                        
+                      
+                        
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DCRdatesModel].self) { decodecObj in
+                            encodedDcrDates = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(encodedDcrDates)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedDcrDates) ?? JSON(), data: jsonData)
                                 print("JSON Data:")
                                 print(jsonData)
                             } catch {

@@ -102,7 +102,7 @@ enum MasterCellType : Int {
             return [MasterInfo.clusters,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
 
         case .dcr:
-            return [MasterInfo.homeSetup, MasterInfo.myDayPlan, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.empty, MasterInfo.empty,  MasterInfo.syncAll]
+            return [MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.myDayPlan, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.empty, MasterInfo.syncAll]
         case .tourPlan:
             return [MasterInfo.tourPlanSetup , MasterInfo.getTP, MasterInfo.empty ,MasterInfo.syncAll]
         case .leave:
@@ -173,7 +173,7 @@ enum `MasterInfo` : String {
     case tourPlanSetup = "Tour plan setup"
     case homeSetup = "DCR"
     case callSync = "Call Sync"
-    case dataSync = "Data Sync"
+    case dcrDateSync = "Date Sync"
    
  ///note: Don't add types at last it affects page loading algorithm.
     var getUrl : String {
@@ -228,7 +228,7 @@ enum `MasterInfo` : String {
         case .homeSetup:
             return String(format: "%@home", mainUrl)
         default :
-            return String(format: "%@table/slides", mainUrl) //
+            return String(format: "%@home", mainUrl) //
         }
     }
     
@@ -331,8 +331,8 @@ enum `MasterInfo` : String {
             return MasterSyncParams.homeDataSetupParams
         case .callSync:
             return [String : Any]()
-        case .dataSync:
-            return [String : Any]()
+        case .dcrDateSync:
+            return [String: Any]()
         case .tourPlanSetup:
             return MasterSyncParams.tourplanSetupParams
         }

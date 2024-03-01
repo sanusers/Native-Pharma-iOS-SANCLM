@@ -34,6 +34,7 @@ struct Sessions {
     var isRejected: Bool?
     var rejectionReason: String?
     var isFirstCell : Bool?
+    var planDate: Date?
 }
 
 extension MainVC {
@@ -68,30 +69,19 @@ extension MainVC {
                          case .success(let response):
                              dump(response)
                              
-                             guard var nonNilSession = welf.sessions else {
-                                 return
-                             }
-                             nonNilSession.indices.forEach { index in
-                                 nonNilSession[index].isRetrived = true
-                             }
+
                              
-    //                         CoreDataManager.shared.removeAllDayPlans()
-    //                         CoreDataManager.shared.saveSessionAsEachDayPlan(session: nonNilSession) { isSaved in
-    //                             print("Day session successfully saved to core data")
-    //                             welf.sessions =  welf.toFetchExistingPlan()
-    //                             welf.toLoadWorktypeTable()
-    //
-    //                         }
-                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
-                            
-                                // welf.toLoadWorktypeTable()
-                                // welf.configureAddplanBtn(true, isSessionSaved: true)
-                                // welf.configureSaveplanBtn(false)
+
+                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: welf.selectedRawDate ?? Date()) {_ in
+ 
                                  completion(true)
                                  welf.toCreateToast(response.msg ?? "")
                              }
                          case .failure(let error):
                              completion(false)
+                             
+
+                             
                              welf.toCreateToast(error.localizedDescription)
                          }
                          

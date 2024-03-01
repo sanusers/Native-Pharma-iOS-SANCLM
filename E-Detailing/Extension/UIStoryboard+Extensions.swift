@@ -51,7 +51,7 @@ extension UIStoryboard {
     
     
     static var mainVC : MainVC {
-        guard let  mainVC = UIStoryboard.main.instantiateViewController(withIdentifier: "MainVC") as? MainVC else{
+        guard let  mainVC = UIStoryboard.Hassan.instantiateViewController(withIdentifier: "MainVC") as? MainVC else{
             fatalError("MainVC couldn't be found in Storyboard file")
         }
         return mainVC
@@ -159,6 +159,7 @@ extension UIStoryboard {
 
 
 extension String {
+    
     func toDate(format: String = "yyyy-MM-dd HH:mm:ss") -> Date{
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = format

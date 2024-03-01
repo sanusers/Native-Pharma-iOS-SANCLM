@@ -1698,9 +1698,8 @@ class TourPlanView: BaseView {
         rejectionReason.setFont(font: .bold(size: .BODY))
         rejectionVIew.layer.cornerRadius = 5
         btnSendFOrApproval.setTitle("Send to approval", for: .normal)
-        btnSendFOrApproval.titleLabel?.text = "Send to approval"
-        //btnSendFOrApproval.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        btnSendFOrApproval.titleLabel?.font = UIFont(name: "Satoshi-Bold", size: 16)
+
+ 
         
         btnSendFOrApproval.backgroundColor = .clear
         btnSendFOrApproval.tintColor = .appWhiteColor

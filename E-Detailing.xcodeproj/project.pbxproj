@@ -182,6 +182,7 @@
 		38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */; };
 		38D6E88B2B34081B003CC4D8 /* BasicReportsInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */; };
 		38D70F0C2B905D400033ED9C /* Pipelines.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D70F0B2B905D400033ED9C /* Pipelines.swift */; };
+		38D70F0E2B909F590033ED9C /* DCRdatesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D70F0D2B909F590033ED9C /* DCRdatesModel.swift */; };
 		38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D738222B120A6F00162548 /* TableSetupModel.swift */; };
 		38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */; };
 		38D7E1E52B677FD500085293 /* PlayPDFCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */; };
@@ -494,6 +495,7 @@
 		38D6E8882B34081B003CC4D8 /* BasicReportsInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicReportsInfoTVC.swift; sourceTree = "<group>"; };
 		38D6E8892B34081B003CC4D8 /* BasicReportsInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BasicReportsInfoTVC.xib; sourceTree = "<group>"; };
 		38D70F0B2B905D400033ED9C /* Pipelines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pipelines.swift; sourceTree = "<group>"; };
+		38D70F0D2B909F590033ED9C /* DCRdatesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdatesModel.swift; sourceTree = "<group>"; };
 		38D738222B120A6F00162548 /* TableSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSetupModel.swift; sourceTree = "<group>"; };
 		38D7E1E22B677FD500085293 /* PlayPDFCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPDFCVC.swift; sourceTree = "<group>"; };
 		38D7E1E32B677FD500085293 /* PlayPDFCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayPDFCVC.xib; sourceTree = "<group>"; };
@@ -831,6 +833,7 @@
 			isa = PBXGroup;
 			children = (
 				38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */,
+				38D70F0D2B909F590033ED9C /* DCRdatesModel.swift */,
 			);
 			path = DCR;
 			sourceTree = "<group>";
@@ -1812,6 +1815,7 @@
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,
+				38D70F0E2B909F590033ED9C /* DCRdatesModel.swift in Sources */,
 				38FAA1732B7F263500714AA2 /* MyDayPlanTVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
 				38E3DF712B8F2DBA0093DF4B /* Viewcontroller + Ex.swift in Sources */,

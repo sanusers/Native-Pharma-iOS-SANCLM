@@ -82,3 +82,94 @@
 //                print("2")
 //                print(response)
 //                print("2")
+
+
+
+
+
+//if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//    
+//    
+//    
+//    if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj) {
+//        return false
+//    } else {
+//        if nonNillSession[index].isRetrived ?? false {
+//            return false
+//        } else {
+//            return true
+//        }
+//        
+//        
+//    }
+//    
+//} else {
+//    if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
+//        return false
+//    } else {
+//        if nonNillSession[index].isRetrived ?? false {
+//           if istoHandeleAddedSession {
+//               return true
+//           } else {
+//               return false
+//           }
+//            
+//            
+//        } else {
+//            return true
+//        }
+//    }
+//}
+//case 1:
+//if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//    if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+//        return false
+//    } else {
+//        if nonNillSession[index].isRetrived ?? false {
+//            return false
+//        } else {
+//            return true
+//        }
+//    }
+//    
+//} else {
+//    if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+//        return false
+//    } else {
+//        if nonNillSession[index].isRetrived ?? false {
+//            return false
+//        } else {
+//            return true
+//        }
+//    }
+//}
+//default:
+//if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//    if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+//        return false
+//    } else {
+//        if nonNillSession[index].isRetrived ?? false {
+//            return false
+//        } else {
+//            return true
+//        }
+//    }
+//    
+//} else {
+//    if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
+//        
+//        let isSessionUnfilled: Bool = {
+//            return self.sessions?.allSatisfy { aSession in
+//                return aSession.cluster == nil && aSession.workType == nil && aSession.headQuarters == nil
+//            } ?? false
+//        }()
+//        
+//        return !isSessionUnfilled
+//    } else {
+//        if nonNillSession[index].isRetrived ?? false {
+//            return false
+//        } else {
+//            return true
+//        }
+//    }
+//}

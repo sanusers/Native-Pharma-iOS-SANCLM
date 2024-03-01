@@ -22,10 +22,14 @@ class MasterSyncVM {
     let appsetup = AppDefaults.shared.getAppSetUp()
     var getRSF: String? {
     
+        let selectedRSF = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        
         let rsfIDPlan1 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
         let rsfIDPlan2 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan2)
 
-        if !rsfIDPlan1.isEmpty {
+        if !selectedRSF.isEmpty {
+            return selectedRSF
+        } else if !rsfIDPlan1.isEmpty {
             return rsfIDPlan1
         } else if !rsfIDPlan2.isEmpty {
             return rsfIDPlan2
@@ -36,10 +40,10 @@ class MasterSyncVM {
     
     var mapID: String?
     
-    func toGetMyDayPlan(type: MasterInfo, isToloadDB: Bool, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
+    func toGetMyDayPlan(type: MasterInfo, isToloadDB: Bool, date: Date = Date(), completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
         
  
-        let date = Date().toString(format: "yyyy-MM-dd 00:00:00")
+        let date = date.toString(format: "yyyy-MM-dd HH:mm:ss")
         var param = [String: Any]()
         
         
@@ -120,10 +124,11 @@ class MasterSyncVM {
         aDayPlan.designation = "\(userConfig.desig!)"
         aDayPlan.stateCode = "\(userConfig.stateCode!)"
         aDayPlan.subdivisionCode = userConfig.subDivisionCode
-        
+     
         model.enumerated().forEach {index, aMyDayPlanResponseModel in
             switch index {
             case 0:
+                aDayPlan.tpDt = aMyDayPlanResponseModel.TPDt.date //2024-02-03 00:00:00
                 aDayPlan.isRetrived  =  true
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
@@ -135,6 +140,7 @@ class MasterSyncVM {
                 aDayPlan.townCode = aMyDayPlanResponseModel.Pl
                 aDayPlan.townName = aMyDayPlanResponseModel.PlNm
             case 1:
+                aDayPlan.tpDt = aMyDayPlanResponseModel.TPDt.date //2024-02-03 00:00:00
                 aDayPlan.isRetrived2  =  true
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
@@ -193,50 +199,7 @@ class MasterSyncVM {
         }
     }
     
-//    func fetchMasterData(type : MasterInfo, sfCode: String, istoUpdateDCRlist : Bool, completionHandler: @escaping (AFDataResponse<Data>) -> Void) {
-//        dump(type.getUrl)
-//        dump(type.getParams)
-//            AF.request(type.getUrl,method: .post,parameters: type.getParams).responseData(){[weak self] (response) in
-//                guard let welf = self else {return}
-//                switch response.result {
-//                case .success(_):
-//                    do {
-//                        if  let apiResponse = try JSONSerialization.jsonObject(with: response.data!, options: []) as? [[String: Any]] {
-//                            print(apiResponse)
-//                            // Save to Core Data or perform any other actions
-//                            DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: sfCode)
-//                        }
-//
-//
-//                    } catch {
-//                        print("Unable to serialize")
-//                    }
-//                    if istoUpdateDCRlist {
-//
-//
-//
-//                        if !welf.isUpdating {
-//                            welf.updateDCRLists() { _ in
-//
-//                                    completionHandler(response)
-//
-//                            }
-//                        }
-//                    } else {
-//                        completionHandler(response)
-//                    }
-//                case .failure(let error):
-//                    completionHandler(response)
-//                print(error)
-//                }
-//
-//
-//            }
-//    }
-    
- 
-    
-    
+
     func updateDCRLists(mapID: String, completion: @escaping (Bool) -> ()) {
         let dispatchgroup = DispatchGroup()
         isUpdating = true
@@ -270,6 +233,17 @@ class MasterSyncVM {
     func getTodayPlans(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
             .responseDecode(to: [MyDayPlanResponseModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(MasterSyncErrors.unableConnect))
+        })
+    }
+    
+    func getDCRdates(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[DCRdatesModel],MasterSyncErrors>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [DCRdatesModel].self, { (json) in
             result(.success(json))
             dump(json)
         }).responseFailure({ (error) in
