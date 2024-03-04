@@ -122,6 +122,8 @@ class BasicReportsInfoTVC: UITableViewCell {
             inAndoutHeightConst.constant = 80
         }
         
+        checkINtapView.isHidden  = isTohideCheckin
+        checkOUTtapView.isHidden = isTohideCheckout
        // remarksAndPlansView
         let isTohideRemarks = isTohideRemarks(model)
         let isTohideplanCollection = isTohideplanCollection(count: self.sessionImages?.count ?? 0)

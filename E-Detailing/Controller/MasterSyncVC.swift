@@ -327,8 +327,11 @@ class MasterSyncVC : UIViewController {
         guard index < masterData.count else {
             print("DCR list sync completed")
             self.collectionView.reloadData()
-            self.setLoader(pageType: .loaded)
-            return
+            DispatchQueue.main.async {
+                self.setLoader(pageType: .navigate, type: .slides)
+            }
+          
+           return
         }
 
         let masterType = masterData[index]
@@ -656,12 +659,12 @@ class MasterSyncVC : UIViewController {
                                     
                                     LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
                                     
-                                    welf.setLoader(pageType: .navigate, type: .slides)
+                                  //  welf.setLoader(pageType: .navigate, type: .slides)
                                 case MasterInfo.slideBrand:
                                     
                                     LocalStorage.shared.setData(LocalStorage.LocalValue.BrandSlideResponse, data: response.data!)
                                     
-                                    welf.setLoader(pageType: .navigate, type: .slides)
+                                   // welf.setLoader(pageType: .navigate, type: .slides)
                                 default:
                                     print("Yet to implement")
                                 }

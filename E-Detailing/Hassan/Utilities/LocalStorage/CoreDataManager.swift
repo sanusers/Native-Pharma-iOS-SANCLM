@@ -1190,7 +1190,20 @@ extension CoreDataManager {
         dcrDates.tbname = dcrModel.tbname
         dcrDates.flag = "\(dcrModel.flg)"
     
-             dcrDates.date = dcrModel.dt.date
+        let dateString = dcrModel.dt.date
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        if let date = dateFormatter.date(from: dateString) {
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let formattedDate = dateFormatter.string(from: date)
+            dcrDates.date = formattedDate
+        } else {
+            print("Failed to convert string to date.")
+        }
+        
+            
             dcrDates.timeZone = dcrModel.dt.timezone
           
             dcrDates.timezoneType = "\(dcrModel.dt.timezoneType)"

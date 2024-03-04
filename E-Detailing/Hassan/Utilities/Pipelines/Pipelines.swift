@@ -27,9 +27,7 @@ struct Coordinates {
 
 class Pipelines  {
 
-    
 
-    
     static let shared = Pipelines()
     
     let appDelegate =  UIApplication.shared.delegate as! AppDelegate

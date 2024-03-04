@@ -489,7 +489,10 @@ class MainVC : UIViewController {
     
     // @IBOutlet weak var imgProfile: UIImageView!
     
+    @IBOutlet var deviateSwitch: UISwitch!
     @IBOutlet var backgroundView: UIView!
+    
+    @IBOutlet var backGroundVXview: UIVisualEffectView!
     @IBOutlet var segmentsCollection: UICollectionView!
     @IBOutlet var monthRangeLbl: UILabel!
     @IBOutlet var lblAverageDocCalls: UILabel!
@@ -631,6 +634,22 @@ class MainVC : UIViewController {
     @IBOutlet weak var dayplancalenderVIew: FSCalendar!
     @IBOutlet var closeRejectionVIew: UIView!
     
+    
+    func setDeviateSwitch(istoON: Bool) {
+        deviateSwitch.isOn = istoON
+    }
+    
+    @IBAction func didtapDeviateSwitch(_ sender: UISwitch) {
+        if sender.isOn {
+            deviateAction(isForremarks: false)
+            setDeviateSwitch(istoON: true)
+        } else {
+            // Switch is OFF
+            // Perform actions when the switch is turned off
+        }
+        
+    }
+    
     @IBAction func didTapPrevBtn(_ sender: Any) {
         self.moveCurrentPage(moveUp: false)
     }
@@ -648,6 +667,7 @@ class MainVC : UIViewController {
                 self.lblDate.text = dateFormatter.string(from: Date())
                 self.selectedRawDate = Date()
                 self.selectedDate = nil
+                self.toSetParams()
                 self.tourPlanCalander.reloadData()
             }
         }
@@ -660,8 +680,25 @@ class MainVC : UIViewController {
         return dateFormatter.string(from: Date())
     }
     
-    @IBAction func didTapFinalSubmit(_ sender: Any) {
+    func toSetupSubmitAlert() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Do you want to add remarks for your day paln?", okAction: "Just check out" , cancelAction: "Add remark")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+           
+            
+            self.checkoutAction()
+        }
         
+        commonAlert.addAdditionalCancelAction {
+            print("Yes action")
+            
+            self.deviateAction(isForremarks: true)
+        
+        }
+    }
+    
+    func checkoutAction() {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {return}
             guard let coordinates = coordinates else {
@@ -708,16 +745,36 @@ class MainVC : UIViewController {
             
             
         }
-        
-        
-        
     }
+    
+    @IBAction func didTapFinalSubmit(_ sender: Any) {
+        if isDayPlanRemarksadded {
+            checkoutAction()
+        } else {
+            self.toSetupSubmitAlert()
+        }
+ 
+    }
+    
+//    
+//    func toSetupCheckinAlert() {
+//        let commonAlert = CommonAlert()
+//        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please do checkin before submitting day report..", okAction: "Ok")
+//        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+//            print("no action")
+//            self.checkinAction()
+//        }
+//    }
     
     
     func fetchCheckins(checkin: CheckinInfo, completion: @escaping (CheckinInfo) -> ()) {
         CoreDataManager.shared.fetchCheckininfo() { saveCheckins  in
             
-            guard let aCheckin = saveCheckins.first else {return}
+            guard let aCheckin = saveCheckins.first else {
+                
+                self.checkinAction()
+                
+                return}
             
             var tempCheckin = checkin
             tempCheckin.checkinDateTime = aCheckin.checkinDateTime
@@ -738,9 +795,13 @@ class MainVC : UIViewController {
     
     var checkinDetailsView:  HomeCheckinDetailsView?
     
+    var tpDeviateReasonView:  TPdeviateReasonView?
+    
     let appSetups = AppDefaults.shared.getAppSetUp()
     
+    @IBOutlet var deviateView: UIView!
     
+    @IBOutlet var deviateViewHeight: NSLayoutConstraint!
     var chartType: ChartType = .doctor
     var cacheDCRindex: Int = 0
     var doctorArr = [HomeData]()
@@ -785,12 +846,9 @@ class MainVC : UIViewController {
     }()
     
     private var currentPage: Date?
-    var isNextMonth = false
-    var isPrevMonth = false
-    var isCurrentMonth = false
     var tableCellheight: CGFloat = 0
-    
-    
+    var isDayPlanRemarksadded: Bool = false
+ 
     func setupHeight(_ isTodelete: Bool, index: Int) -> CGFloat {
         
         
@@ -918,8 +976,18 @@ class MainVC : UIViewController {
         aSession.headQuarters = nil
         aSession.isRetrived = Bool()
         aSession.isFirstCell = true
-        aSession.planDate = self.selectedRawDate
+        aSession.planDate = self.selectedRawDate == nil ? Date() : self.selectedRawDate
+        
+        setDateLbl(date: aSession.planDate ?? Date())
+        
         self.sessions?.insert(aSession, at: 0)
+    }
+    
+    
+    func setDateLbl(date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM d, yyyy"
+        lblDate.text = dateFormatter.string(from:  date)
     }
     
     func toConfigureMydayPlan() {
@@ -929,6 +997,9 @@ class MainVC : UIViewController {
         toFetchExistingPlan() { existingSessions in
             self.sessions = existingSessions
             if !(self.sessions?.isEmpty ?? false) {
+                
+                self.setDateLbl(date: self.sessions?[0].planDate ?? Date())
+                
                 self.sessions?.enumerated().forEach { index, aSession in
                     switch index {
                     case 0:
@@ -1063,7 +1134,7 @@ class MainVC : UIViewController {
             
             self.configureSaveplanBtn(istoEnableSaveBtn)
             self.setupRejectionVIew()
-            
+            self
             self.setSegment(.workPlan)
             
             
@@ -1100,12 +1171,12 @@ class MainVC : UIViewController {
                 return false
             }
             
-            if model.workType?.fwFlg  != "F" {
+            if model.workType?.fwFlg  != nil && model.workType?.fwFlg  != "F"  {
                 return true
             } else {
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                     
-                    if (model.cluster ==  nil || model.cluster == [temporaryselectedClusterobj]) || (model.workType == nil ||  model.workType == temporaryselectedWTobj) {
+                    if (model.cluster ==  nil || model.cluster == [temporaryselectedClusterobj]) || model.cluster  == [Territory]() || model.cluster?[0].code == nil || (model.workType == nil ||  model.workType == temporaryselectedWTobj) {
                         return false
                     } else {
                         if nonNillSession[index].isRetrived ?? false {
@@ -1335,18 +1406,23 @@ class MainVC : UIViewController {
             
             updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
                 guard let welf = self else {return}
-                
+                guard var nonNilSession = welf.sessions else {
+                    return
+                }
+  
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                     welf.callSavePlanAPI() { isUploaded in
                         if isUploaded {
                             welf.toConfigureMydayPlan()
+                            
+                            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
+                            
                         } else {
                             
-                            guard var nonNilSession = welf.sessions else {
-                                return
-                            }
+                  
                             nonNilSession.indices.forEach { index in
                                 nonNilSession[index].isRetrived = false
+                                nonNilSession[index].planDate = welf.selectedRawDate == nil ? Date() : welf.selectedRawDate
                             }
                             
                             welf.sessions = nonNilSession
@@ -1357,7 +1433,33 @@ class MainVC : UIViewController {
                     }
                     
                 } else {
-                    welf.toConfigureMydayPlan()
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: true)
+                    
+                   // welf.toConfigureMydayPlan()
+                    nonNilSession.indices.forEach { index in
+                        nonNilSession[index].isRetrived = true
+                        nonNilSession[index].planDate = welf.selectedRawDate == nil ? Date() : welf.selectedRawDate
+                        
+                    }
+                    
+                    welf.sessions = nonNilSession
+                    
+                    welf.setSegment(.workPlan)
+                    
+                //    welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false)
+                    
+                    welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
+                    
+                    if nonNilSession.count == 2 {
+                        welf.configureAddplanBtn(false)
+                    } else {
+                        welf.configureAddplanBtn(true)
+                    }
+                    
+                   
+                    
+                  //  welf.configureSaveplanBtn(<#T##isToEnable: Bool##Bool#>)
+                    
                     self?.toCreateToast("You are not connected to internet")
                 }
                 
@@ -1518,10 +1620,22 @@ class MainVC : UIViewController {
         }
     }
     
-    
+    func toHideDeviateView(isTohide: Bool) {
+        if isTohide {
+            deviateView.isHidden = true
+            deviateViewHeight.constant = 0
+        } else {
+            deviateView.isHidden = false
+            deviateViewHeight.constant = 50
+        }
+      
+    }
     
     func setupUI() {
+        toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+        toHideDeviateView(isTohide: true)
         backgroundView.isHidden = true
+        backGroundVXview.alpha = 0
         // backgroundView.backgroundColor = .appGreyColor
         dateInfoLbl.textColor = .appTextColor
         dateInfoLbl.setFont(font: .medium(size: .BODY))
@@ -1600,9 +1714,7 @@ class MainVC : UIViewController {
         viewCalls.backgroundColor = .appWhiteColor
         lblDate.setFont(font: .bold(size: .SUBHEADER))
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM d, yyyy"
-        lblDate.text = dateFormatter.string(from: Date())
+
         
         btnCall.layer.borderColor = UIColor.appSelectionColor.cgColor
         btnCall.layer.borderWidth = 0.5
@@ -1658,10 +1770,24 @@ class MainVC : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // CoreDataManager.shared.removeAllDayPlans()
-        // self.toConfigureMydayPlan()
+       // CoreDataManager.shared.removeAllDayPlans()
+      //   self.toConfigureMydayPlan()
         
-        self.toSetDayplan()
+      
+        toPostDayplan() {
+            
+            if !Shared.instance.isDayplanSet {
+                self.toSetDayplan()
+            } else {
+//                guard let nonNillsession = self.sessions else {return}
+//                self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: nonNillsession.count == 2 ? 1 : 0,  istoHandeleAddedSession: false))
+                
+            }
+            
+           
+        }
+        
+        
         rejectionVIew.isHidden = true
         //   toConfigureDynamicHeader(false)
         self.toSeperateDCR()
@@ -1682,6 +1808,43 @@ class MainVC : UIViewController {
     }
     
     
+    func toPostDayplan(completion: @escaping () -> ()) {
+        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            
+            
+            callSavePlanAPI() {  [weak self] isUploaded in
+                guard let welf = self else {return}
+                
+                guard var nonNilSession = welf.sessions else {
+                    return
+                }
+                
+                if isUploaded {
+                    welf.toConfigureMydayPlan()
+                } else {
+                    
+          
+                    nonNilSession.indices.forEach { index in
+                        nonNilSession[index].isRetrived = false
+                    }
+                    
+                    welf.sessions = nonNilSession
+                    
+                    welf.setSegment(.workPlan)
+                }
+                
+                
+                
+                completion()
+            }
+            
+        } else {
+            completion()
+        }
+        
+    }
+    
     func toSetDayplan() {
         
         if !isPlanningNewDCR {
@@ -1689,8 +1852,10 @@ class MainVC : UIViewController {
                 masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
                     self.toConfigureMydayPlan()
                     self.toSetParams()
+                    Shared.instance.isDayplanSet = true
                 }
             } else {
+                Shared.instance.isDayplanSet = false
                 self.toConfigureMydayPlan()
             }
         } else {
@@ -1703,8 +1868,8 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-        //        LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-        //        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+             //   LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+             //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -1717,13 +1882,7 @@ class MainVC : UIViewController {
         let currentDate = Date()
         
         // Check if the stored date is different from the current date
-        if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
-            // Reset the lastCheckedInDate to an empty string
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-            self.btnFinalSubmit.setTitle("Final submit", for: .normal)
-            
-        }
+
         
         
         
@@ -1731,6 +1890,22 @@ class MainVC : UIViewController {
         
         
         if appSetups.srtNeed == 1 {
+            
+            if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
+                // Reset the lastCheckedInDate to an empty string
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+             
+                
+                self.btnFinalSubmit.setTitle("Final submit", for: .normal)
+                
+                
+                return true
+                
+                
+            }
+            
             
             let lastcheckedinDate =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate) //"2024-02-28 14:19:54"
             
@@ -1742,8 +1917,11 @@ class MainVC : UIViewController {
                 if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
                     self.btnFinalSubmit.isUserInteractionEnabled = false
                     self.btnFinalSubmit.alpha = 0.5
+                  
                 }
                 
+                
+                self.btnFinalSubmit.setTitle("Final submit / Check OUT", for: .normal)
                 return false
             } else {
                 
@@ -1771,14 +1949,22 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        toSetParams()
+
+      //  toSetParams()
         self.updateLinks()
         setupUI()
         if istoRedirecttoCheckin() {
             checkinAction()
         }
-        LocationManager.shared.locationUpdate()
+       // LocationManager.shared.locationUpdate()
+        
+        Pipelines.shared.requestAuth() { [weak self] coordinates in
+            guard let welf = self else {return}
+            guard coordinates != nil else {
+                welf.showAlert()
+                return
+            }
+        }
         
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
         
@@ -1860,8 +2046,7 @@ class MainVC : UIViewController {
     
     
     func toLoadCalenderData() {
-        togetDCRdates()
-        returnWeeklyoffDates()
+
         self.tourPlanCalander.register(MyDayPlanCalenderCell.self, forCellReuseIdentifier: "MyDayPlanCalenderCell")
         
         tourPlanCalander.scrollEnabled = false
@@ -1883,9 +2068,16 @@ class MainVC : UIViewController {
         self.tourPlanCalander.scrollDirection = .horizontal
         self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
         tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
-        tourPlanCalander.delegate = self
-        tourPlanCalander.dataSource = self
-        tourPlanCalander.reloadData()
+        
+        self.returnWeeklyoffDates()
+        togetDCRdates() {
+            self.tourPlanCalander.delegate = self
+            self.tourPlanCalander.dataSource = self
+            self.tourPlanCalander.reloadData()
+        }
+     
+        
+     
         //   mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
         
     }
@@ -1964,6 +2156,17 @@ class MainVC : UIViewController {
         
         checkinDetailsView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
         
+        
+        
+        
+        let  tpDeviateVIewwidth = view.bounds.width / 1.7
+        let  tpDeviateVIewheight = view.bounds.height / 2.7
+        
+        let  tpDeviateVIewcenterX = view.bounds.midX - (tpDeviateVIewwidth / 2)
+        let tpDeviateVIewcenterY = view.bounds.midY - (tpDeviateVIewheight / 2)
+        
+        
+        tpDeviateReasonView?.frame = CGRect(x: tpDeviateVIewcenterX, y: tpDeviateVIewcenterY, width: tpDeviateVIewwidth, height: tpDeviateVIewheight)
     }
     
     deinit {
@@ -2267,10 +2470,10 @@ class MainVC : UIViewController {
         
     }
     
-    func toSetParams() {
+    func toSetParams(date: Date? = Date()) {
         
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        let date = date?.toString(format: "yyyy-MM-dd HH:mm:ss")
         var params = [String : Any]()
         params["tableName"] = "gettodycalls"
         params["sfcode"] =  appsetup.sfCode ?? ""
@@ -2651,11 +2854,16 @@ class MainVC : UIViewController {
             viewCalls.isHidden = true
             viewOutBox.isHidden = true
             viewDayPlanStatus.isHidden = true
-            toLoadWorktypeTable()
-            if isfromSwipe ?? false {
+            
+        
+               toLoadWorktypeTable()
+            
+            
+           
+           // if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 0
                 self.segmentsCollection.reloadData()
-            }
+          //  }
             
             
         case .calls:
@@ -2666,10 +2874,10 @@ class MainVC : UIViewController {
             viewOutBox.isHidden = true
             viewDayPlanStatus.isHidden = true
             toloadCallsTable()
-            if isfromSwipe ?? false {
+          //  if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 1
                 self.segmentsCollection.reloadData()
-            }
+           // }
             
             
         case .outbox:
@@ -2680,10 +2888,10 @@ class MainVC : UIViewController {
             viewDayPlanStatus.isHidden = true
             // callsSegmentHolderVIew.isHidden = true
             toLoadOutboxTable()
-            if isfromSwipe ?? false {
+          //  if isfromSwipe ?? false {
                 self.selectedSegmentsIndex = 2
                 self.segmentsCollection.reloadData()
-            }
+          //  }
             
         case .calender:
             viewWorkPlan.isHidden = true
@@ -2698,59 +2906,35 @@ class MainVC : UIViewController {
         let calendar = Calendar.current
         var dateComponents = DateComponents()
         dateComponents.month = moveUp ? 1 : -1
-        
-        //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
+
+
+
         
         
         if moveUp {
-            var isToMoveindex: Int? = nil
-            self.isNextMonth = true
-            if isPrevMonth {
-                self.isCurrentMonth = true
-            }
             
-            if isNextMonth && isCurrentMonth {
-                isToMoveindex = 0
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
-                isCurrentMonth = false
-            } else {
-                isToMoveindex = 1
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
-            }
-            
-            if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+            if let nextMonth = calendar.date(byAdding: .month, value: 0 , to: self.today) {
                 print("Next Month:", nextMonth)
                 self.currentPage = nextMonth
-                self.isPrevMonth = false
+
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+                
             }
+ 
+
         } else if !moveUp{
-            // Calculate the previous month
-            var isToMoveindex: Int? = nil
-            self.isPrevMonth = true
-            if isNextMonth {
-                self.isCurrentMonth = true
-            }
+
             
-            if isPrevMonth && isCurrentMonth {
-                isToMoveindex = 0
-                isCurrentMonth = false
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
-            } else {
-                isToMoveindex = -1
-                toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
-            }
-            if let previousMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.today) {
+            if let previousMonth = calendar.date(byAdding: .month, value: -1 , to: self.today) {
                 print("Previous Month:", previousMonth)
                 self.currentPage = previousMonth
-                self.isNextMonth = false
-                
+               
+                toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
             }
-        } else {
-            if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.today) {
-                print("Previous Month:", currentMonth)
-                self.currentPage = currentMonth
-                
-            }
+            
+
+
+
         }
         
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
@@ -3270,7 +3454,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 if welf.sessions?[0].workType?.fwFlg == "F" && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                     welf.fetchedHQObject1 =  welf.getSubordinate(hqCode:  welf.sessions?[0].headQuarters?.code ?? "")
                 }
-                
+                welf.fetchedClusterObject1 = nil
                 welf.selectedSessionIndex = nil
                 welf.configureSaveplanBtn(false)
                 welf.configureAddplanBtn(true)
@@ -3800,6 +3984,26 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         return dateFormatter.string(from: date )
     }
     
+    
+    func isFurureDate(date : Date) -> Bool {
+        let currentDate = Date() // current date
+
+        // Create another date to compare (for example, one day ahead)
+        let futureDate = date
+
+      
+            if futureDate.compare(currentDate) == .orderedDescending {
+                // futureDate is greater than currentDate
+                print("futureDate is greater than currentDate")
+            return true
+            } else {
+                // futureDate is not greater than currentDate
+                print("futureDate is not greater than currentDate")
+                return false
+            }
+      
+    }
+    
     func getFirstDayOfCurrentMonth() -> Date? {
         let calendar = Calendar.current
         let currentDate = Date()
@@ -3894,26 +4098,15 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
     }
     
-    func togetDCRdates() {
-        CoreDataManager.shared.fetchDcrDates { savedDcrDates in
-            for dcrDate in savedDcrDates {
-                CoreDataManager.shared.context.refresh(dcrDate, mergeChanges: true)
-                // Now, the data is loaded for all properties
-                self.responseDcrDates.append(dcrDate)
-                
-                print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
-            }
+    
+    func toAppendDCRtoHomeData(date: String, flag: String, tbName:String) {
+        
+        let isDayExists: Bool = self.homeDataArr.map { $0.dcr_dt }.contains(date)
+        
+        if isDayExists {
+            print("<------Day exists----->")
+            self.homeDataArr.removeAll { $0.dcr_dt == date }
         }
-        
-        dump( self.responseDcrDates)
-        
-        
-        
-        
-        
-        
-        var  homeDataWeekoffEntities = [HomeData]()
-        for aDate in responseDcrDates {
             if let entityDescription = NSEntityDescription.entity(forEntityName: "HomeData", in: context) {
                 let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
                 
@@ -3922,9 +4115,12 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 entityHomedata.custCode =  String()
                 entityHomedata.custName = String()
                 entityHomedata.custType = String()
-                entityHomedata.dcr_dt = aDate.date ?? ""
+                entityHomedata.dcr_dt = date
                 entityHomedata.dcr_flag = String()
-                entityHomedata.fw_Indicator = aDate.flag == "1" ? "" : ""
+                entityHomedata.fw_Indicator = (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : ""
+                
+                
+             
                 entityHomedata.index = Int16()
                 entityHomedata.isDataSentToAPI = String()
                 entityHomedata.mnth = String()
@@ -3936,12 +4132,41 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 entityHomedata.trans_SlNo = String()
                 entityHomedata.yr = String()
                 
-                homeDataWeekoffEntities.append(entityHomedata)
+              
+                
+                self.homeDataArr.append(entityHomedata)
+            }
+     
+      
+
+            
+            
+        
+  
+    
+    }
+    
+    func togetDCRdates(completion: @escaping () -> ()) {
+        CoreDataManager.shared.fetchDcrDates { savedDcrDates in
+            for dcrDate in savedDcrDates {
+                CoreDataManager.shared.context.refresh(dcrDate, mergeChanges: true)
+                // Now, the data is loaded for all properties
+                self.responseDcrDates.append(dcrDate)
+                self.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "")
+                print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
             }
             
-            
+        
+            completion()
         }
-        self.homeDataArr.append(contentsOf: homeDataWeekoffEntities)
+        
+       // dump( self.responseDcrDates)
+        
+        
+        
+        
+        
+
         
     }
     
@@ -4020,7 +4245,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         cell.addedIV.backgroundColor = .clear
         //  let toCompareDate = dateFormatter.string(from: date)
         cell.addedIV.isHidden = false
-        let model = toExtractWorkDetails(date: date)
+        let model: HomeData? = toExtractWorkDetails(date: date)
         
         
         if model?.fw_Indicator ==  "F" {
@@ -4032,11 +4257,17 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         } else if  model?.fw_Indicator ==  "N" {
             cell.addedIV.backgroundColor = .appBlue
             dump(model)
-        }  else if  model?.fw_Indicator ==  "L" {
+        } else if  model?.fw_Indicator ==  "LAP" {
+            cell.addedIV.backgroundColor = .appDeepBlue
+            dump(model)
+        } else if  model?.fw_Indicator ==  "L" {
             cell.addedIV.backgroundColor = .appLightPink
             dump(model)
         }   else if  model?.fw_Indicator ==  "H" {
             cell.addedIV.backgroundColor = .appViolet
+            dump(model)
+        }  else if  model?.fw_Indicator ==  "M" {
+            cell.addedIV.backgroundColor = .appLightGrey
             dump(model)
         }
         
@@ -4071,6 +4302,14 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         cell.addTap { [weak self] in
             guard let welf = self else {return}
+            if welf.isFurureDate(date: date) {
+                welf.toCreateToast("Day planing for future dates are restricted.")
+                return }
+            guard let nonfilledDate = welf.toFindSequentialNonfilledDates(selectedDate: date) else {
+                welf.toCreateToast("")
+                return}
+            
+            
             if model == nil {
                 welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
                 welf.selectedRawDate = date
@@ -4086,7 +4325,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
                 welf.setSegment(.workPlan)
                 welf.tourPlanCalander.reloadData()
-                
+                welf.toSetParams(date: date)
                 
                 
                 
@@ -4103,6 +4342,45 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         }
         
         return cell
+    }
+    
+    func getCurrentMonth(from selectedDate: Date) -> Int {
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: selectedDate)
+        return month
+    }
+    
+    func toFindSequentialNonfilledDates(selectedDate: Date) -> Date? {
+   
+        
+        let calendar = Calendar.current
+        
+       let currentMonth = calendar.component(.month, from: Date())
+
+        
+        let filteredDates = homeDataArr.filter { dateObject in
+            guard let date = dateObject.dcr_dt?.toDate(format: "yyyy-MM-dd") else { return false }
+            
+            let isDateInCurrentMonth = Calendar.current.isDate(date, equalTo: selectedDate, toGranularity: .month)
+            
+            if currentMonth == getCurrentMonth(from: selectedDate) {
+                // If selectedDate is in the current month, filter dates in the current month only
+                return isDateInCurrentMonth && !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
+            } else {
+                // If selectedDate is not in the current month, consider dates from both current and previous months
+                
+                return  !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
+            }
+        }
+        
+
+            if let leastDate = filteredDates.min(by: { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() < $1.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() }) {
+                print("Least date: \(leastDate.dcr_dt ?? "")")
+                return leastDate.dcr_dt?.toDate(format: "yyyy-MM-dd")
+            }
+        
+        return nil
+        
     }
     
 }
@@ -4144,10 +4422,11 @@ extension MainVC: PopOverVCDelegate {
     
     func checkinDetailsAction(checkin: CheckinInfo? = nil) {
         backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
         //  backgroundView.toAddBlurtoVIew()
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
-            case checkinDetailsView:
+            case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
@@ -4159,12 +4438,13 @@ extension MainVC: PopOverVCDelegate {
                 
             case backgroundView:
                 aAddedView.isUserInteractionEnabled = true
+              
             default:
                 print("Yet to implement")
-                //  aAddedView.toAddBlurtoVIew()
+          
                 
                 aAddedView.isUserInteractionEnabled = false
-                aAddedView.alpha = 0.5
+              
                 
             }
             
@@ -4190,7 +4470,7 @@ extension MainVC: PopOverVCDelegate {
     func checkinAction() {
         
         backgroundView.isHidden = false
-        
+        backGroundVXview.alpha = 0.3
         
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
@@ -4198,14 +4478,22 @@ extension MainVC: PopOverVCDelegate {
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+                
+                
+            case checkinDetailsView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                
+                
             case backgroundView:
                 aAddedView.isUserInteractionEnabled = true
             default:
                 
                 print("Yet to implement")
-                //  aAddedView.toAddBlurtoVIew()
+              
                 aAddedView.isUserInteractionEnabled = false
-                //  aAddedView.alpha = 0.5
+              
                 
             }
             
@@ -4228,10 +4516,48 @@ extension MainVC: PopOverVCDelegate {
     
     func logoutAction() {
         print("Yet to implement")
+        
+        Pipelines.shared.doLogout()
+        
+    }
+    
+    
+    
+    func deviateAction(isForremarks: Bool) {
+        backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                
+                
+            }
+            
+        }
+        
+        tpDeviateReasonView = self.loadCustomView(nibname: XIBs.tpDeviateReasonView) as? TPdeviateReasonView
+        tpDeviateReasonView?.delegate = self
+        
+        tpDeviateReasonView?.addedSubviewDelegate = self
+        tpDeviateReasonView?.isForRemarks = isForremarks
+       // changePasswordView?.userStatisticsVM = self.userststisticsVM
+       // changePasswordView?.appsetup = self.appSetups
+        tpDeviateReasonView?.setupui()
+        view.addSubview(tpDeviateReasonView ?? TPdeviateReasonView())
     }
     
     func changePasswordAction() {
         backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
             case changePasswordView:
@@ -4262,13 +4588,50 @@ extension MainVC: PopOverVCDelegate {
 }
 
 
+extension MainVC : SessionInfoTVCDelegate {
+    func remarksAdded(remarksStr: String, index: Int) {
+        
+        dump(remarksStr)
+        self.isDayPlanRemarksadded = true
+        guard var yetToSaveSession = self.sessions else {return}
+        
+        yetToSaveSession.indices.forEach { index in
+            yetToSaveSession[index].remarks = remarksStr
+        }
+        
+        
+        backgroundView.isHidden = true
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+             //   self.setDeviateSwitch(istoON: true)
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+            }
 
+        }
+        
+        self.sessions = yetToSaveSession
+        
+  
+        
+        didTapFinalSubmit(self)
+
+    }
+    
+    
+}
 
 extension MainVC : addedSubViewsDelegate {
     
     func showAlertToEnableLocation() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings to use this feature.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()
@@ -4287,7 +4650,6 @@ extension MainVC : addedSubViewsDelegate {
         }
     }
     
-    
     func showAlert() {
         showAlertToEnableLocation()
     }
@@ -4299,25 +4661,29 @@ extension MainVC : addedSubViewsDelegate {
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0.5
+                aAddedView.alpha = 0
                 
             case checkinVIew:
                 aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0.5
+                aAddedView.alpha = 0
                 
                 
             case checkinDetailsView:
                 aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0.5
+                aAddedView.alpha = 0
                 
                 self.btnFinalSubmit.setTitle("Final submit / Check OUT", for: .normal)
+                
+                self.didTapSaveBtn(self)
                 
                 if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
                     self.btnFinalSubmit.isUserInteractionEnabled = false
                     self.btnFinalSubmit.alpha = 0.5
                 }
-                
-                
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                self.setDeviateSwitch(istoON: false)
                 
             default:
                 aAddedView.isUserInteractionEnabled = true
@@ -4330,6 +4696,8 @@ extension MainVC : addedSubViewsDelegate {
             
         }
     }
+    
+
     
     func didUpdate() {
         backgroundView.isHidden = true
@@ -4338,20 +4706,28 @@ extension MainVC : addedSubViewsDelegate {
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0.5
+                aAddedView.alpha = 0
                 
                 Pipelines.shared.doLogout()
                 
             case checkinVIew:
                 aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0.5
+                aAddedView.alpha = 0
                 
                 checkinDetailsAction()
                 
                 
             case checkinDetailsView:
                 aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0.5
+                aAddedView.alpha = 0
+                
+            case tpDeviateReasonView:
+                
+                
+                
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                self.setDeviateSwitch(istoON: true)
             default:
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
@@ -4365,4 +4741,21 @@ extension MainVC : addedSubViewsDelegate {
     }
     
     
+}
+extension Calendar {
+    func generateDates(inside range: ClosedRange<Date>, matching unit: Calendar.Component, matchingPolicy: Calendar.MatchingPolicy) -> [Date] {
+        var dates = [Date]()
+        var currentDate = range.lowerBound
+        while currentDate <= range.upperBound {
+            if isDate(currentDate, equalTo: range.upperBound, toGranularity: .day) {
+                // Include the upper bound date
+                dates.append(currentDate)
+                break
+            } else {
+                dates.append(currentDate)
+                currentDate = date(byAdding: unit, value: 1, to: currentDate)!
+            }
+        }
+        return dates
+    }
 }

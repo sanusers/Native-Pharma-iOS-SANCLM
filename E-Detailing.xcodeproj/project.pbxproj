@@ -36,6 +36,8 @@
 		38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */; };
 		38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */; };
 		38145ECB2B345C6400DD7B4E /* VisitInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC92B345C6400DD7B4E /* VisitInfoTVC.xib */; };
+		383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */; };
+		383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */; };
 		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
 		38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */; };
 		384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384ED2BC2A39F8B900285B02 /* AppDefaults.swift */; };
@@ -349,6 +351,8 @@
 		38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WTsheetCVC.xib; sourceTree = "<group>"; };
 		38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoTVC.swift; sourceTree = "<group>"; };
 		38145EC92B345C6400DD7B4E /* VisitInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VisitInfoTVC.xib; sourceTree = "<group>"; };
+		383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TPdeviateReasonView.xib; sourceTree = "<group>"; };
+		383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPdeviateReasonView.swift; sourceTree = "<group>"; };
 		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
 		38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderCell.swift; sourceTree = "<group>"; };
 		384ED2BC2A39F8B900285B02 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
@@ -696,6 +700,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		383A7DA22B932EAE00635D38 /* TPdeviation */ = {
+			isa = PBXGroup;
+			children = (
+				383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */,
+				383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */,
+			);
+			path = TPdeviation;
+			sourceTree = "<group>";
+		};
 		385A424E2AFBABB000C0A58A /* Base */ = {
 			isa = PBXGroup;
 			children = (
@@ -749,6 +762,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				383A7DA22B932EAE00635D38 /* TPdeviation */,
 				38E3DF6B2B8F16A60093DF4B /* Checkin */,
 				38C41C292B8E06D30013361E /* ChangePassword */,
 				38843A092B8DE21400D39E16 /* MyDayPlanCells */,
@@ -1452,6 +1466,7 @@
 				38E42B1F2B679634001E0F07 /* VideoPlayerCVC.xib in Resources */,
 				38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */,
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
+				383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */,
 				B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */,
 				B287E68029F2A20F0097974D /* Satoshi-BoldItalic.otf in Resources */,
 				38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */,
@@ -1713,6 +1728,7 @@
 				38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */,
 				B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */,
 				38CD60DB2A865AB1006FFB39 /* ProductRatingTableViewCell.swift in Sources */,
+				383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */,
 				38CF0DD52A8E57A6000EDD96 /* AdditionalCallViewModel.swift in Sources */,
 				38FAA1692B7F254D00714AA2 /* MyDayPlanModel.swift in Sources */,
 				38D568FD2B3560C6007CB86D /* VisitsCountCVC.swift in Sources */,

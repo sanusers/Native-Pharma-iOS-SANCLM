@@ -69,8 +69,8 @@ extension MainVC {
                          case .success(let response):
                              dump(response)
                              
-
-                             
+                             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
+                            
 
                              welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: welf.selectedRawDate ?? Date()) {_ in
  
@@ -206,7 +206,7 @@ extension MainVC {
                             }
                             
                         }
-                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isFirstCell: true)
+                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isFirstCell: true, planDate: eachDayPlan.tpDt.toDate())
                         aDaysessions.append(tempSession)
                         
 
@@ -269,7 +269,7 @@ extension MainVC {
                         }
                         
                         
-                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isFirstCell: false)
+                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isFirstCell: false, planDate: eachDayPlan.tpDt.toDate())
                       
                         aDaysessions.append(tempSession)
                     }

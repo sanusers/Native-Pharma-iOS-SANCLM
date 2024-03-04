@@ -14,6 +14,7 @@ class Shared {
     fileprivate var gifLoaders : [UIView:GifLoaderValue] = [:]
 
     var selectedPhoneCode: String = ""
+    var isDayplanSet = false
 }
 //MARK:- UserDefaults property observers
 

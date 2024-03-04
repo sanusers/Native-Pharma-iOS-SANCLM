@@ -273,7 +273,7 @@
 import Alamofire
 
 import UIKit
-
+import CoreData
 
 class LoginVC : UIViewController {
     
@@ -316,8 +316,41 @@ class LoginVC : UIViewController {
     }
     
     
+    
+    func clearAllCoreData() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        // Fetch all entity names in the data model
+        let entityNames = appDelegate.persistentContainer.managedObjectModel.entities.map { $0.name }
+
+        for entityName in entityNames {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName ?? "")
+
+            // Create batch delete request
+            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+            do {
+                // Perform batch delete
+                try managedContext.execute(batchDeleteRequest)
+
+                // Save changes
+                try managedContext.save()
+            } catch {
+                print("Error clearing \(entityName): \(error)")
+            }
+        }
+    }
+
+    
+    
     @IBAction func resetConfiguration(_ sender: UIButton) {
         
+        
+        clearAllCoreData()
         AppDefaults.shared.reset()
         
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {

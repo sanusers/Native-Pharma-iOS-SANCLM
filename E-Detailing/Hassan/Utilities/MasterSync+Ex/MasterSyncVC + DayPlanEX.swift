@@ -634,11 +634,10 @@ extension CoreDataManager {
                             aDayPlan.rsf2 = eachPlan.rsfID ?? ""
                             aDayPlan.wtCode2 = eachPlan.wortTypeCode ?? ""
                             let workType = DBManager.shared.getWorkType()
-                            let filetedworkType = workType.filter{$0.code ==  aDayPlan.wtCode}
+                            let filetedworkType = workType.filter{$0.code ==  aDayPlan.wtCode2}
                             aDayPlan.wtName2 = filetedworkType.first?.name ?? ""
                             aDayPlan.fwFlg2 = filetedworkType.first?.fwFlg ?? ""
                             aDayPlan.location2 = ""
-                            aDayPlan.isRetrived = eachPlan.isRetrived
                             aDayPlan.townCode2 = eachPlan.townCodes ?? ""
                             let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
                             let territoryCodes =   aDayPlan.townCode.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -749,7 +748,7 @@ extension CoreDataManager {
         eachDayPlan.remarks = session[0].remarks ?? ""
         eachDayPlan.isRejected = session[0].isRejected ?? false
         eachDayPlan.rejectionReason = session[0].rejectionReason
-        eachDayPlan.planDate = planDate
+        eachDayPlan.planDate = session[0].planDate ?? Date()
         // Convert and add EachPlan objects
         
         
@@ -779,7 +778,7 @@ extension CoreDataManager {
             
             switch index {
             case 0:
-                firstEachPlan.planDate = planDate
+                firstEachPlan.planDate = session[index].planDate ?? Date()
                 firstEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
@@ -798,7 +797,7 @@ extension CoreDataManager {
                 eachPlanSet.add(firstEachPlan)
                
             case 1:
-                secondEachPlan.planDate = planDate
+                secondEachPlan.planDate =  session[index].planDate ?? Date()
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false

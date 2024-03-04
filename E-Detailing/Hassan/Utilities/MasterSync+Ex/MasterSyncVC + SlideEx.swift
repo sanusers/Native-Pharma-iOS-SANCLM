@@ -30,22 +30,28 @@ extension MasterSyncVC {
         case .navigate:
             Shared.instance.removeLoaderInWindow()
             if isFromLaunch {
-                if type == .homeSetup || (type == .slides || type == .slideBrand) && self.loadedSlideInfo.contains(.slideBrand) && self.loadedSlideInfo.contains(.slides) {
+                if (type == .slides || type == .slideBrand) && self.loadedSlideInfo.contains(.slideBrand) && self.loadedSlideInfo.contains(.slides) {
                    
                         moveToDownloadSlide()
                     
                 }
             
-            } else {
-                if (type == .slides || type == .slideBrand) {
+            } else  if (type == .slides) {
+                
                    
                     let isNewSlideExists =  self.toCheckExistenceOfNewSlides()
                     if isNewSlideExists {
                         moveToDownloadSlide()
                     }
                     
-                }
+                
            
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                        appDelegate.setupRootViewControllers()
+                    }
+                }
             }
 
             

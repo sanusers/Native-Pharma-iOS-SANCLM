@@ -45,6 +45,7 @@ case AppMainURL
         case lastCheckedInDate
         case isLoginSynced
         case userCheckedOut
+        case istoUploadDayplans
     }
     
     enum Offsets: String {
