@@ -477,6 +477,14 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
          //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
             
+            if self.previouslySelectdObj != nil {
+                let doctorObj = self.previouslySelectdObj as! Subordinate
+                 if doctorObj.id == model?.id {
+                    // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                     cell.lblName.textColor = .appLightTextColor
+                 }
+            }
+            
             if self.selectedObject != nil {
                let doctorObj = self.selectedObject as! Subordinate
                 if doctorObj.id == model?.id {
@@ -510,8 +518,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
                 welf.selectedObject = model
-                if welf.specifiedMenuVC.selectedObject != nil {
-                    if  (welf.specifiedMenuVC.selectedObject as! Subordinate).id ==   (welf.selectedObject as! Subordinate).id {
+                if welf.specifiedMenuVC.previousselectedObj != nil {
+                    if  (welf.specifiedMenuVC.previousselectedObj as! Subordinate).id ==   (welf.selectedObject as! Subordinate).id {
                         welf.toCreateToast("Please select diffent HQ")
                         return
                     }
@@ -648,12 +656,13 @@ class SpecifiedMenuView: BaseView {
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
+    var previouslySelectdObj: NSManagedObject?
     var selectedCode: Int?
     var previewType: String?
     var selectedClusterID = [String: Bool]()
     var isRejected = Bool()
     //MARK: UDF, gestures  and animations
-    
+    var restrictedIndex: Int? = nil
     private var animationDuration : Double = 1.0
     private let aniamteionWaitTime : TimeInterval = 0.15
     private let animationVelocity : CGFloat = 5.0
@@ -840,6 +849,45 @@ class SpecifiedMenuView: BaseView {
         while animationDuration > 1.6{
             animationDuration = animationDuration * 0.1
         }
+            
+            guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: context),
+                  let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+                  let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+            else {
+                fatalError("Entity not found")
+            }
+            
+            
+            let temporaryselectedSubordinateobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! Subordinate
+            let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+            let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+            
+            switch cellType {
+            case .headQuater:
+                
+                if selectedSpecifiedTypeID == "" &&  selectecIndex  == nil {
+                    hideAnimation(width: width, rtlValue: rtlValue)
+                    return
+                }
+               
+                
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: [temporaryselectedClusterobj])
+            case .cluster:
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: filteredTerritories ?? [temporaryselectedClusterobj])
+                
+            case .workType:
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedWTobj, selectedObjects: [temporaryselectedClusterobj])
+            default:
+                print("Yet to implement")
+            }
+        
+        hideAnimation(width: width, rtlValue: rtlValue)
+
+        
+        
+    }
+    
+    func hideAnimation(width: CGFloat, rtlValue: CGFloat) {
         UIView.animate(withDuration: animationDuration,
                        delay: aniamteionWaitTime,
                        usingSpringWithDamping: animationDampning,
@@ -851,45 +899,8 @@ class SpecifiedMenuView: BaseView {
                         self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
                        }) { (val) in
             
-                           self.specifiedMenuVC.dismiss(animated: true) { [weak self] in
-
-                               guard let welf = self  else {return}
-                               
-                               
-                               guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: welf.context),
-                                     let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: welf.context),
-                                     let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: welf.context)
-                               else {
-                                   fatalError("Entity not found")
-                               }
-                               
-                               
-                               let temporaryselectedSubordinateobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! Subordinate
-                               let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-                               let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
-                               
-                               switch welf.cellType {
-                               case .headQuater:
-                                   
-                                   if welf.selectedSpecifiedTypeID == "" &&  welf.selectecIndex  == nil {
-                                       return
-                                   }
-                                  
-                                   
-                                   welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: [temporaryselectedClusterobj])
-                               case .cluster:
-                                   welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: welf.filteredTerritories ?? [temporaryselectedClusterobj])
-                                   
-                               case .workType:
-                                   welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: welf.specifiedMenuVC.selectedObject ?? temporaryselectedWTobj, selectedObjects: [temporaryselectedClusterobj])
-                               default:
-                                   print("Yet to implement")
-                               }
-                           
-                           }
+                           self.specifiedMenuVC.dismiss(animated: true)
         }
-        
-        
     }
     
     func toLOadData() {
@@ -949,7 +960,24 @@ class SpecifiedMenuView: BaseView {
                    self.searchTF.text = docObj.name
                }
               
-               self.listedDocArr?.enumerated().forEach({ index, doctor in
+               self.headQuatersArr?.enumerated().forEach({ index, doctor in
+                   if doctor.id  == docObj.id {
+                       restrictedIndex = index
+                   }
+               })
+              
+      
+           }
+           
+           
+           if specifiedMenuVC.previousselectedObj != nil {
+               self.previouslySelectdObj = specifiedMenuVC.previousselectedObj as! Subordinate
+               let docObj =  self.previouslySelectdObj as! Subordinate
+             
+              
+               
+              
+               self.headQuatersArr?.enumerated().forEach({ index, doctor in
                    if doctor.id  == docObj.id {
                        selectedIndex = index
                    }
@@ -990,12 +1018,12 @@ class SpecifiedMenuView: BaseView {
            }
        case .chemist:
            bottomHolderHeight.constant = 0
-           self.chemistArr = DBManager.shared.getChemist()
+           self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            
        case .stockist:
-           self.stockistArr =  DBManager.shared.getStockist()
+           self.stockistArr =  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        case .unlistedDoctor:
-           self.unlisteedDocArr = DBManager.shared.getUnListedDoctor()
+           self.unlisteedDocArr = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        default:
            print("Yet to implement")
        }

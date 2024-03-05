@@ -988,7 +988,7 @@ class ProductVC : UIViewController {
         if self.rcpaCallListViewModel.numberOfCompetitorRows() != 0 {
             return
         }
-        let chemists = DBManager.shared.getChemist()
+        let chemists = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
         
         let selectionVC = UIStoryboard.singleSelectionVC
         selectionVC.selectionData = chemists

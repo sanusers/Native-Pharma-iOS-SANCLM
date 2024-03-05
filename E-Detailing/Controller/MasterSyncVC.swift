@@ -294,7 +294,7 @@ class MasterSyncVC : UIViewController {
 
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
         
-        
+        vc.menuDelegate = self
         CoreDataManager.shared.fetchSavedHQ{ [weak self] hqArr in
             guard let welf = self else {return}
             let savedEntity = hqArr.first
@@ -823,15 +823,15 @@ extension MasterSyncVC : collectionViewProtocols{
         switch MasterInfo(rawValue: self.masterData[indexPath.row].rawValue){
             
         case .doctorFencing:
-            cell.lblCount.text = String(DBManager.shared.getDoctor().count)
+            cell.lblCount.text = String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
         case .chemists:
-            cell.lblCount.text = String(DBManager.shared.getChemist().count)
+            cell.lblCount.text = String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
         case .stockists:
-            cell.lblCount.text = String(DBManager.shared.getStockist().count)
+            cell.lblCount.text = String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
         case .unlistedDoctors:
-            cell.lblCount.text = String(DBManager.shared.getUnListedDoctor().count)
+            cell.lblCount.text = String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
         case .clusters:
-            cell.lblCount.text = String(DBManager.shared.getTerritory().count)
+            cell.lblCount.text = String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
         case .worktype:
             cell.lblCount.text = String(DBManager.shared.getWorkType().count)
         case .subordinate:

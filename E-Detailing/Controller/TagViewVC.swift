@@ -57,7 +57,7 @@ class TagViewVC : UIViewController {
             }
             
         case .chemist:
-            let chemists = DBManager.shared.getChemist().filter{$0.code == self.customer.code}
+            let chemists = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{$0.code == self.customer.code}
             
             chemists.forEach { chemist in
                 
@@ -77,7 +77,7 @@ class TagViewVC : UIViewController {
             }
             
         case .stockist:
-            let stockists = DBManager.shared.getStockist().filter{$0.code == self.customer.code}
+            let stockists = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{$0.code == self.customer.code}
             
             stockists.forEach { stockist in
                 
@@ -97,7 +97,7 @@ class TagViewVC : UIViewController {
             }
             
         case .unlistedDoctor:
-            let unListedDoctors = DBManager.shared.getUnListedDoctor().filter{$0.code == self.customer.code}
+            let unListedDoctors = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{$0.code == self.customer.code}
             
             unListedDoctors.forEach { unListedDoctor in
                 

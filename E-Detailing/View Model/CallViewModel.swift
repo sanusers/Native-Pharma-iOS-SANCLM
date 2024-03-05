@@ -22,13 +22,13 @@ class CallListViewModel {
 //                    return CallViewModel(call: doctors[index], type: .doctor)
                 return self.fetchDoctorAtIndex(index: index, type: .doctor, searchText: searchText)
             case .chemist:
-                let chemists = searchText == "" ? DBManager.shared.getChemist() :  DBManager.shared.getChemist().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+                let chemists = searchText == "" ? DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
                 return CallViewModel(call: chemists[index], type: .chemist)
             case .stockist:
-                let stockists = searchText == "" ? DBManager.shared.getStockist() :  DBManager.shared.getStockist().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+                let stockists = searchText == "" ? DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
                 return CallViewModel(call: stockists[index], type: .stockist)
             case .unlistedDoctor:
-                let unlistedDoctor = searchText == "" ? DBManager.shared.getUnListedDoctor() :  DBManager.shared.getUnListedDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+                let unlistedDoctor = searchText == "" ? DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
                 return CallViewModel(call: unlistedDoctor[index], type: .unlistedDoctor)
             case .hospital:
                 let doctor = DBManager.shared.getDoctor()
@@ -59,13 +59,13 @@ class CallListViewModel {
             let doctors = searchText == "" ? DBManager.shared.getDoctor() :  DBManager.shared.getDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
             return doctors.count
         case .chemist:
-            let chemists = searchText == "" ? DBManager.shared.getChemist() :  DBManager.shared.getChemist().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+            let chemists = searchText == "" ? DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
             return chemists.count
         case .stockist:
-            let stockists = searchText == "" ? DBManager.shared.getStockist() :  DBManager.shared.getStockist().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+            let stockists = searchText == "" ? DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
             return stockists.count
         case .unlistedDoctor:
-            let unlistedDoctors = searchText == "" ? DBManager.shared.getUnListedDoctor() :  DBManager.shared.getUnListedDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+            let unlistedDoctors = searchText == "" ? DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
             return unlistedDoctors.count
         case .hospital:
             return DBManager.shared.getDoctor().count

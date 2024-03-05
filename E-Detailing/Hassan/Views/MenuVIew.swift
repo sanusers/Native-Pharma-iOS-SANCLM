@@ -739,17 +739,17 @@ class MenuView : BaseView{
       
         self.headQuatersArr =  DBManager.shared.getSubordinate()
      
-     //   self.clusterArr = DBManager.shared.getTerritory()
+     //   self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
      
         self.jointWorkArr = DBManager.shared.getJointWork()
       
         self.listedDocArr = DBManager.shared.getDoctor()
        
-        self.chemistArr = DBManager.shared.getChemist()
+        self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
          
-        self.stockistArr =  DBManager.shared.getStockist()
+        self.stockistArr =  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
         
-        self.unlisteedDocArr = DBManager.shared.getUnListedDoctor()
+        self.unlisteedDocArr = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
         
         toGenerateNewSession(self.menuVC.sessionDetailsArr != nil ? false : true)
     }

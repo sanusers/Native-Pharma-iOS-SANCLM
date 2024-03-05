@@ -620,7 +620,7 @@ extension HomeVC : UITableViewDelegate , UITableViewDataSource , CollapsibleTabl
             
             if indexPath.section == 2 {
                
-                let territory = DBManager.shared.getTerritory()
+                let territory = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
                 
                 
                 let selectionVC = UIStoryboard.singleSelectionVC

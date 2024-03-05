@@ -1072,6 +1072,8 @@ class DBManager {
         self.saveContext()
     }
     
+    
+    
     func saveDoctorFencingData(values : [[String : Any]],id : String) {
         self.deleteDoctorData(id: id)
         let masterData = self.getMasterData()
@@ -1907,6 +1909,7 @@ class DBManager {
         return array
     }
     
+    
     func getDoctor() -> [DoctorFencing]{
         let masterData = self.getMasterData()
         guard let doctorArray = masterData.doctorFencing?.allObjects as? [DoctorFencing] else {
@@ -1918,6 +1921,37 @@ class DBManager {
         return array
     }
     
+    
+    func getDoctor(mapID: String) -> [Territory]{
+        let masterData = self.getMasterData()
+        guard let doctorArray = masterData.territory?.allObjects as? [Territory] else {
+            return [Territory]()
+        }
+
+        let filteredArray = doctorArray.filter { $0.mapId == mapID }
+
+        let sortedArray = filteredArray.sorted { $0.index < $1.index }
+
+        return sortedArray
+        
+    }
+    
+    
+    func getChemist(mapID: String) -> [Chemist]{
+        let masterData = self.getMasterData()
+        guard let chemistArray = masterData.chemist?.allObjects as? [Chemist] else {
+            return [Chemist]()
+        }
+
+        let filteredArray = chemistArray.filter { $0.mapId == mapID }
+
+        let sortedArray = filteredArray.sorted { $0.index < $1.index }
+
+        return sortedArray
+    }
+    
+    
+    
     func getChemist() -> [Chemist]{
         let masterData = self.getMasterData()
         guard let chemistArray = masterData.chemist?.allObjects as? [Chemist] else {
@@ -1927,6 +1961,20 @@ class DBManager {
             return item1.index < item2.index
         }
         return array
+    }
+    
+    
+    func getStockist(mapID: String) -> [Stockist]{
+        let masterData = self.getMasterData()
+        guard let stockiststArray = masterData.stockist?.allObjects as? [Stockist] else {
+            return [Stockist]()
+        }
+
+        let filteredArray = stockiststArray.filter { $0.mapId == mapID }
+
+        let sortedArray = filteredArray.sorted { $0.index < $1.index }
+
+        return sortedArray
     }
     
     func getStockist() -> [Stockist]{
@@ -1949,6 +1997,20 @@ class DBManager {
             return item1.index < item2.index
         }
         return array
+    }
+    
+    
+    func getUnListedDoctor(mapID: String) -> [UnListedDoctor]{
+        let masterData = self.getMasterData()
+        guard let unlistedDocArray = masterData.unListedDoc?.allObjects as? [UnListedDoctor] else {
+            return [UnListedDoctor]()
+        }
+
+        let filteredArray = unlistedDocArray.filter { $0.mapId == mapID }
+
+        let sortedArray = filteredArray.sorted { $0.index < $1.index }
+
+        return sortedArray
     }
     
     func getWorkType() -> [WorkType]{

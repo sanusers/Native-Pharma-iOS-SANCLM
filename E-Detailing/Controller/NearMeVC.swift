@@ -260,7 +260,7 @@ class NearMeVC : UIViewController {
             }
             
         case .chemist:
-            let chemists = DBManager.shared.getChemist()
+            let chemists = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
             
             for chemist in chemists {
                 if let latitude = chemist.lat , let longitude = chemist.long, let douableLat = Double(latitude), let doubleLong = Double(longitude) {
@@ -291,7 +291,7 @@ class NearMeVC : UIViewController {
             }
             
         case .stockist:
-            let stockists = DBManager.shared.getStockist()
+            let stockists = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
             
             for stockist in stockists {
                 if let latitude = stockist.lat , let longitude = stockist.long, let douableLat = Double(latitude), let doubleLong = Double(longitude) {
@@ -322,7 +322,7 @@ class NearMeVC : UIViewController {
             }
             
         case .unlistedDoctor:
-            let unlistedDoctors = DBManager.shared.getUnListedDoctor()
+            let unlistedDoctors = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
             
             for unlistedDoctor in unlistedDoctors {
                 if let latitude = unlistedDoctor.lat , let longitude = unlistedDoctor.long, let douableLat = Double(latitude), let doubleLong = Double(longitude) {

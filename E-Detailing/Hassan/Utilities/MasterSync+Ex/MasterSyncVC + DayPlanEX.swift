@@ -47,24 +47,28 @@ extension MasterSyncVC: MenuResponseProtocol {
             
             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
             
-         
-            //let config = AppDefaults.shared.getAppSetUp()
-            Shared.instance.showLoaderInWindow()
-            masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { _ in
+            
+            let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
+            
+            if territories.isEmpty {
+                Shared.instance.showLoaderInWindow()
+                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { _ in
+                    
+                    self.toCreateToast("Clusters synced successfully")
+                    self.isDayPlanSynced = true
+                    self.collectionView.reloadData()
+                    self.setHQlbl()
+                    Shared.instance.removeLoaderInWindow()
+                    
+                }
+            } else {
+              
+               
                 
-                self.toCreateToast("Clusters synced successfully")
-              //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
-                self.isDayPlanSynced = true
-                self.collectionView.reloadData()
-                Shared.instance.removeLoaderInWindow()
-                
+                self.setHQlbl()
             }
-           
-            
-            
-          //  NotificationCenter.default.post(name: NSNotification.Name("HQmodified"), object: nil)
 
-            self.setHQlbl()
+           
             
         default:
             print("Yet to implement.")

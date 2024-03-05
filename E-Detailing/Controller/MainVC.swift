@@ -2386,7 +2386,7 @@ class MainVC : UIViewController {
     
     @IBAction func clusterAction(_ sender: UIButton) {
         
-        let territory = DBManager.shared.getTerritory()
+        let territory = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
         
         
         let selectionVC = UIStoryboard.singleSelectionVC
@@ -2766,15 +2766,15 @@ class MainVC : UIViewController {
         
         self.dcrCount.append(DcrCount(name: "Doctor Calls",color: doctorColor,count: DBManager.shared.getDoctor().count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:   self.doctorArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist().count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: self.chemistArr.count))
+        self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: self.chemistArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist().count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: self.stockistArr.count))
+        self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: self.stockistArr.count))
         
-        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .darkGray,count: DBManager.shared.getUnListedDoctor().count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: self.unlistedDocArr.count))
+        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .darkGray,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: self.unlistedDocArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Cip Calls",color: cipColor,count: DBManager.shared.getUnListedDoctor().count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipArr.count))
+        self.dcrCount.append(DcrCount(name: "Cip Calls",color: cipColor,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: hospitalColor,count: DBManager.shared.getUnListedDoctor().count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalArr.count))
+        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: hospitalColor,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalArr.count))
         
     }
     
@@ -3501,9 +3501,24 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         case .headQuater:
             switch self.selectedSessionIndex {
             case 0:
-                vc.selectedObject = self.fetchedHQObject1
+                
+                if let code =  sessions?[1].headQuarters?.code  {
+                    vc.previousselectedObj = self.getSubordinate(hqCode: code)
+                    vc.selectedObject = self.fetchedHQObject1
+                } else {
+                    vc.selectedObject = self.fetchedHQObject1
+                }
+                
+        
+          
+                
             case 1:
-                vc.selectedObject = self.fetchedHQObject2
+                if let code =  sessions?[1].headQuarters?.code  {
+                    vc.previousselectedObj = self.getSubordinate(hqCode: code)
+                    vc.selectedObject = self.fetchedHQObject1
+                } else {
+                    vc.selectedObject = self.fetchedHQObject2
+                }
             default:
                 print("---->>")
             }
@@ -4305,10 +4320,12 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             if welf.isFurureDate(date: date) {
                 welf.toCreateToast("Day planing for future dates are restricted.")
                 return }
-            guard let nonfilledDate = welf.toFindSequentialNonfilledDates(selectedDate: date) else {
-                welf.toCreateToast("")
-                return}
             
+            if let tobefilledDate = welf.getNonExistingDatesInCurrentMonth(selectedDate: date) {
+                welf.toCreateToast("update plan for \(tobefilledDate)")
+                
+                return
+            }
             
             if model == nil {
                 welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
@@ -4350,38 +4367,100 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         return month
     }
     
-    func toFindSequentialNonfilledDates(selectedDate: Date) -> Date? {
-   
-        
+    
+    func getAllDatesInCurrentMonth(date: Date) -> [String] {
         let calendar = Calendar.current
         
-       let currentMonth = calendar.component(.month, from: Date())
-
+        // Get the current date
+        let currentDate = date
         
-        let filteredDates = homeDataArr.filter { dateObject in
-            guard let date = dateObject.dcr_dt?.toDate(format: "yyyy-MM-dd") else { return false }
-            
-            let isDateInCurrentMonth = Calendar.current.isDate(date, equalTo: selectedDate, toGranularity: .month)
-            
-            if currentMonth == getCurrentMonth(from: selectedDate) {
-                // If selectedDate is in the current month, filter dates in the current month only
-                return isDateInCurrentMonth && !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
-            } else {
-                // If selectedDate is not in the current month, consider dates from both current and previous months
-                
-                return  !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
+        // Get the date components for the current month
+        let currentMonthComponents = calendar.dateComponents([.year, .month], from: currentDate)
+        
+        // Create the start date of the current month
+        guard let startOfMonth = calendar.date(from: currentMonthComponents) else {
+            return []
+        }
+        
+        // Get the range of dates for the current month
+        guard let rangeOfDates = calendar.range(of: .day, in: .month, for: startOfMonth) else {
+            return []
+        }
+        
+        // Generate all the dates in the current month
+        var allDatesInCurrentMonth: [String] = []
+        
+        for day in rangeOfDates {
+            if let date = calendar.date(bySetting: .day, value: day, of: startOfMonth) {
+                allDatesInCurrentMonth.append(date.toString(format: "yyyy-MM-dd"))
             }
         }
         
+        return allDatesInCurrentMonth
+    }
+    
+    
+    func getNonExistingDatesInCurrentMonth(selectedDate: Date) -> String? {
+        let calendar = Calendar.current
 
-            if let leastDate = filteredDates.min(by: { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() < $1.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() }) {
-                print("Least date: \(leastDate.dcr_dt ?? "")")
-                return leastDate.dcr_dt?.toDate(format: "yyyy-MM-dd")
-            }
+        let currentMonth = calendar.component(.month, from: selectedDate)
+        let selectedMonth = getCurrentMonth(from: selectedDate)
+        // Get all dates in the current month
+        let allDatesInCurrentMonth = getAllDatesInCurrentMonth(date: self.currentPage ?? Date())
         
-        return nil
+        // Filter dates that are not present in homeDataArr
+        let nonExistingDates = allDatesInCurrentMonth.filter { date in
+            let isDateInHomeDataArr = homeDataArr.contains { dateObject in
+                guard let dateObjectDate = dateObject.dcr_dt?.toDate(format: "yyyy-MM-dd") else { return false }
+                return calendar.isDate(date.toDate(format: "yyyy-MM-dd"), inSameDayAs: dateObjectDate)
+            }
+            return !isDateInHomeDataArr
+        }
+
+        if selectedDate == nonExistingDates.first?.toDate(format: "yyyy-MM-dd") {
+            return nil
+        } else {
+            return nonExistingDates.first
+        }
+        
+      
+        
         
     }
+    
+    
+//    func toFindSequentialNonfilledDates(selectedDate: Date) -> Date? {
+//   
+//        
+//        let calendar = Calendar.current
+//        
+//       let currentMonth = calendar.component(.month, from: Date())
+//
+//        
+//        let filteredDates = homeDataArr.filter { dateObject in
+//            guard let date = dateObject.dcr_dt?.toDate(format: "yyyy-MM-dd") else { return false }
+//            
+//            let isDateInCurrentMonth = Calendar.current.isDate(date, equalTo: selectedDate, toGranularity: .month)
+//            
+//            if currentMonth == getCurrentMonth(from: selectedDate) {
+//                // If selectedDate is in the current month, filter dates in the current month only
+//                return isDateInCurrentMonth && !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
+//            } else {
+//                // If selectedDate is not in the current month, consider dates from both current and previous months
+//                
+//                return  !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
+//            }
+//        }
+//        
+//
+//            if let leastDate = filteredDates.min(by: { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() < $1.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() }) {
+//                print("Least date: \(leastDate.dcr_dt ?? "")")
+//                return leastDate.dcr_dt?.toDate(format: "yyyy-MM-dd")
+//            }
+//        
+//        return nil
+//        
+//    }
     
 }
 

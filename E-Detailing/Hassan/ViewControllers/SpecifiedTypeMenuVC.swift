@@ -15,6 +15,7 @@ class SpecifiedMenuVC : BaseViewController {
     var menuDelegate : MenuResponseProtocol?
     var celltype: MenuView.CellType = .listedDoctor
     var selectedObject: NSManagedObject?
+    var previousselectedObj: NSManagedObject?
     var clusterMapID: String = ""
     var previewType: PreviewHomeView.PreviewType?
     var selectedClusterID: [String : Bool]?
