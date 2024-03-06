@@ -21,6 +21,7 @@ final class ConnectionHandler : NSObject {
         case getToadyCalls = "gettodycalls"
         case checkin = "savetp_attendance"
         case getdcrdate = "getdcrdate"
+        case gettodaydcr = "gettodaydcr"
     }
     
     static let shared = ConnectionHandler()
@@ -344,7 +345,7 @@ final class ConnectionHandler : NSObject {
                             
                         }
                     }
-                    else if data["tableName"] as! String == TableName.getDayPlan.rawValue {
+                    else if data["tableName"] as! String == TableName.getDayPlan.rawValue || data["tableName"] as! String == TableName.gettodaydcr.rawValue  {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [MyDayPlanResponseModel].self) { decodecObj in
                             encodedMyDayPlanResponseModelData = decodecObj
                             do {

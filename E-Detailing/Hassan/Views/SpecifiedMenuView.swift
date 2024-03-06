@@ -169,7 +169,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
 
-            case .listedDoctor:
+            case .listedDoctor, .doctorInfo:
                 if newText.isEmpty {
                     self.toLoadRequiredData(isfromTF: true)
                     toLOadData()
@@ -208,7 +208,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                 }
                 
 
-            case .chemist:
+            case .chemist, .chemistInfo:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
                     toLOadData()
@@ -244,7 +244,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
-            case .stockist:
+            case .stockist, .stockistInfo:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
                 }
@@ -279,7 +279,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                 }
                 
                 
-            case .unlistedDoctor:
+            case .unlistedDoctor, .unlistedDoctorinfo:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
                     toLOadData()
@@ -346,19 +346,27 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             print("Yet to omplement")
         case .unlistedDoctor:
             print("Yet to omplement")
-      
+        case .doctorInfo:
+            return self.listedDocArr?.count ?? 0
+            
+        case .chemistInfo:
+            return self.chemistArr?.count ?? 0
         default:
             print("Yet to implement")
         }
-        return 0
+        return 10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
-        cell.selectionStyle = .none
+        
+  
+        
+
         switch cellType {
     
         case .workType:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
             titleLbl.text = "Select Worktype"
             let model =  self.workTypeArr?[indexPath.row]
             cell.lblName.text = model?.name
@@ -414,8 +422,10 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
+            return cell
         case .cluster:
-       
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
             cell.setCheckBox(isToset: true)
             titleLbl.text = "Select Cluster"
             let model =  self.clusterArr?[indexPath.row]
@@ -464,9 +474,11 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 welf.selectedClusterID = selectedClusterID
                 tableView.reloadData()
             }
-            
+            return cell
             
         case .headQuater:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
             print("Yet to omplement")
             
             titleLbl.text = "Select HQ"
@@ -538,10 +550,12 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 welf.hideMenuAndDismiss()
             }
             
-            
+            return cell
         case .jointCall:
             print("Yet to omplement")
         case .listedDoctor:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
             titleLbl.text = "Select Doctor"
             let model =  self.listedDocArr?[indexPath.row]
             cell.lblName.text = model?.name
@@ -597,19 +611,73 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 welf.endEditing(true)
                 welf.hideMenuAndDismiss()
             }
+            return cell
         case .chemist:
             print("Yet to omplement")
         case .stockist:
             print("Yet to omplement")
         case .unlistedDoctor:
             print("Yet to omplement")
-      
+        case .doctorInfo:
+            let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
+            resourcecell.selectionStyle = .none
+            titleLbl.text = "Listed Doctors"
+            
+            if let modelArr = self.listedDocArr {
+                let model: DoctorFencing = modelArr[indexPath.row]
+                resourcecell.populateCell(model: model)
+                resourcecell.setupHeight(type: cellType)
+            }
+            resourcecell.countLbl.text = "\(indexPath.row + 1)."
+            resourcecell.btnEdit.addTap { [weak self] in
+                guard let welf = self else {return}
+                let vc  = DCRdetailViewEditVC.initWithStory()
+                vc.view.backgroundColor = .appGreyColor
+                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+            }
+          
+            return resourcecell
+            
+        case .chemistInfo:
+            let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
+            resourcecell.selectionStyle = .none
+            titleLbl.text = "Chemists"
+            
+            if let modelArr = self.chemistArr {
+                let model: Chemist = modelArr[indexPath.row]
+                resourcecell.populateCell(model: model)
+                resourcecell.setupHeight(type: cellType)
+            }
+            resourcecell.countLbl.text = "\(indexPath.row + 1)."
+            resourcecell.btnEdit.addTap { [weak self] in
+                guard let welf = self else {return}
+                let vc  = DCRdetailViewEditVC.initWithStory()
+                vc.view.backgroundColor = .appGreyColor
+                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+            }
+          
+            return resourcecell
+            
         default:
             print("Yet to implement")
         }
-        return cell
+        
+        return UITableViewCell()
     }
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch cellType {
+            
+
+        case .doctorInfo:
+            return 190
+         
+        case  .stockistInfo, .chemistInfo, .unlistedDoctorinfo:
+            
+            return 190 - 60
+        default:
+            return UITableView.automaticDimension
+        }
+    }
     
 }
 
@@ -693,7 +761,7 @@ class SpecifiedMenuView: BaseView {
         self.showMenu()
         initGestures()
         setupUI()
-        //cellRegistration()
+        cellRegistration()
         toLoadRequiredData()
     }
     
@@ -757,6 +825,7 @@ class SpecifiedMenuView: BaseView {
             welf.searchTF.text = ""
             welf.isSearched = false
             welf.endEditing(true)
+            welf.toLoadRequiredData(isfromTF: true)
             welf.toLOadData()
         }
         
@@ -942,7 +1011,7 @@ class SpecifiedMenuView: BaseView {
                    self.searchTF.text = docObj.name
                }
               
-               self.listedDocArr?.enumerated().forEach({ index, doctor in
+               self.clusterArr?.enumerated().forEach({ index, doctor in
                    if doctor.id  == docObj.id {
                        selectedIndex = index
                    }
@@ -989,7 +1058,7 @@ class SpecifiedMenuView: BaseView {
        case .jointCall:
            bottomHolderHeight.constant = 0
            self.jointWorkArr = DBManager.shared.getJointWork()
-       case .listedDoctor:
+       case .listedDoctor, .doctorInfo:
            if specifiedMenuVC.previewType != nil {
                switch specifiedMenuVC.previewType {
                case .speciality  :
@@ -997,10 +1066,13 @@ class SpecifiedMenuView: BaseView {
                    self.previewType = specifiedMenuVC.previewType?.rawValue
                
                default:
+                   bottomHolderHeight.constant = 0
                    print("Yet to implement")
                }
+           } else {
+               bottomHolderHeight.constant = 0
            }
-           self.listedDocArr = DBManager.shared.getDoctor()
+           self.listedDocArr = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! DoctorFencing
                let docObj =  self.selectedObject as! DoctorFencing
@@ -1016,15 +1088,16 @@ class SpecifiedMenuView: BaseView {
               
       
            }
-       case .chemist:
+       case .chemist, .chemistInfo:
            bottomHolderHeight.constant = 0
            self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            
-       case .stockist:
+       case .stockist, .stockistInfo:
            self.stockistArr =  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
-       case .unlistedDoctor:
+       case .unlistedDoctor, .unlistedDoctorinfo:
            self.unlisteedDocArr = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        default:
+           bottomHolderHeight.constant = 0
            print("Yet to implement")
        }
         toLOadData()
@@ -1036,7 +1109,10 @@ class SpecifiedMenuView: BaseView {
     }
     
     func cellRegistration() {
-        menuTable.register(UINib(nibName: "SpecifiedMenuTCell", bundle: nil), forCellReuseIdentifier: "SpecifiedMenuTCell")
+       // menuTable.register(UINib(nibName: "SpecifiedMenuTCell", bundle: nil), forCellReuseIdentifier: "SpecifiedMenuTCell")
+        
+        menuTable.register(UINib(nibName: "resourceInfoTVC", bundle: nil), forCellReuseIdentifier: "resourceInfoTVC")
+        
         
     }
     

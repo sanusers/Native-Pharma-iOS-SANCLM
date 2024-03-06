@@ -160,9 +160,10 @@ extension UIStoryboard {
 
 extension String {
     
-    func toDate(format: String = "yyyy-MM-dd HH:mm:ss") -> Date{
+    func toDate(format: String = "yyyy-MM-dd HH:mm:ss", timeZone: TimeZone? = nil) -> Date{
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = format
+        dateformatter.timeZone = TimeZone(abbreviation: "UTC") // Set to UTC
         return dateformatter.date(from: self) ?? Date()
     }
 }

@@ -468,17 +468,21 @@ class MenuView : BaseView{
     
     
     
-    enum CellType {
+    enum CellType: String {
         case edit
         case session
         case workType
         case cluster
         case headQuater
         case jointCall
-        case listedDoctor
-        case chemist
-        case stockist
-        case unlistedDoctor
+        case listedDoctor = "Listed Doctor"
+        case chemist = "Chemist"
+        case stockist = "Stockist"
+        case unlistedDoctor  = "Unlisted Doctor"
+        case doctorInfo
+        case chemistInfo
+        case stockistInfo
+        case unlistedDoctorinfo
       //  case FieldWork
        // case others
     }
@@ -1266,6 +1270,8 @@ class MenuView : BaseView{
             
             self.menuTable.separatorStyle = .singleLine
             self.sessionDetailsArr.sessionDetails?[self.selectedSession].unlistedDoctors = self.unlisteedDocArr
+        default:
+            print("Yet to implement")
         }
         
         
@@ -1361,6 +1367,8 @@ class MenuView : BaseView{
                 welf.setPageType(.session, for: welf.selectedSession)
             case .unlistedDoctor:
                 welf.setPageType(.session, for: welf.selectedSession)
+            default:
+                print("Yet to implement")
             }
         }
         
@@ -1393,6 +1401,8 @@ class MenuView : BaseView{
                 welf.setPageType(.session, for: welf.selectedSession)
             case .unlistedDoctor:
                 welf.setPageType(.session, for: welf.selectedSession)
+            default:
+                print("Yet to implement")
             }
            
         }
@@ -1461,6 +1471,8 @@ class MenuView : BaseView{
                 welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedStockistID?.removeAll()
             case .unlistedDoctor:
                 welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedUnlistedDoctorsID?.removeAll()
+            default:
+                print("Yet to implement")
             }
             welf.menuTable.reloadData()
         }
@@ -1573,6 +1585,8 @@ class MenuView : BaseView{
                         sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID?.removeValue(forKey: cluster.code ?? "")
                     })
                 }
+            default:
+                print("Yet to implement")
             }
             self.menuTable.reloadData()
         }
@@ -1649,6 +1663,8 @@ class MenuView : BaseView{
             } else {
                 isToSelectAll = false
             }
+        default:
+            print("Yet to implement")
         }
         if isToSelectAll {
             self.selectAllIV.image =  UIImage(named: "checkBoxSelected")
@@ -1776,6 +1792,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             return sessionDetailsArr.sessionDetails?[selectedSession].stockist?.count ?? 0
         case .unlistedDoctor:
             return sessionDetailsArr.sessionDetails?[selectedSession].unlistedDoctors?.count ?? 0
+        default:
+           return 0
         }
        
      
@@ -3437,7 +3455,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             
             
        
-      
+        default:
+           return UITableViewCell()
         }
         
         
@@ -3472,6 +3491,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 return  cellEditHeightForOthers
                 
             }
+        default:
+            return 0
         }
     }
     

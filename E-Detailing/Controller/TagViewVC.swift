@@ -36,7 +36,7 @@ class TagViewVC : UIViewController {
         switch self.customer.type {
             
         case .doctor:
-            let doctors = DBManager.shared.getDoctor().filter{$0.code == self.customer.code}
+            let doctors = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{$0.code == self.customer.code}
             
             doctors.forEach { doctor in
                 

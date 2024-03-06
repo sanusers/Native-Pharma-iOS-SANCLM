@@ -369,10 +369,13 @@ class MasterSyncVC : UIViewController {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.stockist,isSelected: false))
         }
         
-        
+       if appsetup.cipNeed == 0 {
+           self.dcrList.append(MasterCellData(cellType: MasterCellType.cip, isSelected: false))
+        }
         if appsetup.unlNeed == 0 {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.unLstDoctor,isSelected: false))
         }
+        
         if appsetup.cipNeed == 0 {
             self.dcrList.append(MasterCellData(cellType: MasterCellType.cip,isSelected: false))
         }
@@ -449,44 +452,7 @@ class MasterSyncVC : UIViewController {
         masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in}
     }
     
-    func tofetchDcrdates(completion: @escaping (Result<([DCRdatesModel]), MasterSyncErrors>) -> ()) {
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        
 
-        var param = [String: Any]()
-        param["tableName"] = "getdcrdate"
-        param["sfcode"] = "\(appsetup.sfCode!)"
-        param["division_code"] = "\(appsetup.divisionCode!)"
-        param["Rsf"] = "\(appsetup.sfCode!)"
-        param["sf_type"] = "\(appsetup.sfType!)"
-        param["Designation"] = "\(appsetup.dsName!)"
-        param["state_code"] = "\(appsetup.stateCode!)"
-        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
-        param["ReqDt"] = date
-        
-        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
-
-        var toSendData = [String: Any]()
-        toSendData["data"] = jsonDatum
- 
-        masterVM?.getDCRdates(params: toSendData, api: .home, paramData: param) { result in
-            
-            switch result {
-                
-            case .success(let respnse):
-                completion(result)
-                
-                dump(respnse)
-          
-                
-            case .failure(_):
-                completion(result)
-            }
-             
-        }
- 
-    }
     
     
     func fetchmasterData(type : MasterInfo, completion: @escaping (Bool) -> ()) {
@@ -510,13 +476,13 @@ class MasterSyncVC : UIViewController {
             }
             completion(true)
         case .dcrDateSync:
-            tofetchDcrdates() { result in
+            masterVM?.tofetchDcrdates() { result in
                 
                 switch result {
                 case .success(let respnse):
                     
                     self.dcrDates = respnse
-                    self.saveDatestoCoreData()
+                    CoreDataManager.shared.saveDatestoCoreData(model: respnse)
                     completion(true)
                 case .failure(let error):
                     completion(false)
@@ -960,20 +926,11 @@ extension MasterSyncVC : collectionViewProtocols{
         animations[indexPath.row] = true
      
         self.fetchmasterData(type: self.masterData[indexPath.row]) {_ in
-            self.saveDatestoCoreData()
             self.collectionView.reloadData()
         }
     }
     
-    func saveDatestoCoreData() {
-        guard let dcrDates = dcrDates else {return}
-        CoreDataManager.shared.removeAllDcrDates()
-        CoreDataManager.shared.saveDCRDates(fromDcrModel: dcrDates) {
-            CoreDataManager.shared.fetchDcrDates() { savedDcrDates in
-                dump(savedDcrDates)
-            }
-        }
-    }
+
 }
 
 

@@ -15,7 +15,7 @@ class ProductSelectedListViewModel {
         
         if type == DCRType.doctor {
             
-            let doctor = DBManager.shared.getDoctor().filter{$0.code == selectedDoctorCode}
+            let doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{$0.code == selectedDoctorCode}
             
             if doctor.first?.productCode == "" {
                 let product = searchText == "" ? DBManager.shared.getProduct() : DBManager.shared.getProduct().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}

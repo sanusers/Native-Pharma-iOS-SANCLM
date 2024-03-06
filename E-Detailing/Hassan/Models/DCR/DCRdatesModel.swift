@@ -12,10 +12,12 @@ class DCRdatesModel: Codable {
     let dt: Dt
     let flg: Int
     let tbname: String
+    let editFlag : String
 
     enum CodingKeys: String, CodingKey {
         case sfCode = "Sf_Code"
         case dt, flg, tbname
+        case editFlag = "edit_flag"
     }
     
     required init(from decoder: Decoder) throws {
@@ -24,6 +26,7 @@ class DCRdatesModel: Codable {
         self.dt = try container.decode(Dt.self, forKey: .dt)
         self.flg = container.safeDecodeValue(forKey: .flg)
         self.tbname = container.safeDecodeValue(forKey: .tbname)
+        self.editFlag = container.safeDecodeValue(forKey: .editFlag)
     }
 }
 

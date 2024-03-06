@@ -134,8 +134,8 @@ class HomeSideMenuView : BaseView{
         let tourPlan : MenuItems = MenuItems(menuName: "Tour Plan", menuIcon: UIImage(named: "tourplan") ?? UIImage(), VC: tourplanVC)
         menuItemArr.append(tourPlan)
         
-        
-        let myResource : MenuItems = MenuItems(menuName: "My Resource", menuIcon: UIImage(named: "SideMenuMyResource") ?? UIImage(), VC: nil)
+        let resourceVC = ReportsVC.initWithStory(pageType: .myResource)
+        let myResource : MenuItems = MenuItems(menuName: "My Resource", menuIcon: UIImage(named: "SideMenuMyResource") ?? UIImage(), VC: resourceVC)
         menuItemArr.append(myResource)
         
         

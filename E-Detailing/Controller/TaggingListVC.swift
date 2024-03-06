@@ -42,7 +42,7 @@ class TaggingListVC : UIViewController {
         self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
         self.txtSearch.addTarget(self, action: #selector(updateCustomerData(_:)), for: .editingChanged)
         
-        self.doctor = DBManager.shared.getDoctor()
+        self.doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
     }
     
     

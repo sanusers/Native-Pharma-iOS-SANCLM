@@ -351,7 +351,7 @@ class PreviewHomeView : BaseView {
     var sortState: SortState = .ascending
     
     func setBrandsData() {
-        self.listedDocArr = DBManager.shared.getDoctor()
+        self.listedDocArr = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
     }
     
     func toSetPageType(pageType: PageType) {

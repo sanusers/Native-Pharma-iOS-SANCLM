@@ -14,6 +14,8 @@
 		3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1002A46FF790066AF15 /* Chemist + Extension.swift */; };
 		3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1022A470E5B0066AF15 /* Stockist + Extension.swift */; };
 		3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */; };
+		380566262B983AFD00BB9117 /* DCRdetailViewEditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */; };
+		380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */; };
 		380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
 		38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */; };
@@ -246,6 +248,8 @@
 		38E659882B33088200E7BF42 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E659872B33088200E7BF42 /* ReportsView.swift */; };
 		38E6598A2B33193F00E7BF42 /* DetailedReportVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E659892B33193F00E7BF42 /* DetailedReportVC.swift */; };
 		38E6598C2B33195C00E7BF42 /* DetailedReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E6598B2B33195C00E7BF42 /* DetailedReportView.swift */; };
+		38E6B0912B9866B80014AF1E /* resourceInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E6B08F2B9866B80014AF1E /* resourceInfoTVC.swift */; };
+		38E6B0922B9866B80014AF1E /* resourceInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E6B0902B9866B80014AF1E /* resourceInfoTVC.xib */; };
 		38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78E0B2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift */; };
 		38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E78E0D2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib */; };
 		38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */; };
@@ -329,6 +333,8 @@
 		3803E1002A46FF790066AF15 /* Chemist + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chemist + Extension.swift"; sourceTree = "<group>"; };
 		3803E1022A470E5B0066AF15 /* Stockist + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stockist + Extension.swift"; sourceTree = "<group>"; };
 		3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnListedDoctor + Extension.swift"; sourceTree = "<group>"; };
+		380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditVC.swift; sourceTree = "<group>"; };
+		380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditView.swift; sourceTree = "<group>"; };
 		380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
 		38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAllInfoTVC.xib; sourceTree = "<group>"; };
@@ -561,6 +567,8 @@
 		38E659872B33088200E7BF42 /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
 		38E659892B33193F00E7BF42 /* DetailedReportVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedReportVC.swift; sourceTree = "<group>"; };
 		38E6598B2B33195C00E7BF42 /* DetailedReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedReportView.swift; sourceTree = "<group>"; };
+		38E6B08F2B9866B80014AF1E /* resourceInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = resourceInfoTVC.swift; sourceTree = "<group>"; };
+		38E6B0902B9866B80014AF1E /* resourceInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = resourceInfoTVC.xib; sourceTree = "<group>"; };
 		38E78E0B2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleEntryTableViewCell.swift; sourceTree = "<group>"; };
 		38E78E0D2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleEntryTableViewCell.xib; sourceTree = "<group>"; };
 		38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreCallVC.swift; sourceTree = "<group>"; };
@@ -734,6 +742,7 @@
 				38CA1FEB2B61169300AFCFD2 /* PlayPresentationVC.swift */,
 				386BEA0F2B7383450083D61F /* PreviewHomeVC.swift */,
 				38EF4C682B74D78900F78F2E /* SpecifiedTypeMenuVC.swift */,
+				380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -755,6 +764,7 @@
 				386BEA112B7383830083D61F /* previewHomeView.swift */,
 				38EF4C6A2B74D7B700F78F2E /* SpecifiedMenuView.swift */,
 				38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */,
+				380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -762,6 +772,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38E6B08E2B9866930014AF1E /* Resource */,
 				383A7DA22B932EAE00635D38 /* TPdeviation */,
 				38E3DF6B2B8F16A60093DF4B /* Checkin */,
 				38C41C292B8E06D30013361E /* ChangePassword */,
@@ -1186,6 +1197,15 @@
 			path = Reports;
 			sourceTree = "<group>";
 		};
+		38E6B08E2B9866930014AF1E /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				38E6B08F2B9866B80014AF1E /* resourceInfoTVC.swift */,
+				38E6B0902B9866B80014AF1E /* resourceInfoTVC.xib */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		38EA3D132AFDECFB00DA7018 /* SessionCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -1472,6 +1492,7 @@
 				38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */,
 				38DD14B82B4FEEF60036384F /* HomeSideMenuTVC.xib in Resources */,
 				38C41C2B2B8E06F40013361E /* ChangePasswordView.xib in Resources */,
+				38E6B0922B9866B80014AF1E /* resourceInfoTVC.xib in Resources */,
 				B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */,
 				38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */,
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
@@ -1639,6 +1660,7 @@
 				38E659882B33088200E7BF42 /* ReportsView.swift in Sources */,
 				38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */,
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
+				38E6B0912B9866B80014AF1E /* resourceInfoTVC.swift in Sources */,
 				38FAA15E2B7F229200714AA2 /* ReportsVM.swift in Sources */,
 				38C41C2D2B8E0AFA0013361E /* ChangePasswordView.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
@@ -1703,6 +1725,7 @@
 				38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */,
 				38E78E0C2AC6CBCD00191085 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */,
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
+				380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */,
 				3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */,
 				38EC6FB22B6242D10065A707 /* Media.swift in Sources */,
 				B287E63829F29F7C0097974D /* HomeVC.swift in Sources */,
@@ -1755,6 +1778,7 @@
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
 				38FAA15C2B7F229200714AA2 /* MasterSyncVM.swift in Sources */,
+				380566262B983AFD00BB9117 /* DCRdetailViewEditVC.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,

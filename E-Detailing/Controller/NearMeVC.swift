@@ -222,7 +222,7 @@ class NearMeVC : UIViewController {
         
         switch self.tagType {
         case .doctor:
-            let doctors = DBManager.shared.getDoctor()
+            let doctors = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
             
             for doctor in doctors {
                 if let latitude = doctor.lat,let longitude = doctor.long,let doubleLat = Double(latitude),let doubleLongitude = Double(longitude) {

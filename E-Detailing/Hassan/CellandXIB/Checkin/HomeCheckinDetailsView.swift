@@ -77,6 +77,9 @@ class HomeCheckinDetailsView: UIView {
         
     
     }
+    
+
+    
     func getCurrentFormattedDateString() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM yyyy hh:mm a"
@@ -105,16 +108,15 @@ class HomeCheckinDetailsView: UIView {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: true)
                 
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+                if self.viewType == .checkout {
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+                }
                 
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+                
                 
                 let dateFormatter = DateFormatter()
                 let currentDate = Date()
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-                
-                let upDatedDateString = dateFormatter.string(from: currentDate)
-                
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+
 
                 self.delegate?.didClose()
                

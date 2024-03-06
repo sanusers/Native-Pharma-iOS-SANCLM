@@ -110,6 +110,8 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                 
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
 
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+                
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
 
                 self.saveLogininfoToCoreData() {_ in
@@ -121,6 +123,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                
                 
             case .failure(let error):
+                
                 self.toCreateToast(error.rawValue)
                               
                 self.saveLogininfoToCoreData() {_ in
@@ -195,6 +198,8 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                     
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
 
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+                    
                     LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
                     CoreDataManager.shared.removeAllCheckins()
                     welf.saveLogininfoToCoreData() {_ in

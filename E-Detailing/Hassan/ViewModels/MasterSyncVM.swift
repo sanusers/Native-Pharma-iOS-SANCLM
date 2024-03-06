@@ -23,7 +23,6 @@ class MasterSyncVM {
     var getRSF: String? {
     
         let selectedRSF = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        
         let rsfIDPlan1 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
         let rsfIDPlan2 = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan2)
 
@@ -40,7 +39,7 @@ class MasterSyncVM {
     
     var mapID: String?
     
-    func toGetMyDayPlan(type: MasterInfo, isToloadDB: Bool, date: Date = Date(), completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
+    func toGetMyDayPlan(type: MasterInfo, isToloadDB: Bool, date: Date = Date(), isFromDCR: Bool? = false, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
         
  
         let date = date.toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -50,13 +49,16 @@ class MasterSyncVM {
 //    http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=table/dcrmasterdata
 //    {"tableName":"getmydayplan","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-15 15:27:16"}
         
-        param["tableName"] = "getmydayplan"
+        
+       // {"tableName":"gettodaydcr","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-12 15:27:16"}
+        
+        param["tableName"] = isFromDCR ?? false ? "gettodaydcr" : "getmydayplan"
         param["ReqDt"] = date
         param["sfcode"] = "\(appsetup.sfCode!)"
         param["division_code"] = "\(appsetup.divisionCode!)"
 
        // let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
-        param["Rsf"] = getRSF
+        param["Rsf"] =  isFromDCR ?? false ? appsetup.sfCode! : getRSF
         param["sf_type"] = "\(appsetup.sfType!)"
         param["Designation"] = "\(appsetup.dsName!)"
         param["state_code"] = "\(appsetup.stateCode!)"
@@ -165,6 +167,8 @@ class MasterSyncVM {
     }
     
     
+    
+    
     func fetchMasterData(type: MasterInfo, sfCode: String, istoUpdateDCRlist: Bool, mapID: String, completionHandler: @escaping (AFDataResponse<Data>) -> Void) {
         dump(type.getUrl)
         dump(type.getParams)
@@ -250,6 +254,46 @@ class MasterSyncVM {
             print(error.description)
             result(.failure(MasterSyncErrors.unableConnect))
         })
+    }
+    
+    
+    func tofetchDcrdates(completion: @escaping (Result<([DCRdatesModel]), MasterSyncErrors>) -> ()) {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        
+
+        var param = [String: Any]()
+        param["tableName"] = "getdcrdate"
+        param["sfcode"] = "\(appsetup.sfCode!)"
+        param["division_code"] = "\(appsetup.divisionCode!)"
+        param["Rsf"] = "\(appsetup.sfCode!)"
+        param["sf_type"] = "\(appsetup.sfType!)"
+        param["Designation"] = "\(appsetup.dsName!)"
+        param["state_code"] = "\(appsetup.stateCode!)"
+        param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+        param["ReqDt"] = date
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+ 
+       self.getDCRdates(params: toSendData, api: .home, paramData: param) { result in
+            
+            switch result {
+                
+            case .success(let respnse):
+                completion(result)
+                
+                dump(respnse)
+          
+                
+            case .failure(_):
+                completion(result)
+            }
+             
+        }
+ 
     }
     
     

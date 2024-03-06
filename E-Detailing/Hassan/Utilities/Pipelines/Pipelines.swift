@@ -140,4 +140,34 @@ class Pipelines  {
         }
     }
     
+    func calculatePersistentStorageSize() -> UInt64? {
+        do {
+            let documentsURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let documentsPath = documentsURL.path
+            
+            var totalSize: UInt64 = 0
+            
+            if let enumerator = FileManager.default.enumerator(atPath: documentsPath) {
+                for file in enumerator {
+                     let filePath = (documentsPath as NSString).appendingPathComponent(file as! String)
+                    if let attributes = try? FileManager.default.attributesOfItem(atPath: filePath) {
+                        if let fileSize = attributes[FileAttributeKey.size] as? UInt64 {
+                            totalSize += fileSize
+                        }
+                    }
+                }
+            }
+            
+            // Convert to MB for readability
+            let totalSizeInMB = Double(totalSize) / (1024 * 1024)
+            print("Total Persistent Storage Size: \(totalSizeInMB) MB")
+            
+            return totalSize
+        } catch {
+            print("Error calculating persistent storage size: \(error)")
+            return nil
+        }
+    }
+
+    
 }

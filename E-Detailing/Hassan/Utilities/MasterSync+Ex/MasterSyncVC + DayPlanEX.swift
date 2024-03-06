@@ -62,10 +62,8 @@ extension MasterSyncVC: MenuResponseProtocol {
                     
                 }
             } else {
-              
-               
-                
                 self.setHQlbl()
+                self.collectionView.reloadData()
             }
 
            
@@ -74,7 +72,6 @@ extension MasterSyncVC: MenuResponseProtocol {
             print("Yet to implement.")
         }
         
-       // self.setHQlbl()
     }
     
     func selectedType(_ type: MenuView.CellType, index: Int) {

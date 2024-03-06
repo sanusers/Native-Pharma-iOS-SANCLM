@@ -162,7 +162,7 @@ class DBManager {
             saveHolidays(values: Values)
         case .homeSetup:
             saveHomeData(values: Values)
-
+       
         default:
             return
         }
@@ -1099,7 +1099,7 @@ class DBManager {
     
     func deleteDoctorData(id : String) {
         let masterData = self.getMasterData()
-        if let prevList = masterData.subordinateMgr?.allObjects as? [DoctorFencing] {
+        if let prevList = masterData.doctorFencing?.allObjects as? [DoctorFencing] {
             let data = prevList.filter{$0.mapId == id}
             _ = data.map{self.managedContext().delete($0)}
         }
@@ -1922,10 +1922,10 @@ class DBManager {
     }
     
     
-    func getDoctor(mapID: String) -> [Territory]{
+    func getDoctor(mapID: String) -> [DoctorFencing]{
         let masterData = self.getMasterData()
-        guard let doctorArray = masterData.territory?.allObjects as? [Territory] else {
-            return [Territory]()
+        guard let doctorArray = masterData.doctorFencing?.allObjects as? [DoctorFencing] else {
+            return [DoctorFencing]()
         }
 
         let filteredArray = doctorArray.filter { $0.mapId == mapID }

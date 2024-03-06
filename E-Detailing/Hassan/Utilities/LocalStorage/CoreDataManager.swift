@@ -1155,6 +1155,16 @@ extension CoreDataManager {
         }
     }
     
+    func saveDatestoCoreData(model: [DCRdatesModel]) {
+       // guard let dcrDates = dcrDates else {return}
+        CoreDataManager.shared.removeAllDcrDates()
+        CoreDataManager.shared.saveDCRDates(fromDcrModel: model) {
+            CoreDataManager.shared.fetchDcrDates() { savedDcrDates in
+                dump(savedDcrDates)
+            }
+        }
+    }
+    
     
     func saveDCRDates(fromDcrModel: [DCRdatesModel], completion: @escaping () -> Void) {
        
@@ -1189,7 +1199,7 @@ extension CoreDataManager {
     
         dcrDates.tbname = dcrModel.tbname
         dcrDates.flag = "\(dcrModel.flg)"
-    
+        dcrDates.editFlag = "\(dcrModel.editFlag)"
         let dateString = dcrModel.dt.date
 
         let dateFormatter = DateFormatter()

@@ -15,6 +15,7 @@ class ReportsVC: BaseViewController {
     enum PageType {
         case reports
         case approvals
+        case myResource
     }
     
     @IBOutlet var reportsView: ReportsView!

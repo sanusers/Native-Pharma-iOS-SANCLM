@@ -660,18 +660,37 @@ class MainVC : UIViewController {
     
     @IBAction func btnCalenderSync(_ sender: Any) {
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) { _ in
-                self.toConfigureMydayPlan()
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "MMMM d, yyyy"
-                self.lblDate.text = dateFormatter.string(from: Date())
-                self.selectedRawDate = Date()
-                self.selectedDate = nil
-                self.toSetParams()
-                self.tourPlanCalander.reloadData()
+            Shared.instance.showLoaderInWindow()
+            masterVM?.tofetchDcrdates() {[weak self] result in
+                guard let welf = self else {return}
+                switch result {
+                    
+                case .success(let response):
+                    Shared.instance.removeLoaderInWindow()
+                    CoreDataManager.shared.saveDatestoCoreData(model: response)
+                    welf.returnWeeklyoffDates()
+                    welf.togetDCRdates() {
+                        welf.tourPlanCalander.delegate = self
+                        welf.tourPlanCalander.dataSource = self
+                        welf.tourPlanCalander.reloadData()
+                    }
+                case .failure(let error):
+                    Shared.instance.removeLoaderInWindow()
+                    welf.toCreateToast("\(error)")
+                }
             }
+            
+
+            
+        } else {
+            
+            self.toCreateToast("OOPS! Unable sync dates.")
         }
+        
     }
+        
+    
+
     
     
     func getCurrentFormattedDateString() -> String {
@@ -751,7 +770,14 @@ class MainVC : UIViewController {
         if isDayPlanRemarksadded {
             checkoutAction()
         } else {
-            self.toSetupSubmitAlert()
+            
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
+                self.toSetupSubmitAlert()
+            } else {
+                self.checkinAction()
+            }
+            
+         
         }
  
     }
@@ -1849,6 +1875,7 @@ class MainVC : UIViewController {
         
         if !isPlanningNewDCR {
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                Shared.instance.showLoaderInWindow()
                 masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
                     self.toConfigureMydayPlan()
                     self.toSetParams()
@@ -1868,8 +1895,9 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-             //   LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+             //  LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
              //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+             //  LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -1893,9 +1921,9 @@ class MainVC : UIViewController {
             
             if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
                 // Reset the lastCheckedInDate to an empty string
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+               // LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+              //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+               // LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
              
                 
                 self.btnFinalSubmit.setTitle("Final submit", for: .normal)
@@ -1947,16 +1975,22 @@ class MainVC : UIViewController {
     }
     
     
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-      //  toSetParams()
+        ///note - use below func to calculate Persistent Storage Size
+        
+      //  let storageSize = Pipelines.shared.calculatePersistentStorageSize()
+      //  print("Total Storage Size: \(storageSize ?? UInt64()) bytes")
+ 
         self.updateLinks()
         setupUI()
         if istoRedirecttoCheckin() {
             checkinAction()
         }
-       // LocationManager.shared.locationUpdate()
+
         
         Pipelines.shared.requestAuth() { [weak self] coordinates in
             guard let welf = self else {return}
@@ -2496,7 +2530,7 @@ class MainVC : UIViewController {
     
     
     func getTodayCalls(_ param: JSON, paramData: JSON) {
-        Shared.instance.showLoaderInWindow()
+    
         userststisticsVM?.getTodayCallsData(params: param, api: .getTodayCalls, paramData: paramData) { result in
             switch result {
             case .success(let response):
@@ -2764,17 +2798,17 @@ class MainVC : UIViewController {
         
         
         
-        self.dcrCount.append(DcrCount(name: "Doctor Calls",color: doctorColor,count: DBManager.shared.getDoctor().count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:   self.doctorArr.count))
+        self.dcrCount.append(DcrCount(name: "Doctor Calls",color: doctorColor,count: DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:   self.doctorArr.count))
         
         self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: self.chemistArr.count))
         
         self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: self.stockistArr.count))
         
-        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .darkGray,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: self.unlistedDocArr.count))
+        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .appGreyColor ,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: self.unlistedDocArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Cip Calls",color: cipColor,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipArr.count))
+        self.dcrCount.append(DcrCount(name: "Cip Calls",color: .appYellow,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipArr.count))
         
-        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: hospitalColor,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalArr.count))
+        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: .appBrown,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalArr.count))
         
     }
     
@@ -3502,12 +3536,26 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             switch self.selectedSessionIndex {
             case 0:
                 
-                if let code =  sessions?[1].headQuarters?.code  {
-                    vc.previousselectedObj = self.getSubordinate(hqCode: code)
-                    vc.selectedObject = self.fetchedHQObject1
+                
+                
+                if let sessions = sessions, sessions.indices.contains(1) {
+                    // Check if there is an element at index 1
+                    if let code = sessions[1].headQuarters?.code {
+                        vc.previousselectedObj = self.getSubordinate(hqCode: code)
+                        vc.selectedObject = self.fetchedHQObject1
+                    }
                 } else {
+                    // Handle the case where there is no element at index 1 or sessions is nil
+                    print("Error: No element at index 1 or sessions is nil")
                     vc.selectedObject = self.fetchedHQObject1
                 }
+                
+//                if let code =  sessions?[1].headQuarters?.code  {
+//                    vc.previousselectedObj = self.getSubordinate(hqCode: code)
+//                    vc.selectedObject = self.fetchedHQObject1
+//                } else {
+//                    vc.selectedObject = self.fetchedHQObject1
+//                }
                 
         
           
@@ -4114,7 +4162,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     }
     
     
-    func toAppendDCRtoHomeData(date: String, flag: String, tbName:String) {
+    func toAppendDCRtoHomeData(date: String, flag: String, tbName:String, editFlag: String) {
         
         let isDayExists: Bool = self.homeDataArr.map { $0.dcr_dt }.contains(date)
         
@@ -4132,6 +4180,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 entityHomedata.custType = String()
                 entityHomedata.dcr_dt = date
                 entityHomedata.dcr_flag = String()
+                entityHomedata.editflag = editFlag
                 entityHomedata.fw_Indicator = (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : ""
                 
                 
@@ -4167,7 +4216,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 CoreDataManager.shared.context.refresh(dcrDate, mergeChanges: true)
                 // Now, the data is loaded for all properties
                 self.responseDcrDates.append(dcrDate)
-                self.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "")
+                self.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "", editFlag: dcrDate.editFlag ?? "")
                 print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
             }
             
@@ -4316,16 +4365,41 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         
         cell.addTap { [weak self] in
+       
             guard let welf = self else {return}
+            let selectedDate = date.toString(format: "yyyy-MM-dd")
+            /// note:- future date selection action
             if welf.isFurureDate(date: date) {
                 welf.toCreateToast("Day planing for future dates are restricted.")
-                return }
-            
-            if let tobefilledDate = welf.getNonExistingDatesInCurrentMonth(selectedDate: date) {
-                welf.toCreateToast("update plan for \(tobefilledDate)")
-                
+          
                 return
             }
+            
+            /// note:- DCR sequential action
+            if let tobefilledDate = welf.getNonExistingDatesInCurrentMonth(selectedDate: date) {
+               
+                if tobefilledDate.toDate(format: "yyyy-MM-dd") < selectedDate.toDate(format: "yyyy-MM-dd")  {
+                    welf.toCreateToast("update plan for \(tobefilledDate)")
+                
+                    return
+                }
+            }
+            
+            /// note:- DCR edit flag
+            if model?.editflag == "0" {
+                print("-----> YET TO CALL API <------")
+                welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
+                
+                
+            }
+            
+            
+            /// note:- Today date selection action
+            let today = Date()
+            if today.toString(format: "yyyy-MM-dd")  ==  date.toString(format: "yyyy-MM-dd") {
+                welf.callDayPLanAPI(date: today, isFromDCRDates: false)
+            }
+            
             
             if model == nil {
                 welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
@@ -4343,23 +4417,40 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.setSegment(.workPlan)
                 welf.tourPlanCalander.reloadData()
                 welf.toSetParams(date: date)
-                
-                
-                
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MMMM d, yyyy"
                 welf.lblDate.text = dateFormatter.string(from: date)
+            } else {
+              //  welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
             }
-            
-            
-            
-            
-            
-            
         }
         
         return cell
     }
+    
+    
+    func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
+        Shared.instance.showLoaderInWindow()
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] _ in
+                Shared.instance.removeLoaderInWindow()
+                guard let welf = self else {return}
+                welf.toConfigureMydayPlan()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MMMM d, yyyy"
+                welf.lblDate.text = dateFormatter.string(from: date)
+                welf.selectedRawDate = date
+                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+                welf.tourPlanCalander.reloadData()
+            }
+        } else {
+            
+            toConfigureMydayPlan()
+            
+        }
+    }
+    
+    
     
     func getCurrentMonth(from selectedDate: Date) -> Int {
         let calendar = Calendar.current
@@ -4753,12 +4844,16 @@ extension MainVC : addedSubViewsDelegate {
                 
                 self.btnFinalSubmit.setTitle("Final submit / Check OUT", for: .normal)
                 
-                self.didTapSaveBtn(self)
-                
-                if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
-                    self.btnFinalSubmit.isUserInteractionEnabled = false
-                    self.btnFinalSubmit.alpha = 0.5
+                if checkinDetailsView?.viewType == .checkout {
+                    self.didTapSaveBtn(self)
+                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
+                        self.btnFinalSubmit.isUserInteractionEnabled = false
+                        self.btnFinalSubmit.alpha = 0.5
+                    }
                 }
+            
+                
+     
             case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0

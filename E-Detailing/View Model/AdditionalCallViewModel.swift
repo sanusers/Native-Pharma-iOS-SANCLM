@@ -37,7 +37,7 @@ class AdditionalCallsListViewModel {
     }
         
     func fetchAdditionalCallData(_ index : Int , searchText : String) -> Objects {
-        let additionalCall = searchText == "" ? DBManager.shared.getDoctor() : DBManager.shared.getDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        let additionalCall = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) : DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
         let value = self.getAdditionalCallData()
         let isSelected = value.filter{$0.docCode.contains(additionalCall[index].code ?? "")}
@@ -45,7 +45,7 @@ class AdditionalCallsListViewModel {
     }
     
     func numberofAdditionalCalls(searchText : String) -> Int {
-        let additionalCalls = searchText == "" ? DBManager.shared.getDoctor() : DBManager.shared.getDoctor().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        let additionalCalls = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) : DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         return additionalCalls.count
     }
     
