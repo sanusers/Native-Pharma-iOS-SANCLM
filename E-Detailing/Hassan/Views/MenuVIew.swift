@@ -490,6 +490,9 @@ class MenuView : BaseView{
         case product = "Product"
         case doctorVisit = "Doctor Visit"
         case holiday = "Holiday / Weekly off"
+        case qualification
+        case category
+        case speciality
       //  case FieldWork
        // case others
     }

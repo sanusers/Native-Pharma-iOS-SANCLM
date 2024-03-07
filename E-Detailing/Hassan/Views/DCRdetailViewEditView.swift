@@ -7,7 +7,68 @@
 
 import Foundation
 import UIKit
-class DCRdetailViewEditView: BaseView {
+import CoreData
+import GoogleMaps
+
+extension DCRdetailViewEditView: MenuResponseProtocol {
+    func routeToView(_ view: UIViewController) {
+        print("Yet to implement")
+    }
+    
+    func callPlanAPI() {
+        print("Yet to implement")
+    }
+    
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
+        switch type {
+
+        case .qualification:
+            let aQualification: Qualifications = selectedObject  as? Qualifications ?? Qualifications()
+            
+            qualificationInputLbl.text = aQualification.name ?? ""
+            
+        case .category:
+            let acategory: DoctorCategory = selectedObject  as? DoctorCategory ?? DoctorCategory()
+            
+            categoryInputLbl.text = acategory.name ?? ""
+            
+        case .speciality:
+            let aspeciality: Speciality = selectedObject  as? Speciality ?? Speciality()
+            
+            specialityInputLbl.text = aspeciality.name ?? ""
+            
+        default:
+            print("Yet to implement")
+        }
+    }
+    
+    
+}
+
+class DCRdetailViewEditView: BaseView, UITextFieldDelegate {
+    
+    enum Gender {
+        case male
+        case female
+    }
+    
+    func setGender(gender: Gender) {
+        switch gender {
+        case .male:
+            maleIV.image = UIImage(named: "checkBoxSelected")
+            
+            
+            femaleIV.image = UIImage(named: "checkBoxEmpty")
+            
+            
+        case .female:
+            femaleIV.image = UIImage(named: "checkBoxSelected")
+            
+            maleIV.image = UIImage(named: "checkBoxEmpty")
+            
+        }
+    }
+    
     var dcrdetailViewEditVc : DCRdetailViewEditVC!
    
     @IBOutlet var titleLbl: UILabel!
@@ -23,10 +84,10 @@ class DCRdetailViewEditView: BaseView {
     
     @IBOutlet var qualificationLbl: UILabel!
     
-    @IBOutlet var qualificationTF: UITextField!
+    @IBOutlet var qualificationInputLbl : UILabel!
     @IBOutlet var specialityShadowStack: UIStackView!
     
-    @IBOutlet var specialityTF: UITextField!
+    @IBOutlet var specialityInputLbl: UILabel!
     
     @IBOutlet var specialityLbl: UILabel!
     @IBOutlet var qualificationShadowStack: UIStackView!
@@ -36,7 +97,7 @@ class DCRdetailViewEditView: BaseView {
     
     @IBOutlet var categoryShadowStack: UIStackView!
     
-    @IBOutlet var categoryTF: UITextField!
+    @IBOutlet var categoryInputLbl: UILabel!
     
     
     @IBOutlet var dobLbl: UILabel!
@@ -116,16 +177,46 @@ class DCRdetailViewEditView: BaseView {
     
     @IBOutlet var contactsInfoView: UIView!
     @IBOutlet var contentsHolder: UIView!
+    
+    @IBOutlet var gmsMapHolderView: UIView!
+    @IBOutlet var addrressDetailRightStach: UIStackView!
+    @IBOutlet var addressDetailLeftStack: UIStackView!
+    @IBOutlet var maleIV: UIImageView!
+    
+    @IBOutlet var btnAddGeoTag: UIButton!
+    @IBAction func didTapGeoTag(_ sender: Any) {
+    }
+    @IBOutlet var femaleIV: UIImageView!
+    var stockist: Stockist?
+    var listedDoctor: DoctorFencing?
+    var unlistedDoctor: UnListedDoctor?
+    var chemist: Chemist?
+    var pickertype: PickerType = .DOB
+    var category: [DoctorCategory]?
+    var qualifications: [Qualifications]?
+    let datePicker = UIDatePicker()
+    var gmsMapView = GMSMapView()
+    
+    enum PickerType {
+        case DOB
+        case DOW
+    }
+    
     func setupUI() {
-        
+    
         let mainTitles : [UILabel] = [titleLbl, addressTitle, clearLbl, submitLbl]
         
         doctorInfoVIew.backgroundColor = .appWhiteColor
-        contactsInfoView.backgroundColor = .appWhiteColor
+        contactsInfoView.backgroundColor = .clear
+        addrressDetailRightStach.layer.cornerRadius = 5
+        addrressDetailRightStach.backgroundColor = .appWhiteColor
+        
+        addressDetailLeftStack.layer.cornerRadius = 5
+        addressDetailLeftStack.backgroundColor = .appWhiteColor
         
         doctorInfoVIew.layer.cornerRadius = 5
         contactsInfoView.layer.cornerRadius = 5
-        
+    
      
         contentsHolder.backgroundColor = .appGreyColor
         mainTitles.forEach {
@@ -147,7 +238,7 @@ class DCRdetailViewEditView: BaseView {
         
         subtitles.forEach {
             $0.setFont(font: .bold(size: .BODY))
-            $0.textColor = .appLightTextColor
+            $0.textColor = .appTextColor
         }
         
         let shadowViews: [UIView] = [qualificationShadowStack, specialityShadowStack, categoryShadowStack, dobShadowStack, dowShadoeStack, districtShadowStack, cityShadowStack, mainAddressShadowView, mobilenumberShadoeView, phoneNumberShadowView, emailShadowView]
@@ -161,25 +252,226 @@ class DCRdetailViewEditView: BaseView {
         }
         
         
-        let textFields: [UITextField] = [qualificationTF, specialityTF, categoryTF, dowTF, dobTF, districtTF, cityTF, mainAddressTF, mobileTF, phoneNumberTF, emailTF]
+        let textFields: [UITextField] = [dowTF, dobTF, districtTF, cityTF, mainAddressTF, mobileTF, phoneNumberTF, emailTF]
         
         textFields.forEach {
-            $0.font = UIFont(name: "Satoshi-Bold", size: 14)
+            $0.font = UIFont(name: "Satoshi-Medium", size: 14)
         }
         
         lblMale.setFont(font: .medium(size: .BODY))
         lblFemale.setFont(font: .medium(size: .BODY))
+        
+        qualificationInputLbl.setFont(font: .medium(size: .BODY))
+        specialityInputLbl.setFont(font: .medium(size: .BODY))
+        categoryInputLbl.setFont(font: .medium(size: .BODY))
+        btnAddGeoTag.layer.cornerRadius = 5
+        btnAddGeoTag.layer.borderWidth = 2
+        btnAddGeoTag.layer.borderColor = UIColor.appLightPink.cgColor
+        
+        
+        gmsMapView.layer.cornerRadius = 5
+        gmsMapView.clipsToBounds = true
+        
+        dobTF.delegate = self
+        dowTF.delegate = self
     }
+    
+    
+    override func didLayoutSubviews(baseVC: BaseViewController) {
+        super.didLayoutSubviews(baseVC: baseVC)
+        self.dcrdetailViewEditVc = baseVC as? DCRdetailViewEditVC
+        
+        
+
+        gmsMapView.frame = gmsMapHolderView.bounds
+        
+    }
+    
+    func addMarker(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
+        let marker = GMSMarker()
+        
+
+   
+        
+        marker.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+     //   marker.title = "Marker Title"
+     //   marker.snippet = "Marker Snippet"
+        marker.map = gmsMapView
+        
+        self.gmsMapHolderView.addSubview(gmsMapView)
+    }
+    
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == dowTF {
+            // 'dowTF' was tapped
+            self.pickertype = .DOW
+        } else if textField == dobTF {
+            // 'dobTF' was tapped
+            self.pickertype = .DOB
+        }
+    }
+    
     
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.dcrdetailViewEditVc = baseVC as? DCRdetailViewEditVC
         setupUI()
+        dcrdetailViewEditVc.setupModel()
+        initTaps()
+  
+    }
+    
+    func initTaps() {
+        
+        showDatePicker()
+        
+        femaleTapView.addTap {
+            self.setGender(gender: .female)
+        }
+        
+        maleTapView.addTap {
+            self.setGender(gender: .male)
+        }
         
         backHolderVIew.addTap {
             self.dcrdetailViewEditVc.dismiss(animated: true)
         }
-  
+        
+        qualificationShadowStack.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.showMenu(type: .qualification)
+        }
+        
+        
+        specialityShadowStack.addTap {[weak self] in
+            guard let welf = self else {return}
+            welf.showMenu(type: .speciality)
+            
+        }
+        
+        
+        categoryShadowStack.addTap {[weak self] in
+            guard let welf = self else {return}
+            welf.showMenu(type: .category)
+        }
+        
+
+        
+        
+        
+    }
+    
+    func showMenu(type: MenuView.CellType) {
+        
+        let vc = SpecifiedMenuVC.initWithStory(self, celltype: type)
+        dcrdetailViewEditVc.modalPresentationStyle = .custom
+        dcrdetailViewEditVc.present(vc, animated: false)
+        
+    }
+    
+    func showDatePicker(){
+      //Formate Date
+      datePicker.datePickerMode = .date
+        datePicker.tintColor = .appTextColor
+   
+     //ToolBar
+     let toolbar = UIToolbar();
+     toolbar.sizeToFit()
+        
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(donedatePicker));
+       doneButton.tintColor = .appTextColor
+      //  let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(cancelDatePicker));
+        cancelButton.tintColor = .appLightPink
+        toolbar.setItems([doneButton,cancelButton], animated: true)
+//spaceButton,
+        dowTF.inputAccessoryView = toolbar
+        dowTF.inputView = datePicker
+        
+        
+        dobTF.inputAccessoryView = toolbar
+        dobTF.inputView = datePicker
+        
+        
+        
+
+   }
+    
+    
+    
+    @objc func cancelDatePicker(){
+       self.endEditing(true)
+     }
+    
+    @objc func donedatePicker(){
+
+        switch self.pickertype {
+        case .DOB:
+            dobTF.text = datePicker.date.toString(format: "dd - MMM")
+        case .DOW:
+            dowTF.text = datePicker.date.toString(format: "dd - MMM")
+        }
+        
+    
+ 
+     self.endEditing(true)
+   }
+    
+    func toPopulateVIew() {
+        
+
+        switch dcrdetailViewEditVc.pageType {
+        case .doctor:
+            guard let model = listedDoctor else {return}
+            self.titleLbl.text = model.name
+            qualificationInputLbl.text   = model.docDesig == "" ? "Select Qualification" :  model.docDesig
+            
+            qualificationInputLbl.textColor   = model.docDesig == "" ? UIColor.appGreyColor :  UIColor.appTextColor
+            
+            specialityInputLbl.text = model.speciality == "" ? "Select Speciality" :  model.speciality
+            
+            specialityInputLbl.textColor   = model.speciality == "" ? UIColor.appGreyColor :  UIColor.appTextColor
+            
+            categoryInputLbl.text = model.category == "" ? "Select Category" :  model.category
+            
+            categoryInputLbl.textColor   = model.category == "" ? UIColor.appGreyColor :  UIColor.appTextColor
+            
+            dobTF.text = model.dob
+            dowTF.text = model.dow
+            districtTF.text =  "-"
+            //model.addrs
+            cityTF.text =  "-"
+            //model.addrs
+            mainAddressTF.text = model.addrs
+            mobileTF.text = model.mobile
+            phoneNumberTF.text = model.phone
+            emailTF.text = model.docEmail
+            if let genderVal = model.drSex, genderVal != "" {
+                self.setGender(gender: genderVal == "M" ? .male : .female)
+            }
+            
+            if let lat = model.lat, let long = model.long, lat != "", long != "" {
+                
+                addMarker(latitude: Double(lat) ?? Double() , longitude: Double(long) ?? Double())
+            }
+          
+        case .chemist:
+            print("Yet to implement")
+        case .stockist:
+            print("Yet to implement")
+        case .unlistedDoctor:
+            print("Yet to implement")
+        case .cip:
+            print("Yet to implement")
+        case .hospital:
+            print("Yet to implement")
+        }
+    }
+    
+    func didEnableSave(_ istoenadble: Bool) {
+        
     }
     
     override func willAppear(baseVC: BaseViewController) {

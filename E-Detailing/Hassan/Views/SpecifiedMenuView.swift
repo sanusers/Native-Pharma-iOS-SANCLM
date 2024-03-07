@@ -423,7 +423,108 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+            case .qualification:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [Qualifications]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                qualifications?.forEach({ visit in
+                    if visit.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(visit)
+                        isMatched = true
+                    }
+                })
+
                 
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    qualifications = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
+                
+            case .speciality:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [Speciality]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                speciality?.forEach({ visit in
+                    if visit.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(visit)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    speciality = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
+            case .category:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [DoctorCategory]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                category?.forEach({ visit in
+                    if visit.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(visit)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    category = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
                 
             default:
                 print("Yet to implement")
@@ -475,6 +576,12 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         case .doctorVisit:
             return self.visitControlArr?.count ?? 0
             
+        case .qualification:
+            return self.qualifications?.count ?? 0
+        case .speciality:
+            return self.speciality?.count ?? 0
+        case.category:
+            return self.category?.count ?? 0
         default:
             print("Yet to implement")
         }
@@ -483,9 +590,6 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-  
-        
-
         switch cellType {
     
         case .workType:
@@ -746,18 +850,22 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
             resourcecell.selectionStyle = .none
             titleLbl.text = "Listed Doctors"
-            
+            var yetTopassModal: NSManagedObject?
             if let modelArr = self.listedDocArr {
                 let model: DoctorFencing = modelArr[indexPath.row]
+                yetTopassModal = model
                 resourcecell.populateCell(model: model)
                 resourcecell.setupHeight(type: cellType)
             }
             resourcecell.countLbl.text = "\(indexPath.row + 1)."
             resourcecell.btnEdit.addTap { [weak self] in
                 guard let welf = self else {return}
-                let vc  = DCRdetailViewEditVC.initWithStory()
-                vc.view.backgroundColor = .appGreyColor
-                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+                
+              
+                    welf.navigateToDetails(type: .doctor, model: yetTopassModal ?? NSManagedObject())
+                
+                
+  
             }
           
             return resourcecell
@@ -766,18 +874,22 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
             resourcecell.selectionStyle = .none
             titleLbl.text = "Chemists"
-            
+            var yetTopassModal: NSManagedObject?
             if let modelArr = self.chemistArr {
                 let model: Chemist = modelArr[indexPath.row]
+                yetTopassModal = model
                 resourcecell.populateCell(model: model)
                 resourcecell.setupHeight(type: cellType)
             }
             resourcecell.countLbl.text = "\(indexPath.row + 1)."
             resourcecell.btnEdit.addTap { [weak self] in
                 guard let welf = self else {return}
-                let vc  = DCRdetailViewEditVC.initWithStory()
-                vc.view.backgroundColor = .appGreyColor
-                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+                
+              
+                    welf.navigateToDetails(type: .chemist, model: yetTopassModal ?? NSManagedObject())
+                
+                
+              
             }
           
             return resourcecell
@@ -787,18 +899,19 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
             resourcecell.selectionStyle = .none
             titleLbl.text = "Stockists"
-            
+            var yetTopassModal: NSManagedObject?
             if let modelArr = self.stockistArr {
                 let model: Stockist = modelArr[indexPath.row]
+                yetTopassModal = model
                 resourcecell.populateCell(model: model)
                 resourcecell.setupHeight(type: cellType)
             }
             resourcecell.countLbl.text = "\(indexPath.row + 1)."
             resourcecell.btnEdit.addTap { [weak self] in
                 guard let welf = self else {return}
-                let vc  = DCRdetailViewEditVC.initWithStory()
-                vc.view.backgroundColor = .appGreyColor
-                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+             
+                    welf.navigateToDetails(type: .stockist, model: yetTopassModal ?? NSManagedObject())
+                
             }
           
             return resourcecell
@@ -807,18 +920,19 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
             resourcecell.selectionStyle = .none
             titleLbl.text = "Unlisted Doctors"
-            
+            var yetTopassModal: NSManagedObject?
             if let modelArr = self.unlisteedDocArr {
                 let model: UnListedDoctor = modelArr[indexPath.row]
+                yetTopassModal = model
                 resourcecell.populateCell(model: model)
                 resourcecell.setupHeight(type: cellType)
             }
             resourcecell.countLbl.text = "\(indexPath.row + 1)."
             resourcecell.btnEdit.addTap { [weak self] in
                 guard let welf = self else {return}
-                let vc  = DCRdetailViewEditVC.initWithStory()
-                vc.view.backgroundColor = .appGreyColor
-                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+           
+                    welf.navigateToDetails(type: .unlistedDoctor, model: yetTopassModal ?? NSManagedObject())
+                
             }
           
             return resourcecell
@@ -884,12 +998,79 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             }
             return cell
             
+            
+        case .speciality:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            titleLbl.text = "Speciality"
+            cell.selectionStyle = .none
+            var yetTosendModel: NSManagedObject?
+             if let modelArr = self.speciality {
+                 let model: Speciality = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+           
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.speciality, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
+            
+            
+        case .qualification:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            titleLbl.text = "Qualification"
+            cell.selectionStyle = .none
+        
+            var yetTosendModel: NSManagedObject?
+             if let modelArr = self.qualifications {
+                 let model: Qualifications = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+              //   cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.qualification, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
+        case .category:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            titleLbl.text = "Category"
+            cell.selectionStyle = .none
+           
+            var yetTosendModel: NSManagedObject?
+             if let modelArr = self.category {
+                 let model: DoctorCategory = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+                // cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.category, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
+            
         default:
             print("Yet to implement")
         }
         
         return UITableViewCell()
     }
+    
+    func navigateToDetails(type: DCRdetailViewEditVC.EditTypes, model: NSManagedObject) {
+        let vc  = DCRdetailViewEditVC.initWithStory(type: type, model: model)
+        vc.view.backgroundColor = .appGreyColor
+        specifiedMenuVC.presentInFullScreen(vc, animated: true)
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch cellType {
             
@@ -905,7 +1086,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return 60 + 10
             
-        case .inputs, .clusterInfo:
+        case .inputs, .clusterInfo, .speciality, .qualification, .category:
             
             return 30 + 10
             
@@ -959,6 +1140,9 @@ class SpecifiedMenuView: BaseView {
     var inputsArr: [Input]?
     var productArr: [Product]?
     var visitControlArr : [VisitControl]?
+    var category: [DoctorCategory]?
+    var speciality: [Speciality]?
+    var qualifications: [Qualifications]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
@@ -1220,6 +1404,17 @@ class SpecifiedMenuView: BaseView {
         var selectedIndex : Int?
         self.selectedClusterID = specifiedMenuVC.selectedClusterID ?? [String: Bool]()
        switch self.cellType {
+         
+           
+       case .category:
+           bottomHolderHeight.constant = 0
+           category = DBManager.shared.getCategory()
+       case .speciality:
+           bottomHolderHeight.constant = 0
+          speciality = DBManager.shared.getSpeciality()
+       case . qualification:
+           bottomHolderHeight.constant = 0
+           qualifications =  DBManager.shared.getQualification()
            
        case .inputs:
            bottomHolderHeight.constant = 0
@@ -1402,6 +1597,26 @@ class SpecifiedMenuTCell: UITableViewCell
         brandMatrisIndicator.backgroundColor = .appGreen
         brandMatrisIndicator.isHidden = true
         specialityLbl.isHidden = true
+    }
+    
+    
+    func populateCell(model: Speciality) {
+        lblName.text = model.name
+      //  itemTypeLbl.text = model.productMode
+    }
+    
+    
+    func populateCell(model: DoctorCategory) {
+        lblName.text = model.name
+      //  itemTypeLbl.text = model.productMode
+    }
+    
+    
+    
+    
+    func populateCell(model: Qualifications) {
+        lblName.text = model.name
+      //  itemTypeLbl.text = model.productMode
     }
     
     

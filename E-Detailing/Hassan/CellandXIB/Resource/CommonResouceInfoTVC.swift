@@ -43,6 +43,8 @@ class CommonResouceInfoTVC: UITableViewCell {
     }
     
     
+
+    
     func populateCell(model: VisitControl) {
         itemNameLBl.text = model.custName
         
@@ -60,8 +62,8 @@ class CommonResouceInfoTVC: UITableViewCell {
             contentHeight.constant = 60
             itemTypeLbl.isHidden = false
         default:
-            contentHeight.constant = 60
-            itemTypeLbl.isHidden = false
+            contentHeight.constant = 30
+            itemTypeLbl.isHidden = true
         }
         
         

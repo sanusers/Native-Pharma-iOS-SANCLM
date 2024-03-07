@@ -95,6 +95,13 @@ extension DoctorFencing {
         if let uRwIdValue = dictionary["uRwID"] as? String{
             uRwId = uRwIdValue
         }
+        
+        if let genderValue = dictionary["ListedDr_Sex"] as? String{
+            drSex = genderValue
+        }
+        
+        
+        
         mapId = id
     }
     

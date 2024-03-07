@@ -81,6 +81,7 @@
         <attribute name="docDesig" optional="YES" attributeType="String"/>
         <attribute name="docEmail" optional="YES" attributeType="String"/>
         <attribute name="dow" optional="YES" attributeType="String"/>
+        <attribute name="drSex" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
         <attribute name="hosAddr" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
