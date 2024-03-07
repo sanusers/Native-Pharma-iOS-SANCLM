@@ -479,10 +479,17 @@ class MenuView : BaseView{
         case chemist = "Chemist"
         case stockist = "Stockist"
         case unlistedDoctor  = "Unlisted Doctor"
+        case cip = "CIP"
+        case hospitals = "Hospital"
         case doctorInfo
         case chemistInfo
         case stockistInfo
         case unlistedDoctorinfo
+        case clusterInfo = "Cluster"
+        case inputs = "Input"
+        case product = "Product"
+        case doctorVisit = "Doctor Visit"
+        case holiday = "Holiday / Weekly off"
       //  case FieldWork
        // case others
     }

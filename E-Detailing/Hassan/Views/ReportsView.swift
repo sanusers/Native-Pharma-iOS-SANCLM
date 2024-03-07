@@ -80,6 +80,25 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             return MenuView.CellType.unlistedDoctorinfo
         }
         
+        if MenuView.CellType(rawValue: name)?.rawValue ?? "" ==  MenuView.CellType.inputs.rawValue {
+            return MenuView.CellType.inputs
+        }
+        
+        if MenuView.CellType(rawValue: name)?.rawValue ?? "" ==  MenuView.CellType.product.rawValue {
+            return MenuView.CellType.product
+        }
+        
+        if MenuView.CellType(rawValue: name)?.rawValue ?? "" ==  MenuView.CellType.clusterInfo.rawValue {
+            return MenuView.CellType.clusterInfo
+        }
+        if MenuView.CellType(rawValue: name)?.rawValue ?? "" ==  MenuView.CellType.doctorVisit.rawValue {
+            return MenuView.CellType.doctorVisit
+        }
+        
+        if MenuView.CellType(rawValue: name)?.rawValue ?? "" ==  MenuView.CellType.holiday.rawValue {
+            return MenuView.CellType.holiday
+        }
+        
         return MenuView.CellType(rawValue: name)
     }
     
@@ -111,6 +130,10 @@ class ReportsView : BaseView {
     
     @IBOutlet weak var reportsCollection: UICollectionView!
     
+    
+    @IBOutlet var resouceHQholderVIew: UIView!
+    
+    @IBOutlet var resourceHQlbl: UILabel!
     var reporsVC : ReportsVC!
     var reportInfoArr : [ReportInfo]?
     var pagetype: ReportsVC.PageType = .reports
@@ -142,6 +165,7 @@ class ReportsView : BaseView {
         switch pagetype {
             
         case .reports:
+            resouceHQholderVIew.isHidden = true
             self.reportTitle.text = "Reports"
            // contentDict
             contentDict = [["Day Report" : "Day Report"], ["Monthly Report": "Monthly"], ["Day Check in Report": "Day Check in"], ["Customer Check in Report" : "Day Check in"], ["Visit Monitor" : "Visit"]]
@@ -153,10 +177,13 @@ class ReportsView : BaseView {
             
            
         case .approvals:
+            resouceHQholderVIew.isHidden = true
             self.reportTitle.text = "Approvals"
             contentDict = Array<JSON>()
             
         case .myResource:
+            resouceHQholderVIew.isHidden = false
+            setHQlbl()
             self.reportTitle.text = "My Resource"
             contentDict = Array<JSON>()
             self.reportInfoArr = generateModel(contentDict: toSetupResources())
@@ -164,11 +191,53 @@ class ReportsView : BaseView {
         toLoadData()
     }
     
+    
+    
+    func setHQlbl() {
+        // let appsetup = AppDefaults.shared.getAppSetUp()
+            CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
+                let savedEntity = hqModelArr.first
+                guard let savedEntity = savedEntity else{
+                    
+                    self.resourceHQlbl.text = "Select HQ"
+                    
+                    return
+                    
+                }
+                
+                self.resourceHQlbl.text = savedEntity.name == "" ? "Select HQ" : savedEntity.name
+                
+                let subordinates = DBManager.shared.getSubordinate()
+                
+                let asubordinate = subordinates.filter{$0.id == savedEntity.code}
+                
+                if !asubordinate.isEmpty {
+                 //  self.fetchedHQObject = asubordinate.first
+                 //   LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                }
+            
+              
+  
+ 
+                
+            }
+            // Retrieve Data from local storage
+               return
+        
+
+       
+    }
+    
+    
+    
     func setupUI() {
         initTaps()
         reportTitle.setFont(font: .bold(size: .SUBHEADER))
         collectionHolderView.backgroundColor = .appSelectionColor
-       
+        resourceHQlbl.setFont(font: .medium(size: .BODY))
+        resourceHQlbl.textColor = .appTextColor
+        resouceHQholderVIew.layer.cornerRadius = 5
+        resouceHQholderVIew.backgroundColor = .appWhiteColor
         setPagetype(pagetype: reporsVC.pageType)
 
         
@@ -222,26 +291,26 @@ class ReportsView : BaseView {
         }
         if appsetup.cipNeed == 0 {
        
-            let  cipDict: [String: String] = ["CIP" : "0"]
+            let  cipDict: [String: String] = [MenuView.CellType.cip.rawValue : "0"]
             
             contentDict.append(cipDict)
         }
         if appsetup.hospNeed == 0 {
         
-            let  hospDict: [String: String] = ["Hospital" : ""]
+            let  hospDict: [String: String] = [MenuView.CellType.hospitals.rawValue : ""]
             
             contentDict.append(hospDict)
         }
         
-        let  hospDict: [String: String] = ["Input" : String(DBManager.shared.getInput().count)]
+        let  hospDict: [String: String] = [MenuView.CellType.inputs.rawValue  : String(DBManager.shared.getInput().count)]
         contentDict.append(hospDict)
-        let  ProductDict: [String: String] = ["Product" : String(DBManager.shared.getProduct().count)]
+        let  ProductDict: [String: String] = [MenuView.CellType.product.rawValue  : String(DBManager.shared.getProduct().count)]
         contentDict.append(ProductDict)
-        let  ClusterDict: [String: String] = ["Cluster": String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
+        let  ClusterDict: [String: String] = [MenuView.CellType.clusterInfo.rawValue : String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
         contentDict.append(ClusterDict)
-        let  DoctorDict: [String: String] = ["Doctor Visit" : String(DBManager.shared.getVisitControl().count)]
+        let  DoctorDict: [String: String] = [MenuView.CellType.doctorVisit.rawValue  : String(DBManager.shared.getVisitControl().count)]
         contentDict.append(DoctorDict)
-        let  HolidayDict: [String: String] = ["Holiday / Weekly off"  : "\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))"]
+        let  HolidayDict: [String: String] = [MenuView.CellType.holiday.rawValue   : "\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))"]
         contentDict.append(HolidayDict)
         
         return contentDict as!  [[String: String]]

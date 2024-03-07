@@ -259,6 +259,7 @@ class MasterSyncVC : UIViewController {
                 
                 if !asubordinate.isEmpty {
                     self.fetchedHQObject = asubordinate.first
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
                 }
             
               
@@ -283,7 +284,7 @@ class MasterSyncVC : UIViewController {
                 }
             }
         
-        
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
         self.lblHqName.text =   self.fetchedHQObject?.name
         self.collectionView.reloadData()
        

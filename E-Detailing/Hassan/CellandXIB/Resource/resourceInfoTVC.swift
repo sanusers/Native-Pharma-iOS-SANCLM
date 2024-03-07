@@ -32,12 +32,12 @@ class resourceInfoTVC: UITableViewCell {
         
         switch type {
             
-        case .doctorInfo :
-            holderViewHeight.constant = 180
+        case .doctorInfo, .unlistedDoctorinfo :
+            holderViewHeight.constant = 100
             specialityVIew.isHidden = false
             
         default:
-            holderViewHeight.constant = 180 - 60
+            holderViewHeight.constant = 100 - 33.3
             specialityVIew.isHidden = true
             
             print("Yet to implement")
@@ -79,13 +79,13 @@ class resourceInfoTVC: UITableViewCell {
     func populateCell(model: DoctorFencing) {
         
         doctorNameLbl.text = model.name
-        spec1.text = model.speciality ?? "-"
-        spec2.text = model.category ?? "-"
-        spec2.text =  "-"
+        spec1.text = model.category ?? "-"
+        spec2.text = model.speciality ?? "-"
+        spec3.text = model.docDesig ?? "-"
+        addressLbl.text = model.townName == "" ? "-" :  model.townName
         
-        
-        if let address = model.hosAddr   {
-            addressLbl.text = address == "" ? "Address not yet listed." :  address
+        if let address = model.addrs   {
+         
             btnViewLocation.isHidden = address == ""
         }
         
@@ -96,9 +96,9 @@ class resourceInfoTVC: UITableViewCell {
         
         doctorNameLbl.text = model.name
        
-       
+        addressLbl.text = model.townName == "" ? "-" :  model.townName
         if let address = model.addr  {
-            addressLbl.text = address == "" ? "Address not yet listed." :  address
+            //  addressLbl.text = address == "" ? "Address not yet listed." :  address
             btnViewLocation.isHidden = address == ""
         }
  
@@ -110,8 +110,13 @@ class resourceInfoTVC: UITableViewCell {
     func populateCell(model: UnListedDoctor) {
         
         doctorNameLbl.text = model.name
-        if let address = model.addrs {
-            addressLbl.text = address == "" ? "Address not yet listed." :  address
+        spec1.text = model.specialty ?? "-"
+        spec2.text = model.category ?? "-"
+        spec2.text =  "-"
+        addressLbl.text = model.townName == "" ? "-" :  model.townName
+        
+        if let address = model.addrs   {
+        
             btnViewLocation.isHidden = address == ""
         }
   
@@ -122,9 +127,9 @@ class resourceInfoTVC: UITableViewCell {
     func populateCell(model: Stockist) {
         
         doctorNameLbl.text = model.name
-
+        addressLbl.text = model.townName == "" ? "-" :  model.townName
         if let address = model.addr  {
-            addressLbl.text = address == "" ? "Address not yet listed." :  address
+          //  addressLbl.text = address == "" ? "Address not yet listed." :  address
             btnViewLocation.isHidden = address == ""
         }
         

@@ -300,6 +300,8 @@
 		38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */; };
 		38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */; };
 		38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */; };
+		38FDD4152B99881500566A04 /* CommonResouceInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FDD4132B99881500566A04 /* CommonResouceInfoTVC.swift */; };
+		38FDD4162B99881500566A04 /* CommonResouceInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FDD4142B99881500566A04 /* CommonResouceInfoTVC.xib */; };
 		B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24C29F6428900B90B61 /* CallCell.swift */; };
 		B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24E29F6630000B90B61 /* OutboxCell.swift */; };
 		B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED25029F6A24600B90B61 /* MenuCell.swift */; };
@@ -619,6 +621,8 @@
 		38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarksEditSessionCell.swift; sourceTree = "<group>"; };
 		38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemarksEditSessionCell.xib; sourceTree = "<group>"; };
 		38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedReportsModel.swift; sourceTree = "<group>"; };
+		38FDD4132B99881500566A04 /* CommonResouceInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonResouceInfoTVC.swift; sourceTree = "<group>"; };
+		38FDD4142B99881500566A04 /* CommonResouceInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommonResouceInfoTVC.xib; sourceTree = "<group>"; };
 		9CE0B15EC24F1D8F6F887F26 /* Pods-E-Detailing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-Detailing.release.xcconfig"; path = "Target Support Files/Pods-E-Detailing/Pods-E-Detailing.release.xcconfig"; sourceTree = "<group>"; };
 		B27ED24C29F6428900B90B61 /* CallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCell.swift; sourceTree = "<group>"; };
 		B27ED24E29F6630000B90B61 /* OutboxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxCell.swift; sourceTree = "<group>"; };
@@ -1202,6 +1206,8 @@
 			children = (
 				38E6B08F2B9866B80014AF1E /* resourceInfoTVC.swift */,
 				38E6B0902B9866B80014AF1E /* resourceInfoTVC.xib */,
+				38FDD4132B99881500566A04 /* CommonResouceInfoTVC.swift */,
+				38FDD4142B99881500566A04 /* CommonResouceInfoTVC.xib */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -1499,6 +1505,7 @@
 				38107C632B36FA0400ACEDF3 /* ViewmoreCVC.xib in Resources */,
 				38107C5F2B36F97E00ACEDF3 /* ReportsCVC.xib in Resources */,
 				38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */,
+				38FDD4162B99881500566A04 /* CommonResouceInfoTVC.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
 				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
 				38DAADEA2B5916AC00966B33 /* OutboxDetailsTVC.xib in Resources */,
@@ -1717,6 +1724,7 @@
 				38107C622B36FA0400ACEDF3 /* ViewmoreCVC.swift in Sources */,
 				B287E6BF29F2A7560097974D /* Extention.swift in Sources */,
 				38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */,
+				38FDD4152B99881500566A04 /* CommonResouceInfoTVC.swift in Sources */,
 				38107C592B36F86C00ACEDF3 /* rcpaCVC.swift in Sources */,
 				3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */,
 				38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */,

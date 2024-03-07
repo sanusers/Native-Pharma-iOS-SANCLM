@@ -34,6 +34,8 @@ extension MasterSyncVC {
                    
                         moveToDownloadSlide()
                     
+                } else {
+                    moveToHome()
                 }
             
             } else  if (type == .slides) {
@@ -47,15 +49,19 @@ extension MasterSyncVC {
                 
            
             } else {
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
-                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                        appDelegate.setupRootViewControllers()
-                    }
-                }
+                moveToHome()
             }
 
             
         
+        }
+    }
+    
+    func moveToHome() {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                appDelegate.setupRootViewControllers()
+            }
         }
     }
     

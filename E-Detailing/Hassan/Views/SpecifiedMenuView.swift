@@ -58,7 +58,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                 }
                 
                 
-            case .cluster:
+            case .cluster, .clusterInfo:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
                     toLOadData()
@@ -316,6 +316,115 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     isSearched = false
                     self.menuTable.isHidden = true
                 }
+                
+                
+            case .inputs:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [Input]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                inputsArr?.forEach({ input in
+                    if input.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(input)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    inputsArr = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
+                
+            case .product:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [Product]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                productArr?.forEach({ product in
+                    if product.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(product)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    productArr = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
+                
+              
+            case .doctorVisit:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [VisitControl]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                visitControlArr?.forEach({ visit in
+                    if visit.custName!.lowercased().contains(newText) {
+                        filteredWorkType.append(visit)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    visitControlArr = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
+                
+                
             default:
                 print("Yet to implement")
             }
@@ -351,6 +460,21 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
         case .chemistInfo:
             return self.chemistArr?.count ?? 0
+            
+        case .stockistInfo:
+            return self.stockistArr?.count ?? 0
+        case .unlistedDoctorinfo:
+            return self.unlisteedDocArr?.count ?? 0
+            
+        case .inputs:
+            return self.inputsArr?.count ?? 0
+        case .product:
+            return self.productArr?.count ?? 0
+        case .clusterInfo:
+            return self.clusterArr?.count ?? 0
+        case .doctorVisit:
+            return self.visitControlArr?.count ?? 0
+            
         default:
             print("Yet to implement")
         }
@@ -658,6 +782,108 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
           
             return resourcecell
             
+            
+        case .stockistInfo:
+            let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
+            resourcecell.selectionStyle = .none
+            titleLbl.text = "Stockists"
+            
+            if let modelArr = self.stockistArr {
+                let model: Stockist = modelArr[indexPath.row]
+                resourcecell.populateCell(model: model)
+                resourcecell.setupHeight(type: cellType)
+            }
+            resourcecell.countLbl.text = "\(indexPath.row + 1)."
+            resourcecell.btnEdit.addTap { [weak self] in
+                guard let welf = self else {return}
+                let vc  = DCRdetailViewEditVC.initWithStory()
+                vc.view.backgroundColor = .appGreyColor
+                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+            }
+          
+            return resourcecell
+            
+        case .unlistedDoctorinfo:
+            let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
+            resourcecell.selectionStyle = .none
+            titleLbl.text = "Unlisted Doctors"
+            
+            if let modelArr = self.unlisteedDocArr {
+                let model: UnListedDoctor = modelArr[indexPath.row]
+                resourcecell.populateCell(model: model)
+                resourcecell.setupHeight(type: cellType)
+            }
+            resourcecell.countLbl.text = "\(indexPath.row + 1)."
+            resourcecell.btnEdit.addTap { [weak self] in
+                guard let welf = self else {return}
+                let vc  = DCRdetailViewEditVC.initWithStory()
+                vc.view.backgroundColor = .appGreyColor
+                welf.specifiedMenuVC.presentInFullScreen(vc, animated: true)
+            }
+          
+            return resourcecell
+            
+            
+        case .inputs:
+            let cell: CommonResouceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "CommonResouceInfoTVC", for: indexPath) as!  CommonResouceInfoTVC
+            titleLbl.text = "Inputs"
+            cell.selectionStyle = .none
+   
+            cell.itemCountLbl.text = "\(indexPath.row + 1)."
+            
+            if let modelArr = self.inputsArr {
+                let model: Input = modelArr[indexPath.row]
+                cell.populateCell(model: model)
+                cell.setupHeight(type: cellType)
+            }
+            
+            
+         
+            return cell
+            
+        case .product:
+            let cell: CommonResouceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "CommonResouceInfoTVC", for: indexPath) as!  CommonResouceInfoTVC
+            titleLbl.text = "Product"
+            cell.selectionStyle = .none
+
+           cell.itemCountLbl.text = "\(indexPath.row + 1)."
+            
+            if let modelArr = self.productArr {
+                let model: Product = modelArr[indexPath.row]
+                cell.populateCell(model: model)
+                cell.setupHeight(type: cellType)
+            }
+            return cell
+            
+        case .clusterInfo:
+            let cell: CommonResouceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "CommonResouceInfoTVC", for: indexPath) as!  CommonResouceInfoTVC
+            titleLbl.text = "Cluster"
+            cell.selectionStyle = .none
+
+           cell.itemCountLbl.text = "\(indexPath.row + 1)."
+            
+            if let modelArr = self.clusterArr {
+                let model: Territory = modelArr[indexPath.row]
+                cell.populateCell(model: model)
+                cell.setupHeight(type: cellType)
+            }
+            return cell
+            
+            
+        case .doctorVisit:
+            let cell: CommonResouceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "CommonResouceInfoTVC", for: indexPath) as!  CommonResouceInfoTVC
+            titleLbl.text = "Doctor Visit"
+            cell.selectionStyle = .none
+
+           cell.itemCountLbl.text = "\(indexPath.row + 1)."
+            
+            if let modelArr = self.visitControlArr {
+                let model: VisitControl = modelArr[indexPath.row]
+                cell.populateCell(model: model)
+                cell.setupHeight(type: cellType)
+            }
+            return cell
+            
         default:
             print("Yet to implement")
         }
@@ -668,12 +894,21 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         switch cellType {
             
 
-        case .doctorInfo:
-            return 190
+        case .doctorInfo, .unlistedDoctorinfo:
+            return 110
          
-        case  .stockistInfo, .chemistInfo, .unlistedDoctorinfo:
+        case  .stockistInfo, .chemistInfo:
             
-            return 190 - 60
+            return 110 - 33.3
+            
+        case .product, .doctorVisit:
+            
+            return 60 + 10
+            
+        case .inputs, .clusterInfo:
+            
+            return 30 + 10
+            
         default:
             return UITableView.automaticDimension
         }
@@ -721,6 +956,9 @@ class SpecifiedMenuView: BaseView {
     var stockistArr : [Stockist]?
     var unlisteedDocArr : [UnListedDoctor]?
     var filteredTerritories: [Territory]?
+    var inputsArr: [Input]?
+    var productArr: [Product]?
+    var visitControlArr : [VisitControl]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
@@ -775,7 +1013,7 @@ class SpecifiedMenuView: BaseView {
         clearLbl.setFont(font: .bold(size: .BODY))
         saveView.layer.cornerRadius = 5
         saveView.backgroundColor = .appTextColor
-        
+        noresultsView.isHidden = true
         
         clearView.layer.cornerRadius = 5
         clearView.layer.borderColor = UIColor.gray.cgColor
@@ -983,6 +1221,18 @@ class SpecifiedMenuView: BaseView {
         self.selectedClusterID = specifiedMenuVC.selectedClusterID ?? [String: Bool]()
        switch self.cellType {
            
+       case .inputs:
+           bottomHolderHeight.constant = 0
+           self.inputsArr = DBManager.shared.getInput()
+           
+       case . product:
+           bottomHolderHeight.constant = 0
+           self.productArr = DBManager.shared.getProduct()
+           
+       case . doctorVisit:
+           bottomHolderHeight.constant = 0
+           self.visitControlArr = DBManager.shared.getVisitControl()
+           
        case .workType:
            bottomHolderHeight.constant = 0
            self.workTypeArr = DBManager.shared.getWorkType()
@@ -1001,9 +1251,16 @@ class SpecifiedMenuView: BaseView {
               
       
            }
+           
+     
+       case .clusterInfo:
+           bottomHolderHeight.constant = 0
+           self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+           
        case .cluster:
+               
            bottomHolderHeight.constant = 80
-           self.clusterArr = DBManager.shared.getTerritory(mapID: self.specifiedMenuVC.clusterMapID)
+           self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            if specifiedMenuVC.selectedObject != nil {
                self.selectedObject = specifiedMenuVC.selectedObject as! Territory
                let docObj =  self.selectedObject as! Territory
@@ -1093,8 +1350,10 @@ class SpecifiedMenuView: BaseView {
            self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            
        case .stockist, .stockistInfo:
+           bottomHolderHeight.constant = 0
            self.stockistArr =  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        case .unlistedDoctor, .unlistedDoctorinfo:
+           bottomHolderHeight.constant = 0
            self.unlisteedDocArr = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        default:
            bottomHolderHeight.constant = 0
@@ -1112,6 +1371,8 @@ class SpecifiedMenuView: BaseView {
        // menuTable.register(UINib(nibName: "SpecifiedMenuTCell", bundle: nil), forCellReuseIdentifier: "SpecifiedMenuTCell")
         
         menuTable.register(UINib(nibName: "resourceInfoTVC", bundle: nil), forCellReuseIdentifier: "resourceInfoTVC")
+        
+        menuTable.register(UINib(nibName: "CommonResouceInfoTVC", bundle: nil), forCellReuseIdentifier: "CommonResouceInfoTVC")
         
         
     }
