@@ -8,6 +8,12 @@
 import Foundation
 
 
+enum LoadingStatus {
+    case isLoading
+    case loaded
+    case error
+}
+
 enum MasterCellType : Int {
     
     case syncAll = 0
@@ -120,7 +126,11 @@ enum MasterCellType : Int {
 //[MasterInfo.slides,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.myDayPlan,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
 //                   MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
 
-enum `MasterInfo` : String {
+class MasterInfoState {
+    static var loadingStatusDict: [MasterInfo: LoadingStatus] = MasterInfo.loadingStatusDict
+}
+
+enum `MasterInfo` : String, CaseIterable {
     
     case myDayPlan = "My Day Plan"
     case worktype = "Work Types"
@@ -175,7 +185,31 @@ enum `MasterInfo` : String {
     case callSync = "Call Sync"
     case dcrDateSync = "Date Sync"
    
- ///note: Don't add types at last it affects page loading algorithm.
+
+    
+
+
+    // Define a dictionary to store SectionInfo for each case
+    static var loadingStatusDict: [MasterInfo: LoadingStatus] = {
+        var dict = [MasterInfo: LoadingStatus]()
+        for caseValue in MasterInfo.allCases {
+            dict[caseValue] = .loaded
+        }
+        return dict
+    }()
+    
+    static func setLoadingStatus(for caseValue: MasterInfo, to status: LoadingStatus) {
+        loadingStatusDict[caseValue] = status
+    }
+    
+    // Computed property to get SectionInfo for a case
+    var loadingStatus: LoadingStatus {
+        return MasterInfo.loadingStatusDict[self] ?? .loaded
+    }
+
+
+
+    
     var getUrl : String {
         
         let mainUrl = AppDefaults.shared.webUrl + AppDefaults.shared.iosUrl

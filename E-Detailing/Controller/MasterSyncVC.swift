@@ -37,9 +37,6 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
 
 class MasterSyncVC : UIViewController {
     
-    
-    
-    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     static let shared = MasterSyncVC()
     var delegate : MasterSyncVCDelegate?
@@ -59,60 +56,61 @@ class MasterSyncVC : UIViewController {
     var isFromLaunch : Bool = false
     var masterVM: MasterSyncVM?
     var masterData = [MasterInfo]()
+ 
     var isDayPlanSynced: Bool = false
     var dcrList = [MasterCellData]()
     var dcrDates: [DCRdatesModel]?
     var selectedMasterGroupIndex: Int? = nil
     var fetchedHQObject: Subordinate?
     
-    var animations = [Bool](){
-        didSet{
-            _ = self.animations.filter{$0 == false}
-        }
-    }
+//    var animations: [LoadingStatus] = MasterInfoState.loadingStatusDict.map { $0.value } {
+//        didSet {
+//            _ = self.animations.filter { $0 == .loaded }
+//        }
+//    }
     
     var arrayOfAllSlideObjects = [SlidesModel]()
     //  var arrayOfBrandSlideObjects = [BrandSlidesModel]()
     
-    var selectedHeadquarter : Subordinate? {
-        didSet{
-            guard let selectedHeadquarter = self.selectedHeadquarter else{
-                return
-            }
-            
-            AppDefaults.shared.sfCode = selectedHeadquarter.id ?? ""
-            self.lblHqName.text = selectedHeadquarter.name
-            
-            
-            if let index = self.masterData.firstIndex(of: MasterInfo.doctorFencing){
-                self.animations[index] = true
-                self.collectionView.reloadData()
-            }
-            if let index = self.masterData.firstIndex(of: MasterInfo.chemists){
-                self.animations[index] = true
-                self.collectionView.reloadData()
-            }
-            if let index = self.masterData.firstIndex(of: MasterInfo.stockists){
-                self.animations[index] = true
-                self.collectionView.reloadData()
-            }
-            if let index = self.masterData.firstIndex(of: MasterInfo.unlistedDoctors){
-                self.animations[index] = true
-                self.collectionView.reloadData()
-            }
-            if let index = self.masterData.firstIndex(of: MasterInfo.clusters){
-                self.animations[index] = true
-                self.collectionView.reloadData()
-            }
-            
-            self.fetchmasterData(type: MasterInfo.doctorFencing) {_ in}
-            self.fetchmasterData(type: MasterInfo.chemists) {_ in}
-            self.fetchmasterData(type: MasterInfo.stockists) {_ in}
-            self.fetchmasterData(type: MasterInfo.unlistedDoctors) {_ in}
-            self.fetchmasterData(type: MasterInfo.clusters) {_ in}
-            
-        }
-    }
+//    var selectedHeadquarter : Subordinate? {
+//        didSet{
+//            guard let selectedHeadquarter = self.selectedHeadquarter else{
+//                return
+//            }
+//            
+//            AppDefaults.shared.sfCode = selectedHeadquarter.id ?? ""
+//            self.lblHqName.text = selectedHeadquarter.name
+//            
+//            
+//            if let index = self.masterData.firstIndex(of: MasterInfo.doctorFencing){
+//                self.animations[index] = true
+//                self.collectionView.reloadData()
+//            }
+//            if let index = self.masterData.firstIndex(of: MasterInfo.chemists){
+//                self.animations[index] = true
+//                self.collectionView.reloadData()
+//            }
+//            if let index = self.masterData.firstIndex(of: MasterInfo.stockists){
+//                self.animations[index] = true
+//                self.collectionView.reloadData()
+//            }
+//            if let index = self.masterData.firstIndex(of: MasterInfo.unlistedDoctors){
+//                self.animations[index] = true
+//                self.collectionView.reloadData()
+//            }
+//            if let index = self.masterData.firstIndex(of: MasterInfo.clusters){
+//                self.animations[index] = true
+//                self.collectionView.reloadData()
+//            }
+//            
+//            self.fetchmasterData(type: MasterInfo.doctorFencing) {_ in}
+//            self.fetchmasterData(type: MasterInfo.chemists) {_ in}
+//            self.fetchmasterData(type: MasterInfo.stockists) {_ in}
+//            self.fetchmasterData(type: MasterInfo.unlistedDoctors) {_ in}
+//            self.fetchmasterData(type: MasterInfo.clusters) {_ in}
+//            
+//        }
+//    }
     
     var mastersyncVM: MasterSyncVM?
     var getSFCode: String{
@@ -170,11 +168,11 @@ class MasterSyncVC : UIViewController {
         
         if !isFromLaunch {
             selectedMasterGroupIndex = 0
-            animations = (0...(masterData.count - 1)).map{_ in false}
+          //  animations = (0...(masterData.count - 1)).map{ $0 == }
         }else {
             selectedMasterGroupIndex = nil
            // self.setLoader(pageType: .loading)
-            animations = (0...(masterData.count - 1)).map{_ in true}
+           // animations = (0...(masterData.count - 1)).map{_ in true}
             fetchMasterDataRecursively(index: 0)
             
         }
@@ -286,7 +284,7 @@ class MasterSyncVC : UIViewController {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
         self.lblHqName.text =   self.fetchedHQObject?.name
-        self.collectionView.reloadData()
+       // self.collectionView.reloadData()
        
     }
     
@@ -321,14 +319,15 @@ class MasterSyncVC : UIViewController {
     }
     
     
-    func fetchMasterDataRecursively(index: Int) {
-        
-      
-        
+    func fetchMasterDataRecursively(index: Int, isfromSyncall: Bool? = false) {
+
         guard index < masterData.count else {
             print("DCR list sync completed")
-            self.collectionView.reloadData()
+           // self.collectionView.reloadData()
             DispatchQueue.main.async {
+                if isfromSyncall ?? false {
+                    Shared.instance.removeLoaderInWindow()
+                }
                 self.setLoader(pageType: .navigate, type: .slides)
             }
           
@@ -336,19 +335,35 @@ class MasterSyncVC : UIViewController {
         }
 
         let masterType = masterData[index]
-        fetchmasterData(type: masterType) { _ in
-            // Continue with the next task
-            self.fetchMasterDataRecursively(index: index + 1)
+        
+        fetchmasterData(type: masterType) { [weak self] isSuccess in
+            guard let welf = self else { return }
+
+    
+            MasterInfoState.loadingStatusDict[masterType] = isSuccess ? .loaded : .error
+            if   !(isfromSyncall ?? false) {
+                welf.collectionView.reloadData()
+            }
+            
+   
+            welf.fetchMasterDataRecursively(index: index + 1, isfromSyncall: isfromSyncall)
         }
+        
     }
     
     @IBAction func syncAll(_ sender: UIButton) {
        
-        animations = (0...(masterData.count - 1)).map{_ in true}
+        let selectedMasterInfo = masterData
+
+        // Set loading status based on MasterInfo for each element in the array
+        selectedMasterInfo.forEach { masterInfo in
+            MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+        }
+
+        
         selectedMasterGroupIndex = nil
-        self.tableView.reloadData()
-       // self.setLoader(pageType: .loading)
-        fetchMasterDataRecursively(index: 0)
+
+        fetchMasterDataRecursively(index: 0, isfromSyncall: true)
         
 
         
@@ -443,8 +458,18 @@ class MasterSyncVC : UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if !isFromLaunch {
+          
             self.masterData = self.dcrList.first!.cellType.groupDetail
+            
+//            let selectedMasterInfo = masterData
+//
+//            // Set loading status based on MasterInfo for each element in the array
+//            selectedMasterInfo.forEach { masterInfo in
+//                MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+//            }
+            
             self.collectionView.reloadData()
+
         }
     }
     
@@ -460,6 +485,9 @@ class MasterSyncVC : UIViewController {
         
         
         switch type {
+            
+
+            
         case .getTP :
             //            toPostDataToserver(type : type) {_ in
             //                completion(true)
@@ -471,10 +499,10 @@ class MasterSyncVC : UIViewController {
             //            }
             
             
-            if let index = masterData.firstIndex(of: type){
-                animations[index] = false
-                collectionView.reloadData()
-            }
+//            if let index = masterData.firstIndex(of: type){
+//                animations[index] = false
+//                collectionView.reloadData()
+//            }
             completion(true)
         case .dcrDateSync:
             masterVM?.tofetchDcrdates() { result in
@@ -492,10 +520,10 @@ class MasterSyncVC : UIViewController {
             }
             
             
-            if let index = masterData.firstIndex(of: type){
-                animations[index] = false
-                collectionView.reloadData()
-            }
+//            if let index = masterData.firstIndex(of: type){
+//                animations[index] = false
+//                collectionView.reloadData()
+//            }
         case .myDayPlan:
             
             mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
@@ -582,21 +610,14 @@ class MasterSyncVC : UIViewController {
                         
                         
                     }
-                    if let index = welf.masterData.firstIndex(of: type){
-                        welf.animations[index] = false
-                        welf.collectionView.reloadData()
-                    }
+
                     
                     completion(true)
                 case .failure(let error):
                     welf.toCreateToast(error.rawValue)
                     
-                    if let index = welf.masterData.firstIndex(of: type){
-                        welf.animations[index] = false
-                        welf.collectionView.reloadData()
-                    }
-                    
-                    completion(true)
+
+                    completion(false)
                 }
             }
             
@@ -644,20 +665,12 @@ class MasterSyncVC : UIViewController {
                     AppDefaults.shared.save(key: .syncTime, value: Date())
                     let date = Date().toString(format: "dd MMM yyyy hh:mm a")
                     welf.lblSyncStatus.text = "Last Sync: " + date
-                    if let index = welf.masterData.firstIndex(of: type){
-                        welf.animations[index] = false
-                        welf.collectionView.reloadData()
-                    }
+
                     completion(true)
                 case .failure(let error):
                     
                     welf.toCreateToast("\(error.localizedDescription)")
                     print(error)
-                    
-                    if let index = welf.masterData.firstIndex(of: type){
-                        welf.animations[index] = false
-                        welf.collectionView.reloadData()
-                    }
                     completion(false)
                 }
                 
@@ -716,34 +729,41 @@ extension MasterSyncVC : tableViewProtocols {
         for i in 0..<self.dcrList.count {
             self.dcrList[i].isSelected = false
         }
-        self.tableView.reloadData()
-        if let cell = tableView.cellForRow(at: indexPath) as? MasterSyncTbCell {
-//            cell.lblName.textColor = .appWhiteColor
-//            cell.selectedIV.image = UIImage(named:   "Vector1")
-          
-        }
         
-        self.masterData = self.dcrList[indexPath.row].cellType.groupDetail
+        self.tableView.reloadData()
+
+       self.masterData = self.dcrList[indexPath.row].cellType.groupDetail
+
         self.collectionView.reloadData()
     }
     
     @objc func syncAllAction (_ sender : UIButton) {
+        
+        Shared.instance.showLoaderInWindow()
+        
         self.loadedSlideInfo = []
       
         self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
                            MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup,MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
         
-        animations = (0...(masterData.count - 1)).map{_ in true}
-      // self.setLoader(pageType: .loading)
-        fetchMasterDataRecursively(index: 0)
-
-
-            print("DCR list sync completed")
-         
-       
-
+                    let selectedMasterInfo = masterData
+        
+                    // Set loading status based on MasterInfo for each element in the array
+                    selectedMasterInfo.forEach { masterInfo in
+                        MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+                    }
         
         
+            self.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
+        
+      
+        
+     //   self.masterData = self.dcrList.first!.cellType.groupDetail
+        
+      //  self.tableView.reloadData()
+      //  self.collectionView.reloadData()
+        
+
     }
     
 }
@@ -772,17 +792,31 @@ extension MasterSyncVC : collectionViewProtocols{
         self.masterData.count
     }
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MasterSyncCell", for: indexPath) as! MasterSyncCell
         cell.lblName.text = self.masterData[indexPath.row].rawValue
-        
-        let status = self.animations[indexPath.row]
-        if status {
-            cell.activityIndicator.isHidden = false
-            cell.activityIndicator.startAnimating()
-        }else{
-            cell.activityIndicator.isHidden = true
-            cell.activityIndicator.stopAnimating()
+        cell.loaderImage.isHidden = false
+        var status :  LoadingStatus = .loaded
+        MasterInfoState.loadingStatusDict.forEach({ masterinfo, loadingStatus  in
+        if masterinfo.rawValue == self.masterData[indexPath.row].rawValue {
+            status = loadingStatus
+        }
+        })
+        if status == .isLoading {
+            cell.stopRotation()
+            cell.isRotationEnabled = true
+            cell.loaderImage.image = UIImage(named: "master_sync_refresh_icon")
+            cell.rotateImage()
+        }else if status == .error {
+            cell.stopRotation()
+            cell.isRotationEnabled = false
+            cell.loaderImage.image = UIImage(named: "icon_sync_failed")
+        } else if status == .loaded  {
+            cell.stopRotation()
+            cell.isRotationEnabled = false
+            cell.loaderImage.image = nil
         }
         cell.btnSync.addTarget(self, action: #selector(groupSyncAll(_:)), for: .touchUpInside)
         
@@ -853,9 +887,10 @@ extension MasterSyncVC : collectionViewProtocols{
 
 
         case   .headquartes:
+          //  cell.lblCount.text = DBManager.shared.gethe
             cell.lblCount.text = "Yet to"
         case   .departments:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
         case   .docTypes:
             cell.lblCount.text = "Yet to"
         case   .ratingDetails:
@@ -914,8 +949,15 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     @objc func groupSyncAll(_ sender : UIButton){
-  
-        animations = (0...(masterData.count - 1)).map{_ in true}
+
+        let selectedMasterInfo = masterData
+
+        // Set loading status based on MasterInfo for each element in the array
+        selectedMasterInfo.forEach { masterInfo in
+            MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+        }
+        
+        self.collectionView.reloadData()
        // self.setLoader(pageType: .loading)
         fetchMasterDataRecursively(index: 0)
         
@@ -924,9 +966,24 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        animations[indexPath.row] = true
-     
-        self.fetchmasterData(type: self.masterData[indexPath.row]) {_ in
+        let selectedMasterInfo = masterData[indexPath.row]
+
+           // Set loading status based on MasterInfo
+           MasterInfoState.loadingStatusDict[selectedMasterInfo] = .isLoading
+
+           // Update animations array
+         //  animations = MasterInfo.allCases.map { MasterInfoState.loadingStatusDict[$0] ?? .loaded }
+
+          self.collectionView.reloadData()
+          self.fetchmasterData(type: self.masterData[indexPath.row]) {isCompleted in
+            
+            if isCompleted {
+                MasterInfoState.loadingStatusDict[selectedMasterInfo] = .loaded
+            } else {
+                MasterInfoState.loadingStatusDict[selectedMasterInfo] = .error
+            }
+            
+           
             self.collectionView.reloadData()
         }
     }

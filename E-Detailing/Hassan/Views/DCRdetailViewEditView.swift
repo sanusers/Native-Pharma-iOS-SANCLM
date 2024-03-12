@@ -10,6 +10,75 @@ import UIKit
 import CoreData
 import GoogleMaps
 
+
+extension DCRdetailViewEditView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+        
+        
+    }
+    
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "Select DOB"
+            textView.textColor = UIColor.lightGray
+        }
+
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+      //  self.remarks = textView.text == "Type here.." ? "" : textView.text
+     
+        // Combine the textView text and the replacement text to
+        // create the updated text string
+        let currentText:String = textView.text
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+
+        // If updated text view will be empty, add the placeholder
+        // and set the cursor to the beginning of the text view
+        if updatedText.isEmpty {
+
+            textView.text = "Select DOB"
+            textView.textColor = UIColor.lightGray
+
+            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+        }
+
+        // Else if the text view's placeholder is showing and the
+        // length of the replacement string is greater than 0, set
+        // the text color to black then set its text to the
+        // replacement string
+         else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+            textView.textColor = UIColor.black
+            textView.text = text
+        }
+
+        // For every other case, the text should change with the usual
+        // behavior...
+        else {
+            return true
+        }
+
+        // ...otherwise return false since the updates have already
+        // been made
+      
+        return false
+    }
+    
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        if self.window != nil {
+            if textView.textColor == UIColor.lightGray {
+                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+            }
+        }
+    }
+    
+}
+
 extension DCRdetailViewEditView: MenuResponseProtocol {
     func routeToView(_ view: UIViewController) {
         print("Yet to implement")
@@ -136,7 +205,7 @@ class DCRdetailViewEditView: BaseView, UITextFieldDelegate {
     
     
     @IBOutlet var mainAddressShadowView: UIView!
-    @IBOutlet var mainAddressTF: UITextField!
+    @IBOutlet var mainAddressTV: UITextView!
     
     
     @IBOutlet var mobileLbl: UILabel!
@@ -252,11 +321,17 @@ class DCRdetailViewEditView: BaseView, UITextFieldDelegate {
         }
         
         
-        let textFields: [UITextField] = [dowTF, dobTF, districtTF, cityTF, mainAddressTF, mobileTF, phoneNumberTF, emailTF]
+        let textFields: [UITextField] = [dowTF, dobTF, districtTF, cityTF, mobileTF, phoneNumberTF, emailTF]
         
         textFields.forEach {
             $0.font = UIFont(name: "Satoshi-Medium", size: 14)
         }
+        
+       // mainAddressTV.font = UIFont(name: "Satoshi-Medium", size: 14)
+        
+        
+        mainAddressTV.textColor = .appTextColor
+        mainAddressTV.font = UIFont(name: "Satoshi-Medium", size: 14)
         
         lblMale.setFont(font: .medium(size: .BODY))
         lblFemale.setFont(font: .medium(size: .BODY))
@@ -438,13 +513,25 @@ class DCRdetailViewEditView: BaseView, UITextFieldDelegate {
             
             categoryInputLbl.textColor   = model.category == "" ? UIColor.appGreyColor :  UIColor.appTextColor
             
-            dobTF.text = model.dob
-            dowTF.text = model.dow
+            dobTF.text = model.dob  == "" ?  "Please select DOB":   model.dob
+            dowTF.text = model.dow  == "" ?  "Please select DOW":   model.dow
+            
+            dobTF.textColor = model.dob  == "" ? UIColor.lightGray :  UIColor.appTextColor
+            
+            dowTF.textColor = model.dow  == "" ? UIColor.lightGray :  UIColor.appTextColor
+            
             districtTF.text =  "-"
             //model.addrs
             cityTF.text =  "-"
             //model.addrs
-            mainAddressTF.text = model.addrs
+            //mainAddressTV.textColor = model.addrs
+            //== "" ? UIColor.appGreyColor :  UIColor.appTextColor
+            
+            
+            mainAddressTV.text = model.addrs 
+            //== "" ?  "Enter main address":   model.addrs
+     
+            
             mobileTF.text = model.mobile
             phoneNumberTF.text = model.phone
             emailTF.text = model.docEmail

@@ -21,6 +21,13 @@ class Shared {
 
 //MARK:- alert
 extension Shared{
+    
+    enum Loaders : String{
+        case common = "loader"
+        case mastersync = "masterSyncLoader"
+        
+    }
+    
     func showLoaderInWindow(){
         DispatchQueue.main.async {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -38,7 +45,7 @@ extension Shared{
             }
         }
     }
-    func showLoader(in view : UIView) {
+    func showLoader(in view : UIView, loaderType: Loaders? = .common) {
         guard Shared.instance.gifLoaders[view] == nil else{return}
         DispatchQueue.main.async {
             let gifValue : GifLoaderValue
@@ -46,7 +53,7 @@ extension Shared{
                 gifValue = (loader: existingLoader.loader,
                             count: existingLoader.count + 1)
             } else {
-                let gif = self.getLoaderGif(forFrame: view.bounds)
+                let gif = self.getLoaderGif(forFrame: view.bounds, loaderType: loaderType)
                 view.addSubview(gif)
                 gif.frame = view.frame
                 gif.center = view.center
@@ -72,11 +79,11 @@ extension Shared{
     
 
     
-    func getLoaderGif(forFrame parentFrame: CGRect) -> UIView {
+    func getLoaderGif(forFrame parentFrame: CGRect, loaderType: Loaders? = .common) -> UIView {
         
         
         
-        let jeremyGif = UIImage.gif(asset: "loader")
+        let jeremyGif = loaderType == .common ? UIImage.gif(asset: "loader") : UIImage.gif(asset: "sync")
         //UIImage.gifImageWithName("loader")
         let view = UIView()
         view.backgroundColor = UIColor.appLightTextColor.withAlphaComponent(0.05)
