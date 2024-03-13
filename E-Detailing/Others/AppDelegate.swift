@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupRootViewControllers(isFromlaunch: Bool? = false) {
         
         if !AppDefaults.shared.isConfigAdded() {
-            self.window?.rootViewController = UIStoryboard.apiconfigNavigationVC
+            self.window?.rootViewController = UINavigationController.init(rootViewController: ConfigVC.initWithStory()) 
         } else {
 
             _ = AppDefaults.shared.getConfig()

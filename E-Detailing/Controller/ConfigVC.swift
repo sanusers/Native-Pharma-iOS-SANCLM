@@ -180,6 +180,15 @@ class ConfigVC : UIViewController {
     @IBOutlet var lblPoweredBy: UILabel!
     var config = [AppConfig]()
     
+    //MARK:- initWithStory
+    class func initWithStory()-> ConfigVC{
+        
+        let view : ConfigVC = UIStoryboard.Hassan.instantiateViewController()
+        view.modalPresentationStyle = .overCurrentContext
+
+        return view
+    }
+    
     func setupUI() {
         
         let headerLbl: [UILabel] = [languageLbl, devieIDLbl, languageLbl, licenceKeyLbl, pageTitle, lblURL]
@@ -416,7 +425,7 @@ class ConfigVC : UIViewController {
                 dump(slideURL)
                 
                 DispatchQueue.main.async {
-                    let loginVC = UIStoryboard.loginVC
+                    let loginVC = LoginVC.initWithStory()
                     self.navigationController?.pushViewController(loginVC, animated: true)
                 }
  
