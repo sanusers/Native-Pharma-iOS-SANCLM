@@ -24,14 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSServices.provideAPIKey("AIzaSyCWeKbT2OcoH82bQJQJKqrHZ_MyLGijWM4")
         
-        self.setupRootViewControllers()
+        self.setupRootViewControllers(isFromlaunch: false)
         // Enable IQKeyboardManager
               IQKeyboardManager.shared.enable = true
         return true
     }
     
     
-    func setupRootViewControllers() {
+    func setupRootViewControllers(isFromlaunch: Bool? = false) {
         
         if !AppDefaults.shared.isConfigAdded() {
             self.window?.rootViewController = UIStoryboard.apiconfigNavigationVC
@@ -40,15 +40,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = AppDefaults.shared.getConfig()
 
             if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
-                self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory())
+                self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: isFromlaunch ?? false, ViewModel: UserStatisticsVM()))
 
             }else if AppDefaults.shared.isLoggedIn() {
-                let mastersyncVC = UIStoryboard.masterSyncVC
+                let mastersyncVC = MasterSyncVC.initWithStory()
                 mastersyncVC.isFromLaunch = true
                 self.window?.rootViewController = UINavigationController.init(rootViewController:mastersyncVC)
 
             }else {
-                self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.loginVC)
+                self.window?.rootViewController = UINavigationController.init(rootViewController: LoginVC.initWithStory())
             }
         }
     }

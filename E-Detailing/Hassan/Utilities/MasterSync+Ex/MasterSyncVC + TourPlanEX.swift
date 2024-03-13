@@ -137,7 +137,7 @@ extension MasterSyncVC {
         }
     }
     
-    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool) {
+    func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool, completion: @escaping (Bool) -> ()) {
         if unSavedPlans.count > 0 {
             toSetParams(unSavedPlans ) {
                 responseResult in
@@ -184,7 +184,9 @@ extension MasterSyncVC {
                                      }
                     
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
+                    completion(true)
                 case .failure(let error):
+                    completion(false)
                     print(error)
                 }
             }
@@ -240,7 +242,10 @@ extension MasterSyncVC {
         dump(unsentIndices)
 
         if unSavedPlans.count > 0 {
-            toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true)
+            toSendUnsavedObjects(unSavedPlans: unSavedPlans, unsentIndices: unsentIndices, isFromFirstLoad: true) {isCompleted in
+                
+            completion(isCompleted)
+            }
         } else {
 
             let toSendData = type.getParams

@@ -264,7 +264,7 @@ class CoreDataManager {
 
         for slidesModel in slidesModels {
             if let entityDescription = NSEntityDescription.entity(forEntityName: "GroupedSlidesCDModel", in: context) {
-                let cdSlidesModel = SlidesCDModel(entity: entityDescription, insertInto: context)
+                let cdSlidesModel = GroupedSlidesCDModel(entity: entityDescription, insertInto: context)
                 
                 // Convert properties of SlidesModel
                 cdSlidesModel.code = Int16(slidesModel.code)
@@ -287,6 +287,7 @@ class CoreDataManager {
                 cdSlidesModel.utType = slidesModel.utType
                 cdSlidesModel.isSelected = slidesModel.isSelected
                 cdSlidesModel.fileName = slidesModel.fileName
+                cdSlidesModel.imageData = slidesModel.imageData
                 cdSlidesModel.isFailed = slidesModel.isFailed
                 cdSlidesModel.isDownloadCompleted = slidesModel.isDownloadCompleted
                 // Convert other properties...

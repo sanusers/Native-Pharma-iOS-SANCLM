@@ -104,30 +104,7 @@
 ////        return AppSetUp(fromDictionary: setup)
 ////    }
 //
-//    func getAppSetUp() -> AppSetUp {
-//
-//        let appData = UserDefaults.standard.data(forKey: keys.appSetUp.rawValue)
-//        let decoder = JSONDecoder()
-//        var isDecoded: Bool = false
-//        do {
-//            let decodedData = try decoder.decode(AppSetUp.self, from: appData!)
-//            isDecoded = true
-//            self.appSetup = decodedData
-//        } catch {
-//            print("Unable to decode")
-//        }
-//        if isDecoded {
-//            return appSetup ?? AppSetUp()
-//        } else {
-//            return AppSetUp()
-//        }
-//
-//
-//
-//        guard let setup = self.get(key: .appSetUp, type: [String : Any]()) else {
-//           // return AppSetUp(fromDictionary: [:])
-//        }
-//    }
+
 //
 //
 //    func getSlides() -> [[String : Any]] {
@@ -219,7 +196,7 @@ class AppDefaults {
     var tpArry = TourPlanArr()
     var eachDatePlan = EachDatePlan()
     let userdefaults = UserDefaults.standard
-    
+    var appSetup: AppSetUp?
     
     
     func getConfig() -> AppConfig {
@@ -250,13 +227,24 @@ class AppDefaults {
         return true
     }
     
-    func isLoggedIn() -> Bool {
-        guard let appsetup = self.get(key: .appSetUp, type: [String : Any]())else{
-            return false
-        }
+//    func isLoggedIn() -> Bool {
+//        guard let appsetup = self.get(key: .appSetUp, type: [String : Any]())else{
+//            return false
+//        }
+//        
+//        return !appsetup.isEmpty
+//    }
+    
+    
+        func isLoggedIn() -> Bool {
+            
+           let appSetup = AppDefaults.shared.getAppSetUp()
         
-        return !appsetup.isEmpty
-    }
+                return true
+        
+      
+            
+        }
     
     func getLogoImgData() -> [String : Any] {
         guard let data = self.get(key: .logoImage, type: [String : Any]())else{
@@ -265,12 +253,34 @@ class AppDefaults {
         return data
     }
     
+    
     func getAppSetUp() -> AppSetUp {
-        guard let setup = self.get(key: .appSetUp, type: [String : Any]()) else {
-            return AppSetUp(fromDictionary: [:])
+
+        let appData = UserDefaults.standard.data(forKey: keys.appSetUp.rawValue) ?? nil
+        guard let appData = appData else {return AppSetUp()}
+        let decoder = JSONDecoder()
+        var isDecoded: Bool = false
+        do {
+            
+            let decodedData = try decoder.decode(AppSetUp.self, from: appData)
+            isDecoded = true
+            self.appSetup = decodedData
+        } catch {
+            print("Unable to decode")
         }
-        return AppSetUp(fromDictionary: setup)
+        if isDecoded {
+            return appSetup ?? AppSetUp()
+        } else {
+            return AppSetUp()
+        }
     }
+    
+//    func getAppSetUp() -> AppSetUp {
+//        guard let setup = self.get(key: .appSetUp, type: [String : Any]()) else {
+//            return AppSetUp(fromDictionary: [:])
+//        }
+//        return AppSetUp(fromDictionary: setup)
+//    }
     
     
     func getSlides() -> [[String : Any]] {

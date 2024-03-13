@@ -1,39 +1,67 @@
-////
-////  LoginVC.swift
-////  E-Detailing
-////
-////  Created by NAGAPRASATH on 29/05/23.
-////
 //
-//import Alamofire
+//  LoginVC.swift
+//  E-Detailing
 //
-//import UIKit
+//  Created by Hassan
 //
+//  Copyright © 2024 san eforce. All rights reserved. 13/03/2024.
 //
-//class LoginVC : UIViewController {
-//
-//
-//    @IBOutlet weak var txtUserName: UITextField!
-//    @IBOutlet weak var txtPassWord: UITextField!
-//
-//    @IBOutlet weak var lblVersion: UILabel!
-//
-//    @IBOutlet weak var imgLogo: UIImageView!
-//
-//    var homeVM: HomeViewModal?
-//    var imgUrl : String!
-//
-//    var weburl : String!
-//    var iosUrl : String!
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        self.homeVM = HomeViewModal()
-//        self.navigationController?.setNavigationBarHidden(true, animated: true)
-//     //   self.navigationController?.isNavigationBarHidden = true
-//
+
+import Alamofire
+
+import UIKit
+import CoreData
+
+class LoginVC : UIViewController {
+    
+    
+    func setupui() {
+        contentsHolderview.elevate(2)
+        contentsHolderview.layer.cornerRadius = 5
+        lblUserID.setFont(font: .bold(size: .BODY))
+        lblUserID.textColor = .appTextColor
+        lblPassword.setFont(font: .bold(size: .BODY))
+        lblPassword.textColor = .appTextColor
+        lblVersion.setFont(font: .medium(size: .SMALL))
+        lblVersion.textColor = .appLightTextColor
+        
+        txtUserName.font = UIFont(name: "Satoshi-Bold", size: 14)
+        txtPassWord.font = UIFont(name: "Satoshi-Bold", size: 14)
+        lblPoweredBy.setFont(font: .medium(size: .BODY))
+        lblPoweredBy.textColor = .appLightTextColor
+    }
+    @IBOutlet var contentsHolderview: UIView!
+    
+    @IBOutlet var lblUserID: UILabel!
+    
+    @IBOutlet var lblPoweredBy: UILabel!
+    
+    @IBOutlet var lblPassword: UILabel!
+    @IBOutlet weak var txtUserName: UITextField!
+    @IBOutlet weak var txtPassWord: UITextField!
+
+    @IBOutlet weak var lblVersion: UILabel!
+
+    @IBOutlet weak var imgLogo: UIImageView!
+
+    var homeVM: HomeViewModal?
+
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    
+    class func initWithStory() -> LoginVC {
+        let loginVC : LoginVC = UIStoryboard.Hassan.instantiateViewController()
+
+        return loginVC
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.homeVM = HomeViewModal()
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        setupui()
 //        let data = AppDefaults.shared.getConfig()
-//        let url = URL(string: data.webUrl + data.logoImg)!
+//
 //
 //        Dispatch.background {
 //            // do stuff
@@ -49,272 +77,115 @@
 //            }
 //        }
 //        }
-//
-//    }
-//
-//    override func viewDidDisappear(_ animated: Bool) {
-//        super.viewDidDisappear(animated)
-//        self.navigationController?.setNavigationBarHidden(false, animated: true)
-//    }
-//
-//
-//    @IBAction func resetConfiguration(_ sender: UIButton) {
-//
-//        AppDefaults.shared.reset()
-//
-//        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//            appDelegate.setupRootViewControllers()
-//        }
-//    }
-//
-//    func doUserLogin(param: [String: Any]) {
-//        dump(param)
-//        homeVM?.doUserLogin(params: param, api: .actionLogin, { responseData in
-//            switch responseData {
-//
-//            case .success(let loginData):
-//                dump(loginData)
-//                if !(loginData.isSuccess ?? false) {
-//                    ConfigVC().showToast(controller: self, message: loginData.successMessage ?? "", seconds: 2)
-//                } else {
-//                    do {
-//                      try  AppDefaults.shared.toSaveEncodedData(object: loginData, key: .appSetUp) { isSaved in
-//                          if isSaved {
-//
-//                              if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                                  appDelegate.setupRootViewControllers()
-//                              }
-//                          } else {
-//                              ConfigVC().showToast(controller: self, message: "Lodaing user Data failed try again later", seconds: 2)
-//                          }
-//                        }
-//                    } catch {
-//                        print("Unable to save data")
-//                    }
-//                }
-//            case .failure(let error):
-//                dump(error)
-//            }
-//        })
-//    }
-//
-//
-//    @IBAction func loginAction(_ sender: UIButton) {
-//
-//        let userId = self.txtUserName.text ?? ""
-//        let password = self.txtPassWord.text ?? ""
-//
-//
-//        if userId.isEmpty {
-//            ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
-//            return
-//
-//        }else if password.isEmpty {
-//            ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
-//            return
-//        }
-//
-//        let version = UIDevice.current.systemVersion
-//        let modelName = UIDevice.current.model
-//
-//
-//        print(AppDefaults.shared.appConfig!.webUrl)
-//        print(AppDefaults.shared.appConfig!.iosUrl)
-//
-////        var params = [String: Any]()
-////        params["name"] = userId
-////        params["password"] = password
-////        params["versionNo"] = "V.1.0"
-////        params["mode"] = "iOS-Edeting"
-////        params["Device_version"] = version
-////        params["device_id"] = ""
-////        params["Device_name"] = modelName
-////        params["AppDeviceRegId"] = ""
-////        params["password"] = password
-////        params["location"] = ""
-////        let toSendParams = ["data" : params.toString()]
-//
-//
-//        let urlStr = appMainURL + "action/login" //"login"  // "http://crm.saneforce.in/apps/ConfigiOSEdet.json"
-//
-//
-//        let paramStr = ["name" : userId,"password" : password,"versionNo": "i.1.0","mode" : "iOS-Edeting","Device_version": version,"device_id" : "","Device_name" : modelName,"AppDeviceRegId" : "", "location" : ""]
-//
-//        print(paramStr)
-//
-//        let param = ["data" : paramStr.toString()]
-//        doUserLogin(param: param)
-//
-//        print(urlStr)
-//        print(param)
-//
-//        let date = Date()
-//
-//        print(date)
-////        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
-////
-////            switch response.result {
-////
-////                case .success(_):
-////                    do {
-////                        let apiResponse = response
-////                        //try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-////
-////                        let date1 = Date()
-////
-////                        print(date1)
-////
-////                        print("ssususnbjbo")
-////                        print(apiResponse)
-////                        print("ssusus")
-////
-////                        let status = self.getStatus(json: apiResponse)
-////
-////                        if status.isOk {
-////
-////                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
-////
-////                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-////                                appDelegate.setupRootViewControllers()
-////                            }
-////                        }
-////
-////                    }catch {
-////
-////                    }
-////                case .failure(let error):
-////
-////                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-////                    print(error)
-////                    return
-////            }
-////
-////            print("2")
-////            print(response)
-////            print("2")
-////        }
-//    }
-//
-//
-//    public func getStatus(json:Any?, isShowToast:Bool = true) -> (isOk:Bool, info:[String:Any]) {
-//        guard let info:[String:Any] = json as? [String:Any] else {
-//            return (false, [:])
-//        }
-//        var status = false
-//        if let statusBool = info["success"] as? Bool {
-//            status = statusBool
-//        }
-//        if status {
-//            if let errormsg = info["msg"] as? String{
-//                if isShowToast {
-//                   // let appdelegate = UIApplication.shared.delegate as! AppDelegate
-//                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-//
-//                   // appdelegate.window?.rootViewController?.showToast(with: errormsg)
-//                }
-//            }else if let errormsg = info["Msg"] as? String{
-//                if isShowToast {
-//                   // let appdelegate = UIApplication.shared.delegate as! AppDelegate
-//
-//                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-//                   // appdelegate.window?.rootViewController?.showToast(with: errormsg)
-//                }
-//            }
-//            return (true, info)
-//        }
-//        else {
-//
-//            if let errormsg = info["msg"] as? String{
-//                if isShowToast {
-////                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
-////                    appdelegate.window?.rootViewController?.showToast(with: errormsg)
-//
-//                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-//                    //showAlert(title: "", message: errormsg, style: .alert, buttons: ["OK"], controller: nil, completion: nil)
-//                }
-//            }else if let errormsg = info["Msg"] as? String{
-//                if isShowToast {
-////                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
-////                    appdelegate.window?.rootViewController?.showToast(with: errormsg)
-//
-//                    ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-//                    //showAlert(title: "", message: errormsg, style: .alert, buttons: ["OK"], controller: nil, completion: nil)
-//                }
-//            }
-//            return (false, info)
-//        }
-//    }
-//}
-//
-//
-//
-//extension Dictionary{
-//    func toString() -> String{
-//        if let jsonData = try? JSONSerialization.data(withJSONObject: self, options: .prettyPrinted){
-//            let jsonString = String(data: jsonData, encoding: String.Encoding.utf8)
-//            if let jsonString = jsonString{
-//                return jsonString
-//            }
-//        }
-//        return self.description
-//    }
-//}
-//
-//
 
-//
-//  LoginVC.swift
-//  E-Detailing
-//
-//  Created by NAGAPRASATH on 29/05/23.
-//
-
-
-import Alamofire
-
-import UIKit
-import CoreData
-
-class LoginVC : UIViewController {
-    
-    
-    @IBOutlet weak var txtUserName: UITextField!
-    @IBOutlet weak var txtPassWord: UITextField!
-    
-    @IBOutlet weak var lblVersion: UILabel!
-    
-    @IBOutlet weak var imgLogo: UIImageView!
-    
-    
-    var imgUrl : String!
-    
-    var weburl : String!
-    var iosUrl : String!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
-     //   self.navigationController?.isNavigationBarHidden = true
-        _ = AppDefaults.shared.getConfig()
-        
-        let storedImgData = AppDefaults.shared.getConfig()
-        
-        let url = URL(string: AppDefaults.shared.webUrl + AppDefaults.shared.imgLogo)!
-        
-        if let data = try? Data(contentsOf: url) {
-            
-            let imgData : [String : Any] = ["name" : AppDefaults.shared.imgLogo , "data" : data]
-            AppDefaults.shared.save(key: .logoImage, value: imgData)
-            self.imgLogo.image = UIImage(data: data)
-         }
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
+
     
+
+    
+
+    @IBAction func resetConfiguration(_ sender: UIButton) {
+                clearAllCoreData()
+                AppDefaults.shared.reset()
+                appDelegate.setupRootViewControllers()
+                
+    }
+
+    func doUserLogin(_ param: [String: Any], paramData: JSON) {
+        dump(param)
+        
+        
+        
+        homeVM?.doUserLogin(params: param, api: .actionLogin, paramData: paramData) { responseData in
+            switch responseData {
+
+            case .success(let loginData):
+                dump(loginData)
+                if !(loginData.isSuccess ?? false) {
+                  //  ConfigVC().showToast(controller: self, message: loginData.successMessage ?? "", seconds: 2)
+                    self.toCreateToast(loginData.successMessage ?? "Failed to login")
+                } else {
+                    do {
+                      try  AppDefaults.shared.toSaveEncodedData(object: loginData, key: .appSetUp) { isSaved in
+                          if isSaved {
+
+                              self.navigate()
+                          } else {
+                        
+                              self.toCreateToast(loginData.successMessage ?? "Failed to save user config data")
+                          }
+                        }
+                    } catch {
+                        print("Unable to save data")
+                    }
+                }
+            case .failure(let error):
+                dump(error)
+            }
+        }
+    }
+
+    
+    func navigate() {
+      
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        if appsetup.sfType == 2 {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: false)
+            
+        } else {
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: true)
+        }
+        
+        appDelegate.setupRootViewControllers()
+        
+    }
+
+    @IBAction func loginAction(_ sender: UIButton) {
+
+        let userId = self.txtUserName.text ?? ""
+        let password = self.txtPassWord.text ?? ""
+
+
+        if userId.isEmpty {
+            ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
+            return
+
+        }else if password.isEmpty {
+            ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
+            return
+        }
+
+        let version = UIDevice.current.systemVersion
+        let modelName = UIDevice.current.model
+
+
+        let param: [String: Any] = [
+            "name": userId,
+            "password": password,
+            "versionNo": "i.1.0",
+            "mode": "iOS-Edeting",
+            "Device_version": version,
+            "device_id": "",
+            "Device_name": modelName,
+            "AppDeviceRegId": "",
+            "location": ""
+        ]
+        
+    
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+        
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        
+        doUserLogin(toSendData, paramData: param)
+
+    }
     
     
     func clearAllCoreData() {
@@ -340,170 +211,11 @@ class LoginVC : UIViewController {
                 // Save changes
                 try managedContext.save()
             } catch {
-                print("Error clearing \(entityName): \(error)")
+                print("Error clearing \(entityName ?? ""): \(error)")
             }
         }
     }
 
-    
-    
-    @IBAction func resetConfiguration(_ sender: UIButton) {
-        
-        
-        clearAllCoreData()
-        AppDefaults.shared.reset()
-        
-        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            appDelegate.setupRootViewControllers()
-        }
-    }
-    
-    
-    @IBAction func loginAction(_ sender: UIButton) {
-        
-        let userId = self.txtUserName.text ?? ""
-        let password = self.txtPassWord.text ?? ""
-        
-        
-        if userId.isEmpty {
-          //  ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
-            self.toCreateToast("Please Enter User ID")
-            return
-            
-        }else if password.isEmpty {
-            self.toCreateToast("Please Enter Password")
-           // ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
-            return
-        }
-        
-        let version = UIDevice.current.systemVersion
-        let modelName = UIDevice.current.model
-        
-        
-        print(AppDefaults.shared.webUrl)
-        print(AppDefaults.shared.iosUrl)
-        
-        let urlStr = AppDefaults.shared.webUrl + AppDefaults.shared.iosUrl + "action/login" //"login"  // "http://crm.saneforce.in/apps/ConfigiOSEdet.json"
-        
-        let params = "{\"name\" : \(userId),\"password\" : \(password), \"versionNo\" : \"V.1.0\",\"mode\": \"iOS-Edeting\",\"Device_version\" : \(version),\"device_id\" : \"\",\"Device_name\" : \(modelName),\"AppDeviceRegId\" : \"\", \"location\" : \"\"}"
-        
-        
-        let paramStr = ["name" : userId,"password" : password,"versionNo": "i.1.0","mode" : "iOS-Edeting","Device_version": version,"device_id" : "","Device_name" : modelName,"AppDeviceRegId" : "", "location" : ""]
-        
-        print(params)
-        
-        let param = ["data" : paramStr.toString()]
-        
-        print(urlStr)
-        print(param)
-
-        let date = Date()
-        
-        print(date)
-        AF.request(urlStr,method: .post,parameters: param).responseData(){ (response) in
-            
-            switch response.result {
-                
-                case .success(_):
-                    do {
-                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                        
-                        let date1 = Date()
-                        
-                        print(date1)
-        
-                        print("ssususnbjbo")
-                        print(apiResponse)
-                        print("ssusus")
-                        
-                        let status = self.getStatus(json: apiResponse)
-                        
-                        if status.isOk {
-                            
-                            AppDefaults.shared.save(key: .appSetUp, value: status.info)
-                            
-                            let appsetup = AppDefaults.shared.getAppSetUp()
-                            if appsetup.sfType == 2 {
-                                LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: false)
-                               
-                            } else {
-                                LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: true)
-                            }
-                            
-                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                                appDelegate.setupRootViewControllers()
-                              //  LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: false)
-                            }
-                        }
-                        
-                    }catch {
-                        print("Json could not be serialized")
-                    }
-                case .failure(let error):
-                
-                self.toCreateToast(error.localizedDescription)
-                
-                  //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-                    print(error)
-                    return
-            }
-            
-            print("2")
-            print(response)
-            print("2")
-        }
-    }
-    
-    
-    public func getStatus(json:Any?, isShowToast:Bool = true) -> (isOk:Bool, info:[String:Any]) {
-        guard let info:[String:Any] = json as? [String:Any] else {
-            return (false, [:])
-        }
-        var status = false
-        if let statusBool = info["success"] as? Bool {
-            status = statusBool
-        }
-        if status {
-            if let errormsg = info["msg"] as? String{
-                if isShowToast {
-                   // let appdelegate = UIApplication.shared.delegate as! AppDelegate
-                    self.toCreateToast(errormsg)
-                   // ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-                    
-                   // appdelegate.window?.rootViewController?.showToast(with: errormsg)
-                }
-            }else if let errormsg = info["Msg"] as? String{
-                if isShowToast {
-                   // let appdelegate = UIApplication.shared.delegate as! AppDelegate
-                    self.toCreateToast(errormsg)
-                   // ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-                   // appdelegate.window?.rootViewController?.showToast(with: errormsg)
-                }
-            }
-            return (true, info)
-        }
-        else {
-            
-            if let errormsg = info["msg"] as? String{
-                if isShowToast {
-//                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
-//                    appdelegate.window?.rootViewController?.showToast(with: errormsg)
-                    self.toCreateToast(errormsg)
-                 //   ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-                    //showAlert(title: "", message: errormsg, style: .alert, buttons: ["OK"], controller: nil, completion: nil)
-                }
-            }else if let errormsg = info["Msg"] as? String{
-                if isShowToast {
-//                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
-//                    appdelegate.window?.rootViewController?.showToast(with: errormsg)
-                    self.toCreateToast(errormsg)
-                  //  ConfigVC().showToast(controller: self, message: errormsg, seconds: 2)
-                    //showAlert(title: "", message: errormsg, style: .alert, buttons: ["OK"], controller: nil, completion: nil)
-                }
-            }
-            return (false, info)
-        }
-    }
 }
 
 
@@ -519,98 +231,3 @@ extension Dictionary{
         return self.description
     }
 }
-
-
-
-
-
-//        AF.request(urlStr,method: .post,parameters: param).responseString { (response) in
-//            print("3")
-//            print(response)
-//            print("3")
-//        }
-//
-//
-//        AF.request(urlStr,method: .post,parameters: param).response { (response) in
-//            print("4")
-//            print(response)
-//            print("4")
-//        }
-//
-//        AF.request(urlStr,method: .post,parameters: param).responseDecodable(of: Config.self) { (response) in
-//
-//            print("5")
-//            print(response)
-//            print("5")
-//        }
-
-
-
-// AF.request(urlStr,method: .post,parameters: param).re
-
-//        AF.request(url).responseDecodable(of: Config.self){ (responseFeed) in
-//
-//            print(responseFeed)
-//
-//
-//
-//            let homeVC = UIStoryboard.homeVC
-//            self.navigationController?.pushViewController(homeVC, animated: true)
-//        }
-
-
-
-//        AF.request(urlStr,method: .post,parameters: param).responseJSON{ (response) in
-//
-//            print("1")
-//            print(response)
-//            print("1")
-//
-//            switch response.result {
-//
-//                case .success(_):
-//                    do {
-//                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-//
-//
-//
-//                        print(apiResponse)
-//                    }catch {
-//
-//                    }
-//                case .failure(let error):
-//                    print(error)
-//                    return
-//            }
-//
-//        }
-
-
-
-
-//    {"name":"EMR123","password":"123","versionNo":"N TS - 1","mode":"Android-App","Device_version":"12","device_id":"e060ab25e4c9f7a1","Device_name":"220333QBI(Xiaomi)","AppDeviceRegId":"d37A27Z4TBuOoTT2vAVcFs:APA91bFHhkVZq1uMig_JHzACXDVj2aXVstqHAJyoLVUIiQK6KlO73-f1YYjpz3hzOAu50nem6nTQfNrgfuUL0l06NtF5_Am3eAUSRKQvW4-SNCgjMcBC8Kub_oXgr6DgpiMrgPZhWhI8","location":"0.0:0.0"}
-
-
-//        let jsonData = try? JSONSerialization.data(withJSONObject: params)
-//
-//        let url = URL(string: urlStr)!
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.httpBody = jsonData
-
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let data = data, error == nil else {
-//                print(error?.localizedDescription ?? "No data")
-//                return
-//            }
-//
-//            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-//
-//            if let responseJSON = responseJSON as? [String: Any] {
-//                print(responseJSON)
-//
-//            }
-//
-//        }.resume()

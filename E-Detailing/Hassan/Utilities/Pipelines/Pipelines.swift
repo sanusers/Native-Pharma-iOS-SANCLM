@@ -37,7 +37,7 @@ class Pipelines  {
     
     func doLogout() {
         window = appDelegate.window
-        self.window?.rootViewController = UINavigationController.init(rootViewController: UIStoryboard.loginVC)
+        self.window?.rootViewController = UINavigationController.init(rootViewController: LoginVC.initWithStory())
     }
     
     
@@ -67,8 +67,8 @@ class Pipelines  {
         var param: [String: Any] = [:]
         param["tableName"] = "savetp_attendance"
         param["sfcode"] = appsetup.sfCode
-        let divcodeArr = appsetup.divisionCode.components(separatedBy: ",")
-        param["division_code"] = divcodeArr[0]
+        let divcodeArr = appsetup.divisionCode?.components(separatedBy: ",")
+        param["division_code"] = divcodeArr?[0]
         param["lat"] = model.latitude
         param["long"] = model.longitude
         param["address"] = model.address

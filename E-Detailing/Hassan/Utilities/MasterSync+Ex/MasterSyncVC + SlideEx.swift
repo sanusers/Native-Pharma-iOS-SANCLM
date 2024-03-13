@@ -60,7 +60,7 @@ extension MasterSyncVC {
     func moveToHome() {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
             if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                appDelegate.setupRootViewControllers()
+                appDelegate.setupRootViewControllers(isFromlaunch: true)
             }
         }
     }

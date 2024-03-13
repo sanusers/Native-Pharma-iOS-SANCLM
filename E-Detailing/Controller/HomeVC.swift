@@ -185,7 +185,7 @@ class HomeVC: UIViewController {
     
     @IBAction func masterSyncAction(_ sender: UIButton) {
         
-        let masterSyncVC = UIStoryboard.masterSyncVC
+        let masterSyncVC = MasterSyncVC.initWithStory()
         self.navigationController?.pushViewController(masterSyncVC, animated: true)
         
        // self.present(masterSyncVC, animated: true)

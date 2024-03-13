@@ -828,6 +828,7 @@ class MainVC : UIViewController {
     @IBOutlet var deviateView: UIView!
     
     @IBOutlet var deviateViewHeight: NSLayoutConstraint!
+    var isFromLaunch: Bool = false
     var chartType: ChartType = .doctor
     var cacheDCRindex: Int = 0
     var doctorArr = [HomeData]()
@@ -919,10 +920,10 @@ class MainVC : UIViewController {
     }
     
     
-    class func initWithStory() -> MainVC {
+    class func initWithStory(isfromLaunch: Bool, ViewModel: UserStatisticsVM) -> MainVC {
         let mainVC : MainVC = UIStoryboard.Hassan.instantiateViewController()
-        mainVC.userststisticsVM = UserStatisticsVM()
-        mainVC.userststisticsVM = UserStatisticsVM()
+        mainVC.userststisticsVM = ViewModel
+        mainVC.isFromLaunch = isfromLaunch
         mainVC.masterVM = MasterSyncVM()
         return mainVC
     }
@@ -1804,13 +1805,7 @@ class MainVC : UIViewController {
             
             if !Shared.instance.isDayplanSet {
                 self.toSetDayplan()
-            } else {
-//                guard let nonNillsession = self.sessions else {return}
-//                self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: nonNillsession.count == 2 ? 1 : 0,  istoHandeleAddedSession: false))
-                
-            }
-            
-           
+         }
         }
         
         
@@ -1905,7 +1900,8 @@ class MainVC : UIViewController {
         
         // Assuming you have a storedDateString retrieved from local storage
         let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
-        let storedDate = dateFormatter.date(from: storedDateString) ?? Date()
+        let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
+        //dateFormatter.date(from: storedDateString) ?? Date()
         
         let currentDate = Date()
         
@@ -1922,7 +1918,7 @@ class MainVC : UIViewController {
             if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
                 // Reset the lastCheckedInDate to an empty string
                // LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-              //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
                // LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
              
                 
@@ -1991,14 +1987,19 @@ class MainVC : UIViewController {
             checkinAction()
         }
 
-        
-        Pipelines.shared.requestAuth() { [weak self] coordinates in
-            guard let welf = self else {return}
-            guard coordinates != nil else {
-                welf.showAlert()
-                return
+   
+            
+            Pipelines.shared.requestAuth() { [weak self] coordinates in
+                guard let welf = self else {return}
+                guard coordinates != nil else {
+                    welf.showAlert()
+                    return
+                }
             }
-        }
+            
+        
+        
+
         
         self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
         
@@ -2073,7 +2074,7 @@ class MainVC : UIViewController {
         self.navigationController?.navigationBar.isHidden = true
         
         
-        self.fetchHome()
+       // self.fetchHome()
         
     }
     
@@ -2367,7 +2368,7 @@ class MainVC : UIViewController {
     
     @IBAction func masterSyncAction(_ sender: UIButton) {
         
-        let masterSync = UIStoryboard.masterSyncVC
+        let masterSync = MasterSyncVC.initWithStory()
         masterSync.delegate = self
         self.navigationController?.pushViewController(masterSync, animated: true)
         
@@ -4109,7 +4110,9 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     }
     
     func returnWeeklyoffDates() {
-        let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
+        let weeklyoffSetupArr : [Weeklyoff]? = DBManager.shared.getWeeklyOff()
+
+        guard let  weeklyoffSetupArr = weeklyoffSetupArr, !weeklyoffSetupArr.isEmpty else {return}
         let weeklyOff = weeklyoffSetupArr[0]
         let weekoffIndex = Int(weeklyOff.holiday_Mode ?? "0") ?? 0
         let weekoffDates = self.getWeekoffDates(forMonths: [-1, 0, 1], weekoffday: weekoffIndex + 1)

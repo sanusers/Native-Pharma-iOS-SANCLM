@@ -19,18 +19,11 @@ protocol MasterSyncVCDelegate: AnyObject {
 extension MasterSyncVC: MenuResponseProtocol {
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         switch type {
-//
-//        case .workType:
-//            self.fetchedWorkTypeObject = selectedObject as? WorkType
-//        case .cluster:
-//            self.fetchedClusterObject = selectedObject as? Territory
+
         case .headQuater:
             
             self.fetchedHQObject = selectedObject as? Subordinate
-//            if self.fetchedHQObject == nil {
-//                
-//            }
-            
+
             let aHQobj = HQModel()
             aHQobj.code = self.fetchedHQObject?.id ?? ""
             aHQobj.mapId = self.fetchedHQObject?.mapId ?? ""
@@ -56,14 +49,14 @@ extension MasterSyncVC: MenuResponseProtocol {
                     
                     self.toCreateToast("Clusters synced successfully")
                     self.isDayPlanSynced = true
-                    self.collectionView.reloadData()
+                  //  self.collectionView.reloadData()
                     self.setHQlbl()
                     Shared.instance.removeLoaderInWindow()
                     
                 }
             } else {
                 self.setHQlbl()
-                self.collectionView.reloadData()
+               // self.collectionView.reloadData()
             }
 
            
@@ -565,14 +558,14 @@ extension CoreDataManager {
                 //  aDayPlan.uuid = eachDayPlan.uuid ?? UUID()
                 aDayPlan.tpDt = eachDayPlan.planDate?.toString(format: "yyyy-MM-dd HH:mm:ss") ?? ""
                 aDayPlan.tableName = "dayplan"
-                aDayPlan.sfcode = userConfig.sfCode
-                aDayPlan.divisionCode = userConfig.divisionCode
+                aDayPlan.sfcode = userConfig.sfCode ?? ""
+                aDayPlan.divisionCode = userConfig.divisionCode ?? ""
                // aDayPlan.rsf =
                 //userConfig.sfCode
                 aDayPlan.sfType = "\(userConfig.sfType!)"
-                aDayPlan.designation = userConfig.desig
+                aDayPlan.designation = userConfig.desig ?? ""
                 aDayPlan.stateCode =  "\(userConfig.stateCode!)"
-                aDayPlan.subdivisionCode = userConfig.subDivisionCode
+                aDayPlan.subdivisionCode = userConfig.subDivisionCode ?? ""
               
                 aDayPlan.remarks = eachDayPlan.remarks ?? ""
                 aDayPlan.isRejected = eachDayPlan.isRejected

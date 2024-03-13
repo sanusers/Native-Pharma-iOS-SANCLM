@@ -27,6 +27,11 @@ class MasterSyncCell : UICollectionViewCell {
     var isRotationEnabled = true
     
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+      //  stopRotation()
+    }
+    
     func loadGIF() {
         // Replace "your_gif_name" with the name of your GIF file (without extension)
         Shared.instance.showLoader(in: loaderView, loaderType: .mastersync)

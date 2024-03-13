@@ -16,7 +16,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
             self.toCreateToast("Master sync completed")
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                    appDelegate.setupRootViewControllers()
+                    appDelegate.setupRootViewControllers(isFromlaunch: true)
                 }
             }
         } else {
@@ -56,7 +56,7 @@ class MasterSyncVC : UIViewController {
     var isFromLaunch : Bool = false
     var masterVM: MasterSyncVM?
     var masterData = [MasterInfo]()
- 
+ var cacheMasterData = [MasterInfo]()
     var isDayPlanSynced: Bool = false
     var dcrList = [MasterCellData]()
     var dcrDates: [DCRdatesModel]?
@@ -164,16 +164,20 @@ class MasterSyncVC : UIViewController {
         //        self.fetchmasterData(type: MasterInfo.subordinateMGR)
        // let selectedHQobj = LocalStorage.shared.getData(key: LocalStorage.LocalValue.selectedHQ)
         
+     //   self.masterData = self.dcrList.first!.cellType.groupDetail
         
+     //   self.collectionView.reloadData()
         
         if !isFromLaunch {
             selectedMasterGroupIndex = 0
-          //  animations = (0...(masterData.count - 1)).map{ $0 == }
+    
         }else {
             selectedMasterGroupIndex = nil
-           // self.setLoader(pageType: .loading)
-           // animations = (0...(masterData.count - 1)).map{_ in true}
-            fetchMasterDataRecursively(index: 0)
+            Shared.instance.showLoaderInWindow()
+            self.collectionView.isHidden = true
+            
+
+            self.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
             
         }
         
@@ -187,6 +191,15 @@ class MasterSyncVC : UIViewController {
         tapInfoVIew.layer.cornerRadius = 5
     }
     
+    
+    //MARK:- initWithStory
+    class func initWithStory()-> MasterSyncVC{
+        
+        let view : MasterSyncVC = UIStoryboard.Hassan.instantiateViewController()
+        view.modalPresentationStyle = .overCurrentContext
+
+        return view
+    }
     
     func setupUI() {
         self.mastersyncVM = MasterSyncVM()
@@ -284,7 +297,7 @@ class MasterSyncVC : UIViewController {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
         self.lblHqName.text =   self.fetchedHQObject?.name
-       // self.collectionView.reloadData()
+        self.collectionView.reloadData()
        
     }
     
@@ -321,20 +334,28 @@ class MasterSyncVC : UIViewController {
     
     func fetchMasterDataRecursively(index: Int, isfromSyncall: Bool? = false) {
 
-        guard index < masterData.count else {
+        let tosyncMasterData : [MasterInfo] = isFromLaunch ? self.masterData : self.cacheMasterData
+        
+        guard index < tosyncMasterData.count else {
             print("DCR list sync completed")
            // self.collectionView.reloadData()
             DispatchQueue.main.async {
                 if isfromSyncall ?? false {
+                    if self.collectionView.isHidden  {
+                        self.masterData = self.dcrList.first!.cellType.groupDetail
+                        self.collectionView.reloadData()
+                        self.collectionView.isHidden = false
+                    }
                     Shared.instance.removeLoaderInWindow()
                 }
                 self.setLoader(pageType: .navigate, type: .slides)
+               
             }
           
            return
         }
 
-        let masterType = masterData[index]
+        let masterType = tosyncMasterData[index]
         
         fetchmasterData(type: masterType) { [weak self] isSuccess in
             guard let welf = self else { return }
@@ -345,14 +366,17 @@ class MasterSyncVC : UIViewController {
                 welf.collectionView.reloadData()
             }
             
-   
             welf.fetchMasterDataRecursively(index: index + 1, isfromSyncall: isfromSyncall)
+
+           
         }
         
     }
     
     @IBAction func syncAll(_ sender: UIButton) {
        
+        cacheMasterData = masterData
+        
         let selectedMasterInfo = masterData
 
         // Set loading status based on MasterInfo for each element in the array
@@ -363,10 +387,11 @@ class MasterSyncVC : UIViewController {
         
         selectedMasterGroupIndex = nil
 
-        fetchMasterDataRecursively(index: 0, isfromSyncall: true)
-        
 
-        
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in  //background queue
+            self?.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
+           }
+
         
     }
     
@@ -461,13 +486,6 @@ class MasterSyncVC : UIViewController {
           
             self.masterData = self.dcrList.first!.cellType.groupDetail
             
-//            let selectedMasterInfo = masterData
-//
-//            // Set loading status based on MasterInfo for each element in the array
-//            selectedMasterInfo.forEach { masterInfo in
-//                MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
-//            }
-            
             self.collectionView.reloadData()
 
         }
@@ -489,19 +507,8 @@ class MasterSyncVC : UIViewController {
 
             
         case .getTP :
-            //            toPostDataToserver(type : type) {_ in
-            //                completion(true)
-            //            }
-            //           // guard let welf = self else {return}
-            //            if let index = masterData.firstIndex(of: type){
-            //                animations[index] = false
-            //                collectionView.reloadData()
-            //            }
-            
-            
-//            if let index = masterData.firstIndex(of: type){
-//                animations[index] = false
-//                collectionView.reloadData()
+//            toPostDataToserver(type : type) {isCompleted in
+//                completion(isCompleted)
 //            }
             completion(true)
         case .dcrDateSync:
@@ -622,6 +629,7 @@ class MasterSyncVC : UIViewController {
             }
             
         default:
+            
             mastersyncVM?.fetchMasterData(type: type, sfCode:  self.getRSF ?? "", istoUpdateDCRlist: false, mapID: self.getRSF ?? "") {[weak self] (response) in
                 guard let welf = self else {return}
                 let date1 = Date().toString(format: "yyyy-MM-dd HH:mm:ss ZZZ")
@@ -739,13 +747,15 @@ extension MasterSyncVC : tableViewProtocols {
     
     @objc func syncAllAction (_ sender : UIButton) {
         
+       
+        
         Shared.instance.showLoaderInWindow()
         
         self.loadedSlideInfo = []
       
         self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
                            MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup,MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
-        
+                    cacheMasterData = masterData
                     let selectedMasterInfo = masterData
         
                     // Set loading status based on MasterInfo for each element in the array
@@ -753,17 +763,15 @@ extension MasterSyncVC : tableViewProtocols {
                         MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
                     }
         
-        
-            self.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
-        
-      
-        
-     //   self.masterData = self.dcrList.first!.cellType.groupDetail
-        
-      //  self.tableView.reloadData()
-      //  self.collectionView.reloadData()
+            self.collectionView.isHidden = true
         
 
+        
+
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in  //background queue
+            self?.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
+           }
+        
     }
     
 }
@@ -950,6 +958,8 @@ extension MasterSyncVC : collectionViewProtocols{
     
     @objc func groupSyncAll(_ sender : UIButton){
 
+        cacheMasterData = masterData
+        
         let selectedMasterInfo = masterData
 
         // Set loading status based on MasterInfo for each element in the array
@@ -959,9 +969,11 @@ extension MasterSyncVC : collectionViewProtocols{
         
         self.collectionView.reloadData()
        // self.setLoader(pageType: .loading)
-        fetchMasterDataRecursively(index: 0)
+    
         
-
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in  //background queue
+            self?.fetchMasterDataRecursively(index: 0)
+           }
         
     }
     

@@ -163,32 +163,57 @@ import Combine
 
 
 class ConfigVC : UIViewController {
+    @IBOutlet var licenceKeyLbl: UILabel!
     
+    @IBOutlet var devieIDLbl: UILabel!
+    @IBOutlet var languageLbl: UILabel!
+    @IBOutlet var lblURL: UILabel!
+    @IBOutlet var pageTitle: UILabel!
     
+    @IBOutlet var appTitle: UILabel!
     @IBOutlet weak var txtWebUrl: UITextField!
     @IBOutlet weak var txtLicenceKey: UITextField!
     @IBOutlet weak var txtDeviceId: UITextField!
     @IBOutlet weak var txtLanguage: UITextField!
     
+    @IBOutlet var statusBarView: UIView!
+    @IBOutlet var lblPoweredBy: UILabel!
     var config = [AppConfig]()
+    
+    func setupUI() {
+        
+        let headerLbl: [UILabel] = [languageLbl, devieIDLbl, languageLbl, licenceKeyLbl, pageTitle, lblURL]
+        headerLbl.forEach {
+            $0.setFont(font: .bold(size: .BODY))
+            $0.textColor = .appTextColor
+        }
+        
+        appTitle.setFont(font: .bold(size: .SUBHEADER))
+        lblPoweredBy.setFont(font: .medium(size: .BODY))
+        lblPoweredBy.textColor = .appLightTextColor
+        statusBarView.backgroundColor = .appTextColor
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupUI()
         
         
         
         [txtWebUrl,txtLicenceKey,txtDeviceId,txtLanguage].forEach { textfield in
-            textfield?.layer.borderColor = AppColors.primaryColorWith_25per_alpha.cgColor
-            textfield?.layer.borderWidth = 1.5
+            textfield?.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+            textfield?.layer.borderWidth = 1
             textfield?.layer.cornerRadius = 5
-            
+            textfield?.font = UIFont(name: "Satoshi-Bold", size: 14)
             let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
             
             textfield?.leftView = paddingView
+            textfield?.rightView = paddingView
             textfield?.leftViewMode = .always
+            
+            textfield?.rightViewMode = .always
         }
-        
+        txtDeviceId.backgroundColor = .appSelectionColor
 //        AF.request("http://crm.sanclm.info/Apps/ConfigiOS.json").responseJSON{ (responseFeed) in
 //            print(responseFeed)
 //
@@ -210,7 +235,7 @@ class ConfigVC : UIViewController {
         
         let uv = Locale.current.languageCode
         
-        print(uv)
+
         
         if #available(iOS 16, *) {
             let lan = Locale.current.language
@@ -221,7 +246,7 @@ class ConfigVC : UIViewController {
             
             let lan = Locale.current.languageCode
             
-            print(lan)
+   
         }
         
         
@@ -255,7 +280,7 @@ class ConfigVC : UIViewController {
     @IBAction func saveSettingsAction(_ sender: UIButton) {
         print("save")
         
-        let v = self.txtWebUrl.text
+        _ = self.txtWebUrl.text
         if self.txtWebUrl.text!.isEmpty {
             self.showToast(controller: self, message: "Please Enter Web URL", seconds: 2.0)
             return
@@ -278,10 +303,10 @@ class ConfigVC : UIViewController {
         
         let webUrl = self.txtWebUrl.text ?? ""
         
-        let licenseKey = self.txtLicenceKey.text ?? ""
+        _ = self.txtLicenceKey.text ?? ""
         
         
-        let urlStr = "http://\(webUrl)/apps/ConfigiOS.json"
+        _ = "http://\(webUrl)/apps/ConfigiOS.json"
 
         
         // Edet
@@ -343,7 +368,8 @@ class ConfigVC : UIViewController {
             print(data as Any)
             
             if error != nil || data == nil {
-                self.showToast(controller: self, message: "Invalid Access Configuration Url / Connection Failed", seconds: 2.0)
+              //  self.showToast(controller: self, message: "Invalid Access Configuration Url / Connection Failed", seconds: 2.0)
+                self.toCreateToast("Invalid Access Configuration Url / Connection Failed")
             }
             
            // self.showToast(controller: self, message: "Invalid Access Configuration Url / Connection Failed", seconds: 2.0)
@@ -364,7 +390,8 @@ class ConfigVC : UIViewController {
                 
                 print(config)
                 guard let appConfig = config.first else {
-                    self.showToast(controller: self, message: "Invalid License Key", seconds: 2.0)
+                  //  self.showToast(controller: self, message: "Invalid License Key", seconds: 2.0)
+                    self.toCreateToast("Invalid License Key")
                     return
                 }
                 

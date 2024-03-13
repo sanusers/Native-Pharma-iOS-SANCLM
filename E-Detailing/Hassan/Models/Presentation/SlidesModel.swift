@@ -28,6 +28,7 @@ import MobileCoreServices
         var id: Int
         
         
+        
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.groupedSlide = try container.decode([SlidesModel].self, forKey: .groupedSlide)
@@ -157,6 +158,7 @@ import MobileCoreServices
        var fileName: String
        var isDownloadCompleted: Bool
         var isFailed: Bool
+        var imageData: Data
         enum CodingKeys: String, CodingKey {
             case code              = "Code"
             case camp               = "Camp"
@@ -181,6 +183,7 @@ import MobileCoreServices
             case isDownloadCompleted
             case isFailed
             case index
+            case imageData
         }
         
         required init(from decoder: Decoder) throws {
@@ -207,6 +210,8 @@ import MobileCoreServices
             self.fileName               = try container.decodeIfPresent(String.self, forKey: .fileName) ?? String()
             self.isDownloadCompleted     = try container.decodeIfPresent(Bool.self, forKey: .isDownloadCompleted) ?? Bool()
             self.isFailed = try container.decodeIfPresent(Bool.self, forKey: .isFailed) ?? Bool()
+            self.imageData = try container.decodeIfPresent(Data.self, forKey: .imageData) ?? Data()
+            
             self.index = try container.decodeIfPresent(Int.self, forKey: .index) ?? Int()
         }
         
@@ -237,6 +242,7 @@ import MobileCoreServices
             isDownloadCompleted = Bool()
             isFailed = Bool()
             index = Int()
+            imageData = Data()
         }
     }
     

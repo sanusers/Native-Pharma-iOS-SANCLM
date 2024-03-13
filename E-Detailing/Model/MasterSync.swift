@@ -85,7 +85,8 @@ enum MasterCellType : Int {
         case .syncAll:
             return [MasterInfo.slides,MasterInfo.worktype]
         case .listedDoctor:
-            return [MasterInfo.doctorFencing,MasterInfo.doctorClass,MasterInfo.category,MasterInfo.speciality,MasterInfo.qualifications,MasterInfo.competitors,MasterInfo.departments,MasterInfo.docFeedback,MasterInfo.empty,MasterInfo.syncAll]
+            return [MasterInfo.doctorFencing,MasterInfo.doctorClass,MasterInfo.speciality,MasterInfo.qualifications,MasterInfo.competitors,MasterInfo.departments,MasterInfo.docFeedback,MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
+            //MasterInfo.category,
         case .chemist:
             return [MasterInfo.chemists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .stockist:
@@ -261,6 +262,10 @@ enum `MasterInfo` : String, CaseIterable {
             
         case .homeSetup:
             return String(format: "%@home", mainUrl)
+            
+        case .slides, .slideBrand, .slideSpeciality:
+            return String(format: "%@table/slides", mainUrl)
+            
         default :
             return String(format: "%@home", mainUrl) //
         }

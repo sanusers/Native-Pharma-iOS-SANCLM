@@ -795,6 +795,11 @@ class SlideDownloadVC : UIViewController {
                aGroupedSlide.priority = (aSlidesModel.priority)
                aGroupedSlide.slideData =  Data()
                aGroupedSlide.utType = ""
+               
+        
+               aGroupedSlide.imageData = Data()
+              
+               
                aGroupedSlide.isSelected = aSlidesModel.isSelected
                aGroupedSlide.isFailed = aSlidesModel.isFailed
                aGroupedSlide.isDownloadCompleted = aSlidesModel.isDownloadCompleted

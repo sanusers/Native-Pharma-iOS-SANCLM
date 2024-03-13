@@ -121,11 +121,11 @@ class MasterSyncVM {
         let userConfig = AppDefaults.shared.getAppSetUp()
         aDayPlan.tableName = "gettodaytpnew"
         aDayPlan.uuid = UUID()
-        aDayPlan.divisionCode = userConfig.divisionCode
+        aDayPlan.divisionCode = userConfig.divisionCode ?? ""
         aDayPlan.sfType = "\(userConfig.sfType!)"
         aDayPlan.designation = "\(userConfig.desig!)"
         aDayPlan.stateCode = "\(userConfig.stateCode!)"
-        aDayPlan.subdivisionCode = userConfig.subDivisionCode
+        aDayPlan.subdivisionCode = userConfig.subDivisionCode ?? ""
      
         model.enumerated().forEach {index, aMyDayPlanResponseModel in
             switch index {

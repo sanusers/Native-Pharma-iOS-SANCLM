@@ -1516,7 +1516,7 @@ class SpecifiedMenuView: BaseView {
                case .speciality  :
                    print("Yet to implement")
                    self.previewType = specifiedMenuVC.previewType?.rawValue
-               
+                   bottomHolderHeight.constant = 0
                default:
                    bottomHolderHeight.constant = 0
                    print("Yet to implement")
