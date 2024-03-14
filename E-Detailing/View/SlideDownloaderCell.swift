@@ -142,8 +142,8 @@ class SlideDownloaderCell : UITableViewCell  {
         
         // https://sanffa.info/Edetailing_files/DP/download/CC_VA_2021_.jpg
         
-        self.downloadData(mediaURL : url)
-
+       // self.downloadData(mediaURL : url)
+        Pipelines.shared.downloadData(mediaURL: url, delegate: self)
         
     }
     

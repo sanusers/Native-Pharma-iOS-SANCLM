@@ -1161,7 +1161,7 @@ class MainVC : UIViewController {
             
             self.configureSaveplanBtn(istoEnableSaveBtn)
             self.setupRejectionVIew()
-            self
+          
             self.setSegment(.workPlan)
             
             
@@ -1509,13 +1509,13 @@ class MainVC : UIViewController {
     //http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=edetsave/dayplan
     //{"tableName":"dayplan","sfcode":"MR6432","division_code":"22,","Rsf":"MR6432","sf_type":"1","Designation":"MR","state_code":"10","subdivision_code":"19,","town_code":"116780,116777,","Town_name":"Bandipora,Bramulla,","WT_code":"306","WTName":"Field Work","FwFlg":"F","town_code2":"","Town_name2":"","WT_code2":"","WTName2":"","FwFlg2":"","Remarks":"","location":"","location2":"","InsMode":"0","Appver":"M1","Mod":"","TPDt":"2024-02-07 00:00:00.000","TpVwFlg":"","TP_cluster":"","TP_worktype":""}
     
-    func toHighlightAddedCell() -> Bool? {
+    func toHighlightAddedCell()  {
         //        if sessions?.count == 2 {
         //
         //            return false
         //        } else {
         guard var nonEmptySession = self.sessions else  {
-            return false
+            return
         }
         
         
@@ -1558,7 +1558,7 @@ class MainVC : UIViewController {
             self.sessions = nonEmptySession
             self.unsavedIndex = indices.first
             self.isTohightCell = false
-            return false
+        
         } else {
             
             let unfilledSessionWithIndex = unsavedSessions.enumerated().filter { index, session in
@@ -1593,12 +1593,12 @@ class MainVC : UIViewController {
                     //   self.toCreateToast("please do save session to add plan")
                     self.unsavedIndex = unfilledindices.first
                     // self.isTohightCell = true
-                    return false
+                 
                 }
             } else {
                 self.unsavedIndex = unfilledindices.first
                 //  self.isTohightCell = true
-                return true
+             
             }
             
             
@@ -1606,7 +1606,7 @@ class MainVC : UIViewController {
         // }
         
         
-        return true
+    
         
     }
     
@@ -4368,25 +4368,37 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         
         cell.addTap { [weak self] in
-       
+            //Shared.instance.showLoaderInWindow()
             guard let welf = self else {return}
             let selectedDate = date.toString(format: "yyyy-MM-dd")
             /// note:- future date selection action
             if welf.isFurureDate(date: date) {
-                welf.toCreateToast("Day planing for future dates are restricted.")
+                
+              
+                
+                welf.showAlertToFilldates(description: "Day planing for future dates are restricted.")
+                //welf.toCreateToast("Day planing for future dates are restricted.")
           
                 return
             }
             
             /// note:- DCR sequential action
-            if let tobefilledDate = welf.getNonExistingDatesInCurrentMonth(selectedDate: date) {
-               
-                if tobefilledDate.toDate(format: "yyyy-MM-dd") < selectedDate.toDate(format: "yyyy-MM-dd")  {
-                    welf.toCreateToast("update plan for \(tobefilledDate)")
-                
-                    return
-                }
+            ///
+           let isForsequential = false
+            if isForsequential {
+                Shared.instance.showLoaderInWindow()
+                welf.getNonExistingDatesInCurrentMonth(selectedDate: date) { tobefilledDate in
+                    Shared.instance.removeLoaderInWindow()
+                    guard let tobefilledDate = tobefilledDate else {return}
+                     //Shared.instance.showLoaderInWindow()
+                     if tobefilledDate.toDate(format: "yyyy-MM-dd") < selectedDate.toDate(format: "yyyy-MM-dd")  {
+                         //Shared.instance.removeLoaderInWindow()
+                         welf.showAlertToFilldates(description: tobefilledDate)
+                         return
+                     }
+                 }
             }
+
             
             /// note:- DCR edit flag
             if model?.editflag == "0" {
@@ -4423,13 +4435,29 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MMMM d, yyyy"
                 welf.lblDate.text = dateFormatter.string(from: date)
+                
+                Shared.instance.showLoaderInWindow()
             } else {
               //  welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
             }
+           
         }
         
         return cell
     }
+    
+    
+    func showAlertToFilldates(description: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "update plan for \(description)", okAction: "Close")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+    }
+    
+
     
     
     func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
@@ -4494,7 +4522,8 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     }
     
     
-    func getNonExistingDatesInCurrentMonth(selectedDate: Date) -> String? {
+    func getNonExistingDatesInCurrentMonth(selectedDate: Date, completion: @escaping(String?) -> ())  {
+        
         let calendar = Calendar.current
 
         let currentMonth = calendar.component(.month, from: selectedDate)
@@ -4512,9 +4541,9 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         }
 
         if selectedDate == nonExistingDates.first?.toDate(format: "yyyy-MM-dd") {
-            return nil
+            completion(nil)
         } else {
-            return nonExistingDates.first
+            completion(nonExistingDates.first)
         }
         
       

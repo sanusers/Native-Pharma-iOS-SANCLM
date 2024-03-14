@@ -100,9 +100,13 @@ extension MasterSyncVC {
         
     }
     
-    func moveToDownloadSlide() {
+    func moveToDownloadSlide(isFromcache: Bool? = false) {
         let vc = SlideDownloadVC.initWithStory()
         vc.isFromlaunch = isFromLaunch
+        if isFromcache ?? false{
+            vc.arrayOfAllSlideObjects = self.arrayOfAllSlideObjects
+        }
+      
         vc.delegate = self
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: true)

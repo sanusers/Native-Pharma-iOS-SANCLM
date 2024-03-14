@@ -41,6 +41,19 @@ class Pipelines  {
     }
     
     
+    func downloadData(mediaURL: String, delegate: MediaDownloaderDelegate) {
+        //, completion: @escaping (Data?, Error?) -> Void
+        guard let url = URL(string: mediaURL) else {
+           // completion(nil, NSError(domain: "E-Detailing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+        }
+
+        let downloader = MediaDownloader()
+        downloader.delegate = delegate
+        downloader.downloadMedia(from: url)
+    }
+    
+    
     func requestAuth(completion: @escaping (Coordinates?) -> Void)  {
 
         let locManager = CLLocationManager()

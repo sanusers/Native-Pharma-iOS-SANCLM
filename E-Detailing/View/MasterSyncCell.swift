@@ -39,20 +39,16 @@ class MasterSyncCell : UICollectionViewCell {
     
     func rotateImage() {
         guard isRotationEnabled else {
-     
             return
         }
 
         // Reset the transform to the identity transform
-   
-    
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveLinear, animations: {
-            // Rotate by 30 degrees
-            self.loaderImage.transform = self.loaderImage.transform.rotated(by: .pi / 6.0)
-        }, completion: { _ in
-            // Recursive call for infinite rotation
-            self.rotateImage()
-        })
+        loaderImage.transform = .identity
+
+        // Perform an infinite rotation animation
+        UIView.animate(withDuration: 1.0, delay: 0.0, options: [.curveLinear, .repeat], animations: {
+            self.loaderImage.transform = CGAffineTransform(rotationAngle: .pi)
+        }, completion: nil)
     }
 
     // Call this function to stop the rotation

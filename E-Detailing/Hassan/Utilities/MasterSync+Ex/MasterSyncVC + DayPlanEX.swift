@@ -44,14 +44,46 @@ extension MasterSyncVC: MenuResponseProtocol {
             let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
             
             if territories.isEmpty {
-                Shared.instance.showLoaderInWindow()
-                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { _ in
+                
+                
+                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                     
+                    self.showMasterSyncError(description: "Please check your internet connectivity!")
+                    
+                    return
+                }
+                
+                
+//                cacheMasterData = masterData
+//                
+//                let selectedMasterInfo = masterData
+                let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
+                // Set loading status based on MasterInfo for each element in the array
+                tosyncMasterData.forEach { masterInfo in
+                    MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+                }
+                self.collectionView.reloadData()
+              //  Shared.instance.showLoaderInWindow()
+                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { response in
+                    switch response.result {
+                    case .success(_):
+                        tosyncMasterData.forEach { masterType in
+                            MasterInfoState.loadingStatusDict[masterType] = .loaded
+                        }
+                        self.collectionView.reloadData()
+                    case .failure(_):
+                        tosyncMasterData.forEach { masterType in
+                            MasterInfoState.loadingStatusDict[masterType] = .error
+                        }
+                        self.collectionView.reloadData()
+                    }
+               
+                  
                     self.toCreateToast("Clusters synced successfully")
                     self.isDayPlanSynced = true
-                  //  self.collectionView.reloadData()
+                 
                     self.setHQlbl()
-                    Shared.instance.removeLoaderInWindow()
+                   // Shared.instance.removeLoaderInWindow()
                     
                 }
             } else {

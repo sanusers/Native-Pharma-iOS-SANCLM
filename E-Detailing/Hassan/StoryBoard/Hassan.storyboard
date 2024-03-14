@@ -7661,7 +7661,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="425" height="49"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7G-nK-uSu">
-                                                                        <rect key="frame" x="0.0" y="15.5" width="48.5" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="16" width="47" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -7692,7 +7692,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="425" height="49"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jo2-V5-9L5">
-                                                                        <rect key="frame" x="0.0" y="16" width="62.5" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="16.5" width="62" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -7862,6 +7862,19 @@ VmVyc2lvbiA6IDEuMAM
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZY-tE-12C">
                                 <rect key="frame" x="0.0" y="-4" width="1180" height="82"/>
                                 <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Slide download inprogress.." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O47-pm-KeD">
+                                        <rect key="frame" x="955" y="38.5" width="210" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ruo-My-nqA">
+                                        <rect key="frame" x="955" y="61" width="210" height="1"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="Oqo-oP-McW"/>
+                                        </constraints>
+                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tOt-wx-6qK">
                                         <rect key="frame" x="5" y="16.5" width="65.5" height="65.5"/>
                                         <subviews>
@@ -7894,12 +7907,17 @@ VmVyc2lvbiA6IDEuMAM
                                 </subviews>
                                 <color key="backgroundColor" red="0.20784313730000001" green="0.22352941179999999" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="ruo-My-nqA" firstAttribute="width" secondItem="O47-pm-KeD" secondAttribute="width" id="6Lj-LK-SKN"/>
+                                    <constraint firstAttribute="trailing" secondItem="O47-pm-KeD" secondAttribute="trailing" constant="15" id="7sJ-Tl-0Ew"/>
                                     <constraint firstItem="tOt-wx-6qK" firstAttribute="centerY" secondItem="eZY-tE-12C" secondAttribute="centerY" multiplier="1.2" id="DMS-vh-fy5"/>
                                     <constraint firstItem="SSv-RJ-0qV" firstAttribute="leading" secondItem="tOt-wx-6qK" secondAttribute="trailing" constant="5" id="G56-bH-zoe"/>
+                                    <constraint firstItem="O47-pm-KeD" firstAttribute="centerY" secondItem="tOt-wx-6qK" secondAttribute="centerY" id="MxU-hQ-78Y"/>
                                     <constraint firstItem="tOt-wx-6qK" firstAttribute="width" secondItem="eZY-tE-12C" secondAttribute="height" multiplier="0.8" id="NJ8-gn-ggE"/>
                                     <constraint firstItem="tOt-wx-6qK" firstAttribute="height" secondItem="eZY-tE-12C" secondAttribute="height" multiplier="0.8" id="Zf1-Me-dET"/>
+                                    <constraint firstItem="ruo-My-nqA" firstAttribute="trailing" secondItem="O47-pm-KeD" secondAttribute="trailing" id="auQ-oc-kAS"/>
                                     <constraint firstItem="tOt-wx-6qK" firstAttribute="leading" secondItem="eZY-tE-12C" secondAttribute="leading" constant="5" id="gXe-uH-yHj"/>
                                     <constraint firstItem="SSv-RJ-0qV" firstAttribute="centerY" secondItem="tOt-wx-6qK" secondAttribute="centerY" id="gfs-zG-ux8"/>
+                                    <constraint firstItem="ruo-My-nqA" firstAttribute="centerY" secondItem="eZY-tE-12C" secondAttribute="centerY" multiplier="1.5" id="wgN-AZ-azY"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eMY-h7-CKJ">
@@ -8150,8 +8168,10 @@ VmVyc2lvbiA6IDEuMAM
                     <connections>
                         <outlet property="backBtn" destination="v6K-JK-tS3" id="bor-8k-zoX"/>
                         <outlet property="collectionView" destination="BkU-b7-V18" id="jec-Rg-wiK"/>
+                        <outlet property="downloadingBottomView" destination="ruo-My-nqA" id="4U7-9t-bOQ"/>
                         <outlet property="lblHqName" destination="iQy-z8-BBE" id="skP-b2-FpM"/>
                         <outlet property="lblSyncStatus" destination="KqT-RF-vz0" id="Ccl-32-JUy"/>
+                        <outlet property="slideDownloadStatusLbl" destination="O47-pm-KeD" id="UnL-fi-pzr"/>
                         <outlet property="tableView" destination="wCG-Jf-gkP" id="Gbc-jh-zZ8"/>
                         <outlet property="tapInfoVIew" destination="lWL-Ej-FTn" id="MU2-SO-aXJ"/>
                         <outlet property="titleLbl" destination="SSv-RJ-0qV" id="tK6-St-xVd"/>
@@ -8166,7 +8186,7 @@ VmVyc2lvbiA6IDEuMAM
         <image name="Menu" width="26.666666030883789" height="23.666666030883789"/>
         <image name="Vector" width="16" height="8"/>
         <image name="alarm" catalog="system" width="123" height="128"/>
-        <image name="arrow.backward" catalog="system" width="32" height="32"/>
+        <image name="arrow.backward" catalog="system" width="128" height="95"/>
         <image name="arrow.triangle.2.circlepath" catalog="system" width="128" height="104"/>
         <image name="arrow.up" catalog="system" width="118" height="128"/>
         <image name="ascending" width="92" height="96"/>
