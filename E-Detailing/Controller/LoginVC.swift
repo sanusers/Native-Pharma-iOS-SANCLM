@@ -29,6 +29,9 @@ class LoginVC : UIViewController {
         txtPassWord.font = UIFont(name: "Satoshi-Bold", size: 14)
         lblPoweredBy.setFont(font: .medium(size: .BODY))
         lblPoweredBy.textColor = .appLightTextColor
+        
+        txtUserName.text = "mgr123"
+        txtPassWord.text = "123"
     }
     @IBOutlet var contentsHolderview: UIView!
     
@@ -43,7 +46,7 @@ class LoginVC : UIViewController {
     @IBOutlet weak var lblVersion: UILabel!
 
     @IBOutlet weak var imgLogo: UIImageView!
-
+    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var homeVM: HomeViewModal?
 
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -90,9 +93,10 @@ class LoginVC : UIViewController {
     
 
     @IBAction func resetConfiguration(_ sender: UIButton) {
-                clearAllCoreData()
-                AppDefaults.shared.reset()
-                appDelegate.setupRootViewControllers()
+        
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            startBackgroundTaskWithLoader(delegate: appDelegate)
+        }
                 
     }
 
@@ -187,9 +191,54 @@ class LoginVC : UIViewController {
 
     }
     
+    func endBackgroundTask() {
+        // End the background task using its identifier
+        UIApplication.shared.endBackgroundTask(backgroundTask)
+        backgroundTask = .invalid // Reset the identifier
+    }
     
-    func clearAllCoreData() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+    
+    func startBackgroundTaskWithLoader(delegate: AppDelegate?) {
+        
+        guard let appDelegate = delegate else {
+            return
+        }
+        // Show loader on the main thread
+        DispatchQueue.main.async {
+            // Show your loader here
+         Shared.instance.showLoaderInWindow()
+        }
+        
+        // Begin a background task and store its identifier
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            // End the background task if the expiration handler is called
+            self?.endBackgroundTask()
+        }
+        
+        // Perform API calls or other background activities
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            // Your background task code here
+          
+            self.clearAllCoreData(delegate: appDelegate)
+            AppDefaults.shared.reset()
+         
+            
+            // Call endBackgroundTask when the task completes if it's not already stopped
+            self.endBackgroundTask()
+            
+            // Hide loader on the main thread once the task completes
+            DispatchQueue.main.async {
+                // Hide your loader here
+                Shared.instance.removeLoaderInWindow()
+                self.appDelegate.setupRootViewControllers()
+            }
+        }
+    }
+    
+    func clearAllCoreData(delegate: AppDelegate?) {
+        guard let appDelegate = delegate else {
             return
         }
 

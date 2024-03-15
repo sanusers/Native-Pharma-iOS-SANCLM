@@ -61,8 +61,10 @@ enum DCRType : Int {
 
 class CallVC : UIViewController {
     
+    @IBOutlet var seatchHolderVIew: UIView!
     @IBOutlet weak var txtSearch: UITextField!
     
+    @IBOutlet var resoureHQlbl: UILabel!
     @IBOutlet weak var callCollectionView: UICollectionView!
     
     
@@ -82,9 +84,51 @@ class CallVC : UIViewController {
     
     var type : DCRType!
     
+    func setHQlbl() {
+        // let appsetup = AppDefaults.shared.getAppSetUp()
+            CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
+                let savedEntity = hqModelArr.first
+                guard let savedEntity = savedEntity else{
+                    
+                    self.resoureHQlbl.text = "Select HQ"
+                    
+                    return
+                    
+                }
+                
+                self.resoureHQlbl.text = savedEntity.name == "" ? "Select HQ" : savedEntity.name
+                
+                let subordinates = DBManager.shared.getSubordinate()
+                
+                let asubordinate = subordinates.filter{$0.id == savedEntity.code}
+                
+                if !asubordinate.isEmpty {
+                 //  self.fetchedHQObject = asubordinate.first
+                 //   LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                }
+            
+              
+  
+ 
+                
+            }
+            // Retrieve Data from local storage
+               return
+        
+
+       
+    }
+
+    func setupUI() {
+        callCollectionView.layer.cornerRadius = 5
+        seatchHolderVIew.layer.cornerRadius = 5
+        seatchHolderVIew.layer.borderWidth = 1
+        seatchHolderVIew.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        setHQlbl()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupUI()
         self.callCollectionView.register(UINib(nibName: "DoctorCallCell", bundle: nil), forCellWithReuseIdentifier: "DoctorCallCell")
         
         let layout = UICollectionViewFlowLayout()
@@ -95,7 +139,7 @@ class CallVC : UIViewController {
         headerLayout.scrollDirection = .horizontal
         self.headerCollectionView.collectionViewLayout = headerLayout
         
-        self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
+       // self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
         
         self.txtSearch.addTarget(self, action: #selector(searchFilterAction(_:)), for: .editingChanged)
         
@@ -270,7 +314,7 @@ extension CallVC : collectionViewProtocols {
                 break
         }
     }
-    
+     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -278,7 +322,7 @@ extension CallVC : collectionViewProtocols {
             case self.callCollectionView :
                 let width = self.callCollectionView.frame.width / 4
             
-                let size = CGSize(width: width - 10, height: 190)
+            let size = CGSize(width: width - 10, height: collectionView.height / 3.5)
                 return size
             
 //                if self.dcrSegmentControl.selectedSegmentIndex == 0 {
@@ -291,7 +335,7 @@ extension CallVC : collectionViewProtocols {
             case self.headerCollectionView:
             
                 let label = UILabel()
-                label.font = UIFont(name: "Satoshi-Bold", size: 20)!
+            label.setFont(font: .bold(size: .BODY))
                 label.text = self.CallListArray.fetchAtIndex(indexPath.row).name
                 let sizeLabelFit = label.sizeThatFits(CGSize(width: self.headerCollectionView.frame.width-30, height: self.headerCollectionView.frame.height))
             

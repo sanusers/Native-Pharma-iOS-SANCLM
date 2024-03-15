@@ -26,6 +26,12 @@ class DCRSelectionTitleCell : UICollectionViewCell {
     }
     
     
+    func setupUI() {
+        lblDoctor.setFont(font: .bold(size: .SUBHEADER))
+        lblDoctor.backgroundColor = .appTextColor
+        viewTitle.backgroundColor = .appTextColor
+    }
+    
     var nameWidth : CGFloat? = nil {
         didSet {
             guard nameWidth != nil else {

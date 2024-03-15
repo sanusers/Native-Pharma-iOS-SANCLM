@@ -21,6 +21,18 @@ class DoctorCallCell: UICollectionViewCell {
     @IBOutlet weak var btnTownName: UIButton!
     
     
+    
+    func setupUI() {
+        lblName.setFont(font: .bold(size: .SUBHEADER))
+        lblName.textColor = .appTextColor
+        lblCategory.setFont(font: .medium(size: .BODY))
+        lblName.textColor = .appLightTextColor
+        lblSpecialty.setFont(font: .medium(size: .BODY))
+        lblSpecialty.textColor = .appLightTextColor
+        lblTownName.setFont(font: .medium(size: .BODY))
+        lblTownName.textColor = .appLightPink
+    }
+    
     var CallDetail : CallViewModel! {
         didSet{
             self.lblName.text = CallDetail.name
@@ -54,5 +66,6 @@ class DoctorCallCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        setupUI()
     }
 }

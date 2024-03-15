@@ -41,7 +41,7 @@ extension MasterSyncVC {
             } else  if (type == .slides) {
                 
                    
-                    let isNewSlideExists =  self.toCheckExistenceOfNewSlides()
+                    let isNewSlideExists =  self.toCheckExistenceOfNewSlides() ?? false
                     if isNewSlideExists {
                         moveToDownloadSlide()
                     }
@@ -58,6 +58,8 @@ extension MasterSyncVC {
     }
     
     func moveToHome() {
+        
+        //self.toCreateToast("sync completed")
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
             if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                 appDelegate.setupRootViewControllers(isFromlaunch: true)
@@ -65,7 +67,7 @@ extension MasterSyncVC {
         }
     }
     
-    func toCheckExistenceOfNewSlides() -> Bool {
+    func toCheckExistenceOfNewSlides() -> Bool? {
         let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse)
         var localParamArr = [[String:  Any]]()
         do {
@@ -87,6 +89,10 @@ extension MasterSyncVC {
             }
         }
         let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
+        
+        if self.arrayOfAllSlideObjects.isEmpty {
+            self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
+        }
         let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
         // Extract slideId values from each array
         let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
@@ -94,13 +100,39 @@ extension MasterSyncVC {
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
         let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 
+        isNewSlideExists = !nonExistingSlides.isEmpty
+        
+        if nonExistingSlides.isEmpty {
+            slideDownloadStatusLbl.isHidden  =  true
+            downloadingBottomView.isHidden =  true
+            return false
+        }
+            
+        
         // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
+        self.arrayOfAllSlideObjects.removeAll()
+        self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
+        self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
+        let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
 
+        if !nonExistingSlides.isEmpty {
+            slideDownloadStatusLbl.isHidden  =  false
+            downloadingBottomView.isHidden =  false
+            slideDownloadStatusLbl.text = "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+        } else {
+            
+            slideDownloadStatusLbl.isHidden  =  true
+            downloadingBottomView.isHidden =  true
+            
+        }
+        
+        
         return !nonExistingSlides.isEmpty
         
     }
     
     func moveToDownloadSlide(isFromcache: Bool? = false) {
+        downloadAlertSet = false
         let vc = SlideDownloadVC.initWithStory()
         vc.isFromlaunch = isFromLaunch
         if isFromcache ?? false{

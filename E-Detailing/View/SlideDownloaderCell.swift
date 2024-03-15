@@ -204,7 +204,7 @@ extension MediaDownloader: URLSessionDownloadDelegate {
             // Handle the case where the response is not an HTTP response
             return
         }
-
+        
         if (200...299).contains(httpResponse.statusCode) {
             // The HTTP status code is in the success range, proceed with processing the downloaded file
             do {
@@ -221,18 +221,11 @@ extension MediaDownloader: URLSessionDownloadDelegate {
         }
         
         
-        
-        
-//        do {
-//            let data = try Data(contentsOf: location)
-//            delegate?.mediaDownloader(self, didFinishDownloadingData: data)
-//        } catch {
-//            print("Error reading downloaded data: \(error.localizedDescription)")
-//            delegate?.mediaDownloader(self, didEncounterError: error)
-//        }
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        
+        
         let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
         delegate?.mediaDownloader(self, didUpdateProgress: progress)
     }

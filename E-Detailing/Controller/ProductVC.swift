@@ -747,13 +747,13 @@ class ProductVC : UIViewController {
                     print(error)
                     Shared.instance.removeLoaderInWindow()
                 }
-                self.popToBack(UIStoryboard.mainVC)
+                self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
             }
         } else {
             self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: params)
            // Shared.instance.removeLoaderInWindow()
             self.toCreateToast("Unable to connect to internet")
-            self.popToBack(UIStoryboard.mainVC)
+            self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
         }
         
 
@@ -925,7 +925,7 @@ class ProductVC : UIViewController {
     
     
     @IBAction func cancelAction(_ sender: UIButton) {
-        self.popToBack(UIStoryboard.mainVC)
+      self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
     }
     
     

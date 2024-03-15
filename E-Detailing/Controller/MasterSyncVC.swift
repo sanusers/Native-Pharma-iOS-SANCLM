@@ -12,12 +12,16 @@ import CoreData
 extension MasterSyncVC:  SlideDownloadVCDelegate {
 
     
-    func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel]) {
+    func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool) {
+        
+        
+        
+        
         self.arrayOfAllSlideObjects = cacheObject
         if isCompleted {
             isSlideDownloading = false
-            self.slideDownloadStatusLbl.isHidden = true
             downloadingBottomView.isHidden = true
+            self.slideDownloadStatusLbl.isHidden = true
             return
         }
         isSlideDownloading = true
@@ -25,20 +29,51 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
         self.slideDownloadStatusLbl.isHidden = false
         let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
        // self.slideDownloadStatusLbl.text =  "Slide download in progress"
-        self.slideDownloadStatusLbl.text =   "slides download in progress \(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+        self.slideDownloadStatusLbl.text =   "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+        
+       // self.slideDownloadStatusLbl.isHidden = isNewSlideExists
+       // downloadingBottomView.isHidden = isNewSlideExists
+        
+       // MasterInfoState.loadingStatusDict[.slides] = .isLoading
+        
+        if isToshowAlert {
+            toSetupAlert(desc: "Slides will be downloaded in background..", istoNavigate: false)
+        }
+       
+        
     }
+    
+    
+    func toSetupAlert(desc: String, istoNavigate: Bool) {
+        downloadAlertSet = true
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("no action")
+            if istoNavigate {
+                self.moveToHome()
+            }
+            self.backBtn.isHidden = false
+            
+           // self.moveToHome()
+            
+        }
+    }
+    
+    
+    
+    
+    
+    
     
 
     
     func didDownloadCompleted() {
         
         if isFromLaunch {
-            self.toCreateToast("Master sync completed")
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
-                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                    appDelegate.setupRootViewControllers(isFromlaunch: true)
-                }
-            }
+            
+            toSetupAlert(desc: "Slides loading completed", istoNavigate: true)
+
         } else {
             self.toCreateToast("Slide downloaded succeessfully.")
         }
@@ -47,17 +82,13 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     }
     
     
-    func toCheckSlideExistence() -> Bool {
-        
-        return false
-    }
-    
-    
 }
 
 class MasterSyncVC : UIViewController {
+    var downloadAlertSet: Bool = false
+    var isNewSlideExists: Bool = false
     var isSlideDownloading : Bool = false
-    let network: ReachabilityManager = ReachabilityManager.sharedInstance
+ 
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     static let shared = MasterSyncVC()
     var delegate : MasterSyncVCDelegate?
@@ -158,7 +189,7 @@ class MasterSyncVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         addobservers()
+       //  addobservers()
         masterVM = MasterSyncVM()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         setupUI()
@@ -202,6 +233,11 @@ class MasterSyncVC : UIViewController {
     }
     
     func setupUI() {
+        
+        
+            backBtn.isHidden = isFromLaunch
+        
+        
         self.mastersyncVM = MasterSyncVM()
         lblHqName.setFont(font: .bold(size: .BODY))
         lblHqName.textColor = .appLightTextColor
@@ -210,8 +246,9 @@ class MasterSyncVC : UIViewController {
         titleLbl.setFont(font: .bold(size: .SUBHEADER))
         slideDownloadStatusLbl.setFont(font: .medium(size: .BODY))
         slideDownloadStatusLbl.textColor = .appWhiteColor
-        downloadingBottomView.isHidden = true
-        slideDownloadStatusLbl.isHidden = true
+        //downloadingBottomView.isHidden = true
+        //slideDownloadStatusLbl.isHidden = true
+       _ = toCheckExistenceOfNewSlides()
         titleLbl.textColor = .appWhiteColor
         backBtn.setTitle("", for: .normal)
         setHQlbl()
@@ -220,21 +257,27 @@ class MasterSyncVC : UIViewController {
         }
     }
     
+  
+       
+        
+    
+    
     @IBAction func backAction(_ sender: UIButton) {
+        
+        
+        if isFromLaunch {
+            self.moveToHome()
+            return
+        }
+        
         delegate?.isHQModified(hqDidChanged: isDayPlanSynced)
-        
-//        if isMaterSyncInProgress {
-//             self.showMasterSyncError(description: "Master sync in progess please wait!")
-//            return
-//        }
-        
         self.navigationController?.popViewController(animated: true)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
-        self.isSlideDownloading = false
+       // LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+      //  self.isSlideDownloading = false
     }
     
     func addobservers() {
@@ -815,24 +858,24 @@ extension MasterSyncVC : tableViewProtocols {
     }
     
     @objc func syncAllAction (_ sender : Any) {
-        if !isFromLaunch {
-            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                
-                self.showMasterSyncError(description: "Please check your internet connectivity!")
-                
-                return
-            }
-        }
+//        if !isFromLaunch {
+//            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+//                
+//                self.showMasterSyncError(description: "Please check your internet connectivity!")
+//                
+//                return
+//            }
+//        }
 
         
-      //  Shared.instance.showLoaderInWindow()
+       // Shared.instance.showLoaderInWindow()
         
         self.isMaterSyncInProgress = true
         
         self.loadedSlideInfo = []
       
         self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup,MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType]
+                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType, MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
         
         cacheMasterData = masterData
         
@@ -1060,12 +1103,12 @@ extension MasterSyncVC : collectionViewProtocols{
     @objc func groupSyncAll(_ sender : UIButton){
 
         
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            
-            self.showMasterSyncError(description: "Please check your internet connectivity!")
-            
-            return
-        }
+//        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+//            
+//            self.showMasterSyncError(description: "Please check your internet connectivity!")
+//            
+//            return
+//        }
         
        
         

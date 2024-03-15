@@ -8,73 +8,106 @@
 import Foundation
 import UIKit
 
+extension PreCallVC : collectionViewProtocols {
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell: PreviewTypeCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PreviewTypeCVC", for: indexPath) as! PreviewTypeCVC
+        
+        
+        cell.selectionView.isHidden =  selectedSegmentsIndex == indexPath.row ? false : true
+        cell.titleLbl.textColor =  selectedSegmentsIndex == indexPath.row ? .appTextColor : .appLightTextColor
+        cell.titleLbl.text = segmentType[indexPath.row].rawValue
+        
+        
+        
+        
+        cell.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.selectedSegmentsIndex  = indexPath.row
+            
+            welf.segmentsCollection.reloadData()
+            
+            
+            switch welf.segmentType[welf.selectedSegmentsIndex] {
+                
+            case .Overview:
+                
+                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                
+            case .Precall :
+                
+                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                
+            }
+            
+            
+            
+        }
+        
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return segmentType.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
 
+  
+             return CGSize(width:segmentType[indexPath.item].rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
+         //   return CGSize(width: collectionView.width / 2, height: collectionView.height)
+        
+    }
+}
 
 class PreCallVC : UIViewController {
     
+    enum SegmentType : String {
+        case Overview = "Overview"
+        case Precall = "Pre call Analysis"
+
+    }
+    func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
+        switch segmentType {
+            
+        case .Overview:
+            self.selectedSegmentsIndex = 0
+            self.segmentsCollection.reloadData()
+        case .Precall:
+            self.selectedSegmentsIndex = 1
+            self.segmentsCollection.reloadData()
+        }
+    }
     
+    func toLoadSegments() {
+        segmentType = [.Overview , .Precall]
+        self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
+        segmentsCollection.delegate = self
+        segmentsCollection.dataSource = self
+        segmentsCollection.reloadData()
+    }
     
     @IBOutlet weak var viewSegmentControl: UIView!
     
-    
+    @IBOutlet var segmentsCollection: UICollectionView!
+    var segmentType: [SegmentType] = []
     private var segmentControl : UISegmentedControl!
-    
+    var selectedSegmentsIndex: Int = 0
     var dcrCall : CallViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateSegment()
+       //updateSegment()
+        toLoadSegments()
     }
     
     deinit {
         print("ok bye")
     }
-    
-    private func updateSegment() {
-        
-        self.segmentControl = UISegmentedControl(items: ["Overview","Pre Call Analysis"])
-        
-        self.segmentControl.translatesAutoresizingMaskIntoConstraints = false
-        self.segmentControl.selectedSegmentIndex = 0
-        self.segmentControl.addTarget(self, action: #selector(segmentControlAction(_:)), for: .valueChanged)
-        
-        self.viewSegmentControl.addSubview(self.segmentControl)
-        
-        let font = UIFont(name: "Satoshi-Bold", size: 18)!
-        self.segmentControl.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-        self.segmentControl.highlightSelectedSegment1()
-         
-        
-        self.segmentControl.topAnchor.constraint(equalTo: self.viewSegmentControl.topAnchor).isActive = true
-        self.segmentControl.leadingAnchor.constraint(equalTo: self.viewSegmentControl.leadingAnchor, constant: 20).isActive = true
-        self.segmentControl.heightAnchor.constraint(equalTo: self.viewSegmentControl.heightAnchor, multiplier: 0.7).isActive = true
-        
-        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
-        
-        let lblUnderLine = UILabel()
-        lblUnderLine.backgroundColor = color
-        lblUnderLine.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.viewSegmentControl.addSubview(lblUnderLine)
-        
-        lblUnderLine.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
-        
-        lblUnderLine.topAnchor.constraint(equalTo: self.segmentControl.bottomAnchor, constant: -6).isActive = true
-        lblUnderLine.leadingAnchor.constraint(equalTo: self.viewSegmentControl.leadingAnchor, constant: 20).isActive = true
-        lblUnderLine.trailingAnchor.constraint(equalTo: self.viewSegmentControl.trailingAnchor, constant: -20).isActive = true
-        
-    }
-    
-    
-    @objc func segmentControlAction (_ sender : UISegmentedControl){
-        
-        self.segmentControl.underlinePosition()
-        
-    }
-    
-    
-    
+
     @IBAction func startDetailingAction(_ sender: UIButton) {
         
         

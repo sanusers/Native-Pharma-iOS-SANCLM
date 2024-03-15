@@ -201,6 +201,9 @@ class ConfigVC : UIViewController {
         lblPoweredBy.setFont(font: .medium(size: .BODY))
         lblPoweredBy.textColor = .appLightTextColor
         statusBarView.backgroundColor = .appTextColor
+        
+        txtWebUrl.text = "sanffa.info"
+        txtLicenceKey.text = "sandemo"
     }
     
     override func viewDidLoad() {
