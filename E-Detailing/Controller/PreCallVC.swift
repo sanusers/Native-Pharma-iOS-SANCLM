@@ -92,6 +92,163 @@ class PreCallVC : UIViewController {
     @IBOutlet weak var viewSegmentControl: UIView!
     
     @IBOutlet var segmentsCollection: UICollectionView!
+    
+    
+    @IBOutlet var nameTitleLbl: UILabel!
+    
+    @IBOutlet var nameLbl: UILabel!
+    
+    @IBOutlet var dobTit: UILabel!
+    
+    
+    @IBOutlet var dobLbl: UILabel!
+    
+    
+    @IBOutlet var weddingDateTit: UILabel!
+    
+    
+    @IBOutlet var weddingDateLbl: UILabel!
+    
+    @IBOutlet var mobileTit: UILabel!
+    
+    
+    @IBOutlet var mobileLbl: UILabel!
+    
+    
+    
+    @IBOutlet var emailTit: UILabel!
+    
+    @IBOutlet var emailLbl: UILabel!
+    
+    
+    @IBOutlet var addressTit: UILabel!
+    
+    @IBOutlet var addressLbl: UILabel!
+    
+    
+    @IBOutlet var qualificationtit: UILabel!
+    
+    
+    @IBOutlet var qualificationLBl: UILabel!
+    
+    
+    
+    @IBOutlet var categoryTit: UILabel!
+    
+    
+    
+    
+    @IBOutlet var categoryLbl: UILabel!
+    
+    
+    @IBOutlet var specialityLbl: UILabel!
+    
+    @IBOutlet var specialityTit: UILabel!
+    
+    
+    @IBOutlet var territoryTit: UILabel!
+    
+    
+    @IBOutlet var territoryLbl: UILabel!
+    
+    
+    @IBOutlet var pagetitle: UILabel!
+    
+    func toretriveDCRdata() {
+        
+        var dcrObject : AnyObject?
+        
+        switch dcrCall.type {
+            
+        case .doctor:
+            if let  tempdcrObject = dcrCall.call as? DoctorFencing {
+                dcrObject = tempdcrObject
+            }
+        case .chemist:
+            if let  tempdcrObject = dcrCall.call as? Chemist {
+                dcrObject = tempdcrObject
+            }
+        case .stockist:
+            if let  tempdcrObject = dcrCall.call as? Stockist {
+                dcrObject = tempdcrObject
+            }
+        case .unlistedDoctor:
+            if let  tempdcrObject = dcrCall.call as? UnListedDoctor {
+                dcrObject = tempdcrObject
+            }
+        case .hospital:
+            print("Yet yo implement")
+        case .cip:
+            print("Yet yo implement")
+        }
+        
+        
+        self.dcrCall = dcrCall.toRetriveDCRdata(dcrcall: dcrObject ?? nil)
+        
+        
+        topopulateVIew(dcrCall: self.dcrCall)
+        
+    }
+    
+    
+    func topopulateVIew(dcrCall : CallViewModel) {
+      
+        switch  dcrCall.type {
+            
+           
+        case .doctor:
+            pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
+            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
+            dobLbl.text =  dcrCall.dob == "" ? "-" :  dcrCall.dob
+            weddingDateLbl.text =  dcrCall.dow == "" ? "-" :  dcrCall.dob
+            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+            
+        case .chemist:
+            pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
+            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
+            dobLbl.text =  dcrCall.dob == "" ? "-" :  dcrCall.dob
+            weddingDateLbl.text = dcrCall.dow == "" ? "-" :  dcrCall.dob
+            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+        case .stockist:
+            pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
+            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
+            dobLbl.text =  dcrCall.dob == "" ? "-" :  dcrCall.dob
+            weddingDateLbl.text = dcrCall.dow == "" ? "-" :  dcrCall.dob
+            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+        case .unlistedDoctor:
+            pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
+            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
+            dobLbl.text = dcrCall.dob == "" ? "-" :  dcrCall.dob
+            weddingDateLbl.text = dcrCall.dow == "" ? "-" :  dcrCall.dob
+            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+        case .hospital:
+            print("Yet to implement")
+        case .cip:
+            print("Yet to implement")
+        }
+    }
+    
+    
     var segmentType: [SegmentType] = []
     private var segmentControl : UISegmentedControl!
     var selectedSegmentsIndex: Int = 0
@@ -101,7 +258,9 @@ class PreCallVC : UIViewController {
         super.viewDidLoad()
         
        //updateSegment()
+        toretriveDCRdata()
         toLoadSegments()
+      
     }
     
     deinit {

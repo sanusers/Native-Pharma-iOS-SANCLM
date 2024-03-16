@@ -23,19 +23,36 @@ class CallListViewModel {
                 return self.fetchDoctorAtIndex(index: index, type: .doctor, searchText: searchText)
             case .chemist:
                 let chemists = searchText == "" ? DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
-                return CallViewModel(call: chemists[index], type: .chemist)
+            let aCallViewmodel = CallViewModel(call: chemists[index], type: .chemist)
+            return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
+              //  return CallViewModel(call: chemists[index], type: .chemist)
             case .stockist:
                 let stockists = searchText == "" ? DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
-                return CallViewModel(call: stockists[index], type: .stockist)
+            let aCallViewmodel = CallViewModel(call: stockists[index], type: .stockist)
+            return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
+            
+              //  return CallViewModel(call: stockists[index], type: .stockist)
             case .unlistedDoctor:
                 let unlistedDoctor = searchText == "" ? DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
-                return CallViewModel(call: unlistedDoctor[index], type: .unlistedDoctor)
+            
+            let aCallViewmodel = CallViewModel(call: unlistedDoctor[index], type: .unlistedDoctor)
+            return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
+            
+              //  return CallViewModel(call: unlistedDoctor[index], type: .unlistedDoctor)
             case .hospital:
                 let doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
-                return CallViewModel(call: doctor[index], type: .hospital)
+             //   return CallViewModel(call: doctor[index], type: .hospital)
+            
+            let aCallViewmodel = CallViewModel(call: doctor[index], type: .hospital)
+            return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
+           
             case .cip:
                 let doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
-                return CallViewModel(call: doctor[index], type: .cip)
+            
+            let aCallViewmodel = CallViewModel(call: doctor[index], type: .cip)
+            return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
+            
+               // return CallViewModel(call: doctor[index], type: .cip)
         }
     }
     
@@ -49,7 +66,10 @@ class CallListViewModel {
             
         }
         let doctors = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
-            return CallViewModel(call: doctors[index], type: .doctor)
+        
+        let docObj = doctors[index] 
+        let aCallViewmodel = CallViewModel(call: docObj , type: .doctor)
+        return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
     }
     
     
@@ -93,55 +113,107 @@ class CallViewModel {
     let call : AnyObject
     let type : DCRType
     
+    
+    
+    var name: String = ""
+    var code: String = ""
+    var dob: String = ""
+    var dow: String = ""
+    var mobile: String = ""
+    var email: String = ""
+    var address: String = ""
+    var qualification: String = ""
+    var category: String = ""
+    var speciality: String = ""
+    var territory: String = ""
+    var cateCode: String = ""
+    var specialityCode : String = ""
+    var townCode : String = ""
+    var townName : String = ""
     init(call: AnyObject, type: DCRType) {
         self.call = call
         self.type = type
     }
     
-    var name : String {
-        return call.name ?? ""
-    }
-    
-    var code : String {
-        return call.code ?? ""
-    }
-    
-    var townCode : String {
-        return call.townCode ?? ""
-    }
-    
-    var townName : String {
-        return call.townName ?? ""
-    }
-    
-    var cateCode : String {
-        if type == DCRType.doctor {
-            return call.categoryCode ?? ""
+    func toRetriveDCRdata(dcrcall: AnyObject?) -> CallViewModel {
+        switch self.type {
+            
+        case .doctor:
+            if let doccall = dcrcall as? DoctorFencing {
+               name = doccall.name ?? ""
+               code = doccall.code ?? ""
+               dob = doccall.dob ?? ""
+               dow = doccall.dow ?? ""
+               mobile = doccall.mobile ?? ""
+               email = doccall.docEmail ?? ""
+               address = doccall.addrs ?? ""
+               qualification = doccall.docDesig ?? ""
+               category = doccall.category ?? ""
+               speciality = doccall.speciality ?? ""
+                territory = doccall.townName ?? ""
+                townCode = doccall.townCode ?? ""
+                specialityCode = doccall.specialityCode ?? ""
+                cateCode = doccall.categoryCode ?? ""
+            }
+        case .chemist:
+            if let doccall = dcrcall as? Chemist {
+               name = doccall.name ?? ""
+               code = doccall.code ?? ""
+  
+               mobile = doccall.chemistMobile ?? ""
+               email = doccall.chemistEmail ?? ""
+               address = doccall.addr ?? ""
+            
+               category =  ""
+               speciality =  ""
+                territory = doccall.townName ?? ""
+                townCode = doccall.townCode ?? ""
+                specialityCode = ""
+                cateCode = ""
+            }
+        case .stockist:
+            if let doccall = dcrcall as? Stockist {
+               name = doccall.name ?? ""
+               code = doccall.code ?? ""
+       
+               mobile = doccall.stkMobile ?? ""
+               email = doccall.stkEmail ?? ""
+               address = doccall.addr ?? ""
+            
+               category =  ""
+               speciality =  ""
+                territory = doccall.townName ?? ""
+                townCode = doccall.townCode ?? ""
+                specialityCode = ""
+                cateCode = ""
+                
+            }
+        case .unlistedDoctor:
+            if let doccall = dcrcall as? UnListedDoctor {
+               name = doccall.name ?? ""
+               code = doccall.code ?? ""
+               dob = ""
+               dow = ""
+               mobile = doccall.mobile ?? ""
+               email = doccall.email ?? ""
+               address = doccall.addrs ?? ""
+               qualification =  ""
+               category = doccall.category ?? ""
+               speciality = doccall.specialtyName ?? ""
+                territory = doccall.townName ?? ""
+                townCode = doccall.townCode ?? ""
+                specialityCode = ""
+                cateCode = ""
+            }
+        case .hospital:
+            print("Yet yo implement")
+        case .cip:
+            print("Yet yo implement")
         }
-        return ""
+        return self
     }
     
-    var categoryName : String {
-        if type == DCRType.doctor {
-            return call.category ?? ""
-        }
-        return ""
-    }
-    
-    var specialityCode : String {
-        if type == DCRType.doctor {
-            return call.specialityCode ?? ""
-        }
-        return ""
-    }
-    
-    var specialityName : String {
-        if type == DCRType.doctor {
-            return call.speciality ?? ""
-        }
-        return ""
-    }
-    
+
 }
 
 

@@ -59,6 +59,78 @@ enum DCRType : Int {
 }
 
 
+extension CallVC: DCRfiltersViewDelegate {
+    func isFiltersupdated(_ addedFiltercount: Int, isItemAdded: Bool) {
+        print(addedFiltercount)
+        if addedFiltercount % 2 != 0 && isItemAdded {
+            addedDCRVIewHeight = addedDCRVIewHeight + 70
+        } else if addedFiltercount % 2 == 0 && !isItemAdded {
+            addedDCRVIewHeight = addedDCRVIewHeight - 70
+        }
+
+      
+        self.viewDidLayoutSubviews()
+        
+    }
+    
+    
+}
+
+extension CallVC : addedSubViewsDelegate {
+    func showAlert() {
+        print("Yet to implement")
+    }
+    
+
+    func didClose() {
+     //  backgroundView.isHidden = true
+        self.view.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+
+            case dcrfiltersView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+
+    
+    func didUpdate() {
+      //  backgroundView.isHidden = true
+        self.view.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+            case dcrfiltersView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+    
+}
+
+
 class CallVC : UIViewController {
     
     @IBOutlet var seatchHolderVIew: UIView!
@@ -72,6 +144,15 @@ class CallVC : UIViewController {
     
     @IBOutlet weak var viewSegmentControl: UIView!
     
+    @IBOutlet var filtersBtn: UIButton!
+    
+    @IBOutlet var addedFiltersCount: UILabel!
+    
+    
+    @IBOutlet var  backgroundView : UIView!
+
+    
+    @IBOutlet var  backGroundVXview : UIView!
     
     private var dcrSegmentControl : UISegmentedControl!
     private var callListViewModel : CallListViewModel!
@@ -79,10 +160,19 @@ class CallVC : UIViewController {
     var dcrActivityType = [DcrActivityType]()
     
     var searchText : String = ""
-    
+    var dcrfiltersView:  DCRfiltersView?
     private var CallListArray = CallListViewModel()
     
+    var addedDCRVIewHeight: CGFloat = 60 + 130 + 70
+    
     var type : DCRType!
+    
+
+    
+    @IBAction func didTapFiltersBtn(_ sender: UIButton) {
+        filtersAction()
+    }
+    
     
     func setHQlbl() {
         // let appsetup = AppDefaults.shared.getAppSetUp()
@@ -124,8 +214,24 @@ class CallVC : UIViewController {
         seatchHolderVIew.layer.cornerRadius = 5
         seatchHolderVIew.layer.borderWidth = 1
         seatchHolderVIew.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        backgroundView.isHidden = true
         setHQlbl()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        
+        let  tpDeviateVIewwidth = view.bounds.width / 1.7
+        let  tpDeviateVIewheight = addedDCRVIewHeight
+        
+        let  tpDeviateVIewcenterX = view.bounds.midX - (tpDeviateVIewwidth / 2)
+        let tpDeviateVIewcenterY = view.bounds.midY - (tpDeviateVIewheight / 2)
+        
+        
+        dcrfiltersView?.frame = CGRect(x: tpDeviateVIewcenterX, y: tpDeviateVIewcenterY, width: tpDeviateVIewwidth, height: tpDeviateVIewheight)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -153,6 +259,37 @@ class CallVC : UIViewController {
     deinit {
         print("ok bye")
     }
+    
+    
+    func filtersAction() {
+       backgroundView.isHidden = false
+       backGroundVXview.alpha = 0.3
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case dcrfiltersView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                
+                
+            }
+            
+        }
+        
+        dcrfiltersView = self.loadCustomView(nibname: XIBs.dcrfiltersView) as? DCRfiltersView
+        dcrfiltersView?.delegate = self
+        
+        dcrfiltersView?.addedSubviewDelegate = self
+        dcrfiltersView?.setupUI()
+        view.addSubview(dcrfiltersView ?? TPdeviateReasonView())
+    }
+    
     
     @objc func searchFilterAction (_ sender : UITextField) {
         print(sender.text!)

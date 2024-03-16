@@ -26,24 +26,24 @@ class DoctorCallCell: UICollectionViewCell {
         lblName.setFont(font: .bold(size: .SUBHEADER))
         lblName.textColor = .appTextColor
         lblCategory.setFont(font: .medium(size: .BODY))
-        lblName.textColor = .appLightTextColor
+        lblCategory.textColor = .appLightTextColor
         lblSpecialty.setFont(font: .medium(size: .BODY))
         lblSpecialty.textColor = .appLightTextColor
-        lblTownName.setFont(font: .medium(size: .BODY))
+        lblTownName.setFont(font: .bold(size: .BODY))
         lblTownName.textColor = .appLightPink
     }
     
     var CallDetail : CallViewModel! {
         didSet{
             self.lblName.text = CallDetail.name
-            self.lblTownName.text = CallDetail.townName
-            self.lblCategory.text = CallDetail.categoryName
-            self.lblSpecialty.text =  CallDetail.specialityName
+            self.lblTownName.text = CallDetail.territory
+            self.lblCategory.text = CallDetail.category
+            self.lblSpecialty.text =  CallDetail.speciality
             
             
             self.btnTownName.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
             
-            self.btnTownName.setTitle(CallDetail.townName, for: .normal)
+            self.btnTownName.setTitle(CallDetail.territory, for: .normal)
             
             self.btnTownName.backgroundColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.2))
             
