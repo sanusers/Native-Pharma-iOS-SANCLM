@@ -2,7 +2,9 @@
 //  ChangePasswordView.swift
 //  E-Detailing
 //
-//  Created by San eforce on 27/02/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 27/02/24.
 //
 
 public protocol addedSubViewsDelegate: AnyObject {

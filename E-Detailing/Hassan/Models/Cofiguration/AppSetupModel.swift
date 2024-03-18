@@ -2,7 +2,9 @@
 //  AppSetupModel.swift
 //  E-Detailing
 //
-//  Created by San eforce on 08/11/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 08/11/23.
 //
 
 import Foundation

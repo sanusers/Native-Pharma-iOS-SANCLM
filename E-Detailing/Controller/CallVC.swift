@@ -84,7 +84,7 @@ extension CallVC : addedSubViewsDelegate {
     
 
     func didClose() {
-     //  backgroundView.isHidden = true
+       backgroundView.isHidden = true
         self.view.subviews.forEach { aAddedView in
             
             switch aAddedView {
@@ -108,7 +108,7 @@ extension CallVC : addedSubViewsDelegate {
 
     
     func didUpdate() {
-      //  backgroundView.isHidden = true
+        backgroundView.isHidden = true
         self.view.subviews.forEach { aAddedView in
             
             switch aAddedView {
@@ -217,6 +217,9 @@ class CallVC : UIViewController {
         seatchHolderVIew.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
         backgroundView.isHidden = true
         setHQlbl()
+        self.backgroundView.addTap {
+            self.didClose()
+        }
     }
     
     override func viewDidLayoutSubviews() {
