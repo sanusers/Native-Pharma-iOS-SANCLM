@@ -8,10 +8,11 @@
 //
 
 import UIKit
-
+import CoreData
 class WorkTypeCell: UITableViewCell {
     
     @IBOutlet weak var workTypeLbl: UILabel!
+   // var selectedObject: NSManagedObject?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

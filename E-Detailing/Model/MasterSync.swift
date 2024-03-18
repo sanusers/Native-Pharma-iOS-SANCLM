@@ -655,6 +655,7 @@ struct MasterSyncParams {
         
         return ["data" : paramString]
     }
+
     
     static var mapCompdetParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()

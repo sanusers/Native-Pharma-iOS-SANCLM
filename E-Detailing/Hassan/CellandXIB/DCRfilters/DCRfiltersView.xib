@@ -129,10 +129,10 @@
                             <rect key="frame" x="0.0" y="190" width="1298" height="70"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Qtc-LW-uBU">
-                                    <rect key="frame" x="908.5" y="14" width="389.5" height="42"/>
+                                    <rect key="frame" x="908.5" y="12.5" width="389.5" height="45"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pGi-w7-W8n" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="189.5" height="42"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="189.5" height="45"/>
                                             <color key="backgroundColor" systemColor="systemGray4Color"/>
                                             <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -140,22 +140,30 @@
                                             <state key="normal" title="Clear">
                                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </state>
+                                            <connections>
+                                                <action selector="didtapClearBtn:" destination="iN0-l3-epB" eventType="touchUpInside" id="cnm-iX-SaQ"/>
+                                            </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5kb-Nv-Vdg" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                            <rect key="frame" x="199.5" y="0.0" width="190" height="42"/>
+                                            <rect key="frame" x="199.5" y="0.0" width="190" height="45"/>
                                             <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                             <state key="normal" title="Apply"/>
+                                            <connections>
+                                                <action selector="didTapApplyBtn:" destination="iN0-l3-epB" eventType="touchUpInside" id="Etl-zV-hkU"/>
+                                            </connections>
                                         </button>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="45" id="dXX-kn-SpU"/>
+                                    </constraints>
                                 </stackView>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstItem="Qtc-LW-uBU" firstAttribute="width" secondItem="802-Vz-5q7" secondAttribute="width" multiplier="0.3" id="TEa-dN-s5w"/>
-                                <constraint firstItem="Qtc-LW-uBU" firstAttribute="height" secondItem="802-Vz-5q7" secondAttribute="height" multiplier="0.6" id="ebu-ZN-tSV"/>
                                 <constraint firstItem="Qtc-LW-uBU" firstAttribute="centerY" secondItem="802-Vz-5q7" secondAttribute="centerY" id="fL9-Ok-iPN"/>
                                 <constraint firstAttribute="trailing" secondItem="Qtc-LW-uBU" secondAttribute="trailing" id="nkz-3D-1Dn"/>
                                 <constraint firstAttribute="height" constant="70" id="qdH-lE-8hk"/>

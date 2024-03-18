@@ -4830,6 +4830,10 @@ extension MainVC : SessionInfoTVCDelegate {
 }
 
 extension MainVC : addedSubViewsDelegate {
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        print("yes action")
+    }
+    
     
     func showAlertToEnableLocation() {
         let commonAlert = CommonAlert()

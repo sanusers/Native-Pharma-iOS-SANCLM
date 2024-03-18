@@ -11,11 +11,16 @@ public protocol addedSubViewsDelegate: AnyObject {
     func didClose()
     func didUpdate()
     func showAlert()
+    func didUpdateFilters(filteredObjects: [NSManagedObject])
 }
+
+//extension addedSubViewsDelegate {
+//    func didFilersUpdate()
+//}
 
 import Foundation
 import UIKit
-
+import CoreData
 extension ChangePasswordView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

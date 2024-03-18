@@ -11,8 +11,8 @@ import CoreData
 
 extension Speciality {
     func setValues(fromDictionary dictionary: [String:Any]){
-        if let codeValue = dictionary["Code"] as? String{
-            code = codeValue
+        if let codeValue = dictionary["Code"] as? Int{
+            code = "\(codeValue)"
         }
         if let divisionCodeValue = dictionary["Division_Code"] as? String{
             divisionCode = divisionCodeValue
@@ -45,8 +45,8 @@ extension Departs {
 
 extension DoctorClass {
     func setValues(fromDictionary dictionary: [String:Any]){
-        if let codeValue = dictionary["Code"] as? String{
-            code = codeValue
+        if let codeValue = dictionary["Code"] as? Int{
+            code = "\(codeValue)"
         }
         if let divisionCodeValue = dictionary["Division_Code"] as? String{
             divisionCode = divisionCodeValue
@@ -62,8 +62,8 @@ extension DoctorClass {
 
 extension DoctorCategory {
     func setValues(fromDictionary dictionary: [String:Any]){
-        if let codeValue = dictionary["Code"] as? String{
-            code = codeValue
+        if let codeValue = dictionary["Code"] as? Int{
+            code = "\(codeValue)"
         }
         if let divisionCodeValue = dictionary["Division_Code"] as? String{
             divisionCode = divisionCodeValue

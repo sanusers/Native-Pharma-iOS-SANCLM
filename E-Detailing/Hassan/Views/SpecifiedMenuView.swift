@@ -973,15 +973,32 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let cell: CommonResouceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "CommonResouceInfoTVC", for: indexPath) as!  CommonResouceInfoTVC
             titleLbl.text = "Cluster"
             cell.selectionStyle = .none
-
+            var yetTosendModel: NSManagedObject?
            cell.itemCountLbl.text = "\(indexPath.row + 1)."
-            
+       
             if let modelArr = self.clusterArr {
                 let model: Territory = modelArr[indexPath.row]
+                yetTosendModel = model
                 cell.populateCell(model: model)
                 cell.setupHeight(type: cellType)
             }
+            
+            if specifiedMenuVC.isFromfilter {
+                
+                cell.itemCountLbl.isHidden = true
+                cell.itemNameLBl.setFont(font: .medium(size: .BODY))
+                
+                cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.speciality, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            }
+            
+            
             return cell
+            
+            
+            
             
             
         case .doctorVisit:

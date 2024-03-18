@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 
 enum DCRType : Int {
@@ -62,9 +63,15 @@ extension CallVC: DCRfiltersViewDelegate {
     func isFiltersupdated(_ addedFiltercount: Int, isItemAdded: Bool) {
         print(addedFiltercount)
         if addedFiltercount % 2 != 0 && isItemAdded {
-            addedDCRVIewHeight = addedDCRVIewHeight + 70
+            addedDCRVIewHeight =  60 + 130 + 70 + 70
+            //addedDCRVIewHeight + 70
+            
+           
+            
         } else if addedFiltercount % 2 == 0 && !isItemAdded {
-            addedDCRVIewHeight = addedDCRVIewHeight - 70
+            addedDCRVIewHeight =   60 + 130 + 70
+            
+            //addedDCRVIewHeight - 70
         } else  if addedFiltercount % 2 != 0 && !isItemAdded {
            
         }
@@ -77,7 +84,67 @@ extension CallVC: DCRfiltersViewDelegate {
     
 }
 
+struct FilteredCase {
+    let specialityCode: Speciality?
+    let categoryCode: DoctorCategory?
+    let territoryCode: Territory?
+    let classCode: DoctorClass?
+}
+
 extension CallVC : addedSubViewsDelegate {
+    
+
+    
+    
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        if !filteredObjects.isEmpty {
+            addedFiltersCount.isHidden = false
+            addedFiltersCount.text = "\(filteredObjects.count)"
+        } else {
+            addedFiltersCount.isHidden = true
+        }
+     
+        if filteredObjects.isEmpty {
+            self.filterscase = nil
+            self.callCollectionView.reloadData()
+            self.didClose()
+            return
+        }
+        
+        var specialitycode: Speciality?
+        var catcode: DoctorCategory?
+        var territoryCode: Territory?
+        var classCode: DoctorClass?
+        filteredObjects.forEach { anObject in
+            switch anObject {
+            case let territoryObj as Territory:
+               
+                territoryCode = territoryObj
+                
+            case let catObj as DoctorCategory:
+              
+                catcode = catObj
+                
+            case let specialityObj as Speciality:
+            
+                specialitycode = specialityObj
+                
+            case let classObj as DoctorClass:
+                
+                classCode = classObj
+                
+            default:
+               print("object uncategorized")
+            }
+        }
+        
+        
+        self.filterscase = FilteredCase(specialityCode: specialitycode, categoryCode: catcode, territoryCode: territoryCode, classCode: classCode)
+
+        self.callCollectionView.reloadData()
+        self.didClose()
+    }
+    
     func showAlert() {
         print("Yet to implement")
     }
@@ -168,7 +235,7 @@ class CallVC : UIViewController {
     
     var type : DCRType!
     
-
+    var filterscase: FilteredCase?
     
     @IBAction func didTapFiltersBtn(_ sender: UIButton) {
         filtersAction()
@@ -211,6 +278,7 @@ class CallVC : UIViewController {
     }
 
     func setupUI() {
+        addedFiltersCount.isHidden = true
         callCollectionView.layer.cornerRadius = 5
         seatchHolderVIew.layer.cornerRadius = 5
         seatchHolderVIew.layer.borderWidth = 1
@@ -225,9 +293,26 @@ class CallVC : UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+      //  addedDCRVIewHeight = 60 + 130 + 70
+  
+        if let filterscase = filterscase {
+            if let _ =   filterscase.territoryCode  {
+                addedDCRVIewHeight =  60 + 130 + 60 + 70
+               
+            }
+            
+            if let _ =   filterscase.classCode  {
+                addedDCRVIewHeight =  60 + 130 + 60 + 70
+             
+            }
+        }
+        
+        
         
         let  tpDeviateVIewwidth = view.bounds.width / 1.7
         let  tpDeviateVIewheight = addedDCRVIewHeight
+        
+        
         
         let  tpDeviateVIewcenterX = view.bounds.midX - (tpDeviateVIewwidth / 2)
         let tpDeviateVIewcenterY = view.bounds.midY - (tpDeviateVIewheight / 2)
@@ -288,10 +373,15 @@ class CallVC : UIViewController {
         
         dcrfiltersView = self.loadCustomView(nibname: XIBs.dcrfiltersView) as? DCRfiltersView
         dcrfiltersView?.delegate = self
-        
+        dcrfiltersView?.selectedcategoty = self.filterscase?.categoryCode
+        dcrfiltersView?.selectedterritory = self.filterscase?.territoryCode
+        dcrfiltersView?.selectedspeciality = self.filterscase?.specialityCode
+        dcrfiltersView?.selecteddocClass = self.filterscase?.classCode
         dcrfiltersView?.addedSubviewDelegate = self
+        dcrfiltersView?.type = self.type
+        dcrfiltersView?.rootVC = self
         dcrfiltersView?.setupUI()
-        view.addSubview(dcrfiltersView ?? TPdeviateReasonView())
+        view.addSubview(dcrfiltersView ?? DCRfiltersView())
     }
     
     
@@ -409,7 +499,12 @@ extension CallVC : collectionViewProtocols {
         
         switch collectionView {
             case self.callCollectionView:
+            if let filterscase = self.filterscase   {
+                return self.CallListArray.filteredDCRrows(self.type, searchText: searchText, filterscase: filterscase)
+            } else {
                 return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+            }
+              
             case self.headerCollectionView:
                 return self.CallListArray.numberofDcrs()
             default:
@@ -422,7 +517,7 @@ extension CallVC : collectionViewProtocols {
         switch collectionView {
             case self.callCollectionView :
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DoctorCallCell", for: indexPath) as! DoctorCallCell
-                cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText)
+                cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
                 return cell
             case self.headerCollectionView :
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRSelectionTitleCell", for: indexPath) as! DCRSelectionTitleCell
@@ -445,7 +540,7 @@ extension CallVC : collectionViewProtocols {
         switch collectionView {
             case self.callCollectionView:
                 let precallvc = UIStoryboard.preCallVC
-                precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText)
+            precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
                 self.navigationController?.pushViewController(precallvc, animated: true)
             case self.headerCollectionView:
                 self.type = self.CallListArray.fetchAtIndex(indexPath.row).type
