@@ -69,7 +69,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="50" id="43k-9Y-TnU"/>
+                            <constraint firstAttribute="height" constant="50" id="5Vl-RX-3jD"/>
                             <constraint firstAttribute="trailing" secondItem="PYR-59-v71" secondAttribute="trailing" id="Brx-G7-MnL"/>
                             <constraint firstAttribute="bottom" secondItem="PYR-59-v71" secondAttribute="bottom" id="aXU-Oe-g2Z"/>
                             <constraint firstItem="PYR-59-v71" firstAttribute="top" secondItem="yIF-Dd-f3S" secondAttribute="top" id="c2q-PW-ZLJ"/>

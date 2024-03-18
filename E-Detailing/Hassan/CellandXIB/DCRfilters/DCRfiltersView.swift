@@ -27,12 +27,22 @@ extension DCRfiltersView: collectionViewProtocols {
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var height: CGFloat = 0
-        if   self.addedFilters.count % 2 == 0 {
-            height = collectionView.height  / 2
-        } else {
-       
-            height = collectionView.height
+        
+        switch self.addedIndex {
+        case 1, 2:
+            height = 60
+        case 3, 4:
+            height = 130 / 2
+        default:
+            print("Yet to implment")
         }
+        
+//        if   self.addedFilters.count % 2 == 0 {
+//            height = collectionView.height  / 2
+//        } else {
+//       
+//            height = collectionView.height
+//        }
         
         return CGSize(width: collectionView.width / 2.1, height: height)
     }
@@ -84,7 +94,7 @@ class DCRfiltersView: UIView {
     weak var delegate: DCRfiltersViewDelegate?
     weak var addedSubviewDelegate :  addedSubViewsDelegate?
     var addedFilters: [AddedFilters] = [.speciality, .category]
-    
+    var addedIndex: Int = 2
     
     func toLOadData() {
         filtersCollection.delegate = self
@@ -108,13 +118,17 @@ class DCRfiltersView: UIView {
             if self.addedFilters.count == 4 {
                 return
             }
-            self.toAddorRemoveFilters(istoadd: true, index: self.addedFilters.count)
+            
+            
+            self.addedIndex = self.addedFilters.count + 1
+            self.toAddorRemoveFilters(istoadd: true, index: self.addedFilters.count + 1)
         }
         
         self.removeFiltersIV.addTap {
             if self.addedFilters.count == 2 {
                 return
             }
+            self.addedIndex = self.addedFilters.count - 1
             self.toAddorRemoveFilters(istoadd: false, index: self.addedFilters.count - 1)
         }
     }
@@ -123,13 +137,19 @@ class DCRfiltersView: UIView {
         
         if istoadd {
             switch index {
-            case 2:
+                
+            case 1,2:
+              
+                filtersCollectionHeight.constant = 60
+                filtersViewHeight.constant = 130
+                
+            case 3:
                 if !addedFilters.contains(.territory) {
                     addedFilters.append(.territory)
                     filtersCollectionHeight.constant = 60 + 60 + 10
                     filtersViewHeight.constant = 130 + 60 + 10
                 }
-            case 3:
+            case 4:
         
                 if !addedFilters.contains(.dcrClass) {
                     addedFilters.append(.dcrClass)
@@ -150,8 +170,9 @@ class DCRfiltersView: UIView {
                 filtersCollectionHeight.constant = 60
                 filtersViewHeight.constant = 130
             case 3:
-                filtersCollectionHeight.constant = 60
-                filtersViewHeight.constant = 130
+                filtersCollectionHeight.constant = 60 + 60 + 10
+                filtersViewHeight.constant = 130 + 60 + 10
+                
             default:
 //                filtersCollectionHeight.constant = 60
 //                filtersViewHeight.constant = 130
@@ -162,7 +183,7 @@ class DCRfiltersView: UIView {
   
         delegate?.isFiltersupdated(addedFilters.count, isItemAdded: istoadd)
         self.toLOadData()
-            self.filtersCollection.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        self.filtersCollection.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         }
     }
     

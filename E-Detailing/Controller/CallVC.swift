@@ -54,8 +54,7 @@ enum DCRType : Int {
             return appSetup.cipINeed ?? 0
         }
     }
-    
-    
+ 
 }
 
 
@@ -66,6 +65,8 @@ extension CallVC: DCRfiltersViewDelegate {
             addedDCRVIewHeight = addedDCRVIewHeight + 70
         } else if addedFiltercount % 2 == 0 && !isItemAdded {
             addedDCRVIewHeight = addedDCRVIewHeight - 70
+        } else  if addedFiltercount % 2 != 0 && !isItemAdded {
+           
         }
 
       
