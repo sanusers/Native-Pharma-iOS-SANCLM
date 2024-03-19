@@ -62,7 +62,36 @@ extension PreCallVC : collectionViewProtocols {
     }
 }
 
+extension PreCallVC: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 0 :
+            let cell: productSectiontitleTVC = tableView.dequeueReusableCell(withIdentifier: "productSectiontitleTVC", for: indexPath) as! productSectiontitleTVC
+            cell.selectionStyle = .none
+            return cell
+
+        default:
+            let cell: ProductsDescriptionTVC = tableView.dequeueReusableCell(withIdentifier: "ProductsDescriptionTVC", for: indexPath) as! ProductsDescriptionTVC
+            cell.selectionStyle = .none
+            return cell
+        }
+    }
+    
+    
+}
+
 class PreCallVC : UIViewController {
+    
+    func cellregistration() {
+        productsTable.register(UINib(nibName: "ProductsDescriptionTVC", bundle: nil), forCellReuseIdentifier: "ProductsDescriptionTVC")
+        
+        productsTable.register(UINib(nibName: "productSectiontitleTVC", bundle: nil), forCellReuseIdentifier: "productSectiontitleTVC")
+        
+    }
     
     enum SegmentType : String {
         case Overview = "Overview"
@@ -75,25 +104,34 @@ class PreCallVC : UIViewController {
         case .Overview:
             self.selectedSegmentsIndex = 0
             self.segmentsCollection.reloadData()
+            self.overVIewVIew.isHidden = false
+            self.preCallVIew.isHidden = true
         case .Precall:
             self.selectedSegmentsIndex = 1
             self.segmentsCollection.reloadData()
+            self.overVIewVIew.isHidden = true
+            self.preCallVIew.isHidden = false
+            fetchPrecall()
         }
     }
     
     func toLoadSegments() {
+        segmentsCollection.isScrollEnabled = false
         segmentType = [.Overview , .Precall]
         self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
         segmentsCollection.delegate = self
         segmentsCollection.dataSource = self
         segmentsCollection.reloadData()
+        self.setSegment(.Overview)
     }
     
     @IBOutlet weak var viewSegmentControl: UIView!
     
     @IBOutlet var segmentsCollection: UICollectionView!
     
+    @IBOutlet var overVIewVIew: ShadowView!
     
+    @IBOutlet var preCallVIew: UIView!
     @IBOutlet var nameTitleLbl: UILabel!
     
     @IBOutlet var nameLbl: UILabel!
@@ -153,6 +191,16 @@ class PreCallVC : UIViewController {
     
     
     @IBOutlet var pagetitle: UILabel!
+    
+    var callresponse: [PrecallsModel]?
+    @IBOutlet var productsTable: UITableView!
+    var userStatisticsVM: UserStatisticsVM?
+    
+    func toloadProductsTable() {
+        productsTable.delegate = self
+        productsTable.dataSource = self
+        productsTable.reloadData()
+    }
     
     func toretriveDCRdata() {
         
@@ -260,7 +308,9 @@ class PreCallVC : UIViewController {
        //updateSegment()
         toretriveDCRdata()
         toLoadSegments()
-      
+        cellregistration()
+        toloadProductsTable()
+        //fetchPrecall()
     }
     
     deinit {
@@ -282,6 +332,55 @@ class PreCallVC : UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    
+    func setupPrecallsinfo() {
+        
+    }
+    
+    func fetchPrecall() {
+        //getTodayCalls
+        
+       // {"tableName":"getcuslvst","typ":"D","CusCode":"1679478","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,"}
+        self.userStatisticsVM = UserStatisticsVM()
+        
+        //let setup = AppDefaults.shared.getAppSetUp()
+        var param = [String: Any]()
+        param["tableName"] = "getcuslvst"
+        param["CusCode"] = "1679478"
+        //self.dcrCall.code
+        param["typ"] = "D"
+        param["sfcode"] =  "MR5940"
+        //setup.sfCode
+        param["division_code"] =  "63"
+        //setup.divisionCode
+        param["Rsf"] =  "MR5940"
+        //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] =  "1"
+        //setup.sfType
+        param["Designation"] = "MR"
+        //setup.desig
+        param["state_code"] =  "2"
+        //setup.stateCode
+        param["subdivision_code"] = "86,"
+        //setup.subDivisionCode
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        
+        userStatisticsVM?.getPrecalls(params: toSendData, api: .getTodayCalls, paramData: param) {  result in
+            
+            switch result {
+                
+            case .success(let response):
+                dump(response)
+                self.callresponse = response
+            case .failure(let error):
+                dump(error.localizedDescription)
+            }
+        }
+    }
     
 }
 

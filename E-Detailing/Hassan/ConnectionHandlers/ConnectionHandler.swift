@@ -22,6 +22,7 @@ final class ConnectionHandler : NSObject {
         case checkin = "savetp_attendance"
         case getdcrdate = "getdcrdate"
         case gettodaydcr = "gettodaydcr"
+        case getpreCalls = "getcuslvst"
     }
     
     static let shared = ConnectionHandler()
@@ -289,6 +290,7 @@ final class ConnectionHandler : NSObject {
                     var checkinModelData : [GeneralResponseModal]?
                     var encodedAdayCalls: [TodayCallsModel]?
                     var encodedDcrDates: [DCRdatesModel]?
+                    var encodedPrecalls : [PrecallsModel]?
                     if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
                             encodedReportsModelData = decodecObj
@@ -399,6 +401,29 @@ final class ConnectionHandler : NSObject {
                                 // Convert Swift object to JSON string
                               
                                 responseHandler.handleSuccess(value: self.convertToDictionary(encodedDcrDates) ?? JSON(), data: jsonData)
+                                print("JSON Data:")
+                                print(jsonData)
+                            } catch {
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        
+                        
+                    } else if data["tableName"] as! String == TableName.getpreCalls.rawValue {
+                        
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [PrecallsModel].self) { decodecObj in
+                            encodedPrecalls = decodecObj
+                            do {
+                                let jsonData = try JSONEncoder().encode(encodedPrecalls)
+                                
+                                // Convert Swift object to JSON string
+                              
+                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedPrecalls) ?? JSON(), data: jsonData)
                                 print("JSON Data:")
                                 print(jsonData)
                             } catch {

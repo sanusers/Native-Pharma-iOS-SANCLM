@@ -27,6 +27,7 @@ enum APIEnums : String{
     case checkin = "save/activity"
     case updatePassword = "save/chpwd"
     case home = "home"
+   
 }
 
 

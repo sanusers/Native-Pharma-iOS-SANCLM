@@ -91,6 +91,18 @@ class UserStatisticsVM {
         })
     }
     
+    //getTodayCalls
+    func getPrecalls(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[PrecallsModel],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [PrecallsModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
 }
 
 

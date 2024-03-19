@@ -42,6 +42,11 @@
 		3825CFCD2BA806B600217D40 /* addedFiltersCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */; };
 		3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */; };
 		3825CFCF2BA806B600217D40 /* DCRfiltersView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFCB2BA806B600217D40 /* DCRfiltersView.xib */; };
+		3825CFD22BA8650D00217D40 /* productSectiontitleTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD02BA8650D00217D40 /* productSectiontitleTVC.swift */; };
+		3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFD12BA8650D00217D40 /* productSectiontitleTVC.xib */; };
+		3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */; };
+		3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */; };
+		3825CFD92BA86F4800217D40 /* PrecallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD82BA86F4800217D40 /* PrecallsModel.swift */; };
 		383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */; };
 		383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */; };
 		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
@@ -367,6 +372,11 @@
 		3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addedFiltersCVC.xib; sourceTree = "<group>"; };
 		3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addedFiltersCVC.swift; sourceTree = "<group>"; };
 		3825CFCB2BA806B600217D40 /* DCRfiltersView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCRfiltersView.xib; sourceTree = "<group>"; };
+		3825CFD02BA8650D00217D40 /* productSectiontitleTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = productSectiontitleTVC.swift; sourceTree = "<group>"; };
+		3825CFD12BA8650D00217D40 /* productSectiontitleTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = productSectiontitleTVC.xib; sourceTree = "<group>"; };
+		3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsDescriptionTVC.swift; sourceTree = "<group>"; };
+		3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsDescriptionTVC.xib; sourceTree = "<group>"; };
+		3825CFD82BA86F4800217D40 /* PrecallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrecallsModel.swift; sourceTree = "<group>"; };
 		383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TPdeviateReasonView.xib; sourceTree = "<group>"; };
 		383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPdeviateReasonView.swift; sourceTree = "<group>"; };
 		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
@@ -724,9 +734,13 @@
 			isa = PBXGroup;
 			children = (
 				3825CFC82BA806B600217D40 /* DCRfiltersView.swift */,
+				3825CFCB2BA806B600217D40 /* DCRfiltersView.xib */,
+				3825CFD02BA8650D00217D40 /* productSectiontitleTVC.swift */,
+				3825CFD12BA8650D00217D40 /* productSectiontitleTVC.xib */,
 				3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */,
 				3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */,
-				3825CFCB2BA806B600217D40 /* DCRfiltersView.xib */,
+				3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */,
+				3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */,
 			);
 			path = DCRfilters;
 			sourceTree = "<group>";
@@ -795,7 +809,6 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
-				3825CFC72BA806B600217D40 /* DCRfilters */,
 				38E6B08E2B9866930014AF1E /* Resource */,
 				383A7DA22B932EAE00635D38 /* TPdeviation */,
 				38E3DF6B2B8F16A60093DF4B /* Checkin */,
@@ -810,6 +823,7 @@
 				38E659802B33072D00E7BF42 /* Reports */,
 				38E48D332B14AA9A00878DA9 /* TourPlan */,
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
+				3825CFC72BA806B600217D40 /* DCRfilters */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -1273,6 +1287,7 @@
 				38FAA16A2B7F255100714AA2 /* MyDayPlanResponseModel.swift */,
 				38FAA1682B7F254D00714AA2 /* MyDayPlanModel.swift */,
 				38FAA1762B7F5CB200714AA2 /* HQModel.swift */,
+				3825CFD82BA86F4800217D40 /* PrecallsModel.swift */,
 			);
 			path = MyDayPlan;
 			sourceTree = "<group>";
@@ -1585,6 +1600,7 @@
 				B287E62A29F29C1B0097974D /* Main.storyboard in Resources */,
 				38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */,
 				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
+				3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
@@ -1594,6 +1610,7 @@
 				388546402B5FC765005FC9FC /* HomeWorktypeTVC.xib in Resources */,
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
 				38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */,
+				3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */,
 				38E78E0E2AC6CBDA00191085 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
@@ -1670,6 +1687,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */,
+				3825CFD92BA86F4800217D40 /* PrecallsModel.swift in Sources */,
 				38F515852AA33E090069FC6B /* RcpaViewModel.swift in Sources */,
 				38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */,
 				38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */,
@@ -1824,6 +1842,7 @@
 				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				3801D4952B4ECF4800A9740F /* HomeSideMenuVC.swift in Sources */,
 				38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */,
+				3825CFD22BA8650D00217D40 /* productSectiontitleTVC.swift in Sources */,
 				38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */,
 				38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */,
 				38E6598C2B33195C00E7BF42 /* DetailedReportView.swift in Sources */,
@@ -1836,6 +1855,7 @@
 				3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */,
 				38E3DF752B8F66F50093DF4B /* HomeCheckinDetailsView.swift in Sources */,
 				38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */,
+				3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */,
 				38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */,
 				38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */,
 				38CF07E22A9C99090051B577 /* LocationManager.swift in Sources */,
