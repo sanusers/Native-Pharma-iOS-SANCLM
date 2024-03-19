@@ -149,6 +149,7 @@
 		38CA1FF42B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */; };
 		38CA1FF62B613C2A00AFCFD2 /* SlidesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */; };
 		38CA58D32B80AAFB00E28C3D /* MainVC + DayPlanEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */; };
+		38CACEAC2BA96464006BFA62 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CACEAB2BA96464006BFA62 /* BackgroundTaskManager.swift */; };
 		38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */; };
 		38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */; };
 		38CAE5D72AC2F15A00DA554F /* EventCaptureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */; };
@@ -479,6 +480,7 @@
 		38CA1FF22B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayLoadedPresentationCVC.xib; sourceTree = "<group>"; };
 		38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesModel.swift; sourceTree = "<group>"; };
 		38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + DayPlanEX.swift"; sourceTree = "<group>"; };
+		38CACEAB2BA96464006BFA62 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		38CAE4C12A57E3040071AD9C /* Subordinate + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subordinate + Extension.swift"; sourceTree = "<group>"; };
 		38CAE5D42AC2F14B00DA554F /* EventCaptureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCell.swift; sourceTree = "<group>"; };
 		38CAE5D62AC2F15A00DA554F /* EventCaptureCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCell.xib; sourceTree = "<group>"; };
@@ -926,6 +928,7 @@
 				38EC6FB12B6242D10065A707 /* Media.swift */,
 				38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */,
 				38E3DF702B8F2DBA0093DF4B /* Viewcontroller + Ex.swift */,
+				38CACEAB2BA96464006BFA62 /* BackgroundTaskManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1746,6 +1749,7 @@
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				38FAA16D2B7F255600714AA2 /* CommonStructs.swift in Sources */,
 				B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */,
+				38CACEAC2BA96464006BFA62 /* BackgroundTaskManager.swift in Sources */,
 				38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */,
 				38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */,
 				38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */,

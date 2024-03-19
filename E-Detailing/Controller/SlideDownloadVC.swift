@@ -13,6 +13,17 @@ import Alamofire
 import MobileCoreServices
 import SSZipArchive
 
+
+extension SlideDownloadVC: BackgroundTaskManagerDelegate {
+    func didUpdate(rrayOfAllSlideObjects: [SlidesModel], index: Int, completion: @escaping () -> ()) {
+        didDownloadCompleted(arrayOfAllSlideObjects: rrayOfAllSlideObjects, index: index, isForSingleSelection: false, isfrorBackgroundTask: true, istoreturn: false) { _ in
+            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: rrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
+            completion()
+        }
+    }
+
+}
+
 extension SlideDownloadVC : MediaDownloaderDelegate {
     func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
         print("Downloading...<--")
@@ -29,9 +40,11 @@ extension SlideDownloadVC : MediaDownloaderDelegate {
             params.isDownloadCompleted = true
             params.isFailed = false
             params.uuid = UUID()
-        didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false) {_ in
+        didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false, isfrorBackgroundTask: false, istoreturn: false) {_ in
            
-            self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false)}
+        self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)}
+        
+       // toDownloadMedia(index: self.loadingIndex, items: self.arrayOfAllSlideObjects)
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: Error) {
@@ -42,9 +55,9 @@ extension SlideDownloadVC : MediaDownloaderDelegate {
              params.isDownloadCompleted = false
              params.isFailed = true
              params.uuid = UUID()
-        didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false) {_ in
+        didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false, isfrorBackgroundTask: false, istoreturn: false) {_ in
            
-       self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false)
+            self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
             
         }
     }
@@ -54,9 +67,18 @@ extension SlideDownloadVC : MediaDownloaderDelegate {
 
 
 extension SlideDownloadVC : SlideDownloaderCellDelegate {
-    func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, isForSingleSelection: Bool, completion: @escaping (Bool) -> Void) {
+    func didDownloadCompleted(arrayOfAllSlideObjects: [SlidesModel], index: Int, isForSingleSelection: Bool, isfrorBackgroundTask: Bool, istoreturn : Bool, completion: @escaping (Bool) -> Void) {
         
-      
+        
+        if istoreturn {
+            completion(true)
+            return
+            
+        }
+        
+      self.closeHolderView.isUserInteractionEnabled = false
+      guard isDownloadingInProgress  else { 
+          return }
       self.tableView.isUserInteractionEnabled = !isDownloading
       self.loadingIndex = index + 1
       self.arrayOfAllSlideObjects = arrayOfAllSlideObjects
@@ -83,8 +105,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                             // Update UI on the main queue after background tasks are completed
                              self.tableView.reloadData()
                             LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
-                            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false)
+                            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                             self.isDownloading = false
+                            self.closeHolderView.isUserInteractionEnabled = true
                             completion(true)
                         }
                     }
@@ -109,20 +132,32 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                             }
                             
                             DispatchQueue.main.async {
-                                self.tableView.reloadData()
+                                
+                                if !isfrorBackgroundTask {
+                                    self.tableView.reloadData()
+                                    self.tableView.isUserInteractionEnabled = true
+                                }
+                               
                                 LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
-                                self.tableView.isUserInteractionEnabled = true
-                                self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false)
+                                self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                                 self.checkifSyncIsCompleted(self.isFromlaunch)
+                                self.closeHolderView.isUserInteractionEnabled = true
+                                completion(true)
                             }
                         }
           
                         return
                     }
                     
-                    self.tableView.reloadData()
-                     self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false)
+                  
+                    self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                     LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
+                    self.closeHolderView.isUserInteractionEnabled = true
+                    if isfrorBackgroundTask {
+                        completion(true)
+                        return
+                    }
+                    self.tableView.reloadData()
                     self.toDownloadMedia(index: index + 1, items: arrayOfAllSlideObjects)
                 }
             }
@@ -158,7 +193,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
 
 protocol SlideDownloadVCDelegate: AnyObject {
     func didDownloadCompleted()
-    func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool)
+    func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool)
 }
 
 typealias SlidesCallBack = (_ status: Bool) -> Void
@@ -175,6 +210,7 @@ class SlideDownloadVC : UIViewController {
         let tourPlanVC : SlideDownloadVC = UIStoryboard.Hassan.instantiateViewController()
         return tourPlanVC
     }
+    var isDownloadingInProgress : Bool = false
     var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
     var arrayOfAllSlideObjects = [SlidesModel]()
     var extractedFileName: String?
@@ -185,10 +221,16 @@ class SlideDownloadVC : UIViewController {
     var isConnected = Bool()
     var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var isBackgroundTaskRunning: Bool = false
+    var iscellIterating: Bool = false
     @IBOutlet weak var tableView: UITableView!
     
     var slidesModel = [SlidesModel]()
 
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+       // isDownloadingInProgress = false
+    }
     
     func startDownload() {
       
@@ -197,7 +239,8 @@ class SlideDownloadVC : UIViewController {
          
          let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
         
-        endBackgroundTask()
+      
+        isDownloadingInProgress = true
         toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
     }
     
@@ -209,14 +252,15 @@ class SlideDownloadVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        if  Shared.instance.iscelliterating {
+            return
+        }
         setupuUI()
         initVIew()
         let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
         if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
-            if isBackgroundTaskRunning {
-                    endBackgroundTask()
-                }
+            self.isDownloadingInProgress = false
+             _ = toCheckExistenceOfNewSlides()
             toSetTableVIewDataSource()
             startDownload()
         } else {
@@ -251,20 +295,13 @@ class SlideDownloadVC : UIViewController {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
             }
             
-            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) && !self.isFromlaunch {
-              //  self.toSetupAlert()
-                self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: apiFetchedSlide, isToshowAlert: self.isDownloading)
-                self.dismiss(animated: false)
-                
-            } else if self.isFromlaunch {
-               // self.toSetupAlert()
-                self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: apiFetchedSlide, isToshowAlert: self.isDownloading)
-                self.dismiss(animated: false)
-             
-            } else {
-                self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: apiFetchedSlide, isToshowAlert: self.isDownloading)
-                self.dismiss(animated: false)
-            }
+
+          
+
+          //  self.startDownload()
+            
+            self.dismiss(animated: false)
+
 
         }
     }
@@ -295,6 +332,7 @@ class SlideDownloadVC : UIViewController {
                            self.toCreateToast("Please check your internet connection.")
                            self.isConnected = false
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                           self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: true)
                           // self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
                            
                            
@@ -302,6 +340,7 @@ class SlideDownloadVC : UIViewController {
                            self.isConnected = true
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
+                           self.startDownload()
                            //self.toDownloadMedia(index: self.loadingIndex, items: self.arrayOfAllSlideObjects)
                          //  self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
                        }
@@ -412,21 +451,21 @@ class SlideDownloadVC : UIViewController {
                     
                     let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
                     
-                    let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
+                  //  let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
                     
-                    toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
-                   
+                  //  toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
+                    self.startDownload()
                 } else {
                     
                     _ = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
                      
                      let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
                      
-                     let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
+                   //  let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
                      
-                     toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
+                     //toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
                     
-                  
+                    self.startDownload()
                 }
               
             } else {
@@ -472,25 +511,39 @@ class SlideDownloadVC : UIViewController {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
            // self.tableView.isUserInteractionEnabled = true
             self.isDownloading = false
-            UIApplication.shared.endBackgroundTask(self.backgroundTask)
-           
+           // UIApplication.shared.endBackgroundTask(self.backgroundTask)
+            BackgroundTaskManager.shared.stopBackgroundTask()
             return
         }
         
-
+       // BackgroundTaskManager.shared.toDownloadMedia(index: index, items: items, delegte: self)
         
         let indexPath = IndexPath(row: index , section: 0) // Assuming single section
         
         scrollToItem(at: index, animated: true)
         
         if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
+            Shared.instance.iscelliterating = true
             cell.toSendParamsToAPISerially(index: index, items: items, isForsingleRetry: isForsingleRetry)
             cell.delegate = self
            
         } else {
+            Shared.instance.iscelliterating = false
             print("Cant able to retrive cell.")
-            toStartBackgroundTask(index: index, items: items)
-
+            
+            BackgroundTaskManager.shared.stopBackgroundTask()
+            
+            let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
+            
+            let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
+            
+          //  toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
+            self.didDownloadCompleted(arrayOfAllSlideObjects: self.arrayOfAllSlideObjects, index: cacheIndexInt, isForSingleSelection: false, isfrorBackgroundTask: true, istoreturn: true) {_ in
+                BackgroundTaskManager.shared.toDownloadMedia(index: cacheIndexInt, items: self.arrayOfAllSlideObjects, delegte: self)
+            }
+            
+//            self.isDownloadingInProgress = false
+//            BackgroundTaskManager.shared.toDownloadMedia(index: index, items: items, delegte: self)
         }
     }
     

@@ -11,7 +11,7 @@
 import UIKit
 
 protocol SlideDownloaderCellDelegate: AnyObject {
-    func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, isForSingleSelection: Bool, completion: @escaping (Bool) -> Void)
+    func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, isForSingleSelection: Bool, isfrorBackgroundTask: Bool, istoreturn: Bool, completion: @escaping (Bool) -> Void)
 }
 
 extension SlideDownloaderCell: MediaDownloaderDelegate {
@@ -24,7 +24,7 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             params.isFailed = false
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
-        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false) {_ in}
+        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
         
     }
     
@@ -38,7 +38,7 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             print("Error downloading media: \(error)")
             lblDataBytes.text = "Error downloading media"
             btnRetry.isHidden = false
-        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false) {_ in}
+        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {

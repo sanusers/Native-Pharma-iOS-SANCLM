@@ -118,9 +118,16 @@ extension MasterSyncVC {
         if !nonExistingSlides.isEmpty {
             slideDownloadStatusLbl.isHidden  =  false
             downloadingBottomView.isHidden =  false
-            slideDownloadStatusLbl.text = "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+            if isfromHome {
+                slideDownloadStatusLbl.text = "Slides download in progress"
+            } else {
+                slideDownloadStatusLbl.text = "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+            }
+       
+            retryVIew.isHidden = false
+           
         } else {
-            
+            retryVIew.isHidden = true
             slideDownloadStatusLbl.isHidden  =  true
             downloadingBottomView.isHidden =  true
             

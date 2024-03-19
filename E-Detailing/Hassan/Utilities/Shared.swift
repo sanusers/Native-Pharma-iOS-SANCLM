@@ -15,6 +15,7 @@ class Shared {
 
     var selectedPhoneCode: String = ""
     var isDayplanSet = false
+    var iscelliterating: Bool = false
 }
 //MARK:- UserDefaults property observers
 

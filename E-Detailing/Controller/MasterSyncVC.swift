@@ -12,24 +12,39 @@ import CoreData
 extension MasterSyncVC:  SlideDownloadVCDelegate {
 
     
-    func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool) {
+    func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool) {
         
         
         
         
         self.arrayOfAllSlideObjects = cacheObject
+        
+        if didEncountererror {
+            isSlideDownloading = false
+            retryVIew.isHidden = false
+            self.slideDownloadStatusLbl.text =   "Error downloading slides.."
+            return
+        } else {
+            retryVIew.isHidden = true
+        }
+        
         if isCompleted {
             isSlideDownloading = false
             downloadingBottomView.isHidden = true
             self.slideDownloadStatusLbl.isHidden = true
             return
         }
-        isSlideDownloading = true
+        
+  
+        
+        
         downloadingBottomView.isHidden = false
         self.slideDownloadStatusLbl.isHidden = false
         let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
        // self.slideDownloadStatusLbl.text =  "Slide download in progress"
         self.slideDownloadStatusLbl.text =   "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+        
+   
         
        // self.slideDownloadStatusLbl.isHidden = isNewSlideExists
        // downloadingBottomView.isHidden = isNewSlideExists
@@ -53,7 +68,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
             if istoNavigate {
                 self.moveToHome()
             }
-            self.backBtn.isHidden = false
+      
             
            // self.moveToHome()
             
@@ -104,6 +119,9 @@ class MasterSyncVC : UIViewController {
     
     @IBOutlet var downloadingBottomView: UIView!
     @IBOutlet var slideDownloadStatusLbl: UILabel!
+    
+    @IBOutlet var retryVIew: UIView!
+    
     var pageType: PageType = .loaded
     var loadedSlideInfo = [MasterInfo]()
     var extractedFileName: String?
@@ -117,7 +135,7 @@ class MasterSyncVC : UIViewController {
     var selectedMasterGroupIndex: Int? = nil
     var fetchedHQObject: Subordinate?
     var isMaterSyncInProgress : Bool = false
-
+    var isfromHome : Bool = false
      var backgroundTask: UIBackgroundTaskIdentifier = .invalid
 //    var animations: [LoadingStatus] = MasterInfoState.loadingStatusDict.map { $0.value } {
 //        didSet {
@@ -234,8 +252,8 @@ class MasterSyncVC : UIViewController {
     
     func setupUI() {
         
-        
-            backBtn.isHidden = isFromLaunch
+        retryVIew.isHidden = true
+        backBtn.isHidden = isFromLaunch
         
         
         self.mastersyncVM = MasterSyncVM()
@@ -251,9 +269,24 @@ class MasterSyncVC : UIViewController {
        _ = toCheckExistenceOfNewSlides()
         titleLbl.textColor = .appWhiteColor
         backBtn.setTitle("", for: .normal)
+      
+        retryVIew.layer.cornerRadius = retryVIew.height / 2
         setHQlbl()
+        
+     
+        
         slideDownloadStatusLbl.addTap {
+          //  if  !self.retryVIew.isHidden {
+            
+            if  Shared.instance.iscelliterating {
+                return
+            }
+            
             self.moveToDownloadSlide(isFromcache: true)
+           // } else {
+            //    return
+           // }
+            
         }
     }
     
@@ -447,6 +480,7 @@ class MasterSyncVC : UIViewController {
                 
                 if istoNavigate || self.isFromLaunch {
                     self.setLoader(pageType: .navigate, type: .slides)
+                    self.backBtn.isHidden = false
                 }
 
             }

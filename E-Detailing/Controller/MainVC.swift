@@ -15,27 +15,11 @@ import CoreData
 
 extension MainVC : MasterSyncVCDelegate {
     func isHQModified(hqDidChanged: Bool) {
-        //
-        //        if hqDidChanged {
-        //            toConfigureMydayPlan()
-        //            guard var nonemptysession = sessions, !nonemptysession.isEmpty  else {
-        //                return
-        //            }
-        //
-        //
-        //            for (index, var session) in nonemptysession.enumerated() {
-        //                if session.isRetrived == false {
-        //                    session.headQuarters = nil
-        //                    nonemptysession[index] = session
-        //                }
-        //            }
-        //            self.sessions = nonemptysession
-        //
-        //        } else {
-        //
-        //        }
-        //        self.configureAddplanBtn(false, isSessionSaved: false)
-        //        self.toLoadWorktypeTable()
+        
+                if hqDidChanged {
+                    toConfigureMydayPlan()
+    
+                }
         
     }
 }
@@ -2369,6 +2353,7 @@ class MainVC : UIViewController {
     @IBAction func masterSyncAction(_ sender: UIButton) {
         
         let masterSync = MasterSyncVC.initWithStory()
+        masterSync.isfromHome = true
         masterSync.delegate = self
         self.navigationController?.pushViewController(masterSync, animated: true)
         
