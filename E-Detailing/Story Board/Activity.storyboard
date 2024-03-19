@@ -829,24 +829,24 @@ Chennai</string>
                                                         <rect key="frame" x="0.0" y="0.0" width="544.5" height="564.5"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="juu-so-7bm">
-                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="282"/>
+                                                                <rect key="frame" x="0.0" y="15" width="544.5" height="225.5"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KXU-As-rJL">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="94"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="75"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="sZx-qJ-kh7">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="94"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="75"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last visit date &amp; time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xAE-LX-N8h">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="47"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="37.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                                         <nil key="textColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No last visit data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wtX-q1-BVW">
-                                                                                        <rect key="frame" x="0.0" y="47" width="544.5" height="47"/>
+                                                                                        <rect key="frame" x="0.0" y="37.5" width="544.5" height="37.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
-                                                                                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                 </subviews>
@@ -861,21 +861,21 @@ Chennai</string>
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6f7-Nf-IF1">
-                                                                        <rect key="frame" x="0.0" y="94" width="544.5" height="94"/>
+                                                                        <rect key="frame" x="0.0" y="75" width="544.5" height="75.5"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="UAm-va-Jb0">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="94"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="75.5"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Feedback" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XBb-vd-6lu">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="47"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="37.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                                         <nil key="textColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No feedback" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Hj-TH-Ovl">
-                                                                                        <rect key="frame" x="0.0" y="47" width="544.5" height="47"/>
+                                                                                        <rect key="frame" x="0.0" y="37.5" width="544.5" height="38"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
-                                                                                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                 </subviews>
@@ -890,21 +890,21 @@ Chennai</string>
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UZG-Mt-9it">
-                                                                        <rect key="frame" x="0.0" y="188" width="544.5" height="94"/>
+                                                                        <rect key="frame" x="0.0" y="150.5" width="544.5" height="75"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="atz-A6-3UF">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="94"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="75"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remarks" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UG1-eM-lAD">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="47"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="37.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                                         <nil key="textColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No remarks" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kq3-U7-l81">
-                                                                                        <rect key="frame" x="0.0" y="47" width="544.5" height="47"/>
+                                                                                        <rect key="frame" x="0.0" y="37.5" width="544.5" height="37.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
-                                                                                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                 </subviews>
@@ -924,8 +924,8 @@ Chennai</string>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <constraints>
                                                             <constraint firstItem="juu-so-7bm" firstAttribute="leading" secondItem="mz4-Vp-1oI" secondAttribute="leading" id="UJU-xY-ImH"/>
-                                                            <constraint firstItem="juu-so-7bm" firstAttribute="height" secondItem="mz4-Vp-1oI" secondAttribute="height" multiplier="0.5" id="beR-Cj-kdo"/>
-                                                            <constraint firstItem="juu-so-7bm" firstAttribute="top" secondItem="mz4-Vp-1oI" secondAttribute="top" id="ddB-VU-C7x"/>
+                                                            <constraint firstItem="juu-so-7bm" firstAttribute="height" secondItem="mz4-Vp-1oI" secondAttribute="height" multiplier="0.4" id="beR-Cj-kdo"/>
+                                                            <constraint firstItem="juu-so-7bm" firstAttribute="top" secondItem="mz4-Vp-1oI" secondAttribute="top" constant="15" id="ddB-VU-C7x"/>
                                                             <constraint firstAttribute="trailing" secondItem="juu-so-7bm" secondAttribute="trailing" id="lRp-cm-J8v"/>
                                                         </constraints>
                                                     </view>
@@ -933,36 +933,36 @@ Chennai</string>
                                                         <rect key="frame" x="554.5" y="0.0" width="544.5" height="564.5"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="5se-2a-RMX">
-                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="94"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="75"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Inputs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cqB-qY-fkr">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="47"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="37.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No inputs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ENK-Fv-v8Z">
-                                                                        <rect key="frame" x="0.0" y="47" width="544.5" height="47"/>
+                                                                        <rect key="frame" x="0.0" y="37.5" width="544.5" height="37.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
-                                                                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                 </subviews>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="1Mc-wP-exJ">
-                                                                <rect key="frame" x="0.0" y="94" width="544.5" height="470.5"/>
+                                                                <rect key="frame" x="0.0" y="75" width="544.5" height="489.5"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Products promoted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OfJ-st-mgm">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="47"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="544.5" height="37.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jjE-Jh-wQw">
-                                                                        <rect key="frame" x="0.0" y="47" width="544.5" height="423.5"/>
+                                                                        <rect key="frame" x="0.0" y="37.5" width="544.5" height="452"/>
                                                                         <subviews>
                                                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="y0m-57-TCG">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="423.5"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="544.5" height="452"/>
                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                             </tableView>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No products promoted" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rzr-uq-3or">
@@ -1097,9 +1097,14 @@ Chennai</string>
                         <outlet property="mobileTit" destination="usp-RC-grs" id="vNy-My-y5I"/>
                         <outlet property="nameLbl" destination="ewe-n8-ywH" id="hoN-50-Ago"/>
                         <outlet property="nameTitleLbl" destination="tea-bb-JrD" id="A6o-Dm-gTQ"/>
+                        <outlet property="noProductsLbl" destination="rzr-uq-3or" id="rf5-Hy-KcZ"/>
                         <outlet property="overVIewVIew" destination="8DQ-tH-m03" id="3TU-jS-Hzc"/>
                         <outlet property="pagetitle" destination="gaS-dx-W3m" id="t2f-3y-EyQ"/>
                         <outlet property="preCallVIew" destination="jFd-28-SVx" id="x7V-uA-3d4"/>
+                        <outlet property="precallFeedbackLbl" destination="3Hj-TH-Ovl" id="G6d-z5-3WU"/>
+                        <outlet property="precallInputsLbl" destination="ENK-Fv-v8Z" id="EHu-GZ-u3x"/>
+                        <outlet property="precallLastVIsitLbl" destination="wtX-q1-BVW" id="TNv-WE-WQ9"/>
+                        <outlet property="precallRemarksLbl" destination="Kq3-U7-l81" id="acA-zs-UxZ"/>
                         <outlet property="productsTable" destination="y0m-57-TCG" id="NDV-qO-Kba"/>
                         <outlet property="qualificationLBl" destination="TiQ-x6-up9" id="LtZ-vA-Y9x"/>
                         <outlet property="qualificationtit" destination="6sK-vs-y7z" id="UqX-81-2jB"/>
@@ -1455,11 +1460,11 @@ Chennai</string>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7t4-mW-nWc">
                                                 <rect key="frame" x="0.0" y="0.0" width="1180" height="550"/>
                                                 <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="08S-d5-AWv">
-                                                        <rect key="frame" x="30" y="0.0" width="1120" height="550"/>
+                                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="08S-d5-AWv">
+                                                        <rect key="frame" x="29.5" y="0.0" width="1121" height="550"/>
                                                         <subviews>
                                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="uMq-Fx-EEE">
-                                                                <rect key="frame" x="0.0" y="0.0" width="1120" height="550"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="1121" height="550"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <connections>
                                                                     <outlet property="dataSource" destination="Jwy-oC-nIs" id="MV8-bH-IL6"/>
@@ -1478,10 +1483,10 @@ Chennai</string>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstItem="08S-d5-AWv" firstAttribute="top" secondItem="7t4-mW-nWc" secondAttribute="top" id="9mw-A6-3YO"/>
-                                                    <constraint firstAttribute="bottom" secondItem="08S-d5-AWv" secondAttribute="bottom" id="Yr2-Qh-vqa"/>
-                                                    <constraint firstItem="08S-d5-AWv" firstAttribute="leading" secondItem="7t4-mW-nWc" secondAttribute="leading" constant="30" id="kJv-2Q-OjU"/>
-                                                    <constraint firstAttribute="trailing" secondItem="08S-d5-AWv" secondAttribute="trailing" constant="30" id="mC1-Ej-h2x"/>
+                                                    <constraint firstItem="08S-d5-AWv" firstAttribute="centerY" secondItem="7t4-mW-nWc" secondAttribute="centerY" id="ASQ-IE-nfM"/>
+                                                    <constraint firstItem="08S-d5-AWv" firstAttribute="centerX" secondItem="7t4-mW-nWc" secondAttribute="centerX" id="JIk-ZJ-Dup"/>
+                                                    <constraint firstItem="08S-d5-AWv" firstAttribute="height" secondItem="7t4-mW-nWc" secondAttribute="height" id="lvD-z4-2YS"/>
+                                                    <constraint firstItem="08S-d5-AWv" firstAttribute="width" secondItem="7t4-mW-nWc" secondAttribute="width" multiplier="0.95" id="pFp-Hi-xEQ"/>
                                                 </constraints>
                                             </view>
                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q0E-EM-eb8">
@@ -2137,31 +2142,30 @@ Chennai</string>
                                 <rect key="frame" x="0.0" y="0.0" width="1180" height="82"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aOH-JM-RRh">
-                                        <rect key="frame" x="25" y="15" width="50" height="50"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="1uV-pR-JMF"/>
-                                            <constraint firstAttribute="width" constant="50" id="gAm-IQ-J4M"/>
-                                        </constraints>
+                                        <rect key="frame" x="5" y="16.5" width="65.5" height="65.5"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="left_Arrow_White"/>
+                                        <state key="normal" image="arrow.backward" catalog="system"/>
                                         <connections>
                                             <action selector="backAction:" destination="Jwy-oC-nIs" eventType="touchUpInside" id="Rlk-DH-hGw"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ashok Kumar" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hPt-fx-1Nw">
-                                        <rect key="frame" x="105" y="25" width="1060" height="27.5"/>
-                                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="22"/>
+                                        <rect key="frame" x="85.5" y="38.5" width="1079.5" height="21.5"/>
+                                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="aOH-JM-RRh" firstAttribute="leading" secondItem="cg0-nb-2vU" secondAttribute="leading" constant="25" id="EpJ-cn-ETk"/>
-                                    <constraint firstItem="hPt-fx-1Nw" firstAttribute="top" secondItem="cg0-nb-2vU" secondAttribute="top" constant="25" id="Zoh-FV-HO6"/>
+                                    <constraint firstItem="aOH-JM-RRh" firstAttribute="centerY" secondItem="cg0-nb-2vU" secondAttribute="centerY" multiplier="1.2" id="4cj-Ez-TeQ"/>
+                                    <constraint firstItem="hPt-fx-1Nw" firstAttribute="leading" secondItem="aOH-JM-RRh" secondAttribute="trailing" constant="15" id="6dv-AC-TMc"/>
+                                    <constraint firstItem="aOH-JM-RRh" firstAttribute="leading" secondItem="cg0-nb-2vU" secondAttribute="leading" constant="5" id="EpJ-cn-ETk"/>
+                                    <constraint firstItem="aOH-JM-RRh" firstAttribute="width" secondItem="cg0-nb-2vU" secondAttribute="height" multiplier="0.8" id="MZm-rb-RdA"/>
+                                    <constraint firstItem="aOH-JM-RRh" firstAttribute="height" secondItem="cg0-nb-2vU" secondAttribute="height" multiplier="0.8" id="aa5-WS-CfH"/>
                                     <constraint firstAttribute="trailing" secondItem="hPt-fx-1Nw" secondAttribute="trailing" constant="15" id="f00-Gt-7i8"/>
-                                    <constraint firstItem="aOH-JM-RRh" firstAttribute="top" secondItem="cg0-nb-2vU" secondAttribute="top" constant="15" id="pgy-Ri-vV6"/>
-                                    <constraint firstItem="hPt-fx-1Nw" firstAttribute="leading" secondItem="aOH-JM-RRh" secondAttribute="trailing" constant="30" id="t4K-pf-5h1"/>
+                                    <constraint firstItem="hPt-fx-1Nw" firstAttribute="centerY" secondItem="aOH-JM-RRh" secondAttribute="centerY" id="ilu-4C-OYt"/>
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p3y-44-EZn">
@@ -2647,7 +2651,7 @@ Chennai</string>
                                                         <rect key="frame" x="0.0" y="0.0" width="531" height="620"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <view key="tableFooterView" contentMode="scaleToFill" id="Lwm-tN-kUo">
-                                                            <rect key="frame" x="0.0" y="268.5" width="531" height="80"/>
+                                                            <rect key="frame" x="0.0" y="288.5" width="531" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <subviews>
                                                                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I7E-aC-X1w">
@@ -2676,34 +2680,34 @@ Chennai</string>
                                                         </view>
                                                         <prototypes>
                                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AdditionalCallSampleEntryTableViewCell" id="lYO-Kr-U3N" customClass="AdditionalCallSampleEntryTableViewCell" customModule="E_Detailing" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="50" width="531" height="190.5"/>
+                                                                <rect key="frame" x="0.0" y="50" width="531" height="210.5"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lYO-Kr-U3N" id="SHJ-Ib-imE">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="531" height="190.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="531" height="210.5"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <subviews>
                                                                         <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tIg-03-OvG">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="531" height="190.5"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="531" height="210.5"/>
                                                                             <subviews>
                                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zh9-UM-due">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="265.5" height="190.5"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="265.5" height="210.5"/>
                                                                                     <subviews>
                                                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="23F-s6-NTj">
-                                                                                            <rect key="frame" x="10" y="10" width="245.5" height="170.5"/>
+                                                                                            <rect key="frame" x="10" y="10" width="245.5" height="190.5"/>
                                                                                             <subviews>
                                                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Arrow_down" translatesAutoresizingMaskIntoConstraints="NO" id="517-eE-tFx">
-                                                                                                    <rect key="frame" x="225.5" y="80.5" width="10" height="10"/>
+                                                                                                    <rect key="frame" x="225.5" y="90.5" width="10" height="10"/>
                                                                                                     <constraints>
                                                                                                         <constraint firstAttribute="height" constant="10" id="JyW-RM-Obf"/>
                                                                                                         <constraint firstAttribute="width" constant="10" id="Kbp-EV-KgF"/>
                                                                                                     </constraints>
                                                                                                 </imageView>
                                                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hah-V6-RST">
-                                                                                                    <rect key="frame" x="0.0" y="0.0" width="245.5" height="170.5"/>
+                                                                                                    <rect key="frame" x="0.0" y="0.0" width="245.5" height="190.5"/>
                                                                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 </button>
                                                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fAk-3o-9Gj">
-                                                                                                    <rect key="frame" x="5" y="74" width="45.5" height="22.5"/>
+                                                                                                    <rect key="frame" x="5" y="84" width="45.5" height="22.5"/>
                                                                                                     <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
                                                                                                     <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                                     <nil key="highlightedColor"/>
@@ -2731,10 +2735,10 @@ Chennai</string>
                                                                                     </constraints>
                                                                                 </view>
                                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3WB-75-NR2">
-                                                                                    <rect key="frame" x="265.5" y="0.0" width="106" height="190.5"/>
+                                                                                    <rect key="frame" x="265.5" y="0.0" width="106" height="210.5"/>
                                                                                     <subviews>
                                                                                         <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="d1Q-GM-G43">
-                                                                                            <rect key="frame" x="10" y="75.5" width="86" height="40"/>
+                                                                                            <rect key="frame" x="10" y="85.5" width="86" height="40"/>
                                                                                             <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                             <constraints>
                                                                                                 <constraint firstAttribute="height" constant="40" id="9Yo-HT-uQL"/>
@@ -2751,10 +2755,10 @@ Chennai</string>
                                                                                     </constraints>
                                                                                 </view>
                                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GGw-nz-mTa">
-                                                                                    <rect key="frame" x="371.5" y="0.0" width="106.5" height="190.5"/>
+                                                                                    <rect key="frame" x="371.5" y="0.0" width="106.5" height="210.5"/>
                                                                                     <subviews>
                                                                                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i16-tG-6R9">
-                                                                                            <rect key="frame" x="10" y="75.5" width="86.5" height="40"/>
+                                                                                            <rect key="frame" x="10" y="85.5" width="86.5" height="40"/>
                                                                                             <constraints>
                                                                                                 <constraint firstAttribute="height" constant="40" id="iuZ-ih-0ge"/>
                                                                                             </constraints>
@@ -2770,10 +2774,10 @@ Chennai</string>
                                                                                     </constraints>
                                                                                 </view>
                                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6e7-5H-UYb">
-                                                                                    <rect key="frame" x="478" y="0.0" width="53" height="190.5"/>
+                                                                                    <rect key="frame" x="478" y="0.0" width="53" height="210.5"/>
                                                                                     <subviews>
                                                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mL2-pe-RNb">
-                                                                                            <rect key="frame" x="19" y="83.5" width="24" height="24"/>
+                                                                                            <rect key="frame" x="19" y="93.5" width="24" height="24"/>
                                                                                             <constraints>
                                                                                                 <constraint firstAttribute="width" secondItem="mL2-pe-RNb" secondAttribute="height" multiplier="1:1" id="k1U-vb-hpE"/>
                                                                                             </constraints>
@@ -3192,6 +3196,7 @@ Chennai</string>
                         <outlet property="btnRcpaChemist" destination="bdt-fJ-3yL" id="xZS-eJ-G1B"/>
                         <outlet property="btnRcpaProduct" destination="3gq-ct-AFX" id="uUL-41-KLX"/>
                         <outlet property="detailledListTableView" destination="uMq-Fx-EEE" id="VOg-e2-cSh"/>
+                        <outlet property="detailsHolder" destination="08S-d5-AWv" id="tl2-o5-Lup"/>
                         <outlet property="eventCaptureTableView" destination="tZq-Os-Y73" id="Aol-t5-tec"/>
                         <outlet property="inputListTableView" destination="ig1-Rz-1Bd" id="faW-Xv-8I6"/>
                         <outlet property="inputSampleTableView" destination="mv7-Yg-mp6" id="vaB-jr-Rwz"/>
@@ -3257,9 +3262,11 @@ Chennai</string>
         <image name="cameraGreenIcon" width="20" height="20"/>
         <image name="cancel" width="21.333333969116211" height="21.333333969116211"/>
         <image name="ic_Close1" width="20" height="20"/>
-        <image name="left_Arrow_White" width="20" height="17"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

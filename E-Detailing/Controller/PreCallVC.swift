@@ -64,21 +64,28 @@ extension PreCallVC : collectionViewProtocols {
 
 extension PreCallVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return productStrArr.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0 :
             let cell: productSectiontitleTVC = tableView.dequeueReusableCell(withIdentifier: "productSectiontitleTVC", for: indexPath) as! productSectiontitleTVC
+            
             cell.selectionStyle = .none
             return cell
 
         default:
             let cell: ProductsDescriptionTVC = tableView.dequeueReusableCell(withIdentifier: "ProductsDescriptionTVC", for: indexPath) as! ProductsDescriptionTVC
+            let model = self.productStrArr[indexPath.row]
+            cell.topopulateCell(modelStr: model)
             cell.selectionStyle = .none
             return cell
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(50)
     }
     
     
@@ -111,7 +118,10 @@ class PreCallVC : UIViewController {
             self.segmentsCollection.reloadData()
             self.overVIewVIew.isHidden = true
             self.preCallVIew.isHidden = false
-            fetchPrecall()
+            if !self.isDatafetched {
+                fetchPrecall()
+            }
+            
         }
     }
     
@@ -192,10 +202,22 @@ class PreCallVC : UIViewController {
     
     @IBOutlet var pagetitle: UILabel!
     
+    
+    @IBOutlet var precallLastVIsitLbl: UILabel!
+    
+    @IBOutlet var precallFeedbackLbl: UILabel!
+    
+    @IBOutlet var precallRemarksLbl: UILabel!
+    
+    @IBOutlet var precallInputsLbl: UILabel!
+    
+    @IBOutlet var noProductsLbl: UILabel!
+    
     var callresponse: [PrecallsModel]?
     @IBOutlet var productsTable: UITableView!
+    var isDatafetched: Bool = false
     var userStatisticsVM: UserStatisticsVM?
-    
+    var productStrArr : [SampleProduct] = []
     func toloadProductsTable() {
         productsTable.delegate = self
         productsTable.dataSource = self
@@ -309,7 +331,8 @@ class PreCallVC : UIViewController {
         toretriveDCRdata()
         toLoadSegments()
         cellregistration()
-        toloadProductsTable()
+        noProductsLbl.isHidden = true
+       // toloadProductsTable()
         //fetchPrecall()
     }
     
@@ -343,26 +366,26 @@ class PreCallVC : UIViewController {
        // {"tableName":"getcuslvst","typ":"D","CusCode":"1679478","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,"}
         self.userStatisticsVM = UserStatisticsVM()
         
-        //let setup = AppDefaults.shared.getAppSetUp()
+        let setup = AppDefaults.shared.getAppSetUp()
         var param = [String: Any]()
         param["tableName"] = "getcuslvst"
-        param["CusCode"] = "1679478"
-        //self.dcrCall.code
+        param["CusCode"] = self.dcrCall.code
+
         param["typ"] = "D"
-        param["sfcode"] =  "MR5940"
-        //setup.sfCode
-        param["division_code"] =  "63"
-        //setup.divisionCode
-        param["Rsf"] =  "MR5940"
-        //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        param["sf_type"] =  "1"
-        //setup.sfType
-        param["Designation"] = "MR"
-        //setup.desig
-        param["state_code"] =  "2"
-        //setup.stateCode
-        param["subdivision_code"] = "86,"
-        //setup.subDivisionCode
+        param["sfcode"] =  setup.sfCode
+
+        param["division_code"] =  setup.divisionCode
+ 
+        param["Rsf"] =   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+  
+        param["sf_type"] =  setup.sfType
+
+        param["Designation"] = setup.desig
+ 
+        param["state_code"] =  setup.stateCode
+  
+        param["subdivision_code"] = "\(setup.subDivisionCode!),"
+
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
         
@@ -376,10 +399,84 @@ class PreCallVC : UIViewController {
             case .success(let response):
                 dump(response)
                 self.callresponse = response
+                self.toPopulateView()
+                self.isDatafetched = true
             case .failure(let error):
                 dump(error.localizedDescription)
             }
         }
+    }
+    
+    func toPopulateView() {
+        
+        guard let callresponse = self.callresponse?.first else {return}
+        
+      let cleanedResponse = callresponse.inputs == "( 0 )," ? "No inputs" : callresponse.inputs
+        
+        self.precallInputsLbl.text = cleanedResponse
+        self.precallRemarksLbl.text = callresponse.remarks.isEmpty ? "No remarks" : callresponse.remarks
+        self.precallFeedbackLbl.text = callresponse.feedback.isEmpty ? "No feedback" : callresponse.feedback
+      
+        let rawDate = callresponse.visitDate.date.toDate(format: "yyyy-MM-dd HH:mm:ss")
+        self.precallLastVIsitLbl.text = rawDate.toString(format:  "yyyy-MM-dd HH:mm:ss")
+        
+        toSetDataSourceForProducts(detailedReportModel: callresponse)
+    }
+    
+    
+    func toSetDataSourceForProducts(detailedReportModel: PrecallsModel?) {
+        productStrArr.removeAll()
+        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
+        
+       if detailedReportModel?.sampleProduct != "" {
+           var prodArr =  detailedReportModel?.sampleProduct.components(separatedBy: ",")
+           if prodArr?.last == "" {
+               prodArr?.removeLast()
+           }
+           prodArr?.forEach { prod in
+               var prodString : [String] = []
+               prodString.append(contentsOf: prod.components(separatedBy: "("))
+               prodString = prodString.map({ aprod in
+                   aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+               })
+               var name: String = ""
+               var isPromoted: String = ""
+               var noOfsamples: String = ""
+               var rxQty: String = ""
+               var rcpa: String  = ""
+               prodString.enumerated().forEach {prodindex, prod in
+             
+                  // let sampleProduct: SampleProduct
+                   switch prodindex {
+                   case 0 :
+                       name = prod
+                   case 1:
+                       isPromoted = prod
+                   case 2:
+                       noOfsamples = prod
+                   case 3:
+                       rxQty = prod
+                   case 4:
+                       rcpa = prod
+                   default:
+                       print("default")
+                   }
+               }
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted.replacingOccurrences(of: " ", with: "") == "0" ? true : false, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false)
+               
+             //  let aProduct = SampleProduct(prodName: prodString[0].isEmpty ? "" : prodString[0] , isPromoted: prodString[1].isEmpty ? false : prodString[1].contains("0") ? true : false, noOfSamples:  prodString[2].isEmpty ? "" : prodString[2] , rxQTY:  prodString[3].isEmpty ? "" : prodString[3] , rcpa:  prodString[4].isEmpty ? "" : prodString[4])
+               productStrArr.append(aProduct)
+           }
+       } else {
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
+       }
+
+        
+        //productStrArr.append(contentsOf: detailedReportModel?.products.components(separatedBy: ",") ?? [])
+  
+        
+        toloadProductsTable()
+         
     }
     
 }

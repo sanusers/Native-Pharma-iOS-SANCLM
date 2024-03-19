@@ -15,14 +15,17 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool) {
         
         
-        
+        if isToshowAlert {
+            toSetupAlert(desc: "Slides will be downloaded in background..", istoNavigate: false)
+            return
+        }
         
         self.arrayOfAllSlideObjects = cacheObject
         
         if didEncountererror {
             isSlideDownloading = false
             retryVIew.isHidden = false
-            self.slideDownloadStatusLbl.text =   "Error downloading slides.."
+            self.slideDownloadStatusLbl.text = "Error downloading slides.."
             return
         } else {
             retryVIew.isHidden = true
@@ -51,9 +54,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
         
        // MasterInfoState.loadingStatusDict[.slides] = .isLoading
         
-        if isToshowAlert {
-            toSetupAlert(desc: "Slides will be downloaded in background..", istoNavigate: false)
-        }
+ 
        
         
     }

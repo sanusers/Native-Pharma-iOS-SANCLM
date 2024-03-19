@@ -126,6 +126,7 @@ class ProductVC : UIViewController {
     
     @IBOutlet weak var trailingViewRemarksConstraint: NSLayoutConstraint!
     
+    @IBOutlet var detailsHolder: UIView!
     
     private var productSegmentControl : UISegmentedControl!
     
@@ -160,6 +161,10 @@ class ProductVC : UIViewController {
     
     private var rcpaCallListViewModel = RcpaListViewModel()
     
+    
+    func setupUI() {
+        detailsHolder.layer.cornerRadius = 5
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -310,6 +315,12 @@ class ProductVC : UIViewController {
         
         self.selectionTableView.register(UINib(nibName: "ProductNameTableViewCell", bundle: nil), forCellReuseIdentifier: "ProductNameTableViewCell")
         
+        detailledListTableView.register(UINib(nibName: "ProductdetailsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "ProductdetailsHeader")
+        
+        
+        productSampleTableView.register(UINib(nibName: "ProductsInfoHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "ProductsInfoHeader")
+        
+        
     }
     
     
@@ -329,7 +340,7 @@ class ProductVC : UIViewController {
         
         self.viewAdditionalCallSegmentControl.addSubview(self.SampleInputSegmentControl)
         
-        let font = UIFont(name: "Satoshi-Bold", size: 20)!
+        let font = UIFont(name: "Satoshi-Bold", size: 15)!
         
         self.SampleInputSegmentControl.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
         self.SampleInputSegmentControl.highlightSelectedSegment1()
@@ -390,7 +401,7 @@ class ProductVC : UIViewController {
         
         self.viewSegmentControl.addSubview(self.productSegmentControl)
         
-        let font = UIFont(name: "Satoshi-Bold", size: 18)!
+        let font = UIFont(name: "Satoshi-Bold", size: 15)!
         self.productSegmentControl.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
         self.productSegmentControl.highlightSelectedSegment1()
          
@@ -1293,6 +1304,7 @@ extension ProductVC : tableViewProtocols {
             return cell
         case self.detailledListTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "ProductRatingTableViewCell",for: indexPath) as! ProductRatingTableViewCell
+            cell.selectionStyle = .none
             return cell
         case self.selectionTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell",for: indexPath) as! ProductNameTableViewCell
@@ -1531,168 +1543,33 @@ extension ProductVC : tableViewProtocols {
         let appsetup = AppDefaults.shared.getAppSetUp()
         switch tableView {
         case self.detailledListTableView:
-            let view = UIStackView()
-            view.axis = .vertical
-            view.backgroundColor = .white
-            
-            let lblName = UILabel()
-            lblName.text = "Brand Name"
-            lblName.textColor = AppColors.primaryColor
-            lblName.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lblRating = UILabel()
-            lblRating.text = "Rating"
-            lblRating.textColor = AppColors.primaryColor
-            lblRating.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lblFeedbck = UILabel()
-            lblFeedbck.text = "Feedback"
-            lblFeedbck.textColor = AppColors.primaryColor
-            lblFeedbck.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lblTimeLine = UILabel()
-            lblTimeLine.text = "Timeline"
-            lblTimeLine.textColor = AppColors.primaryColor
-            lblTimeLine.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lbl = UILabel()
-            lbl.translatesAutoresizingMaskIntoConstraints = true
-            
-            let lblLine = UILabel()
-            lblLine.backgroundColor = AppColors.primaryColorWith_25per_alpha
-            
-            let vStackView : UIStackView = {
-                let view = UIStackView(arrangedSubviews: [lblName,lblRating,lblFeedbck,lblTimeLine,lbl])
-                
-                view.backgroundColor = .white
-                view.axis = .horizontal
-               return view
-            }()
-            view.addSubview(vStackView)
-            
-            
-            lblName.leadingAnchor.constraint(equalTo: vStackView.leadingAnchor).isActive = true
-            lblName.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblRating.leadingAnchor.constraint(equalTo: lblName.trailingAnchor, constant: 10).isActive = true
-            lblRating.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblFeedbck.leadingAnchor.constraint(equalTo: lblRating.trailingAnchor, constant: 10).isActive = true
-            lblFeedbck.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblTimeLine.leadingAnchor.constraint(equalTo: lblFeedbck.trailingAnchor, constant: 10).isActive = true
-            lblTimeLine.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lbl.leadingAnchor.constraint(equalTo: lblTimeLine.trailingAnchor, constant: 10).isActive = true
-            lbl.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblName.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.32).isActive = true
-            lblRating.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.22).isActive = true
-            lblFeedbck.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.15).isActive = true
-            lblTimeLine.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.15).isActive = true
-            
-            
-            view.addArrangedSubview(vStackView)
-            view.addArrangedSubview(lblLine)
-            
-            lblLine.heightAnchor.constraint(equalToConstant: 2).isActive = true
-            lblLine.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15).isActive = true
-            lblLine.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
-            lblLine.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-            
-            return view
+
+            // Dequeue the header view
+            guard let headerView = detailledListTableView.dequeueReusableHeaderFooterView(withIdentifier: "ProductdetailsHeader") as? ProductdetailsHeader else {
+     
+                return UIView()
+            }
+
+
+
+            return headerView
+         
             
         case self.productSampleTableView:
             
-            let view = UIStackView()
-            view.axis = .vertical
-            view.backgroundColor = .white
-            
-            let lblName = UILabel()
-            lblName.text = "Product Name"
-            lblName.textColor = AppColors.primaryColor
-            lblName.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lblPromoted = UILabel()
-            lblPromoted.text = "Promoted"
-            lblPromoted.textColor = AppColors.primaryColor
-            lblPromoted.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lblStock = UILabel()
-            lblStock.text = "Stock"
-            lblStock.textColor = AppColors.primaryColor
-            lblStock.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-      //      lblStock.isHidden = true
-            
-            let lblSamples = UILabel()
-            lblSamples.text = "Samples"
-            lblSamples.textColor = AppColors.primaryColor
-            lblSamples.font = UIFont(name: "Satoshi-Bold", size: 20)
+            // Dequeue the header view
+            guard let headerView = productSampleTableView.dequeueReusableHeaderFooterView(withIdentifier: "ProductsInfoHeader") as? ProductsInfoHeader else {
+     
+                return UIView()
+            }
+
+
+
+            return headerView
             
             
-            let lblRxQty = UILabel()
-            lblRxQty.text = "Rx Qty"
-            lblRxQty.textColor = AppColors.primaryColor
-            lblRxQty.font = UIFont(name: "Satoshi-Bold", size: 20)
             
-            let lblRCPA = UILabel()
-            lblRCPA.text = "RCPA"
-            lblRCPA.textColor = AppColors.primaryColor
-            lblRCPA.font = UIFont(name: "Satoshi-Bold", size: 20)
-            
-            let lbl = UILabel()
-            lbl.translatesAutoresizingMaskIntoConstraints = true
-            
-            
-            let lblLine = UILabel()
-            lblLine.backgroundColor = AppColors.primaryColorWith_25per_alpha
-            
-            let vStackView : UIStackView = {
-                let view = UIStackView(arrangedSubviews: [lblName,lblPromoted,lblStock,lblSamples,lblRxQty,lblRCPA,lbl])
-                
-                view.axis = .horizontal
-               return view
-            }()
-        
-            lblName.leadingAnchor.constraint(equalTo: vStackView.leadingAnchor).isActive = true
-            lblName.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblPromoted.leadingAnchor.constraint(equalTo: lblName.trailingAnchor, constant: 10).isActive = true
-            lblPromoted.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblStock.leadingAnchor.constraint(equalTo: lblPromoted.trailingAnchor, constant: 10).isActive = true
-            lblStock.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblSamples.leadingAnchor.constraint(equalTo: lblStock.trailingAnchor, constant: 10).isActive = true
-            lblSamples.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblRxQty.leadingAnchor.constraint(equalTo: lblSamples.trailingAnchor, constant: 10).isActive = true
-            lblRxQty.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblRCPA.leadingAnchor.constraint(equalTo: lblRxQty.trailingAnchor, constant: 10).isActive = true
-            lblRCPA.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lbl.leadingAnchor.constraint(equalTo: lblRCPA.trailingAnchor, constant: 10).isActive = true
-            lbl.centerYAnchor.constraint(equalTo: vStackView.centerYAnchor).isActive = true
-            
-            lblName.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.3).isActive = true
-            lblPromoted.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.1).isActive = true
-            lblStock.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.125).isActive = true
-            lblSamples.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.125).isActive = true
-            lblRxQty.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.125).isActive = true
-            lblRCPA.widthAnchor.constraint(equalTo: vStackView.widthAnchor, multiplier: 0.125).isActive = true
-            
-            
-            view.addArrangedSubview(vStackView)
-            view.addArrangedSubview(lblLine)
-            
-            lblLine.heightAnchor.constraint(equalToConstant: 2).isActive = true
-            lblLine.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15).isActive = true
-            lblLine.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
-            lblLine.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-            
-            return view
+       
             
         case self.inputSampleTableView:
             

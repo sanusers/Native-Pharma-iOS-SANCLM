@@ -51,6 +51,10 @@
 		383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */; };
 		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
 		38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */; };
+		3845556B2BA9C62B00F6CE1A /* ProductdetailsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384555692BA9C62B00F6CE1A /* ProductdetailsHeader.swift */; };
+		3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3845556A2BA9C62B00F6CE1A /* ProductdetailsHeader.xib */; };
+		3845556F2BA9C87F00F6CE1A /* ProductsInfoHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3845556D2BA9C87F00F6CE1A /* ProductsInfoHeader.swift */; };
+		384555702BA9C87F00F6CE1A /* ProductsInfoHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3845556E2BA9C87F00F6CE1A /* ProductsInfoHeader.xib */; };
 		384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384ED2BC2A39F8B900285B02 /* AppDefaults.swift */; };
 		385A424A2AFB840600C0A58A /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */; };
 		385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424C2AFBAB6400C0A58A /* View+UX.swift */; };
@@ -382,6 +386,10 @@
 		383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPdeviateReasonView.swift; sourceTree = "<group>"; };
 		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
 		38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderCell.swift; sourceTree = "<group>"; };
+		384555692BA9C62B00F6CE1A /* ProductdetailsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductdetailsHeader.swift; sourceTree = "<group>"; };
+		3845556A2BA9C62B00F6CE1A /* ProductdetailsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductdetailsHeader.xib; sourceTree = "<group>"; };
+		3845556D2BA9C87F00F6CE1A /* ProductsInfoHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsInfoHeader.swift; sourceTree = "<group>"; };
+		3845556E2BA9C87F00F6CE1A /* ProductsInfoHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsInfoHeader.xib; sourceTree = "<group>"; };
 		384ED2BC2A39F8B900285B02 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		385A42492AFB840600C0A58A /* DispatchQueue+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Extensions.swift"; sourceTree = "<group>"; };
 		385A424C2AFBAB6400C0A58A /* View+UX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+UX.swift"; sourceTree = "<group>"; };
@@ -756,6 +764,17 @@
 			path = TPdeviation;
 			sourceTree = "<group>";
 		};
+		384555682BA9C5F900F6CE1A /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				384555692BA9C62B00F6CE1A /* ProductdetailsHeader.swift */,
+				3845556A2BA9C62B00F6CE1A /* ProductdetailsHeader.xib */,
+				3845556D2BA9C87F00F6CE1A /* ProductsInfoHeader.swift */,
+				3845556E2BA9C87F00F6CE1A /* ProductsInfoHeader.xib */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		385A424E2AFBABB000C0A58A /* Base */ = {
 			isa = PBXGroup;
 			children = (
@@ -811,6 +830,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				384555682BA9C5F900F6CE1A /* Headers */,
 				38E6B08E2B9866930014AF1E /* Resource */,
 				383A7DA22B932EAE00635D38 /* TPdeviation */,
 				38E3DF6B2B8F16A60093DF4B /* Checkin */,
@@ -1552,8 +1572,10 @@
 				B287E68429F2A20F0097974D /* Satoshi-Medium.otf in Resources */,
 				38C25EA22B64D88E00A8E076 /* DeletePHIAlertview.xib in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
+				384555702BA9C87F00F6CE1A /* ProductsInfoHeader.xib in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
+				3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */,
 				38EF4C672B749DAE00F78F2E /* BrandsPreviewCVC.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */,
@@ -1741,6 +1763,7 @@
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
 				38CD60DF2A866CEA006FFB39 /* ProductSampleTableViewCell.swift in Sources */,
+				3845556F2BA9C87F00F6CE1A /* ProductsInfoHeader.swift in Sources */,
 				38D5690D2B35AFE3007CB86D /* RadioSelectionTVC.swift in Sources */,
 				38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */,
 				38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */,
@@ -1881,6 +1904,7 @@
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				388546422B5FDB90005FC9FC /* PresentationHomeVC.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
+				3845556B2BA9C62B00F6CE1A /* ProductdetailsHeader.swift in Sources */,
 				38EF4C662B749DAE00F78F2E /* BrandsPreviewCVC.swift in Sources */,
 				38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */,
 				38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */,

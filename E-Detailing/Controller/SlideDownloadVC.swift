@@ -296,7 +296,7 @@ class SlideDownloadVC : UIViewController {
             }
             
 
-          
+            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: true, didEncountererror: false)
 
           //  self.startDownload()
             
