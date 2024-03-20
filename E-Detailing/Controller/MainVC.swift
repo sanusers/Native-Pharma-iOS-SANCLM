@@ -3071,12 +3071,12 @@ extension MainVC : collectionViewProtocols {
                 switch cell.link.name {
                 case "Presentaion":
                     
-                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
+                 //   if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
                         let vc =  PresentationHomeVC.initWithStory()
                         self.navigationController?.pushViewController(vc, animated: true)
-                    } else {
+                //    } else {
                         self.toSetupAlert()
-                    }
+                  //  }
                     
                 case "Slide Preview":
                     let vc = PreviewHomeVC.initWithStory()

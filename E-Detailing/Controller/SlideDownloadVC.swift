@@ -210,6 +210,7 @@ class SlideDownloadVC : UIViewController {
         let tourPlanVC : SlideDownloadVC = UIStoryboard.Hassan.instantiateViewController()
         return tourPlanVC
     }
+    var istoGroupBrandwise: Bool = false
     var isDownloadingInProgress : Bool = false
     var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
     var arrayOfAllSlideObjects = [SlidesModel]()
@@ -253,11 +254,23 @@ class SlideDownloadVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if  Shared.instance.iscelliterating {
+            dismiss(animated: false)
             return
+            
         }
+
         setupuUI()
         initVIew()
         let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
+        
+        if istoGroupBrandwise {
+            Shared.instance.showLoader(in: self.tableView)
+            self.toGroupSlidesBrandWise() { _ in
+                Shared.instance.removeLoader(in: self.tableView)
+                self.dismiss(animated: true)
+            }
+        }
+        
         if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
             self.isDownloadingInProgress = false
              _ = toCheckExistenceOfNewSlides()
@@ -502,7 +515,7 @@ class SlideDownloadVC : UIViewController {
     
     func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false) {
 
-     
+        Shared.instance.isSlideDownloading = true
        
    
         self.tableView.isUserInteractionEnabled = !self.isDownloading
@@ -511,6 +524,7 @@ class SlideDownloadVC : UIViewController {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
            // self.tableView.isUserInteractionEnabled = true
             self.isDownloading = false
+            Shared.instance.isSlideDownloading = false
            // UIApplication.shared.endBackgroundTask(self.backgroundTask)
             BackgroundTaskManager.shared.stopBackgroundTask()
             return
@@ -710,7 +724,7 @@ class SlideDownloadVC : UIViewController {
         
       
         
-        tempGroupedBrandsSlideModel.forEach { aGroupedBrandsSlideModel in
+        tempGroupedBrandsSlideModel.enumerated().forEach { index, aGroupedBrandsSlideModel in
             CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) {isSaved in
                 if isSaved {
                     completion(true)

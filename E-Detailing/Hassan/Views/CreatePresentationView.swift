@@ -88,12 +88,59 @@ class CreatePresentationView : BaseView {
     
     func toRetriveModelsFromCoreData() {
         self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
-        if let groupedBrandsSlideModel = groupedBrandsSlideModel {
+        guard  groupedBrandsSlideModel != nil else {return}
             self.selectedSlides = [SlidesModel]()
             createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
-        }
-     
+
     }
+    
+    
+//    func processSlideModels(completion: @escaping () -> Void) {
+//        guard let groupedBrandsSlideModel = self.groupedBrandsSlideModel else {
+//            // Call the completion handler if there are no slide models to process
+//            completion()
+//            return
+//        }
+//        
+//        // Create a serial DispatchQueue
+//        
+//        // Define a function to process each slide model
+//        func processSlideModel(index: Int, completion: @escaping () -> Void) {
+//            guard index < groupedBrandsSlideModel.count else {
+//                // All models processed, call the completion handler
+//                completion()
+//                return
+//            }
+//            
+//            let aGroupedBrandsSlideModel = groupedBrandsSlideModel[index]
+//            
+//            // Process each grouped slide model in the inner loop
+//            let groupDispatchGroup = DispatchGroup()
+//            
+//            for aSlidesModel in aGroupedBrandsSlideModel.groupedSlide {
+//                groupDispatchGroup.enter()
+//                
+//                let data = aSlidesModel.slideData
+//                let utType = aSlidesModel.utType
+//                
+//                ObjectFormatter.shared.loadImageDataInBackground(utType: utType, data: data) { imageData in
+//                    // Update the model with the retrieved image data
+//                    aSlidesModel.imageData = imageData ?? Data()
+//                    
+//                    groupDispatchGroup.leave()
+//                }
+//            }
+//            
+//            groupDispatchGroup.notify(queue: .main) {
+//                // Move to the next slide model after all inner loop tasks are completed
+//                let nextIndex = index + 1
+//                processSlideModel(index: nextIndex, completion: completion)
+//            }
+//        }
+//        
+//        // Start processing from index 0
+//        processSlideModel(index: 0, completion: completion)
+//    }
     
     func toLoadNewPresentationData() {
         self.editView.isHidden = true
@@ -260,7 +307,7 @@ class CreatePresentationView : BaseView {
         
         if let savedPresentation = self.savedPresentation {
             savedPresentation.name = self.addNameTF.text ?? ""
-            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, savedPresentation.uuid) { isEdited in
+            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, id: savedPresentation.uuid) { isEdited in
                 if isEdited {
                     self.toCreateToast("Presentation saved successfully.")
                 } else {
@@ -274,9 +321,6 @@ class CreatePresentationView : BaseView {
         }
         
         toExiteVC()
-        
-        
-        
     }
     
     func toExiteVC() {
@@ -285,20 +329,23 @@ class CreatePresentationView : BaseView {
     }
     
     func toSaveNewPresentation() {
+        self.endEditing(true)
         let savedPresentation = SavedPresentation()
         savedPresentation.uuid = UUID()
         savedPresentation.name = self.addNameTF.text ?? ""
         savedPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel ?? [GroupedBrandsSlideModel]()
-        
+        Shared.instance.showLoaderInWindow()
         CoreDataManager.shared.saveToCoreData(savedPresentation: savedPresentation) { isObjSaved in
+            Shared.instance.removeLoaderInWindow()
             if isObjSaved {
                 self.toCreateToast("Presentation saved Successfully.")
             } else {
                 self.toCreateToast("Presentation might be aldready saved.")
             }
+            self.toExiteVC()
         }
         
-        toExiteVC()
+        
         
         //        CoreDataManager.shared.fetchMovies { savedCDPresentationArr in
         //            dump(savedCDPresentationArr)

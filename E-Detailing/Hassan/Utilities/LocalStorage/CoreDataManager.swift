@@ -110,30 +110,35 @@ class CoreDataManager {
     ///   - savedPresentation: SavedPresentation object
     ///   - id: UUID
     ///   - completion: boolean
-    func toEditSavedPresentation(savedPresentation: SavedPresentation,_ id: UUID, completion: (Bool) -> ()) {
+    func toEditSavedPresentation(savedPresentation: SavedPresentation, id: UUID, completion: @escaping (Bool) -> Void) {
         do {
             let request = SavedCDPresentation.fetchRequest() as NSFetchRequest
             let pred = NSPredicate(format: "uuid == '\(id)'")
-            //LIKE
             request.predicate = pred
-           let presentations = try context.fetch(request)
+            let presentations = try context.fetch(request)
             if let existingEntity = presentations.first {
                 // Convert properties
                 existingEntity.uuid = savedPresentation.uuid
                 existingEntity.name = savedPresentation.name
 
                 // Convert and add groupedBrandsSlideModel
-                
-                existingEntity.groupedBrandsSlideModel = convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context)
-
-                // Save to Core Data
-                 try self.context.save()
-                 completion(true)
-             } else {
-                 completion(false)
-             }
+                convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context) { groupedBrandsSlideModel in
+                    existingEntity.groupedBrandsSlideModel = groupedBrandsSlideModel
+                    
+                    // Save to Core Data
+                    do {
+                        try self.context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+            } else {
+                completion(false)
+            }
         } catch {
-            print("unable to fetch")
+            print("Unable to fetch presentations: \(error)")
             completion(false)
         }
     }
@@ -146,12 +151,16 @@ class CoreDataManager {
     /// - Parameters:
     ///   - savedPresentation: SavedPresentation
     ///   - completion: boolean
-    func saveToCoreData(savedPresentation: SavedPresentation  , completion: (Bool) -> ()) {
+    func saveToCoreData(savedPresentation: SavedPresentation, completion: @escaping (Bool) -> Void) {
         toCheckExistance(savedPresentation.uuid) { isExists in
+            var tempcompletion: Bool = false
+            let dispatchGroup = DispatchGroup()
             if !isExists {
+               
                 let context = self.context
                 // Create a new managed object
                 if let entityDescription = NSEntityDescription.entity(forEntityName: "SavedCDPresentation", in: context) {
+                    dispatchGroup.enter()
                     let savedCDPresentation = SavedCDPresentation(entity: entityDescription, insertInto: context)
 
                     // Convert properties
@@ -159,19 +168,27 @@ class CoreDataManager {
                     savedCDPresentation.name = savedPresentation.name
 
                     // Convert and add groupedBrandsSlideModel
-                    savedCDPresentation.groupedBrandsSlideModel = convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context)
-
-                    // Save to Core Data
-                    do {
-                        try context.save()
-                        completion(true)
-                    } catch {
-                        print("Failed to save to Core Data: \(error)")
-                        completion(false)
+                    convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context) { groupedBrandsSlideModel in
+                        savedCDPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel
+                        
+                        // Save to Core Data
+                        do {
+                            try context.save()
+                            tempcompletion = true
+                            dispatchGroup.leave()
+                        } catch {
+                            print("Failed to save to Core Data: \(error)")
+                            tempcompletion = false
+                            dispatchGroup.leave()
+                        }
                     }
                 }
             } else {
-                completion(false)
+                tempcompletion = false
+            }
+            // Notify the completion handler when all tasks in the dispatch group are complete
+            dispatchGroup.notify(queue: .main) {
+                completion(tempcompletion)
             }
         }
     }
@@ -182,10 +199,16 @@ class CoreDataManager {
     ///   - groupedBrandsSlideModels: object of type [GroupedBrandsSlideModel]
     ///   - context: (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     /// - Returns: NSSet
-    private func convertToCDGroupedBrandsSlideModel(_ groupedBrandsSlideModels: [GroupedBrandsSlideModel], context: NSManagedObjectContext) -> NSSet {
+    private func convertToCDGroupedBrandsSlideModel(_ groupedBrandsSlideModels: [GroupedBrandsSlideModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
         let cdGroupedBrandsSlideModels = NSMutableSet()
 
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+
+        // Iterate over each GroupedBrandsSlideModel
         for groupedBrandsSlideModel in groupedBrandsSlideModels {
+            dispatchGroup.enter()
+
             if let entityDescription = NSEntityDescription.entity(forEntityName: "GroupedBrandsSlideCDModel", in: context) {
                 let cdGroupedBrandsSlideModel = GroupedBrandsSlideCDModel(entity: entityDescription, insertInto: context)
 
@@ -196,26 +219,35 @@ class CoreDataManager {
 
                 // Convert and add groupedSlide
                 let tempSlide =  groupedBrandsSlideModel.groupedSlide.sorted { $0.index < $1.index }
-                cdGroupedBrandsSlideModel.groupedSlide = convertToSavedSlidesCDModel(tempSlide, context: context)
+                convertToSavedSlidesCDModel(tempSlide, context: context) { groupedSlide in
+                    cdGroupedBrandsSlideModel.groupedSlide = groupedSlide
+                    
+                    // Leave the dispatch group after converting and adding groupedSlide
+                    dispatchGroup.leave()
+                }
 
                 // Add to set
                 cdGroupedBrandsSlideModels.add(cdGroupedBrandsSlideModel)
             }
         }
 
-        return cdGroupedBrandsSlideModels
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(cdGroupedBrandsSlideModels)
+        }
     }
     
     
-    private func convertToSavedSlidesCDModel(_ slidesModels: [SlidesModel], context: NSManagedObjectContext) -> NSSet {
+    private func convertToSavedSlidesCDModel(_ slidesModels: [SlidesModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
         let cdSlidesModels = NSMutableSet()
-
+        let groupDispatchGroup = DispatchGroup()
         for slidesModel in slidesModels {
+         
             if let entityDescription = NSEntityDescription.entity(forEntityName: "SavedSlidesCDModel", in: context) {
                 let cdSlidesModel = SavedSlidesCDModel(entity: entityDescription, insertInto: context)
-                if slidesModel.utType == "video/mp4" || slidesModel.utType == "application/pdf" || slidesModel.utType == "text/html" {
-                    print(slidesModel.index)
-                }
+//                if slidesModel.utType == "video/mp4" || slidesModel.utType == "application/pdf" || slidesModel.utType == "text/html" {
+//                    print(slidesModel.index)
+//                }
                 // Convert properties of SlidesModel
                 cdSlidesModel.code = Int16(slidesModel.code)
                 cdSlidesModel.filePath = slidesModel.filePath
@@ -241,17 +273,27 @@ class CoreDataManager {
                 cdSlidesModel.isFailed = slidesModel.isFailed
                 cdSlidesModel.isDownloadCompleted = slidesModel.isDownloadCompleted
                 cdSlidesModel.index = Int16(slidesModel.index)
+                groupDispatchGroup.enter()
                 // Convert other properties...
+                
+                processSlideModel(slidesModel: slidesModel) { imageData in
+                    cdSlidesModel.imageData = imageData
+                   
+                    groupDispatchGroup.leave() // Leave the group after the processing is done
+                }
                 
                 // Add to set
                 cdSlidesModels.add(cdSlidesModel)
             }
         }
 
-        return cdSlidesModels
+        groupDispatchGroup.notify(queue: .main) {
+            // Completion handler called when all slide models are processed
+            completion(cdSlidesModels)
+        }
     }
     
-    
+ 
     
     
     /// function used to convert codable class objet array to NSset. sincc core data saves object of type NSset
@@ -259,47 +301,85 @@ class CoreDataManager {
     ///   - slidesModels: object of type [SlidesModel]
     ///   - context: (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     /// - Returns: NSSet
-    private func convertToSlidesCDModel(_ slidesModels: [SlidesModel], context: NSManagedObjectContext) -> NSSet {
+    private func convertToSlidesCDModel(_ slidesModels: [SlidesModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
         let cdSlidesModels = NSMutableSet()
-
+        let groupDispatchGroup = DispatchGroup()
+        
         for slidesModel in slidesModels {
+            groupDispatchGroup.enter()
             if let entityDescription = NSEntityDescription.entity(forEntityName: "GroupedSlidesCDModel", in: context) {
                 let cdSlidesModel = GroupedSlidesCDModel(entity: entityDescription, insertInto: context)
                 
                 // Convert properties of SlidesModel
                 cdSlidesModel.code = Int16(slidesModel.code)
                 cdSlidesModel.filePath = slidesModel.filePath
-                cdSlidesModel.code =   Int16(slidesModel.code)
+                cdSlidesModel.code = Int16(slidesModel.code)
                 cdSlidesModel.camp = Int16(slidesModel.camp)
                 cdSlidesModel.productDetailCode = slidesModel.productDetailCode
                 cdSlidesModel.group = Int16(slidesModel.group)
                 cdSlidesModel.specialityCode = slidesModel.specialityCode
                 cdSlidesModel.slideId = Int16(slidesModel.slideId)
                 cdSlidesModel.fileType = slidesModel.fileType
-                // cdSlidesModel.effFrom = effFrom = DateI
                 cdSlidesModel.categoryCode = slidesModel.categoryCode
                 cdSlidesModel.name = slidesModel.name
                 cdSlidesModel.noofSamples = Int16(slidesModel.noofSamples)
-                // cdSlidesModel.effTo = effTo = DateI
                 cdSlidesModel.ordNo = Int16(slidesModel.ordNo)
                 cdSlidesModel.priority = Int16(slidesModel.priority)
                 cdSlidesModel.slideData = slidesModel.slideData
                 cdSlidesModel.utType = slidesModel.utType
                 cdSlidesModel.isSelected = slidesModel.isSelected
                 cdSlidesModel.fileName = slidesModel.fileName
-                cdSlidesModel.imageData = slidesModel.imageData
                 cdSlidesModel.isFailed = slidesModel.isFailed
                 cdSlidesModel.isDownloadCompleted = slidesModel.isDownloadCompleted
-                // Convert other properties...
+                
+                processSlideModel(slidesModel: slidesModel) { imageData in
+                    cdSlidesModel.imageData = imageData
+                    groupDispatchGroup.leave() // Leave the group after the processing is done
+                }
                 
                 // Add to set
                 cdSlidesModels.add(cdSlidesModel)
-              
             }
         }
-
-        return cdSlidesModels
+        
+        groupDispatchGroup.notify(queue: .main) {
+            // Completion handler called when all slide models are processed
+            completion(cdSlidesModels)
+        }
     }
+    
+    
+
+    
+    func processSlideModel(slidesModel: SlidesModel, completion: @escaping (Data) -> Void) {
+        
+        
+        // Process each grouped slide model in the inner loop
+        let groupDispatchGroup = DispatchGroup()
+        
+        var imagedata: Data?
+       
+        
+        let data = slidesModel.slideData
+        let utType = slidesModel.utType
+        
+        groupDispatchGroup.enter()
+        ObjectFormatter.shared.loadImageDataInBackground(utType: utType, data: data) { data in
+            // Update the model with the retrieved image data
+            
+            imagedata = data
+            groupDispatchGroup.leave()
+        
+        }
+        
+        groupDispatchGroup.notify(queue: .main) {
+            // Move to the next slide model after all inner loop tasks are completed
+        
+            completion(imagedata ?? data)
+        }
+    }
+    
+    
     
     
     
@@ -350,6 +430,7 @@ class CoreDataManager {
                                 agroupedSlide.isFailed = slidesCDModel.isFailed
                                 agroupedSlide.isDownloadCompleted = slidesCDModel.isDownloadCompleted
                                 agroupedSlide.index = Int(slidesCDModel.index)
+                                agroupedSlide.imageData = slidesCDModel.imageData ?? Data()
                                 groupedSlideArr.append(agroupedSlide)
                             }
                             
@@ -449,7 +530,7 @@ extension CoreDataManager {
         do {
             let request = GeneralSlideGroupsCDModel.fetchRequest() as NSFetchRequest
             let pred = NSPredicate(format: "productBrdCode == '\(productBrdCode)'")
-            //LIKE
+         
             request.predicate = pred
            let films = try context.fetch(request)
             if films.isEmpty {
@@ -481,8 +562,21 @@ extension CoreDataManager {
             completion(false)
         }
     }
-    
-    
+
+    func removeAllGroupedSlidesCDModel() {
+        let fetchRequest: NSFetchRequest<GroupedSlidesCDModel> = NSFetchRequest(entityName: "GroupedSlidesCDModel")
+
+        do {
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
     
     
     func removeAllGroupedSlides() {
@@ -521,7 +615,7 @@ extension CoreDataManager {
     
     
     
-    func toSaveGroupedSlidesToCoreData(groupedBrandSlide: GroupedBrandsSlideModel  , completion: @escaping (Bool) -> ()) {
+    func toSaveGroupedSlidesToCoreData(groupedBrandSlide: GroupedBrandsSlideModel, completion: @escaping (Bool) -> ()) {
         toCheckGroupedSlidesExistance(groupedBrandSlide.uuid) { isExists in
             if !isExists {
                 let context = self.context
@@ -537,15 +631,17 @@ extension CoreDataManager {
                     GroupedBrandsSlides.subdivisionCode = Int16(groupedBrandSlide.subdivisionCode)
 
                     // Convert and add groupedBrandsSlideModel
-                    GroupedBrandsSlides.groupedSlide = convertToSlidesCDModel(groupedBrandSlide.groupedSlide, context: context)
+                    convertToSlidesCDModel(groupedBrandSlide.groupedSlide, context: context) { groupedSlide in
+                        GroupedBrandsSlides.groupedSlide = groupedSlide
 
-                    // Save to Core Data
-                    do {
-                        try context.save()
-                        completion(true)
-                    } catch {
-                        print("Failed to save to Core Data: \(error)")
-                        completion(false)
+                        // Save to Core Data
+                        do {
+                            try context.save()
+                            completion(true)
+                        } catch {
+                            print("Failed to save to Core Data: \(error)")
+                            completion(false)
+                        }
                     }
                 }
             } else {
@@ -922,7 +1018,7 @@ extension CoreDataManager {
 }
 
 extension CoreDataManager {
-    func toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: GroupedBrandsSlideModel  , completion: @escaping (Bool) -> ()) {
+    func toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: GroupedBrandsSlideModel, completion: @escaping (Bool) -> ()) {
         toCheckGeneralGroupedSlidesExistance(groupedBrandSlide.productBrdCode) { isExists in
             if !isExists {
                 let context = self.context
@@ -938,15 +1034,17 @@ extension CoreDataManager {
                     GroupedBrandsSlides.subdivisionCode = Int16(groupedBrandSlide.subdivisionCode)
                     
                     // Convert and add groupedBrandsSlideModel
-                    GroupedBrandsSlides.groupedSlide = convertToSlidesCDModel(groupedBrandSlide.groupedSlide, context: context)
-                    
-                    // Save to Core Data
-                    do {
-                        try context.save()
-                        completion(true)
-                    } catch {
-                        print("Failed to save to Core Data: \(error)")
-                        completion(false)
+                    convertToSlidesCDModel(groupedBrandSlide.groupedSlide, context: context) { groupedSlide in
+                        GroupedBrandsSlides.groupedSlide = groupedSlide
+                        
+                        // Save to Core Data
+                        do {
+                            try context.save()
+                            completion(true)
+                        } catch {
+                            print("Failed to save to Core Data: \(error)")
+                            completion(false)
+                        }
                     }
                 }
             } else {
@@ -1101,6 +1199,7 @@ extension CoreDataManager {
                         agroupedSlide.fileName = slidesCDModel.fileName ?? ""
                         agroupedSlide.isFailed = slidesCDModel.isFailed
                         agroupedSlide.isDownloadCompleted = slidesCDModel.isDownloadCompleted
+                        agroupedSlide.imageData = slidesCDModel.imageData ?? Data()
                         groupedSlideArr.append(agroupedSlide)
                     }
                     

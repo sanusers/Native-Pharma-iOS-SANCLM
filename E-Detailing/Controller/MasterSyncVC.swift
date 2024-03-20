@@ -47,16 +47,6 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
        // self.slideDownloadStatusLbl.text =  "Slide download in progress"
         self.slideDownloadStatusLbl.text =   "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
         
-   
-        
-       // self.slideDownloadStatusLbl.isHidden = isNewSlideExists
-       // downloadingBottomView.isHidden = isNewSlideExists
-        
-       // MasterInfoState.loadingStatusDict[.slides] = .isLoading
-        
- 
-       
-        
     }
     
     
@@ -278,7 +268,9 @@ class MasterSyncVC : UIViewController {
         
         slideDownloadStatusLbl.addTap {
           //  if  !self.retryVIew.isHidden {
-            
+            if self.slideDownloadStatusLbl.text == "slides download in progress.." {
+                return
+            }
             if  Shared.instance.iscelliterating {
                 return
             }
@@ -421,48 +413,26 @@ class MasterSyncVC : UIViewController {
         
         self.modalPresentationStyle = .custom
         self.navigationController?.present(vc, animated: false)
-//        let selectionVC = UIStoryboard.singleSelectionVC
-//        selectionVC.selectionData = headquarter
-//        selectionVC.didSelectCompletion{ (index) in
-//            self.selectedHeadquarter = headquarter[index]
-//        }
-//        self.present(selectionVC, animated: true)
+
     }
     
     
-//    func scheduleLocalNotification() {
-//        // Create a local notification content
-//        let content = UNMutableNotificationContent()
-//        content.title = "E - Detailing"
-//        content.body = "Master sync completed."
-//        
-//        // Create a trigger for the notification (can be time-based or location-based)
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false) // Example trigger
-//        
-//        // Create a notification request
-//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-//        
-//        // Add the notification request to the notification center
-//        UNUserNotificationCenter.current().add(request) { error in
-//            if let error = error {
-//                print("Error scheduling local notification: \(error)")
-//            }
-//        }
-//    }
     
     func fetchMasterDataRecursively(index: Int, isfromSyncall: Bool? = false) {
         
         let tosyncMasterData : [MasterInfo] = cacheMasterData
-  //      self.masterData = self.dcrList[selectedMasterGroupIndex ?? 0].cellType.groupDetail
-//        DispatchQueue.main.async {
-//            self.collectionView.reloadData()
-//        }
+
         guard index < tosyncMasterData.count else {
             print("DCR list sync completed")
             
             UIApplication.shared.endBackgroundTask(backgroundTask)
             
             DispatchQueue.main.async {
+                
+                if Shared.instance.isSlideDownloading {
+                    return
+                }
+                
                 if isfromSyncall ?? false {
                     
                     self.collectionView.reloadData()
@@ -471,7 +441,6 @@ class MasterSyncVC : UIViewController {
                 
                 self.isMaterSyncInProgress = false
                 
-                
                 var istoNavigate: Bool = false
                 tosyncMasterData.forEach { aMasterInfo in
                     if aMasterInfo == .slides && !(isfromSyncall ?? false) {
@@ -479,7 +448,9 @@ class MasterSyncVC : UIViewController {
                     }
                 }
                 
-                if istoNavigate || self.isFromLaunch {
+          
+                
+                if istoNavigate || self.isFromLaunch  {
                     self.setLoader(pageType: .navigate, type: .slides)
                     self.backBtn.isHidden = false
                 }
@@ -512,22 +483,22 @@ class MasterSyncVC : UIViewController {
     
     @IBAction func syncAll(_ sender: UIButton) {
        
-        cacheMasterData = masterData
-        
-        let selectedMasterInfo = masterData
-
-        // Set loading status based on MasterInfo for each element in the array
-        selectedMasterInfo.forEach { masterInfo in
-            MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
-        }
-
-        collectionView.reloadData()
-        selectedMasterGroupIndex = nil
-
-
-     //   DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
-          // }
+//        cacheMasterData = masterData
+//        
+//        let selectedMasterInfo = masterData
+//
+//        // Set loading status based on MasterInfo for each element in the array
+//        selectedMasterInfo.forEach { masterInfo in
+//            MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+//        }
+//
+//        collectionView.reloadData()
+//        selectedMasterGroupIndex = nil
+//
+//
+//     //   DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//            self.fetchMasterDataRecursively(index: 0, isfromSyncall: true)
+//          // }
 
         
     }
@@ -854,15 +825,11 @@ extension MasterSyncVC : tableViewProtocols {
         cell.lblName.text = self.dcrList[indexPath.row].cellType.name
         cell.btnSyncAll.isHidden = MasterCellType.syncAll.rawValue == self.dcrList[indexPath.row].cellType.rawValue ? false : true
         cell.btnSyncAll.addTarget(self, action: #selector(syncAllAction(_:)), for: .touchUpInside)
-//        if self.dcrList[indexPath.row].isSelected == true {
-//            cell.lblName.textColor = .appWhiteColor
-//            cell.selectedIV.image = UIImage(named:   "Vector1")
-//        }else {
-//            cell.selectedIV.image = UIImage(named:   "Vector")
-//            cell.selectedIV.tintColor = .appTextColor
-//        }
+
         return cell
     }
+    
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
@@ -893,24 +860,17 @@ extension MasterSyncVC : tableViewProtocols {
     }
     
     @objc func syncAllAction (_ sender : Any) {
-//        if !isFromLaunch {
-//            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-//                
-//                self.showMasterSyncError(description: "Please check your internet connectivity!")
-//                
-//                return
-//            }
-//        }
 
-        
-       // Shared.instance.showLoaderInWindow()
+        if Shared.instance.isSlideDownloading {
+            return
+        }
         
         self.isMaterSyncInProgress = true
         
         self.loadedSlideInfo = []
       
-        self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType, MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides]
+        self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
+                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType, MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
         
         cacheMasterData = masterData
         
@@ -1157,7 +1117,7 @@ extension MasterSyncVC : collectionViewProtocols{
         var istoReturn: Bool = false
         selectedMasterInfo.forEach { masterInfo in
           
-            if masterInfo == .slides  && isSlideDownloading {
+            if masterInfo == .slides  && Shared.instance.isSlideDownloading {
                 self.toCreateToast("Slide downloading please wait..")
                 istoReturn = true
             }

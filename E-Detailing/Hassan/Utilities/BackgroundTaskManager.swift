@@ -65,11 +65,12 @@ class BackgroundTaskManager {
     
     func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false, delegte: BackgroundTaskManagerDelegate) {
 
-
+        Shared.instance.isSlideDownloading = true
+        
         guard index >= 0, index < items.count else {
             
             LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
-
+            Shared.instance.isSlideDownloading = false
             self.stopBackgroundTask()
             return
         }

@@ -51,14 +51,14 @@ class SelectedSlidesTVC: UITableViewCell {
         }
        
 
-       // descriptionLbl.text = model.filePath
-        let data =  model.slideData
-        let utType = model.utType
-        ObjectFormatter.shared.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
-                    guard let welf = self else { return }
-                    welf.presentationIV.image = displayImage ?? UIImage()
-                }
-        
+//       // descriptionLbl.text = model.filePath
+//        let data =  model.slideData
+//        let utType = model.utType
+//        ObjectFormatter.shared.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
+//                    guard let welf = self else { return }
+//                    welf.presentationIV.image = displayImage ?? UIImage()
+//                }
+        presentationIV.image = UIImage(data: model.imageData)
         
     }
 

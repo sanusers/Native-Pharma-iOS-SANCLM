@@ -1373,45 +1373,45 @@ extension ProductVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch tableView {
         case self.ProductTableView :
-            let productValue = self.productSelectedListViewModel.fetchProductData(indexPath.row, searchText: self.searchText,type: dcrCall.type,selectedDoctorCode: dcrCall.code)
-            if productValue.isSelected {
-                if let cell = tableView.cellForRow(at: indexPath) as? ProductNameWithSampleTableViewCell {
-                    cell.btnSelected.isSelected = false
-                }
-                self.productSelectedListViewModel.removeById(productValue.Object.code ?? "")
-                self.productSampleTableView.reloadData()
-            }else {
-                if let cell = tableView.cellForRow(at: indexPath) as? ProductNameWithSampleTableViewCell {
-                    cell.btnSelected.isSelected = true
-                }
-                
-                let productStocks = DBManager.shared.getStockBalance()
-                
-                var productAvailableQty = [ProductStockBalance]()
-                
-                guard let productStockValue = productStocks , let productLists = productStockValue.product?.allObjects as? [ProductStockBalance] else {
-                    return
-                }
-                
-                productAvailableQty = productLists
-                
-                let selectedProduct = productValue.Object as? Product
-                
-                let selectedProdcutCode = selectedProduct?.code
-                
-                let product = productAvailableQty.filter{$0.code == selectedProdcutCode}
-                
-                var count = ""
-                
-                if !product.isEmpty {
-                    count = "\(product.first!.balanceStock <= 0 ? 0 : product.first!.balanceStock)"
-                }
-                
-                self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: count, totalCount: count)))
-                
-           //     self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "")))
-                self.productSampleTableView.reloadData()
-            }
+//            let productValue = self.productSelectedListViewModel.fetchProductData(indexPath.row, searchText: self.searchText,type: dcrCall.type,selectedDoctorCode: dcrCall.code)
+//            if productValue.isSelected {
+//                if let cell = tableView.cellForRow(at: indexPath) as? ProductNameWithSampleTableViewCell {
+//                    cell.btnSelected.isSelected = false
+//                }
+//                self.productSelectedListViewModel.removeById(productValue.Object.code ?? "")
+//                self.productSampleTableView.reloadData()
+//            }else {
+//                if let cell = tableView.cellForRow(at: indexPath) as? ProductNameWithSampleTableViewCell {
+//                    cell.btnSelected.isSelected = true
+//                }
+//                
+//                let productStocks = DBManager.shared.getStockBalance()
+//                
+//                var productAvailableQty = [ProductStockBalance]()
+//                
+//                guard let productStockValue = productStocks , let productLists = productStockValue.product?.allObjects as? [ProductStockBalance] else {
+//                    return
+//                }
+//                
+//                productAvailableQty = productLists
+//                
+//                let selectedProduct = productValue.Object as? Product
+//                
+//                let selectedProdcutCode = selectedProduct?.code
+//                
+//                let product = productAvailableQty.filter{$0.code == selectedProdcutCode}
+//                
+//                var count = ""
+//                
+//                if !product.isEmpty {
+//                    count = "\(product.first!.balanceStock <= 0 ? 0 : product.first!.balanceStock)"
+//                }
+//                
+//                self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: count, totalCount: count)))
+//                
+//           //     self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "")))
+//                self.productSampleTableView.reloadData()
+//            }
             break
         case self.productSampleTableView:
             break
@@ -1890,6 +1890,10 @@ extension ProductVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         switch tableView{
+        case self.ProductTableView:
+            
+            return 60
+            
         case self.inputSampleTableView:
             return 70
         case self.rcpaCompetitorTableView:

@@ -52,14 +52,14 @@ class BrandsPreviewCVC: UICollectionViewCell {
         
         let aslide = model.groupedSlide.first
         
-        let data =  aslide?.slideData ?? Data()
-        let utType = aslide?.utType ?? ""
-        objectFormatter.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
-                    guard let welf = self else { return }
-                    welf.presentationIV.image = displayImage ?? UIImage()
-                }
+//        let data =  aslide?.slideData ?? Data()
+//        let utType = aslide?.utType ?? ""
+//        objectFormatter.loadImageInBackground(utType: utType, data: data, presentationIV: presentationIV) { [weak self] displayImage in
+//                    guard let welf = self else { return }
+//                    welf.presentationIV.image = displayImage ?? UIImage()
+//                }
         
-
+        presentationIV.image = UIImage(data: aslide?.imageData ?? Data())
     }
     
     func toPopulateCell(model: SavedPresentation) {
@@ -81,13 +81,15 @@ class BrandsPreviewCVC: UICollectionViewCell {
         
         
         let slideElement = slidesModel.first
-        let imageDatatype = slideElement?.utType ?? ""
+      //  let imageDatatype = slideElement?.utType ?? ""
        // self.presentationIV.toSetImageFromData(utType: imageDatatype, data: slideElement?.slideData ?? Data())
         
-        ObjectFormatter.shared.loadImageInBackground(utType: imageDatatype, data: slideElement?.slideData ?? Data(), presentationIV: presentationIV) { [weak self] displayImage in
-                    guard let welf = self else { return }
-                    welf.presentationIV.image = displayImage ?? UIImage()
-                }
+//        ObjectFormatter.shared.loadImageInBackground(utType: imageDatatype, data: slideElement?.slideData ?? Data(), presentationIV: presentationIV) { [weak self] displayImage in
+//                    guard let welf = self else { return }
+//                    welf.presentationIV.image = displayImage ?? UIImage()
+//                }
+        
+        presentationIV.image = UIImage(data: slideElement?.imageData ?? Data())
     }
     
     

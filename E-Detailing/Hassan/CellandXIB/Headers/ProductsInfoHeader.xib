@@ -33,8 +33,8 @@
                                         <rect key="frame" x="0.0" y="0.0" width="175" height="76.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Product Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gcI-7O-43t">
-                                                <rect key="frame" x="38.333333333333336" y="29.333333333333329" width="98.333333333333314" height="18"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <rect key="frame" x="37.000000000000007" y="28.666666666666671" width="100.66666666666669" height="19"/>
+                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -49,7 +49,7 @@
                                         <rect key="frame" x="175" y="0.0" width="174.66666666666663" height="76.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Promoted" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="buG-5k-sDo">
-                                                <rect key="frame" x="53.999999999999993" y="29.333333333333329" width="66.333333333333314" height="17.666666666666671"/>
+                                                <rect key="frame" x="52.666666666666657" y="28.666666666666671" width="69" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -65,7 +65,7 @@
                                         <rect key="frame" x="349.66666666666669" y="0.0" width="175.00000000000006" height="76.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Stock" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bpa-pr-L8x">
-                                                <rect key="frame" x="68" y="29.333333333333329" width="39" height="17.666666666666671"/>
+                                                <rect key="frame" x="67.666666666666629" y="28.666666666666671" width="39.333333333333343" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -81,7 +81,7 @@
                                         <rect key="frame" x="524.66666666666663" y="0.0" width="174.66666666666663" height="76.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rx Qty" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MJr-bg-3oz">
-                                                <rect key="frame" x="64.333333333333371" y="29.333333333333329" width="46" height="17.666666666666671"/>
+                                                <rect key="frame" x="64" y="28.666666666666671" width="46.666666666666657" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -97,7 +97,7 @@
                                         <rect key="frame" x="699.33333333333337" y="0.0" width="175" height="76.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RCPA" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Km-VZ-ido">
-                                                <rect key="frame" x="67.666666666666629" y="29.333333333333329" width="39.666666666666657" height="17.666666666666671"/>
+                                                <rect key="frame" x="67" y="28.666666666666671" width="40.666666666666657" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -113,7 +113,7 @@
                                         <rect key="frame" x="874.33333333333337" y="0.0" width="174.66666666666663" height="76.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Samples" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MVB-N1-n6w">
-                                                <rect key="frame" x="58" y="29.333333333333329" width="58.666666666666657" height="17.666666666666671"/>
+                                                <rect key="frame" x="57.666666666666629" y="28.666666666666671" width="59" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>

@@ -363,6 +363,7 @@
         <attribute name="filePath" optional="YES" attributeType="String"/>
         <attribute name="fileType" optional="YES" attributeType="String"/>
         <attribute name="group" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imageData" optional="YES" attributeType="Binary"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isDownloadCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isFailed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

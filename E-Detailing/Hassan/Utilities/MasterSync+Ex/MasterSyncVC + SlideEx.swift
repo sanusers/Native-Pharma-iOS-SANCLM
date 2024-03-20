@@ -31,7 +31,7 @@ extension MasterSyncVC {
             Shared.instance.removeLoaderInWindow()
             if isFromLaunch {
                 if (type == .slides || type == .slideBrand) && self.loadedSlideInfo.contains(.slideBrand) && self.loadedSlideInfo.contains(.slides) {
-                   
+ 
                         moveToDownloadSlide()
                     
                 } else {
@@ -41,10 +41,11 @@ extension MasterSyncVC {
             } else  if (type == .slides) {
                 
                    
-                    let isNewSlideExists =  self.toCheckExistenceOfNewSlides() ?? false
-                    if isNewSlideExists {
+                    let isNewSlideExists = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded)
+                //self.toCheckExistenceOfNewSlides()  ?? false
+                  //  if !isNewSlideExists {
                         moveToDownloadSlide()
-                    }
+                  //  }
                     
                 
            
@@ -118,13 +119,17 @@ extension MasterSyncVC {
         if !nonExistingSlides.isEmpty {
             slideDownloadStatusLbl.isHidden  =  false
             downloadingBottomView.isHidden =  false
-            if isfromHome {
-                slideDownloadStatusLbl.text = "Slides download in progress"
-            } else {
-                slideDownloadStatusLbl.text = "slides downloaded :\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+            if isfromHome && !Shared.instance.isSlideDownloading {
+                slideDownloadStatusLbl.text = "Tap to retry slide download"
+                retryVIew.isHidden = false
+            }
+            else {
+                slideDownloadStatusLbl.text = "slides download in progress.."
+                retryVIew.isHidden = true
+                //:\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
             }
        
-            retryVIew.isHidden = false
+         
            
         } else {
             retryVIew.isHidden = true
@@ -140,7 +145,11 @@ extension MasterSyncVC {
     
     func moveToDownloadSlide(isFromcache: Bool? = false) {
         downloadAlertSet = false
+        
         let vc = SlideDownloadVC.initWithStory()
+       // if toCheckExistenceOfNewSlides() ?? false && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
+            vc.istoGroupBrandwise = true
+        //}
         vc.isFromlaunch = isFromLaunch
         if isFromcache ?? false{
             vc.arrayOfAllSlideObjects = self.arrayOfAllSlideObjects
