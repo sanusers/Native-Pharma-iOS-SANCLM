@@ -52,14 +52,15 @@ class ProductSampleTableViewCell : UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        [txtSampleQty,txtRxQty,txtRcpaQty,txtProductCount].forEach { textfield in
-            
-            textfield?.layer.borderColor = AppColors.primaryColorWith_25per_alpha.cgColor
-            textfield?.layer.borderWidth = 1.5
+        txtProductCount.backgroundColor = .appLightTextColor.withAlphaComponent(0.3)
+        [txtSampleQty,txtRxQty,txtRcpaQty, txtProductCount].forEach { textfield in
+            if textfield != txtProductCount {
+                textfield?.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+                textfield?.layer.borderWidth = 1.5
+          
+            }
             textfield?.layer.cornerRadius = 5
-            
-            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: textfield?.frame.height ?? 50))
             
             textfield?.leftView = paddingView
             textfield?.leftViewMode = .always

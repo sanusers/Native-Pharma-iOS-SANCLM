@@ -15,7 +15,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool) {
         
         
-        if isToshowAlert {
+        if isToshowAlert && !isCompleted {
             toSetupAlert(desc: "Slides will be downloaded in background..", istoNavigate: false)
             return
         }

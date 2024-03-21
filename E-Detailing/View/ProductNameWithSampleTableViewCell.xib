@@ -32,25 +32,25 @@
                                 <state key="selected" image="checkBoxSelected"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="GUSTIL Alworm 50mg " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tfd-zP-7Bw">
-                                <rect key="frame" x="49" y="27.5" width="245.5" height="17.5"/>
+                                <rect key="frame" x="49" y="27.5" width="196.5" height="17.5"/>
                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TyU-gs-N4B">
-                                <rect key="frame" x="304.5" y="18" width="78.5" height="36"/>
+                                <rect key="frame" x="348" y="18" width="35" height="36"/>
                                 <subviews>
                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7g6-Iz-fTN">
-                                        <rect key="frame" x="0.0" y="0.0" width="78.5" height="36"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="35" height="36"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="hsg-P9-XWS">
-                                            <rect key="frame" x="0.0" y="0.0" width="78.5" height="36"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="35" height="36"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
                                         <color key="backgroundColor" systemColor="systemGreenColor"/>
                                         <blurEffect style="regular"/>
                                     </visualEffectView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x9K-8c-IoG">
-                                        <rect key="frame" x="0.0" y="0.0" width="78.5" height="36"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SM " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x9K-8c-IoG">
+                                        <rect key="frame" x="3.5" y="0.0" width="28" height="36"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                         <color key="textColor" red="0.0" green="0.77647058820000003" blue="0.53725490196078429" alpha="1" colorSpace="calibratedRGB"/>
@@ -65,14 +65,14 @@
                                     <constraint firstItem="7g6-Iz-fTN" firstAttribute="top" secondItem="TyU-gs-N4B" secondAttribute="top" id="Fzs-43-E6k"/>
                                     <constraint firstItem="x9K-8c-IoG" firstAttribute="centerX" secondItem="TyU-gs-N4B" secondAttribute="centerX" id="QKO-MR-LcB"/>
                                     <constraint firstItem="7g6-Iz-fTN" firstAttribute="leading" secondItem="TyU-gs-N4B" secondAttribute="leading" id="RXf-SR-3SU"/>
+                                    <constraint firstAttribute="width" secondItem="x9K-8c-IoG" secondAttribute="width" multiplier="1.25" id="dY3-kD-ElP"/>
                                     <constraint firstItem="x9K-8c-IoG" firstAttribute="centerY" secondItem="TyU-gs-N4B" secondAttribute="centerY" id="kDK-Nb-nle"/>
-                                    <constraint firstItem="x9K-8c-IoG" firstAttribute="width" secondItem="TyU-gs-N4B" secondAttribute="width" id="nwc-zj-qwW"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aDg-lJ-wNO">
                                 <rect key="frame" x="15" y="70" width="363" height="2"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" systemColor="tableSeparatorLightColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -81,10 +81,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="TyU-gs-N4B" secondAttribute="trailing" constant="10" id="BZo-K0-dZP"/>
-                            <constraint firstItem="TyU-gs-N4B" firstAttribute="leading" secondItem="tfd-zP-7Bw" secondAttribute="trailing" constant="10" id="G87-zR-jty"/>
                             <constraint firstItem="TyU-gs-N4B" firstAttribute="centerY" secondItem="2h6-Xz-ies" secondAttribute="centerY" id="VDP-0d-Lxl"/>
                             <constraint firstItem="tfd-zP-7Bw" firstAttribute="centerY" secondItem="2h6-Xz-ies" secondAttribute="centerY" id="Vj1-9L-RgS"/>
-                            <constraint firstItem="TyU-gs-N4B" firstAttribute="width" secondItem="cSP-8b-Rat" secondAttribute="width" multiplier="0.2" id="ZnU-G7-FQs"/>
+                            <constraint firstItem="tfd-zP-7Bw" firstAttribute="width" secondItem="cSP-8b-Rat" secondAttribute="width" multiplier="0.5" id="f8q-e3-ooV"/>
                             <constraint firstItem="TyU-gs-N4B" firstAttribute="height" secondItem="cSP-8b-Rat" secondAttribute="height" multiplier="0.5" id="g3b-lw-ynx"/>
                             <constraint firstItem="2h6-Xz-ies" firstAttribute="leading" secondItem="cSP-8b-Rat" secondAttribute="leading" constant="10" id="hLH-Gq-ScT"/>
                             <constraint firstItem="2h6-Xz-ies" firstAttribute="centerY" secondItem="cSP-8b-Rat" secondAttribute="centerY" id="mBX-lO-fvM"/>
@@ -119,6 +118,9 @@
         </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tableSeparatorLightColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

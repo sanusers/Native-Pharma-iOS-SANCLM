@@ -136,6 +136,7 @@ class PresentationHomeView : BaseView {
     
     @IBOutlet var noPresentationView: UIView!
     @IBOutlet var contentsHolderView: UIView!
+   
     var pageType: PageType = .empty
     let localStorage =  LocalStorage.shared
     var savePresentationArr : [SavedPresentation]?
@@ -145,22 +146,37 @@ class PresentationHomeView : BaseView {
         self.presentationHomeVC = baseVC as? PresentationHomeVC
         setupUI()
         initView()
-        retriveSavedPresentations()
-        
-     
+       // retriveSavedPresentations()
+        groupSlides()
+
     }
     
     
     
     func retriveSavedPresentations()  {
-      //  Shared.instance.showLoaderInWindow()
+ 
         CoreDataManager.shared.retriveSavedPresentations{ savedPresentationArr in
-           // Shared.instance.removeLoaderInWindow()
+        
             self.savePresentationArr = savedPresentationArr
             self.toLoadDataSource()
         }
  
     }
+    
+    func groupSlides() {
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) {
+            Shared.instance.showLoaderInWindow()
+            presentationHomeVC.mastersyncVM?.toGroupSlidesBrandWise() { isgrouped in
+                Shared.instance.showLoaderInWindow()
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
+                self.retriveSavedPresentations()
+        }
+        } else {
+            self.retriveSavedPresentations()
+        }
+    }
+    
+    
     
     func toLoadDataSource() {
         if let savePresentationArr =   self.savePresentationArr {

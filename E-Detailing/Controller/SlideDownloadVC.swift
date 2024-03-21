@@ -72,6 +72,8 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
         
         if istoreturn {
             completion(true)
+            self.dismiss(animated: true)
+            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: arrayOfAllSlideObjects, isToshowAlert: true, didEncountererror: false)
             return
             
         }
@@ -97,9 +99,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                 if isUpdated {
                     DispatchQueue.global().async {
                         // Perform subsequent tasks asynchronously on a background queue
-                        self.toGroupSlidesBrandWise() { _ in
-              
-                        }
+//                        self.mastersyncvm?.toGroupSlidesBrandWise() { _ in
+//                            
+//                        }
                         
                         DispatchQueue.main.async {
                             // Update UI on the main queue after background tasks are completed
@@ -127,9 +129,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                     guard index + 1 < arrayOfAllSlideObjects.count else {
                         DispatchQueue.global().async {
                             // Perform subsequent tasks asynchronously on a background queue
-                            self.toGroupSlidesBrandWise() { _ in
-                                
-                            }
+//                            self.mastersyncvm?.toGroupSlidesBrandWise() { _ in
+//                                
+//                            }
                             
                             DispatchQueue.main.async {
                                 
@@ -206,8 +208,10 @@ class SlideDownloadVC : UIViewController {
     @IBOutlet var lblStatus: UILabel!
     @IBOutlet var titleLbl: UILabel!
     weak var delegate: SlideDownloadVCDelegate?
-    class func initWithStory() -> SlideDownloadVC {
+    var mastersyncvm: MasterSyncVM?
+    class func initWithStory(viewmodel: MasterSyncVM) -> SlideDownloadVC {
         let tourPlanVC : SlideDownloadVC = UIStoryboard.Hassan.instantiateViewController()
+        tourPlanVC.mastersyncvm = viewmodel
         return tourPlanVC
     }
     var istoGroupBrandwise: Bool = false
@@ -263,13 +267,13 @@ class SlideDownloadVC : UIViewController {
         initVIew()
         let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
         
-        if istoGroupBrandwise {
-            Shared.instance.showLoader(in: self.tableView)
-            self.toGroupSlidesBrandWise() { _ in
-                Shared.instance.removeLoader(in: self.tableView)
-                self.dismiss(animated: true)
-            }
-        }
+//        if istoGroupBrandwise {
+//            Shared.instance.showLoader(in: self.tableView)
+//            self.toGroupSlidesBrandWise() { _ in
+//                Shared.instance.removeLoader(in: self.tableView)
+//                self.dismiss(animated: true)
+//            }
+//        }
         
         if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
             self.isDownloadingInProgress = false
@@ -464,20 +468,13 @@ class SlideDownloadVC : UIViewController {
                     
                     let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
                     
-                  //  let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
-                    
-                  //  toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
+
                     self.startDownload()
                 } else {
                     
                     _ = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
                      
-                     let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
-                     
-                   //  let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
-                     
-                     //toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
-                    
+
                     self.startDownload()
                 }
               
@@ -529,10 +526,7 @@ class SlideDownloadVC : UIViewController {
             BackgroundTaskManager.shared.stopBackgroundTask()
             return
         }
-        
-       // BackgroundTaskManager.shared.toDownloadMedia(index: index, items: items, delegte: self)
-        
-        let indexPath = IndexPath(row: index , section: 0) // Assuming single section
+        let indexPath = IndexPath(row: index , section: 0)
         
         scrollToItem(at: index, animated: true)
         
@@ -543,6 +537,9 @@ class SlideDownloadVC : UIViewController {
            
         } else {
             Shared.instance.iscelliterating = false
+            
+            
+            
             print("Cant able to retrive cell.")
             
             BackgroundTaskManager.shared.stopBackgroundTask()
@@ -555,9 +552,6 @@ class SlideDownloadVC : UIViewController {
             self.didDownloadCompleted(arrayOfAllSlideObjects: self.arrayOfAllSlideObjects, index: cacheIndexInt, isForSingleSelection: false, isfrorBackgroundTask: true, istoreturn: true) {_ in
                 BackgroundTaskManager.shared.toDownloadMedia(index: cacheIndexInt, items: self.arrayOfAllSlideObjects, delegte: self)
             }
-            
-//            self.isDownloadingInProgress = false
-//            BackgroundTaskManager.shared.toDownloadMedia(index: index, items: items, delegte: self)
         }
     }
     
@@ -614,53 +608,53 @@ class SlideDownloadVC : UIViewController {
     }
     
     
-    func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
-      //  Shared.instance.showLoaderInWindow()
-        let allSlideObjects = CoreDataManager.shared.retriveSavedSlides()
-        let brandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
-
-        CoreDataManager.shared.removeAllGeneralGroupedSlides()
-
-        let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
-            let brandSlides = allSlideObjects.filter { $0.code == brandSlideModel.productBrdCode }
-
-            guard !brandSlides.isEmpty else {
-                print("No slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
-                return nil
-            }
-            
-            print("slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
-            let groupedBrandModel = GroupedBrandsSlideModel()
-            groupedBrandModel.groupedSlide = brandSlides
-            groupedBrandModel.priority = brandSlideModel.priority
-            groupedBrandModel.divisionCode = brandSlideModel.divisionCode
-            groupedBrandModel.productBrdCode = brandSlideModel.productBrdCode
-            groupedBrandModel.subdivisionCode = brandSlideModel.subdivisionCode
-            groupedBrandModel.id = brandSlideModel.id
-
-            return groupedBrandModel
-        }
-
-        let dispatchGroup = DispatchGroup()
-
-        for groupedBrandModel in groupedBrandsSlideModels {
-            dispatchGroup.enter()
-
-            tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
-                dispatchGroup.leave()
-
-                if isSaved {
-                    completion(true)
-                }
-            }
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            // All async tasks are completed
-            completion(true)
-          //  Shared.instance.removeLoaderInWindow()
-        }
-    }
+//    func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
+//      //  Shared.instance.showLoaderInWindow()
+//        let allSlideObjects = CoreDataManager.shared.retriveSavedSlides()
+//        let brandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
+//
+//        CoreDataManager.shared.removeAllGeneralGroupedSlides()
+//
+//        let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
+//            let brandSlides = allSlideObjects.filter { $0.code == brandSlideModel.productBrdCode }
+//
+//            guard !brandSlides.isEmpty else {
+//                print("No slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
+//                return nil
+//            }
+//            
+//            print("slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
+//            let groupedBrandModel = GroupedBrandsSlideModel()
+//            groupedBrandModel.groupedSlide = brandSlides
+//            groupedBrandModel.priority = brandSlideModel.priority
+//            groupedBrandModel.divisionCode = brandSlideModel.divisionCode
+//            groupedBrandModel.productBrdCode = brandSlideModel.productBrdCode
+//            groupedBrandModel.subdivisionCode = brandSlideModel.subdivisionCode
+//            groupedBrandModel.id = brandSlideModel.id
+//
+//            return groupedBrandModel
+//        }
+//
+//        let dispatchGroup = DispatchGroup()
+//
+//        for groupedBrandModel in groupedBrandsSlideModels {
+//            dispatchGroup.enter()
+//
+//            tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
+//                dispatchGroup.leave()
+//
+//                if isSaved {
+//                    completion(true)
+//                }
+//            }
+//        }
+//
+//        dispatchGroup.notify(queue: .main) {
+//            // All async tasks are completed
+//            completion(true)
+//          //  Shared.instance.removeLoaderInWindow()
+//        }
+//    }
     
     func tounArchiveData(aGroupedBrandsSlideModel: GroupedBrandsSlideModel, completion: @escaping (Bool) -> Void) {
         var zipContentsSlides = [SlidesModel]()
@@ -897,55 +891,6 @@ class SlideDownloadVC : UIViewController {
                     self.delegate?.didDownloadCompleted()
                 }
             }
-        }
-    }
-    
-    
-    struct UnzippedDataInfo {
-        var videofiles: [Videoinfo]
-        var imagefiles: [Imageinfo]
-        var htmlfiles: [HTMLinfo]
-        
-        init() {
-            self.videofiles = [Videoinfo]()
-            self.imagefiles = [Imageinfo]()
-            self.htmlfiles = [HTMLinfo]()
-        }
-    }
-
-    struct Videoinfo {
-
-        var fileData:  Data?
-        var filetype: String?
-        init() {
-
-            self.fileData = Data()
-            self.filetype = String()
-        }
-    }
-
-
-    struct Imageinfo {
-
-        var fileData:  Data?
-        var filetype: String?
-        init() {
-
-            self.fileData = Data()
-            self.filetype = String()
-        }
-    }
-    
-    struct HTMLinfo {
-        var htmlString: String?
-        var htmlFileURL: URL?
-        var fileData:  Data?
-        var fileName: String?
-        init() {
-            self.htmlString = String()
-            self.htmlFileURL = URL(string: "")
-            self.fileData = Data()
-            self.fileName = String()
         }
     }
     

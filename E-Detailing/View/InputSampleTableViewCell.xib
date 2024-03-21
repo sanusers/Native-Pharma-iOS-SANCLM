@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,25 +15,25 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="73" id="HqK-RK-99T" customClass="InputSampleTableViewCell" customModule="E_Detailing" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="59" id="HqK-RK-99T" customClass="InputSampleTableViewCell" customModule="E_Detailing" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="601" height="59"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HqK-RK-99T" id="rVk-hn-zko">
-                <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+                <rect key="frame" x="0.0" y="0.0" width="601" height="59"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bf-hF-Xrg">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+                        <rect key="frame" x="0.0" y="0.0" width="601" height="59"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dD4-0j-ZnZ">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="73"/>
+                                <rect key="frame" x="0.0" y="0.0" width="601" height="59"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jqs-mb-cZU">
-                                        <rect key="frame" x="0.0" y="0.0" width="137.5" height="73"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="210.5" height="59"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HvP-5F-qQA">
-                                                <rect key="frame" x="15" y="24" width="112.5" height="25"/>
-                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
+                                                <rect key="frame" x="15" y="21" width="185.5" height="17.5"/>
+                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -46,10 +46,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="61n-3Y-LB4">
-                                        <rect key="frame" x="137.5" y="0.0" width="78.5" height="73"/>
+                                        <rect key="frame" x="210.5" y="0.0" width="120" height="59"/>
                                         <subviews>
                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4lN-OO-tRG">
-                                                <rect key="frame" x="5" y="14" width="68.5" height="45"/>
+                                                <rect key="frame" x="5" y="14" width="110" height="31"/>
                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -65,10 +65,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PFc-cb-M4u">
-                                        <rect key="frame" x="216" y="0.0" width="79" height="73"/>
+                                        <rect key="frame" x="330.5" y="0.0" width="120.5" height="59"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ohj-xM-ZPd">
-                                                <rect key="frame" x="5" y="14" width="69" height="45"/>
+                                                <rect key="frame" x="5" y="14" width="110.5" height="31"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -83,22 +83,20 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uJS-ti-PLE">
-                                        <rect key="frame" x="295" y="0.0" width="98" height="73"/>
+                                        <rect key="frame" x="451" y="0.0" width="150" height="59"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cjg-oh-fEh">
-                                                <rect key="frame" x="64" y="24.5" width="24" height="24"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="24" id="DRb-JO-Ml9"/>
-                                                    <constraint firstAttribute="width" constant="24" id="n9u-CK-Dkd"/>
-                                                </constraints>
+                                                <rect key="frame" x="90" y="20.5" width="15" height="18"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" image="DeleteBinIcon"/>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="Cjg-oh-fEh" secondAttribute="trailing" constant="10" id="98q-Qk-FNL"/>
+                                            <constraint firstItem="Cjg-oh-fEh" firstAttribute="centerX" secondItem="uJS-ti-PLE" secondAttribute="centerX" multiplier="1.3" id="2e3-Dm-6sA"/>
                                             <constraint firstItem="Cjg-oh-fEh" firstAttribute="centerY" secondItem="uJS-ti-PLE" secondAttribute="centerY" id="eVq-1Z-a5O"/>
+                                            <constraint firstItem="Cjg-oh-fEh" firstAttribute="height" secondItem="uJS-ti-PLE" secondAttribute="height" multiplier="0.3" id="je5-qE-QvJ"/>
+                                            <constraint firstItem="Cjg-oh-fEh" firstAttribute="width" secondItem="uJS-ti-PLE" secondAttribute="width" multiplier="0.1" id="wKY-xK-9Hw"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -110,13 +108,13 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H4I-4f-SYk">
-                                <rect key="frame" x="15" y="71" width="363" height="2"/>
-                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <rect key="frame" x="15" y="58" width="571" height="1"/>
+                                <color key="backgroundColor" systemColor="tableSeparatorLightColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="2" id="WsF-vc-lgy"/>
+                                    <constraint firstAttribute="height" constant="1" id="WsF-vc-lgy"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -146,13 +144,16 @@
                 <outlet property="txtSampleQty" destination="ohj-xM-ZPd" id="6wb-xU-Kwy"/>
                 <outlet property="viewSampleQty" destination="61n-3Y-LB4" id="zNr-3n-4hK"/>
             </connections>
-            <point key="canvasLocation" x="-2.5609756097560976" y="-88.728813559322035"/>
+            <point key="canvasLocation" x="73.536585365853654" y="-92.288135593220346"/>
         </tableViewCell>
     </objects>
     <resources>
         <image name="DeleteBinIcon" width="24" height="24"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tableSeparatorLightColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,7 +18,7 @@
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="62" id="qnV-iQ-EhY" customClass="AdditionalCallSampleInputTableViewCell" customModule="E_Detailing" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="606" height="62"/>
             <autoresizingMask key="autoresizingMask"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qnV-iQ-EhY" id="ayB-h4-Jws">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qnV-iQ-EhY" id="ayB-h4-Jws">
                 <rect key="frame" x="0.0" y="0.0" width="606" height="62"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -29,8 +29,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="109" height="58"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ShN-7P-UAv">
-                                        <rect key="frame" x="15" y="16.5" width="50.5" height="25"/>
-                                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
+                                        <rect key="frame" x="15" y="20.5" width="89" height="17.5"/>
+                                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -39,6 +39,7 @@
                                 <constraints>
                                     <constraint firstItem="ShN-7P-UAv" firstAttribute="centerY" secondItem="KUc-qv-04L" secondAttribute="centerY" id="Eou-Po-IOo"/>
                                     <constraint firstItem="ShN-7P-UAv" firstAttribute="leading" secondItem="KUc-qv-04L" secondAttribute="leading" constant="15" id="WYV-db-TNT"/>
+                                    <constraint firstAttribute="trailing" secondItem="ShN-7P-UAv" secondAttribute="trailing" constant="5" id="tG5-o1-ecU"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rXv-d4-hec">
@@ -100,9 +101,9 @@
                                         <rect key="frame" x="0.0" y="0.0" width="448.5" height="58"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PwM-qA-rJ9" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="15" y="10.5" width="202" height="37"/>
+                                                <rect key="frame" x="15" y="14" width="157" height="30"/>
                                                 <color key="backgroundColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
+                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="Add Product/Input">
                                                     <color key="titleColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
@@ -119,7 +120,7 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="PwM-qA-rJ9" firstAttribute="width" secondItem="98J-Dh-Z0n" secondAttribute="width" multiplier="0.45" id="tBP-DB-f54"/>
+                                            <constraint firstItem="PwM-qA-rJ9" firstAttribute="width" secondItem="98J-Dh-Z0n" secondAttribute="width" multiplier="0.35" id="tBP-DB-f54"/>
                                             <constraint firstItem="PwM-qA-rJ9" firstAttribute="centerY" secondItem="98J-Dh-Z0n" secondAttribute="centerY" id="tbu-oW-En1"/>
                                             <constraint firstItem="PwM-qA-rJ9" firstAttribute="leading" secondItem="98J-Dh-Z0n" secondAttribute="leading" constant="15" id="wOk-vp-c0H"/>
                                         </constraints>
@@ -155,18 +156,17 @@
                                 <rect key="frame" x="557.5" y="0.0" width="48.5" height="58"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kex-fg-3tX">
-                                        <rect key="frame" x="9.5" y="17" width="24" height="24"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="kex-fg-3tX" secondAttribute="height" multiplier="1:1" id="eSy-jc-pcM"/>
-                                        </constraints>
+                                        <rect key="frame" x="3.5" y="19" width="17" height="20"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="DeleteBinIcon"/>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstItem="kex-fg-3tX" firstAttribute="width" secondItem="ZIU-HN-9T8" secondAttribute="width" multiplier="0.35" id="JUR-fp-d8J"/>
+                                    <constraint firstItem="kex-fg-3tX" firstAttribute="centerX" secondItem="ZIU-HN-9T8" secondAttribute="centerX" multiplier="0.5" id="JhG-Ke-7aj"/>
                                     <constraint firstItem="kex-fg-3tX" firstAttribute="centerY" secondItem="ZIU-HN-9T8" secondAttribute="centerY" id="iXt-hc-sr5"/>
-                                    <constraint firstAttribute="trailing" secondItem="kex-fg-3tX" secondAttribute="trailing" constant="15" id="mkP-dY-k0t"/>
+                                    <constraint firstItem="kex-fg-3tX" firstAttribute="height" secondItem="ZIU-HN-9T8" secondAttribute="height" multiplier="0.35" id="zcd-CU-pEK"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -183,13 +183,13 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j62-fh-YNC">
-                        <rect key="frame" x="10" y="60" width="586" height="2"/>
-                        <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                        <rect key="frame" x="10" y="60" width="586" height="1"/>
+                        <color key="backgroundColor" systemColor="tableSeparatorLightColor"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="2" id="DOY-6C-rSE"/>
+                            <constraint firstAttribute="height" constant="1" id="DOY-6C-rSE"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
+                        <color key="textColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
@@ -229,6 +229,9 @@
         <image name="GreenRightArrow" width="24" height="24"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tableSeparatorLightColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,42 +26,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="72"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="usa-jH-Mdr">
-                                <rect key="frame" x="15" y="20" width="32" height="32"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="32" id="GUp-E1-fo3"/>
-                                    <constraint firstAttribute="height" constant="32" id="NC0-tZ-drK"/>
-                                </constraints>
+                                <rect key="frame" x="10" y="21.5" width="29" height="29"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="checkBoxEmpty"/>
                                 <state key="selected" image="checkBoxSelected"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dsg-mF-90N">
-                                <rect key="frame" x="67" y="25" width="311" height="22.5"/>
-                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                <rect key="frame" x="49" y="27.5" width="329" height="17.5"/>
+                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QkH-4p-q8C">
-                                <rect key="frame" x="15" y="70" width="363" height="2"/>
-                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QkH-4p-q8C">
+                                <rect key="frame" x="15" y="71" width="363" height="1"/>
+                                <color key="backgroundColor" systemColor="tableSeparatorLightColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="2" id="3JI-wR-ZmO"/>
+                                    <constraint firstAttribute="height" constant="1" id="3JI-wR-ZmO"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="usa-jH-Mdr" firstAttribute="centerY" secondItem="6ar-wT-d5p" secondAttribute="centerY" id="6CZ-7C-yca"/>
+                            <constraint firstItem="usa-jH-Mdr" firstAttribute="centerY" secondItem="6ar-wT-d5p" secondAttribute="centerY" id="2kc-Fs-9pF"/>
                             <constraint firstAttribute="trailing" secondItem="QkH-4p-q8C" secondAttribute="trailing" constant="15" id="Ccr-WS-hcm"/>
-                            <constraint firstItem="dsg-mF-90N" firstAttribute="leading" secondItem="usa-jH-Mdr" secondAttribute="trailing" constant="20" id="I8j-ct-yzU"/>
                             <constraint firstAttribute="trailing" secondItem="dsg-mF-90N" secondAttribute="trailing" constant="15" id="Id0-dX-xBW"/>
+                            <constraint firstItem="usa-jH-Mdr" firstAttribute="width" secondItem="6ar-wT-d5p" secondAttribute="height" multiplier="0.4" id="K1B-k6-Thc"/>
+                            <constraint firstItem="dsg-mF-90N" firstAttribute="leading" secondItem="usa-jH-Mdr" secondAttribute="trailing" constant="10" id="Kv3-s0-uCk"/>
                             <constraint firstItem="QkH-4p-q8C" firstAttribute="leading" secondItem="6ar-wT-d5p" secondAttribute="leading" constant="15" id="POz-Qe-Ed2"/>
                             <constraint firstAttribute="bottom" secondItem="QkH-4p-q8C" secondAttribute="bottom" id="Vmj-gm-iCQ"/>
                             <constraint firstItem="dsg-mF-90N" firstAttribute="centerY" secondItem="6ar-wT-d5p" secondAttribute="centerY" id="aLG-gh-wpW"/>
-                            <constraint firstItem="usa-jH-Mdr" firstAttribute="leading" secondItem="6ar-wT-d5p" secondAttribute="leading" constant="15" id="sQn-R2-vDx"/>
+                            <constraint firstItem="usa-jH-Mdr" firstAttribute="leading" secondItem="6ar-wT-d5p" secondAttribute="leading" constant="10" id="l40-kc-bw3"/>
+                            <constraint firstItem="usa-jH-Mdr" firstAttribute="height" secondItem="6ar-wT-d5p" secondAttribute="height" multiplier="0.4" id="r0s-0m-eoX"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -84,6 +82,9 @@
         <image name="checkBoxSelected" width="32" height="32"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tableSeparatorLightColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

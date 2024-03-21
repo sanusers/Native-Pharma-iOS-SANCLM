@@ -29,6 +29,14 @@ class ProductNameTableViewCell : UITableViewCell {
         didSet {
             lblName.text = input.Object.name
             btnSelected.isSelected = input.isSelected
+            
+            
+            if input.isSelected {
+                lblName.textColor = .appTextColor
+            } else {
+                lblName.textColor = .appLightTextColor
+            }
+            
         }
     }
     
@@ -43,7 +51,17 @@ class ProductNameTableViewCell : UITableViewCell {
         didSet{
             lblName.text = additionalCall.Object.name
             btnSelected.isSelected = additionalCall.isSelected
+            
+            
+            if additionalCall.isSelected {
+                lblName.textColor = .appTextColor
+            } else {
+                lblName.textColor = .appLightTextColor
+            }
+            
         }
+        
+       
     }
     
     override func awakeFromNib() {

@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 class PresentationHomeVC: BaseViewController {
     @IBOutlet var presentationHomeView: PresentationHomeView!
-    
+    var mastersyncVM: MasterSyncVM?
     override func viewDidLoad() {
         super.viewDidLoad()
 

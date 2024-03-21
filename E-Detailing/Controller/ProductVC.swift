@@ -2422,6 +2422,7 @@ extension ProductVC : tableViewProtocols {
     }
     
     @objc func additionalCallSelectionAction(_ sender : UIButton){
+        //additionalCallSelectedTableView
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.additionalCallListTableView)
         guard let indexPath = self.additionalCallListTableView.indexPathForRow(at: buttonPosition) else{
             return
@@ -2446,6 +2447,7 @@ extension ProductVC : tableViewProtocols {
     }
     
     @objc func addProductInputAction(_ sender: UIButton) {
+        //additionalCallSelectedTableView
         print("sender Tag == \(sender.tag)")
         self.selectedDoctorIndex = sender.tag
         self.additionalCallSampleInputTableView.reloadData()
@@ -2455,6 +2457,7 @@ extension ProductVC : tableViewProtocols {
     }
     
     @objc func editAdditionalCallSampleInput(_ sender : UIButton) {
+        //additionalCallSelectedTableView
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.additionalCallSelectedTableView)
         guard let indexPath = self.additionalCallSelectedTableView.indexPathForRow(at: buttonPosition) else {
             return
@@ -2468,6 +2471,7 @@ extension ProductVC : tableViewProtocols {
     }
     
     @objc func additionalCallDownArrowAction(_ sender : UIButton) {
+        //additionalCallSelectedTableView
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.additionalCallSelectedTableView)
         guard let indexPath = self.additionalCallSelectedTableView.indexPathForRow(at: buttonPosition) else {
             return
@@ -2562,6 +2566,7 @@ extension ProductVC : tableViewProtocols {
     }
     
     @objc func deleteAdditionalCall (_ sender : UIButton) {
+        //additionalCallSelectedTableView
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.additionalCallSelectedTableView)
         guard let indexPath = self.additionalCallSelectedTableView.indexPathForRow(at: buttonPosition) else{
             return

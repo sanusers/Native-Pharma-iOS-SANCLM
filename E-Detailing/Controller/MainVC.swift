@@ -3073,9 +3073,10 @@ extension MainVC : collectionViewProtocols {
                     
                  //   if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
                         let vc =  PresentationHomeVC.initWithStory()
+                    vc.mastersyncVM = self.masterVM ?? MasterSyncVM()
                         self.navigationController?.pushViewController(vc, animated: true)
                 //    } else {
-                        self.toSetupAlert()
+                      //  self.toSetupAlert()
                   //  }
                     
                 case "Slide Preview":

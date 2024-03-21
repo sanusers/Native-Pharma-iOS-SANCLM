@@ -11,6 +11,10 @@ import UIKit
 
 class ProductNameWithSampleTableViewCell : UITableViewCell {
     
+//    enum productType: String {
+//        case sale = ""
+//    }
+    
     @IBOutlet var samplesVXview: UIVisualEffectView!
     
     @IBOutlet var samplesView: UIView!
@@ -28,19 +32,19 @@ class ProductNameWithSampleTableViewCell : UITableViewCell {
             
             let productMode = product.Object.productMode ?? ""
             
-            if ((productMode?.contains("sample")) != nil) && ((productMode?.contains("sale")) != nil) {
+            if productMode == "Sale/Sample"{
                 lblSample.text = "SM/SL"
-                lblSample.textColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
-                samplesVXview.backgroundColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.15))
-            }else if ((productMode?.contains("sample")) != nil) {
-                lblSample.text = "SM"
-                lblSample.textColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(1.0))
-                samplesVXview.backgroundColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.15))
+                lblSample.textColor = .appLightTextColor
+                samplesVXview.backgroundColor = .appLightTextColor
+            }else if productMode == "Sample" {
+                lblSample.text = " SM "
+                lblSample.textColor = .appLightPink
+                samplesVXview.backgroundColor = .appLightPink
                 
-            }else if ((productMode?.contains("sale")) != nil){
-                lblSample.text = "SL"
-                lblSample.textColor = UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(1.0))
-                samplesVXview.backgroundColor = UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.15))
+            }else if productMode == "Sale" {
+                lblSample.text = " SL "
+                lblSample.textColor = .appBlue
+                samplesVXview.backgroundColor = .appBlue
             }
             
             if product.priority != "" {
@@ -50,6 +54,13 @@ class ProductNameWithSampleTableViewCell : UITableViewCell {
             }
             
             btnSelected.isSelected = product.isSelected
+            if product.isSelected {
+                lblName.textColor = .appTextColor
+            } else {
+                lblName.textColor = .appLightTextColor
+            }
+         
+            
         }
     }
     
@@ -57,6 +68,7 @@ class ProductNameWithSampleTableViewCell : UITableViewCell {
         super.awakeFromNib()
         samplesView.layer.cornerRadius = 3
         samplesVXview.layer.cornerRadius = 3
+        lblName.textColor = .appLightTextColor
         
     }
 }

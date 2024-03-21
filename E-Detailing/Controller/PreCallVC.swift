@@ -184,6 +184,10 @@ class PreCallVC : UIViewController {
     @IBOutlet var categoryTit: UILabel!
     
     
+    @IBOutlet var btnSkip: UIButton!
+    
+    
+    @IBOutlet var btnStartdetailing: UIButton!
     
     
     @IBOutlet var categoryLbl: UILabel!
@@ -334,10 +338,20 @@ class PreCallVC : UIViewController {
         noProductsLbl.isHidden = true
        // toloadProductsTable()
         //fetchPrecall()
+        setupUI()
     }
     
-    deinit {
-        print("ok bye")
+    func setupUI() {
+        
+        btnSkip.layer.cornerRadius = 5
+        btnSkip.layer.borderWidth = 1
+        btnSkip.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        //btnSkip.backgroundColor = .appGreyColor
+        
+        
+        btnStartdetailing.layer.cornerRadius = 5
+        btnStartdetailing.backgroundColor = .appTextColor
+
     }
 
     @IBAction func startDetailingAction(_ sender: UIButton) {

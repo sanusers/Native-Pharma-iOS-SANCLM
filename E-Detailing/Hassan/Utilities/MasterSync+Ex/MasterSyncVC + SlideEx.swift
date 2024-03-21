@@ -146,7 +146,7 @@ extension MasterSyncVC {
     func moveToDownloadSlide(isFromcache: Bool? = false) {
         downloadAlertSet = false
         
-        let vc = SlideDownloadVC.initWithStory()
+        let vc = SlideDownloadVC.initWithStory(viewmodel: self.mastersyncVM ?? MasterSyncVM())
        // if toCheckExistenceOfNewSlides() ?? false && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
             vc.istoGroupBrandwise = true
         //}

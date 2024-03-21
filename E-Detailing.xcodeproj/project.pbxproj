@@ -38,6 +38,10 @@
 		38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */; };
 		38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */; };
 		38145ECB2B345C6400DD7B4E /* VisitInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC92B345C6400DD7B4E /* VisitInfoTVC.xib */; };
+		381BC25F2BAC617800804B85 /* AdditionalCallsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC25D2BAC617800804B85 /* AdditionalCallsHeader.swift */; };
+		381BC2602BAC617800804B85 /* AdditionalCallsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381BC25E2BAC617800804B85 /* AdditionalCallsHeader.xib */; };
+		381BC2622BAC65D400804B85 /* AddproductsMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */; };
+		381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */; };
 		3825CFCC2BA806B600217D40 /* DCRfiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFC82BA806B600217D40 /* DCRfiltersView.swift */; };
 		3825CFCD2BA806B600217D40 /* addedFiltersCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */; };
 		3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */; };
@@ -218,6 +222,8 @@
 		38DAADEE2B59505C00966B33 /* CalldetailsCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */; };
 		38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DB6CB32AC3F94400F3F930 /* EventCaptureViewModel.swift */; };
 		38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */; };
+		38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC5EE02BAC3C7D0088386B /* ProductInputsHeader.swift */; };
+		38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DC5EE12BAC3C7D0088386B /* ProductInputsHeader.xib */; };
 		38DD14B12B4FBAA70036384F /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD14B02B4FBAA70036384F /* Shared.swift */; };
 		38DD14B32B4FBB6C0036384F /* Loaders in Resources */ = {isa = PBXBuildFile; fileRef = 38DD14B22B4FBB6C0036384F /* Loaders */; };
 		38DD14B72B4FEEF60036384F /* HomeSideMenuTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD14B52B4FEEF60036384F /* HomeSideMenuTVC.swift */; };
@@ -375,6 +381,10 @@
 		38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WTsheetCVC.xib; sourceTree = "<group>"; };
 		38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoTVC.swift; sourceTree = "<group>"; };
 		38145EC92B345C6400DD7B4E /* VisitInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VisitInfoTVC.xib; sourceTree = "<group>"; };
+		381BC25D2BAC617800804B85 /* AdditionalCallsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallsHeader.swift; sourceTree = "<group>"; };
+		381BC25E2BAC617800804B85 /* AdditionalCallsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallsHeader.xib; sourceTree = "<group>"; };
+		381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddproductsMenuView.swift; sourceTree = "<group>"; };
+		381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddproductsMenuVC.swift; sourceTree = "<group>"; };
 		3825CFC82BA806B600217D40 /* DCRfiltersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCRfiltersView.swift; sourceTree = "<group>"; };
 		3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addedFiltersCVC.xib; sourceTree = "<group>"; };
 		3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addedFiltersCVC.swift; sourceTree = "<group>"; };
@@ -555,6 +565,8 @@
 		38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalldetailsCVC.xib; sourceTree = "<group>"; };
 		38DB6CB32AC3F94400F3F930 /* EventCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureViewModel.swift; sourceTree = "<group>"; };
 		38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionRightVC.swift; sourceTree = "<group>"; };
+		38DC5EE02BAC3C7D0088386B /* ProductInputsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputsHeader.swift; sourceTree = "<group>"; };
+		38DC5EE12BAC3C7D0088386B /* ProductInputsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInputsHeader.xib; sourceTree = "<group>"; };
 		38DD14B02B4FBAA70036384F /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		38DD14B22B4FBB6C0036384F /* Loaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Loaders; sourceTree = "<group>"; };
 		38DD14B52B4FEEF60036384F /* HomeSideMenuTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSideMenuTVC.swift; sourceTree = "<group>"; };
@@ -775,6 +787,10 @@
 				3845556A2BA9C62B00F6CE1A /* ProductdetailsHeader.xib */,
 				3845556D2BA9C87F00F6CE1A /* ProductsInfoHeader.swift */,
 				3845556E2BA9C87F00F6CE1A /* ProductsInfoHeader.xib */,
+				38DC5EE02BAC3C7D0088386B /* ProductInputsHeader.swift */,
+				38DC5EE12BAC3C7D0088386B /* ProductInputsHeader.xib */,
+				381BC25D2BAC617800804B85 /* AdditionalCallsHeader.swift */,
+				381BC25E2BAC617800804B85 /* AdditionalCallsHeader.xib */,
 			);
 			path = Headers;
 			sourceTree = "<group>";
@@ -873,6 +889,7 @@
 			isa = PBXGroup;
 			children = (
 				387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */,
+				381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */,
 			);
 			path = Addcalls;
 			sourceTree = "<group>";
@@ -881,6 +898,7 @@
 			isa = PBXGroup;
 			children = (
 				387BDB022BAB1E20002B5E7D /* AddCallinfoVC.swift */,
+				381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */,
 			);
 			path = AddCalls;
 			sourceTree = "<group>";
@@ -1627,6 +1645,7 @@
 				38C673222A3C2B5800528E36 /* Activity.storyboard in Resources */,
 				38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */,
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
+				381BC2602BAC617800804B85 /* AdditionalCallsHeader.xib in Resources */,
 				B287E68529F2A20F0097974D /* Satoshi-MediumItalic.otf in Resources */,
 				38D2E0C42B04FC03002DD291 /* SelectAllTypesTVC.xib in Resources */,
 				38D7E1E52B677FD500085293 /* PlayPDFCVC.xib in Resources */,
@@ -1662,6 +1681,7 @@
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
 				3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */,
+				38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */,
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
 				38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */,
 			);
@@ -1740,6 +1760,7 @@
 				38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */,
 				38EF4C692B74D78900F78F2E /* SpecifiedTypeMenuVC.swift in Sources */,
 				38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */,
+				381BC25F2BAC617800804B85 /* AdditionalCallsHeader.swift in Sources */,
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
 				38C90ADC2A7785F5003CC0C8 /* DCRCallCell.swift in Sources */,
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,
@@ -1872,6 +1893,8 @@
 				38CA1FEA2B61163C00AFCFD2 /* PlayPresentationView.swift in Sources */,
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
+				38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */,
+				381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
 				38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
@@ -1890,6 +1913,7 @@
 				38C600DC2A93392100C733AF /* Color.swift in Sources */,
 				38FAA16F2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift in Sources */,
 				3825CFCC2BA806B600217D40 /* DCRfiltersView.swift in Sources */,
+				381BC2622BAC65D400804B85 /* AddproductsMenuView.swift in Sources */,
 				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				3801D4952B4ECF4800A9740F /* HomeSideMenuVC.swift in Sources */,
 				38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */,

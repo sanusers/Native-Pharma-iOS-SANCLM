@@ -39,8 +39,13 @@ class InputSampleTableViewCell : UITableViewCell {
         
         [txtInputCount,txtSampleQty].forEach { textfield in
             
-            textfield?.layer.borderColor = AppColors.primaryColorWith_25per_alpha.cgColor
-            textfield?.layer.borderWidth = 1.5
+            txtInputCount.backgroundColor = .appLightTextColor.withAlphaComponent(0.3)
+            
+            if textfield != txtInputCount {
+                textfield?.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+                textfield?.layer.borderWidth = 1.5
+            }
+    
             textfield?.layer.cornerRadius = 5
             
             let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
