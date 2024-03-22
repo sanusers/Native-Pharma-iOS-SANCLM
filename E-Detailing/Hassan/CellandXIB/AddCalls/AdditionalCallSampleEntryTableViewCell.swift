@@ -2,12 +2,10 @@
 //  AdditionalCallSampleEntryTableViewCell.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 29/09/23.
+//  Created by San eforce on 22/03/24.
 //
 
-import Foundation
 import UIKit
-
 
 class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
     

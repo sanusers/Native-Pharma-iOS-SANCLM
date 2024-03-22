@@ -9,27 +9,118 @@ import Foundation
 import UIKit
 
 extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
+    
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch self.segmentType[selectedSegmentsIndex] {
+            
+        case .products:
+            
+            return 50
+        case .inputs:
+            return 50
+
+
+        }
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch self.segmentType[selectedSegmentsIndex] {
+            
+        case .products:
+            
+            return 50
+        case .inputs:
+            return 50
+
+
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        switch self.segmentType[selectedSegmentsIndex] {
+            
+        case .inputs:
+            guard let headerView = additionalCallSampleInputTableView.dequeueReusableHeaderFooterView(withIdentifier: "AddadditionalProductsFooter") as? AddadditionalProductsFooter else {
+     
+                return UIView()
+            }
+
+
+
+            return headerView
+        case .products:
+            guard let headerView = additionalCallSampleInputTableView.dequeueReusableHeaderFooterView(withIdentifier: "AddadditionalProductsFooter") as? AddadditionalProductsFooter else {
+               
+                
+                
+                return UIView()
+            }
+
+//            headerView.btnAddtype.addTarget(self, action: addAdditionalCallSampleInput(headerView.btnAddtype), for: .touchUpInside)
+            
+            headerView.btnAddtype.addTarget(self, action: #selector(addAdditionalCallSampleInput(_:)), for: .touchUpInside)
+
+            return headerView
+        }
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch self.segmentType[selectedSegmentsIndex] {
+            
+        case .inputs:
+            guard let headerView = additionalCallSampleInputTableView.dequeueReusableHeaderFooterView(withIdentifier: "AddAdditionalproductsHeader") as? AddAdditionalproductsHeader else {
+     
+                return UIView()
+            }
+
+
+
+            return headerView
+        case .products:
+            guard let headerView = additionalCallSampleInputTableView.dequeueReusableHeaderFooterView(withIdentifier: "AddAdditionalproductsHeader") as? AddAdditionalproductsHeader else {
+     
+                return UIView()
+            }
+
+
+
+            return headerView
+        }
+    
+    
+}
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-                return self.additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
+            return self.additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
         case .inputs:
-                return self.additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
+            return self.additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
         }
     }
+    
+
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AdditionalCallSampleEntryTableViewCell", for: indexPath) as! AdditionalCallSampleEntryTableViewCell
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-                cell.product = self.additionalCallListViewModel.fetchProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
-            case .inputs:
-                cell.input = self.additionalCallListViewModel.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            cell.product = self.additionalCallListViewModel.fetchProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+        case .inputs:
+            cell.input = self.additionalCallListViewModel.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
         }
         cell.btnProduct.addTarget(self, action: #selector(additionalCallSampleInputSelection(_:)), for: .touchUpInside)
         cell.btnDelete.addTarget(self, action: #selector(deleteAdditionalCallSampleInput(_:)), for: .touchUpInside)
         cell.txtSampleStock.addTarget(self, action: #selector(updateSampleInputQty(_:)), for: .editingChanged)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
     }
     
     @objc func updateSampleInputQty(_ sender : UITextField) {
@@ -40,11 +131,11 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-                self.additionalCallListViewModel.updateProductQtyAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
-                break
+            self.additionalCallListViewModel.updateProductQtyAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
+            break
         case .inputs:
-                self.additionalCallListViewModel.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
-                break
+            self.additionalCallListViewModel.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
+            break
         }
     }
     
@@ -56,12 +147,12 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-                self.additionalCallListViewModel.deleteProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
-                self.additionalCallSampleInputTableView.reloadData()
+            self.additionalCallListViewModel.deleteProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            self.additionalCallSampleInputTableView.reloadData()
         case .inputs:
-                self.additionalCallListViewModel.deleteInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
-                self.additionalCallSampleInputTableView.reloadData()
-                break
+            self.additionalCallListViewModel.deleteInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            self.additionalCallSampleInputTableView.reloadData()
+            break
         }
     }
     
@@ -73,38 +164,37 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-                let products = DBManager.shared.getProduct()
+            let products = DBManager.shared.getProduct()
+            
+            let selectionVC = UIStoryboard.singleSelectionVC
+            selectionVC.selectionData = products
+            selectionVC.didSelectCompletion { selectedIndex in
                 
-                let selectionVC = UIStoryboard.singleSelectionVC
-                selectionVC.selectionData = products
-                selectionVC.didSelectCompletion { selectedIndex in
-                    
-                    if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
-                        cell.lblName.text = products[selectedIndex].name
-                    }
-                    
-                    self.additionalCallListViewModel.updateProductAtSection(self.selectedDoctorIndex, index: indexPath.row, product: products[selectedIndex])
-                    
+                if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
+                    cell.lblName.text = products[selectedIndex].name
                 }
+                
+                self.additionalCallListViewModel.updateProductAtSection(self.selectedDoctorIndex, index: indexPath.row, product: products[selectedIndex])
+                
+            }
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
         case .inputs:
-                
-                let inputs = DBManager.shared.getInput()
-                
-                let selectionVC = UIStoryboard.singleSelectionVC
-                selectionVC.selectionData = inputs
-                selectionVC.didSelectCompletion { selectedIndex in
-                    if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
-                        cell.lblName.text = inputs[selectedIndex].name
-                    }
-                    self.additionalCallListViewModel.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
+            
+            let inputs = DBManager.shared.getInput()
+            
+            let selectionVC = UIStoryboard.singleSelectionVC
+            selectionVC.selectionData = inputs
+            selectionVC.didSelectCompletion { selectedIndex in
+                if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
+                    cell.lblName.text = inputs[selectedIndex].name
                 }
+                self.additionalCallListViewModel.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
+            }
             self.addproductsMenuVC.present(selectionVC, animated: true)
-         
+            
         }
     }
-    
     
 }
 
@@ -170,6 +260,13 @@ class AddproductsMenuView: BaseView {
     func cellregistration() {
         self.additionalCallSampleInputTableView.register(UINib(nibName: "AdditionalCallSampleEntryTableViewCell", bundle: nil), forCellReuseIdentifier: "AdditionalCallSampleEntryTableViewCell")
         self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
+        
+        
+        self.additionalCallSampleInputTableView.register(UINib(nibName: "AddAdditionalproductsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "AddAdditionalproductsHeader")
+        
+        self.additionalCallSampleInputTableView.register(UINib(nibName: "AddadditionalProductsFooter", bundle: nil), forHeaderFooterViewReuseIdentifier: "AddadditionalProductsFooter")
+        
+        
     }
     
     func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
@@ -204,6 +301,8 @@ class AddproductsMenuView: BaseView {
     
     @IBOutlet weak var contentBgView: UIView!
     
+
+    @IBOutlet var btnAddtype: UIButton!
     
     
     var selectedSegmentsIndex: Int = 0
@@ -213,6 +312,22 @@ class AddproductsMenuView: BaseView {
     private let animationDampning : CGFloat = 2.0
     private let viewOpacity : CGFloat = 0.3
     
+    
+    
+    
+    @IBAction func addAdditionalCallSampleInput(_ sender: UIButton) {
+        
+        switch self.segmentType[self.selectedSegmentsIndex] {
+        case .products:
+            self.additionalCallListViewModel.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(product: nil, isDetailed: false, sampleCount: "", rxCount:"", rcpaCount: "", availableCount: "", totalCount: "")))
+            self.additionalCallSampleInputTableView.reloadData()
+            break
+        case .inputs:
+            self.additionalCallListViewModel.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "")))
+            self.additionalCallSampleInputTableView.reloadData()
+            break
+        }
+    }
     
     func toLoadData() {
         additionalCallSampleInputTableView.delegate = self
@@ -230,6 +345,7 @@ class AddproductsMenuView: BaseView {
         segmentType = [.products, .inputs]
         toLoadSegments()
         toLoadData()
+
        // setupUI()
        // cellRegistration()
        // toLoadRequiredData()

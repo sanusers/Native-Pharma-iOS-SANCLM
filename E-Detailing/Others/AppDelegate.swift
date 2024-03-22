@@ -7,7 +7,7 @@
 
 import UIKit
 import CoreData
-import GoogleMaps
+//import GoogleMaps
 import IQKeyboardManagerSwift
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         
-        GMSServices.provideAPIKey("AIzaSyCWeKbT2OcoH82bQJQJKqrHZ_MyLGijWM4")
+     //   GMSServices.provideAPIKey("AIzaSyCWeKbT2OcoH82bQJQJKqrHZ_MyLGijWM4")
         
         self.setupRootViewControllers(isFromlaunch: false)
         // Enable IQKeyboardManager

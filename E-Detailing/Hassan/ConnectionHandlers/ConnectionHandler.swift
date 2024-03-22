@@ -239,7 +239,7 @@ final class ConnectionHandler : NSObject {
         let responseHandler = APIResponseHandler()
         let param = params
        // param["token"] = LocalStorage.shared.getString(key: .accessToken)
-        dump(param["tableName"])
+     //   dump(param["tableName"])
  
         
         //uberSupport.showProgressInWindow(showAnimation: true)
@@ -292,151 +292,194 @@ final class ConnectionHandler : NSObject {
                     var encodedDcrDates: [DCRdatesModel]?
                     var encodedPrecalls : [PrecallsModel]?
                     if data["tableName"] as! String == TableName.reports.rawValue {
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { decodecObj in
-                            encodedReportsModelData = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(encodedReportsModelData)
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { result in
+                           // decodecObj
+                            switch result {
+                            case .success(let decodecObj):
                                 
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedReportsModelData) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                                encodedReportsModelData = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedReportsModelData)
+    
+                                    // Convert Swift object to JSON string
+    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedReportsModelData) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
+           
                         }
                     } else if data["tableName"] as! String == TableName.getToadyCalls.rawValue {
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TodayCallsModel].self) { decodecObj in
-                            encodedAdayCalls = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(encodedAdayCalls)
-                                
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedAdayCalls) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TodayCallsModel].self) { result in
+                            
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedAdayCalls = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedAdayCalls)
+                                    
+                                    // Convert Swift object to JSON string
+                                  
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedAdayCalls) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
-                            
-                            
                             
                         }
                     }
                     else if data["tableName"] as! String == TableName.detailedReport.rawValue {
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DetailedReportsModel].self) { decodecObj in
-                            encodedDetailedReportsModelData = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(encodedDetailedReportsModelData)
-                                
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedDetailedReportsModelData) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DetailedReportsModel].self) { result in
+                            
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedDetailedReportsModelData = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedDetailedReportsModelData)
+                                    
+                                    // Convert Swift object to JSON string
+                                  
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedDetailedReportsModelData) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
-                            
-                            
-                            
                         }
                     }
                     else if data["tableName"] as! String == TableName.getDayPlan.rawValue || data["tableName"] as! String == TableName.gettodaydcr.rawValue  {
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [MyDayPlanResponseModel].self) { decodecObj in
-                            encodedMyDayPlanResponseModelData = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(encodedMyDayPlanResponseModelData)
-                                
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedMyDayPlanResponseModelData) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [MyDayPlanResponseModel].self) { result in
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedMyDayPlanResponseModelData = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedMyDayPlanResponseModelData)
+                                    
+                                    // Convert Swift object to JSON string
+                                  
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedMyDayPlanResponseModelData) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
                             }
+                            
+                            
+          
                             
                             
                             
                         }
                     } else if data["tableName"] as! String == TableName.checkin.rawValue {
                         
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [GeneralResponseModal].self) { decodecObj in
-                            checkinModelData = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(checkinModelData)
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [GeneralResponseModal].self){ result in
+                            switch result {
+                            case .success(let decodecObj):
+                                checkinModelData = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(checkinModelData)
+                                    
+                                    // Convert Swift object to JSON string
+                                    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(checkinModelData) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
                                 
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(checkinModelData) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
+                                
                             }
                             
                             
                             
                         }
+                    }else if data["tableName"] as! String == TableName.getdcrdate.rawValue {
                         
                         
                         
-                    } else if data["tableName"] as! String == TableName.getdcrdate.rawValue {
-                        
-                      
-                        
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DCRdatesModel].self) { decodecObj in
-                            encodedDcrDates = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(encodedDcrDates)
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [DCRdatesModel].self) { result in
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedDcrDates = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedDcrDates)
+                                    
+                                    // Convert Swift object to JSON string
+                                    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedDcrDates) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
                                 
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedDcrDates) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
+                                
                             }
                             
                             
                             
                         }
+                    }else if data["tableName"] as! String == TableName.getpreCalls.rawValue {
                         
-                        
-                        
-                    } else if data["tableName"] as! String == TableName.getpreCalls.rawValue {
-                        
-                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [PrecallsModel].self) { decodecObj in
-                            encodedPrecalls = decodecObj
-                            do {
-                                let jsonData = try JSONEncoder().encode(encodedPrecalls)
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [PrecallsModel].self) { result in
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedPrecalls = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedPrecalls)
+                                    
+                                    // Convert Swift object to JSON string
+                                    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedPrecalls) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
                                 
-                                // Convert Swift object to JSON string
-                              
-                                responseHandler.handleSuccess(value: self.convertToDictionary(encodedPrecalls) ?? JSON(), data: jsonData)
-                                print("JSON Data:")
-                                print(jsonData)
-                            } catch {
+                            case .failure(let error):
                                 responseHandler.handleFailure(value: "Unable to decode.")
                                 print("Error encoding JSON: \(error)")
+                                
                             }
                             
                             
                             
                         }
-                        
-                        
-                        
                     }
 
  
@@ -499,16 +542,29 @@ final class ConnectionHandler : NSObject {
         }
     }
     
-    func toConvertDataToObj<T: Decodable>(responseData: Data, to modal : T.Type,
-                                          _ result : @escaping Closure<T>) {
+//    func toConvertDataToObj<T: Decodable>(responseData: Data, to modal : T.Type,
+//                                          _ result : @escaping Closure<T>) {
+//        let decoder = JSONDecoder()
+//           do {
+//               let decodedObj = try decoder.decode(T.self, from: responseData)
+//               dump(decodedObj)
+//               result(decodedObj)
+//           } catch {
+//               print("Error")
+//           }
+//    }
+    
+    func toConvertDataToObj<T: Decodable>(responseData: Data, to modal: T.Type,
+                                          completion: @escaping (Result<T, Error>) -> Void) {
         let decoder = JSONDecoder()
-           do {
-               let decodedObj = try decoder.decode(T.self, from: responseData )
-               dump(decodedObj)
-               result(decodedObj)
-           } catch {
-               print("Error")
-           }
+        do {
+            let decodedObj = try decoder.decode(T.self, from: responseData)
+            dump(decodedObj)
+            completion(.success(decodedObj))
+        } catch {
+            print("Error: \(error)")
+            completion(.failure(error))
+        }
     }
     
     

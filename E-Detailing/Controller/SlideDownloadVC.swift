@@ -537,9 +537,7 @@ class SlideDownloadVC : UIViewController {
            
         } else {
             Shared.instance.iscelliterating = false
-            
-            
-            
+
             print("Cant able to retrive cell.")
             
             BackgroundTaskManager.shared.stopBackgroundTask()

@@ -73,22 +73,23 @@ class TagVC : UIViewController {
         let divisionCode = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
         
         let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        let params = ["tableName" : "save_geo",
-                      "lat" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.latitude)" : "0.0000",
-                      "long" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.longitude)" : "0.0000",
-                      "cuscode" : self.customer.code,
-                      "divcode" : divisionCode,
-                      "cust" : self.customer.tagType,
-                      "tagged_time" : date,
-                      "image_name" : "",
-                      "sfname" : appsetup.sfName ?? "",
-                      "sfcode" : appsetup.sfCode ?? "",
-                      "addr" : self.lblAddress.text ?? "",
-                      "tagged_cust_HQ" : appsetup.sfCode ?? "",
-                      "cust_name" : self.customer.name,
-                      "mode" : "iOS-Edet-New",
-                      "version" : "iEdet.1.1",
-        ]
+        let params =  [String: Any]()
+//        ["tableName" : "save_geo",
+//                      "lat" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.latitude)" : "0.0000",
+//                      "long" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.longitude)" : "0.0000",
+//                      "cuscode" : self.customer.code,
+//                      "divcode" : divisionCode,
+//                      "cust" : self.customer.tagType,
+//                      "tagged_time" : date,
+//                      "image_name" : "",
+//                      "sfname" : appsetup.sfName ?? "",
+//                      "sfcode" : appsetup.sfCode ?? "",
+//                      "addr" : self.lblAddress.text ?? "",
+//                      "tagged_cust_HQ" : appsetup.sfCode ?? "",
+//                      "cust_name" : self.customer.name,
+//                      "mode" : "iOS-Edet-New",
+//                      "version" : "iEdet.1.1",
+//        ]
         
         let param = ["data" : params.toString()]
         

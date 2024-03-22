@@ -25,7 +25,54 @@ extension AddCallinfoView: MenuResponseProtocol {
 }
 
 extension AddCallinfoView {
-
+///RCPA
+//    @objc func editRcpaProduct(_ sender : UIButton) {
+//        //rcpaAddedListTableView
+//        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
+//        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
+//            return
+//        }
+//        
+//        let chemist = self.rcpaAddedListViewModel.fetchAtSection(indexPath.section)
+//        
+//        let products = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
+//        
+//        let rcpas = products.rcpas
+//        
+//        
+//        self.selectedChemistRcpa = chemist.rcpaChemist.chemist
+//        
+//        self.selectedProductRcpa = products.product
+//        
+//        self.txtRcpaQty.text = products.quantity
+//        
+//        self.txtRcpaTotal.text = products.total
+//        
+//        self.txtRcpaTotal.text = products.total
+//        
+//        self.lblChemistName.text = chemist.rcpaChemist.chemist.name ?? ""
+//        self.lblProductName.text = products.product.name ?? ""
+//        
+//        self.rcpaCallListViewModel.removeAll()
+//        
+//        self.btnRcpaChemist.isHidden = true
+//        self.btnRcpaProduct.isHidden = true
+//        
+//        for i in 0..<rcpas.count {
+//            
+//            self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: chemist.rcpaChemist.chemist, product: products.product, quantity: products.quantity, total: products.total, rate: products.rate, competitorCompanyName: rcpas[i].competitorCompanyName, competitorCompanyCode: rcpas[i].competitorCompanyCode, competitorBrandName: rcpas[i].competitorBrandName, competitorBrandCode: rcpas[i].competitorBrandCode, competitorRate: rcpas[i].rate, competitorTotal: rcpas[i].competitorTotal, competitorQty: rcpas[i].competitorQty,remarks: "")))
+//        }
+//        
+//        
+//        self.rcpaCompetitorTableView.reloadData()
+//        
+//        UIView.animate(withDuration: 1.5) {
+//            self.viewRcpa.isHidden = false
+//        }
+//        
+//        print(indexPath)
+//    }
+    
     ///Additional calls
     @objc func additionalCallDownArrowAction(_ sender : UIButton) {
         //additionalCallSelectedTableView
@@ -345,8 +392,7 @@ extension AddCallinfoView: tableViewProtocols {
                 return UITableViewCell()
             }
             
-//        case .products:
-//            <#code#>
+
         case .inputs:
             switch tableView {
             case yetToloadContentsTable:
@@ -415,8 +461,39 @@ extension AddCallinfoView: tableViewProtocols {
             default:
                 return UITableViewCell()
             }
-//        case .rcppa:
-//            <#code#>
+        case .rcppa:
+            switch tableView {
+            case yetToloadContentsTable:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
+                cell.rcpaProduct = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
+//                cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
+//                cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
+//                cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
+                return cell
+            case loadedContentsTable:
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "ProductSampleTableViewCell", for: indexPath) as! ProductSampleTableViewCell
+                cell.selectionStyle = .none
+                cell.productSample = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
+                cell.btnDelete.addTarget(self, action: #selector(deleteProduct(_:)), for: .touchUpInside)
+                cell.btnDelete.tag = indexPath.row
+                cell.txtRxQty.tag = indexPath.row
+                cell.txtRcpaQty.tag = indexPath.row
+                cell.txtSampleQty.tag = indexPath.row
+                cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
+                cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
+                cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
+                cell.btnDeviation.addTarget(self, action: #selector(productDetailedSelection(_:)), for: .touchUpInside)
+                cell.txtSampleQty.delegate = self
+                cell.txtRxQty.delegate = self
+                cell.txtRcpaQty.delegate = self
+                if appsetup.sampleValidation != 1 {
+                  //  cell.viewStock.isHidden = true
+                }
+                return cell
+            default:
+                return UITableViewCell()
+            }
 //        case .jointWork:
 //            <#code#>
             
@@ -677,6 +754,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     let appsetup = AppDefaults.shared.getAppSetUp()
     var segmentType: [SegmentType] = []
     private var inputSelectedListViewModel = InputSelectedListViewModel()
+    private var rcpaAddedListViewModel = RcpaAddedListViewModel()
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
