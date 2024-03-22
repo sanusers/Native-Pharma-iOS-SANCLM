@@ -159,6 +159,10 @@ extension MainVC : HomeLineChartViewDelegate
 }
 
 extension MainVC: MenuResponseProtocol {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+        print("Yet to implement")
+    }
+    
     func callPlanAPI() {
         print("Yet to implement")
     }

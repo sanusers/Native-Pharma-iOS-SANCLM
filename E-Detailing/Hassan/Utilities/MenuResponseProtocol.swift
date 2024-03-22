@@ -6,6 +6,7 @@ import CoreData
     func routeToView(_ view : UIViewController)
     func callPlanAPI()
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject])
+     func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel)
 
 }
 extension MenuResponseProtocol where Self : UIViewController{

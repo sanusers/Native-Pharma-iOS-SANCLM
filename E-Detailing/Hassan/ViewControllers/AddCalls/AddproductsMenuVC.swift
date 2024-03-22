@@ -10,6 +10,9 @@ import UIKit
 class AddproductsMenuVC : BaseViewController {
     @IBOutlet var addproductsMenuView: AddproductsMenuView!
     var menuDelegate : MenuResponseProtocol?
+    var productSelectedListViewModel : ProductSelectedListViewModel?
+    var additionalCallListViewModel : AdditionalCallsListViewModel?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -17,11 +20,12 @@ class AddproductsMenuVC : BaseViewController {
     }
     
     //MARK:- initWithStory
-    class func initWithStory(_ delegate : MenuResponseProtocol?)-> AddproductsMenuVC{
+    class func initWithStory(_ delegate : MenuResponseProtocol?, productSelectedListViewModel : ProductSelectedListViewModel, additionalCallListViewModel: AdditionalCallsListViewModel)-> AddproductsMenuVC{
         
         let view : AddproductsMenuVC = UIStoryboard.Hassan.instantiateViewController()
         view.modalPresentationStyle = .overCurrentContext
-      
+        view.additionalCallListViewModel = additionalCallListViewModel
+        view.productSelectedListViewModel = productSelectedListViewModel
         view.menuDelegate = delegate
 
 

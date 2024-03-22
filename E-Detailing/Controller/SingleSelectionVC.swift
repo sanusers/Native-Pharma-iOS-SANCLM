@@ -66,7 +66,7 @@ extension SingleSelectionVC : tableViewProtocols {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SingleSelectionCell", for: indexPath) as! SingleSelectionCell
         
      //   cell.lblName.text = self.selectionData[indexPath.row].name
-        
+        cell.selectionStyle = .none
         if self.isFromStruct == true {
             cell.lblName.text = self.selectionList[indexPath.row].name
         }else {

@@ -12,7 +12,9 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
     
     @IBOutlet weak var lblName: UILabel!
     
+    @IBOutlet var inputQtyCorneredView: UIView!
     
+    @IBOutlet var productqtyCorneredVIew: UIView!
     @IBOutlet weak var lblProductName: UILabel!
     @IBOutlet weak var lblProductQty: UILabel!
     
@@ -34,6 +36,17 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
     
     @IBOutlet weak var heightViewAdditionalSampleInputList: NSLayoutConstraint!
     
+    
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        productqtyCorneredVIew.layer.cornerRadius = 3
+        productqtyCorneredVIew.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        
+        
+        inputQtyCorneredView.layer.cornerRadius = 3
+        inputQtyCorneredView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+    }
     
     var additionalCall : AdditionalCallViewModel!{
         didSet {
@@ -205,8 +218,5 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
     }
     
     
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+
 }

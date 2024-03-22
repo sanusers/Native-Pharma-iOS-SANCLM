@@ -9,6 +9,12 @@ import Foundation
 import UIKit
 import CoreData
 extension AddCallinfoView: MenuResponseProtocol {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+        self.productSelectedListViewModel = product
+        self.additionalCallListViewModel = additioncall
+        self.loadedContentsTable.reloadData()
+    }
+    
     func routeToView(_ view: UIViewController) {
         print("Yet to implement")
     }
@@ -100,11 +106,9 @@ extension AddCallinfoView {
         
         self.selectedDoctorIndex = sender.tag
         
-        //MARK: - hide menu
-//        self.additionalCallSampleInputTableView.reloadData()
-//        UIView.animate(withDuration: 1.5){
-//            self.viewAdditionalCallSampleInput.isHidden = false
-//        }
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel)
+        vc.modalPresentationStyle = .custom
+        self.addCallinfoVC.navigationController?.present(vc, animated: false)
     }
     
     @objc func deleteAdditionalCall (_ sender : UIButton) {
@@ -126,7 +130,7 @@ extension AddCallinfoView {
         self.selectedDoctorIndex = sender.tag
         //MARK: - Show menu
         
-        let vc = AddproductsMenuVC.initWithStory(self)
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel)
         vc.modalPresentationStyle = .custom
     
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
@@ -503,7 +507,28 @@ extension AddCallinfoView: tableViewProtocols {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        switch self.segmentType[selectedSegmentsIndex] {
+            
+        case .detailed:
+            return 60
+        case .products:
+            return 60
+        case .inputs:
+            return 60
+        case .additionalCalls:
+            switch tableView {
+            case yetToloadContentsTable:
+                return 60
+            case loadedContentsTable:
+                return UITableView.automaticDimension
+            default:
+                return 60
+            }
+        case .rcppa:
+            return 60
+        case .jointWork:
+            return 60
+        }
     }
     
     

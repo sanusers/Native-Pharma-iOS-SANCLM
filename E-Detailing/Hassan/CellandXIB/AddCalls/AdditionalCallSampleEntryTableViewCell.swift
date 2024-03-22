@@ -24,7 +24,9 @@ class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
     
     var product : ProductViewModel! {
         didSet {
-            self.lblName.text = product.name
+            self.lblName.text = product.name == "" ? "Select" : product.name
+            self.lblName.textColor = product.name == "" ?  .appLightTextColor : .appTextColor
+            //product.name == "" ? . : product.name
             self.txtAvailableStock.text = product.availableCount
             self.txtSampleStock.text = product.sampleCount
         }
@@ -44,15 +46,15 @@ class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
         super.awakeFromNib()
         
         txtSampleStock.layer.cornerRadius = 5
-        txtSampleStock.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
+        txtSampleStock.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         txtSampleStock.layer.borderWidth = 1
         
         txtAvailableStock.layer.cornerRadius = 5
-        txtAvailableStock.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
-        txtAvailableStock.layer.borderWidth = 1
+       // txtAvailableStock.layer.borderColor = UIColor.appLightTextColor.cgColor
+       // txtAvailableStock.layer.borderWidth = 1
         
         viewProduct.layer.cornerRadius = 5
-        viewProduct.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
-        viewProduct.layer.borderWidth = 1.5
+        viewProduct.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        viewProduct.layer.borderWidth = 1
     }
 }

@@ -17,6 +17,10 @@ protocol MasterSyncVCDelegate: AnyObject {
 
 
 extension MasterSyncVC: MenuResponseProtocol {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+        print("Yet to implement")
+    }
+    
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         switch type {
 

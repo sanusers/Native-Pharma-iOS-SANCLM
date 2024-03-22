@@ -13,7 +13,7 @@ class AddadditionalProductsFooter: UITableViewHeaderFooterView {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
+     
         btnAddtype.layer.cornerRadius = 5
         btnAddtype.layer.borderWidth = 1
         btnAddtype.layer.borderColor = UIColor.appGreen.cgColor

@@ -82,6 +82,10 @@ extension DCRdetailViewEditView: UITextViewDelegate {
 }
 
 extension DCRdetailViewEditView: MenuResponseProtocol {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+        print("Yet to implement")
+    }
+    
     func routeToView(_ view: UIViewController) {
         print("Yet to implement")
     }

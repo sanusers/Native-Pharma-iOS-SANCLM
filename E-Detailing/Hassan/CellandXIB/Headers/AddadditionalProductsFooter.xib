@@ -23,20 +23,23 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ru1-Xa-ARM">
-                        <rect key="frame" x="15" y="14.333333333333336" width="205" height="66.333333333333314"/>
+                        <rect key="frame" x="15" y="27.666666666666671" width="205" height="40"/>
                         <color key="backgroundColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="40" id="uyu-xq-i1h"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                         <color key="tintColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                         <state key="normal" title="  Add Input " image="plus" catalog="system">
                             <color key="titleColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
+                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="bold"/>
                         </state>
                     </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="ru1-Xa-ARM" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="lc6-ii-uKb"/>
                     <constraint firstItem="ru1-Xa-ARM" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.3" id="mm1-2A-gnZ"/>
-                    <constraint firstItem="ru1-Xa-ARM" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.7" id="oxe-rL-IfV"/>
                     <constraint firstItem="ru1-Xa-ARM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="tln-ws-iKu"/>
                 </constraints>
             </tableViewCellContentView>

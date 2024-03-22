@@ -2070,6 +2070,10 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
 }
 
 extension TourPlanView: MenuResponseProtocol {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+        print("Yet to implement")
+    }
+    
 
     
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {

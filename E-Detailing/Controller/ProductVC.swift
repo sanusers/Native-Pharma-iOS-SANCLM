@@ -321,6 +321,9 @@ class ProductVC : UIViewController {
         productSampleTableView.register(UINib(nibName: "ProductsInfoHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "ProductsInfoHeader")
         
         
+        additionalCallSelectedTableView.register(UINib(nibName: "AdditionalCallSampleEntryTableViewCell", bundle: nil), forCellReuseIdentifier: "AdditionalCallSampleEntryTableViewCell")
+        
+        additionalCallSampleInputTableView.register(UINib(nibName: "AdditionalCallSampleEntryTableViewCell", bundle: nil), forCellReuseIdentifier: "AdditionalCallSampleEntryTableViewCell")
     }
     
     

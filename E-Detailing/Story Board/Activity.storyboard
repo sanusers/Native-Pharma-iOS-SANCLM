@@ -33,16 +33,16 @@
                                 <rect key="frame" x="0.0" y="0.0" width="580" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mdW-93-FRA">
-                                        <rect key="frame" x="30" y="15" width="55" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="17"/>
+                                        <rect key="frame" x="15" y="16.5" width="45" height="17.5"/>
+                                        <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sH-WL-1gd">
-                                        <rect key="frame" x="540" y="10" width="25" height="25"/>
+                                        <rect key="frame" x="550" y="17.5" width="15" height="15"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="25" id="4Qu-Fj-E4c"/>
-                                            <constraint firstAttribute="height" constant="25" id="SOK-AO-K1R"/>
+                                            <constraint firstAttribute="width" constant="15" id="4Qu-Fj-E4c"/>
+                                            <constraint firstAttribute="height" constant="15" id="SOK-AO-K1R"/>
                                         </constraints>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="cancel"/>
@@ -53,12 +53,12 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="mdW-93-FRA" firstAttribute="top" secondItem="BRU-mp-h01" secondAttribute="top" constant="15" id="BWb-EM-8oN"/>
-                                    <constraint firstItem="mdW-93-FRA" firstAttribute="leading" secondItem="BRU-mp-h01" secondAttribute="leading" constant="30" id="COr-Wb-jYc"/>
+                                    <constraint firstItem="mdW-93-FRA" firstAttribute="leading" secondItem="BRU-mp-h01" secondAttribute="leading" constant="15" id="COr-Wb-jYc"/>
+                                    <constraint firstItem="mdW-93-FRA" firstAttribute="centerY" secondItem="7sH-WL-1gd" secondAttribute="centerY" id="QWJ-ob-OAt"/>
                                     <constraint firstAttribute="trailing" secondItem="7sH-WL-1gd" secondAttribute="trailing" constant="15" id="Y4F-y0-lGh"/>
-                                    <constraint firstItem="7sH-WL-1gd" firstAttribute="top" secondItem="BRU-mp-h01" secondAttribute="top" constant="10" id="aeK-OJ-PIU"/>
                                     <constraint firstAttribute="height" constant="50" id="bxR-4U-aUF"/>
                                     <constraint firstItem="7sH-WL-1gd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mdW-93-FRA" secondAttribute="trailing" constant="15" id="gNJ-Zb-abq"/>
+                                    <constraint firstItem="7sH-WL-1gd" firstAttribute="centerY" secondItem="BRU-mp-h01" secondAttribute="centerY" id="jB6-iv-uIA"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rpe-YH-sKJ">
@@ -73,15 +73,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="52S-fz-vKv">
-                                                    <rect key="frame" x="30" y="10" width="535" height="25"/>
-                                                    <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="20"/>
+                                                    <rect key="frame" x="15" y="13" width="550" height="17.5"/>
+                                                    <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                     <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="52S-fz-vKv" firstAttribute="top" secondItem="pNH-L8-eRc" secondAttribute="top" constant="10" id="eMg-VO-07a"/>
-                                                <constraint firstItem="52S-fz-vKv" firstAttribute="leading" secondItem="pNH-L8-eRc" secondAttribute="leading" constant="30" id="jTY-qW-p4G"/>
+                                                <constraint firstItem="52S-fz-vKv" firstAttribute="leading" secondItem="pNH-L8-eRc" secondAttribute="leading" constant="15" id="jTY-qW-p4G"/>
+                                                <constraint firstItem="52S-fz-vKv" firstAttribute="centerY" secondItem="pNH-L8-eRc" secondAttribute="centerY" id="mUz-tX-Ghf"/>
                                                 <constraint firstAttribute="trailing" secondItem="52S-fz-vKv" secondAttribute="trailing" constant="15" id="uK8-83-wUu"/>
                                             </constraints>
                                         </tableViewCellContentView>

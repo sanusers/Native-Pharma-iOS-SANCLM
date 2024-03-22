@@ -30,9 +30,9 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             
         case .products:
             
-            return 50
+            return 60
         case .inputs:
-            return 50
+            return 60
 
 
         }
@@ -46,8 +46,8 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
      
                 return UIView()
             }
-
-
+            headerView.btnAddtype?.setTitle("Add Input", for: .normal)
+            headerView.btnAddtype.addTarget(self, action: #selector(addAdditionalCallSampleInput(_:)), for: .touchUpInside)
 
             return headerView
         case .products:
@@ -58,8 +58,8 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                 return UIView()
             }
 
-//            headerView.btnAddtype.addTarget(self, action: addAdditionalCallSampleInput(headerView.btnAddtype), for: .touchUpInside)
-            
+
+            headerView.btnAddtype?.setTitle("Add Product", for: .normal)
             headerView.btnAddtype.addTarget(self, action: #selector(addAdditionalCallSampleInput(_:)), for: .touchUpInside)
 
             return headerView
@@ -77,7 +77,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             }
 
 
-
+            headerView.typeTitle.text = "Input"
             return headerView
         case .products:
             guard let headerView = additionalCallSampleInputTableView.dequeueReusableHeaderFooterView(withIdentifier: "AddAdditionalproductsHeader") as? AddAdditionalproductsHeader else {
@@ -85,7 +85,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                 return UIView()
             }
 
-
+            headerView.typeTitle.text = "Product"
 
             return headerView
         }
@@ -96,9 +96,9 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-            return self.additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
+            return self.addproductsMenuVC?.additionalCallListViewModel?.numberOfProductsInSection(self.selectedDoctorIndex) ?? 0
         case .inputs:
-            return self.additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
+            return self.addproductsMenuVC?.additionalCallListViewModel?.numberOfInputsInSection(self.selectedDoctorIndex) ?? 0
         }
     }
     
@@ -109,9 +109,9 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AdditionalCallSampleEntryTableViewCell", for: indexPath) as! AdditionalCallSampleEntryTableViewCell
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-            cell.product = self.additionalCallListViewModel.fetchProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            cell.product = self.addproductsMenuVC?.additionalCallListViewModel?.fetchProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
         case .inputs:
-            cell.input = self.additionalCallListViewModel.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            cell.input = self.addproductsMenuVC?.additionalCallListViewModel?.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
         }
         cell.btnProduct.addTarget(self, action: #selector(additionalCallSampleInputSelection(_:)), for: .touchUpInside)
         cell.btnDelete.addTarget(self, action: #selector(deleteAdditionalCallSampleInput(_:)), for: .touchUpInside)
@@ -120,7 +120,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        return 60
     }
     
     @objc func updateSampleInputQty(_ sender : UITextField) {
@@ -131,10 +131,10 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-            self.additionalCallListViewModel.updateProductQtyAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
+            self.addproductsMenuVC?.additionalCallListViewModel?.updateProductQtyAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
             break
         case .inputs:
-            self.additionalCallListViewModel.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
+            self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, qty: sender.text ?? "")
             break
         }
     }
@@ -147,10 +147,10 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-            self.additionalCallListViewModel.deleteProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            self.addproductsMenuVC?.additionalCallListViewModel?.deleteProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
             self.additionalCallSampleInputTableView.reloadData()
         case .inputs:
-            self.additionalCallListViewModel.deleteInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            self.addproductsMenuVC?.additionalCallListViewModel?.deleteInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
             self.additionalCallSampleInputTableView.reloadData()
             break
         }
@@ -174,7 +174,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                     cell.lblName.text = products[selectedIndex].name
                 }
                 
-                self.additionalCallListViewModel.updateProductAtSection(self.selectedDoctorIndex, index: indexPath.row, product: products[selectedIndex])
+                self.addproductsMenuVC?.additionalCallListViewModel?.updateProductAtSection(self.selectedDoctorIndex, index: indexPath.row, product: products[selectedIndex])
                 
             }
             self.addproductsMenuVC.present(selectionVC, animated: true)
@@ -189,7 +189,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                 if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
                     cell.lblName.text = inputs[selectedIndex].name
                 }
-                self.additionalCallListViewModel.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
+                self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
             }
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
@@ -247,14 +247,11 @@ extension AddproductsMenuView : collectionViewProtocols {
 }
 
 class AddproductsMenuView: BaseView {
-    private var productSelectedListViewModel = ProductSelectedListViewModel()
-        private var additionalCallListViewModel = AdditionalCallsListViewModel()
+
     var selectedDoctorIndex = 0
     enum  SegmentType : String {
          case inputs = "Inputs"
          case products = "Products"
-
-
      }
     
     func cellregistration() {
@@ -275,8 +272,10 @@ class AddproductsMenuView: BaseView {
             
             
         case .products:
+            self.toLoadData()
             break
         case .inputs:
+            self.toLoadData()
             break
         }
     }
@@ -304,6 +303,7 @@ class AddproductsMenuView: BaseView {
 
     @IBOutlet var btnAddtype: UIButton!
     
+    @IBOutlet var clearView: UIView!
     
     var selectedSegmentsIndex: Int = 0
     private var animationDuration : Double = 1.0
@@ -316,16 +316,16 @@ class AddproductsMenuView: BaseView {
     
     
     @IBAction func addAdditionalCallSampleInput(_ sender: UIButton) {
-        
+      //  toLoadData()
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-            self.additionalCallListViewModel.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(product: nil, isDetailed: false, sampleCount: "", rxCount:"", rcpaCount: "", availableCount: "", totalCount: "")))
-            self.additionalCallSampleInputTableView.reloadData()
-            break
+            self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(product: nil, isDetailed: false, sampleCount: "", rxCount:"", rcpaCount: "", availableCount: "", totalCount: "")))
+            toLoadData()
+       
         case .inputs:
-            self.additionalCallListViewModel.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "")))
-            self.additionalCallSampleInputTableView.reloadData()
-            break
+            self.addproductsMenuVC?.additionalCallListViewModel?.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "")))
+            toLoadData()
+          
         }
     }
     
@@ -345,7 +345,7 @@ class AddproductsMenuView: BaseView {
         segmentType = [.products, .inputs]
         toLoadSegments()
         toLoadData()
-
+        clearView.layer.cornerRadius = 5
        // setupUI()
        // cellRegistration()
        // toLoadRequiredData()
@@ -406,6 +406,12 @@ class AddproductsMenuView: BaseView {
     }
     
     func initGestures() {
+        clearView.addTap {
+            guard let productSelectedListViewModel = self.addproductsMenuVC.productSelectedListViewModel, let additionalCallListViewModel = self.addproductsMenuVC.additionalCallListViewModel else  {return}
+            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, additioncall: additionalCallListViewModel)
+            self.hideMenuAndDismiss()
+        }
+        
 //        clearView.addTap {
 //            self.specifiedMenuVC.selectedClusterID = nil
 //            self.selectedClusterID = [String: Bool]()
