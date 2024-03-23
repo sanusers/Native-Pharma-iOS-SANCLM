@@ -32,52 +32,90 @@ extension AddCallinfoView: MenuResponseProtocol {
 
 extension AddCallinfoView {
 ///RCPA
-//    @objc func editRcpaProduct(_ sender : UIButton) {
-//        //rcpaAddedListTableView
-//        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
-//        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
-//            return
-//        }
-//        
-//        let chemist = self.rcpaAddedListViewModel.fetchAtSection(indexPath.section)
-//        
-//        let products = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-//        
-//        let rcpas = products.rcpas
-//        
-//        
-//        self.selectedChemistRcpa = chemist.rcpaChemist.chemist
-//        
-//        self.selectedProductRcpa = products.product
-//        
-//        self.txtRcpaQty.text = products.quantity
-//        
-//        self.txtRcpaTotal.text = products.total
-//        
-//        self.txtRcpaTotal.text = products.total
-//        
-//        self.lblChemistName.text = chemist.rcpaChemist.chemist.name ?? ""
-//        self.lblProductName.text = products.product.name ?? ""
-//        
-//        self.rcpaCallListViewModel.removeAll()
-//        
-//        self.btnRcpaChemist.isHidden = true
-//        self.btnRcpaProduct.isHidden = true
-//        
-//        for i in 0..<rcpas.count {
-//            
-//            self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: chemist.rcpaChemist.chemist, product: products.product, quantity: products.quantity, total: products.total, rate: products.rate, competitorCompanyName: rcpas[i].competitorCompanyName, competitorCompanyCode: rcpas[i].competitorCompanyCode, competitorBrandName: rcpas[i].competitorBrandName, competitorBrandCode: rcpas[i].competitorBrandCode, competitorRate: rcpas[i].rate, competitorTotal: rcpas[i].competitorTotal, competitorQty: rcpas[i].competitorQty,remarks: "")))
-//        }
-//        
-//        
-//        self.rcpaCompetitorTableView.reloadData()
-//        
+    
+    @objc func plusRcpaProduct(_ sender : UIButton){
+        //rcpaAddedListTableView
+        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
+        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
+            return
+        }
+        
+        let rcpa = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
+        
+        let isTapped = rcpa.isViewTapped
+        
+        self.rcpaAddedListViewModel.updateProductIsViewTapped(indexPath.section, row: indexPath.row, isTapped: !isTapped)
+        self.yetToloadContentsTable.reloadData()
+    }
+    
+    
+    @objc func deleteRcpaProduct(_ sender : UIButton) {
+        //rcpaAddedListTableView
+        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
+        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
+            return
+        }
+        
+        let products = self.rcpaAddedListViewModel.fetchAtSection(indexPath.section)
+        
+        if products.rcpaChemist.products.count == 1{
+            self.rcpaAddedListViewModel.deleteSection(indexPath.section)
+            self.yetToloadContentsTable.reloadData()
+            return
+        }
+        
+        self.rcpaAddedListViewModel.deleteAtRows(indexPath.section, row: indexPath.row)
+        self.yetToloadContentsTable.reloadData()
+    }
+    
+    @objc func editRcpaProduct(_ sender : UIButton) {
+        //rcpaAddedListTableView
+        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
+        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
+            return
+        }
+        
+        let chemist = self.rcpaAddedListViewModel.fetchAtSection(indexPath.section)
+        
+        let products = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
+        
+        let rcpas = products.rcpas
+        
+        
+        self.selectedChemistRcpa = chemist.rcpaChemist.chemist
+        
+        self.selectedProductRcpa = products.product
+        
+      //  self.txtRcpaQty.text = products.quantity
+        
+     //   self.txtRcpaTotal.text = products.total
+        
+        
+        
+      //  self.lblChemistName.text = chemist.rcpaChemist.chemist.name ?? ""
+      //  self.lblProductName.text = products.product.name ?? ""
+        
+        self.rcpaCallListViewModel.removeAll()
+        
+     //   self.btnRcpaChemist.isHidden = true
+     //   self.btnRcpaProduct.isHidden = true
+        
+        for i in 0..<rcpas.count {
+            
+            self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: chemist.rcpaChemist.chemist, product: products.product, quantity: products.quantity, total: products.total, rate: products.rate, competitorCompanyName: rcpas[i].competitorCompanyName, competitorCompanyCode: rcpas[i].competitorCompanyCode, competitorBrandName: rcpas[i].competitorBrandName, competitorBrandCode: rcpas[i].competitorBrandCode, competitorRate: rcpas[i].rate, competitorTotal: rcpas[i].competitorTotal, competitorQty: rcpas[i].competitorQty,remarks: "")))
+        }
+        
+        
+        self.yetToloadContentsTable.reloadData()
+        
+        //MARK: - show RCPA table
+        
 //        UIView.animate(withDuration: 1.5) {
 //            self.viewRcpa.isHidden = false
 //        }
-//        
-//        print(indexPath)
-//    }
+        
+        print(indexPath)
+    }
     
     ///Additional calls
     @objc func additionalCallDownArrowAction(_ sender : UIButton) {
@@ -106,7 +144,7 @@ extension AddCallinfoView {
         
         self.selectedDoctorIndex = sender.tag
         
-        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel)
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, selectedDoctorIndex: selectedDoctorIndex)
         vc.modalPresentationStyle = .custom
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
     }
@@ -130,7 +168,7 @@ extension AddCallinfoView {
         self.selectedDoctorIndex = sender.tag
         //MARK: - Show menu
         
-        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel)
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, selectedDoctorIndex: self.selectedDoctorIndex)
         vc.modalPresentationStyle = .custom
     
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
@@ -342,8 +380,20 @@ extension AddCallinfoView: tableViewProtocols {
             default:
                 return Int()
             }
-//        case .rcppa:
-//            <#code#>
+        case .rcppa:
+            
+            switch tableView {
+            case yetToloadContentsTable:
+                return Int()
+            case loadedContentsTable:
+                return self.rcpaAddedListViewModel.numberofRowsInSection(section)
+            default:
+                return Int()
+            }
+            
+//        case self.rcpaCompetitorTableView:
+//            return self.rcpaCallListViewModel.numberOfCompetitorRows()
+        
 //        case .jointWork:
 //            <#code#>
             
@@ -470,9 +520,9 @@ extension AddCallinfoView: tableViewProtocols {
             case yetToloadContentsTable:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
                 cell.rcpaProduct = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-//                cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
-//                cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
-//                cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
+                cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
+                cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
+                cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
                 return cell
             case loadedContentsTable:
                 
@@ -715,20 +765,35 @@ class AddCallinfoView : BaseView {
             
           
         case .detailed:
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .products:
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .inputs:
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .additionalCalls:
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .rcppa:
-            toloadYettables()
-            toloadContentsTable()
+            rcpaEntryView.isHidden = false
+            yetToloadContentsTable.isHidden = true
+            yettoaddSectionView.backgroundColor = .appWhiteColor
+            //toloadYettables()
+            //toloadContentsTable()
         case .jointWork:
             toloadYettables()
             toloadContentsTable()
@@ -746,7 +811,20 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
        case jointWork = "JFW / Others"
 
     }
+
+    @IBOutlet var dcrNameCurvedView: UIView!
     
+    @IBOutlet var productnameCurvedView: UIView!
+    
+    @IBOutlet var productQtyCurvedView: UIView!
+    
+    @IBOutlet var rateCurvedView: UIView!
+    
+    @IBOutlet var valueCurvedVIew: UIView!
+    
+    @IBOutlet var btnAddRCPA: UIButton!
+    
+    @IBOutlet var rcpaEntryView: UIView!
     @IBOutlet var contentsSectionVIew: UIView!
     
     @IBOutlet var yettoaddSectionView: UIView!
@@ -780,6 +858,12 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     var segmentType: [SegmentType] = []
     private var inputSelectedListViewModel = InputSelectedListViewModel()
     private var rcpaAddedListViewModel = RcpaAddedListViewModel()
+    private var rcpaCallListViewModel = RcpaListViewModel()
+    
+    var selectedChemistRcpa : AnyObject!
+    
+    var selectedProductRcpa : AnyObject!
+    
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
@@ -787,6 +871,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
        toLoadSegments()
         cellregistration()
         toloadYettables()
+   
        // toloadContentsTable()
     }
     
@@ -850,6 +935,20 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     
     func setupUI() {
         
+        let curvedVIews: [UIView] = [dcrNameCurvedView, productnameCurvedView, productQtyCurvedView, rateCurvedView, valueCurvedVIew]
+        
+        btnAddRCPA.layer.cornerRadius = 5
+        
+        curvedVIews.forEach { 
+            if $0 != rateCurvedView ||  $0 != valueCurvedVIew {
+                $0.layer.borderWidth = 1
+                $0.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+            }
+            $0.layer.cornerRadius = 5
+        }
+        
+ 
+      
         loadedContentsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         contentsSectionVIew.layer.cornerRadius = 5

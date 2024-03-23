@@ -12,6 +12,8 @@ import UIKit
 class AdditionalCallSampleInputView: UIView {
     
     
+    @IBOutlet var inputQtyCurvedView: UIView!
+    @IBOutlet var productQtyCurvedVIew: UIView!
     
     @IBOutlet weak var lblProduct: UILabel!
     @IBOutlet weak var lblProductQty: UILabel!
@@ -21,6 +23,11 @@ class AdditionalCallSampleInputView: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        productQtyCurvedVIew.layer.cornerRadius = 3
+        inputQtyCurvedView.layer.cornerRadius = 3
+        
+        productQtyCurvedVIew.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        inputQtyCurvedView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
     }
     
     var product : ProductViewModel! {

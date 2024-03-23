@@ -335,17 +335,25 @@ class AddproductsMenuView: BaseView {
         additionalCallSampleInputTableView.reloadData()
     }
     
+    func initIndex() {
+        guard let selectedDoctorIndex = addproductsMenuVC.selectedDoctorIndex else {return}
+        self.selectedDoctorIndex = selectedDoctorIndex
+        
+    }
+    
     override func didLoad(baseVC: BaseViewController) {
         self.addproductsMenuVC = baseVC as? AddproductsMenuVC
 
       
         self.showMenu()
+        initIndex()
         initGestures()
         cellregistration()
         segmentType = [.products, .inputs]
         toLoadSegments()
         toLoadData()
         clearView.layer.cornerRadius = 5
+    
        // setupUI()
        // cellRegistration()
        // toLoadRequiredData()
