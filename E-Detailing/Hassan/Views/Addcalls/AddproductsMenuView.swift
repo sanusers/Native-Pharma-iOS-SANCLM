@@ -416,7 +416,7 @@ class AddproductsMenuView: BaseView {
     func initGestures() {
         clearView.addTap {
             guard let productSelectedListViewModel = self.addproductsMenuVC.productSelectedListViewModel, let additionalCallListViewModel = self.addproductsMenuVC.additionalCallListViewModel else  {return}
-            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, additioncall: additionalCallListViewModel)
+            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
             self.hideMenuAndDismiss()
         }
         

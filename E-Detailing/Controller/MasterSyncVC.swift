@@ -56,13 +56,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
         commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
-            if istoNavigate {
-                self.moveToHome()
-            }
-      
-            
-           // self.moveToHome()
-            
+
         }
     }
     
@@ -450,7 +444,7 @@ class MasterSyncVC : UIViewController {
                 
           
                 
-                if istoNavigate || self.isFromLaunch  {
+                if istoNavigate  {
                     self.setLoader(pageType: .navigate, type: .slides)
                     self.backBtn.isHidden = false
                 }

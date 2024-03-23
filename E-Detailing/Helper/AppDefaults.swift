@@ -238,9 +238,7 @@ class AppDefaults {
     
         func isLoggedIn() -> Bool {
             
-           let appSetup = AppDefaults.shared.getAppSetUp()
-        
-                return true
+          return  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserLoggedIn)
         
       
             

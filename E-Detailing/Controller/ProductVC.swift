@@ -523,10 +523,10 @@ class ProductVC : UIViewController {
     
     @IBAction func rcpaSaveAction(_ sender: UIButton) {
         
-        if self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
-            print("Add Competitor")
-            return
-        }
+//        if self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
+//            print("Add Competitor")
+//            return
+//        }
         
         UIView.animate(withDuration: 1.5) {
             self.viewRcpa.isHidden = true

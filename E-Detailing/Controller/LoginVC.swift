@@ -103,24 +103,25 @@ class LoginVC : UIViewController {
     func doUserLogin(_ param: [String: Any], paramData: JSON) {
         dump(param)
         
-        
+        Shared.instance.showLoaderInWindow()
         
         homeVM?.doUserLogin(params: param, api: .actionLogin, paramData: paramData) { responseData in
+            Shared.instance.removeLoaderInWindow()
             switch responseData {
 
             case .success(let loginData):
                 dump(loginData)
                 if !(loginData.isSuccess ?? false) {
-                  //  ConfigVC().showToast(controller: self, message: loginData.successMessage ?? "", seconds: 2)
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
                     self.toCreateToast(loginData.successMessage ?? "Failed to login")
                 } else {
                     do {
                       try  AppDefaults.shared.toSaveEncodedData(object: loginData, key: .appSetUp) { isSaved in
                           if isSaved {
-
+                              LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: true)
                               self.navigate()
                           } else {
-                        
+                              LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
                               self.toCreateToast(loginData.successMessage ?? "Failed to save user config data")
                           }
                         }
@@ -129,7 +130,9 @@ class LoginVC : UIViewController {
                     }
                 }
             case .failure(let error):
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
                 dump(error)
+                self.toCreateToast(error.rawValue)
             }
         }
     }

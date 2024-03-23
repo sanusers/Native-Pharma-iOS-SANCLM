@@ -382,9 +382,9 @@ class MasterSyncVM {
             tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
                 dispatchGroup.leave()
 
-                if isSaved {
-                    completion(true)
-                }
+//                if isSaved {
+//                    completion(true)
+//                }
             }
         }
 

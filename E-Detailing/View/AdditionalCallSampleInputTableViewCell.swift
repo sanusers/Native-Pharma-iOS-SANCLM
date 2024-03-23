@@ -47,7 +47,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
         inputQtyCorneredView.layer.cornerRadius = 3
         inputQtyCorneredView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         
-        self.btnDownArrow.isSelected = false
+       
     }
     
     var additionalCall : AdditionalCallViewModel!{

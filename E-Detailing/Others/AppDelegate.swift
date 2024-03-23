@@ -37,9 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController = UINavigationController.init(rootViewController: ConfigVC.initWithStory()) 
         } else {
 
-            _ = AppDefaults.shared.getConfig()
-
             if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
+                BackgroundTaskManager.shared.stopBackgroundTask()
+                
                 self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: isFromlaunch ?? false, ViewModel: UserStatisticsVM()))
 
             }else if AppDefaults.shared.isLoggedIn() {

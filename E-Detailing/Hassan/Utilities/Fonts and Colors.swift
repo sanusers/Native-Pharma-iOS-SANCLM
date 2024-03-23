@@ -156,4 +156,4 @@ class Fonts:NSObject{
    // "Head_1_bold"
     static let SATOSHI_MEDIUM = "Satoshi-Medium"
 }
-// Thanks to the author @Hassan
+//

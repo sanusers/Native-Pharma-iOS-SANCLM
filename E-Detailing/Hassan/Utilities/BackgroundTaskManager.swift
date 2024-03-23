@@ -32,7 +32,7 @@ extension BackgroundTaskManager : MediaDownloaderDelegate {
     
         
         
-        //self.toStartBackgroundTask(index: (self.index ?? 0) + 1, items: items, delegte: self.delegate!)
+       
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: Error) {
@@ -63,19 +63,41 @@ class BackgroundTaskManager {
     }
     
     
-    func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false, delegte: BackgroundTaskManagerDelegate) {
+    
+    func togroupSlides() {
+        
+        
+        backgroundTask = UIApplication.shared.beginBackgroundTask {
+            // End the background task if the expiration handler is called
 
+            self.stopBackgroundTask()
+        }
+        isBackgroundTaskRunning = true
+
+        // Perform API calls in the background
+         DispatchQueue.global(qos: .userInitiated).async {
+                Pipelines.shared.toGroupSlides(mastersyncVM: MasterSyncVM()) {
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+                Shared.instance.isSlideDownloading = false
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+            }
+
+        }
+    }
+    
+    
+    func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false, delegte: BackgroundTaskManagerDelegate) {
+        let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
+        if cacheIndexStr.isEmpty {return}
         Shared.instance.isSlideDownloading = true
         
         guard index >= 0, index < items.count else {
-            
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
-            Shared.instance.isSlideDownloading = false
             self.stopBackgroundTask()
+            togroupSlides()
             return
         }
 
-        
+        self.stopBackgroundTask()
         self.toStartBackgroundTask(index: index, items: items, delegte: delegte)
         }
     
@@ -91,7 +113,7 @@ class BackgroundTaskManager {
         backgroundTask = UIApplication.shared.beginBackgroundTask {
             // End the background task if the expiration handler is called
       
-            self.endBackgroundTask()
+            self.stopBackgroundTask()
         }
         isBackgroundTaskRunning = true
         // Perform API calls in the background

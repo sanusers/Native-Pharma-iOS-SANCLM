@@ -12,7 +12,9 @@ import Foundation
 class  HomeViewModal: BaseViewModel {
     
     enum HomeError: String, Error {
-    case unableConnect = "An issue occured data will be saved to device"
+        
+    case unableConnect = "Request time out"
+   // case customError(message: String)
     }
     
     func getConfigData(params: JSON, api : APIEnums, _ result : @escaping (Result<[AppConfig],Error>) -> Void) {

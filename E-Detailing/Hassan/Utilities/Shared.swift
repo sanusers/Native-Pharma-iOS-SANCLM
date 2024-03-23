@@ -91,7 +91,7 @@ extension Shared{
         view.backgroundColor = UIColor.appLightTextColor.withAlphaComponent(0.05)
         view.frame = parentFrame
         let imageView = UIImageView(image: jeremyGif)
-        imageView.tintColor = .appLightPink
+        imageView.tintColor = .appTextColor
         imageView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         imageView.center = view.center
         view.addSubview(imageView)
@@ -111,4 +111,4 @@ extension Shared{
     }
 }
 
-// Thanks to the author @Hassan
+//

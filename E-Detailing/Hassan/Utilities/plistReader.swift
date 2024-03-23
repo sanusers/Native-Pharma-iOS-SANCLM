@@ -80,4 +80,4 @@ extension PlistReader {
 
 
 
-// Thanks to the author @Hassan
+//

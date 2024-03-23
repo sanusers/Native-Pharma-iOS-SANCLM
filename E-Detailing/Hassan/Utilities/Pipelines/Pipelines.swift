@@ -185,4 +185,17 @@ class Pipelines  {
     }
 
     
+    func toGroupSlides(mastersyncVM: MasterSyncVM, completion: @escaping () -> ()) {
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) {
+  
+            mastersyncVM.toGroupSlidesBrandWise() { isgrouped in
+            
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
+                completion()
+        }
+        } else {
+            completion()
+        }
+    }
+    
 }

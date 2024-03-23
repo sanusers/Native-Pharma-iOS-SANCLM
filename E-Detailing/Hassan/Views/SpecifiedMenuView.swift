@@ -526,6 +526,8 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+         
+                
             default:
                 print("Yet to implement")
             }
@@ -551,7 +553,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         case .listedDoctor:
            return self.listedDocArr?.count ?? 0
         case .chemist:
-            print("Yet to omplement")
+            return self.chemistArr?.count ?? 0
         case .stockist:
             print("Yet to omplement")
         case .unlistedDoctor:
@@ -841,7 +843,64 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             }
             return cell
         case .chemist:
-            print("Yet to omplement")
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
+            titleLbl.text = "Select Chemist"
+            let model =  self.chemistArr?[indexPath.row]
+            cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            if self.selectedObject != nil {
+               let doctorObj = self.selectedObject as! Chemist
+                if doctorObj.id == model?.id {
+                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    cell.lblName.textColor = .appGreen
+                }
+            } else {
+                if self.isSearched {
+                    if self.selectedSpecifiedTypeID ==  model?.code {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                } else {
+                    if indexPath.row == self.selectecIndex {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                }
+            }
+            
+
+            
+   
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.selectedObject = model
+                welf.specifiedMenuVC.selectedObject = model
+                if welf.isSearched {
+                    welf.selectedSpecifiedTypeID = model?.code ?? ""
+               
+                } else {
+                    welf.selectecIndex = indexPath.row
+                  
+                }
+               
+              
+                welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Chemist(), selectedObjects: [NSManagedObject]())
+                welf.endEditing(true)
+                welf.hideMenuAndDismiss()
+            }
+            return cell
         case .stockist:
             print("Yet to omplement")
         case .unlistedDoctor:
@@ -959,14 +1018,25 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let cell: CommonResouceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "CommonResouceInfoTVC", for: indexPath) as!  CommonResouceInfoTVC
             titleLbl.text = "Product"
             cell.selectionStyle = .none
-
+            var yetTosendModel: NSManagedObject?
            cell.itemCountLbl.text = "\(indexPath.row + 1)."
             
             if let modelArr = self.productArr {
                 let model: Product = modelArr[indexPath.row]
+                yetTosendModel = model
                 cell.populateCell(model: model)
                 cell.setupHeight(type: cellType)
             }
+            
+            if specifiedMenuVC.isFromfilter {
+                
+                
+                cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(self.cellType, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            }
+            
             return cell
             
         case .clusterInfo:
@@ -1441,6 +1511,18 @@ class SpecifiedMenuView: BaseView {
            bottomHolderHeight.constant = 0
            self.productArr = DBManager.shared.getProduct()
            
+           if specifiedMenuVC.previousselectedObj != nil {
+               self.previouslySelectdObj = specifiedMenuVC.previousselectedObj as! Product
+               let docObj =  self.previouslySelectdObj as! Product
+               self.productArr?.enumerated().forEach({ index, chemist in
+                   if chemist.id  == docObj.id {
+                       selectedIndex = index
+                   }
+               })
+              
+      
+           }
+           
        case . doctorVisit:
            bottomHolderHeight.constant = 0
            self.visitControlArr = DBManager.shared.getVisitControl()
@@ -1511,10 +1593,6 @@ class SpecifiedMenuView: BaseView {
            if specifiedMenuVC.previousselectedObj != nil {
                self.previouslySelectdObj = specifiedMenuVC.previousselectedObj as! Subordinate
                let docObj =  self.previouslySelectdObj as! Subordinate
-             
-              
-               
-              
                self.headQuatersArr?.enumerated().forEach({ index, doctor in
                    if doctor.id  == docObj.id {
                        selectedIndex = index
@@ -1560,6 +1638,18 @@ class SpecifiedMenuView: BaseView {
        case .chemist, .chemistInfo:
            bottomHolderHeight.constant = 0
            self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+           
+           if specifiedMenuVC.previousselectedObj != nil {
+               self.previouslySelectdObj = specifiedMenuVC.previousselectedObj as! Chemist
+               let docObj =  self.previouslySelectdObj as! Chemist
+               self.chemistArr?.enumerated().forEach({ index, chemist in
+                   if chemist.id  == docObj.id {
+                       selectedIndex = index
+                   }
+               })
+              
+      
+           }
            
        case .stockist, .stockistInfo:
            bottomHolderHeight.constant = 0

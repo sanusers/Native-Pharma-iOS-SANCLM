@@ -159,7 +159,7 @@ extension MainVC : HomeLineChartViewDelegate
 }
 
 extension MainVC: MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel,index: Int) {
         print("Yet to implement")
     }
     
@@ -2368,11 +2368,8 @@ class MainVC : UIViewController {
         print("Tapped -->")
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.view.width / 4, height: self.view.height / 2.3), on: btnProfile, onframe: CGRect(), pagetype: .profile)
         vc.delegate = self
-        //  vc.selectedIndex = indexPath.row
         self.navigationController?.present(vc, animated: true)
-        
-        //  self.viewProfile.isHidden = false
-        
+            //.present(vc, animated: true)
         
     }
     
@@ -3060,9 +3057,6 @@ extension MainVC : collectionViewProtocols {
                 case .calender:
                     print("Yet to implement")
                 }
-                
-                
-                
             }
             
             
@@ -3075,13 +3069,13 @@ extension MainVC : collectionViewProtocols {
                 switch cell.link.name {
                 case "Presentaion":
                     
-                 //   if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
+                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
                         let vc =  PresentationHomeVC.initWithStory()
                     vc.mastersyncVM = self.masterVM ?? MasterSyncVM()
                         self.navigationController?.pushViewController(vc, animated: true)
-                //    } else {
-                      //  self.toSetupAlert()
-                  //  }
+                    } else {
+                        self.toSetupAlert()
+                   }
                     
                 case "Slide Preview":
                     let vc = PreviewHomeVC.initWithStory()

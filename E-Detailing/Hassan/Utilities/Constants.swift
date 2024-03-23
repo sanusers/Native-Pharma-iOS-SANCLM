@@ -95,4 +95,4 @@ var AppMainSlideURL : String  {
 
 
 
-// Thanks to the author @Hassan
+//

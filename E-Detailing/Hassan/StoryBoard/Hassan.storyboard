@@ -3348,18 +3348,18 @@
                                                         <rect key="frame" x="9" y="0.0" width="572" height="57.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Slide downloader" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hRy-Y9-26f">
-                                                                <rect key="frame" x="0.0" y="0.0" width="400.5" height="57.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="171.5" height="57.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                                <nil key="textColor"/>
+                                                                <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bfw-zI-Eby">
-                                                                <rect key="frame" x="400.5" y="0.0" width="114.5" height="57.5"/>
+                                                                <rect key="frame" x="171.5" y="0.0" width="343.5" height="57.5"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6sB-E9-Btm">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="114.5" height="57.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="343.5" height="57.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                        <nil key="textColor"/>
+                                                                        <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                 </subviews>
@@ -3376,7 +3376,7 @@
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="H6C-gF-bh3">
                                                                         <rect key="frame" x="0.0" y="2" width="57" height="53"/>
-                                                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     </imageView>
                                                                 </subviews>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -3390,7 +3390,7 @@
                                                         </subviews>
                                                         <constraints>
                                                             <constraint firstItem="CAE-MQ-uvw" firstAttribute="width" secondItem="eLH-Py-bSK" secondAttribute="width" multiplier="0.1" id="5Zr-51-yjX"/>
-                                                            <constraint firstItem="hRy-Y9-26f" firstAttribute="width" secondItem="eLH-Py-bSK" secondAttribute="width" multiplier="0.7" id="rEC-4s-IRc"/>
+                                                            <constraint firstItem="hRy-Y9-26f" firstAttribute="width" secondItem="eLH-Py-bSK" secondAttribute="width" multiplier="0.3" id="rEC-4s-IRc"/>
                                                         </constraints>
                                                     </stackView>
                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yxa-A8-izV">
@@ -5330,12 +5330,12 @@
                                                                 <rect key="frame" x="10" y="5" width="328" height="37"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-4F-p13">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="26.5" height="37"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="49.5" height="37"/>
                                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
                                                                     </imageView>
                                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QYf-HS-1zw">
-                                                                        <rect key="frame" x="26.5" y="0.0" width="301.5" height="37"/>
+                                                                        <rect key="frame" x="49.5" y="0.0" width="278.5" height="37"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                     </textField>
@@ -5470,7 +5470,7 @@
                                                                                         <rect key="frame" x="0.0" y="17.5" width="330.5" height="70.5"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IJA-1r-7oe">
-                                                                                                <rect key="frame" x="0.0" y="10.5" width="330.5" height="49.5"/>
+                                                                                                <rect key="frame" x="15" y="10.5" width="300" height="49.5"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meb-Ly-iph">
                                                                                                         <rect key="frame" x="15" y="16" width="133.5" height="17.5"/>
@@ -5479,7 +5479,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7lw-l7-meY">
-                                                                                                        <rect key="frame" x="291" y="13.5" width="24.5" height="22.5"/>
+                                                                                                        <rect key="frame" x="260.5" y="13.5" width="24.5" height="22.5"/>
                                                                                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                                                                     </imageView>
@@ -5536,7 +5536,10 @@
                                                                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Qty" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S8K-m3-gSf">
                                                                                                         <rect key="frame" x="15" y="1" width="270" height="46.5"/>
                                                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                                                        <textInputTraits key="textInputTraits"/>
+                                                                                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                                                                                        <connections>
+                                                                                                            <action selector="productQtyAction:" destination="Ilm-Hj-YFe" eventType="editingDidEnd" id="Kji-sF-CKv"/>
+                                                                                                        </connections>
                                                                                                     </textField>
                                                                                                 </subviews>
                                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -5586,7 +5589,19 @@
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cY9-Wr-32I">
                                                                                                 <rect key="frame" x="15" y="10.5" width="300" height="49"/>
+                                                                                                <subviews>
+                                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ld7-ly-d3r">
+                                                                                                        <rect key="frame" x="15" y="24.5" width="0.0" height="0.0"/>
+                                                                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                                                                        <nil key="textColor"/>
+                                                                                                        <nil key="highlightedColor"/>
+                                                                                                    </label>
+                                                                                                </subviews>
                                                                                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                                <constraints>
+                                                                                                    <constraint firstItem="Ld7-ly-d3r" firstAttribute="centerY" secondItem="cY9-Wr-32I" secondAttribute="centerY" id="3Mt-eh-vq5"/>
+                                                                                                    <constraint firstItem="Ld7-ly-d3r" firstAttribute="leading" secondItem="cY9-Wr-32I" secondAttribute="leading" constant="15" id="efP-X5-7NR"/>
+                                                                                                </constraints>
                                                                                             </view>
                                                                                         </subviews>
                                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -5626,7 +5641,19 @@
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="690-xZ-7qs">
                                                                                                 <rect key="frame" x="15" y="10.5" width="300" height="49.5"/>
+                                                                                                <subviews>
+                                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slb-Mv-I8u">
+                                                                                                        <rect key="frame" x="15" y="24.5" width="0.0" height="0.0"/>
+                                                                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                                                                                        <nil key="textColor"/>
+                                                                                                        <nil key="highlightedColor"/>
+                                                                                                    </label>
+                                                                                                </subviews>
                                                                                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                                <constraints>
+                                                                                                    <constraint firstItem="slb-Mv-I8u" firstAttribute="leading" secondItem="690-xZ-7qs" secondAttribute="leading" constant="15" id="HbL-Ng-aeU"/>
+                                                                                                    <constraint firstItem="slb-Mv-I8u" firstAttribute="centerY" secondItem="690-xZ-7qs" secondAttribute="centerY" id="YRW-6U-bj4"/>
+                                                                                                </constraints>
                                                                                             </view>
                                                                                         </subviews>
                                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -5848,17 +5875,22 @@
                             <outlet property="contentsSectionVIew" destination="eX7-Lo-4Z8" id="THT-4p-Wgv"/>
                             <outlet property="dcrNameCurvedView" destination="1Qr-Oa-dHJ" id="xew-Kd-5Xj"/>
                             <outlet property="detailsTable" destination="MRL-zC-tDE" id="LOn-it-fs9"/>
+                            <outlet property="lblSeclectedDCRName" destination="pDQ-aw-rhK" id="kh7-2X-2ka"/>
+                            <outlet property="lblSelectedProductName" destination="meb-Ly-iph" id="cuY-DB-dmG"/>
                             <outlet property="loadedContentsTable" destination="lSo-vd-38N" id="dgo-NI-1y4"/>
                             <outlet property="navigationVIew" destination="wLY-6b-9bG" id="pfV-zS-Ya6"/>
                             <outlet property="productQtyCurvedView" destination="JSF-hY-yTQ" id="ga0-J9-xmG"/>
+                            <outlet property="productQtyTF" destination="S8K-m3-gSf" id="l9e-vU-5qU"/>
                             <outlet property="productnameCurvedView" destination="IJA-1r-7oe" id="pEn-gK-jTl"/>
                             <outlet property="rateCurvedView" destination="cY9-Wr-32I" id="EuP-fU-LKE"/>
+                            <outlet property="rateLbl" destination="Ld7-ly-d3r" id="njp-UE-jVg"/>
                             <outlet property="rcpaEntryView" destination="99e-7n-4VS" id="Fq5-XJ-0iY"/>
                             <outlet property="saveView" destination="KCv-Qa-M8z" id="3x5-DE-6iK"/>
                             <outlet property="searchView" destination="ZVi-sm-FrG" id="XYO-ge-RKf"/>
                             <outlet property="segmentsCollection" destination="ZMv-A6-123" id="Hyg-ms-Ot3"/>
                             <outlet property="titleLbl" destination="1td-rp-gvV" id="eHq-cG-fap"/>
                             <outlet property="valueCurvedVIew" destination="690-xZ-7qs" id="QOc-Nd-msU"/>
+                            <outlet property="valuelbl" destination="slb-Mv-I8u" id="ufD-V1-Gk6"/>
                             <outlet property="yetToloadContentsTable" destination="MRL-zC-tDE" id="UjQ-RS-Pmk"/>
                             <outlet property="yettoaddSectionView" destination="fnC-wI-HGp" id="3Q0-SE-2r7"/>
                             <outlet property="yettoaddTableHolder" destination="XTa-i1-F6F" id="AIv-Ak-l79"/>

@@ -30,9 +30,9 @@ extension MasterSyncVC {
         case .navigate:
             Shared.instance.removeLoaderInWindow()
             if isFromLaunch {
-                if (type == .slides || type == .slideBrand) && self.loadedSlideInfo.contains(.slideBrand) && self.loadedSlideInfo.contains(.slides) {
+                if (type == .slides || type == .slideBrand) {
  
-                        moveToDownloadSlide()
+                    moveToDownloadSlide()
                     
                 } else {
                     moveToHome()
@@ -43,9 +43,9 @@ extension MasterSyncVC {
                    
                     let isNewSlideExists = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded)
                 //self.toCheckExistenceOfNewSlides()  ?? false
-                  //  if !isNewSlideExists {
+                    if !isNewSlideExists {
                         moveToDownloadSlide()
-                  //  }
+                    }
                     
                 
            
@@ -147,9 +147,6 @@ extension MasterSyncVC {
         downloadAlertSet = false
         
         let vc = SlideDownloadVC.initWithStory(viewmodel: self.mastersyncVM ?? MasterSyncVM())
-       // if toCheckExistenceOfNewSlides() ?? false && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
-            vc.istoGroupBrandwise = true
-        //}
         vc.isFromlaunch = isFromLaunch
         if isFromcache ?? false{
             vc.arrayOfAllSlideObjects = self.arrayOfAllSlideObjects

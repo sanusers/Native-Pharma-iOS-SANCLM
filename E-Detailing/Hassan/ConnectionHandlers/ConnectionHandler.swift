@@ -132,7 +132,7 @@ final class ConnectionHandler : NSObject {
                         responseHandler.handleArrSuccess(value: ArrJSONseq, data: response.data ?? Data())
                     } else if CacheAttribute == .tableSetup {
                       
-                             jsonseq = ArrJSONseq[0]
+                     jsonseq = ArrJSONseq[0]
                        
                         responseHandler.handleSuccess(value: jsonseq, data: response.data ?? Data())
                     }
@@ -144,8 +144,8 @@ final class ConnectionHandler : NSObject {
                    // responseHandler.handleFailure(value: json.status_message)
                 }
             case .failure(let error):
-                if error._code == 13 {
-                    responseHandler.handleFailure(value: "No internet connection.".localizedCapitalized)
+                if error._code == 1001 {
+                    responseHandler.handleFailure(value: "The request timed out.".localizedCapitalized)
                 } else {
                     responseHandler.handleFailure(value: error.localizedDescription)
                 }
@@ -270,6 +270,7 @@ final class ConnectionHandler : NSObject {
             
             let endTime = Date()
             
+
             self.networkChecker(with: startTime, EndTime: endTime, ContentData: results.data)
             
             switch results.result{
@@ -519,8 +520,8 @@ final class ConnectionHandler : NSObject {
                 responseHandler.handleFailure(value: json.status_message)
                 print("Error in upload: \(error.localizedDescription)")
                 //                               self.appDelegate.createToastMessage(error.localizedDescription, bgColor: .black, textColor: .white)
-                if error._code == 13 {
-                    responseHandler.handleFailure(value: "No internet connection.".localizedCapitalized)
+                if error._code == 1001 {
+                    responseHandler.handleFailure(value: "The request timed out.".localizedCapitalized)
                 } else {
                     responseHandler.handleFailure(value: error.localizedDescription)
                 }

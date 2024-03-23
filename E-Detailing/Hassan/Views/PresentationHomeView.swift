@@ -146,8 +146,8 @@ class PresentationHomeView : BaseView {
         self.presentationHomeVC = baseVC as? PresentationHomeVC
         setupUI()
         initView()
-       // retriveSavedPresentations()
-        groupSlides()
+        retriveSavedPresentations()
+       // groupSlides()
 
     }
     
@@ -164,14 +164,9 @@ class PresentationHomeView : BaseView {
     }
     
     func groupSlides() {
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) {
-            Shared.instance.showLoaderInWindow()
-            presentationHomeVC.mastersyncVM?.toGroupSlidesBrandWise() { isgrouped in
-                Shared.instance.showLoaderInWindow()
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
-                self.retriveSavedPresentations()
-        }
-        } else {
+        Shared.instance.showLoaderInWindow()
+        Pipelines.shared.toGroupSlides(mastersyncVM: presentationHomeVC.mastersyncVM ?? MasterSyncVM()) {
+            Shared.instance.removeLoaderInWindow()
             self.retriveSavedPresentations()
         }
     }

@@ -914,7 +914,7 @@ extension UISegmentedControl {
     }
 }
 
-// Thanks to the author @Hassan
+//
 
 //extension UIView {
 //    

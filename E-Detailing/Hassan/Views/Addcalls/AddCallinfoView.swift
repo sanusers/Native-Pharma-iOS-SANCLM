@@ -9,9 +9,10 @@ import Foundation
 import UIKit
 import CoreData
 extension AddCallinfoView: MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel) {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
         self.productSelectedListViewModel = product
         self.additionalCallListViewModel = additioncall
+        self.additionalCallListViewModel.updateInCallSection(index, isView: false)
         self.loadedContentsTable.reloadData()
     }
     
@@ -24,14 +25,47 @@ extension AddCallinfoView: MenuResponseProtocol {
     }
     
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
-        print("Yet to implement")
+
+        switch type {
+        case .product:
+            if let selectedObject = selectedObject as? Product {
+                self.lblSelectedProductName.text = selectedObject.name ?? ""
+                self.productObj = selectedObject
+                
+                let rateInt: Int = Int(selectedObject.dRate ?? "1") ?? 0
+                self.rateInt = rateInt
+                let qtyInt: Int = Int(self.productQty) ?? 0
+                rateLbl.text = "\(rateInt * qtyInt)"
+                valuelbl.text = "\(rateInt * qtyInt)"
+                
+            }
+        case .chemist:
+            if let selectedObject = selectedObject as? Chemist {
+                self.lblSeclectedDCRName.text = selectedObject.name ?? ""
+                self.chemistObj = selectedObject
+            }
+        default:
+            print("---><---")
+        }
     }
-    
-    
+ 
 }
 
 extension AddCallinfoView {
 ///RCPA
+    @IBAction func rcpaSaveAction(_ sender: UIButton) {
+        
+        if self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
+            print("Add Competitor")
+            return
+        }
+        
+//        UIView.animate(withDuration: 1.5) {
+//            self.viewRcpa.isHidden = true
+//        }
+        yetToloadContentsTable.isHidden = false
+        self.yetToloadContentsTable.reloadData()
+    }
     
     @objc func plusRcpaProduct(_ sender : UIButton){
         //rcpaAddedListTableView
@@ -86,14 +120,15 @@ extension AddCallinfoView {
         
         self.selectedProductRcpa = products.product
         
-      //  self.txtRcpaQty.text = products.quantity
+
+        rateLbl.text = products.quantity
         
-     //   self.txtRcpaTotal.text = products.total
+        valuelbl.text = products.total
         
         
         
-      //  self.lblChemistName.text = chemist.rcpaChemist.chemist.name ?? ""
-      //  self.lblProductName.text = products.product.name ?? ""
+        self.lblSeclectedDCRName.text = chemist.rcpaChemist.chemist.name ?? "Select Chemist Name"
+        self.lblSelectedProductName.text = products.product.name ?? "Select Product Name"
         
         self.rcpaCallListViewModel.removeAll()
         
@@ -332,16 +367,25 @@ extension AddCallinfoView {
 
 extension AddCallinfoView : UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
-        let compSepByCharInSet = string.components(separatedBy: aSet)
-        let numberFiltered = compSepByCharInSet.joined(separator: "")
-        let maxLength = 6
-        let currentString: NSString = textField.text! as NSString
-        let newString: NSString =
-            currentString.replacingCharacters(in: range, with: string) as NSString
-        return string == numberFiltered && newString.length <= maxLength
+        switch textField {
+        case productQtyTF:
+            self.productQty = textField.text ?? "1"
+            return true
+        default:
+            let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
+            let compSepByCharInSet = string.components(separatedBy: aSet)
+            let numberFiltered = compSepByCharInSet.joined(separator: "")
+            let maxLength = 6
+            let currentString: NSString = textField.text! as NSString
+            let newString: NSString =
+                currentString.replacingCharacters(in: range, with: string) as NSString
+            return string == numberFiltered && newString.length <= maxLength
+        }
+
     }
+    
+    
+    
 }
 
 
@@ -518,33 +562,33 @@ extension AddCallinfoView: tableViewProtocols {
         case .rcppa:
             switch tableView {
             case yetToloadContentsTable:
+                return UITableViewCell()
+            case loadedContentsTable:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
                 cell.rcpaProduct = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
                 cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
                 cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
                 cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
                 return cell
-            case loadedContentsTable:
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "ProductSampleTableViewCell", for: indexPath) as! ProductSampleTableViewCell
-                cell.selectionStyle = .none
-                cell.productSample = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
-                cell.btnDelete.addTarget(self, action: #selector(deleteProduct(_:)), for: .touchUpInside)
-                cell.btnDelete.tag = indexPath.row
-                cell.txtRxQty.tag = indexPath.row
-                cell.txtRcpaQty.tag = indexPath.row
-                cell.txtSampleQty.tag = indexPath.row
-                cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
-                cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
-                cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
-                cell.btnDeviation.addTarget(self, action: #selector(productDetailedSelection(_:)), for: .touchUpInside)
-                cell.txtSampleQty.delegate = self
-                cell.txtRxQty.delegate = self
-                cell.txtRcpaQty.delegate = self
-                if appsetup.sampleValidation != 1 {
-                  //  cell.viewStock.isHidden = true
-                }
-                return cell
+//                let cell = tableView.dequeueReusableCell(withIdentifier: "ProductSampleTableViewCell", for: indexPath) as! ProductSampleTableViewCell
+//                cell.selectionStyle = .none
+//                cell.productSample = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
+//                cell.btnDelete.addTarget(self, action: #selector(deleteProduct(_:)), for: .touchUpInside)
+//                cell.btnDelete.tag = indexPath.row
+//                cell.txtRxQty.tag = indexPath.row
+//                cell.txtRcpaQty.tag = indexPath.row
+//                cell.txtSampleQty.tag = indexPath.row
+//                cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
+//                cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
+//                cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
+//                cell.btnDeviation.addTarget(self, action: #selector(productDetailedSelection(_:)), for: .touchUpInside)
+//                cell.txtSampleQty.delegate = self
+//                cell.txtRxQty.delegate = self
+//                cell.txtRcpaQty.delegate = self
+//                if appsetup.sampleValidation != 1 {
+//                  //  cell.viewStock.isHidden = true
+//                }
+//                return cell
             default:
                 return UITableViewCell()
             }
@@ -789,11 +833,12 @@ class AddCallinfoView : BaseView {
             toloadYettables()
             toloadContentsTable()
         case .rcppa:
+        
             rcpaEntryView.isHidden = false
             yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .appWhiteColor
             //toloadYettables()
-            //toloadContentsTable()
+            toloadContentsTable()
         case .jointWork:
             toloadYettables()
             toloadContentsTable()
@@ -812,6 +857,20 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
 
     }
 
+    
+    @IBOutlet var lblSeclectedDCRName: UILabel!
+    
+    
+    @IBOutlet var lblSelectedProductName: UILabel!
+    
+    @IBOutlet var productQtyTF: UITextField!
+    
+
+    @IBOutlet var rateLbl: UILabel!
+    
+    @IBOutlet var valuelbl: UILabel!
+    
+    
     @IBOutlet var dcrNameCurvedView: UIView!
     
     @IBOutlet var productnameCurvedView: UIView!
@@ -859,9 +918,11 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     private var inputSelectedListViewModel = InputSelectedListViewModel()
     private var rcpaAddedListViewModel = RcpaAddedListViewModel()
     private var rcpaCallListViewModel = RcpaListViewModel()
-    
+    var productObj: NSManagedObject?
+    var chemistObj: NSManagedObject?
     var selectedChemistRcpa : AnyObject!
-    
+    var productQty: String = "1"
+    var rateInt: Int = 0
     var selectedProductRcpa : AnyObject!
     
     override func didLoad(baseVC: BaseViewController) {
@@ -871,8 +932,33 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
        toLoadSegments()
         cellregistration()
         toloadYettables()
-   
+        initVIews()
        // toloadContentsTable()
+    }
+    
+    func initVIews() {
+        dcrNameCurvedView.addTap {
+            let vc = SpecifiedMenuVC.initWithStory(self, celltype: .chemist)
+            vc.isFromfilter = true
+            if let chemistobj = self.chemistObj {
+                vc.previousselectedObj = chemistobj
+            }
+            self.addCallinfoVC.modalPresentationStyle = .custom
+            self.addCallinfoVC.navigationController?.present(vc, animated: false)
+        }
+        
+        productnameCurvedView.addTap {
+            let vc = SpecifiedMenuVC.initWithStory(self, celltype: .product)
+            vc.isFromfilter = true
+            
+            if let productObj = self.productObj {
+                vc.previousselectedObj = productObj
+            }
+           
+            self.addCallinfoVC.modalPresentationStyle = .custom
+            self.addCallinfoVC.navigationController?.present(vc, animated: false)
+        }
+        
     }
     
     func cellregistration() {
@@ -938,8 +1024,11 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         let curvedVIews: [UIView] = [dcrNameCurvedView, productnameCurvedView, productQtyCurvedView, rateCurvedView, valueCurvedVIew]
         
         btnAddRCPA.layer.cornerRadius = 5
-        
-        curvedVIews.forEach { 
+      
+                             
+        btnAddRCPA.addTarget(self, action: #selector(rcpaSaveAction(_:)), for: .touchUpInside)
+                             
+        curvedVIews.forEach {
             if $0 != rateCurvedView ||  $0 != valueCurvedVIew {
                 $0.layer.borderWidth = 1
                 $0.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
@@ -948,7 +1037,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         }
         
  
-      
+        productQtyTF.delegate = self
         loadedContentsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         contentsSectionVIew.layer.cornerRadius = 5
@@ -966,5 +1055,15 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         clearView.layer.cornerRadius = 5
         
     }
+    
+    @IBAction func productQtyAction(_ sender: UITextField) {
+        
+        self.productQty = sender.text ?? "1"
+        let qtyInt: Int = Int(self.productQty) ?? 0
+        rateLbl.text = "\(rateInt * qtyInt)"
+        valuelbl.text = "\(rateInt * qtyInt)"
+        
+    }
+    
     
 }

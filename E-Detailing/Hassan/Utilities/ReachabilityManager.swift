@@ -95,4 +95,4 @@ class ReachabilityManager : NSObject {
     
 }
 
-// Thanks to the author @Hassan
+//

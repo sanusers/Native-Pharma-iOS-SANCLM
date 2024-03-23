@@ -48,6 +48,7 @@ case AppMainURL
         case istoUploadDayplans
         case slideDownloadIndex
         case isSlidesGrouped
+        case isUserLoggedIn
     }
     
     enum Offsets: String {
@@ -176,4 +177,4 @@ case AppMainURL
     
 }
 
-// Thanks to the author @Hassan
+//
