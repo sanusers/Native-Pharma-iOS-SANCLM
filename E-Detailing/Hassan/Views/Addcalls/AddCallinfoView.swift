@@ -811,7 +811,7 @@ class AddCallinfoView : BaseView {
         case .detailed:
             didClose()
             jfwExceptionView.isHidden = false
-           
+            viewnoRCPA.isHidden = true
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
@@ -820,7 +820,7 @@ class AddCallinfoView : BaseView {
         case .products:
             didClose()
             jfwExceptionView.isHidden = false
-            
+            viewnoRCPA.isHidden = true
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
@@ -832,6 +832,7 @@ class AddCallinfoView : BaseView {
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
+            viewnoRCPA.isHidden = true
             toloadYettables()
             toloadContentsTable()
         case .additionalCalls:
@@ -840,6 +841,7 @@ class AddCallinfoView : BaseView {
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
+            viewnoRCPA.isHidden = true
             toloadYettables()
             toloadContentsTable()
         case .rcppa:
@@ -848,8 +850,9 @@ class AddCallinfoView : BaseView {
             rcpaEntryView.isHidden = false
             yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .appWhiteColor
+            viewnoRCPA.isHidden = false
             //toloadYettables()
-            toloadContentsTable()
+            //toloadContentsTable()
         case .jointWork:
             jfwExceptionView.isHidden = true
             jfwAction()
@@ -952,6 +955,10 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     
     @IBOutlet var yettoaddTableHolder: UIView!
     @IBOutlet var saveView: UIView!
+    
+    
+    @IBOutlet var viewnoRCPA: UIView!
+    
     var selectedDoctorIndex = 0
     var selectedProductIndex: Int? = nil
     var searchText: String = ""
@@ -963,7 +970,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     private var rcpaAddedListViewModel = RcpaAddedListViewModel()
     private var rcpaCallListViewModel = RcpaListViewModel()
     private var eventCaptureListViewModel = EventCaptureListViewModel()
-    
+    private var jointWorkSelectedListViewModel = JointWorksListViewModel()
     var jfwView : JfwView?
     
     var productObj: NSManagedObject?
@@ -1038,6 +1045,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         jfwView = self.addCallinfoVC.loadCustomView(nibname: XIBs.jfwView) as? JfwView
         jfwView?.rootVC = self.addCallinfoVC
         jfwView?.eventCaptureListViewModel = self.eventCaptureListViewModel
+        jfwView?.jointWorkSelectedListViewModel = self.jointWorkSelectedListViewModel
        // jfwView?.delegate = self
       //  jfwView?.userStatisticsVM = self.userststisticsVM
      //   changePasswordView?.appsetup = self.appSetups

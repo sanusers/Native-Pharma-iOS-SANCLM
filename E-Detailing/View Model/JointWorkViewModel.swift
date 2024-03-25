@@ -51,6 +51,28 @@ class JointWorksListViewModel {
         return Objects(Object: jointWorks[index], isSelected: isSelected.isEmpty ? false : true, priority: "")
     }
     
+    
+    func fetchJointWorkData(_ id : String) -> Objects? {
+        let jointWorks = DBManager.shared.getJointWork()
+        
+        var jwIndex: Int?
+        
+        jointWorks.enumerated().forEach { index, aJointWork in
+            if aJointWork.code == id {
+                jwIndex = index
+            }
+        }
+        if let jwIndex = jwIndex {
+            return Objects(Object: jointWorks[jwIndex], isSelected: true, priority: "")
+        } else {
+            return nil
+        }
+
+            
+ 
+        
+    }
+    
     func numbersOfJointWorks() -> Int {
         return DBManager.shared.getJointWork().count
     }

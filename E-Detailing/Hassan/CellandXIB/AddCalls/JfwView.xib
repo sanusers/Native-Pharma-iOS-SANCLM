@@ -63,10 +63,10 @@
                                                                         <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ocm-0W-SGg">
                                                                             <rect key="frame" x="11.5" y="28.5" width="284.5" height="85"/>
                                                                             <subviews>
-                                                                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter value" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="V5s-TD-VCL">
+                                                                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter value" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="V5s-TD-VCL">
                                                                                     <rect key="frame" x="15" y="4" width="213.5" height="77"/>
                                                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                                    <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                                     <connections>
                                                                                         <action selector="didtapPOBtf:" destination="iN0-l3-epB" eventType="editingDidEnd" id="8Df-O3-OIx"/>
                                                                                     </connections>
@@ -589,7 +589,7 @@
                 <outlet property="eventCaptureTableView" destination="I4N-Ma-0Aj" id="4j8-cr-Bc0"/>
                 <outlet property="eventcaptureCurvedView" destination="hhn-L6-56E" id="0BQ-lF-MxX"/>
                 <outlet property="feedbackLbl" destination="a2d-Xb-Ixe" id="50i-If-edX"/>
-                <outlet property="jointWorkTable" destination="83e-1z-Ob1" id="yCG-h5-4Hb"/>
+                <outlet property="jointWorkTableView" destination="83e-1z-Ob1" id="Bby-a5-fJV"/>
                 <outlet property="jwCurvedView" destination="cww-rb-fbX" id="oco-Zn-pf1"/>
                 <outlet property="lblCaptureEvent" destination="cKB-lh-6zP" id="tCu-Ag-K5t"/>
                 <outlet property="lblEnterRemarks" destination="41U-Zf-Kzs" id="x0R-fl-0CP"/>
@@ -619,7 +619,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tableSeparatorDarkColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>

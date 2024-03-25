@@ -583,7 +583,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         case .headQuater:
             return self.headQuatersArr?.count ?? 0
         case .jointCall:
-            print("Yet to omplement")
+            return self.jointWorkArr?.count ?? 0
         case .listedDoctor:
            return self.listedDocArr?.count ?? 0
         case .chemist:
@@ -819,7 +819,24 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return cell
         case .jointCall:
-            print("Yet to omplement")
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            titleLbl.text = "Feedback"
+            cell.selectionStyle = .none
+        
+            var yetTosendModel: NSManagedObject?
+             if let modelArr = self.jointWorkArr{
+                 let model: JointWork = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+              //   cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.feedback, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
         case .listedDoctor:
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
             cell.selectionStyle = .none
@@ -1787,6 +1804,12 @@ class SpecifiedMenuTCell: UITableViewCell
     }
     
     func  populateCell(model: Feedback) {
+        lblName.text = model.name
+    }
+    
+    
+    
+    func  populateCell(model: JointWork) {
         lblName.text = model.name
     }
     

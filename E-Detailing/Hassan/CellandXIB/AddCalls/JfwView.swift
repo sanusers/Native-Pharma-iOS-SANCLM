@@ -25,9 +25,15 @@ extension JfwView: MenuResponseProtocol {
             selectedfeedbackLbl.text = feedbackObj.name == "" ? "Select" :  feedbackObj.name
             
             
+            
+            
          //   lblEnterRemarks.textColor =  feedbackObj.name == "" ? .appLightTextColor :
         }
         
+        
+        if let jwObj = selectedObject as? JointWork {
+            jointworkSelectionAction(obj: jwObj)
+        }
         
     }
     
@@ -65,6 +71,27 @@ extension JfwView : UITextViewDelegate {
 }
 
 extension JfwView: UITableViewDelegate, UITableViewDataSource {
+    func jointworkSelectionAction(obj: JointWork) {
+//        let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.selectionTableView)
+//        guard let indexPath = self.selectionTableView.indexPathForRow(at: buttonPosition) else{
+//            return
+//        }
+        
+        let jointWorkValue = self.jointWorkSelectedListViewModel?.fetchJointWorkData(obj.code ?? "")
+        guard var jointWorkValue = jointWorkValue else {return}
+        jointWorkValue.isSelected = true
+        //jointWorkValue.isSelected ?  !jointWorkValue.isSelected : jointWorkValue.isSelected
+        if jointWorkValue.isSelected {
+            self.jointWorkSelectedListViewModel?.addJointWorkViewModel(JointWorkViewModel(jointWork: jointWorkValue.Object as! JointWork))
+
+        } else {
+            self.jointWorkSelectedListViewModel?.removeById(id: jointWorkValue.Object.code ?? "")
+        
+        }
+        
+        self.jointWorkTableView.reloadData()
+    }
+    
     
     @objc func deleteEventCapture(_ sender : UIButton){
         self.eventCaptureListViewModel?.removeAtIndex(sender.tag)
@@ -77,11 +104,31 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
     }
     
     
+    @objc func addJointWork() {
+
+        let vc = SpecifiedMenuVC.initWithStory(self, celltype: .jointCall)
+        self.rootVC?.modalPresentationStyle = .custom
+        self.rootVC?.navigationController?.present(vc, animated: false)
+        
+    }
+    
+    @objc func deleteJointWork (_ sender : UIButton) {
+        let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.jointWorkTableView)
+        guard let indexPath = self.jointWorkTableView.indexPathForRow(at: buttonPosition) else{
+            return
+        }
+        
+        self.jointWorkSelectedListViewModel?.removeAtindex(indexPath.row)
+        self.jointWorkTableView.reloadData()
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case self.eventCaptureTableView :
             return self.eventCaptureListViewModel?.numberOfRows() ?? 0
+            
+        case self.jointWorkTableView:
+            return self.jointWorkSelectedListViewModel?.numberofSelectedRows() ?? 0
         default:
             return 0
         }
@@ -100,6 +147,14 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
          //   cell.txtDescription.tag = indexPath.row
           // cell.txtDescription.delegate = self
             return cell
+            
+            
+        case self.jointWorkTableView:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "JointWorkTableViewCell", for: indexPath) as! JointWorkTableViewCell
+            cell.selectionStyle = .none
+            cell.jointWorkSample = self.jointWorkSelectedListViewModel?.fetchDataAtIndex(indexPath.row)
+            cell.btnDelete.addTarget(self, action: #selector(deleteJointWork(_:)), for: .touchUpInside)
+            return cell
         default:
             return UITableViewCell()
         }
@@ -108,7 +163,8 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
         switch tableView{ 
         case self.eventCaptureTableView:
             return 150
-            
+        case self.jointWorkTableView:
+            return 60
         default:
             return 0
         }
@@ -164,7 +220,7 @@ class JfwView: UIView {
     @IBOutlet var captureCurvedVIew: UIView!
     
     
-    @IBOutlet var jointWorkTable: UITableView!
+    @IBOutlet var jointWorkTableView: UITableView!
     
     
     
@@ -193,6 +249,7 @@ class JfwView: UIView {
     var photoOutput: AVCapturePhotoOutput?
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     var eventCaptureListViewModel : EventCaptureListViewModel?
+    var jointWorkSelectedListViewModel: JointWorksListViewModel?
     func initTaps() {
         overallFeedbackCurvedView.addTap {
             let vc = SpecifiedMenuVC.initWithStory(self, celltype: .feedback)
@@ -201,6 +258,15 @@ class JfwView: UIView {
         }
         
         captureBtn.addTarget(self, action: #selector(checkCameraAuthorization), for: .touchUpInside)
+        
+        addJWbtn.addTarget(self, action: #selector(addJointWork), for: .touchUpInside)
+        
+    }
+    
+    func toloadJWtable() {
+        jointWorkTableView.delegate = self
+        jointWorkTableView.dataSource = self
+        jointWorkTableView.reloadData()
     }
     
     
@@ -326,7 +392,11 @@ class JfwView: UIView {
         pobTF.delegate = self
         
         eventCaptureTableView.register(UINib(nibName: "EventCaptureCell", bundle: nil), forCellReuseIdentifier: "EventCaptureCell")
+        
+        
+        jointWorkTableView.register(UINib(nibName: "JointWorkTableViewCell", bundle: nil), forCellReuseIdentifier: "JointWorkTableViewCell")
         toloadEventCapuretable()
+        toloadJWtable()
     }
     
     func toloadEventCapuretable() {
