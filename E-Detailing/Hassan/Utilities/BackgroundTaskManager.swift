@@ -15,7 +15,9 @@ extension BackgroundTaskManager : MediaDownloaderDelegate {
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didFinishDownloadingData data: Data?) {
-        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) || LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) {
+            return
+        }
         guard let items = self.items else {return}
         guard let index = self.index else {return}
         let params = items[index]
@@ -27,7 +29,9 @@ extension BackgroundTaskManager : MediaDownloaderDelegate {
         
             delegate?.didUpdate(rrayOfAllSlideObjects: items, index: index) {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.index ?? 0)")
-            self.toDownloadMedia(index: (self.index ?? 0) + 1, items: items, delegte: self.delegate!)
+            self.toDownloadMedia(index: (self.index ?? 0) + 1, items: items, delegte: self.delegate!) {
+                    
+            }
         }
     
         
@@ -64,7 +68,7 @@ class BackgroundTaskManager {
     
     
     
-    func togroupSlides() {
+    func togroupSlides(completion: @escaping () -> ()) {
         
         
         backgroundTask = UIApplication.shared.beginBackgroundTask {
@@ -80,20 +84,23 @@ class BackgroundTaskManager {
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
                 Shared.instance.isSlideDownloading = false
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+                completion()
             }
 
         }
     }
     
     
-    func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false, delegte: BackgroundTaskManagerDelegate) {
+    func toDownloadMedia(index: Int, items: [SlidesModel], isForsingleRetry: Bool? = false, delegte: BackgroundTaskManagerDelegate, completion: @escaping () -> ()) {
         let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
         if cacheIndexStr.isEmpty {return}
         Shared.instance.isSlideDownloading = true
         
         guard index >= 0, index < items.count else {
             self.stopBackgroundTask()
-            togroupSlides()
+            togroupSlides() {
+                completion()
+            }
             return
         }
 

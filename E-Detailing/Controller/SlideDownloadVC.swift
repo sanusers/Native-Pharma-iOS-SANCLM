@@ -107,7 +107,10 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                             self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                             self.isDownloading = false
                             self.closeHolderView.isUserInteractionEnabled = true
-                            completion(true)
+                            self.togroupSlides() {
+                                completion(true)
+                            }
+                            
                         }
                     }
                 }
@@ -139,9 +142,13 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                
                                 LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
                                 self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
-                                self.checkifSyncIsCompleted(self.isFromlaunch)
                                 self.closeHolderView.isUserInteractionEnabled = true
-                                completion(true)
+                                self.checkifSyncIsCompleted(self.isFromlaunch) {
+                                    BackgroundTaskManager.shared.stopBackgroundTask()
+                                    completion(true)
+                                }
+                             
+                         
                             }
                         }
           
@@ -318,7 +325,7 @@ class SlideDownloadVC : UIViewController {
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
                  self.dismiss(animated: false) {
-                self.delegate?.didDownloadCompleted()
+             //   self.delegate?.didDownloadCompleted()
             }
         }
     }
@@ -343,8 +350,6 @@ class SlideDownloadVC : UIViewController {
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
                            self.startDownload()
-                           //self.toDownloadMedia(index: self.loadingIndex, items: self.arrayOfAllSlideObjects)
-                         //  self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
                        }
                    }
                }
@@ -480,11 +485,13 @@ class SlideDownloadVC : UIViewController {
         
     }
     
-    func togroupSlides() {
+    func togroupSlides(completion: @escaping () -> ()) {
+        self.closeHolderView.isHidden = true
         Shared.instance.showLoaderInWindow()
         countLbl.text = "Please wait while organizing downloaded slides..."
         countLbl.textColor = .appLightPink
         Pipelines.shared.toGroupSlides(mastersyncVM: self.mastersyncvm ?? MasterSyncVM()) {
+            self.closeHolderView.isHidden = false
             self.countLbl.text = "Download completed.."
             self.countLbl.textColor = .appTextColor
             Shared.instance.removeLoaderInWindow()
@@ -493,6 +500,7 @@ class SlideDownloadVC : UIViewController {
             self.isDownloading = false
             Shared.instance.isSlideDownloading = false
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+            completion()
             self.delegate?.didDownloadCompleted()
         }
     }
@@ -512,7 +520,9 @@ class SlideDownloadVC : UIViewController {
         guard index >= 0, index < items.count else {
             
 
-        
+            self.togroupSlides() {
+             
+            }
             return
         }
         
@@ -539,7 +549,9 @@ class SlideDownloadVC : UIViewController {
           //  toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
             self.didDownloadCompleted(arrayOfAllSlideObjects: self.arrayOfAllSlideObjects, index: cacheIndexInt, isForSingleSelection: false, isfrorBackgroundTask: true, istoreturn: true) {_ in
                 //  BackgroundTaskManager.shared.stopBackgroundTask()
-                  BackgroundTaskManager.shared.toDownloadMedia(index: cacheIndexInt, items: self.arrayOfAllSlideObjects, delegte: self)
+                BackgroundTaskManager.shared.toDownloadMedia(index: cacheIndexInt, items: self.arrayOfAllSlideObjects, delegte: self) {
+                    
+                }
             }
         }
     }
@@ -844,7 +856,7 @@ class SlideDownloadVC : UIViewController {
 
     
     
-    func checkifSyncIsCompleted(_ isFromLaunch: Bool){
+    func checkifSyncIsCompleted(_ isFromLaunch: Bool, completion: @escaping () -> ()){
         let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
         let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
         
@@ -854,7 +866,9 @@ class SlideDownloadVC : UIViewController {
         }
         isSlideDownloadCompleted = true
         self.tableView.isScrollEnabled = true
-        togroupSlides()
+        togroupSlides() {
+            completion()
+        }
     }
     
     func unarchiveAndGetData(from zipData: Data) -> UnzippedDataInfo {

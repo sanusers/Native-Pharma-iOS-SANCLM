@@ -35,7 +35,7 @@ extension AddCallinfoView: MenuResponseProtocol {
                 let rateInt: Int = Int(selectedObject.dRate ?? "1") ?? 0
                 self.rateInt = rateInt
                 let qtyInt: Int = Int(self.productQty) ?? 0
-                rateLbl.text = "\(rateInt * qtyInt)"
+                rateLbl.text = "\(rateInt)"
                 valuelbl.text = "\(rateInt * qtyInt)"
                 
             }
@@ -856,7 +856,35 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
        case jointWork = "JFW / Others"
 
     }
-
+    
+    func setupjfwViews() {
+        viewPOB.layer.cornerRadius = 5
+        viewOverallFeedback.layer.cornerRadius = 5
+        viewEventCapture.layer.cornerRadius = 5
+        captureView.layer.cornerRadius = 5
+        captureVXView.layer.cornerRadius = 5
+        captureView.layer.borderWidth = 1
+        captureView.layer.borderColor = UIColor.appGreen.cgColor
+        
+        
+        
+    }
+    
+    @IBOutlet var bottomButtonsHolder: UIView!
+    @IBOutlet var eventcaptureTable: UITableView!
+    
+    @IBOutlet var btnCapture: UIButton!
+    @IBOutlet var captureVXView: UIVisualEffectView!
+    
+    @IBOutlet var captureView: UIView!
+    
+    @IBOutlet var jfwView: UIView!
+    
+    @IBOutlet var viewPOB: UIView!
+    
+    @IBOutlet var viewOverallFeedback: UIView!
+    
+    @IBOutlet var viewEventCapture: UIView!
     
     @IBOutlet var lblSeclectedDCRName: UILabel!
     
@@ -1060,7 +1088,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         
         self.productQty = sender.text ?? "1"
         let qtyInt: Int = Int(self.productQty) ?? 0
-        rateLbl.text = "\(rateInt * qtyInt)"
+        rateLbl.text = "\(rateInt)"
         valuelbl.text = "\(rateInt * qtyInt)"
         
     }

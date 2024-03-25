@@ -247,7 +247,7 @@ class ObjectFormatter {
         do {
             let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
             let thumbnailImage = UIImage(cgImage: cgImage)
-            deleteTemporaryFile(at: videoURL)
+          //  deleteTemporaryFile(at: videoURL)
            return thumbnailImage
           //  self.contentMode = .scaleAspectFill
       
@@ -268,7 +268,7 @@ class ObjectFormatter {
         do {
             let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
             let thumbnailImage = UIImage(cgImage: cgImage)
-            deleteTemporaryFile(at: videoURL)
+          //  deleteTemporaryFile(at: videoURL)
             return thumbnailImage.pngData() ?? Data() // Convert UIImage to data
         } catch {
             print("Error generating thumbnail: \(error.localizedDescription)")

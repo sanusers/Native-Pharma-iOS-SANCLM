@@ -356,14 +356,14 @@ class PreCallVC : UIViewController {
 
     @IBAction func startDetailingAction(_ sender: UIButton) {
         
-//        
-//        let productVC = UIStoryboard.productVC
-//        productVC.dcrCall = self.dcrCall
-//        self.navigationController?.pushViewController(productVC, animated: true)
+        
+        let productVC = UIStoryboard.productVC
+        productVC.dcrCall = self.dcrCall
+        self.navigationController?.pushViewController(productVC, animated: true)
 ////        
-        let vc = AddCallinfoVC.initWithStory()
-        vc.dcrCall = self.dcrCall
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = AddCallinfoVC.initWithStory()
+//        vc.dcrCall = self.dcrCall
+//        self.navigationController?.pushViewController(vc, animated: true)
         
     }
     

@@ -69,7 +69,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
 
     
     func didDownloadCompleted() {
-        
+        Shared.instance.removeLoaderInWindow()
         if isFromLaunch {
             
             toSetupAlert(desc: "Slides loading completed", istoNavigate: true)
