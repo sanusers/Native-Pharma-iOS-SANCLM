@@ -261,8 +261,6 @@ extension MainVC: MenuResponseProtocol {
                 aHQobj.steps = self.fetchedHQObject1?.steps ?? String()
                 aHQobj.sfHQ = self.fetchedHQObject1?.sfHq ?? String()
                 
-                
-                
                 guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
                         
                 else {
@@ -279,24 +277,20 @@ extension MainVC: MenuResponseProtocol {
                 temporaryselectedHqobj.mapId                  = aHQobj.mapId
                 
                 sessions?[selectedSessionIndex ?? 0].headQuarters = temporaryselectedHqobj
-                
-                
-                
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+
                 toLoadWorktypeTable()
                 let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
-                
-                
                 
                 if territories.isEmpty {
                     Shared.instance.showLoaderInWindow()
                     masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { [weak self] _  in
-                        
                         guard let welf = self else {return}
-                        
+                        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
                         Shared.instance.removeLoaderInWindow()
                         welf.toCreateToast("Clusters synced successfully")
                     }
+                } else {
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
                 }
                 
             case 1:

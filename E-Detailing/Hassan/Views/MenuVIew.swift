@@ -493,6 +493,7 @@ class MenuView : BaseView{
         case qualification
         case category
         case speciality
+        case feedback
       //  case FieldWork
        // case others
     }

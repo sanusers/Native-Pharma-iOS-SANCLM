@@ -809,39 +809,50 @@ class AddCallinfoView : BaseView {
             
           
         case .detailed:
+            didClose()
+            jfwExceptionView.isHidden = false
+           
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .products:
+            didClose()
+            jfwExceptionView.isHidden = false
+            
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .inputs:
+            didClose()
+            jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .additionalCalls:
+            didClose()
+            jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             toloadYettables()
             toloadContentsTable()
         case .rcppa:
-        
+            didClose()
+            jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = false
             yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .appWhiteColor
             //toloadYettables()
             toloadContentsTable()
         case .jointWork:
-            toloadYettables()
-            toloadContentsTable()
+            jfwExceptionView.isHidden = true
+            jfwAction()
         }
     }
     
@@ -857,34 +868,39 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
 
     }
     
-    func setupjfwViews() {
-        viewPOB.layer.cornerRadius = 5
-        viewOverallFeedback.layer.cornerRadius = 5
-        viewEventCapture.layer.cornerRadius = 5
-        captureView.layer.cornerRadius = 5
-        captureVXView.layer.cornerRadius = 5
-        captureView.layer.borderWidth = 1
-        captureView.layer.borderColor = UIColor.appGreen.cgColor
-        
-        
-        
-    }
+//    func setupjfwViews() {
+//        viewPOB.layer.cornerRadius = 5
+//        viewOverallFeedback.layer.cornerRadius = 5
+//        viewEventCapture.layer.cornerRadius = 5
+//        captureView.layer.cornerRadius = 5
+//        captureVXView.layer.cornerRadius = 5
+//        captureView.layer.borderWidth = 1
+//        captureView.layer.borderColor = UIColor.appGreen.cgColor
+//        
+//        
+//        
+//    }
     
     @IBOutlet var bottomButtonsHolder: UIView!
-    @IBOutlet var eventcaptureTable: UITableView!
     
-    @IBOutlet var btnCapture: UIButton!
-    @IBOutlet var captureVXView: UIVisualEffectView!
     
-    @IBOutlet var captureView: UIView!
+    @IBOutlet var jfwExceptionView: UIView!
     
-    @IBOutlet var jfwView: UIView!
-    
-    @IBOutlet var viewPOB: UIView!
-    
-    @IBOutlet var viewOverallFeedback: UIView!
-    
-    @IBOutlet var viewEventCapture: UIView!
+    @IBOutlet var segmentCollectionHolder: UIView!
+//    @IBOutlet var eventcaptureTable: UITableView!
+//    
+//    @IBOutlet var btnCapture: UIButton!
+//    @IBOutlet var captureVXView: UIVisualEffectView!
+//    
+//    @IBOutlet var captureView: UIView!
+//    
+//    @IBOutlet var jfwView: UIView!
+//    
+//    @IBOutlet var viewPOB: UIView!
+//    
+//    @IBOutlet var viewOverallFeedback: UIView!
+//    
+//    @IBOutlet var viewEventCapture: UIView!
     
     @IBOutlet var lblSeclectedDCRName: UILabel!
     
@@ -946,6 +962,10 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     private var inputSelectedListViewModel = InputSelectedListViewModel()
     private var rcpaAddedListViewModel = RcpaAddedListViewModel()
     private var rcpaCallListViewModel = RcpaListViewModel()
+    private var eventCaptureListViewModel = EventCaptureListViewModel()
+    
+    var jfwView : JfwView?
+    
     var productObj: NSManagedObject?
     var chemistObj: NSManagedObject?
     var selectedChemistRcpa : AnyObject!
@@ -962,6 +982,67 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         toloadYettables()
         initVIews()
        // toloadContentsTable()
+    }
+    
+    override func didLayoutSubviews(baseVC: BaseViewController) {
+        super.didLayoutSubviews(baseVC: baseVC)
+        
+        let changePasswordViewwidth = self.bounds.width
+        let changePasswordViewheight = self.bounds.height / 1.5
+        
+        let changePasswordViewcenterX = self.bounds.midX - (changePasswordViewwidth / 2)
+       // let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
+        
+        self.jfwView?.frame = CGRect(x: changePasswordViewcenterX, y: segmentCollectionHolder.bottom + 5, width: changePasswordViewwidth, height: changePasswordViewheight)
+        
+        
+    }
+    
+    
+    func didClose() {
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case jfwView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+            }
+            
+        }
+    }
+    
+    
+    func jfwAction() {
+
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case jfwView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = true
+                
+                
+            }
+            
+        }
+        
+        jfwView = self.addCallinfoVC.loadCustomView(nibname: XIBs.jfwView) as? JfwView
+        jfwView?.rootVC = self.addCallinfoVC
+        jfwView?.eventCaptureListViewModel = self.eventCaptureListViewModel
+       // jfwView?.delegate = self
+      //  jfwView?.userStatisticsVM = self.userststisticsVM
+     //   changePasswordView?.appsetup = self.appSetups
+        jfwView?.setupUI()
+        self.addSubview(jfwView ?? JfwView())
     }
     
     func initVIews() {

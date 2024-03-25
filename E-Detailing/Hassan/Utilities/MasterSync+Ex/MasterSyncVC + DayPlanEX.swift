@@ -26,7 +26,7 @@ extension MasterSyncVC: MenuResponseProtocol {
 
         case .headQuater:
             
-            self.fetchedHQObject = selectedObject as? Subordinate
+     
 
             let aHQobj = HQModel()
             aHQobj.code = self.fetchedHQObject?.id ?? ""
@@ -35,14 +35,7 @@ extension MasterSyncVC: MenuResponseProtocol {
             aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? ""
             aHQobj.steps = self.fetchedHQObject?.steps ?? ""
             aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? ""
-            CoreDataManager.shared.removeHQ()
-            CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
-                CoreDataManager.shared.toRetriveSavedHQ { HQModelarr in
-                    dump(HQModelarr)
-                }
-            }
-            
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+
             
             
             let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
@@ -74,6 +67,15 @@ extension MasterSyncVC: MenuResponseProtocol {
                         tosyncMasterData.forEach { masterType in
                             MasterInfoState.loadingStatusDict[masterType] = .loaded
                         }
+                        self.fetchedHQObject = selectedObject as? Subordinate
+                        CoreDataManager.shared.removeHQ()
+                        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+                            self.setHQlbl()
+                            self.isDayPlanSynced = true
+                            self.toCreateToast("Clusters synced successfully")
+                        }
+               
                         self.collectionView.reloadData()
                     case .failure(_):
                         tosyncMasterData.forEach { masterType in
@@ -81,18 +83,19 @@ extension MasterSyncVC: MenuResponseProtocol {
                         }
                         self.collectionView.reloadData()
                     }
-               
-                  
-                    self.toCreateToast("Clusters synced successfully")
-                    self.isDayPlanSynced = true
-                 
-                    self.setHQlbl()
-                   // Shared.instance.removeLoaderInWindow()
-                    
                 }
             } else {
-                self.setHQlbl()
-               // self.collectionView.reloadData()
+                self.fetchedHQObject = selectedObject as? Subordinate
+                CoreDataManager.shared.removeHQ()
+                CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+                    self.setHQlbl()
+                }
+                //                            CoreDataManager.shared.toRetriveSavedHQ { HQModelarr in
+                //                                dump(HQModelarr)
+                //                            }
+                
+                // self.collectionView.reloadData()
             }
 
            

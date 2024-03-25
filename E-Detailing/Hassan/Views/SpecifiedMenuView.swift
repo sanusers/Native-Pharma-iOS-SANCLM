@@ -457,6 +457,40 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+            case .feedback:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [Feedback]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                feedback?.forEach({ visit in
+                    if visit.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(visit)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    feedback = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
                 
             case .speciality:
                 if newText.isEmpty {
@@ -580,6 +614,9 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
         case .qualification:
             return self.qualifications?.count ?? 0
+            
+        case .feedback:
+            return self.feedback?.count ?? 0
         case .speciality:
             return self.speciality?.count ?? 0
         case.category:
@@ -1125,6 +1162,26 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             }
             
             return cell
+            
+        case .feedback:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            titleLbl.text = "Feedback"
+            cell.selectionStyle = .none
+        
+            var yetTosendModel: NSManagedObject?
+             if let modelArr = self.feedback {
+                 let model: Feedback = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+              //   cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.feedback, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
         case .category:
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
             titleLbl.text = "Category"
@@ -1230,6 +1287,7 @@ class SpecifiedMenuView: BaseView {
     var category: [DoctorCategory]?
     var speciality: [Speciality]?
     var qualifications: [Qualifications]?
+    var feedback : [Feedback]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
@@ -1502,7 +1560,9 @@ class SpecifiedMenuView: BaseView {
        case . qualification:
            bottomHolderHeight.constant = 0
            qualifications =  DBManager.shared.getQualification()
-           
+       case .feedback:
+           bottomHolderHeight.constant = 0
+           feedback =  DBManager.shared.getFeedback()
        case .inputs:
            bottomHolderHeight.constant = 0
            self.inputsArr = DBManager.shared.getInput()
@@ -1724,6 +1784,10 @@ class SpecifiedMenuTCell: UITableViewCell
     func populateCell(model: Qualifications) {
         lblName.text = model.name
       //  itemTypeLbl.text = model.productMode
+    }
+    
+    func  populateCell(model: Feedback) {
+        lblName.text = model.name
     }
     
     
