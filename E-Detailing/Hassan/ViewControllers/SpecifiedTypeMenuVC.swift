@@ -19,6 +19,7 @@ class SpecifiedMenuVC : BaseViewController {
     var clusterMapID: String = ""
     var previewType: PreviewHomeView.PreviewType?
     var selectedClusterID: [String : Bool]?
+    var selectedCompetitorsID: [String : Bool]?
     var isFromfilter = Bool()
     
     override func viewDidLoad() {

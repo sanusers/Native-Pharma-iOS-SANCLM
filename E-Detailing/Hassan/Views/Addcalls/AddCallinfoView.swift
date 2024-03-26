@@ -10,6 +10,9 @@ import UIKit
 import CoreData
 extension AddCallinfoView: MenuResponseProtocol {
     func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
+        
+        
+        
         self.productSelectedListViewModel = product
         self.additionalCallListViewModel = additioncall
         self.additionalCallListViewModel.updateInCallSection(index, isView: false)
@@ -46,6 +49,22 @@ extension AddCallinfoView: MenuResponseProtocol {
                 self.chemistObj = selectedObject
                 selectedChemistRcpa = selectedObject
             }
+            
+        case .competitors:
+            if let competitors = selectedObjects as? [Competitor] {
+               
+                
+                competitors.enumerated().forEach { index, competitor  in
+                    self.rcpaCallListViewModel.setCompetitorCompanyAtIndex(self.selectedAddcompetitorSection, name: competitor.ourProductName ?? "", code: competitor.ourProductCode ?? "")
+                    
+                    
+                }
+                
+
+                self.loadedContentsTable.reloadData()
+
+
+            }
         default:
             print("---><---")
         }
@@ -53,7 +72,12 @@ extension AddCallinfoView: MenuResponseProtocol {
  
 }
 
+
+
 extension AddCallinfoView {
+    
+
+    
 ///RCPA
     
     @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
@@ -259,7 +283,7 @@ extension AddCallinfoView {
     @objc func editAdditionalCallSampleInput(_ sender : UIButton) {
         //additionalCallSelectedTableView
         let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.loadedContentsTable)
-        guard let indexPath = self.loadedContentsTable.indexPathForRow(at: buttonPosition) else {
+        guard self.loadedContentsTable.indexPathForRow(at: buttonPosition) != nil else {
             return
         }
         
@@ -652,9 +676,9 @@ extension AddCallinfoView: tableViewProtocols {
             case loadedContentsTable:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
                 cell.rcpaProduct = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-                cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
+             //   cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
                 cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
-                cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
+            //    cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
                 return cell
             default:
                 return UITableViewCell()
@@ -692,6 +716,77 @@ extension AddCallinfoView: tableViewProtocols {
         }
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        switch self.segmentType[selectedSegmentsIndex] {
+        case .rcppa:
+            return  rcpaAddedListViewModel.numberofSections()
+        default:
+            return 1
+        }
+    }
+    
+    @objc func navigatetoSpecifiedMenu() {
+        let vc  = SpecifiedMenuVC.initWithStory(self, celltype: .competitors)
+        vc.menuDelegate = self
+        self.addCallinfoVC.modalPresentationStyle = .custom
+        self.addCallinfoVC.navigationController?.present(vc, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        
+        switch self.segmentType[selectedSegmentsIndex] {
+        case .rcppa:
+            switch tableView {
+            case yetToloadContentsTable:
+                return UIView()
+            case loadedContentsTable:
+                // Dequeue the header view
+                guard let footerview = loadedContentsTable.dequeueReusableHeaderFooterView(withIdentifier: "CompetitorsFooter") as? CompetitorsFooter else {
+                    
+                    return UIView()
+                }
+
+//                footerview.viewAddcompetitor.addTap {
+//                    self.navigatetoSpecifiedMenu()
+//                }
+                footerview.btnAddcompetitor.addTarget(self, action: #selector(navigatetoSpecifiedMenu), for: .touchUpInside)
+                self.selectedAddcompetitorSection = section
+                footerview.setupAddedCompetitors(count: self.rcpaCallListViewModel.numberOfCompetitorRows())
+                return footerview
+            default:
+                return UIView()
+            }
+            
+        default:
+            return UIView()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch self.segmentType[selectedSegmentsIndex] {
+        case .rcppa:
+            
+            if rcpaAddedListViewModel.numberofSections() == 0 {
+                return 0
+            } else {
+                //50 - header
+                //50 - addbtn (40 + padding (10))
+                //10 - top bottom padding
+                //50 * count - each cell height
+                if  self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
+                    return 50
+                } else {
+                    return CGFloat(50 + (self.rcpaCallListViewModel.numberOfCompetitorRows() * 50) + 10) + 50
+                }
+            
+                //+ 10 + (50 * 3) + 50
+              
+            }
+          
+        default:
+            return 0
+        }
+    }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch self.segmentType[selectedSegmentsIndex] {
@@ -753,7 +848,28 @@ extension AddCallinfoView: tableViewProtocols {
             
             
         case .rcppa:
-            <#code#>
+            
+            switch tableView {
+            case yetToloadContentsTable:
+                return UIView()
+            case loadedContentsTable:
+                // Dequeue the header view
+                guard let headerView = loadedContentsTable.dequeueReusableHeaderFooterView(withIdentifier: "RCPASectionheader") as? RCPASectionheader else {
+         
+                    return UIView()
+                }
+
+                headerView.holderStack.layer.cornerRadius = 5
+                headerView.holderStack.backgroundColor = .appLightTextColor.withAlphaComponent(0.1)
+                let chemist = self.rcpaAddedListViewModel.fetchAtSection(section)
+                let products = self.rcpaAddedListViewModel.fetchAtRowIndex(section, row: 0)
+               //let rcpas = products.rcpas
+                headerView.titleLbl.text = chemist.rcpaChemist.chemist.name ?? ""
+                headerView.summonedTotal.text = products.total
+                return headerView
+            default:
+                return UIView()
+            }
 //        case .jointWork:
 //            <#code#>
             
@@ -797,8 +913,8 @@ extension AddCallinfoView: tableViewProtocols {
             default:
                 return CGFloat()
             }
-//        case .rcppa:
-//            <#code#>
+        case .rcppa:
+            return 80
 //        case .jointWork:
 //            <#code#>
             
@@ -924,6 +1040,7 @@ class AddCallinfoView : BaseView {
             } else {
                 viewnoRCPA.isHidden = true
                 loadedContentsTable.isHidden = false
+                toloadContentsTable()
             }
             
             
@@ -947,40 +1064,13 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
 
     }
     
-//    func setupjfwViews() {
-//        viewPOB.layer.cornerRadius = 5
-//        viewOverallFeedback.layer.cornerRadius = 5
-//        viewEventCapture.layer.cornerRadius = 5
-//        captureView.layer.cornerRadius = 5
-//        captureVXView.layer.cornerRadius = 5
-//        captureView.layer.borderWidth = 1
-//        captureView.layer.borderColor = UIColor.appGreen.cgColor
-//        
-//        
-//        
-//    }
-    
+
     @IBOutlet var bottomButtonsHolder: UIView!
-    
     
     @IBOutlet var jfwExceptionView: UIView!
     
     @IBOutlet var segmentCollectionHolder: UIView!
-//    @IBOutlet var eventcaptureTable: UITableView!
-//    
-//    @IBOutlet var btnCapture: UIButton!
-//    @IBOutlet var captureVXView: UIVisualEffectView!
-//    
-//    @IBOutlet var captureView: UIView!
-//    
-//    @IBOutlet var jfwView: UIView!
-//    
-//    @IBOutlet var viewPOB: UIView!
-//    
-//    @IBOutlet var viewOverallFeedback: UIView!
-//    
-//    @IBOutlet var viewEventCapture: UIView!
-    
+
     @IBOutlet var lblSeclectedDCRName: UILabel!
     
     
@@ -1030,8 +1120,8 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     @IBOutlet var clearView: UIView!
     
     @IBOutlet var yettoaddTableHolder: UIView!
-    @IBOutlet var saveView: UIView!
     
+    @IBOutlet var saveView: UIView!
     
     @IBOutlet var viewnoRCPA: UIView!
     
@@ -1055,7 +1145,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     var productQty: String = "1"
     var rateInt: Int = 0
     var selectedProductRcpa : AnyObject?
-    
+    var selectedAddcompetitorSection: Int = 0
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
@@ -1183,6 +1273,10 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         
         //headers
         
+        
+        self.loadedContentsTable.register(UINib(nibName: "CompetitorsFooter", bundle: nil), forHeaderFooterViewReuseIdentifier: "CompetitorsFooter")
+        
+        self.loadedContentsTable.register(UINib(nibName: "RCPASectionheader", bundle: nil), forHeaderFooterViewReuseIdentifier: "RCPASectionheader")
         self.loadedContentsTable.register(UINib(nibName: "ProductsInfoHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "ProductsInfoHeader")
         
         self.loadedContentsTable.register(UINib(nibName: "ProductInputsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "ProductInputsHeader")
@@ -1214,6 +1308,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         self.setSegment(.detailed)
     }
     
+    
     func setupUI() {
         
         let curvedVIews: [UIView] = [dcrNameCurvedView, productnameCurvedView, productQtyCurvedView, rateCurvedView, valueCurvedVIew]
@@ -1222,16 +1317,25 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
       
                              
         btnAddRCPA.addTarget(self, action: #selector(rcpaSaveAction(_:)), for: .touchUpInside)
+        
+        
+       
                              
         curvedVIews.forEach {
             if $0 != rateCurvedView ||  $0 != valueCurvedVIew {
                 $0.layer.borderWidth = 1
-                $0.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+                $0.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.1).cgColor
+             
+            } else {
+            
             }
             $0.layer.cornerRadius = 5
         }
         
- 
+        rateCurvedView.backgroundColor = .appLightTextColor.withAlphaComponent(0.1)
+        
+        
+        valueCurvedVIew.backgroundColor = .appLightTextColor.withAlphaComponent(0.1)
         productQtyTF.delegate = self
         loadedContentsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor

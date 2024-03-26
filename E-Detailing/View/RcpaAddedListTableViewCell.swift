@@ -21,19 +21,15 @@ class RcpaAddedListTableViewCell : UITableViewCell {
     @IBOutlet var lblValue: UILabel!
     
     @IBOutlet weak var btnDelete: UIButton!
-    @IBOutlet weak var btnEdit: UIButton!
-    @IBOutlet weak var btnPlus: UIButton!
-    
+
     
     @IBOutlet var viewQtyHolder: UIView!
     @IBOutlet var viewRateHolder: UIView!
     
     @IBOutlet var viewTotalHolder: UIView!
     
-    @IBOutlet weak var viewCompetitorList: UIView!
-    
     @IBOutlet var viewValueHolder: UIView!
-    @IBOutlet weak var heightViewCompetitorListConstraint: NSLayoutConstraint!
+
     
     
     var rcpaProduct : rcpaProduct! {
@@ -44,7 +40,7 @@ class RcpaAddedListTableViewCell : UITableViewCell {
             self.lblRate.text = self.rcpaProduct.rate
             self.lblTotal.text = self.rcpaProduct.total
             
-            self.btnPlus.isSelected = self.rcpaProduct.isViewTapped
+        //    self.btnPlus.isSelected = self.rcpaProduct.isViewTapped
             
             
 //            if self.rcpaProduct.isViewTapped == true {
@@ -119,8 +115,11 @@ class RcpaAddedListTableViewCell : UITableViewCell {
         viewTotalHolder.layer.cornerRadius = 3
         viewValueHolder.layer.cornerRadius = 3
         
+        viewRateHolder.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        viewValueHolder.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        viewTotalHolder.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         viewQtyHolder.layer.borderWidth = 1
-        viewQtyHolder.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        viewQtyHolder.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.1).cgColor
 //        self.viewCompetitorList.layer.cornerRadius = 5
 //        self.viewCompetitorList.layer.borderWidth = 1
 //        self.viewCompetitorList.layer.borderColor = AppColors.primaryColorWith_10per_alpha.cgColor

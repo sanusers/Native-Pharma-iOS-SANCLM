@@ -1291,9 +1291,9 @@ extension ProductVC : tableViewProtocols {
         case self.rcpaAddedListTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
             cell.rcpaProduct = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-            cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
+          //  cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
             cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
-            cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
+          // cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
             return cell
         case self.eventCaptureTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "EventCaptureCell", for: indexPath) as! EventCaptureCell

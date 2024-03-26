@@ -207,6 +207,41 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+            case .competitors:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                    toLOadData()
+                }
+                var filteredWorkType = [Competitor]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+              competitorsArr?.forEach({ cluster in
+                    if cluster.ourProductName!.lowercased().contains(newText) {
+                        filteredWorkType.append(cluster)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+                
+                    self.noresultsView.isHidden = true
+
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    competitorsArr = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
 
             case .chemist, .chemistInfo:
                 if newText.isEmpty {
@@ -580,6 +615,9 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             return self.workTypeArr?.count ?? 0
         case .cluster:
             return self.clusterArr?.count ?? 0
+            
+        case .competitors:
+            return self.competitorsArr?.count ?? 0
         case .headQuater:
             return self.headQuatersArr?.count ?? 0
         case .jointCall:
@@ -690,6 +728,63 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 welf.hideMenuAndDismiss()
             }
             return cell
+            
+        case .competitors:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
+            cell.setCheckBox(isToset: true)
+            titleLbl.text = "Select Competitors"
+            let model =  self.competitorsArr?[indexPath.row]
+            cell.lblName.text = model?.ourProductName
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            
+            self.competitorsArr?.forEach({ cluster in
+                //  dump(cluster.code)
+                selectedCompetitorID.forEach { id, isSelected in
+                    if id == cluster.ourProductCode {
+
+                        if isSelected  {
+                            if cluster.ourProductName ==  cell.lblName?.text {
+                                cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                            }
+                            
+                        } else {
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        }
+                    } else {
+                    }
+                }
+            })
+
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                 var selectedCompetitorID = welf.selectedCompetitorID
+                
+                if let _ = selectedCompetitorID[model?.ourProductCode ?? ""] {
+
+                    selectedCompetitorID[model?.ourProductCode ?? ""] =
+                        !(selectedCompetitorID[model?.ourProductCode ?? ""] ?? false)
+
+                    if selectedCompetitorID[model?.ourProductCode ?? ""] == false {
+                        selectedCompetitorID.removeValue(forKey: model?.ourProductCode ?? "")
+                    }
+
+                } else {
+                    selectedCompetitorID[model?.ourProductCode ?? ""] = true
+                }
+                
+                welf.selectedCompetitorID = selectedCompetitorID
+                tableView.reloadData()
+            }
+            return cell
+            
+            
+            
+            
         case .cluster:
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
             cell.selectionStyle = .none
@@ -1247,7 +1342,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return 60 + 10
             
-        case .inputs, .clusterInfo, .speciality, .qualification, .category:
+        case .inputs, .clusterInfo, .speciality, .qualification, .category, .competitors:
             
             return 30 + 10
             
@@ -1298,6 +1393,8 @@ class SpecifiedMenuView: BaseView {
     var stockistArr : [Stockist]?
     var unlisteedDocArr : [UnListedDoctor]?
     var filteredTerritories: [Territory]?
+    var filteredCompetitors: [Competitor]?
+    
     var inputsArr: [Input]?
     var productArr: [Product]?
     var visitControlArr : [VisitControl]?
@@ -1305,6 +1402,7 @@ class SpecifiedMenuView: BaseView {
     var speciality: [Speciality]?
     var qualifications: [Qualifications]?
     var feedback : [Feedback]?
+    var competitorsArr : [Competitor]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
@@ -1312,6 +1410,7 @@ class SpecifiedMenuView: BaseView {
     var selectedCode: Int?
     var previewType: String?
     var selectedClusterID = [String: Bool]()
+    var selectedCompetitorID = [String: Bool]()
     var isRejected = Bool()
     //MARK: UDF, gestures  and animations
     var restrictedIndex: Int? = nil
@@ -1381,12 +1480,20 @@ class SpecifiedMenuView: BaseView {
     
     func initGestures() {
         clearView.addTap {
+            
+            self.specifiedMenuVC.selectedCompetitorsID = nil
+            self.selectedCompetitorID = [String: Bool]()
+            
             self.specifiedMenuVC.selectedClusterID = nil
             self.selectedClusterID = [String: Bool]()
             self.menuTable.reloadData()
+            
+            
+           
         }
         
         saveView.addTap { [weak self] in
+            
             guard let welf = self else {return}
             welf.filteredTerritories = welf.clusterArr?.filter { territory in
                 guard let code = territory.code else {
@@ -1396,7 +1503,13 @@ class SpecifiedMenuView: BaseView {
             }
             
 
-            
+      
+            welf.filteredCompetitors = welf.competitorsArr?.filter { territory in
+                guard let code = territory.ourProductCode else {
+                    return false
+                }
+                return welf.selectedCompetitorID[code] == true
+            }
     
             
             welf.hideMenuAndDismiss()
@@ -1505,7 +1618,8 @@ class SpecifiedMenuView: BaseView {
             
             guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: context),
                   let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
-                  let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+                  let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
+                  let selectedCompetitorentity = NSEntityDescription.entity(forEntityName: "Competitor", in: context)
             else {
                 fatalError("Entity not found")
             }
@@ -1514,6 +1628,7 @@ class SpecifiedMenuView: BaseView {
             let temporaryselectedSubordinateobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! Subordinate
             let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
             let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+            let temporaryselectedCompetitorsobj = NSManagedObject(entity: selectedCompetitorentity, insertInto: nil)  as! Competitor
             
             switch cellType {
             case .headQuater:
@@ -1526,10 +1641,14 @@ class SpecifiedMenuView: BaseView {
                 
                 specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: [temporaryselectedClusterobj])
             case .cluster:
-                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedSubordinateobj, selectedObjects: filteredTerritories ?? [temporaryselectedClusterobj])
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedClusterobj, selectedObjects: filteredTerritories ?? [temporaryselectedClusterobj])
                 
             case .workType:
                 specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedWTobj, selectedObjects: [temporaryselectedClusterobj])
+                
+            case .competitors:
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedCompetitorsobj, selectedObjects: filteredCompetitors ?? [temporaryselectedCompetitorsobj])
+                
             default:
                 print("Yet to implement")
             }
@@ -1580,6 +1699,7 @@ class SpecifiedMenuView: BaseView {
        case .feedback:
            bottomHolderHeight.constant = 0
            feedback =  DBManager.shared.getFeedback()
+      
        case .inputs:
            bottomHolderHeight.constant = 0
            self.inputsArr = DBManager.shared.getInput()
@@ -1627,6 +1747,10 @@ class SpecifiedMenuView: BaseView {
        case .clusterInfo:
            bottomHolderHeight.constant = 0
            self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+           
+       case .competitors:
+           bottomHolderHeight.constant = 80
+           competitorsArr =  DBManager.shared.getCompetitor()
            
        case .cluster:
                
@@ -1807,10 +1931,14 @@ class SpecifiedMenuTCell: UITableViewCell
         lblName.text = model.name
     }
     
-    
+    func  populateCell(model: Competitor) {
+        lblName.text = model.compName
+      //  itemTypeLbl.text = model.ourProductName
+    }
     
     func  populateCell(model: JointWork) {
         lblName.text = model.name
+        
     }
     
     

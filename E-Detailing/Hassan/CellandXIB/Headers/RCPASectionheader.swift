@@ -6,14 +6,25 @@
 //
 
 import UIKit
-
+import CoreData
 class RCPASectionheader: UITableViewHeaderFooterView {
-
+    
+    @IBOutlet var summonedTotal: UILabel!
+    
+    @IBOutlet var holderStack: UIStackView!
+    
+    @IBOutlet var titleLbl: UILabel!
+    
+    @IBOutlet var btnDelete: UIButton!
+    
+    var section: Int?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
+    
 
-
+    
     
 }
