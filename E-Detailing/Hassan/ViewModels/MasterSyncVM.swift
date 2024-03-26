@@ -382,16 +382,13 @@ class MasterSyncVM {
             tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
                 dispatchGroup.leave()
 
-//                if isSaved {
-//                    completion(true)
-//                }
+
             }
         }
 
         dispatchGroup.notify(queue: .main) {
             // All async tasks are completed
             completion(true)
-          //  Shared.instance.removeLoaderInWindow()
         }
     }
     
@@ -462,6 +459,8 @@ class MasterSyncVM {
             CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) {isSaved in
                 if isSaved {
                     completion(true)
+                } else {
+                    completion(false)
                 }
             }
         }

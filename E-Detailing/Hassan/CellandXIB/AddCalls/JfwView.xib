@@ -66,7 +66,7 @@
                                                                                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter value" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="V5s-TD-VCL">
                                                                                     <rect key="frame" x="15" y="4" width="213.5" height="77"/>
                                                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                                                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                                     <connections>
                                                                                         <action selector="didtapPOBtf:" destination="iN0-l3-epB" eventType="editingDidEnd" id="8Df-O3-OIx"/>
                                                                                     </connections>

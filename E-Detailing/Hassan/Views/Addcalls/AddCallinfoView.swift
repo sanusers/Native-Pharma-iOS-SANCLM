@@ -31,6 +31,7 @@ extension AddCallinfoView: MenuResponseProtocol {
             if let selectedObject = selectedObject as? Product {
                 self.lblSelectedProductName.text = selectedObject.name ?? ""
                 self.productObj = selectedObject
+                self.selectedProductRcpa = selectedObject
                 
                 let rateInt: Int = Int(selectedObject.dRate ?? "1") ?? 0
                 self.rateInt = rateInt
@@ -43,6 +44,7 @@ extension AddCallinfoView: MenuResponseProtocol {
             if let selectedObject = selectedObject as? Chemist {
                 self.lblSeclectedDCRName.text = selectedObject.name ?? ""
                 self.chemistObj = selectedObject
+                selectedChemistRcpa = selectedObject
             }
         default:
             print("---><---")
@@ -53,16 +55,111 @@ extension AddCallinfoView: MenuResponseProtocol {
 
 extension AddCallinfoView {
 ///RCPA
+    
+    @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
+        
+        
+//        if self.rcpaCallListViewModel.numberOfCompetitorRows() != 0 {
+//         //   self.btnRcpaChemist.isHidden = true
+//        }
+        
+        guard self.selectedChemistRcpa != nil,  self.selectedProductRcpa != nil,  self.productQtyTF.text! != "" else {
+            
+            if self.selectedChemistRcpa == nil {
+                self.toCreateToast("Please select Chemist...")
+                return
+            }
+            
+            if self.selectedProductRcpa == nil {
+                self.toCreateToast("Please select Procuct...")
+                return
+            }
+            
+            if self.productQtyTF.text! == "" {
+                self.toCreateToast("Please enter Quantity...")
+                return
+            }
+            
+            return
+            }
+        
+        
+
+        
+        let code = self.selectedChemistRcpa?.code ?? ""
+        
+        if self.rcpaAddedListViewModel.isChemistAdded(code ?? "") {
+            
+            let productCode = self.selectedProductRcpa?.code ?? ""
+            
+            let index = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
+            
+            print(index)
+            
+            if index.productIndex == -1 {
+                self.rcpaAddedListViewModel.addRcpaProductAtSection(index.chemistIndex, product: rcpaProduct(product: self.selectedProductRcpa ?? Product(), quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", isViewTapped: false))
+                
+                
+                let ProductIndex = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
+                
+                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: ProductIndex.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
+                
+            }else {
+                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: index.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "",competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
+                
+                
+                    let value = self.rcpaAddedListViewModel.fetchAtSection(index.chemistIndex)
+                
+                    print(value.rcpaChemist.products[index.productIndex].rcpas.count)
+            }
+        }else {
+            self.rcpaAddedListViewModel.addRcpaChemist(RcpaAddedViewModel(rcpaChemist: RcpaChemist(chemist: self.selectedChemistRcpa ?? Chemist())))
+            
+            let productCode = self.selectedProductRcpa?.code ?? ""
+            
+            let index = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
+            
+            if index.productIndex == -1 {
+                self.rcpaAddedListViewModel.addRcpaProductAtSection(index.chemistIndex, product: rcpaProduct(product: self.selectedProductRcpa ?? Product(), quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", isViewTapped: false))
+                
+                let ProductIndex = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
+                
+                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: ProductIndex.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
+            }else{
+                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: index.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
+            }
+        }
+       
+        self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: "")))
+        
+        toloadContentsTable()
+        removeAddedRCPAInfo()
+    }
+    
+    func removeAddedRCPAInfo() {
+        self.selectedChemistRcpa = nil
+        self.selectedProductRcpa = nil
+        productObj = nil
+        chemistObj = nil
+        lblSeclectedDCRName.text = "Select Chemist Name"
+        lblSelectedProductName.text = "Select Product Name"
+        self.productQtyTF.text = ""
+        self.productQtyTF.placeholder = "Enter Qty"
+        self.rateLbl.text = ""
+        self.valuelbl.text = ""
+        self.productQty = "1"
+        self.loadedContentsTable.isHidden = false
+        self.viewnoRCPA.isHidden = true
+    }
+    
+    
+    
     @IBAction func rcpaSaveAction(_ sender: UIButton) {
         
         if self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
             print("Add Competitor")
             return
         }
-        
-//        UIView.animate(withDuration: 1.5) {
-//            self.viewRcpa.isHidden = true
-//        }
         yetToloadContentsTable.isHidden = false
         self.yetToloadContentsTable.reloadData()
     }
@@ -131,10 +228,6 @@ extension AddCallinfoView {
         self.lblSelectedProductName.text = products.product.name ?? "Select Product Name"
         
         self.rcpaCallListViewModel.removeAll()
-        
-     //   self.btnRcpaChemist.isHidden = true
-     //   self.btnRcpaProduct.isHidden = true
-        
         for i in 0..<rcpas.count {
             
             self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: chemist.rcpaChemist.chemist, product: products.product, quantity: products.quantity, total: products.total, rate: products.rate, competitorCompanyName: rcpas[i].competitorCompanyName, competitorCompanyCode: rcpas[i].competitorCompanyCode, competitorBrandName: rcpas[i].competitorBrandName, competitorBrandCode: rcpas[i].competitorBrandCode, competitorRate: rcpas[i].rate, competitorTotal: rcpas[i].competitorTotal, competitorQty: rcpas[i].competitorQty,remarks: "")))
@@ -142,13 +235,6 @@ extension AddCallinfoView {
         
         
         self.yetToloadContentsTable.reloadData()
-        
-        //MARK: - show RCPA table
-        
-//        UIView.animate(withDuration: 1.5) {
-//            self.viewRcpa.isHidden = false
-//        }
-        
         print(indexPath)
     }
     
@@ -570,25 +656,6 @@ extension AddCallinfoView: tableViewProtocols {
                 cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
                 cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
                 return cell
-//                let cell = tableView.dequeueReusableCell(withIdentifier: "ProductSampleTableViewCell", for: indexPath) as! ProductSampleTableViewCell
-//                cell.selectionStyle = .none
-//                cell.productSample = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
-//                cell.btnDelete.addTarget(self, action: #selector(deleteProduct(_:)), for: .touchUpInside)
-//                cell.btnDelete.tag = indexPath.row
-//                cell.txtRxQty.tag = indexPath.row
-//                cell.txtRcpaQty.tag = indexPath.row
-//                cell.txtSampleQty.tag = indexPath.row
-//                cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
-//                cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
-//                cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
-//                cell.btnDeviation.addTarget(self, action: #selector(productDetailedSelection(_:)), for: .touchUpInside)
-//                cell.txtSampleQty.delegate = self
-//                cell.txtRxQty.delegate = self
-//                cell.txtRcpaQty.delegate = self
-//                if appsetup.sampleValidation != 1 {
-//                  //  cell.viewStock.isHidden = true
-//                }
-//                return cell
             default:
                 return UITableViewCell()
             }
@@ -648,10 +715,6 @@ extension AddCallinfoView: tableViewProtocols {
                 return UIView()
             }
 
-//        case .products:
-//            <#code#>
-            
-            
         case .inputs:
             switch tableView {
             case yetToloadContentsTable:
@@ -689,8 +752,8 @@ extension AddCallinfoView: tableViewProtocols {
             
             
             
-//        case .rcppa:
-//            <#code#>
+        case .rcppa:
+            <#code#>
 //        case .jointWork:
 //            <#code#>
             
@@ -815,6 +878,7 @@ class AddCallinfoView : BaseView {
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
+            loadedContentsTable.isHidden = false
             toloadYettables()
             toloadContentsTable()
         case .products:
@@ -824,6 +888,7 @@ class AddCallinfoView : BaseView {
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
+            loadedContentsTable.isHidden = false
             toloadYettables()
             toloadContentsTable()
         case .inputs:
@@ -833,6 +898,7 @@ class AddCallinfoView : BaseView {
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             viewnoRCPA.isHidden = true
+            loadedContentsTable.isHidden = false
             toloadYettables()
             toloadContentsTable()
         case .additionalCalls:
@@ -842,6 +908,7 @@ class AddCallinfoView : BaseView {
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             viewnoRCPA.isHidden = true
+            loadedContentsTable.isHidden = false
             toloadYettables()
             toloadContentsTable()
         case .rcppa:
@@ -850,7 +917,16 @@ class AddCallinfoView : BaseView {
             rcpaEntryView.isHidden = false
             yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .appWhiteColor
-            viewnoRCPA.isHidden = false
+            
+            if rcpaAddedListViewModel.numberofSections() == 0 {
+                viewnoRCPA.isHidden = false
+                loadedContentsTable.isHidden = true
+            } else {
+                viewnoRCPA.isHidden = true
+                loadedContentsTable.isHidden = false
+            }
+            
+            
             //toloadYettables()
             //toloadContentsTable()
         case .jointWork:
@@ -975,10 +1051,10 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     
     var productObj: NSManagedObject?
     var chemistObj: NSManagedObject?
-    var selectedChemistRcpa : AnyObject!
+    var selectedChemistRcpa : AnyObject?
     var productQty: String = "1"
     var rateInt: Int = 0
-    var selectedProductRcpa : AnyObject!
+    var selectedProductRcpa : AnyObject?
     
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
@@ -1092,6 +1168,8 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         self.loadedContentsTable.register(UINib(nibName: "ProductSampleTableViewCell", bundle: nil), forCellReuseIdentifier: "ProductSampleTableViewCell")
         
   
+        
+        self.loadedContentsTable.register(UINib(nibName: "RcpaAddedListTableViewCell", bundle: nil), forCellReuseIdentifier: "RcpaAddedListTableViewCell")
         
         self.loadedContentsTable.register(UINib(nibName: "InputSampleTableViewCell", bundle: nil), forCellReuseIdentifier: "InputSampleTableViewCell")
         

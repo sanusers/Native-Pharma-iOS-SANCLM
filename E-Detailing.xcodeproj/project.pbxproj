@@ -74,6 +74,8 @@
 		3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */; };
 		3865F8D92AFCE924009AB984 /* WorkPlansInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */; };
 		3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */; };
+		386A61D82BB2AC7000363C6C /* RCPASectionheader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386A61D62BB2AC7000363C6C /* RCPASectionheader.swift */; };
+		386A61D92BB2AC7000363C6C /* RCPASectionheader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 386A61D72BB2AC7000363C6C /* RCPASectionheader.xib */; };
 		386BEA0D2B7381CF0083D61F /* PreviewTypeCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA0B2B7381CF0083D61F /* PreviewTypeCVC.swift */; };
 		386BEA0E2B7381CF0083D61F /* PreviewTypeCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 386BEA0C2B7381CF0083D61F /* PreviewTypeCVC.xib */; };
 		386BEA102B7383450083D61F /* PreviewHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA0F2B7383450083D61F /* PreviewHomeVC.swift */; };
@@ -423,6 +425,8 @@
 		3865F8D42AFCE3BF009AB984 /* worksPlanTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = worksPlanTVC.xib; sourceTree = "<group>"; };
 		3865F8D72AFCE924009AB984 /* WorkPlansInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkPlansInfoCVC.swift; sourceTree = "<group>"; };
 		3865F8D82AFCE924009AB984 /* WorkPlansInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkPlansInfoCVC.xib; sourceTree = "<group>"; };
+		386A61D62BB2AC7000363C6C /* RCPASectionheader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPASectionheader.swift; sourceTree = "<group>"; };
+		386A61D72BB2AC7000363C6C /* RCPASectionheader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RCPASectionheader.xib; sourceTree = "<group>"; };
 		386BEA0B2B7381CF0083D61F /* PreviewTypeCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTypeCVC.swift; sourceTree = "<group>"; };
 		386BEA0C2B7381CF0083D61F /* PreviewTypeCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PreviewTypeCVC.xib; sourceTree = "<group>"; };
 		386BEA0F2B7383450083D61F /* PreviewHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHomeVC.swift; sourceTree = "<group>"; };
@@ -808,6 +812,8 @@
 				38FA7EEA2BAD4B3600BB2593 /* AddAdditionalproductsHeader.xib */,
 				384E399A2BAD60AD0048CE13 /* AddadditionalProductsFooter.swift */,
 				384E399B2BAD60AD0048CE13 /* AddadditionalProductsFooter.xib */,
+				386A61D62BB2AC7000363C6C /* RCPASectionheader.swift */,
+				386A61D72BB2AC7000363C6C /* RCPASectionheader.xib */,
 			);
 			path = Headers;
 			sourceTree = "<group>";
@@ -1711,6 +1717,7 @@
 				3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
+				386A61D92BB2AC7000363C6C /* RCPASectionheader.xib in Resources */,
 				3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */,
 				38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */,
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
@@ -1794,6 +1801,7 @@
 				38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */,
 				381BC25F2BAC617800804B85 /* AdditionalCallsHeader.swift in Sources */,
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
+				386A61D82BB2AC7000363C6C /* RCPASectionheader.swift in Sources */,
 				38C90ADC2A7785F5003CC0C8 /* DCRCallCell.swift in Sources */,
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,
 				38E8B5D82B0B642D00C40042 /* SessionAPIResponseModel.swift in Sources */,

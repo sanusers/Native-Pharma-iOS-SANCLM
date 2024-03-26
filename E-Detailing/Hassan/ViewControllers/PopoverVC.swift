@@ -196,8 +196,8 @@ class PopOverVC: UIViewController {
     
      
         popover.backgroundColor = .appWhiteColor
-        popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
-        
+       // popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
+        popover.permittedArrowDirections = pagetype == .HomeGraph ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
         
         return infoWindow
     }
