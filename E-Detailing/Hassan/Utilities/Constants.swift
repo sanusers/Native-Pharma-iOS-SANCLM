@@ -35,6 +35,9 @@ let userDefaults = UserDefaults.standard
 let infoPlist = PlistReader<InfoPlistKeys>()
 /**
  */
+
+let GooglePlacesApiKey : String = infoPlist?.value(for: .Google_Places_keys) ?? ""
+
 var APIBaseUrl : String  {
     get {
         APIUrl

@@ -82,6 +82,8 @@
 		386BEA122B7383830083D61F /* previewHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA112B7383830083D61F /* previewHomeView.swift */; };
 		386BEA152B739A480083D61F /* SelectedPreviewTypesCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */; };
 		386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */; };
+		387B8A2E2BB3DCDA007F38AB /* _demo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */; };
+		387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */; };
 		387BDB002BAB1DCB002B5E7D /* AddCallinfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */; };
 		387BDB032BAB1E20002B5E7D /* AddCallinfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387BDB022BAB1E20002B5E7D /* AddCallinfoVC.swift */; };
 		3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */; };
@@ -439,6 +441,8 @@
 		386BEA112B7383830083D61F /* previewHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = previewHomeView.swift; sourceTree = "<group>"; };
 		386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedPreviewTypesCVC.swift; sourceTree = "<group>"; };
 		386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedPreviewTypesCVC.xib; sourceTree = "<group>"; };
+		387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _demo.xcconfig; sourceTree = "<group>"; };
+		387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _live.xcconfig; sourceTree = "<group>"; };
 		387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCallinfoView.swift; sourceTree = "<group>"; };
 		387BDB022BAB1E20002B5E7D /* AddCallinfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCallinfoVC.swift; sourceTree = "<group>"; };
 		3885463A2B5F80BF005FC9FC /* ObjectFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFormatter.swift; sourceTree = "<group>"; };
@@ -925,6 +929,15 @@
 			path = SlidePreview;
 			sourceTree = "<group>";
 		};
+		387B8A2D2BB3DCDA007F38AB /* ConfigurationFiles */ = {
+			isa = PBXGroup;
+			children = (
+				387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */,
+				387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */,
+			);
+			path = ConfigurationFiles;
+			sourceTree = "<group>";
+		};
 		387BDAFE2BAB1D9D002B5E7D /* Addcalls */ = {
 			isa = PBXGroup;
 			children = (
@@ -1260,6 +1273,7 @@
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
+				387B8A2D2BB3DCDA007F38AB /* ConfigurationFiles */,
 				38B52CE32B29D13900CF30D9 /* StoryBoard */,
 				3865F8D22AFCE38E009AB984 /* CellandXIB */,
 				3865F8CD2AFCCE57009AB984 /* Views */,
@@ -1677,6 +1691,7 @@
 				386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */,
 				38107C562B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib in Resources */,
 				38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */,
+				387B8A2E2BB3DCDA007F38AB /* _demo.xcconfig in Resources */,
 				38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */,
 				386BEA0E2B7381CF0083D61F /* PreviewTypeCVC.xib in Resources */,
 				38CA1FE12B60EDF400AFCFD2 /* SelectedSlidesTVC.xib in Resources */,
@@ -1742,6 +1757,7 @@
 				3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */,
 				38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */,
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
+				387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */,
 				38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2212,6 +2228,7 @@
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "E-Detailing/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "E-Detailing uses pictures to verify Events";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
@@ -2250,6 +2267,7 @@
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "E-Detailing/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "E-Detailing uses pictures to verify Events";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
