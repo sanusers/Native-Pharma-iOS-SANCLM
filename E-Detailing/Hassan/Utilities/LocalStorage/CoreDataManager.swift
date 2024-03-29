@@ -817,11 +817,11 @@ extension CoreDataManager {
         // Fetch the existing SlidesCDModel using the uuid
         let fetchRequest: NSFetchRequest<SlidesCDModel> = SlidesCDModel.fetchRequest()
         //fetchRequest.predicate = NSPredicate(format: "uuid == %@", savedSlides.uuid as CVarArg)
-        fetchRequest.predicate = NSPredicate(format: "code == %ld", savedSlides.code)
+        fetchRequest.predicate = NSPredicate(format: "code == %ld", 1011223344)
 
         do {
             if let savedCDSlide = try context.fetch(fetchRequest).first {
-                print("SlidesCDModel with uuid \(savedSlides.uuid) found will be updated.")
+                print("SlidesCDModel with name \(savedSlides.name) found will be updated.")
                 // Update properties
                 savedCDSlide.code              =         Int16(savedSlides.code)
                 savedCDSlide.camp              =         Int16(savedSlides.camp)

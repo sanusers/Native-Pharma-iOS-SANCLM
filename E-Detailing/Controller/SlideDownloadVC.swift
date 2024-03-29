@@ -75,8 +75,8 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             completion(true)
         }
         
-      self.closeHolderView.isUserInteractionEnabled = false
-      guard isDownloadingInProgress  else { 
+     // self.closeHolderView.isUserInteractionEnabled = false
+      guard isDownloadingInProgress  else {
           return }
       self.tableView.isUserInteractionEnabled = !isDownloading
       self.loadingIndex = index + 1
@@ -106,10 +106,12 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                             LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
                             self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                             self.isDownloading = false
+                            Shared.instance.iscelliterating = false
                             self.closeHolderView.isUserInteractionEnabled = true
                             self.togroupSlides() {
                                 completion(true)
                             }
+                          //  self.startDownload(ifForsingleSeclection: true)
                             
                         }
                     }
@@ -144,8 +146,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                 self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                                 self.closeHolderView.isUserInteractionEnabled = true
                                 self.checkifSyncIsCompleted(self.isFromlaunch) {
-                                    BackgroundTaskManager.shared.stopBackgroundTask()
-                                    completion(true)
+                                BackgroundTaskManager.shared.stopBackgroundTask()
+                                    self.dismiss(animated: true)
+                                completion(true)
                                 }
                              
                          
@@ -159,6 +162,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                     self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                     LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
                     self.closeHolderView.isUserInteractionEnabled = true
+                    Shared.instance.iscelliterating = false
                     if isfrorBackgroundTask {
                         completion(true)
                         return
@@ -241,16 +245,20 @@ class SlideDownloadVC : UIViewController {
        // isDownloadingInProgress = false
     }
     
-    func startDownload() {
+    func startDownload(ifForsingleSeclection: Bool) {
       
          
          let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
          
          let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
         
-      
+        if ifForsingleSeclection {
+            
+        } else {
+            toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
+        }
         isDownloadingInProgress = true
-        toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
+      
     }
     
     func endBackgroundTask() {
@@ -261,11 +269,11 @@ class SlideDownloadVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if  Shared.instance.iscelliterating {
-            dismiss(animated: false)
-            return
-            
-        }
+//        if  Shared.instance.iscelliterating {
+//            dismiss(animated: false)
+//            return
+//            
+//        }
 
         setupuUI()
         initVIew()
@@ -275,11 +283,17 @@ class SlideDownloadVC : UIViewController {
             self.isDownloadingInProgress = false
              _ = toCheckExistenceOfNewSlides()
             toSetTableVIewDataSource()
-            startDownload()
+            startDownload(ifForsingleSeclection: false)
+        } else if LocalStorage.shared.getBool(key: .isSlidesGrouped) {
+            toSetTableVIewDataSource()
         } else {
             toLoadPresentationData(type: .slideBrand)
             toLoadPresentationData(type: .slides)
         }
+        
+//       self.arrayOfAllSlideObjects.filter { aSlidesModel in
+//            aSlidesModel.isDownloadCompleted = false
+//        }
 
     }
     
@@ -349,7 +363,7 @@ class SlideDownloadVC : UIViewController {
                            self.isConnected = true
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
-                           self.startDownload()
+                           self.startDownload(ifForsingleSeclection: false)
                        }
                    }
                }
@@ -415,8 +429,7 @@ class SlideDownloadVC : UIViewController {
                    let model = try? JSONDecoder().decode(SlidesModel.self , from: jsonData) {
                     model.uuid = UUID()
                     arrayOfAllSlideObjects.append(model)
-                    
-                    
+
                 } else {
                     print("Failed to decode dictionary into YourModel")
                 }
@@ -452,7 +465,7 @@ class SlideDownloadVC : UIViewController {
             if isNewSlideExists {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
                 toSetTableVIewDataSource()
-                self.startDownload()
+                self.startDownload(ifForsingleSeclection: false)
             } else {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
                 self.isSlideDownloadCompleted = true
@@ -486,23 +499,26 @@ class SlideDownloadVC : UIViewController {
     }
     
     func togroupSlides(completion: @escaping () -> ()) {
-        self.closeHolderView.isHidden = true
-        Shared.instance.showLoaderInWindow()
-        countLbl.text = "Please wait while organizing downloaded slides..."
-        countLbl.textColor = .appLightPink
-        Pipelines.shared.toGroupSlides(mastersyncVM: self.mastersyncvm ?? MasterSyncVM()) {
-            self.closeHolderView.isHidden = false
-            self.countLbl.text = "Download completed.."
-            self.countLbl.textColor = .appTextColor
-            Shared.instance.removeLoaderInWindow()
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
-            BackgroundTaskManager.shared.stopBackgroundTask()
-            self.isDownloading = false
-            Shared.instance.isSlideDownloading = false
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
-            completion()
-            self.delegate?.didDownloadCompleted()
-        }
+        self.closeHolderView.isHidden = false
+        self.delegate?.didDownloadCompleted()
+        completion()
+        self.countLbl.text = "Download completed.."
+     //   Shared.instance.showLoaderInWindow()
+//        countLbl.text = "Please wait while organizing downloaded slides..."
+//        countLbl.textColor = .appLightPink
+//        Pipelines.shared.toGroupSlides(mastersyncVM: self.mastersyncvm ?? MasterSyncVM()) {
+//            self.closeHolderView.isHidden = false
+//            self.countLbl.text = "Download completed.."
+//            self.countLbl.textColor = .appTextColor
+//            BackgroundTaskManager.shared.stopBackgroundTask()
+//            self.isDownloading = false
+//            Shared.instance.isSlideDownloading = false
+//            Shared.instance.iscelliterating = false
+//            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+//            self.delegate?.didDownloadCompleted()
+//            completion()
+//            
+//        }
     }
 
 
@@ -532,6 +548,7 @@ class SlideDownloadVC : UIViewController {
         
         if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
             Shared.instance.iscelliterating = true
+            self.isDownloadingInProgress = true
             cell.toSendParamsToAPISerially(index: index, items: items, isForsingleRetry: isForsingleRetry)
             cell.delegate = self
            
@@ -591,53 +608,53 @@ class SlideDownloadVC : UIViewController {
     }
     
     
-//    func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
-//      //  Shared.instance.showLoaderInWindow()
-//        let allSlideObjects = CoreDataManager.shared.retriveSavedSlides()
-//        let brandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
-//
-//        CoreDataManager.shared.removeAllGeneralGroupedSlides()
-//
-//        let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
-//            let brandSlides = allSlideObjects.filter { $0.code == brandSlideModel.productBrdCode }
-//
-//            guard !brandSlides.isEmpty else {
-//                print("No slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
-//                return nil
-//            }
-//            
-//            print("slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
-//            let groupedBrandModel = GroupedBrandsSlideModel()
-//            groupedBrandModel.groupedSlide = brandSlides
-//            groupedBrandModel.priority = brandSlideModel.priority
-//            groupedBrandModel.divisionCode = brandSlideModel.divisionCode
-//            groupedBrandModel.productBrdCode = brandSlideModel.productBrdCode
-//            groupedBrandModel.subdivisionCode = brandSlideModel.subdivisionCode
-//            groupedBrandModel.id = brandSlideModel.id
-//
-//            return groupedBrandModel
-//        }
-//
-//        let dispatchGroup = DispatchGroup()
-//
-//        for groupedBrandModel in groupedBrandsSlideModels {
-//            dispatchGroup.enter()
-//
-//            tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
-//                dispatchGroup.leave()
-//
-//                if isSaved {
-//                    completion(true)
-//                }
-//            }
-//        }
-//
-//        dispatchGroup.notify(queue: .main) {
-//            // All async tasks are completed
-//            completion(true)
-//          //  Shared.instance.removeLoaderInWindow()
-//        }
-//    }
+    func toGroupSlidesBrandWise(completion: @escaping (Bool) -> Void) {
+      //  Shared.instance.showLoaderInWindow()
+        let allSlideObjects = CoreDataManager.shared.retriveSavedSlides()
+        let brandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
+
+        CoreDataManager.shared.removeAllGeneralGroupedSlides()
+
+        let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
+            let brandSlides = allSlideObjects.filter { $0.code == brandSlideModel.productBrdCode }
+
+            guard !brandSlides.isEmpty else {
+                print("No slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
+                return nil
+            }
+            
+            print("slides found for iterated Brand code: \(brandSlideModel.productBrdCode)")
+            let groupedBrandModel = GroupedBrandsSlideModel()
+            groupedBrandModel.groupedSlide = brandSlides
+            groupedBrandModel.priority = brandSlideModel.priority
+            groupedBrandModel.divisionCode = brandSlideModel.divisionCode
+            groupedBrandModel.productBrdCode = brandSlideModel.productBrdCode
+            groupedBrandModel.subdivisionCode = brandSlideModel.subdivisionCode
+            groupedBrandModel.id = brandSlideModel.id
+
+            return groupedBrandModel
+        }
+
+        let dispatchGroup = DispatchGroup()
+
+        for groupedBrandModel in groupedBrandsSlideModels {
+            dispatchGroup.enter()
+
+            tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
+                dispatchGroup.leave()
+
+                if isSaved {
+                    completion(true)
+                }
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            // All async tasks are completed
+            completion(true)
+          //  Shared.instance.removeLoaderInWindow()
+        }
+    }
     
     func tounArchiveData(aGroupedBrandsSlideModel: GroupedBrandsSlideModel, completion: @escaping (Bool) -> Void) {
         var zipContentsSlides = [SlidesModel]()
@@ -867,7 +884,7 @@ class SlideDownloadVC : UIViewController {
         isSlideDownloadCompleted = true
         self.tableView.isScrollEnabled = true
         togroupSlides() {
-            completion()
+        completion()
         }
     }
     
@@ -1086,13 +1103,16 @@ extension SlideDownloadVC : tableViewProtocols {
         } else {
             cell.toSetupDownloadingCell(false)
         }
+        
+ 
         cell.btnRetry.addTap { [weak self] in
             
             guard let welf = self else {return}
-            if welf.isDownloading {return}
-           // if welf.toCheckNetworkStatus() {
-                welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)
-          //  }
+            if Shared.instance.isSlideDownloading {return}
+            welf.isDownloadingInProgress = true
+        
+            welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)
+         
         }
         cell.selectionStyle = .none
         return cell

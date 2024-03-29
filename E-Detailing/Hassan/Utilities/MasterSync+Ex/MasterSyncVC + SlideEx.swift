@@ -114,19 +114,27 @@ extension MasterSyncVC {
         self.arrayOfAllSlideObjects.removeAll()
         self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
         self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
-        let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
+       //let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
 
         if !nonExistingSlides.isEmpty {
             slideDownloadStatusLbl.isHidden  =  false
             downloadingBottomView.isHidden =  false
-            if isfromHome && !Shared.instance.isSlideDownloading {
+            if Shared.instance.isSlideDownloading  {
+                slideDownloadStatusLbl.text = "slides download in progress.."
+                retryVIew.isHidden = true
+                
+            } else if isfromHome && !LocalStorage.shared.getBool(key: .isSlidesLoaded) {
                 slideDownloadStatusLbl.text = "Tap to retry slide download"
                 retryVIew.isHidden = false
             }
-            else {
+            else if Shared.instance.isSlideDownloading {
                 slideDownloadStatusLbl.text = "slides download in progress.."
                 retryVIew.isHidden = true
                 //:\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+            } else {
+                slideDownloadStatusLbl.isHidden = true
+                retryVIew.isHidden = true
+                downloadingBottomView.isHidden = true
             }
        
          

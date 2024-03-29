@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -95,19 +95,19 @@
                                                         <rect key="frame" x="0.0" y="46.5" width="252" height="23.5"/>
                                                         <subviews>
                                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fqQ-jJ-0m2">
-                                                                <rect key="frame" x="0.0" y="0.0" width="100" height="23.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="113" height="23.5"/>
                                                                 <subviews>
                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qaE-nq-vep">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="23.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="113" height="23.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="2At-V1-kQc">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="24"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="113" height="24"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemPinkColor"/>
                                                                         <blurEffect style="regular"/>
                                                                     </visualEffectView>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duplicate Call" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pny-mh-ZG7">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="23.5"/>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting to sync" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pny-mh-ZG7">
+                                                                        <rect key="frame" x="10" y="0.0" width="93" height="23.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                                         <color key="textColor" systemColor="systemRedColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -119,11 +119,10 @@
                                                                     <constraint firstItem="qaE-nq-vep" firstAttribute="top" secondItem="fqQ-jJ-0m2" secondAttribute="top" id="BDv-OR-GNd"/>
                                                                     <constraint firstAttribute="trailing" secondItem="qaE-nq-vep" secondAttribute="trailing" id="I32-oy-tta"/>
                                                                     <constraint firstItem="pny-mh-ZG7" firstAttribute="top" secondItem="fqQ-jJ-0m2" secondAttribute="top" id="L11-hJ-8Gr"/>
-                                                                    <constraint firstItem="pny-mh-ZG7" firstAttribute="leading" secondItem="fqQ-jJ-0m2" secondAttribute="leading" id="Wow-Fm-wBJ"/>
+                                                                    <constraint firstItem="pny-mh-ZG7" firstAttribute="leading" secondItem="fqQ-jJ-0m2" secondAttribute="leading" constant="10" id="Wow-Fm-wBJ"/>
                                                                     <constraint firstItem="qaE-nq-vep" firstAttribute="leading" secondItem="fqQ-jJ-0m2" secondAttribute="leading" id="njl-W2-tBf"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="pny-mh-ZG7" secondAttribute="trailing" id="r95-fi-XPB"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="pny-mh-ZG7" secondAttribute="trailing" constant="10" id="r95-fi-XPB"/>
                                                                     <constraint firstAttribute="bottom" secondItem="qaE-nq-vep" secondAttribute="bottom" id="tFu-XL-YEK"/>
-                                                                    <constraint firstAttribute="width" constant="100" id="wgx-N8-bgw"/>
                                                                 </constraints>
                                                             </view>
                                                         </subviews>

@@ -52,18 +52,8 @@ extension AddCallinfoView: MenuResponseProtocol {
             
         case .competitors:
             if let competitors = selectedObjects as? [Competitor] {
-               
-                
-                competitors.enumerated().forEach { index, competitor  in
-                    self.rcpaCallListViewModel.setCompetitorCompanyAtIndex(self.selectedAddcompetitorSection, name: competitor.ourProductName ?? "", code: competitor.ourProductCode ?? "")
-                    
-                    
-                }
-                
-
+                self.rcpaDetailsModel[selectedAddcompetitorSection].competitor = competitors
                 self.loadedContentsTable.reloadData()
-
-
             }
         default:
             print("---><---")
@@ -79,86 +69,106 @@ extension AddCallinfoView {
 
     
 ///RCPA
-    
-    @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
-        
-        
-//        if self.rcpaCallListViewModel.numberOfCompetitorRows() != 0 {
-//         //   self.btnRcpaChemist.isHidden = true
-//        }
-        
-        guard self.selectedChemistRcpa != nil,  self.selectedProductRcpa != nil,  self.productQtyTF.text! != "" else {
-            
-            if self.selectedChemistRcpa == nil {
-                self.toCreateToast("Please select Chemist...")
-                return
-            }
-            
-            if self.selectedProductRcpa == nil {
-                self.toCreateToast("Please select Procuct...")
-                return
-            }
-            
-            if self.productQtyTF.text! == "" {
-                self.toCreateToast("Please enter Quantity...")
-                return
-            }
-            
-            return
-            }
-        
-        
+    ///
 
-        
-        let code = self.selectedChemistRcpa?.code ?? ""
-        
-        if self.rcpaAddedListViewModel.isChemistAdded(code ?? "") {
-            
-            let productCode = self.selectedProductRcpa?.code ?? ""
-            
-            let index = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
-            
-            print(index)
-            
-            if index.productIndex == -1 {
-                self.rcpaAddedListViewModel.addRcpaProductAtSection(index.chemistIndex, product: rcpaProduct(product: self.selectedProductRcpa ?? Product(), quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", isViewTapped: false))
-                
-                
-                let ProductIndex = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
-                
-                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: ProductIndex.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
-                
-            }else {
-                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: index.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "",competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
-                
-                
-                    let value = self.rcpaAddedListViewModel.fetchAtSection(index.chemistIndex)
-                
-                    print(value.rcpaChemist.products[index.productIndex].rcpas.count)
-            }
-        }else {
-            self.rcpaAddedListViewModel.addRcpaChemist(RcpaAddedViewModel(rcpaChemist: RcpaChemist(chemist: self.selectedChemistRcpa ?? Chemist())))
-            
-            let productCode = self.selectedProductRcpa?.code ?? ""
-            
-            let index = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
-            
-            if index.productIndex == -1 {
-                self.rcpaAddedListViewModel.addRcpaProductAtSection(index.chemistIndex, product: rcpaProduct(product: self.selectedProductRcpa ?? Product(), quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", isViewTapped: false))
-                
-                let ProductIndex = self.rcpaAddedListViewModel.chemistAtSection(code ?? "", productCode: productCode ?? "")
-                
-                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: ProductIndex.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
-            }else{
-                self.rcpaAddedListViewModel.addRcpaCompetitorProductAtProduct(index.chemistIndex, row: index.productIndex, product: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: ""))
-            }
+    @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
+        guard let selectedChemist = selectedChemistRcpa as? Chemist,
+              let selectedProduct = selectedProductRcpa as? Product,
+              let productQuantity = productQtyTF.text, !productQuantity.isEmpty else {
+            handleIncompleteSelection()
+            return
         }
-       
-        self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: self.selectedChemistRcpa, product: self.selectedProductRcpa, quantity: self.productQtyTF.text ?? "", total: self.valuelbl.text ?? "", rate: self.rateLbl.text ?? "", competitorCompanyName: "", competitorCompanyCode: "", competitorBrandName: "", competitorBrandCode: "", competitorRate: "", competitorTotal: "", competitorQty: "",remarks: "")))
+        
+        let rcpaDetails = createRCPADetails()
+        
+        if let existingIndex = findExistingRCPADetailsIndex(for: selectedChemist) {
+            updateExistingRCPADetails(existingIndex, selectedChemist, selectedProduct, rcpaDetails.addedProductDetails ?? ProductDetails())
+        } else {
+            addNewRCPADetails(selectedChemist, selectedProduct, rcpaDetails, rcpaDetails.addedProductDetails ?? ProductDetails())
+        }
         
         toloadContentsTable()
         removeAddedRCPAInfo()
     }
+    
+    func handleIncompleteSelection() {
+        if selectedChemistRcpa == nil {
+            toCreateToast("Please select Chemist...")
+        } else if selectedProductRcpa == nil {
+            toCreateToast("Please select Product...")
+        } else {
+            toCreateToast("Please enter Quantity...")
+        }
+    }
+
+    func createRCPADetails() -> RCPAdetailsModal {
+        let rcpaDetailsModal = RCPAdetailsModal()
+        var productDetails = ProductDetails()
+        productDetails.addedQuantity = [self.productQty]
+       
+        productDetails.addedRate = [self.rateLbl.text ?? "0"]
+        productDetails.addedValue = [self.valuelbl.text ?? "0"]
+        productDetails.addedTotal = [self.valuelbl.text ?? "0"]
+        rcpaDetailsModal.addedProductDetails = productDetails
+        return rcpaDetailsModal
+    }
+
+    func findExistingRCPADetailsIndex(for chemist: Chemist) -> Int? {
+        return rcpaDetailsModel.firstIndex { $0.addedChemist?.code == chemist.code }
+    }
+
+    func updateExistingRCPADetails(_ index: Int, _ chemist: Chemist, _ product: Product, _ addedProductDetails: ProductDetails) {
+        let existingRCPADetails = rcpaDetailsModel[index]
+        let addedQuantity = addedProductDetails.addedQuantity ?? [String]()
+        let addedRate = addedProductDetails.addedRate ?? [String]()
+        let addedValue = addedProductDetails.addedValue ??  [String]()
+        let addedTotal = addedProductDetails.addedTotal ??  [String]()
+        
+        var tempaddedProductDetails = addedProductDetails
+        
+        tempaddedProductDetails.addedRate = existingRCPADetails.addedProductDetails?.addedRate
+        tempaddedProductDetails.addedValue = existingRCPADetails.addedProductDetails?.addedValue
+        tempaddedProductDetails.addedQuantity = existingRCPADetails.addedProductDetails?.addedQuantity
+        tempaddedProductDetails.addedProduct =  existingRCPADetails.addedProductDetails?.addedProduct
+        
+        if let existingProductIndex = existingRCPADetails.addedProductDetails?.addedProduct?.firstIndex(where: { $0.code == product.code }) {
+            // Update existing product if found
+            tempaddedProductDetails.addedQuantity?[existingProductIndex]  = existingRCPADetails.addedProductDetails?.addedQuantity?[existingProductIndex] ?? ""
+            tempaddedProductDetails.addedRate?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedRate?[existingProductIndex] ?? ""
+            tempaddedProductDetails.addedValue?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedValue?[existingProductIndex] ?? ""
+            tempaddedProductDetails.addedProduct?[existingProductIndex] = product
+        } else {
+            // Add new product if it doesn't exist
+            tempaddedProductDetails.addedQuantity?.append(contentsOf: addedQuantity)
+            tempaddedProductDetails.addedValue?.append(contentsOf: addedValue)
+            tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
+            tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
+            tempaddedProductDetails.addedProduct?.append(product)
+            
+        }
+
+        existingRCPADetails.addedProductDetails = tempaddedProductDetails
+        
+        rcpaDetailsModel[index] = existingRCPADetails
+    }
+
+    func addNewRCPADetails(_ chemist: Chemist, _ product: Product, _ details: RCPAdetailsModal, _ addedProductDetails: ProductDetails) {
+        details.addedChemist = chemist
+        var tempaddedProductDetails = addedProductDetails
+        // Unwrap addedProductDetails and append the product
+        if tempaddedProductDetails.addedProduct == nil {
+            tempaddedProductDetails.addedProduct = [product]
+        } else {
+            tempaddedProductDetails.addedProduct?.append(product)
+        }
+       
+        details.addedProductDetails = tempaddedProductDetails
+        // Set other details
+
+        // Append the modified details to rcpaDetailsModel
+        rcpaDetailsModel.append(details)
+    }
+    
     
     func removeAddedRCPAInfo() {
         self.selectedChemistRcpa = nil
@@ -180,88 +190,14 @@ extension AddCallinfoView {
     
     @IBAction func rcpaSaveAction(_ sender: UIButton) {
         
-        if self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
-            print("Add Competitor")
-            return
-        }
+//        if self.rcpaCallListViewModel.numberOfCompetitorRows(forSection: selectedAddcompetitorSection) == 0 {
+//            print("Add Competitor")
+//            return
+//        }
         yetToloadContentsTable.isHidden = false
         self.yetToloadContentsTable.reloadData()
     }
-    
-    @objc func plusRcpaProduct(_ sender : UIButton){
-        //rcpaAddedListTableView
-        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
-        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
-            return
-        }
-        
-        let rcpa = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-        
-        let isTapped = rcpa.isViewTapped
-        
-        self.rcpaAddedListViewModel.updateProductIsViewTapped(indexPath.section, row: indexPath.row, isTapped: !isTapped)
-        self.yetToloadContentsTable.reloadData()
-    }
-    
-    
-    @objc func deleteRcpaProduct(_ sender : UIButton) {
-        //rcpaAddedListTableView
-        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
-        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
-            return
-        }
-        
-        let products = self.rcpaAddedListViewModel.fetchAtSection(indexPath.section)
-        
-        if products.rcpaChemist.products.count == 1{
-            self.rcpaAddedListViewModel.deleteSection(indexPath.section)
-            self.yetToloadContentsTable.reloadData()
-            return
-        }
-        
-        self.rcpaAddedListViewModel.deleteAtRows(indexPath.section, row: indexPath.row)
-        self.yetToloadContentsTable.reloadData()
-    }
-    
-    @objc func editRcpaProduct(_ sender : UIButton) {
-        //rcpaAddedListTableView
-        let buttonPosition : CGPoint = sender.convert(CGPoint.zero, to: self.yetToloadContentsTable)
-        guard let indexPath = self.yetToloadContentsTable.indexPathForRow(at: buttonPosition) else {
-            return
-        }
-        
-        let chemist = self.rcpaAddedListViewModel.fetchAtSection(indexPath.section)
-        
-        let products = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-        
-        let rcpas = products.rcpas
-        
-        
-        self.selectedChemistRcpa = chemist.rcpaChemist.chemist
-        
-        self.selectedProductRcpa = products.product
-        
 
-        rateLbl.text = products.quantity
-        
-        valuelbl.text = products.total
-        
-        
-        
-        self.lblSeclectedDCRName.text = chemist.rcpaChemist.chemist.name ?? "Select Chemist Name"
-        self.lblSelectedProductName.text = products.product.name ?? "Select Product Name"
-        
-        self.rcpaCallListViewModel.removeAll()
-        for i in 0..<rcpas.count {
-            
-            self.rcpaCallListViewModel.addRcpaCompetitor(RcpaViewModel(rcpaHeaderData: RcpaHeaderData(chemist: chemist.rcpaChemist.chemist, product: products.product, quantity: products.quantity, total: products.total, rate: products.rate, competitorCompanyName: rcpas[i].competitorCompanyName, competitorCompanyCode: rcpas[i].competitorCompanyCode, competitorBrandName: rcpas[i].competitorBrandName, competitorBrandCode: rcpas[i].competitorBrandCode, competitorRate: rcpas[i].rate, competitorTotal: rcpas[i].competitorTotal, competitorQty: rcpas[i].competitorQty,remarks: "")))
-        }
-        
-        
-        self.yetToloadContentsTable.reloadData()
-        print(indexPath)
-    }
-    
     ///Additional calls
     @objc func additionalCallDownArrowAction(_ sender : UIButton) {
         //additionalCallSelectedTableView
@@ -540,7 +476,10 @@ extension AddCallinfoView: tableViewProtocols {
             case yetToloadContentsTable:
                 return Int()
             case loadedContentsTable:
-                return self.rcpaAddedListViewModel.numberofRowsInSection(section)
+               // self.selectedAddcompetitorSection = self.rcpaAddedListViewModel.numberofRowsInSection(section)
+               // return self.selectedAddcompetitorSection
+                let arcpaModelsection = self.rcpaDetailsModel[section]
+                return arcpaModelsection.addedProductDetails?.addedProduct?.count ?? 0
             default:
                 return Int()
             }
@@ -675,10 +614,30 @@ extension AddCallinfoView: tableViewProtocols {
                 return UITableViewCell()
             case loadedContentsTable:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
-                cell.rcpaProduct = self.rcpaAddedListViewModel.fetchAtRowIndex(indexPath.section, row: indexPath.row)
-             //   cell.btnEdit.addTarget(self, action: #selector(editRcpaProduct(_:)), for: .touchUpInside)
-                cell.btnDelete.addTarget(self, action: #selector(deleteRcpaProduct(_:)), for: .touchUpInside)
-            //    cell.btnPlus.addTarget(self, action: #selector(plusRcpaProduct(_:)), for: .touchUpInside)
+            
+                    cell.rcpaProduct = self.rcpaDetailsModel[indexPath.section]
+                let productsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails
+                cell.lblName.text = productsInfo?.addedProduct?[indexPath.row].name
+               
+                cell.lblQty.text = productsInfo?.addedQuantity?[indexPath.row] ?? ""
+                
+                cell.lblRate.text = productsInfo?.addedRate?[indexPath.row] ?? ""
+                cell.lblValue.text = productsInfo?.addedValue?[indexPath.row] ?? ""
+                cell.lblTotal.text = summonedTotal(rate:  cell.lblRate.text ?? "", quantity: cell.lblQty.text ?? "")
+                
+                cell.selectionStyle = .none
+          
+                cell.btnDelete.isUserInteractionEnabled = true
+                
+                cell.btnDelete.addTap {
+
+                    self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?.remove(at: indexPath.row)
+                    self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedRate?.remove(at: indexPath.row)
+                    self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedQuantity?.remove(at: indexPath.row)
+                    self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedValue?.remove(at: indexPath.row)
+                    self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedTotal?.remove(at: indexPath.row)
+                    self.loadedContentsTable.reloadData()
+                }
                 return cell
             default:
                 return UITableViewCell()
@@ -689,6 +648,13 @@ extension AddCallinfoView: tableViewProtocols {
         default:
             return UITableViewCell()
         }
+    }
+    
+    func summonedTotal(rate: String, quantity: String) -> String {
+    let rateInt: Int = Int(rate) ?? 0
+        let intQuantity: Int = Int(quantity) ?? 0
+        
+        return "\(rateInt * intQuantity)"
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -719,13 +685,16 @@ extension AddCallinfoView: tableViewProtocols {
     func numberOfSections(in tableView: UITableView) -> Int {
         switch self.segmentType[selectedSegmentsIndex] {
         case .rcppa:
-            return  rcpaAddedListViewModel.numberofSections()
+            return   self.rcpaDetailsModel.count
+            //rcpaAddedListViewModel.numberofSections()
         default:
             return 1
         }
     }
     
-    @objc func navigatetoSpecifiedMenu() {
+    @objc func navigatetoSpecifiedMenu(rcpaSection section: Int) {
+       
+        self.selectedAddcompetitorSection = section
         let vc  = SpecifiedMenuVC.initWithStory(self, celltype: .competitors)
         vc.menuDelegate = self
         self.addCallinfoVC.modalPresentationStyle = .custom
@@ -746,12 +715,17 @@ extension AddCallinfoView: tableViewProtocols {
                     return UIView()
                 }
 
-//                footerview.viewAddcompetitor.addTap {
-//                    self.navigatetoSpecifiedMenu()
-//                }
-                footerview.btnAddcompetitor.addTarget(self, action: #selector(navigatetoSpecifiedMenu), for: .touchUpInside)
+                //footerview.btnAddcompetitor.addTarget(self, action: #selector(navigatetoSpecifiedMenu), for: .touchUpInside)
+                footerview.btnAddcompetitor.isUserInteractionEnabled = false
+                footerview.section = section
+                footerview.viewAddcompetitor.addTap {
+                    self.navigatetoSpecifiedMenu(rcpaSection: section)
+                }
+                
                 self.selectedAddcompetitorSection = section
-                footerview.setupAddedCompetitors(count: self.rcpaCallListViewModel.numberOfCompetitorRows())
+                let aCompetitorArr = self.rcpaDetailsModel[section].competitor ?? [Competitor]()
+                footerview.setupAddedCompetitors(count: self.rcpaDetailsModel[section].competitor?.count ?? 0, competitors: aCompetitorArr)
+                footerview.delegate = self
                 return footerview
             default:
                 return UIView()
@@ -765,27 +739,31 @@ extension AddCallinfoView: tableViewProtocols {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         switch self.segmentType[selectedSegmentsIndex] {
         case .rcppa:
-            
-            if rcpaAddedListViewModel.numberofSections() == 0 {
-                return 0
-            } else {
+ 
                 //50 - header
                 //50 - addbtn (40 + padding (10))
                 //10 - top bottom padding
                 //50 * count - each cell height
-                if  self.rcpaCallListViewModel.numberOfCompetitorRows() == 0 {
+                if self.rcpaDetailsModel[section].competitor?.count ?? 0 == 0 {
+                    //self.rcpaAddedListViewModel.addRcpaChemist(<#T##VM: RcpaAddedViewModel##RcpaAddedViewModel#>)
                     return 50
                 } else {
-                    return CGFloat(50 + (self.rcpaCallListViewModel.numberOfCompetitorRows() * 50) + 10) + 50
+                    return calculateSectionHeight(forSection: section)
                 }
             
                 //+ 10 + (50 * 3) + 50
               
-            }
+            
           
         default:
             return 0
         }
+    }
+    
+    func calculateSectionHeight(forSection section: Int) -> CGFloat {
+        let competitorCount = self.rcpaDetailsModel[section].competitor?.count ?? 0
+        let sectionHeight = CGFloat(50 + (competitorCount * 50) + 10) + 50
+        return sectionHeight
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -861,11 +839,22 @@ extension AddCallinfoView: tableViewProtocols {
 
                 headerView.holderStack.layer.cornerRadius = 5
                 headerView.holderStack.backgroundColor = .appLightTextColor.withAlphaComponent(0.1)
-                let chemist = self.rcpaAddedListViewModel.fetchAtSection(section)
-                let products = self.rcpaAddedListViewModel.fetchAtRowIndex(section, row: 0)
-               //let rcpas = products.rcpas
-                headerView.titleLbl.text = chemist.rcpaChemist.chemist.name ?? ""
-                headerView.summonedTotal.text = products.total
+                let chemist =  self.rcpaDetailsModel[section].addedChemist
+                let productsInfo =  self.rcpaDetailsModel[section].addedProductDetails
+                headerView.titleLbl.text = chemist?.name ?? ""
+                var summonedTotal: Int = 0
+    
+                productsInfo?.addedTotal?.forEach({ aProductTotal in
+                    let intTotal = Int(aProductTotal) ?? 0
+                    summonedTotal += intTotal
+                })
+                
+                headerView.summonedTotal.text = "\(summonedTotal).00"
+                headerView.deleteView.addTap {
+                    self.rcpaDetailsModel.remove(at: section)
+                    self.loadedContentsTable.reloadData()
+                }
+               // deleteSection
                 return headerView
             default:
                 return UIView()
@@ -1034,7 +1023,7 @@ class AddCallinfoView : BaseView {
             yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .appWhiteColor
             
-            if rcpaAddedListViewModel.numberofSections() == 0 {
+            if rcpaDetailsModel.count == 0 {
                 viewnoRCPA.isHidden = false
                 loadedContentsTable.isHidden = true
             } else {
@@ -1052,8 +1041,8 @@ class AddCallinfoView : BaseView {
         }
     }
     
-private var productSelectedListViewModel = ProductSelectedListViewModel()
-    private var additionalCallListViewModel = AdditionalCallsListViewModel()
+ var productSelectedListViewModel = ProductSelectedListViewModel()
+     var additionalCallListViewModel = AdditionalCallsListViewModel()
    enum  SegmentType : String {
         case detailed = "Detailed"
         case products = "Products"
@@ -1132,13 +1121,16 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
     var addCallinfoVC : AddCallinfoVC!
     let appsetup = AppDefaults.shared.getAppSetUp()
     var segmentType: [SegmentType] = []
-    private var inputSelectedListViewModel = InputSelectedListViewModel()
-    private var rcpaAddedListViewModel = RcpaAddedListViewModel()
-    private var rcpaCallListViewModel = RcpaListViewModel()
-    private var eventCaptureListViewModel = EventCaptureListViewModel()
-    private var jointWorkSelectedListViewModel = JointWorksListViewModel()
-    var jfwView : JfwView?
-    
+     var inputSelectedListViewModel = InputSelectedListViewModel()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+     var rcpaDetailsModel :  [RCPAdetailsModal] = []
+     var eventCaptureListViewModel = EventCaptureListViewModel()
+     var jointWorkSelectedListViewModel = JointWorksListViewModel()
+     var jfwView : JfwView?
+    var pobValue: String?
+    var overallFeedback: Feedback?
+    var overallRemarks: String?
+ 
     var productObj: NSManagedObject?
     var chemistObj: NSManagedObject?
     var selectedChemistRcpa : AnyObject?
@@ -1156,6 +1148,9 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         initVIews()
        // toloadContentsTable()
     }
+    
+    
+    
     
     override func didLayoutSubviews(baseVC: BaseViewController) {
         super.didLayoutSubviews(baseVC: baseVC)
@@ -1210,16 +1205,22 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         
         jfwView = self.addCallinfoVC.loadCustomView(nibname: XIBs.jfwView) as? JfwView
         jfwView?.rootVC = self.addCallinfoVC
+        jfwView?.pobValue = self.pobValue ?? nil
+        jfwView?.overallFeedback = self.overallFeedback ?? nil
+        jfwView?.overallRemark = self.overallRemarks ?? nil
         jfwView?.eventCaptureListViewModel = self.eventCaptureListViewModel
         jfwView?.jointWorkSelectedListViewModel = self.jointWorkSelectedListViewModel
-       // jfwView?.delegate = self
-      //  jfwView?.userStatisticsVM = self.userststisticsVM
-     //   changePasswordView?.appsetup = self.appSetups
+        jfwView?.delegate = self
         jfwView?.setupUI()
         self.addSubview(jfwView ?? JfwView())
     }
     
     func initVIews() {
+        
+        backHolderView.addTap {
+            self.addCallinfoVC.navigationController?.popViewController(animated: true)
+        }
+        
         dcrNameCurvedView.addTap {
             let vc = SpecifiedMenuVC.initWithStory(self, celltype: .chemist)
             vc.isFromfilter = true
@@ -1240,6 +1241,9 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
            
             self.addCallinfoVC.modalPresentationStyle = .custom
             self.addCallinfoVC.navigationController?.present(vc, animated: false)
+        }
+        saveView.addTap {
+            self.addCallinfoVC.setupParam()
         }
         
     }
@@ -1316,7 +1320,7 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         btnAddRCPA.layer.cornerRadius = 5
       
                              
-        btnAddRCPA.addTarget(self, action: #selector(rcpaSaveAction(_:)), for: .touchUpInside)
+        btnAddRCPA.addTarget(self, action: #selector(rcpaAddCompetitorAction(_:)), for: .touchUpInside)
         
         
        
@@ -1362,6 +1366,31 @@ private var productSelectedListViewModel = ProductSelectedListViewModel()
         rateLbl.text = "\(rateInt)"
         valuelbl.text = "\(rateInt * qtyInt)"
         
+    }
+    
+    
+}
+
+
+extension AddCallinfoView : CompetitorsFooterDelegate {
+    func didTapdelete(section: Int, index: Int) {
+       // self.rcpaAddedListViewModel.removecompetitor(section: section, index: index)
+        self.rcpaDetailsModel[section].competitor?.remove(at: index)
+        self.loadedContentsTable.reloadData()
+    }
+
+    
+    
+}
+
+
+extension AddCallinfoView : JfwViewDelegate {
+    func selectedObjects(eventcptureVM: EventCaptureListViewModel, jointWorkSelectedListViewModel: JointWorksListViewModel, POBValue: String, overallFeedback: Feedback, overallRemarks: String) {
+        self.eventCaptureListViewModel = eventcptureVM
+        self.jointWorkSelectedListViewModel = jointWorkSelectedListViewModel
+        self.pobValue = POBValue
+        self.overallFeedback = overallFeedback
+        self.overallRemarks = overallRemarks
     }
     
     

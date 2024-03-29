@@ -1922,20 +1922,42 @@ class DBManager {
     }
     
     
-    func getDoctor(mapID: String) -> [DoctorFencing]{
+//    func getDoctor(mapID: String) -> [DoctorFencing]{
+//        let masterData = self.getMasterData()
+//        guard let doctorArray = masterData.doctorFencing?.allObjects as? [DoctorFencing] else {
+//            return [DoctorFencing]()
+//        }
+//
+//        let filteredArray = doctorArray.filter { $0.mapId == mapID }
+//
+//        
+//        
+//        let sortedArray = filteredArray.sorted { $0.index < $1.index }
+//
+//        return sortedArray
+//        
+//    }
+  
+    
+    func getDoctor(mapID: String) -> [DoctorFencing] {
         let masterData = self.getMasterData()
         guard let doctorArray = masterData.doctorFencing?.allObjects as? [DoctorFencing] else {
-            return [DoctorFencing]()
+            return []
         }
 
-        let filteredArray = doctorArray.filter { $0.mapId == mapID }
+        var uniqueCodes = Set<String>() // To keep track of unique codes
+        var filteredArray = [DoctorFencing]()
+
+        for doctor in doctorArray {
+            if doctor.mapId == mapID && !uniqueCodes.contains(doctor.code ?? "") {
+                filteredArray.append(doctor)
+                uniqueCodes.insert(doctor.code ?? "")
+            }
+        }
 
         let sortedArray = filteredArray.sorted { $0.index < $1.index }
-
         return sortedArray
-        
     }
-    
     
     func getChemist(mapID: String) -> [Chemist]{
         let masterData = self.getMasterData()

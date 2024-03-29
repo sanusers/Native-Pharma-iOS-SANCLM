@@ -213,7 +213,8 @@ enum `MasterInfo` : String, CaseIterable {
     
     var getUrl : String {
         
-        let mainUrl = AppDefaults.shared.webUrl + AppDefaults.shared.iosUrl
+        let mainUrl =  LocalStorage.shared.getString(key: .AppMainURL)
+        //AppDefaults.shared.webUrl + AppDefaults.shared.iosUrl
         
         switch self {
             

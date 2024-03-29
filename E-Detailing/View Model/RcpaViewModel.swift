@@ -10,14 +10,27 @@ import Foundation
 class RcpaAddedListViewModel {
     
     private var rcpaAddedListViewModel = [RcpaAddedViewModel]()
+
     
     func addRcpaChemist(_ VM : RcpaAddedViewModel) {
         rcpaAddedListViewModel.append(VM)
     }
     
-    func addRcpaProductAtSection(_ section : Int , product : rcpaProduct) {
+    
+    func numberOfCompetitorRows(forSection section: Int) -> Int {
+        return rcpaAddedListViewModel[section].rcpaHeaderData.count
+    }
+    
+    
+    
+    func addRcpaProductAtSection(_ section: Int, product: rcpaProduct) {
+        guard section < rcpaAddedListViewModel.count else {
+            return // Section index out of bounds
+        }
+        
         rcpaAddedListViewModel[section].rcpaChemist.products.append(product)
     }
+    
     
     func addRcpaCompetitorProductAtProduct(_ section : Int,row : Int, product : RcpaHeaderData) {
         rcpaAddedListViewModel[section].rcpaChemist.products[row].rcpas.append(product)
@@ -78,11 +91,17 @@ class RcpaAddedListViewModel {
     }
     
     
-    func fetchAtSection(_ section : Int) -> RcpaAddedViewModel {
+    func fetchAtSection(_ section : Int) -> RcpaAddedViewModel? {
         return rcpaAddedListViewModel[section]
     }
     
-    func fetchAtRowIndex(_ section : Int , row : Int) -> rcpaProduct {
+    func fetchAtRowIndex(_ section: Int, row: Int) -> rcpaProduct? {
+        guard section < rcpaAddedListViewModel.count else {
+            return nil
+        }
+        guard row < rcpaAddedListViewModel[section].rcpaChemist.products.count else {
+            return nil
+        }
         return rcpaAddedListViewModel[section].rcpaChemist.products[row]
     }
     
@@ -91,7 +110,16 @@ class RcpaAddedListViewModel {
         rcpaAddedListViewModel.remove(at: section)
     }
     
-    func deleteAtRows (_ section : Int , row : Int) {
+    func deleteAtRows(_ section: Int, row: Int) {
+        guard section < rcpaAddedListViewModel.count else {
+            return // Section index out of range
+        }
+
+        let products = rcpaAddedListViewModel[section].rcpaChemist.products
+        guard row < products.count else {
+            return // Row index out of range
+        }
+
         rcpaAddedListViewModel[section].rcpaChemist.products.remove(at: row)
     }
     
@@ -141,6 +169,26 @@ class RcpaAddedListViewModel {
     func setCompetitorBrandRemarksAtSectionIndex(_ section : Int, row : Int, compRow : Int,remarks : String){
         rcpaAddedListViewModel[section].rcpaChemist.products[row].rcpas[compRow].remarks(remarks)
     }
+    
+    func numberOfCompetitorRows(forsSection section: Int) -> Int {
+        return  rcpaAddedListViewModel[section].rcpaHeaderData.count
+    }
+    
+    func removecompetitor(section: Int, index: Int) {
+        rcpaAddedListViewModel[section].rcpaHeaderData.remove(at: index)
+    }
+
+    
+    func setCompetitorCompanyAtIndex(competitotSection section : Int, competitotIndex index: Int, name : String,code : String, headerData:  RcpaHeaderData? = nil) {
+       // if rcpaAddedListViewModel[section].rcpaHeaderData.isEmpty {
+            guard let headerData = headerData else {return}
+            rcpaAddedListViewModel[section].rcpaHeaderData.append(headerData)
+    }
+    
+    func setCompetitorBrandAtIndex(competitotSection section : Int, competitotIndex index: Int, name : String,code : String){
+        rcpaAddedListViewModel[section].rcpaHeaderData[index].updateCompetitorBrand(name, code: code)
+    }
+    
 }
 
 class RcpaListViewModel {
@@ -148,13 +196,24 @@ class RcpaListViewModel {
     private var rcpaListViewModel = [RcpaViewModel]()
     
     
-    func addRcpaCompetitor (_ VM : RcpaViewModel) {
+    func addRcpaCompetitor(VM:  RcpaViewModel, forsection section: Int, header: [RcpaHeaderData]) {
+        rcpaListViewModel.insert(VM, at: 0)
+        rcpaListViewModel[section].rcpaHeaderData = header
+       // rcpaListViewModel.insert(VM, at: 0)
+    }
+    
+    
+    func insertNewList(_ VM : RcpaViewModel) {
         rcpaListViewModel.insert(VM, at: 0)
     }
     
-    func numberOfCompetitorRows() -> Int {
-        return rcpaListViewModel.count
+    func numberOfCompetitorRows(forSection section: Int) -> Int {
+        return rcpaListViewModel[section].rcpaHeaderData.count
     }
+    
+//    func numberOfCompetitorRows(forsSection section: Int) -> Int {
+//        return  rcpaListViewModel[section].rcpaHeaderData.count
+//    }
     
     func removeAtIndex(_ index : Int) {
         rcpaListViewModel.remove(at: index)
@@ -172,12 +231,13 @@ class RcpaListViewModel {
         return rcpaListViewModel.filter{$0.productCode == code}
     }
     
-    func setCompetitorCompanyAtIndex(_ index : Int,name : String,code : String) {
-        rcpaListViewModel[index].rcpaHeaderData.updateCompetitorCompany(name, code: code)
+    func setCompetitorCompanyAtIndex(competitotSection section : Int, competitotIndex index: Int, name : String,code : String) {
+        rcpaListViewModel[section].rcpaHeaderData[index].updateCompetitorCompany(name, code: code)
+        //.updateCompetitorCompany(name, code: code)
     }
     
-    func setCompetitorBrandAtIndex(_ index : Int,name : String,code : String){
-        rcpaListViewModel[index].rcpaHeaderData.updateCompetitorBrand(name, code: code)
+    func setCompetitorBrandAtIndex(competitotSection section : Int, competitotIndex index: Int, name : String,code : String){
+        rcpaListViewModel[section].rcpaHeaderData[index].updateCompetitorBrand(name, code: code)
     }
     
 }
@@ -186,9 +246,12 @@ class RcpaListViewModel {
 class RcpaAddedViewModel {
     
     var rcpaChemist : RcpaChemist
-    
-    init(rcpaChemist: RcpaChemist) {
+    var rcpaHeaderData : [RcpaHeaderData]
+    var section: Int
+    init(rcpaChemist: RcpaChemist, rcpaHeader: [RcpaHeaderData], forSection section: Int) {
         self.rcpaChemist = rcpaChemist
+        rcpaHeaderData  = rcpaHeader
+        self.section = section
     }
     
     var chemistName : String {
@@ -204,46 +267,47 @@ class RcpaAddedViewModel {
 
 class RcpaViewModel {
     
-    var rcpaHeaderData : RcpaHeaderData
-    
-    init(rcpaHeaderData: RcpaHeaderData) {
+    var rcpaHeaderData : [RcpaHeaderData]
+    var section: Int
+    init(rcpaHeaderData: [RcpaHeaderData], forSection section: Int) {
         self.rcpaHeaderData = rcpaHeaderData
+        self.section = section
     }
     
     var productName : String {
-        return rcpaHeaderData.product?.name ?? ""
+        return rcpaHeaderData[section].product?.name ?? ""
     }
     
     var productCode : String {
-        return rcpaHeaderData.product?.code ?? ""
+        return rcpaHeaderData[section].product?.code ?? ""
     }
     
     var competitorCompanyName : String {
-        return rcpaHeaderData.competitorCompanyName
+        return rcpaHeaderData[section].competitorCompanyName
     }
     
     var competitorCompanyCode : String {
-        return rcpaHeaderData.competitorCompanyCode
+        return rcpaHeaderData[section].competitorCompanyCode
     }
     
     var competitorBrandName : String {
-        return rcpaHeaderData.competitorBrandName
+        return rcpaHeaderData[section].competitorBrandName
     }
     
     var competitorBrandCode : String {
-        return rcpaHeaderData.competitorBrandCode
+        return rcpaHeaderData[section].competitorBrandCode
     }
     
     var competitorQty : String {
-        return rcpaHeaderData.competitorQty
+        return rcpaHeaderData[section].competitorQty
     }
     
     var competitorRate : String {
-        return rcpaHeaderData.competitorRate
+        return rcpaHeaderData[section].competitorRate
     }
     
     var competitorTotal : String {
-        return rcpaHeaderData.competitorTotal
+        return rcpaHeaderData[section].competitorTotal
     }
 }
 
@@ -276,6 +340,7 @@ struct rcpaProduct {
 }
 
 struct RcpaHeaderData {
+    
     
     var chemist : AnyObject?
     

@@ -32,77 +32,15 @@ class RcpaAddedListTableViewCell : UITableViewCell {
 
     
     
-    var rcpaProduct : rcpaProduct! {
+    var rcpaProduct : RCPAdetailsModal! {
 
         didSet {
-            self.lblName.text = self.rcpaProduct.product.name ?? ""
-            self.lblQty.text = self.rcpaProduct.quantity
-            self.lblRate.text = self.rcpaProduct.rate
-            self.lblTotal.text = self.rcpaProduct.total
+          //  self.lblName.text = self.rcpaProduct.addedProduct?.name ?? ""
+//            self.lblQty.text = self.rcpaProduct.addedQuantity
+//            self.lblRate.text = self.rcpaProduct.addedRate ?? ""
+//            self.lblValue.text = self.rcpaProduct.addedValue ?? ""
+//            self.lblTotal.text = self.rcpaProduct.totalValue ?? ""
             
-        //    self.btnPlus.isSelected = self.rcpaProduct.isViewTapped
-            
-            
-//            if self.rcpaProduct.isViewTapped == true {
-//                if self.rcpaProduct.rcpas.count != 0 { // || self.rcpaProduct.rcpas.count == 0
-//                    
-//                    var rcpa = self.rcpaProduct.rcpas
-//                    
-//                    let value = RcpaHeaderData(chemist: nil, product: nil, quantity: "", total: "", rate: "", competitorCompanyName: "Competitor Company", competitorCompanyCode: "", competitorBrandName: "Competitor Brand", competitorBrandCode: "", competitorRate: "Rate", competitorTotal: "Value", competitorQty: "Qty", remarks: "Remarks")
-//                    
-//                    
-//                    rcpa.insert(value, at: 0)
-//                    
-//                    
-//                    var previousView : UIView!
-//                    for (index,product) in
-//                            rcpa.enumerated(){
-//                        
-//                        print("rcpa == \(product)")
-//                        
-//                        let productView = RcpaSelectedCompetitorView.instanceFromNib()
-//                        productView.translatesAutoresizingMaskIntoConstraints = false
-//                        self.viewCompetitorList.addSubview(productView)
-//                        if self.heightViewCompetitorListConstraint != nil{
-//                            self.heightViewCompetitorListConstraint.isActive = false
-//                        }
-//                        productView.rcpa = product
-//                
-//                        if index == 0 {
-//                            var constraintArray = [productView.topAnchor.constraint(equalTo: self.viewCompetitorList.topAnchor, constant: 0),
-//                            productView.leftAnchor.constraint(equalTo: self.viewCompetitorList.leftAnchor, constant: 0),
-//                            productView.rightAnchor.constraint(equalTo: self.viewCompetitorList.rightAnchor, constant: 0)]
-//                            if rcpa.count == 1{
-//                                constraintArray.append(productView.bottomAnchor.constraint(equalTo: self.viewCompetitorList.bottomAnchor, constant: 0))
-//                            }
-//                            NSLayoutConstraint.activate(constraintArray)
-//                            previousView = productView
-//                        }else if index == rcpa.count - 1{
-//                            let constraintArray = [productView.topAnchor.constraint(equalTo: previousView.bottomAnchor, constant: 0),
-//                            productView.bottomAnchor.constraint(equalTo: self.viewCompetitorList.bottomAnchor, constant: 0),
-//                            productView.leftAnchor.constraint(equalTo: self.viewCompetitorList.leftAnchor, constant: 0),
-//                            productView.rightAnchor.constraint(equalTo: self.viewCompetitorList.rightAnchor, constant: 0)]
-//                            NSLayoutConstraint.activate(constraintArray)
-//                            previousView = productView
-//                        }else{
-//                            let constraintArray = [productView.topAnchor.constraint(equalTo: previousView.bottomAnchor, constant: 0),
-//                            productView.leftAnchor.constraint(equalTo: self.viewCompetitorList.leftAnchor, constant: 0),
-//                            productView.rightAnchor.constraint(equalTo: self.viewCompetitorList.rightAnchor, constant: 0)]
-//                            NSLayoutConstraint.activate(constraintArray)
-//                            previousView = productView
-//                        }
-//                    }
-//                }
-//            }else {
-//                if self.heightViewCompetitorListConstraint != nil{
-//                    self.heightViewCompetitorListConstraint.constant = 0
-//                }else {
-//                    let productView = RcpaSelectedCompetitorView.instanceFromNib()
-//                    productView.translatesAutoresizingMaskIntoConstraints = false
-//                    self.viewCompetitorList.subviews.forEach{ $0.removeFromSuperview()}
-//                    self.viewCompetitorList.addSubview(productView)
-//                }
-//            }
 
         }
     }

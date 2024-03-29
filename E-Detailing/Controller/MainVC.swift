@@ -616,7 +616,8 @@ class MainVC : UIViewController {
     @IBOutlet weak var dayplancalenderVIew: FSCalendar!
     @IBOutlet var closeRejectionVIew: UIView!
     
-    
+    var  latitude : Double?
+    var longitude: Double?
     func setDeviateSwitch(istoON: Bool) {
         deviateSwitch.isOn = istoON
     }
@@ -648,7 +649,7 @@ class MainVC : UIViewController {
                 switch result {
                     
                 case .success(let response):
-                    Shared.instance.removeLoaderInWindow()
+                 //   Shared.instance.removeLoaderInWindow()
                     CoreDataManager.shared.saveDatestoCoreData(model: response)
                     welf.returnWeeklyoffDates()
                     welf.togetDCRdates() {
@@ -657,7 +658,7 @@ class MainVC : UIViewController {
                         welf.tourPlanCalander.reloadData()
                     }
                 case .failure(let error):
-                    Shared.instance.removeLoaderInWindow()
+                  //  Shared.instance.removeLoaderInWindow()
                     welf.toCreateToast("\(error)")
                 }
             }
@@ -1693,6 +1694,8 @@ class MainVC : UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         
         
+        NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
+        
         
         btnAddplan.backgroundColor = .appGreyColor
         btnAddplan.layer.borderWidth = 1
@@ -1775,7 +1778,9 @@ class MainVC : UIViewController {
         // configureSaveplanBtn(false)
     }
     
-    
+    @objc func dcrcallsAdded() {
+        self.toLoadOutboxTable()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -1852,7 +1857,7 @@ class MainVC : UIViewController {
         
         if !isPlanningNewDCR {
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                Shared.instance.showLoaderInWindow()
+              //  Shared.instance.showLoaderInWindow()
                 masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
                     self.toConfigureMydayPlan()
                     self.toSetParams()
@@ -1954,7 +1959,17 @@ class MainVC : UIViewController {
     
     
     
-    
+    func requestAuth() {
+        Pipelines.shared.requestAuth() {[weak self] coordinates in
+            guard let welf = self else {return}
+            guard coordinates != nil else {
+                welf.showAlert()
+                return
+            }
+            welf.latitude = coordinates?.latitude
+            welf.longitude = coordinates?.longitude
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -1968,16 +1983,13 @@ class MainVC : UIViewController {
         if istoRedirecttoCheckin() {
             checkinAction()
         }
-
+        
+        
+        
+        if !isFromLaunch {
+            requestAuth()
+        }
    
-            
-            Pipelines.shared.requestAuth() { [weak self] coordinates in
-                guard let welf = self else {return}
-                guard coordinates != nil else {
-                    welf.showAlert()
-                    return
-                }
-            }
             
         
         
@@ -2271,6 +2283,7 @@ class MainVC : UIViewController {
             toDdayCall.vstTime = aHomeData.dcr_dt ?? ""
             toDdayCall.submissionDate = aHomeData.dcr_dt ?? ""
             toDdayCall.designation = type == 1 ? "Doctor" : type == 2 ? "Chemist" : type == 3 ? "Stockist" : type == 4 ? "hospital" : type == 5 ? "cip" : type == 6 ? "UnlistedDr." : ""
+           // toDdayCall.submissionStatus = "Waiting for sync"
             self.outBoxDataArr?.append(toDdayCall)
         }
         toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]())
@@ -2520,13 +2533,13 @@ class MainVC : UIViewController {
                 // Shared.instance.removeLoader(in: self.view)
                 self.setupCalls(response: response)
                 dump(response)
-                Shared.instance.removeLoaderInWindow()
+              //  Shared.instance.removeLoaderInWindow()
             case .failure(let error):
                 //  Shared.instance.removeLoader(in: self.view)
                 
                 print(error.localizedDescription)
                 self.view.toCreateToast("Error while fetching response from server.")
-                Shared.instance.removeLoaderInWindow()
+               // Shared.instance.removeLoaderInWindow()
                 
             }
         }
@@ -3317,22 +3330,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
                 if cell.callsExpandState == .callsExpanded {
                     obj_sections[indexPath.section].isCallExpanded = true
-                    
-                    //                    cell.cellStackHeightConst.constant = CGFloat(290 + 90 * count)
-                    //                    cell.callSubDetailVIew.isHidden = false
-                    //                    cell.callSubdetailHeightConst.constant = 90 * 2
-                    //                    cell.callDetailStackHeightConst.constant = CGFloat(50 + 90 * count)
-                    //                    cell.callsHolderViewHeightConst.constant = CGFloat(50 + 90 * count)
-                    //                    cell.callsViewSeperator.isHidden = false
+ 
                 } else {
                     obj_sections[indexPath.section].isCallExpanded = false
-                    
-                    //                    cell.cellStackHeightConst.constant = 290
-                    //                    cell.callSubDetailVIew.isHidden = true
-                    //                    cell.callSubdetailHeightConst.constant = 0 //90
-                    //                    cell.callsHolderViewHeightConst.constant = 50
-                    //                    cell.callDetailStackHeightConst.constant = 50
-                    //                    cell.callsViewSeperator.isHidden = true
+   
                 }
                 cell.toSetCellHeight(callsExpandState:  cell.callsExpandState)
                 self.outboxTableView.reloadData()
@@ -3660,48 +3661,101 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func toretryDCRupload( date: String, completion: @escaping (Bool) -> Void) {
-        
-        let paramData = LocalStorage.shared.getData(key: .outboxParams)
-        var localParamArr = [String: [[String: Any]]]()
-        do {
-            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-            dump(localParamArr)
-        } catch {
-            //  self.toCreateToast("unable to retrive")
-            completion(false)
-        }
-        
-        var specificDateParams : [[String: Any]] = [[:]]
-        
-        
-        if date.isEmpty {
-            localParamArr.forEach { key, value in
-                
-                specificDateParams = value
-                
+        var userAddress: String?
+
+        Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
+            guard let welf = self else{return}
+            userAddress = address
+
+            let paramData = LocalStorage.shared.getData(key: .outboxParams)
+            var localParamArr = [String: [[String: Any]]]()
+            do {
+                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+                dump(localParamArr)
+            } catch {
+                //  self.toCreateToast("unable to retrive")
+                completion(false)
             }
-        } else {
-            localParamArr.forEach { key, value in
-                if key == date {
-                    dump(value)
+            
+            var specificDateParams : [[String: Any]] = [[:]]
+            
+            
+            if date.isEmpty {
+                localParamArr.forEach { key, value in
+                    
                     specificDateParams = value
+                    
+                    
+                    for index in 0..<specificDateParams.count {
+                        var paramData = specificDateParams[index]
+                        
+                        // Check if "Entry_location" key exists
+                        if let entryLocation = paramData["Entry_location"] as? String {
+                            // Update the value of "Entry_location" key
+                            paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+                        }
+                        
+                        // Check if "address" key exists
+                        if let address = paramData["address"] as? String {
+                            // Update the value of "address" key
+                            paramData["address"] = userAddress ?? ""
+                        }
+                        
+                        // Update the dictionary in specificDateParams array
+                        specificDateParams[index] = paramData
+                    }
+                    
+                    
+                }
+            } else {
+                localParamArr.forEach { key, value in
+                    if key == date {
+                        dump(value)
+                        specificDateParams = value
+
+                        for index in 0..<specificDateParams.count {
+                            var paramData = specificDateParams[index]
+                            
+                            // Check if "Entry_location" key exists
+                            if let entryLocation = paramData["Entry_location"] as? String {
+                                // Update the value of "Entry_location" key
+                                paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+                            }
+                            
+                            // Check if "address" key exists
+                            if let address = paramData["address"] as? String {
+                                // Update the value of "address" key
+                                paramData["address"] = userAddress ?? ""
+                            }
+                            
+                            // Update the dictionary in specificDateParams array
+                            specificDateParams[index] = paramData
+                        }
+                        
+                    }
                 }
             }
-        }
+            
+            print("specificDateParams has \(specificDateParams.count) values")
+            if !localParamArr.isEmpty {
+                welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
+                    if isCompleted {
+                       // self.toSetParams()
+                        completion(true)
+                    }
+                }
+            } else {
+           
+                completion(true)
+            }
+            
+            
+            }
         
-        print("specificDateParams has \(specificDateParams.count) values")
-        if !localParamArr.isEmpty {
-            toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
-                if isCompleted {
-                    Shared.instance.removeLoaderInWindow()
-                    self.toSetParams()
-                    completion(true)
-                }
-            }
-        } else {
-            Shared.instance.removeLoaderInWindow()
-            completion(true)
-        }
+        
+        
+        
+
         
     }
     
@@ -3711,10 +3765,6 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         guard index < items.count else {
             // All items processed, exit the recursion
-            
-            DispatchQueue.main.async {
-                self.toLoadOutboxTable()
-            }
             completion(true)
             return
         }
@@ -3731,10 +3781,28 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             completion(true)
             return
         }
-        self.sendAPIrequest(toSendData, paramData: params) { iscompleted in
-            completion(iscompleted)
-            let nextIndex = index + 1
-            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
+        
+        let diapatchGroup = DispatchGroup()
+        diapatchGroup.enter()
+        var isSubmitted: Bool = false
+        self.sendAPIrequest(toSendData, paramData: params) { callstatus in
+            if callstatus.isCallSubmitted ?? false {
+              //  self.outBoxDataArr?.remove(at: index)
+                isSubmitted = true
+                diapatchGroup.leave()
+            } else {
+               // self.outBoxDataArr?[index].submissionStatus = callstatus.status ?? "Waiting to sync"
+                isSubmitted = false
+          
+                diapatchGroup.leave()
+            }
+         
+            diapatchGroup.notify(queue: .main) {
+                completion(isSubmitted)
+                let nextIndex = index + 1
+                self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
+            }
+   
             
         }
         // Handle the result if needed
@@ -3743,80 +3811,37 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
     }
     
+    struct callstatus {
+        var status: String?
+        var isCallSubmitted: Bool?
+    }
     
-    
-    
-    //    func toSendParamsToAPISerially(paramsArr : [JSON], completion: @escaping (Bool) -> Void) {
-    //         // Iterate through the array of parameters
-    //
-    //
-    //
-    //        for (_, params) in paramsArr.enumerated() {
-    //
-    //            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
-    //
-    ////            var jsonDatum = Data()
-    ////
-    ////            do {
-    ////                let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
-    ////                jsonDatum = jsonData
-    ////                // Convert JSON data to a string
-    ////                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-    ////                    print(tempjsonString)
-    ////
-    ////                }
-    ////
-    ////
-    ////            } catch {
-    ////                print("Error converting parameter to JSON: \(error)")
-    ////            }
-    //
-    //
-    //
-    //
-    //            var toSendData = [String: Any]()
-    //            toSendData["data"] = jsonDatum
-    //
-    //            if params.isEmpty {
-    //               completion(true)
-    //               return
-    //            }
-    //            self.sendAPIrequest(toSendData, paramData: params) { iscompleted in
-    //                completion(iscompleted)
-    //
-    //            }
-    //
-    //        }
-    //    }
-    
-    
-    func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (Bool) -> Void) {
-        Shared.instance.showLoaderInWindow()
+    func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (callstatus) -> Void) {
+      //  Shared.instance.showLoaderInWindow()
         userststisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
             switch result {
             case .success(let response):
                 print(response)
-                
+            
                 dump(response)
-                if response.msg == "Call Already Exists" {
-                    // self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
-                    self.toCreateToast(response.msg!)
+                if response.isSuccess ?? false {
+                    let callStatus = callstatus(status: response.msg ?? "", isCallSubmitted: response.isSuccess ?? false)
                     self.toRemoveOutboxandDefaultParams(param: paramData)
+                    completion(callStatus)
                 } else {
-                    self.toRemoveOutboxandDefaultParams(param: paramData)
-                    
-                    //   self.saveCallsToDB(issussess: true, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+                    let callStatus = callstatus(status: response.msg ?? "", isCallSubmitted: response.isSuccess ?? false)
+                    self.toCreateToast(response.msg ?? "Error uploading data try again later.")
+                    self.toUpdateData(param: paramData, status: response.msg ?? "Yet to")
+                    completion(callStatus)
                 }
-                
-                completion(true)
                 //  Shared.instance.removeLoaderInWindow()
             case .failure(let error):
                 //   self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
                 
                 print(error.localizedDescription)
                 self.view.toCreateToast("Error uploading data try again later.")
-                
-                completion(true)
+                let callStatus = callstatus(status:  "Waiting to sync", isCallSubmitted: false)
+                completion(callStatus)
                 //   Shared.instance.removeLoaderInWindow()
                 
                 return
@@ -3849,6 +3874,34 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         } catch {
             // Handle fetch error
         }
+        
+        DispatchQueue.main.async {
+            self.toLoadOutboxTable()
+        }
+    }
+    
+    
+    func toUpdateData(param: JSON, status: String?) {
+        let custCodeToUpdate = param["CustCode"] as! String
+
+        let updatedSections = obj_sections.map { section -> Section in
+            var updatedSection = section
+
+            updatedSection.items = section.items.map { call in
+                let updatedCall = call
+                
+                // Update the submissionStatus property
+                if call.custCode == custCodeToUpdate {
+                    updatedCall.submissionStatus = status ?? "Waiting for sync."
+                }
+                
+                return updatedCall
+            }
+            
+            return updatedSection
+        }
+        
+        obj_sections = updatedSections
         
         DispatchQueue.main.async {
             self.toLoadOutboxTable()
@@ -3932,20 +3985,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
         
-        
-        //            var jsonDatum = Data()
-        //
-        //            do {
-        //                let jsonData = try JSONSerialization.data(withJSONObject: localParamArr, options: [])
-        //                jsonDatum = jsonData
-        //                // Convert JSON data to a string
-        //                if let tempjsonString = String(data: jsonData, encoding: .utf8) {
-        //                    print(tempjsonString)
-        //
-        //                }
-        //            } catch {
-        //                print("Error converting parameter to JSON: \(error)")
-        //            }
+
         
         LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
         
@@ -3975,6 +4015,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         })
         
         print(obj_sections)
+        
+        DispatchQueue.main.async {
+           // self.toSetParams()
+            self.toLoadOutboxTable()
+        }
         
         
     }
@@ -4364,7 +4409,6 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             ///
            let isForsequential = false
             if isForsequential {
-                Shared.instance.showLoaderInWindow()
                 welf.getNonExistingDatesInCurrentMonth(selectedDate: date) { tobefilledDate in
                     Shared.instance.removeLoaderInWindow()
                     guard let tobefilledDate = tobefilledDate else {return}
@@ -4439,7 +4483,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     
     
     func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
-        Shared.instance.showLoaderInWindow()
+       // Shared.instance.showLoaderInWindow()
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] _ in
                 Shared.instance.removeLoaderInWindow()

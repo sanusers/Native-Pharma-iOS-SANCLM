@@ -33,6 +33,9 @@
 		38107C632B36FA0400ACEDF3 /* ViewmoreCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C612B36FA0400ACEDF3 /* ViewmoreCVC.xib */; };
 		38107C672B37056600ACEDF3 /* ProductsDescriptionCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C652B37056600ACEDF3 /* ProductsDescriptionCVC.swift */; };
 		38107C682B37056600ACEDF3 /* ProductsDescriptionCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C662B37056600ACEDF3 /* ProductsDescriptionCVC.xib */; };
+		38111E1D2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38111E1C2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib */; };
+		38111E1E2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38111E1B2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift */; };
+		38111E212BB44F7600C46358 /* RCPAdetailsModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38111E202BB44F7600C46358 /* RCPAdetailsModal.swift */; };
 		3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3813B35E2A20E9AE006F3B78 /* Config.swift */; };
 		38145EC62B3459E100DD7B4E /* WTsheetCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38145EC42B3459E100DD7B4E /* WTsheetCVC.swift */; };
 		38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */; };
@@ -392,6 +395,9 @@
 		38107C612B36FA0400ACEDF3 /* ViewmoreCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewmoreCVC.xib; sourceTree = "<group>"; };
 		38107C652B37056600ACEDF3 /* ProductsDescriptionCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsDescriptionCVC.swift; sourceTree = "<group>"; };
 		38107C662B37056600ACEDF3 /* ProductsDescriptionCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsDescriptionCVC.xib; sourceTree = "<group>"; };
+		38111E1B2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompetitorsMultiselectionTVC.swift; sourceTree = "<group>"; };
+		38111E1C2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CompetitorsMultiselectionTVC.xib; sourceTree = "<group>"; };
+		38111E202BB44F7600C46358 /* RCPAdetailsModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPAdetailsModal.swift; sourceTree = "<group>"; };
 		3813B35E2A20E9AE006F3B78 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		38145EC42B3459E100DD7B4E /* WTsheetCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WTsheetCVC.swift; sourceTree = "<group>"; };
 		38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WTsheetCVC.xib; sourceTree = "<group>"; };
@@ -765,6 +771,14 @@
 			path = ReportsViewMore;
 			sourceTree = "<group>";
 		};
+		38111E1F2BB44F5100C46358 /* RCPAmodels */ = {
+			isa = PBXGroup;
+			children = (
+				38111E202BB44F7600C46358 /* RCPAdetailsModal.swift */,
+			);
+			path = RCPAmodels;
+			sourceTree = "<group>";
+		};
 		3813B35D2A20E774006F3B78 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1081,6 +1095,7 @@
 		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				38111E1F2BB44F5100C46358 /* RCPAmodels */,
 				38FAA1752B7F5C8100714AA2 /* MyDayPlan */,
 				38FAA16C2B7F255600714AA2 /* CommonStructs.swift */,
 				38CA1FE62B6107E700AFCFD2 /* Presentation */,
@@ -1397,6 +1412,8 @@
 				38E189252BB16DF60093C446 /* JfwView.swift */,
 				38866E742BB2DBC800F9E576 /* CompetitorsDetailsCell.swift */,
 				38866E752BB2DBC800F9E576 /* CompetitorsDetailsCell.xib */,
+				38111E1B2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift */,
+				38111E1C2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib */,
 			);
 			path = AddCalls;
 			sourceTree = "<group>";
@@ -1685,6 +1702,7 @@
 				3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */,
 				38EF4C672B749DAE00F78F2E /* BrandsPreviewCVC.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
+				38111E1D2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib in Resources */,
 				38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */,
 				38CA1FE52B6102AB00AFCFD2 /* SelectPresentationCVC.xib in Resources */,
 				38FAA1722B7F263500714AA2 /* MyDayPlanTVC.xib in Resources */,
@@ -1923,6 +1941,7 @@
 				38C4D33C2A7BD9BB0029AC12 /* MainViewModel.swift in Sources */,
 				38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */,
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
+				38111E212BB44F7600C46358 /* RCPAdetailsModal.swift in Sources */,
 				380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */,
 				3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */,
 				38EC6FB22B6242D10065A707 /* Media.swift in Sources */,
@@ -1970,6 +1989,7 @@
 				38E42B1E2B679634001E0F07 /* VideoPlayerCVC.swift in Sources */,
 				38CA1FEA2B61163C00AFCFD2 /* PlayPresentationView.swift in Sources */,
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
+				38111E1E2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift in Sources */,
 				38866E722BB2D3D500F9E576 /* CompetitorsFooter.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */,

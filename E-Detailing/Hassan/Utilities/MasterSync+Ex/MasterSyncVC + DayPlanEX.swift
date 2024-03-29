@@ -43,12 +43,12 @@ extension MasterSyncVC: MenuResponseProtocol {
             if territories.isEmpty {
                 
                 
-                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            //    if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                     
-                    self.showMasterSyncError(description: "Please check your internet connectivity!")
-                    
-                    return
-                }
+                //    self.showMasterSyncError(description: "Please check your internet connectivity!")
+               //
+              //      return
+             //   }
                 
                 
 //                cacheMasterData = masterData

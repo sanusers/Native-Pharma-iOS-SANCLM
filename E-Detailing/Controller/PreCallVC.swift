@@ -361,7 +361,7 @@ class PreCallVC : UIViewController {
 //        productVC.dcrCall = self.dcrCall
 //        self.navigationController?.pushViewController(productVC, animated: true)
 ////        
-        let vc = AddCallinfoVC.initWithStory()
+        let vc = AddCallinfoVC.initWithStory(viewmodel: self.userStatisticsVM ?? UserStatisticsVM())
         vc.dcrCall = self.dcrCall
         self.navigationController?.pushViewController(vc, animated: true)
         

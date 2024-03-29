@@ -44,7 +44,7 @@ class CalldetailsCVC: UICollectionViewCell {
     func topopulateCell(_ model: TodayCallsModel) {
         callDCRinfoLbl.text = "\(model.name)(\(model.designation))"
         timeinfoLbl.text = model.vstTime
-        
+        callStatusLbl.text = model.submissionStatus
         if model.designation == "Doctor" {
             callsDCR_IV.image = UIImage(named: "ListedDoctor")
         } else if model.designation == "Chemist" {

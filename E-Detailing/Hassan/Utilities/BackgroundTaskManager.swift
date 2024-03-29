@@ -83,6 +83,7 @@ class BackgroundTaskManager {
                 Pipelines.shared.toGroupSlides(mastersyncVM: MasterSyncVM()) {
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
                 Shared.instance.isSlideDownloading = false
+                Shared.instance.iscelliterating = false
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
                 completion()
             }

@@ -17,11 +17,13 @@ class RCPASectionheader: UITableViewHeaderFooterView {
     
     @IBOutlet var btnDelete: UIButton!
     
+    @IBOutlet var deleteView: UIView!
     var section: Int?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        btnDelete.isUserInteractionEnabled = false
     }
     
 

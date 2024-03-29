@@ -24,7 +24,7 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             params.isFailed = false
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
-        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
+         delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
         
     }
     

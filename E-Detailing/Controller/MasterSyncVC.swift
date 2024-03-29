@@ -69,14 +69,25 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
 
     
     func didDownloadCompleted() {
-        Shared.instance.removeLoaderInWindow()
-        if isFromLaunch {
-            
-            toSetupAlert(desc: "Slides loading completed", istoNavigate: true)
+   //     Shared.instance.removeLoaderInWindow()
+//        if isFromLaunch {
+//            
+//            toSetupAlert(desc: "Please wait while organizing slides data", istoNavigate: true)
+//
+//        } else {
+//            self.toCreateToast("Slide downloaded succeessfully.")
+//        }
+        
+        self.toCreateToast("Please wait while organizing slides data.")
 
-        } else {
-            self.toCreateToast("Slide downloaded succeessfully.")
+        Pipelines.shared.toGroupSlides(mastersyncVM: mastersyncVM ?? MasterSyncVM()) {
+            BackgroundTaskManager.shared.stopBackgroundTask()
+            Shared.instance.isSlideDownloading = false
+            Shared.instance.iscelliterating = false
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
         }
+        
+
         
 
     }
@@ -106,7 +117,7 @@ class MasterSyncVC : UIViewController {
     @IBOutlet var slideDownloadStatusLbl: UILabel!
     
     @IBOutlet var retryVIew: UIView!
-    
+    let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var pageType: PageType = .loaded
     var loadedSlideInfo = [MasterInfo]()
     var extractedFileName: String?
@@ -192,7 +203,7 @@ class MasterSyncVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       //  addobservers()
+        addobservers()
         masterVM = MasterSyncVM()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         setupUI()
@@ -305,9 +316,15 @@ class MasterSyncVC : UIViewController {
 //        
 //        NotificationCenter.default.addObserver(self, selector: #selector(hqModified) , name: NSNotification.Name("HQmodified"), object: nil)
         
+                NotificationCenter.default.addObserver(self, selector: #selector(dcrCallAdded) , name: NSNotification.Name("callsAdded"), object: nil)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
     }
     
+    
+    @objc func dcrCallAdded() {
+        self.fetchmasterData(type: .homeSetup) {_ in }
+    }
     
     @objc func hqModified() {
         print("Tapped")

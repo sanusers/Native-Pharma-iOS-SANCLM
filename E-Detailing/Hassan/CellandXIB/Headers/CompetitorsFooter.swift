@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 extension CompetitorsFooter: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -14,7 +15,15 @@ extension CompetitorsFooter: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CompetitorsDetailsCell = tableView.dequeueReusableCell(withIdentifier: "CompetitorsDetailsCell", for: indexPath) as! CompetitorsDetailsCell
+        if let competitors = self.competitors {
+            cell.competitor =  competitors[indexPath.row]
+        }
+    
         cell.selectionStyle = .none
+        cell.deleteHolder.addTap {
+            self.delegate?.didTapdelete(section: self.section ?? 0, index: indexPath.row)
+        }
+        
         return cell
     }
     
@@ -40,6 +49,11 @@ extension CompetitorsFooter: UITableViewDelegate, UITableViewDataSource {
     
 }
 
+
+protocol CompetitorsFooterDelegate: AnyObject {
+    func didTapdelete(section: Int, index: Int)
+}
+
 class CompetitorsFooter: UITableViewHeaderFooterView {
     @IBOutlet var viewAddcompetitor: UIView!
     
@@ -50,15 +64,24 @@ class CompetitorsFooter: UITableViewHeaderFooterView {
     @IBOutlet var btnAddcompetitor: UIButton!
     @IBOutlet var competitorsTable: UITableView!
     var rowcount: Int?
-    func setupAddedCompetitors(count: Int) {
+    var section: Int?
+    weak var delegate: CompetitorsFooterDelegate?
+    var competitors: [Competitor]?
+    func setupAddedCompetitors(count: Int, competitors: [Competitor]) {
         //50 - header
         //50 - addbtn
         //10 - top bottom padding
         //50 * count - each cell height
-        rowcount = count
+
         let tableHeight: CGFloat = count == 0 ?  CGFloat(50) : CGFloat((count * 50) + 50 + 50 + 10)
         curvedViewHeightConstraint.constant = tableHeight
-        toloadData()
+        if count > 0 {
+            rowcount = count
+            self.competitors = competitors
+            toloadData()
+        }
+
+      
     }
     
     func toloadData() {

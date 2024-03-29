@@ -99,12 +99,12 @@ extension UIStoryboard {
         return preCallVC
     }
     
-    static var productVC : ProductVC {
-        guard let  productVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "ProductVC") as? ProductVC else{
-            fatalError("ProductVC couldn't be found in Storyboard file")
-        }
-        return productVC
-    }
+//    static var productVC : ProductVC {
+//        guard let  productVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "ProductVC") as? ProductVC else{
+//            fatalError("ProductVC couldn't be found in Storyboard file")
+//        }
+//        return productVC
+//    }
     
     static var multiSelectionVC : MultiSelectionVC {
         guard let  multiSelectionVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "MultiSelectionVC") as? MultiSelectionVC else{

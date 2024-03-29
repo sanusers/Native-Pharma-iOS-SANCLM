@@ -128,6 +128,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="btnDelete" destination="7m2-NY-y4Z" id="G6e-i5-9Mh"/>
+                <outlet property="deleteView" destination="bMg-4W-j3E" id="2fu-4H-NxJ"/>
                 <outlet property="holderStack" destination="VQl-6c-2AG" id="5rv-qg-OOT"/>
                 <outlet property="summonedTotal" destination="cQd-AU-QIP" id="aKW-Io-ydt"/>
                 <outlet property="titleLbl" destination="S7F-bA-k1v" id="yit-uQ-1yb"/>

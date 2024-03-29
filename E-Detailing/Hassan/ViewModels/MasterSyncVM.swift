@@ -370,7 +370,7 @@ class MasterSyncVM {
             groupedBrandModel.productBrdCode = brandSlideModel.productBrdCode
             groupedBrandModel.subdivisionCode = brandSlideModel.subdivisionCode
             groupedBrandModel.id = brandSlideModel.id
-
+            dump(groupedBrandModel)
             return groupedBrandModel
         }
 
@@ -451,21 +451,50 @@ class MasterSyncVM {
 
 
       
-         
-        
-      
-        
-        tempGroupedBrandsSlideModel.enumerated().forEach { index, aGroupedBrandsSlideModel in
-            CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) {isSaved in
-                if isSaved {
-                    completion(true)
-                } else {
-                    completion(false)
-                }
+        saveGroupedSlides(tempGroupedBrandsSlideModel, atIndex: 0) { success in
+            if success {
+                // All items saved successfully
+                completion(true)
+            } else {
+                // Saving failed for one or more items
+                completion(false)
             }
         }
         
+      
+        
+//        tempGroupedBrandsSlideModel.enumerated().forEach { index, aGroupedBrandsSlideModel in
+//            CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) {isSaved in
+//                if isSaved {
+//                    completion(true)
+//                } else {
+//                    completion(false)
+//                }
+//            }
+//        }
+        
 
+    }
+    
+    
+    func saveGroupedSlides(_ groupedSlides: [GroupedBrandsSlideModel], atIndex index: Int, completion: @escaping (Bool) -> Void) {
+        guard index < groupedSlides.count else {
+            // All items saved
+            completion(true)
+            return
+        }
+
+        let currentSlide = groupedSlides[index]
+
+        CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: currentSlide) { isSaved in
+            if isSaved {
+                // Proceed to save the next item
+                self.saveGroupedSlides(groupedSlides, atIndex: index + 1, completion: completion)
+            } else {
+                // If one fails, stop the process and return false
+                completion(false)
+            }
+        }
     }
 
     func unarchiveAndGetData(from zipData: Data) -> UnzippedDataInfo {

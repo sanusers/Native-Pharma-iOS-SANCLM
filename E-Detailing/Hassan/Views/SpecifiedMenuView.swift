@@ -730,25 +730,21 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             return cell
             
         case .competitors:
-            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            let cell: CompetitorsMultiselectionTVC = tableView.dequeueReusableCell(withIdentifier: "CompetitorsMultiselectionTVC", for: indexPath) as!  CompetitorsMultiselectionTVC
             cell.selectionStyle = .none
-            cell.setCheckBox(isToset: true)
+      
             titleLbl.text = "Select Competitors"
             let model =  self.competitorsArr?[indexPath.row]
-            cell.lblName.text = model?.ourProductName
-            cell.lblName.textColor = .appTextColor
+            cell.competitorProduct.text = model?.compProductName ?? ""
+            cell.competitorCompany.text = model?.compName ?? ""
             cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
-            
-         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
-            
-            
             self.competitorsArr?.forEach({ cluster in
                 //  dump(cluster.code)
                 selectedCompetitorID.forEach { id, isSelected in
                     if id == cluster.ourProductCode {
 
                         if isSelected  {
-                            if cluster.ourProductName ==  cell.lblName?.text {
+                            if cluster.compProductName ==  cell.competitorProduct?.text {
                                 cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
                             }
                             
@@ -1342,9 +1338,11 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return 60 + 10
             
-        case .inputs, .clusterInfo, .speciality, .qualification, .category, .competitors:
+        case .inputs, .clusterInfo, .speciality, .qualification, .category:
             
             return 30 + 10
+        case .competitors:
+            return 60
             
         default:
             return UITableView.automaticDimension
@@ -1750,8 +1748,18 @@ class SpecifiedMenuView: BaseView {
            
        case .competitors:
            bottomHolderHeight.constant = 80
-           competitorsArr =  DBManager.shared.getCompetitor()
-           
+           let competitorArr  =  DBManager.shared.getCompetitor()
+           let productArr = DBManager.shared.getProduct()
+           var tempCompetitor: [Competitor] = []
+           productArr.forEach { aProduct in
+               competitorArr.forEach { acompetitor in
+                   if acompetitor.ourProductCode ==   aProduct.code {
+                       tempCompetitor.append(acompetitor)
+                   }
+               }
+             
+           }
+           self.competitorsArr = tempCompetitor
        case .cluster:
                
            bottomHolderHeight.constant = 80
@@ -1876,6 +1884,8 @@ class SpecifiedMenuView: BaseView {
         menuTable.register(UINib(nibName: "resourceInfoTVC", bundle: nil), forCellReuseIdentifier: "resourceInfoTVC")
         
         menuTable.register(UINib(nibName: "CommonResouceInfoTVC", bundle: nil), forCellReuseIdentifier: "CommonResouceInfoTVC")
+        
+        menuTable.register(UINib(nibName: "CompetitorsMultiselectionTVC", bundle: nil), forCellReuseIdentifier: "CompetitorsMultiselectionTVC")
         
         
     }

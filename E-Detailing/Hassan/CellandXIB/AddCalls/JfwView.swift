@@ -22,18 +22,16 @@ extension JfwView: MenuResponseProtocol {
        //lblEnterRemarks.textColor = .appLightTextColor
         
         if let feedbackObj = selectedObject as? Feedback {
-            selectedfeedbackLbl.text = feedbackObj.name == "" ? "Select" :  feedbackObj.name
-            
-            
-            
-            
-         //   lblEnterRemarks.textColor =  feedbackObj.name == "" ? .appLightTextColor :
+            selectedfeedbackLbl.text = feedbackObj.name == "" ? "Select Overall Feedback" :  feedbackObj.name
+            self.overallFeedback = feedbackObj
         }
         
         
         if let jwObj = selectedObject as? JointWork {
             jointworkSelectionAction(obj: jwObj)
         }
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
         
     }
     
@@ -42,6 +40,11 @@ extension JfwView: MenuResponseProtocol {
     }
     
     
+}
+
+
+protocol JfwViewDelegate: AnyObject {
+    func selectedObjects(eventcptureVM: EventCaptureListViewModel, jointWorkSelectedListViewModel : JointWorksListViewModel, POBValue: String, overallFeedback: Feedback, overallRemarks: String)
 }
 
 extension JfwView : UIImagePickerControllerDelegate , UINavigationControllerDelegate {
@@ -59,6 +62,7 @@ extension JfwView : UIImagePickerControllerDelegate , UINavigationControllerDele
         guard let eventCaptureListViewModel = self.eventCaptureListViewModel else {return}
         eventCaptureListViewModel.addEventCapture(EventCaptureViewModel(eventCapture: EventCapture(image: image,title: "",description: "")))
         self.eventCaptureTableView.reloadData()
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
     }
 }
 
@@ -67,8 +71,12 @@ extension JfwView : UITextViewDelegate {
         let text = textView.text ?? ""
         
         self.eventCaptureListViewModel?.updateDescription(textView.tag, remark: text)
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
     }
 }
+
+
 
 extension JfwView: UITableViewDelegate, UITableViewDataSource {
     func jointworkSelectionAction(obj: JointWork) {
@@ -90,12 +98,14 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
         }
         
         self.jointWorkTableView.reloadData()
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
     }
     
     
     @objc func deleteEventCapture(_ sender : UIButton){
         self.eventCaptureListViewModel?.removeAtIndex(sender.tag)
         self.eventCaptureTableView.reloadData()
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
     }
     
     
@@ -175,9 +185,9 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
 class JfwView: UIView {
     
 
+    weak var delegate: JfwViewDelegate?
     
-    
-    @IBOutlet var lblEnterRemarks: UILabel!
+   // @IBOutlet var lblEnterRemarks: UILabel!
     
     @IBOutlet var lblPOBValue: UILabel!
     
@@ -240,9 +250,12 @@ class JfwView: UIView {
     
     @IBOutlet var viewJointWorkSegment: UIView!
     
+    @IBOutlet var remarksTF: UITextField!
     
     var rootVC: UIViewController?
     var pobValue: String?
+    var overallFeedback: Feedback?
+    var overallRemark: String?
     var captureSession : AVCaptureSession?
     var frontCamera: AVCaptureDevice?
     var currentCamera: AVCaptureDevice?
@@ -340,7 +353,7 @@ class JfwView: UIView {
     func setupUI() {
       //  viewEventCaptureSegment.isHidden = true
         selectedfeedbackLbl.setFont(font: .medium(size: .BODY))
-        lblEnterRemarks.setFont(font: .medium(size: .BODY))
+       // lblEnterRemarks.setFont(font: .medium(size: .BODY))
         lblPOBValue.setFont(font: .bold(size: .BODY))
         feedbackLbl.setFont(font: .bold(size: .BODY))
         lblOverallRemarks.setFont(font: .bold(size: .BODY))
@@ -352,7 +365,7 @@ class JfwView: UIView {
         
         viewOverallFeedback.layer.cornerRadius = 5
         viewPOB.layer.cornerRadius = 5
-        
+        remarksTF.delegate = self
         
         captureCurvedVIew.layer.cornerRadius = 5
         //captureVXView.layer.cornerRadius = 5
@@ -395,6 +408,19 @@ class JfwView: UIView {
         
         
         jointWorkTableView.register(UINib(nibName: "JointWorkTableViewCell", bundle: nil), forCellReuseIdentifier: "JointWorkTableViewCell")
+        
+        if let overallFeedback = self.overallFeedback {
+            selectedfeedbackLbl.text = overallFeedback.name == "" ? "Select Overall Feedback" :  overallFeedback.name
+        }
+        
+        if let pobValue = self.pobValue {
+            pobTF.text = pobValue
+        }
+        
+        if let overallRemark = self.overallRemark {
+            remarksTF.text = overallRemark
+        }
+       
         toloadEventCapuretable()
         toloadJWtable()
     }
@@ -405,10 +431,16 @@ class JfwView: UIView {
         eventCaptureTableView.reloadData()
     }
     
+    @IBAction func didTapRemarks(_ sender: UITextField) {
+        self.overallRemark = sender.text ?? ""
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        
+    }
     
     @IBAction func didtapPOBtf(_ sender: UITextField) {
         
         self.pobValue = sender.text ?? ""
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
     }
     
     

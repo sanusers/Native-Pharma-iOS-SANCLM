@@ -93,18 +93,21 @@
                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f3d-uI-3cV">
                                                 <rect key="frame" x="2" y="1.3333333333333321" width="70.666666666666671" height="45.333333333333343"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Qty" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XkZ-uE-JUr">
-                                                        <rect key="frame" x="4.9999999999999964" y="14.000000000000002" width="60.666666666666657" height="17.666666666666671"/>
-                                                        <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
-                                                        <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
+                                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Qty" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="biN-xs-Ya1">
+                                                        <rect key="frame" x="9.9999999999999964" y="13.333333333333337" width="50.666666666666657" height="18.666666666666679"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                        <connections>
+                                                            <action selector="didtapQtyLbl:" destination="KGk-i7-Jjw" eventType="editingDidEnd" id="YeF-ir-qKZ"/>
+                                                        </connections>
+                                                    </textField>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstItem="XkZ-uE-JUr" firstAttribute="leading" secondItem="f3d-uI-3cV" secondAttribute="leading" constant="5" id="4s5-L5-r08"/>
-                                                    <constraint firstItem="XkZ-uE-JUr" firstAttribute="centerY" secondItem="f3d-uI-3cV" secondAttribute="centerY" id="b4i-tE-22N"/>
-                                                    <constraint firstAttribute="trailing" secondItem="XkZ-uE-JUr" secondAttribute="trailing" constant="5" id="zhY-uk-D2C"/>
+                                                    <constraint firstItem="biN-xs-Ya1" firstAttribute="centerY" secondItem="f3d-uI-3cV" secondAttribute="centerY" id="1Jv-vh-i7b"/>
+                                                    <constraint firstItem="biN-xs-Ya1" firstAttribute="leading" secondItem="f3d-uI-3cV" secondAttribute="leading" constant="10" id="Aej-R1-d1H"/>
+                                                    <constraint firstItem="biN-xs-Ya1" firstAttribute="centerX" secondItem="f3d-uI-3cV" secondAttribute="centerX" id="QFG-wI-CmN"/>
+                                                    <constraint firstAttribute="trailing" secondItem="biN-xs-Ya1" secondAttribute="trailing" constant="10" id="Zez-uR-msL"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
@@ -256,7 +259,7 @@
                 <outlet property="compProductLbl" destination="heI-vf-Siy" id="qy1-Ud-nZ9"/>
                 <outlet property="deleteHolder" destination="T4u-VF-p1Z" id="3Ta-Gf-cMO"/>
                 <outlet property="qtyHolde" destination="f3d-uI-3cV" id="mG3-Ed-Dsq"/>
-                <outlet property="qtyLbl" destination="XkZ-uE-JUr" id="idf-ol-UN5"/>
+                <outlet property="qtyTF" destination="biN-xs-Ya1" id="K9c-6N-TK6"/>
                 <outlet property="rateHolder" destination="rya-RD-dgP" id="OAU-vN-cQQ"/>
                 <outlet property="rateLbl" destination="OhS-jx-N8r" id="Ksk-gt-VnJ"/>
                 <outlet property="valueHolder" destination="ju7-Zi-Uqs" id="uP0-qC-mFv"/>
@@ -272,7 +275,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray6Color">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

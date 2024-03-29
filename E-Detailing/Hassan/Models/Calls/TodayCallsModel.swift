@@ -20,6 +20,7 @@ class TodayCallsModel: Codable {
     var name: String
     var designation: String
     var submissionDate: String
+    var submissionStatus: String
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.aDetSLNo = container.safeDecodeValue(forKey: .aDetSLNo)
@@ -36,6 +37,7 @@ class TodayCallsModel: Codable {
          let components = custName.components(separatedBy: "[")
         designation = components.count > 1 ? components[1].replacingOccurrences(of: "]", with: "").replacingOccurrences(of: " ", with: "") : ""
         submissionDate = ""
+        submissionStatus = ""
     }
     
     
@@ -47,6 +49,7 @@ class TodayCallsModel: Codable {
         case synced = "Synced"
         case transSlNo = "Trans_SlNo"
         case vstTime = "vstTime"
+      
         
     }
     
@@ -61,6 +64,7 @@ class TodayCallsModel: Codable {
         self.name = String()
         self.designation = String()
         self.submissionDate = String()
+        self.submissionStatus = String()
     }
     
 }

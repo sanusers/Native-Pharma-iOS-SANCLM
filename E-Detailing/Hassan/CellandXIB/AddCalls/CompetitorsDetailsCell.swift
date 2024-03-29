@@ -7,7 +7,13 @@
 
 import UIKit
 
-class CompetitorsDetailsCell: UITableViewCell {
+protocol CompetitorsDetailsCellDelagate : AnyObject {
+    
+   func didUpdateQuantity()
+}
+
+
+class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     
 
     
@@ -22,16 +28,39 @@ class CompetitorsDetailsCell: UITableViewCell {
     
     @IBOutlet var qtyHolde: UIView!
     
-    @IBOutlet var qtyLbl: UILabel!
+    @IBOutlet var qtyTF: UITextField!
     @IBOutlet var rateLbl: UILabel!
     @IBOutlet var rateHolder: UIView!
     @IBOutlet var deleteHolder: UIView!
     @IBOutlet var commentsHolder: UIView!
+    
+    var index: Int = 0
+   // var productDetail: ProductDetails?
+    
+    var competitor : Competitor! {
+        didSet {
+            compProductLbl.text = competitor?.compProductName ?? ""
+            compCompanyLbl.text = competitor?.compName ?? ""
+        }
+    }
+    
+    func setupUI() {
+        qtyTF.delegate = self
+ 
+       // rateLbl.text = competitor?.
+    }
+    
+    @IBAction func didtapQtyLbl(_ sender: UITextField) {
+        
+        
+        
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
-        let curvedViews : [UIView] = [    compCompanyHolder, compProductHolder, rateHolder, valueHolder]
+        let curvedViews : [UIView] = [compCompanyHolder, compProductHolder, rateHolder, valueHolder]
         
         curvedViews.forEach {
             $0.layer.cornerRadius = 3
