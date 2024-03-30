@@ -103,52 +103,42 @@ extension MasterSyncVC {
 
         isNewSlideExists = !nonExistingSlides.isEmpty
         
-        if nonExistingSlides.isEmpty {
-            slideDownloadStatusLbl.isHidden  =  true
-            downloadingBottomView.isHidden =  true
-            return false
-        }
-            
         
         // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
         self.arrayOfAllSlideObjects.removeAll()
         self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
         self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
-       //let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
-
-        if !nonExistingSlides.isEmpty {
+        
+        if !LocalStorage.shared.getBool(key: .isSlidesLoaded) ||  !LocalStorage.shared.getBool(key: .isSlidesGrouped) {
+            if nonExistingSlides.isEmpty {
+                slideDownloadStatusLbl.isHidden  =  true
+                downloadingBottomView.isHidden =  true
+                return false
+            } else {
+                slideDownloadStatusLbl.text = "Tap to retry slide download"
+                retryVIew.isHidden = false
+                return true
+            }
+        } else if !nonExistingSlides.isEmpty {
             slideDownloadStatusLbl.isHidden  =  false
             downloadingBottomView.isHidden =  false
             if Shared.instance.isSlideDownloading  {
                 slideDownloadStatusLbl.text = "slides download in progress.."
                 retryVIew.isHidden = true
                 
-            } else if isfromHome && !LocalStorage.shared.getBool(key: .isSlidesLoaded) {
+            } else if isfromHome  {
                 slideDownloadStatusLbl.text = "Tap to retry slide download"
                 retryVIew.isHidden = false
-            }
-            else if Shared.instance.isSlideDownloading {
-                slideDownloadStatusLbl.text = "slides download in progress.."
-                retryVIew.isHidden = true
-                //:\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
             } else {
                 slideDownloadStatusLbl.isHidden = true
                 retryVIew.isHidden = true
                 downloadingBottomView.isHidden = true
             }
-       
-         
-           
-        } else {
-            retryVIew.isHidden = true
-            slideDownloadStatusLbl.isHidden  =  true
-            downloadingBottomView.isHidden =  true
-            
+            return !nonExistingSlides.isEmpty
         }
-        
-        
-        return !nonExistingSlides.isEmpty
-        
+       //let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
+       
+        return false
     }
     
     func moveToDownloadSlide(isFromcache: Bool? = false) {

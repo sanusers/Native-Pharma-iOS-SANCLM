@@ -2461,21 +2461,17 @@ class MainVC : UIViewController {
             case .success(_):
                 do {
                     let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                    
-                    
-                    print("ssususnbjbo")
+
                     print(apiResponse)
-                    print("ssusus")
-                    
-                    
-                    if let response = apiResponse as? [[String : Any]] {
+
+                  //  if let response = apiResponse as? [[String : Any]] {
                         
-                    }
+                //    }
                 }catch {
                     print(error)
                 }
             case .failure(let error):
-                //   ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+             
                 self.toCreateToast(error.localizedDescription)
                 print(error)
                 return
@@ -2486,13 +2482,13 @@ class MainVC : UIViewController {
     
     
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
-        let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
+    //    let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
         //  obj_sections[section].isLoading = true
-        if isConnected {
+      //  if isConnected {
             toSetParams()
-        } else {
-            self.toCreateToast("Please connect to internet and try again later.")
-        }
+//        } else {
+//            self.toCreateToast("Please connect to internet and try again later.")
+//        }
         
         
         
@@ -4621,16 +4617,14 @@ extension MainVC : UIViewControllerTransitioningDelegate{
 extension MainVC : outboxCollapseTVCDelegate {
     func didTapRefresh(_ refreshIndex: Int) {
         
-        let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
+      //  let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
         //  obj_sections[section].isLoading = true
-        if isConnected {
+       // if isConnected {
             self.toretryDCRupload(date: obj_sections[refreshIndex].date) {_ in }
-        } else {
-            self.toCreateToast("Please connect to internet and try again later.")
-        }
-        
-        // header?.refreshBtn.isUserInteractionEnabled = false
-        // header?.refreshBtn.alpha = 0.5
+       // } else {
+          //  self.toCreateToast("Please connect to internet and try again later.")
+      //  }
+
     }
     
     

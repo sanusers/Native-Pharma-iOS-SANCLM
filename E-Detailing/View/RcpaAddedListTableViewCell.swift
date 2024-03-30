@@ -8,6 +8,47 @@
 import Foundation
 import UIKit
 
+extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rowcount ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: CompetitorsDetailsCell = tableView.dequeueReusableCell(withIdentifier: "CompetitorsDetailsCell", for: indexPath) as! CompetitorsDetailsCell
+        if let competitors = self.competitors {
+            cell.competitor =  competitors[indexPath.row]
+        }
+    
+        cell.selectionStyle = .none
+        cell.deleteHolder.addTap {
+            guard let section = self.section, let index = self.index else {return}
+            self.delegate?.didTapdeleteCompetitor(section: section, index: index, competitorIndex: indexPath.row)
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CompetitorsDetailsHeader") as? CompetitorsDetailsHeader else {
+ 
+            return UIView()
+        }
+
+
+
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    
+}
 
 class RcpaAddedListTableViewCell : UITableViewCell {
     
@@ -29,8 +70,38 @@ class RcpaAddedListTableViewCell : UITableViewCell {
     @IBOutlet var viewTotalHolder: UIView!
     
     @IBOutlet var viewValueHolder: UIView!
-
     
+    @IBOutlet var btnAddCompetitor: UIButton!
+    weak var delegate: CompetitorsFooterDelegate?
+    
+    @IBOutlet var viewAddcompetitor: UIView!
+    @IBOutlet var curvedView: UIView!
+    @IBOutlet var competitorsTable: UITableView!
+    @IBOutlet var curvedViewHeightConstraint: NSLayoutConstraint! //50 default
+    var rowcount: Int?
+    var section: Int?
+    var index: Int?
+    var competitors: [Competitor]?
+    func setupAddedCompetitors(count: Int, competitors: [Competitor]) {
+        //50 - header
+        //50 - addbtn
+        //10 - top bottom padding
+        //50 * count - each cell height
+
+        let tableHeight: CGFloat = count == 0 ?  CGFloat(50) : CGFloat((count * 50) + 50 + 50 + 10)
+        curvedViewHeightConstraint.constant = tableHeight
+        if count > 0 {
+            rowcount = count
+            self.competitors = competitors
+            toloadData()
+        }
+
+        func toloadData() {
+            competitorsTable.delegate = self
+            competitorsTable.dataSource = self
+            competitorsTable.reloadData()
+        }
+    }
     
     var rcpaProduct : RCPAdetailsModal! {
 
@@ -45,8 +116,19 @@ class RcpaAddedListTableViewCell : UITableViewCell {
         }
     }
     
+    
+    func cellregistration() {
+        competitorsTable.register(UINib(nibName: "CompetitorsDetailsCell", bundle: nil), forCellReuseIdentifier: "CompetitorsDetailsCell")
+        
+        competitorsTable.register(UINib(nibName: "CompetitorsDetailsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "CompetitorsDetailsHeader")
+        
+        
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        competitorsTable.showsVerticalScrollIndicator = false
+        competitorsTable.isScrollEnabled = false
         btnDelete.setTitle("", for: .normal)
         viewQtyHolder.layer.cornerRadius = 3
         viewRateHolder.layer.cornerRadius = 3
@@ -58,9 +140,18 @@ class RcpaAddedListTableViewCell : UITableViewCell {
         viewTotalHolder.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         viewQtyHolder.layer.borderWidth = 1
         viewQtyHolder.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.1).cgColor
-//        self.viewCompetitorList.layer.cornerRadius = 5
-//        self.viewCompetitorList.layer.borderWidth = 1
-//        self.viewCompetitorList.layer.borderColor = AppColors.primaryColorWith_10per_alpha.cgColor
+
+        
+        cellregistration()
+        competitorsTable.separatorStyle = .none
+
+        // Initialization code
+        viewAddcompetitor.layer.cornerRadius = 5
+        viewAddcompetitor.layer.borderWidth = 1
+        viewAddcompetitor.layer.borderColor = UIColor.appGreen.cgColor
+        curvedView.layer.cornerRadius = 5
+        curvedView.layer.borderWidth = 1
+        curvedView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
         
     }
     

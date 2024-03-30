@@ -7,8 +7,15 @@
 
 import Foundation
 
+struct ProductWithCompetiors {
+    var addedProduct : Product?
+    var competitor: [Competitor]?
+}
+
+
+
 struct ProductDetails {
-    var addedProduct: [Product]?
+    var addedProduct: [ProductWithCompetiors]?
     var addedQuantity: [String]?
     var addedRate: [String]?
     var addedValue: [String]?
@@ -18,16 +25,15 @@ struct ProductDetails {
  class RCPAdetailsModal  {
     
     var addedChemist: Chemist?
- 
     var addedProductDetails : ProductDetails?
-    var competitor: [Competitor]?
+  //  var competitor: [Competitor]?
     var totalValue: String?
     
     init() {
     addedChemist = Chemist()
 
     addedProductDetails = ProductDetails()
-    competitor = [Competitor]()
+ //   competitor = [Competitor]()
 
         
         

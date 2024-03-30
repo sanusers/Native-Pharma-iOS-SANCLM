@@ -21,7 +21,7 @@ extension CompetitorsFooter: UITableViewDelegate, UITableViewDataSource {
     
         cell.selectionStyle = .none
         cell.deleteHolder.addTap {
-            self.delegate?.didTapdelete(section: self.section ?? 0, index: indexPath.row)
+           // self.delegate?.didTapdeleteCompetitor(section: section, index: indx, competitorIndex: <#T##Int#>)
         }
         
         return cell
@@ -51,7 +51,7 @@ extension CompetitorsFooter: UITableViewDelegate, UITableViewDataSource {
 
 
 protocol CompetitorsFooterDelegate: AnyObject {
-    func didTapdelete(section: Int, index: Int)
+    func didTapdeleteCompetitor(section: Int, index: Int, competitorIndex: Int)
 }
 
 class CompetitorsFooter: UITableViewHeaderFooterView {

@@ -85,7 +85,7 @@ extension Shared{
         
         
         
-        let jeremyGif = loaderType == .common ? UIImage.gif(asset: "loader") : UIImage.gif(asset: "sync")
+        let jeremyGif = loaderType == .common ? UIImage.gif(asset: "loader") : UIImage.gif(asset: "loading")
         //UIImage.gifImageWithName("loader")
         let view = UIView()
         view.backgroundColor = UIColor.appLightTextColor.withAlphaComponent(0.05)

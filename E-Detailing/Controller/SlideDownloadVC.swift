@@ -71,8 +71,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
         
         
         if istoreturn {
-            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
+            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: true)
             completion(true)
+            return
         }
         
      // self.closeHolderView.isUserInteractionEnabled = false
@@ -129,32 +130,24 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                 if isInstanceSaved {
 
                     guard index + 1 < arrayOfAllSlideObjects.count else {
-                        DispatchQueue.global().async {
-                            // Perform subsequent tasks asynchronously on a background queue
-//                            self.mastersyncvm?.toGroupSlidesBrandWise() { _ in
-//                                
-//                            }
-                            
-                            DispatchQueue.main.async {
-                                
-                                if !isfrorBackgroundTask {
-                                    self.tableView.reloadData()
-                                    self.tableView.isUserInteractionEnabled = true
-                                }
+                        
+                        Shared.instance.showLoader(in: self.tableView, loaderType: .common)
                                
                                 LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
                                 self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
-                                self.closeHolderView.isUserInteractionEnabled = true
+
                                 self.checkifSyncIsCompleted(self.isFromlaunch) {
-                                BackgroundTaskManager.shared.stopBackgroundTask()
-                                    self.dismiss(animated: true)
-                                completion(true)
+                                    if !isfrorBackgroundTask {
+                                        self.tableView.reloadData()
+                                        self.tableView.isScrollEnabled = true
+                                        self.tableView.isUserInteractionEnabled = true
+                                        self.toSetupAlert(text: "Slide downloading completed")
+                                    } else {
+                                        BackgroundTaskManager.shared.stopBackgroundTask()
+                                    }
+                                    Shared.instance.removeLoader(in: self.tableView)
+                                    completion(true)
                                 }
-                             
-                         
-                            }
-                        }
-          
                         return
                     }
                     
@@ -269,11 +262,6 @@ class SlideDownloadVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        if  Shared.instance.iscelliterating {
-//            dismiss(animated: false)
-//            return
-//            
-//        }
 
         setupuUI()
         initVIew()
@@ -289,11 +277,13 @@ class SlideDownloadVC : UIViewController {
         } else {
             toLoadPresentationData(type: .slideBrand)
             toLoadPresentationData(type: .slides)
+//            Shared.instance.showLoaderInWindow()
+//            self.toGroupSlidesBrandWise() {_ in
+//                Shared.instance.removeLoaderInWindow()
+//            }
+            
         }
-        
-//       self.arrayOfAllSlideObjects.filter { aSlidesModel in
-//            aSlidesModel.isDownloadCompleted = false
-//        }
+
 
     }
     
@@ -333,14 +323,14 @@ class SlideDownloadVC : UIViewController {
 
     
     
-    func toSetupAlert() {
+    func toSetupAlert(text: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Slides will be downloaded in background..", okAction: "Ok")
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
-                 self.dismiss(animated: false) {
-             //   self.delegate?.didDownloadCompleted()
-            }
+                // self.dismiss(animated: false) {
+              //  self.delegate?.didDownloadCompleted()
+            //}
         }
     }
     
@@ -554,21 +544,18 @@ class SlideDownloadVC : UIViewController {
            
         } else {
             Shared.instance.iscelliterating = false
-
+            Shared.instance.isSlideDownloading = false
             print("Cant able to retrive cell.")
             
-            
+            isDownloadingInProgress = false
             
             let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
             
             let cacheIndexInt: Int = Int(cacheIndexstr) ?? 0
             
-          //  toDownloadMedia(index: cacheIndexInt, items: arrayOfAllSlideObjects)
             self.didDownloadCompleted(arrayOfAllSlideObjects: self.arrayOfAllSlideObjects, index: cacheIndexInt, isForSingleSelection: false, isfrorBackgroundTask: true, istoreturn: true) {_ in
                 //  BackgroundTaskManager.shared.stopBackgroundTask()
-                BackgroundTaskManager.shared.toDownloadMedia(index: cacheIndexInt, items: self.arrayOfAllSlideObjects, delegte: self) {
-                    
-                }
+     
             }
         }
     }
@@ -635,99 +622,97 @@ class SlideDownloadVC : UIViewController {
             return groupedBrandModel
         }
 
-        let dispatchGroup = DispatchGroup()
-
-        for groupedBrandModel in groupedBrandsSlideModels {
-            dispatchGroup.enter()
-
-            tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
-                dispatchGroup.leave()
-
-                if isSaved {
-                    completion(true)
-                }
-            }
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            // All async tasks are completed
+        processBrandsSlideModels(groupedBrandsSlideModels: groupedBrandsSlideModels, index: 0) { _ in
             completion(true)
-          //  Shared.instance.removeLoaderInWindow()
+        }
+        
+    }
+    
+    func processBrandsSlideModels(groupedBrandsSlideModels:  [GroupedBrandsSlideModel],index: Int, completion: @escaping (Bool) -> Void) {
+        guard index < groupedBrandsSlideModels.count else {
+            // Base case: All items processed, notify completion
+            completion(true)
+            return
+        }
+        
+        let groupedBrandModel = groupedBrandsSlideModels[index]
+        
+        tounArchiveData(aGroupedBrandsSlideModel: groupedBrandModel) { isSaved in
+            // Continue with next iteration
+            if isSaved {
+                self.processBrandsSlideModels(groupedBrandsSlideModels: groupedBrandsSlideModels, index: index + 1, completion: completion)
+            } else {
+                completion(false) // Or handle failure appropriately
+            }
         }
     }
     
+    
     func tounArchiveData(aGroupedBrandsSlideModel: GroupedBrandsSlideModel, completion: @escaping (Bool) -> Void) {
-        var zipContentsSlides = [SlidesModel]()
-        var zipgropedBrandModels = [GroupedBrandsSlideModel]()
-        var tempGroupedBrandsSlideModel =  [GroupedBrandsSlideModel]()
-        
-        zipContentsSlides = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
-            aSlideModel.utType == "application/zip" ||  aSlideModel.fileType == "H"
-        }
-        
-        // Update groupedSlideModel by removing slides with utType equal to "application/zip"
-        aGroupedBrandsSlideModel.groupedSlide = aGroupedBrandsSlideModel.groupedSlide.filter { aSlideModel in
-            !(aSlideModel.utType == "application/zip" && aSlideModel.fileType == "H")
-        }
-        
-      
-        
-        // Append to zipgropedBrandModels if there are zipContentsSlides
-        if !zipContentsSlides.isEmpty {
-           
-            zipgropedBrandModels.append(aGroupedBrandsSlideModel)
-            var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
-            zipgropedBrandModels.forEach { aGroupedBrandsSlideModel in
-                let tempGroupedBrandsSlideModel = GroupedBrandsSlideModel()
 
-                var aGroupedSlideArr = [SlidesModel]()
+        
+        var modifiedZipgropedBrandModels = [GroupedBrandsSlideModel]()
+  
+        processSlides(index: 0, groupedBrandsSlideModel: aGroupedBrandsSlideModel) {  modifiedModels in
+    
+            modifiedZipgropedBrandModels.append(modifiedModels)
             
-                var data = UnzippedDataInfo()
-             
-                    zipContentsSlides.enumerated().forEach { aSlidesModelIndex, aSlidesModel in
-                        
-                        
-                        data = unarchiveAndGetData(from: aSlidesModel.slideData)
-
-                       let aGroupedSlide = toExtractSlidesFromUnzippedContent(data: data, aSlidesModel: aSlidesModel)
-                        aGroupedSlideArr.append(contentsOf: aGroupedSlide)
-                    }
-                    tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
-                    tempGroupedBrandsSlideModel.groupedSlide = aGroupedSlideArr
-                    tempGroupedBrandsSlideModel.priority   = aGroupedBrandsSlideModel.priority
-                    tempGroupedBrandsSlideModel.updatedDate = aGroupedBrandsSlideModel.updatedDate
-                    tempGroupedBrandsSlideModel.divisionCode = aGroupedBrandsSlideModel.divisionCode
-                    tempGroupedBrandsSlideModel.productBrdCode = aGroupedBrandsSlideModel.productBrdCode
-                    tempGroupedBrandsSlideModel.subdivisionCode = aGroupedBrandsSlideModel.subdivisionCode
-                    tempGroupedBrandsSlideModel.createdDate = aGroupedBrandsSlideModel.createdDate
-                    tempGroupedBrandsSlideModel.id = aGroupedBrandsSlideModel.id
-                    modifiedZipgropedBrandModels.append(tempGroupedBrandsSlideModel)
+            self.saveModifiedModelsToCoreData(tempGroupedBrandsSlideModels: modifiedZipgropedBrandModels, index: 0) { _ in
+                completion(true)
+                
             }
-            tempGroupedBrandsSlideModel.append(contentsOf: modifiedZipgropedBrandModels)
-        } else {
-            tempGroupedBrandsSlideModel.append(aGroupedBrandsSlideModel)
+           
         }
-        
-       // aGroupedBrandsSlideModel = tempGroupedBrandsSlideModel
-        
-       
-
-
-      
-         
-        
-      
-        
-        tempGroupedBrandsSlideModel.enumerated().forEach { index, aGroupedBrandsSlideModel in
-            CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) {isSaved in
-                if isSaved {
-                    completion(true)
-                }
-            }
-        }
-        
-
     }
+    
+    
+    func processSlides(index: Int, groupedBrandsSlideModel: GroupedBrandsSlideModel, completion: @escaping (GroupedBrandsSlideModel) -> Void) {
+      
+        
+        
+     //   var modifiedModels = GroupedBrandsSlideModel()
+        guard index < groupedBrandsSlideModel.groupedSlide.count else {
+            // All slides processed
+            completion(groupedBrandsSlideModel)
+            return
+        }
+        
+        let aSlidesModel = groupedBrandsSlideModel.groupedSlide[index]
+        
+        if aSlidesModel.utType == "application/zip" || aSlidesModel.fileType == "H" {
+          let data =  unarchiveAndGetData(from: aSlidesModel.slideData)
+         let groupedSlide = self.toExtractSlidesFromUnzippedContent(data: data, aSlidesModel: aSlidesModel)
+                
+                groupedBrandsSlideModel.groupedSlide[index] = groupedSlide.first ??  SlidesModel()
+                
+                processSlides(index: index + 1, groupedBrandsSlideModel: groupedBrandsSlideModel, completion: completion)
+            
+        } else {
+            // Process the next slide
+            processSlides(index: index + 1, groupedBrandsSlideModel: groupedBrandsSlideModel, completion: completion)
+        }
+    }
+    
+    func saveModifiedModelsToCoreData(tempGroupedBrandsSlideModels: [GroupedBrandsSlideModel], index: Int, completion: @escaping (Bool) -> Void) {
+        guard index < tempGroupedBrandsSlideModels.count else {
+            // All models are saved
+            completion(true)
+            return
+        }
+        
+        let aGroupedBrandsSlideModel = tempGroupedBrandsSlideModels[index]
+        CoreDataManager.shared.toSaveGeneralGroupedSlidesToCoreData(groupedBrandSlide: aGroupedBrandsSlideModel) { isSaved in
+            if isSaved {
+                // Move to the next model
+                self.saveModifiedModelsToCoreData(tempGroupedBrandsSlideModels: tempGroupedBrandsSlideModels, index: index + 1, completion: completion)
+            } else {
+                // Handle failure
+                completion(false)
+            }
+        }
+    }
+    
+
 
     func toExtractSlidesFromUnzippedContent(data: UnzippedDataInfo, aSlidesModel: SlidesModel) -> [SlidesModel] {
         if !data.videofiles.isEmpty {
@@ -880,108 +865,216 @@ class SlideDownloadVC : UIViewController {
         if existingCDSlides.count == apiFetchedSlide.count {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
             self.isDownloading = false
-        }
-        isSlideDownloadCompleted = true
-        self.tableView.isScrollEnabled = true
-        togroupSlides() {
-        completion()
+            isSlideDownloadCompleted = true
+            Shared.instance.showLoaderInWindow()
+            toGroupSlidesBrandWise() {_ in
+            Shared.instance.removeLoaderInWindow()
+                completion()
+            }
         }
     }
     
     func unarchiveAndGetData(from zipData: Data) -> UnzippedDataInfo {
+        guard let temporaryDirectoryURL = createTemporaryDirectory() else {
+            print("Failed to create temporary directory.")
+            return UnzippedDataInfo()
+        }
 
-        // Create a unique temporary directory URL
+        guard let zipFilePath = saveZipData(to: temporaryDirectoryURL, data: zipData) else {
+            print("Failed to save zip data to temporary file.")
+            return UnzippedDataInfo()
+        }
+
+        guard let extractedFolderPath = unzipFile(at: temporaryDirectoryURL, zipFilePath: zipFilePath) else {
+            print("Failed to unzip file.")
+            return UnzippedDataInfo()
+        }
+
+        var unzippedDataInfo = UnzippedDataInfo()
+        var aHTMLinfoArr = [HTMLinfo]()
+        var dataArray: Data = Data()
+
+        // Get the contents of the extracted folder
+        if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
+            // Enumerate through the contents
+            for fileURL in contents {
+                var aHTMLinfo = HTMLinfo()
+                print("File URL: \(fileURL)")
+                print("File Name: \(fileURL.lastPathComponent)")
+                let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
+                print("File Name (without extension): \(fileNameWithoutExtension)")
+                
+                // Create a valid file URL
+                let validFileURL = URL(fileURLWithPath: fileURL.path)
+                let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
+                guard result.htmlFileURL != nil, result.htmlString != nil else {
+                    
+                    let unzippedFolderURL = URL(fileURLWithPath: extractedFolderPath.absoluteString)
+                    let unzippedDataInfo = extractUnzippedDataInfo(from: unzippedFolderURL)
+                    
+                    return unzippedDataInfo
+                }
+                extractedFileName = fileNameWithoutExtension
+                dataArray = findImageData(inDirectory: validFileURL) ?? Data()
+                aHTMLinfo.fileData = dataArray
+                let fileName = "index.html"
+                aHTMLinfo.htmlFileURL = extractedFolderPath.appendingPathComponent(fileNameWithoutExtension).appendingPathComponent(fileName)
+                //validFileURL
+                aHTMLinfo.htmlString = result.htmlString
+                aHTMLinfo.fileName = extractedFileName
+                aHTMLinfoArr.append(aHTMLinfo)
+                unzippedDataInfo.htmlfiles.append(contentsOf: aHTMLinfoArr)
+                return unzippedDataInfo
+            }
+        }
+        
+       // let unzippedDataInfo = extractUnzippedDataInfo(from: extractedFolderPath)
+        removeTemporaryDirectory(at: temporaryDirectoryURL)
+
+        return unzippedDataInfo
+    }
+    
+    private func createTemporaryDirectory() -> URL? {
         let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-
-        // Ensure the temporary directory exists
         do {
             try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+            return temporaryDirectoryURL
         } catch {
             print("Error creating temporary directory: \(error.localizedDescription)")
+            return nil
         }
-
-        // Path to the ZIP file data
-        // let zipData: Data // Replace with your actual zip data
-        let zipFilePath = temporaryDirectoryURL.appendingPathComponent("temp.zip")
-
-        // Save the zip data to a temporary file
+    }
+    
+    private func saveZipData(to directoryURL: URL, data: Data) -> URL? {
+        let zipFilePath = directoryURL.appendingPathComponent("temp.zip")
         do {
-            try zipData.write(to: zipFilePath)
+            try data.write(to: zipFilePath)
+            return zipFilePath
         } catch {
             print("Error saving zip data to temporary file: \(error.localizedDescription)")
+            return nil
         }
-
-        // Unzip the file
-        do {
-            // Get the app's Documents directory
-            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                // Append a subdirectory for your extracted content
-                let extractedFolderName = "ExtractedContent"
-                let extractedFolderPath = documentsDirectory.appendingPathComponent(extractedFolderName)
-
-                // Ensure the directory exists, create it if needed
-                do {
-                    try FileManager.default.createDirectory(at: extractedFolderPath, withIntermediateDirectories: true, attributes: nil)
-                } catch {
-                    print("Error creating directory: \(error.localizedDescription)")
-                }
-
-
-                // Unzip the file from the temporary directory to the Documents directory
-
-                SSZipArchive.unzipFile(atPath: zipFilePath.path, toDestination: extractedFolderPath.path)
-                print("File unzipped successfully.")
-                var unzippedDataInfo = UnzippedDataInfo()
-                var aHTMLinfoArr = [HTMLinfo]()
-                var dataArray: Data = Data()
-
-                // Get the contents of the extracted folder
-                if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
-                    // Enumerate through the contents
-                    for fileURL in contents {
-                        var aHTMLinfo = HTMLinfo()
-                        print("File URL: \(fileURL)")
-                        print("File Name: \(fileURL.lastPathComponent)")
-                        let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
-                        print("File Name (without extension): \(fileNameWithoutExtension)")
-
-                        // Create a valid file URL
-                        let validFileURL = URL(fileURLWithPath: fileURL.path)
-                        let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
-                        guard result.htmlFileURL != nil, result.htmlString != nil else {
-
-                            let unzippedFolderURL = URL(fileURLWithPath: extractedFolderPath.absoluteString)
-                            let unzippedDataInfo = extractUnzippedDataInfo(from: unzippedFolderURL)
-
-                             return unzippedDataInfo
-                        }
-                        extractedFileName = fileNameWithoutExtension
-                        dataArray = findImageData(inDirectory: validFileURL) ?? Data()
-                        aHTMLinfo.fileData = dataArray
-                        let fileName = "index.html"
-                        aHTMLinfo.htmlFileURL = extractedFolderPath.appendingPathComponent(fileNameWithoutExtension).appendingPathComponent(fileName)
-                        //validFileURL
-                        aHTMLinfo.htmlString = result.htmlString
-                        aHTMLinfo.fileName = extractedFileName
-                        aHTMLinfoArr.append(aHTMLinfo)
-                        unzippedDataInfo.htmlfiles.append(contentsOf: aHTMLinfoArr)
-                        return unzippedDataInfo
-                    }
-                } else {
-                    print("Error getting contents of the extracted folder.")
-                }
-
-            }
-
-                do {
-                    try FileManager.default.removeItem(at: temporaryDirectoryURL)
-                } catch {
-                    print("Error removing temporary directory: \(error.localizedDescription)")
-                }
-
-        }
-        return UnzippedDataInfo()
     }
+    
+    private func unzipFile(at temporaryDirectoryURL: URL, zipFilePath: URL) -> URL? {
+        let extractedFolderName = "ExtractedContent"
+        let extractedFolderPath = temporaryDirectoryURL.appendingPathComponent(extractedFolderName)
+
+        do {
+            try FileManager.default.createDirectory(at: extractedFolderPath, withIntermediateDirectories: true, attributes: nil)
+            SSZipArchive.unzipFile(atPath: zipFilePath.path, toDestination: extractedFolderPath.path)
+            print("File unzipped successfully.")
+            return extractedFolderPath
+        } catch {
+            print("Error unzipping file: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    private func removeTemporaryDirectory(at directoryURL: URL) {
+        do {
+            try FileManager.default.removeItem(at: directoryURL)
+        } catch {
+            print("Error removing temporary directory: \(error.localizedDescription)")
+        }
+    }
+
+    
+//    func unarchiveAndGetData(from zipData: Data) -> UnzippedDataInfo {
+//
+//        //, completion: (UnzippedDataInfo?) -> ()
+//        // Create a unique temporary directory URL
+//        let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+//
+//        // Ensure the temporary directory exists
+//        do {
+//            try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+//        } catch {
+//            print("Error creating temporary directory: \(error.localizedDescription)")
+//        }
+//
+//        // Path to the ZIP file data
+//        // let zipData: Data // Replace with your actual zip data
+//        let zipFilePath = temporaryDirectoryURL.appendingPathComponent("temp.zip")
+//
+//        // Save the zip data to a temporary file
+//        do {
+//            try zipData.write(to: zipFilePath)
+//        } catch {
+//            print("Error saving zip data to temporary file: \(error.localizedDescription)")
+//        }
+//
+//        // Unzip the file
+//        do {
+//            // Get the app's Documents directory
+//            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//                // Append a subdirectory for your extracted content
+//                let extractedFolderName = "ExtractedContent"
+//                let extractedFolderPath = documentsDirectory.appendingPathComponent(extractedFolderName)
+//
+//                // Ensure the directory exists, create it if needed
+//                do {
+//                    try FileManager.default.createDirectory(at: extractedFolderPath, withIntermediateDirectories: true, attributes: nil)
+//                } catch {
+//                    print("Error creating directory: \(error.localizedDescription)")
+//                }
+//
+//
+//                // Unzip the file from the temporary directory to the Documents directory
+//
+//                SSZipArchive.unzipFile(atPath: zipFilePath.path, toDestination: extractedFolderPath.path)
+//                print("File unzipped successfully.")
+//                var unzippedDataInfo = UnzippedDataInfo()
+//                var aHTMLinfoArr = [HTMLinfo]()
+//                var dataArray: Data = Data()
+//
+//                // Get the contents of the extracted folder
+//                if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
+//                    // Enumerate through the contents
+//                    for fileURL in contents {
+//                        var aHTMLinfo = HTMLinfo()
+//                        print("File URL: \(fileURL)")
+//                        print("File Name: \(fileURL.lastPathComponent)")
+//                        let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
+//                        print("File Name (without extension): \(fileNameWithoutExtension)")
+//
+//                        // Create a valid file URL
+//                        let validFileURL = URL(fileURLWithPath: fileURL.path)
+//                        let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
+//                        guard result.htmlFileURL != nil, result.htmlString != nil else {
+//
+//                            let unzippedFolderURL = URL(fileURLWithPath: extractedFolderPath.absoluteString)
+//                            let unzippedDataInfo = extractUnzippedDataInfo(from: unzippedFolderURL)
+//
+//                             return unzippedDataInfo
+//                        }
+//                        extractedFileName = fileNameWithoutExtension
+//                        dataArray = findImageData(inDirectory: validFileURL) ?? Data()
+//                        aHTMLinfo.fileData = dataArray
+//                        let fileName = "index.html"
+//                        aHTMLinfo.htmlFileURL = extractedFolderPath.appendingPathComponent(fileNameWithoutExtension).appendingPathComponent(fileName)
+//                        //validFileURL
+//                        aHTMLinfo.htmlString = result.htmlString
+//                        aHTMLinfo.fileName = extractedFileName
+//                        aHTMLinfoArr.append(aHTMLinfo)
+//                        unzippedDataInfo.htmlfiles.append(contentsOf: aHTMLinfoArr)
+//                        return unzippedDataInfo
+//                    }
+//                } else {
+//                    print("Error getting contents of the extracted folder.")
+//                }
+//
+//            }
+//
+//                do {
+//                    try FileManager.default.removeItem(at: temporaryDirectoryURL)
+//                } catch {
+//                    print("Error removing temporary directory: \(error.localizedDescription)")
+//                }
+//
+//        }
+//        return UnzippedDataInfo()
+//    }
     
 
     func extractUnzippedDataInfo(from folderURL: URL) -> UnzippedDataInfo {

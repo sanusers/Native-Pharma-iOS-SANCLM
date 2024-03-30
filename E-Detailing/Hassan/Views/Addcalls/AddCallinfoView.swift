@@ -52,7 +52,13 @@ extension AddCallinfoView: MenuResponseProtocol {
             
         case .competitors:
             if let competitors = selectedObjects as? [Competitor] {
-                self.rcpaDetailsModel[selectedAddcompetitorSection].competitor = competitors
+                
+                
+                
+             //   self.rcpaDetailsModel[selectedAddcompetitorSection].competitor = competitors
+                
+                self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorProductRow].competitor = competitors
+                
                 self.loadedContentsTable.reloadData()
             }
         default:
@@ -131,21 +137,40 @@ extension AddCallinfoView {
         tempaddedProductDetails.addedQuantity = existingRCPADetails.addedProductDetails?.addedQuantity
         tempaddedProductDetails.addedProduct =  existingRCPADetails.addedProductDetails?.addedProduct
         
-        if let existingProductIndex = existingRCPADetails.addedProductDetails?.addedProduct?.firstIndex(where: { $0.code == product.code }) {
-            // Update existing product if found
-            tempaddedProductDetails.addedQuantity?[existingProductIndex]  = existingRCPADetails.addedProductDetails?.addedQuantity?[existingProductIndex] ?? ""
-            tempaddedProductDetails.addedRate?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedRate?[existingProductIndex] ?? ""
-            tempaddedProductDetails.addedValue?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedValue?[existingProductIndex] ?? ""
-            tempaddedProductDetails.addedProduct?[existingProductIndex] = product
-        } else {
-            // Add new product if it doesn't exist
-            tempaddedProductDetails.addedQuantity?.append(contentsOf: addedQuantity)
-            tempaddedProductDetails.addedValue?.append(contentsOf: addedValue)
-            tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
-            tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
-            tempaddedProductDetails.addedProduct?.append(product)
+        existingRCPADetails.addedProductDetails?.addedProduct?.enumerated().forEach{index, addedProduct in
             
+            if addedProduct.addedProduct?.code == product.code {
+                // Update existing product if found
+                tempaddedProductDetails.addedQuantity?[index] = existingRCPADetails.addedProductDetails?.addedQuantity?[index] ?? ""
+                tempaddedProductDetails.addedRate?[index] = existingRCPADetails.addedProductDetails?.addedRate?[index] ?? ""
+                tempaddedProductDetails.addedValue?[index] = existingRCPADetails.addedProductDetails?.addedValue?[index] ?? ""
+                tempaddedProductDetails.addedProduct?[index] = addedProduct
+                //[index] = addedProduct
+            } else {
+                tempaddedProductDetails.addedQuantity?.append(contentsOf: addedQuantity)
+                tempaddedProductDetails.addedValue?.append(contentsOf: addedValue)
+                tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
+                tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
+                let aProductWithCompetiors = ProductWithCompetiors(addedProduct: product, competitor: nil)
+                tempaddedProductDetails.addedProduct?.append(aProductWithCompetiors)
+            }
         }
+        
+//        if let existingProductIndex = existingRCPADetails.addedProductDetails?.addedProduct?.firstIndex(where: { $0.code == product.code }) {
+//            // Update existing product if found
+//            tempaddedProductDetails.addedQuantity?[existingProductIndex]  = existingRCPADetails.addedProductDetails?.addedQuantity?[existingProductIndex] ?? ""
+//            tempaddedProductDetails.addedRate?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedRate?[existingProductIndex] ?? ""
+//            tempaddedProductDetails.addedValue?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedValue?[existingProductIndex] ?? ""
+//            tempaddedProductDetails.addedProduct?[existingProductIndex] = product
+//        } else {
+//            // Add new product if it doesn't exist
+//            tempaddedProductDetails.addedQuantity?.append(contentsOf: addedQuantity)
+//            tempaddedProductDetails.addedValue?.append(contentsOf: addedValue)
+//            tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
+//            tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
+//            tempaddedProductDetails.addedProduct?.append(product)
+//            
+//        }
 
         existingRCPADetails.addedProductDetails = tempaddedProductDetails
         
@@ -156,10 +181,12 @@ extension AddCallinfoView {
         details.addedChemist = chemist
         var tempaddedProductDetails = addedProductDetails
         // Unwrap addedProductDetails and append the product
+        let aProductWithCompetiors =  ProductWithCompetiors(addedProduct: product, competitor: nil)
         if tempaddedProductDetails.addedProduct == nil {
-            tempaddedProductDetails.addedProduct = [product]
+        
+            tempaddedProductDetails.addedProduct = [aProductWithCompetiors]
         } else {
-            tempaddedProductDetails.addedProduct?.append(product)
+            tempaddedProductDetails.addedProduct?.append(aProductWithCompetiors)
         }
        
         details.addedProductDetails = tempaddedProductDetails
@@ -412,10 +439,23 @@ extension AddCallinfoView {
 
 
 extension AddCallinfoView : UITextFieldDelegate {
+    
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         switch textField {
         case productQtyTF:
-            self.productQty = textField.text ?? "1"
+            // Construct the new text after replacement
+            let currentText = textField.text ?? "1"
+            guard let stringRange = Range(range, in: currentText) else {
+                return false
+            }
+            let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+            
+            // Update the text immediately
+            self.productQty = updatedText
+            self.productQtyAction(textField)
+            
+            // Return false to prevent the text from changing again
             return true
         default:
             let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
@@ -476,8 +516,7 @@ extension AddCallinfoView: tableViewProtocols {
             case yetToloadContentsTable:
                 return Int()
             case loadedContentsTable:
-               // self.selectedAddcompetitorSection = self.rcpaAddedListViewModel.numberofRowsInSection(section)
-               // return self.selectedAddcompetitorSection
+   
                 let arcpaModelsection = self.rcpaDetailsModel[section]
                 return arcpaModelsection.addedProductDetails?.addedProduct?.count ?? 0
             default:
@@ -617,8 +656,10 @@ extension AddCallinfoView: tableViewProtocols {
             
                     cell.rcpaProduct = self.rcpaDetailsModel[indexPath.section]
                 let productsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails
-                cell.lblName.text = productsInfo?.addedProduct?[indexPath.row].name
-               
+                cell.lblName.text = productsInfo?.addedProduct?[indexPath.row].addedProduct?.name ?? ""
+                //[indexPath.row].name
+                cell.section = indexPath.section
+                cell.index = indexPath.row
                 cell.lblQty.text = productsInfo?.addedQuantity?[indexPath.row] ?? ""
                 
                 cell.lblRate.text = productsInfo?.addedRate?[indexPath.row] ?? ""
@@ -638,6 +679,20 @@ extension AddCallinfoView: tableViewProtocols {
                     self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedTotal?.remove(at: indexPath.row)
                     self.loadedContentsTable.reloadData()
                 }
+                
+                
+                
+                let aCompetitorArr = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor ?? [Competitor]()
+                //competitor ?? [Competitor]()
+                cell.setupAddedCompetitors(count: self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?.count ?? 0, competitors: aCompetitorArr)
+                cell.delegate = self
+                cell.btnAddCompetitor.isUserInteractionEnabled = false
+                cell.viewAddcompetitor.addTap {
+                self.selectedAddcompetitorProductRow =  indexPath.row
+                self.selectedAddcompetitorSection = indexPath.section
+                self.navigatetoSpecifiedMenu(rcpaSection: indexPath.section)
+                }
+                
                 return cell
             default:
                 return UITableViewCell()
@@ -676,7 +731,15 @@ extension AddCallinfoView: tableViewProtocols {
                 return 60
             }
         case .rcppa:
-            return 60
+            guard let competitors = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor else { return 50 + 5 + 5 + 60 }
+            
+            if self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?.count ?? 0 == 0 {
+                //self.rcpaAddedListViewModel.addRcpaChemist(<#T##VM: RcpaAddedViewModel##RcpaAddedViewModel#>)
+                return 50 + 5 + 5 + 60
+            } else {
+                return 50 + 5 + 5 + calculateSectionHeight(forSection: indexPath.section, index: indexPath.row)
+            }
+            
         case .jointWork:
             return 60
         }
@@ -691,7 +754,7 @@ extension AddCallinfoView: tableViewProtocols {
             return 1
         }
     }
-    
+   
     @objc func navigatetoSpecifiedMenu(rcpaSection section: Int) {
        
         self.selectedAddcompetitorSection = section
@@ -701,67 +764,68 @@ extension AddCallinfoView: tableViewProtocols {
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        
-        switch self.segmentType[selectedSegmentsIndex] {
-        case .rcppa:
-            switch tableView {
-            case yetToloadContentsTable:
-                return UIView()
-            case loadedContentsTable:
-                // Dequeue the header view
-                guard let footerview = loadedContentsTable.dequeueReusableHeaderFooterView(withIdentifier: "CompetitorsFooter") as? CompetitorsFooter else {
-                    
-                    return UIView()
-                }
-
-                //footerview.btnAddcompetitor.addTarget(self, action: #selector(navigatetoSpecifiedMenu), for: .touchUpInside)
-                footerview.btnAddcompetitor.isUserInteractionEnabled = false
-                footerview.section = section
-                footerview.viewAddcompetitor.addTap {
-                    self.navigatetoSpecifiedMenu(rcpaSection: section)
-                }
-                
-                self.selectedAddcompetitorSection = section
-                let aCompetitorArr = self.rcpaDetailsModel[section].competitor ?? [Competitor]()
-                footerview.setupAddedCompetitors(count: self.rcpaDetailsModel[section].competitor?.count ?? 0, competitors: aCompetitorArr)
-                footerview.delegate = self
-                return footerview
-            default:
-                return UIView()
-            }
-            
-        default:
-            return UIView()
-        }
-    }
+//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        
+//        switch self.segmentType[selectedSegmentsIndex] {
+//        case .rcppa:
+//            switch tableView {
+//            case yetToloadContentsTable:
+//                return UIView()
+//            case loadedContentsTable:
+//                // Dequeue the header view
+//                guard let footerview = loadedContentsTable.dequeueReusableHeaderFooterView(withIdentifier: "CompetitorsFooter") as? CompetitorsFooter else {
+//                    
+//                    return UIView()
+//                }
+//
+//                //footerview.btnAddcompetitor.addTarget(self, action: #selector(navigatetoSpecifiedMenu), for: .touchUpInside)
+//                footerview.btnAddcompetitor.isUserInteractionEnabled = false
+//                footerview.section = section
+//                footerview.viewAddcompetitor.addTap {
+//                    self.navigatetoSpecifiedMenu(rcpaSection: section)
+//                }
+//                
+//                self.selectedAddcompetitorSection = section
+//                let aCompetitorArr = self.rcpaDetailsModel[section].competitor ?? [Competitor]()
+//                footerview.setupAddedCompetitors(count: self.rcpaDetailsModel[section].competitor?.count ?? 0, competitors: aCompetitorArr)
+//                footerview.delegate = self
+//                return footerview
+//            default:
+//                return UIView()
+//            }
+//            
+//        default:
+//            return UIView()
+//        }
+//    }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        switch self.segmentType[selectedSegmentsIndex] {
-        case .rcppa:
- 
-                //50 - header
-                //50 - addbtn (40 + padding (10))
-                //10 - top bottom padding
-                //50 * count - each cell height
-                if self.rcpaDetailsModel[section].competitor?.count ?? 0 == 0 {
-                    //self.rcpaAddedListViewModel.addRcpaChemist(<#T##VM: RcpaAddedViewModel##RcpaAddedViewModel#>)
-                    return 50
-                } else {
-                    return calculateSectionHeight(forSection: section)
-                }
-            
-                //+ 10 + (50 * 3) + 50
-              
-            
-          
-        default:
-            return 0
-        }
-    }
+//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        switch self.segmentType[selectedSegmentsIndex] {
+//        case .rcppa:
+// 
+//                //50 - header
+//                //50 - addbtn (40 + padding (10))
+//                //10 - top bottom padding
+//                //50 * count - each cell height
+//                if self.rcpaDetailsModel[section].competitor?.count ?? 0 == 0 {
+//                    //self.rcpaAddedListViewModel.addRcpaChemist(<#T##VM: RcpaAddedViewModel##RcpaAddedViewModel#>)
+//                    return 50
+//                } else {
+//                    return calculateSectionHeight(forSection: section)
+//                }
+//            
+//                //+ 10 + (50 * 3) + 50
+//              
+//            
+//          
+//        default:
+//            return 0
+//        }
+//    }
     
-    func calculateSectionHeight(forSection section: Int) -> CGFloat {
-        let competitorCount = self.rcpaDetailsModel[section].competitor?.count ?? 0
+    func calculateSectionHeight(forSection section: Int, index: Int) -> CGFloat {
+        //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?
+        let competitorCount = self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitor?.count ?? 0
         let sectionHeight = CGFloat(50 + (competitorCount * 50) + 10) + 50
         return sectionHeight
     }
@@ -1138,6 +1202,7 @@ class AddCallinfoView : BaseView {
     var rateInt: Int = 0
     var selectedProductRcpa : AnyObject?
     var selectedAddcompetitorSection: Int = 0
+    var selectedAddcompetitorProductRow: Int = 0
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
@@ -1361,8 +1426,7 @@ class AddCallinfoView : BaseView {
     
     @IBAction func productQtyAction(_ sender: UITextField) {
         
-        self.productQty = sender.text ?? "1"
-        let qtyInt: Int = Int(self.productQty) ?? 0
+        let qtyInt: Int = Int(self.productQty) ?? 1
         rateLbl.text = "\(rateInt)"
         valuelbl.text = "\(rateInt * qtyInt)"
         
@@ -1373,10 +1437,18 @@ class AddCallinfoView : BaseView {
 
 
 extension AddCallinfoView : CompetitorsFooterDelegate {
+    func didTapdeleteCompetitor(section: Int, index: Int, competitorIndex: Int) {
+        self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitor?.remove(at: competitorIndex)
+        self.loadedContentsTable.reloadData()
+    }
+    
     func didTapdelete(section: Int, index: Int) {
        // self.rcpaAddedListViewModel.removecompetitor(section: section, index: index)
-        self.rcpaDetailsModel[section].competitor?.remove(at: index)
-        self.loadedContentsTable.reloadData()
+        
+    
+     //   self.rcpaDetailsModel[section].competitor?.remove(at: index)
+      //  self.loadedContentsTable.reloadData()
+        print("Yet to delete")
     }
 
     

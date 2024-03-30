@@ -88,10 +88,10 @@ class AddCallinfoVC: BaseViewController {
             let rcpaChemist = ["Name" : rcpa.addedChemist?.name , "Code" : rcpa.addedChemist?.code]
 
             rcpa.addedProductDetails?.addedProduct?.forEach{ aAddedProduct in
-
+              
                 var competitorData = [[String : Any]]()
-                var productCode : String = aAddedProduct.code ?? ""
-                var productName : String = aAddedProduct.name ?? ""
+                var productCode : String =    aAddedProduct.addedProduct?.code ?? ""
+                var productName : String =  aAddedProduct.addedProduct?.name ?? ""
 
 //                for j in 0..<rcpa.rcpaChemist.products[i].rcpas.count {
 //                    productCode = rcpa.rcpaChemist.products[i].rcpas[j].product?.code ?? ""
