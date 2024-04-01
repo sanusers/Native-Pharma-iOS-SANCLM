@@ -279,6 +279,7 @@ class CallVC : UIViewController {
 
     func setupUI() {
         addedFiltersCount.isHidden = true
+        addedFiltersCount.layer.cornerRadius = addedFiltersCount.height / 2
         callCollectionView.layer.cornerRadius = 5
         seatchHolderVIew.layer.cornerRadius = 5
         seatchHolderVIew.layer.borderWidth = 1

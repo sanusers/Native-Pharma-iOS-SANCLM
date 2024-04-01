@@ -622,9 +622,7 @@ class MasterSyncVC : UIViewController {
         
         
         switch type {
-            
 
-            
         case .getTP :
             toPostDataToserver(type : type) {isCompleted in
                 completion(isCompleted)
@@ -994,15 +992,19 @@ extension MasterSyncVC : collectionViewProtocols{
         case .worktype:
             cell.lblCount.text = String(DBManager.shared.getWorkType().count)
         case .subordinate:
-            cell.lblCount.text = String(DBManager.shared.getSubordinate().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getSubordinate().count)
         case .subordinateMGR:
-            cell.lblCount.text = String(DBManager.shared.getSubordinateMGR().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getSubordinateMGR().count)
         case .myDayPlan:
-            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
-                cell.lblCount.text =  "\(dayplans.count)"
-            }
+            cell.lblCount.text =  ""
+//            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+//                cell.lblCount.text =  "\(dayplans.count)"
+//            }
         case .jointWork:
-            cell.lblCount.text = String(DBManager.shared.getJointWork().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getJointWork().count)
         case .products:
             cell.lblCount.text = String(DBManager.shared.getProduct().count)
         case .inputs:
@@ -1026,7 +1028,8 @@ extension MasterSyncVC : collectionViewProtocols{
         case .qualifications:
             cell.lblCount.text = String(DBManager.shared.getQualification().count)
         case .visitControl:
-            cell.lblCount.text = String(DBManager.shared.getVisitControl().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getVisitControl().count)
         case .leaveType:
             cell.lblCount.text = String(DBManager.shared.getLeaveType().count)
         case .mapCompDet:
@@ -1038,56 +1041,60 @@ extension MasterSyncVC : collectionViewProtocols{
         case .weeklyOff:
             cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
         case .tourPlanSetup:
-            cell.lblCount.text = String(DBManager.shared.getTableSetUp().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getTableSetUp().count)
          
         case .getTP:
-            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
-
+//            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
+            cell.lblCount.text =  ""
 
         case   .headquartes:
           //  cell.lblCount.text = DBManager.shared.gethe
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .departments:
             cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
         case   .docTypes:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .ratingDetails:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .ratingFeedbacks:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .speakerList:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .participantList:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .indicationList:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .setups:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .doctors:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .institutions:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .customSetup:
-            cell.lblCount.text = "Yet to"
+            cell.lblCount.text = ""
         case   .tourPlanStatus:
-            cell.lblCount.text = "sync All"
+            cell.lblCount.text = ""
         case   .stockBalance:
-            let balance = DBManager.shared.getStockBalance()
-            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
+            cell.lblCount.text =  ""
+//            let balance = DBManager.shared.getStockBalance()
+//            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
         case   .empty:
             cell.lblCount.text = "Yet to"
         case   .syncAll:
             cell.lblCount.text = "sync All"
         case   .apptableSetup:
-            cell.lblCount.text =  "Yet to"
+            cell.lblCount.text =  ""
         case   .homeSetup:
-            cell.lblCount.text =  "\(DBManager.shared.getHomeData().count)"
+            cell.lblCount.text =  ""
+            //\(DBManager.shared.getHomeData().count)
         case   .callSync:
             cell.lblCount.text = "Yet to"
         case   .dcrDateSync:
-           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
-               cell.lblCount.text = "\(dcrDates.count)"
-            }
+//           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
+//               cell.lblCount.text = "\(dcrDates.count)"
+//            }
+            cell.lblCount.text = ""
         case .none:
             cell.lblCount.text = "Yet to"
 

@@ -9,7 +9,7 @@ import UIKit
 
 protocol CompetitorsDetailsCellDelagate : AnyObject {
     
-   func didUpdateQuantity()
+    func didUpdateQuantity(qty: String, index: Int)
 }
 
 
@@ -33,7 +33,7 @@ class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     @IBOutlet var rateHolder: UIView!
     @IBOutlet var deleteHolder: UIView!
     @IBOutlet var commentsHolder: UIView!
-    
+    weak var delegate: CompetitorsDetailsCellDelagate?
     var index: Int = 0
    // var productDetail: ProductDetails?
     
@@ -52,7 +52,7 @@ class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     
     @IBAction func didtapQtyLbl(_ sender: UITextField) {
         
-        
+        self.delegate?.didUpdateQuantity(qty: sender.text ?? "", index: index)
         
     }
     

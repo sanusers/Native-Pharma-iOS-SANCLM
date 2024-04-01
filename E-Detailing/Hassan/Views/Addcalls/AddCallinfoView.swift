@@ -52,14 +52,18 @@ extension AddCallinfoView: MenuResponseProtocol {
             
         case .competitors:
             if let competitors = selectedObjects as? [Competitor] {
+                guard competitors.contains(where: { aCompetitor in
+                    aCompetitor.ourProductCode != nil
+                }) else {return}
+                var competitorInfoArr = [AdditionalCompetitorsInfo]()
+                for competitor in competitors {
+                    let competitorInfo = AdditionalCompetitorsInfo(competitor: competitor, qty: "", remarks: "", rate: "", value: "")
+                    competitorInfoArr.append(competitorInfo)
+                }
                 
-                
-                
-             //   self.rcpaDetailsModel[selectedAddcompetitorSection].competitor = competitors
-                
-                self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorProductRow].competitor = competitors
-                
+                self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorProductRow].competitorsInfo = competitorInfoArr
                 self.loadedContentsTable.reloadData()
+                
             }
         default:
             print("---><---")
@@ -151,7 +155,7 @@ extension AddCallinfoView {
                 tempaddedProductDetails.addedValue?.append(contentsOf: addedValue)
                 tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
                 tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
-                let aProductWithCompetiors = ProductWithCompetiors(addedProduct: product, competitor: nil)
+                let aProductWithCompetiors = ProductWithCompetiors(addedProduct: product, competitorsInfo: nil)
                 tempaddedProductDetails.addedProduct?.append(aProductWithCompetiors)
             }
         }
@@ -181,7 +185,7 @@ extension AddCallinfoView {
         details.addedChemist = chemist
         var tempaddedProductDetails = addedProductDetails
         // Unwrap addedProductDetails and append the product
-        let aProductWithCompetiors =  ProductWithCompetiors(addedProduct: product, competitor: nil)
+        let aProductWithCompetiors =  ProductWithCompetiors(addedProduct: product, competitorsInfo: nil)
         if tempaddedProductDetails.addedProduct == nil {
         
             tempaddedProductDetails.addedProduct = [aProductWithCompetiors]
@@ -684,11 +688,16 @@ extension AddCallinfoView: tableViewProtocols {
                     self.loadedContentsTable.reloadData()
                 }
                 
+
+                var selectedComp = [Competitor]()
+                self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo?.forEach({ aAdditionalCompetitorsInfo in
+                    selectedComp.append(aAdditionalCompetitorsInfo.competitor ?? Competitor())
+                })
                 
-                
-                let aCompetitorArr = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor ?? [Competitor]()
+                let aCompetitorArr = selectedComp //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor ?? [Competitor]()
                 //competitor ?? [Competitor]()
-                cell.setupAddedCompetitors(count: self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?.count ?? 0, competitors: aCompetitorArr)
+                cell.competitorsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo
+                cell.setupAddedCompetitors(count: selectedComp.count, competitors: selectedComp)
                 cell.delegate = self
                 cell.btnAddCompetitor.isUserInteractionEnabled = false
                 cell.viewAddcompetitor.addTap {
@@ -742,9 +751,17 @@ extension AddCallinfoView: tableViewProtocols {
             }
             guard addedProduct.count >= indexPath.row else {return 50 + 5 + 5 + 60}
             
-            guard let competitors = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor else { return 50 + 5 + 5 + 60 }
+
+            guard self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo != nil  else { return 50 + 5 + 5 + 60 }
             
-            if self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?.count ?? 0 == 0 {
+          //  guard (self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor) != nil else { return 50 + 5 + 5 + 60 }
+            
+            var selectedComp = [Competitor]()
+            self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo?.forEach({ aAdditionalCompetitorsInfo in
+                selectedComp.append(aAdditionalCompetitorsInfo.competitor ?? Competitor())
+            })
+            
+            if selectedComp.count == 0 {
                 return 50 + 5 + 5 + 60
             } else {
                 return 50 + 5 + 5 + calculateSectionHeight(forSection: indexPath.section, index: indexPath.row)
@@ -835,7 +852,13 @@ extension AddCallinfoView: tableViewProtocols {
     
     func calculateSectionHeight(forSection section: Int, index: Int) -> CGFloat {
         //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?
-        let competitorCount = self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitor?.count ?? 0
+        
+        var selectedComp = [Competitor]()
+        self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?.forEach({ aAdditionalCompetitorsInfo in
+            selectedComp.append(aAdditionalCompetitorsInfo.competitor ?? Competitor())
+        })
+        
+        let competitorCount = selectedComp.count //self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitor?.count ?? 0
         let sectionHeight = CGFloat(50 + (competitorCount * 50) + 10) + 50
         return sectionHeight
     }
@@ -1209,8 +1232,13 @@ class AddCallinfoView : BaseView {
     
     @IBOutlet var viewnoRCPA: UIView!
     
+    
+    @IBOutlet var backGroundVXview: UIView!
+    
+    @IBOutlet var backgroundView: UIView!
+    
+    
     var selectedDoctorIndex = 0
-    var selectedProductIndex: Int? = nil
     var searchText: String = ""
     var selectedSegmentsIndex: Int = 0
     var addCallinfoVC : AddCallinfoVC!
@@ -1221,6 +1249,7 @@ class AddCallinfoView : BaseView {
      var rcpaDetailsModel :  [RCPAdetailsModal] = []
      var eventCaptureListViewModel = EventCaptureListViewModel()
      var jointWorkSelectedListViewModel = JointWorksListViewModel()
+     var tpDeviateReasonView:  TPdeviateReasonView?
      var jfwView : JfwView?
     var pobValue: String?
     var overallFeedback: Feedback?
@@ -1234,6 +1263,9 @@ class AddCallinfoView : BaseView {
     var selectedProductRcpa : AnyObject?
     var selectedAddcompetitorSection: Int = 0
     var selectedAddcompetitorProductRow: Int = 0
+    var selectedAddcompetitorRow: Int = 0
+
+    var selectedCompetitor: Competitor?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
@@ -1260,13 +1292,61 @@ class AddCallinfoView : BaseView {
         self.jfwView?.frame = CGRect(x: changePasswordViewcenterX, y: segmentCollectionHolder.bottom + 5, width: changePasswordViewwidth, height: changePasswordViewheight)
         
         
+        
+        let  tpDeviateVIewwidth = self.bounds.width / 1.7
+        let  tpDeviateVIewheight = self.bounds.height / 2.7
+        
+        let  tpDeviateVIewcenterX = self.bounds.midX - (tpDeviateVIewwidth / 2)
+        let tpDeviateVIewcenterY = self.bounds.midY - (tpDeviateVIewheight / 2)
+        
+        
+        tpDeviateReasonView?.frame = CGRect(x: tpDeviateVIewcenterX, y: tpDeviateVIewcenterY, width: tpDeviateVIewwidth, height: tpDeviateVIewheight)
+        
+        
     }
     
     
+    func competitorCommentAction(isForremarks: Bool, remarksStr: String?) {
+        backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                
+                
+            }
+            
+        }
+        
+        tpDeviateReasonView = self.addCallinfoVC.loadCustomView(nibname: XIBs.tpDeviateReasonView) as? TPdeviateReasonView
+        tpDeviateReasonView?.delegate = self
+        
+        tpDeviateReasonView?.addedSubviewDelegate = self
+        tpDeviateReasonView?.isForRemarks = isForremarks
+        tpDeviateReasonView?.remarks = remarksStr == "" ? nil :  remarksStr
+        tpDeviateReasonView?.setupui()
+        self.addSubview(tpDeviateReasonView ?? TPdeviateReasonView())
+    }
+    
     func didClose() {
+        self.backgroundView.isHidden = true
         self.subviews.forEach { aAddedView in
             switch aAddedView {
             case jfwView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            case tpDeviateReasonView:
+               
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 
@@ -1411,7 +1491,7 @@ class AddCallinfoView : BaseView {
     
     
     func setupUI() {
-        
+        backgroundView.isHidden = true
         let curvedVIews: [UIView] = [dcrNameCurvedView, productnameCurvedView, productQtyCurvedView, rateCurvedView, valueCurvedVIew]
         
         btnAddRCPA.layer.cornerRadius = 5
@@ -1469,8 +1549,28 @@ class AddCallinfoView : BaseView {
 
 
 extension AddCallinfoView : CompetitorsFooterDelegate {
-    func didTapdeleteCompetitor(section: Int, index: Int, competitorIndex: Int) {
-        self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitor?.remove(at: competitorIndex)
+    func didTapEditCompetitor(competitor: Competitor, section: Int, index: Int, competitorIndex: Int) {
+      //  selectedProductIndex = index
+        selectedCompetitor = competitor
+        selectedAddcompetitorRow = competitorIndex
+        selectedAddcompetitorSection = section
+        selectedAddcompetitorProductRow = index
+     //   self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?[selectedAddcompetitorRow]
+        
+        guard let remarksStr : String? = self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?[selectedAddcompetitorRow].remarks else {
+            
+            self.competitorCommentAction(isForremarks: true, remarksStr: nil)
+            return}
+        
+         self.competitorCommentAction(isForremarks: true, remarksStr: remarksStr)
+     
+    }
+    
+    func didTapdeleteCompetitor(competitor: Competitor, section: Int, index: Int, competitorIndex: Int) {
+        self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?.remove(at: competitorIndex)
+        
+      //  self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].removeCompetitorInfo(forCompetitor: competitor)
+        
         self.loadedContentsTable.reloadData()
     }
     
@@ -1495,6 +1595,61 @@ extension AddCallinfoView : JfwViewDelegate {
         self.pobValue = POBValue
         self.overallFeedback = overallFeedback
         self.overallRemarks = overallRemarks
+    }
+    
+    
+}
+
+
+extension AddCallinfoView : addedSubViewsDelegate {
+    
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        print("Yet to implement")
+    }
+    
+    func showAlert() {
+        print("Yet to implement")
+    }
+    
+    
+    func didUpdate() {
+        print("Yet to implement")
+    }
+
+}
+
+
+extension AddCallinfoView : SessionInfoTVCDelegate {
+    
+    func handleAddedRemarks(remarksStr: String) {
+
+      //  let aCompetitorInfo = AdditionalCompetitorsInfo(competitor: selectedCompetitor, qty: "", remarks: remarksStr, rate: "", value: "")
+        self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorProductRow].competitorsInfo?[selectedAddcompetitorRow].remarks = remarksStr
+        
+        self.loadedContentsTable.reloadData()
+    }
+    
+    func remarksAdded(remarksStr: String, index: Int) {
+        
+        dump(remarksStr)
+
+        backgroundView.isHidden = true
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+            
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+            }
+
+        }
+        handleAddedRemarks(remarksStr: remarksStr)
+
     }
     
     

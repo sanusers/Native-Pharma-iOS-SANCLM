@@ -8,6 +8,16 @@
 import Foundation
 import UIKit
 
+
+extension RcpaAddedListTableViewCell: CompetitorsDetailsCellDelagate {
+    func didUpdateQuantity(qty: String, index: Int) {
+        self.competitorsInfo?[index].qty = qty
+        self.toloadData()
+    }
+    
+    
+}
+
 extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rowcount ?? 0
@@ -18,11 +28,24 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
         if let competitors = self.competitors {
             cell.competitor =  competitors[indexPath.row]
         }
-    
+        cell.delegate = self
+        cell.index = indexPath.row
+        cell.commentsHolder.alpha = 0.5
         cell.selectionStyle = .none
+        
+        if let competitorsInfo = self.competitorsInfo {
+            let selectedCompetitorsInfo = competitorsInfo[indexPath.row]
+            cell.commentsHolder.alpha =   selectedCompetitorsInfo.remarks != "" || selectedCompetitorsInfo.remarks != nil ?  1 : 0.5
+        }
+        
         cell.deleteHolder.addTap {
             guard let section = self.section, let index = self.index else {return}
-            self.delegate?.didTapdeleteCompetitor(section: section, index: index, competitorIndex: indexPath.row)
+            self.delegate?.didTapdeleteCompetitor(competitor:  cell.competitor, section: section, index: index, competitorIndex: indexPath.row)
+        }
+      
+        cell.commentsHolder.addTap {
+            guard let section = self.section, let index = self.index else {return}
+            self.delegate?.didTapEditCompetitor(competitor:  cell.competitor , section: section, index: index, competitorIndex: indexPath.row)
         }
         
         return cell
@@ -82,6 +105,7 @@ class RcpaAddedListTableViewCell : UITableViewCell {
     var section: Int?
     var index: Int?
     var competitors: [Competitor]?
+    var competitorsInfo : [AdditionalCompetitorsInfo]?
     func setupAddedCompetitors(count: Int, competitors: [Competitor]) {
         //50 - header
         //50 - addbtn
@@ -96,11 +120,13 @@ class RcpaAddedListTableViewCell : UITableViewCell {
             toloadData()
         }
 
-        func toloadData() {
-            competitorsTable.delegate = self
-            competitorsTable.dataSource = self
-            competitorsTable.reloadData()
-        }
+   
+    }
+    
+    func toloadData() {
+        competitorsTable.delegate = self
+        competitorsTable.dataSource = self
+        competitorsTable.reloadData()
     }
     
     var rcpaProduct : RCPAdetailsModal! {

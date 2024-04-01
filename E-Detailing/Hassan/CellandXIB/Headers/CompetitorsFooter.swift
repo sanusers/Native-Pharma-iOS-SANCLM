@@ -51,7 +51,8 @@ extension CompetitorsFooter: UITableViewDelegate, UITableViewDataSource {
 
 
 protocol CompetitorsFooterDelegate: AnyObject {
-    func didTapdeleteCompetitor(section: Int, index: Int, competitorIndex: Int)
+    func didTapdeleteCompetitor(competitor: Competitor, section: Int, index: Int, competitorIndex: Int)
+    func didTapEditCompetitor(competitor: Competitor, section: Int, index: Int, competitorIndex: Int)
 }
 
 class CompetitorsFooter: UITableViewHeaderFooterView {

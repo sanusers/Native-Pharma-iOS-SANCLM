@@ -1780,6 +1780,7 @@ class MainVC : UIViewController {
     
     @objc func dcrcallsAdded() {
         self.toLoadOutboxTable()
+        self.toLoadDcrCollection()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -1856,18 +1857,19 @@ class MainVC : UIViewController {
     func toSetDayplan() {
         
         if !isPlanningNewDCR {
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-              //  Shared.instance.showLoaderInWindow()
+//            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        
                 masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
                     self.toConfigureMydayPlan()
                     self.toSetParams()
                     Shared.instance.isDayplanSet = true
                 }
-            } else {
-                Shared.instance.isDayplanSet = false
-                self.toConfigureMydayPlan()
-            }
+          //  } else {
+              //  Shared.instance.isDayplanSet = false
+              //  self.toConfigureMydayPlan()
+          //  }
         } else {
+            self.toSetParams()
             configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
         }
         
@@ -2772,33 +2774,68 @@ class MainVC : UIViewController {
         
     }
     
+    func isDateInCurrentMonthAndYear(_ dateString: String?, currentDate: Date) -> Bool {
+        guard let dateString = dateString else { return false }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if let dcrDate = dateFormatter.date(from: dateString) {
+            let calendar = Calendar.current
+            let currentMonth = calendar.component(.month, from: currentDate)
+            let currentYear = calendar.component(.year, from: currentDate)
+            let dcrMonth = calendar.component(.month, from: dcrDate)
+            let dcrYear = calendar.component(.year, from: dcrDate)
+            return dcrMonth == currentMonth && dcrYear == currentYear
+        }
+        return false
+    }
+
+    
     private func updateDcr () {
         
-        let doctorColor = UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(1.0))
         
-        let chemistColor = UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(1.0))
+
+        // Get the current date
+        let currentDate = Date()
+        // Filter the array based on the current month and year
+        let DoctorfilteredArray = doctorArr.filter { model in
+            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        }
         
-        let stockistColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(1.0))
-        
-        let unlistdColor = UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.8))
-        
-        let cipColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.8))
-        
-        let hospitalColor = UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.8))
-        
+        self.dcrCount.append(DcrCount(name: "Doctor Calls",color: .appGreen,count: DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:  DoctorfilteredArray.count))
         
         
-        self.dcrCount.append(DcrCount(name: "Doctor Calls",color: doctorColor,count: DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:   self.doctorArr.count))
+        let ChemistfilteredArray = chemistArr.filter { model in
+            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        }
         
-        self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: self.chemistArr.count))
+        self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: ChemistfilteredArray.count))
         
-        self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: self.stockistArr.count))
+        let stockistFilteredArray = stockistArr.filter { model in
+            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        }
         
-        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .appGreyColor ,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: self.unlistedDocArr.count))
+        self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: stockistFilteredArray.count))
         
-        self.dcrCount.append(DcrCount(name: "Cip Calls",color: .appYellow,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipArr.count))
+        let unlistedDocFilteredArray = stockistArr.filter { model in
+            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        }
         
-        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: .appBrown,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalArr.count))
+        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .appLightTextColor.withAlphaComponent(0.2) ,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: unlistedDocFilteredArray.count))
+        
+        
+        
+        let cipFilteredArray = cipArr.filter { model in
+            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        }
+        self.dcrCount.append(DcrCount(name: "Cip Calls",color: .appYellow,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipFilteredArray.count))
+        
+        
+        let hospitalFilteredArray = cipArr.filter { model in
+            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        }
+        
+        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: .appBrown,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalFilteredArray.count))
         
     }
     
@@ -3828,6 +3865,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     let callStatus = callstatus(status: response.msg ?? "", isCallSubmitted: response.isSuccess ?? false)
                     self.toCreateToast(response.msg ?? "Error uploading data try again later.")
                     self.toUpdateData(param: paramData, status: response.msg ?? "Yet to")
+                    //  self.toRemoveFailedHomeDictResponse(param: paramData)
                     completion(callStatus)
                 }
                 //  Shared.instance.removeLoaderInWindow()
@@ -3901,6 +3939,48 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         DispatchQueue.main.async {
             self.toLoadOutboxTable()
+        }
+    }
+    
+    
+    func toRemoveFailedHomeDictResponse(param: JSON) {
+        
+        //to remove object from Local array and core data
+        
+        let filteredValues =  self.outBoxDataArr?.filter({ outBoxCallModel in
+            outBoxCallModel.custCode != param["CustCode"] as! String
+        })
+        
+        self.outBoxDataArr = filteredValues
+        
+        
+        self.homeDataArr.forEach { aHomeData in
+            if aHomeData.custCode == param["CustCode"] as? String {
+                aHomeData.isDataSentToAPI = "1"
+            }
+        }
+        let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
+        // let existingHomeData = masterData.homeData?.first { ($0 as! HomeData).custCode == identifier }
+        
+        
+        let context = DBManager.shared.managedContext()
+        
+        let fetchRequest: NSFetchRequest<HomeData> = HomeData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", identifier ?? "")
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            if let existingObject = results.first {
+                // Object found, update isDataSentToAPI
+                existingObject.isDataSentToAPI = "1"
+                
+                // Save the context to persist changes
+                DBManager.shared.saveContext()
+            } else {
+                // Object not found, handle accordingly
+            }
+        } catch {
+            // Handle fetch error
         }
     }
     

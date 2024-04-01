@@ -141,10 +141,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
     }
     
-    func separateDatesByMonth(_ dates: [Date]) -> [Int: [Date]] {
+    func separateDatesByMonth(_ dates: [Date], in timeZone: TimeZone = .current) -> [Int: [Date]] {
         var result: [Int: [Date]] = [:]
         
-        let calendar = Calendar.current
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
         
         for date in dates {
             let month = calendar.component(.month, from: date)
@@ -211,7 +212,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     
     func toCalculateAvgDate() {
         self.allListArr =  self.allListArr.filter { aHomeData in
-            aHomeData.fw_Indicator == "F" &&  aHomeData.custType == "0"
+            aHomeData.fw_Indicator == "F"
+            //&&  aHomeData.custType == "0"
         }
         
         var avgdates = [Date]()
