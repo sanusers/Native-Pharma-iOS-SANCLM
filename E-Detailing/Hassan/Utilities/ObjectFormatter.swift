@@ -57,7 +57,7 @@ class ObjectFormatter {
         var jsonDatum = Data()
 
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: [json], options: [])
+            let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
             jsonDatum = jsonData
            
             // Convert JSON data to a string

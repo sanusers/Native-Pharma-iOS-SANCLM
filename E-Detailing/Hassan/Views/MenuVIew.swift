@@ -1986,6 +1986,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             var clusterNameArr = [String]()
             var clusterCodeArr = [String]()
             if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.isEmpty ?? true) {
+                let selectedHQ = sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes
+                self.clusterArr = DBManager.shared.getTerritory(mapID: selectedHQ ?? "")
                 self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.forEach { key, value in
                         if key == cluster.code {
@@ -2293,6 +2295,8 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.isEmpty ?? true) {
                 var clusterNameArr = [String]()
                 var clusterCodeArr = [String]()
+                let selectedHQ = sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes
+                self.clusterArr = DBManager.shared.getTerritory(mapID: selectedHQ ?? "")
                 self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.forEach { key, value in
                         if key == cluster.code {
@@ -2458,7 +2462,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 }
                 
                 welf.clusterArr = DBManager.shared.getTerritory(mapID:  id)
-                if welf.clusterArr?.count == 0 || welf.clusterArr == nil {
+                if welf.clusterArr?.count == 0 || welf.clusterArr == nil && LocalStorage.shared.getBool(key: .isConnectedToNetwork)  {
                     Shared.instance.showLoaderInWindow()
                     print("Call api")
                     

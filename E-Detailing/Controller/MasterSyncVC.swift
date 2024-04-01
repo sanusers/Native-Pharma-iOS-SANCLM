@@ -626,10 +626,10 @@ class MasterSyncVC : UIViewController {
 
             
         case .getTP :
-//            toPostDataToserver(type : type) {isCompleted in
-//                completion(isCompleted)
-//            }
-            completion(true)
+            toPostDataToserver(type : type) {isCompleted in
+                completion(isCompleted)
+            }
+          //  completion(true)
         case .dcrDateSync:
             masterVM?.tofetchDcrdates() { result in
                 

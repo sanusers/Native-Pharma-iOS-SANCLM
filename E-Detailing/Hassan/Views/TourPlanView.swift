@@ -1709,6 +1709,7 @@ class TourPlanView: BaseView {
         worksPlanTable.separatorStyle = .none
        
         cellRegistration()
+        
         updateCalender()
         calenderHolderView.elevate(2)
         calenderHolderView.layer.cornerRadius = 5
