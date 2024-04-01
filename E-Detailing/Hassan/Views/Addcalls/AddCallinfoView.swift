@@ -457,6 +457,10 @@ extension AddCallinfoView : UITextFieldDelegate {
             
             // Return false to prevent the text from changing again
             return true
+            
+        case yetTosearchTF:
+            self.didTapSearchTF(textField)
+            return true
         default:
             let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
             let compSepByCharInSet = string.components(separatedBy: aSet)
@@ -713,6 +717,7 @@ extension AddCallinfoView: tableViewProtocols {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
         switch self.segmentType[selectedSegmentsIndex] {
             
         case .detailed:
@@ -731,10 +736,15 @@ extension AddCallinfoView: tableViewProtocols {
                 return 60
             }
         case .rcppa:
+      
+            guard let addedProduct = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct else {
+                return 50 + 5 + 5 + 60
+            }
+            guard addedProduct.count >= indexPath.row else {return 50 + 5 + 5 + 60}
+            
             guard let competitors = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor else { return 50 + 5 + 5 + 60 }
             
             if self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?.count ?? 0 == 0 {
-                //self.rcpaAddedListViewModel.addRcpaChemist(<#T##VM: RcpaAddedViewModel##RcpaAddedViewModel#>)
                 return 50 + 5 + 5 + 60
             } else {
                 return 50 + 5 + 5 + calculateSectionHeight(forSection: indexPath.section, index: indexPath.row)
@@ -1036,11 +1046,18 @@ extension AddCallinfoView : collectionViewProtocols {
 
 class AddCallinfoView : BaseView {
     
+    func setupSearchTF() {
+        self.searchText = ""
+        self.yetTosearchTF.text = ""
+        self.yetTosearchTF.placeholder = "Search"
+    }
+    
     func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
         switch segmentType {
             
           
         case .detailed:
+            setupSearchTF()
             didClose()
             jfwExceptionView.isHidden = false
             viewnoRCPA.isHidden = true
@@ -1051,6 +1068,7 @@ class AddCallinfoView : BaseView {
             toloadYettables()
             toloadContentsTable()
         case .products:
+            setupSearchTF()
             didClose()
             jfwExceptionView.isHidden = false
             viewnoRCPA.isHidden = true
@@ -1061,6 +1079,7 @@ class AddCallinfoView : BaseView {
             toloadYettables()
             toloadContentsTable()
         case .inputs:
+            setupSearchTF()
             didClose()
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
@@ -1071,6 +1090,7 @@ class AddCallinfoView : BaseView {
             toloadYettables()
             toloadContentsTable()
         case .additionalCalls:
+            setupSearchTF()
             didClose()
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
@@ -1081,6 +1101,7 @@ class AddCallinfoView : BaseView {
             toloadYettables()
             toloadContentsTable()
         case .rcppa:
+            setupSearchTF()
             didClose()
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = false
@@ -1100,6 +1121,7 @@ class AddCallinfoView : BaseView {
             //toloadYettables()
             //toloadContentsTable()
         case .jointWork:
+            setupSearchTF()
             jfwExceptionView.isHidden = true
             jfwAction()
         }
@@ -1117,7 +1139,16 @@ class AddCallinfoView : BaseView {
 
     }
     
-
+    
+    @IBAction func didTapSearchTF(_ sender: UITextField) {
+        self.searchText = sender.text ?? ""
+        self.yetToloadContentsTable.reloadData()
+    }
+    
+    
+    @IBOutlet var yetTosearchTF: UITextField!
+    
+    
     @IBOutlet var bottomButtonsHolder: UIView!
     
     @IBOutlet var jfwExceptionView: UIView!
@@ -1281,6 +1312,7 @@ class AddCallinfoView : BaseView {
     }
     
     func initVIews() {
+        yetTosearchTF.delegate = self
         
         backHolderView.addTap {
             self.addCallinfoVC.navigationController?.popViewController(animated: true)

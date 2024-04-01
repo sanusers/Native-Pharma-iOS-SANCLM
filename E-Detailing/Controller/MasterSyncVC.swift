@@ -379,8 +379,8 @@ class MasterSyncVC : UIViewController {
  
                 
             }
-            // Retrieve Data from local storage
-               return
+            self.collectionView.reloadData()
+            return
         }
             let aHQobj = HQModel()
             aHQobj.code = self.fetchedHQObject?.id ?? ""

@@ -40,20 +40,8 @@ extension MasterSyncVC: MenuResponseProtocol {
             
             let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
             
-            if territories.isEmpty {
+            if territories.isEmpty && LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork){
                 
-                
-            //    if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                    
-                //    self.showMasterSyncError(description: "Please check your internet connectivity!")
-               //
-              //      return
-             //   }
-                
-                
-//                cacheMasterData = masterData
-//                
-//                let selectedMasterInfo = masterData
                 let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
                 // Set loading status based on MasterInfo for each element in the array
                 tosyncMasterData.forEach { masterInfo in
@@ -76,7 +64,7 @@ extension MasterSyncVC: MenuResponseProtocol {
                             self.toCreateToast("Clusters synced successfully")
                         }
                
-                        self.collectionView.reloadData()
+                       // self.collectionView.reloadData()
                     case .failure(_):
                         tosyncMasterData.forEach { masterType in
                             MasterInfoState.loadingStatusDict[masterType] = .error
