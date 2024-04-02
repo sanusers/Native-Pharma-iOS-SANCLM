@@ -712,6 +712,12 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
+                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    if welf.specifiedMenuVC.selectedObject  == model {
+                        self?.toCreateToast("Two plan works for same day is restricted.")
+                        return
+                    }
+                }
                 welf.selectedObject = model
                 welf.specifiedMenuVC.selectedObject = model
                 if welf.isSearched {

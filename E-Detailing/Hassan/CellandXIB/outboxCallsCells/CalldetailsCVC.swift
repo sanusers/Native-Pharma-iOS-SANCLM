@@ -53,7 +53,7 @@ class CalldetailsCVC: UICollectionViewCell {
             callsDCR_IV.image = UIImage(named: "cip")
         } else if model.designation == "UnlistedDr." {
             callsDCR_IV.image = UIImage(named: "Doctor")
-        } else if model.designation == "Hospital" {
+        } else if model.designation == "hospital" {
             callsDCR_IV.image = UIImage(named: "hospital")
         } else if model.designation == "Stockist" {
             callsDCR_IV.image = UIImage(named: "Stockist")

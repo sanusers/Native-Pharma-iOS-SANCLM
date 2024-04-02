@@ -588,6 +588,7 @@ class MainVC : UIViewController {
     @IBOutlet weak var callTableView: UITableView!
     @IBOutlet weak var outboxTableView: UITableView!
     
+    @IBOutlet var viewLeftSegment: UIView!
     
     //my day plan
     
@@ -1290,7 +1291,7 @@ class MainVC : UIViewController {
         dump(homeDataArr)
         
         let totalFWs =  homeDataArr.filter { aHomeData in
-            aHomeData.fw_Indicator == "F"  &&   aHomeData.custType == "0"
+            aHomeData.fw_Indicator == "F"
         }
         self.totalFWCount = totalFWs.count
         
@@ -1315,7 +1316,7 @@ class MainVC : UIViewController {
             aHomeData.custType == "5"
         }
         
-        hospitalArr =  homeDataArr.filter { aHomeData in
+      hospitalArr   =  homeDataArr.filter { aHomeData in
             aHomeData.custType == "6"
         }
         
@@ -1338,10 +1339,9 @@ class MainVC : UIViewController {
                         self.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                         self.toretryDCRupload( date: "") {_ in
-                            
-                            // self.callSavePlanAPI() {_ in
-                            // self.toSetParams(date: Date())
-                            //  }
+      
+                            self.todayCallSyncAction(self.btnSync)
+
                             
                         }
                         
@@ -2130,6 +2130,8 @@ class MainVC : UIViewController {
         switch type {
             
         case .doctor:
+
+            
             ahomeLineChartView.setupUI(self.doctorArr, avgCalls: self.totalFWCount)
             
         case .chemist:
@@ -2284,7 +2286,7 @@ class MainVC : UIViewController {
             toDdayCall.name = aHomeData.custName ?? ""
             toDdayCall.vstTime = aHomeData.dcr_dt ?? ""
             toDdayCall.submissionDate = aHomeData.dcr_dt ?? ""
-            toDdayCall.designation = type == 1 ? "Doctor" : type == 2 ? "Chemist" : type == 3 ? "Stockist" : type == 4 ? "hospital" : type == 5 ? "cip" : type == 6 ? "UnlistedDr." : ""
+            toDdayCall.designation = type == 1 ? "Doctor" : type == 2 ? "Chemist" : type == 3 ? "Stockist" : type == 4 ?  "UnlistedDr." : type == 5 ? "cip" : type == 6 ? "hospital" : ""
            // toDdayCall.submissionStatus = "Waiting for sync"
             self.outBoxDataArr?.append(toDdayCall)
         }
@@ -2487,7 +2489,19 @@ class MainVC : UIViewController {
     //    let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
         //  obj_sections[section].isLoading = true
       //  if isConnected {
-            toSetParams()
+        toSetParams()
+        self.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: true, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
+            guard let welf = self else {return}
+            welf.toSeperateDCR()
+            welf.updateDcr()
+            welf.toIntegrateChartView(welf.chartType, welf.cacheDCRindex)
+            
+            welf.toLoadCalenderData()
+            
+            welf.toLoadDcrCollection()
+            welf.toLoadOutboxTable()
+        }
+        
 //        } else {
 //            self.toCreateToast("Please connect to internet and try again later.")
 //        }
@@ -2794,7 +2808,7 @@ class MainVC : UIViewController {
     private func updateDcr () {
         
         
-
+        self.dcrCount.removeAll()
         // Get the current date
         let currentDate = Date()
         // Filter the array based on the current month and year
@@ -2817,7 +2831,7 @@ class MainVC : UIViewController {
         
         self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: stockistFilteredArray.count))
         
-        let unlistedDocFilteredArray = stockistArr.filter { model in
+        let unlistedDocFilteredArray = unlistedDocArr.filter { model in
             return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
         }
         
@@ -3484,11 +3498,18 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             cell.clusterBorderView.addTap { [weak self] in
                 guard let welf = self else {return}
                 welf.selectedSessionIndex = indexPath.row
-                if model.headQuarters != nil {
+                
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
                     welf.navigateToSpecifiedMenu(type: .cluster)
                 } else {
-                    welf.toCreateToast("Please select HQ")
+                    if model.headQuarters != nil {
+                        welf.navigateToSpecifiedMenu(type: .cluster)
+                    } else {
+                        welf.toCreateToast("Please select HQ")
+                    }
                 }
+                
+
                 
                 
             }
@@ -3695,7 +3716,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func toretryDCRupload( date: String, completion: @escaping (Bool) -> Void) {
         var userAddress: String?
-
+    
         Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
             guard let welf = self else{return}
             userAddress = address
@@ -3750,13 +3771,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                             var paramData = specificDateParams[index]
                             
                             // Check if "Entry_location" key exists
-                            if let entryLocation = paramData["Entry_location"] as? String {
+                            if paramData["Entry_location"] is String {
                                 // Update the value of "Entry_location" key
                                 paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
                             }
                             
                             // Check if "address" key exists
-                            if let address = paramData["address"] as? String {
+                            if paramData["address"] is String {
                                 // Update the value of "address" key
                                 paramData["address"] = userAddress ?? ""
                             }
@@ -3773,7 +3794,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             if !localParamArr.isEmpty {
                 welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
                     if isCompleted {
-                       // self.toSetParams()
+                        welf.todayCallSyncAction(welf.btnSync)
+                 
                         completion(true)
                     }
                 }
@@ -3798,6 +3820,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         guard index < items.count else {
             // All items processed, exit the recursion
+            
             completion(true)
             return
         }
@@ -3815,26 +3838,21 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             return
         }
         
-        let diapatchGroup = DispatchGroup()
-        diapatchGroup.enter()
+       //  let diapatchGroup = DispatchGroup()
+       // diapatchGroup.enter()
         var isSubmitted: Bool = false
         self.sendAPIrequest(toSendData, paramData: params) { callstatus in
             if callstatus.isCallSubmitted ?? false {
               //  self.outBoxDataArr?.remove(at: index)
                 isSubmitted = true
-                diapatchGroup.leave()
             } else {
                // self.outBoxDataArr?[index].submissionStatus = callstatus.status ?? "Waiting to sync"
                 isSubmitted = false
           
-                diapatchGroup.leave()
             }
-         
-            diapatchGroup.notify(queue: .main) {
-                completion(isSubmitted)
-                let nextIndex = index + 1
-                self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
-            }
+
+            let nextIndex = index + 1
+            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
    
             
         }
@@ -3887,8 +3905,12 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     @IBAction func didTapClearCalls() {
         
+        
+  
+        
         self.outBoxDataArr?.removeAll()
         
+      //  self.toRemoveFailedHomeDictResponse(param: paramData)
         
         LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
         
@@ -4547,7 +4569,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     
     func showAlertToFilldates(description: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "update plan for \(description)", okAction: "Close")
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "\(description)", okAction: "Close")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

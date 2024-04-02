@@ -161,8 +161,25 @@ public struct UICircularProgressRingFormatter: UICircularRingValueFormatter {
             if showFloatingPoint {
                 return String(format: "%.\(decimalPlaces)f", value) + "\(valueIndicator)"
             } else {
-                return "\(Int(value))\(valueIndicator)"
+                
+                
+                
+              
+                      // Check if the value is NaN or infinite
+                      if value.isNaN || value.isInfinite {
+                          return nil
+                      }
+
+                      // Handle regular numeric values
+                      return "\(Int(value))\(valueIndicator)"
+                  }
+                
+                
+                
+                
+                
+            //    return "\(Int(value))\(valueIndicator)"
             }
         }
     }
-}
+

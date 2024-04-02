@@ -131,7 +131,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
 
                     guard index + 1 < arrayOfAllSlideObjects.count else {
                         
-                        Shared.instance.showLoader(in: self.tableView, loaderType: .common)
+                        //Shared.instance.showLoader(in: self.tableView, loaderType: .common)
                                
                                 LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
                                 self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
@@ -145,7 +145,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                     } else {
                                         BackgroundTaskManager.shared.stopBackgroundTask()
                                     }
-                                    Shared.instance.removeLoader(in: self.tableView)
+                                   // Shared.instance.removeLoader(in: self.tableView)
                                     completion(true)
                                 }
                         return

@@ -30,8 +30,8 @@ class LoginVC : UIViewController {
         lblPoweredBy.setFont(font: .medium(size: .BODY))
         lblPoweredBy.textColor = .appLightTextColor
         
-        txtUserName.text = "mgr123"
-        txtPassWord.text = "123"
+        txtUserName.text = "dmr02"
+        txtPassWord.text = "02"
     }
     @IBOutlet var contentsHolderview: UIView!
     

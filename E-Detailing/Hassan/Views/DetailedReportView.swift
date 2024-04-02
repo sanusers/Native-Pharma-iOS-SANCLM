@@ -43,6 +43,8 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         
         if isTohideCheckin && isTohideCheckout  {
             tempCellHeight = tempCellHeight - 80
+        } else {
+            tempCellHeight += 80
         }
         
         var count = Int()
@@ -81,6 +83,9 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let isTohideRemarks = isTohideRemarks(model)
         let isTohideplanCollection = isTohideplanCollection(count:  count )
         
+        if isTohideplanCollection {
+       //     self.
+        }
          
         if isTohideRemarks && isTohideplanCollection {
           //  tempCellHeight = tempCellHeight - 75
@@ -88,7 +93,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
          
         }
         
-        
+       
         return CGFloat(tempCellHeight)
     }
     

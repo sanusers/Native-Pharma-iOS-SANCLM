@@ -141,20 +141,15 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
     }
     
-    func separateDatesByMonth(_ dates: [Date], in timeZone: TimeZone = .current) -> [Int: [Date]] {
+    func separateDatesByMonth(_ dates: [Date], in timeZone: TimeZone = TimeZone(identifier: "IST")!) -> [Int: [Date]] {
         var result: [Int: [Date]] = [:]
         
         var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = timeZone
+        calendar.timeZone = timeZone // Set the calendar's time zone
         
         for date in dates {
             let month = calendar.component(.month, from: date)
-            
-            if result[month] == nil {
-                result[month] = [date]
-            } else {
-                result[month]?.append(date)
-            }
+            result[month, default: []].append(date)
         }
         
         return result
@@ -211,7 +206,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     
     
     func toCalculateAvgDate() {
-        self.allListArr =  self.allListArr.filter { aHomeData in
+        self.allListArr =  self.dataSourceArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F"
             //&&  aHomeData.custType == "0"
         }
@@ -269,7 +264,9 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             switch dayNumbersIndex {
             case 0:
                 // Filter days in the range 0 to 15
-                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                var daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                daysInRange0to15 = Array(Set(daysInRange0to15))
+                
                 if !daysInRange0to15.isEmpty {
                     
                   
@@ -287,7 +284,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
                 // Filter days in the range 16 to 31
-                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                var daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                daysInRange16to31 = Array(Set(daysInRange16to31))
                 if !daysInRange16to31.isEmpty {
                  
                     avgeacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
@@ -302,7 +300,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
              
             case 1:
                 // Filter days in the range 0 to 15
-                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                var daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                daysInRange0to15 = Array(Set(daysInRange0to15))
                 if !daysInRange0to15.isEmpty {
                  
                    
@@ -318,7 +317,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
                 // Filter days in the range 16 to 31
-                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                var daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                daysInRange16to31 = Array(Set(daysInRange16to31))
                 if !daysInRange16to31.isEmpty {
                 
                     avgeacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
@@ -333,7 +333,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 
             case 2:
                 // Filter days in the range 0 to 15
-                let daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                var daysInRange0to15 = dayNumbers.filter { $0 >= 0 && $0 <= 15 }
+                daysInRange0to15 = Array(Set(daysInRange0to15))
                 if !daysInRange0to15.isEmpty {
                 
                     avgeacSectorCounrArr[4].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
@@ -346,7 +347,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
                 // Filter days in the range 16 to 31
-                let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                var daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
+                daysInRange16to31 = Array(Set(daysInRange16to31))
                 if !daysInRange16to31.isEmpty {
                   
                 
@@ -872,8 +874,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
             yAxis.axisMinimum = 0
          
-        if yRangeMax == 0 {
-            yAxis.axisMaximum =  20
+        if yRangeMax <= 10  {
+            yAxis.axisMaximum = 100
         } else {
             yAxis.axisMaximum =  Double(yRangeMax) * 1.5
         }

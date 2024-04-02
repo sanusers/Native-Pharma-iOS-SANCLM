@@ -268,7 +268,7 @@ class CallListViewModel {
 class CallViewModel {
     
     let call : AnyObject
-    let type : DCRType
+    var type : DCRType
     
     
     
@@ -297,7 +297,9 @@ class CallViewModel {
             
         case .doctor:
             if let doccall = dcrcall as? DoctorFencing {
+                type = .doctor
                name = doccall.name ?? ""
+              
                code = doccall.code ?? ""
                dob = doccall.dob ?? ""
                dow = doccall.dow ?? ""
@@ -314,6 +316,7 @@ class CallViewModel {
             }
         case .chemist:
             if let doccall = dcrcall as? Chemist {
+                type = .chemist
                name = doccall.name ?? ""
                code = doccall.code ?? ""
   
@@ -330,6 +333,7 @@ class CallViewModel {
             }
         case .stockist:
             if let doccall = dcrcall as? Stockist {
+                type = .stockist
                name = doccall.name ?? ""
                code = doccall.code ?? ""
        
@@ -347,6 +351,7 @@ class CallViewModel {
             }
         case .unlistedDoctor:
             if let doccall = dcrcall as? UnListedDoctor {
+                type = .unlistedDoctor
                name = doccall.name ?? ""
                code = doccall.code ?? ""
                dob = ""
@@ -355,6 +360,7 @@ class CallViewModel {
                email = doccall.email ?? ""
                address = doccall.addrs ?? ""
                qualification =  ""
+                
                category = doccall.category ?? ""
                speciality = doccall.specialtyName ?? ""
                 territory = doccall.townName ?? ""
@@ -363,8 +369,10 @@ class CallViewModel {
                 cateCode = ""
             }
         case .hospital:
+            type = .hospital
             print("Yet yo implement")
         case .cip:
+            type = .cip
             print("Yet yo implement")
         }
         return self

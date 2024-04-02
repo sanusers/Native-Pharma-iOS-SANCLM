@@ -138,12 +138,12 @@ class AddCallinfoVC: BaseViewController {
                 cusType = "2"
             case .stockist:
                 cusType = "3"
+            case .hospital:
+                cusType = "6"
+            case .cip:
+                cusType = "5"
             case .unlistedDoctor:
                 cusType = "4"
-            case .hospital:
-                cusType = "5"
-            case .cip:
-                cusType = "6"
         }
         
         let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -209,7 +209,7 @@ class AddCallinfoVC: BaseViewController {
             }
             welf.latitude = coordinates?.latitude
             welf.longitude = coordinates?.longitude
-            
+            Shared.instance.showLoaderInWindow()
             Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
                 welf.address = address
                 params["address"] =  address
@@ -220,8 +220,9 @@ class AddCallinfoVC: BaseViewController {
 
                 toSendData["data"] = jsonDatum
                 welf.callDCRScaeapi(toSendData: toSendData, params: params, cusType: cusType) { isPosted in
-                    
-                    welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: params)
+                    Shared.instance.removeLoaderInWindow()
+            
+                    welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: params)
                     
                     welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                 }
@@ -327,6 +328,26 @@ class AddCallinfoVC: BaseViewController {
                         let contextNew = DBManager.shared.managedContext()
                         let HomeDataEntity = NSEntityDescription.entity(forEntityName: "HomeData", in: contextNew)
                         let HomeDataSetupItem = HomeData(entity: HomeDataEntity!, insertInto: contextNew)
+                    
+                     if  self.dcrCall.type == .chemist {
+                         HomeDataSetupItem.custType = "2"
+                       }
+                       if  self.dcrCall.type == .stockist {
+                           HomeDataSetupItem.custType = "3"
+                         }
+                       if  self.dcrCall.type == .doctor {
+                           HomeDataSetupItem.custType = "1"
+                         }
+                       if  self.dcrCall.type == .hospital {
+                           HomeDataSetupItem.custType = "6"
+                         }
+                       if  self.dcrCall.type == .unlistedDoctor {
+                           HomeDataSetupItem.custType = "4"
+                         }
+                       if  self.dcrCall.type == .cip
+                       {
+                           HomeDataSetupItem.custType = "5"
+                         }
                         HomeDataSetupItem.setValues(fromDictionary: homeData)
                         HomeDataSetupItem.index = Int16(index)
                         HomeDataSetupArray.append(HomeDataSetupItem)

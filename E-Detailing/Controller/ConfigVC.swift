@@ -203,7 +203,7 @@ class ConfigVC : UIViewController {
         statusBarView.backgroundColor = .appTextColor
         
         txtWebUrl.text = "sanffa.info"
-        txtLicenceKey.text = "mark2023"
+        txtLicenceKey.text = "ed19"
     }
     
     override func viewDidLoad() {
