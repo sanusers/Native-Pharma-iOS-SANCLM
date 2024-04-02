@@ -8,11 +8,12 @@
 //
 
 import Foundation
+enum TPErrors: String, Error {
+    case unableConnect = "An issue occured data will be saved to device"
+}
 class  TourPlanVM {
     
-    enum TPErrors: String, Error {
-        case unableConnect = "An issue occured data will be saved to device"
-    }
+
     
     //getAllPlansData
     func getTourPlanData(params: JSON, api : APIEnums, _ result : @escaping (Result<SessionResponseModel,Error>) -> Void) {

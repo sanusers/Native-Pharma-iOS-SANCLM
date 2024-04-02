@@ -419,8 +419,6 @@ class CallVC : UIViewController {
             self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption ?? "", type: .cip)))
         }
         
-        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.hospCaption ?? "", type: .hospital)))
-        self.CallListArray.addDcrActivity(DcrActivityViewModel(activityType: DcrActivityType(name: appsetup.cipCaption ?? "", type: .cip)))
     }
     
     private func updateSegment() {

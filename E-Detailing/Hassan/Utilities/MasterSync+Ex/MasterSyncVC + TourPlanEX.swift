@@ -26,7 +26,7 @@ extension MasterSyncVC {
         }
     }
     
-    func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, Error>) -> ())  {
+    func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, TPErrors>) -> ())  {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
 
         
@@ -115,27 +115,64 @@ extension MasterSyncVC {
         }
         dump(sessions)
         
+        makeAPICalls(sessions: sessions, currentIndex: 0) { result in
+            
+            completion(result)
+            self.setLoader(pageType: .loaded)
+        }
+      
         
-        let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: sessions)
+//        let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: sessions)
+//    
+//        var toSendData = [String: Any]()
+//        toSendData["data"] = jsonDatum
+//        let tourPlanVM = TourPlanVM()
+//        tourPlanVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
+//            switch result {
+//            case .success(let response):
+//                dump(response)
+//                completion(.success(response))
+//                self.setLoader(pageType: .loaded)
+//                
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//                
+//                completion(.failure(error))
+//                self.setLoader(pageType: .loaded)
+//            }
+//        }
+    }
     
+    
+    func makeAPICalls(sessions: [JSON], currentIndex: Int = 0, completion: @escaping (Result<SaveTPresponseModel,TPErrors>) -> Void) {
+        var  responseModel: SaveTPresponseModel?
+        guard currentIndex < sessions.count else {
+            // Base case: all API calls have been made
+            completion(.success(responseModel ?? SaveTPresponseModel()))
+            return
+        }
+        
+        let json = sessions[currentIndex]
+        let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: [json])
         var toSendData = [String: Any]()
         toSendData["data"] = jsonDatum
         let tourPlanVM = TourPlanVM()
-        tourPlanVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: param) { result in
+        tourPlanVM.uploadTPmultipartFormData(params: toSendData, api: .saveTP, paramData: sessions[currentIndex]) { result in
             switch result {
             case .success(let response):
                 dump(response)
                 completion(.success(response))
-                self.setLoader(pageType: .loaded)
+                // Continue to the next API call recursively
+                responseModel = response
+                self.makeAPICalls(sessions: sessions, currentIndex: currentIndex + 1, completion: completion)
                 
             case .failure(let error):
                 print(error.localizedDescription)
-                
                 completion(.failure(error))
-                self.setLoader(pageType: .loaded)
             }
         }
     }
+    
     
     func toSendUnsavedObjects(unSavedPlans : [SessionDetailsArr], unsentIndices: [Int], isFromFirstLoad : Bool, completion: @escaping (Bool) -> ()) {
         if unSavedPlans.count > 0 {
