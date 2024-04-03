@@ -179,7 +179,7 @@ class SessionDetails: Codable {
     let chemThreeCode, chemThreeName, stockistCode, stockistName: String
     let stockistTwoCode, stockistTwoName, stockistThreeCode, stockistThreeName: String
     let day: String
-    let tourMonth, tourYear: Int
+    let tourMonth, tourYear: String
     let tpmonth: String
     let tpday: String
     let dayRemarks: String
@@ -319,8 +319,8 @@ class SessionDetails: Codable {
         self.stockistThreeCode = container.safeDecodeValue(forKey: .stockistThreeCode)
         self.stockistThreeName = container.safeDecodeValue(forKey: .stockistThreeName)
         self.day = container.safeDecodeValue(forKey: .day)
-        self.tourMonth = try container.decode(Int.self, forKey: .tourMonth)
-        self.tourYear = try container.decode(Int.self, forKey: .tourYear)
+        self.tourMonth = container.safeDecodeValue(forKey: .tourMonth)
+        self.tourYear =  container.safeDecodeValue(forKey: .tourYear)
         self.tpmonth = container.safeDecodeValue(forKey: .tpmonth)
         self.tpday = container.safeDecodeValue(forKey: .tpday)
         self.dayRemarks = container.safeDecodeValue(forKey: .dayRemarks)
@@ -397,8 +397,8 @@ class SessionDetails: Codable {
         self.chemThreeCode = String()
         self.stockistTwoCode = String()
         self.fwFlg2  = String()
-        self.tourMonth = Int()
-        self.tourYear = Int()
+        self.tourMonth = String()
+        self.tourYear = String()
         self.day = String()
        
         self.tpmonth = String()
@@ -422,7 +422,7 @@ class SessionDetails: Codable {
 class TimeInfo: Codable {
     let date : String
     let timezone : String
-    let timezone_type : String
+    let timezone_type : Int
     
     enum CodingKeys: String, CodingKey {
         case date
@@ -441,7 +441,7 @@ class TimeInfo: Codable {
         
         date = ""
         timezone = ""
-        timezone_type = ""
+        timezone_type = Int()
     }
     
     

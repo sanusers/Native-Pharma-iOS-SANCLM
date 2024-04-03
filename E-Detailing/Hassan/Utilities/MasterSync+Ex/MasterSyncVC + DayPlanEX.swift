@@ -165,22 +165,23 @@ extension CoreDataManager {
         }
     }
     
+    func removeUnsyncedHomeData() {
+        let fetchRequest: NSFetchRequest<UnsyncedHomeData> = NSFetchRequest(entityName: "UnsyncedHomeData")
+
+        do {
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
     
-//    func removeHQ() {
-//        //completion: @escaping () -> Void
-//        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SelectedHQ.fetchRequest()
-//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-//
-//        do {
-//            try context.execute(batchDeleteRequest)
-//            try context.save()
-//            // completion()
-//        } catch {
-//            print("Error deleting slide brands: \(error)")
-//            //  completion()
-//        }
-//    }
     
+
     
     
     func saveToHQCoreData(hqModel: HQModel  , completion: (Bool) -> ()) {

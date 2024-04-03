@@ -270,8 +270,9 @@ class CallViewModel {
     let call : AnyObject
     var type : DCRType
     
-    
-    
+    var dcrTime: String = ""
+    var latitude: Double = Double()
+    var longitude:  Double = Double()
     var name: String = ""
     var code: String = ""
     var dob: String = ""

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Brand" representedClassName="Brand" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -282,6 +282,7 @@
         <relationship name="tableSetup" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TableSetup"/>
         <relationship name="territory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Territory"/>
         <relationship name="unListedDoc" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UnListedDoctor"/>
+        <relationship name="unsyncedHomeData" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UnsyncedHomeData"/>
         <relationship name="visitControl" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="VisitControl"/>
         <relationship name="weeklyoff" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Weeklyoff"/>
         <relationship name="workType" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkType"/>
@@ -529,6 +530,26 @@
         <attribute name="townName" optional="YES" attributeType="String"/>
         <relationship name="dob" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="dow" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
+    </entity>
+    <entity name="UnsyncedHomeData" representedClassName="UnsyncedHomeData" syncable="YES" codeGenerationType="class">
+        <attribute name="anslNo" optional="YES" attributeType="String"/>
+        <attribute name="custCode" optional="YES" attributeType="String"/>
+        <attribute name="custName" optional="YES" attributeType="String"/>
+        <attribute name="custType" optional="YES" attributeType="String"/>
+        <attribute name="dcr_dt" optional="YES" attributeType="String"/>
+        <attribute name="dcr_flag" optional="YES" attributeType="String"/>
+        <attribute name="editflag" optional="YES" attributeType="String"/>
+        <attribute name="fw_Indicator" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isDataSentToAPI" optional="YES" attributeType="String"/>
+        <attribute name="mnth" optional="YES" attributeType="String"/>
+        <attribute name="month_name" optional="YES" attributeType="String"/>
+        <attribute name="rejectionReason" optional="YES" attributeType="String"/>
+        <attribute name="sf_Code" optional="YES" attributeType="String"/>
+        <attribute name="town_code" optional="YES" attributeType="String"/>
+        <attribute name="town_name" optional="YES" attributeType="String"/>
+        <attribute name="trans_SlNo" optional="YES" attributeType="String"/>
+        <attribute name="yr" optional="YES" attributeType="String"/>
     </entity>
     <entity name="VisitControl" representedClassName="VisitControl" syncable="YES" codeGenerationType="class">
         <attribute name="custCode" optional="YES" attributeType="String"/>

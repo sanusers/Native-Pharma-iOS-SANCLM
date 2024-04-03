@@ -341,6 +341,10 @@
 		38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */; };
 		38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */; };
 		38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */; };
+		38FD4F022BBD714700EF9D3D /* CustomerCheckinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FD4F012BBD714700EF9D3D /* CustomerCheckinView.swift */; };
+		38FD4F042BBD763000EF9D3D /* CustomerCheckinView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FD4F032BBD763000EF9D3D /* CustomerCheckinView.xib */; };
+		38FD4F062BBD868500EF9D3D /* CustomerCheckoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FD4F052BBD868500EF9D3D /* CustomerCheckoutView.xib */; };
+		38FD4F082BBD869800EF9D3D /* CustomerCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FD4F072BBD869800EF9D3D /* CustomerCheckoutView.swift */; };
 		38FDD4152B99881500566A04 /* CommonResouceInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FDD4132B99881500566A04 /* CommonResouceInfoTVC.swift */; };
 		38FDD4162B99881500566A04 /* CommonResouceInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FDD4142B99881500566A04 /* CommonResouceInfoTVC.xib */; };
 		B27ED24D29F6428900B90B61 /* CallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24C29F6428900B90B61 /* CallCell.swift */; };
@@ -704,6 +708,10 @@
 		38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarksEditSessionCell.swift; sourceTree = "<group>"; };
 		38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemarksEditSessionCell.xib; sourceTree = "<group>"; };
 		38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedReportsModel.swift; sourceTree = "<group>"; };
+		38FD4F012BBD714700EF9D3D /* CustomerCheckinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerCheckinView.swift; sourceTree = "<group>"; };
+		38FD4F032BBD763000EF9D3D /* CustomerCheckinView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerCheckinView.xib; sourceTree = "<group>"; };
+		38FD4F052BBD868500EF9D3D /* CustomerCheckoutView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerCheckoutView.xib; sourceTree = "<group>"; };
+		38FD4F072BBD869800EF9D3D /* CustomerCheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerCheckoutView.swift; sourceTree = "<group>"; };
 		38FDD4132B99881500566A04 /* CommonResouceInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonResouceInfoTVC.swift; sourceTree = "<group>"; };
 		38FDD4142B99881500566A04 /* CommonResouceInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommonResouceInfoTVC.xib; sourceTree = "<group>"; };
 		9CE0B15EC24F1D8F6F887F26 /* Pods-E-Detailing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-Detailing.release.xcconfig"; path = "Target Support Files/Pods-E-Detailing/Pods-E-Detailing.release.xcconfig"; sourceTree = "<group>"; };
@@ -909,6 +917,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38FD4EFE2BBD6F7A00EF9D3D /* CustomerCheckin */,
 				38FA7EE42BAD463A00BB2593 /* AddCalls */,
 				384555682BA9C5F900F6CE1A /* Headers */,
 				38E6B08E2B9866930014AF1E /* Resource */,
@@ -1439,6 +1448,17 @@
 			path = MyDayPlan;
 			sourceTree = "<group>";
 		};
+		38FD4EFE2BBD6F7A00EF9D3D /* CustomerCheckin */ = {
+			isa = PBXGroup;
+			children = (
+				38FD4F012BBD714700EF9D3D /* CustomerCheckinView.swift */,
+				38FD4F032BBD763000EF9D3D /* CustomerCheckinView.xib */,
+				38FD4F052BBD868500EF9D3D /* CustomerCheckoutView.xib */,
+				38FD4F072BBD869800EF9D3D /* CustomerCheckoutView.swift */,
+			);
+			path = CustomerCheckin;
+			sourceTree = "<group>";
+		};
 		A8343534F7C81EDB68431942 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1736,6 +1756,7 @@
 				388546492B5FE65F005FC9FC /* CreatedPresentationCVC.xib in Resources */,
 				38C673222A3C2B5800528E36 /* Activity.storyboard in Resources */,
 				38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */,
+				38FD4F062BBD868500EF9D3D /* CustomerCheckoutView.xib in Resources */,
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
 				381BC2602BAC617800804B85 /* AdditionalCallsHeader.xib in Resources */,
 				B287E68529F2A20F0097974D /* Satoshi-MediumItalic.otf in Resources */,
@@ -1772,6 +1793,7 @@
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
 				386A61D92BB2AC7000363C6C /* RCPASectionheader.xib in Resources */,
+				38FD4F042BBD763000EF9D3D /* CustomerCheckinView.xib in Resources */,
 				3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */,
 				38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */,
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
@@ -1916,6 +1938,7 @@
 				38CACEAC2BA96464006BFA62 /* BackgroundTaskManager.swift in Sources */,
 				38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */,
 				38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */,
+				38FD4F022BBD714700EF9D3D /* CustomerCheckinView.swift in Sources */,
 				38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38DD14B12B4FBAA70036384F /* Shared.swift in Sources */,
@@ -1937,6 +1960,7 @@
 				38107C592B36F86C00ACEDF3 /* rcpaCVC.swift in Sources */,
 				3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */,
 				38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */,
+				38FD4F082BBD869800EF9D3D /* CustomerCheckoutView.swift in Sources */,
 				3885463F2B5FC765005FC9FC /* HomeWorktypeTVC.swift in Sources */,
 				38C4D33C2A7BD9BB0029AC12 /* MainViewModel.swift in Sources */,
 				38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */,

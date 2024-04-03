@@ -2069,6 +2069,17 @@ class DBManager {
     }
     
     
+    func geUnsyncedtHomeData() -> [UnsyncedHomeData]? {
+        let masterData = self.getMasterData()
+        guard let WeeklyoffSetupArray = masterData.unsyncedHomeData?.allObjects else{
+            return [UnsyncedHomeData]()
+        }
+//        let array = WeeklyoffSetupArray.sorted{(item1 , item2 ) -> Bool in
+//            return item1.index < item2.index
+//        }
+        return WeeklyoffSetupArray as? [UnsyncedHomeData] ?? nil
+    }
+    
     func getHomeData() -> [HomeData]{
         let masterData = self.getMasterData()
         guard let WeeklyoffSetupArray = masterData.homeData?.allObjects as? [HomeData] else{

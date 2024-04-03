@@ -822,6 +822,7 @@ class MainVC : UIViewController {
     var cipArr = [HomeData]()
     var hospitalArr = [HomeData]()
     var  homeDataArr = [HomeData]()
+    var unsyncedhomeDataArr = [UnsyncedHomeData]()
     var responseDcrDates = [DcrDates]()
     var outBoxDataArr : [TodayCallsModel]?
     var totalFWCount: Int = 0
@@ -1286,9 +1287,43 @@ class MainVC : UIViewController {
     }
     
     
-    func toSeperateDCR() {
+    func appendUnsyncedCalls() {
+        if let unsyncedhomeDataArr = DBManager.shared.geUnsyncedtHomeData() {
+            
+            for unsyncedHomeData in unsyncedhomeDataArr {
+                let homeData = HomeData(context: self.context)
+                      homeData.anslNo = unsyncedHomeData.anslNo
+                      homeData.custCode = unsyncedHomeData.custCode
+                      homeData.custName = unsyncedHomeData.custName
+                      homeData.custType = unsyncedHomeData.custType
+                      homeData.dcr_dt = unsyncedHomeData.dcr_dt
+                      homeData.dcr_flag = unsyncedHomeData.dcr_flag
+                      homeData.editflag = unsyncedHomeData.editflag
+                      homeData.fw_Indicator = unsyncedHomeData.fw_Indicator
+                      homeData.index = unsyncedHomeData.index
+                      homeData.isDataSentToAPI = unsyncedHomeData.isDataSentToAPI
+                      homeData.mnth = unsyncedHomeData.mnth
+                      homeData.month_name = unsyncedHomeData.month_name
+                      homeData.rejectionReason = unsyncedHomeData.rejectionReason
+                      homeData.sf_Code = unsyncedHomeData.sf_Code
+                      homeData.town_code = unsyncedHomeData.town_code
+                      homeData.town_name = unsyncedHomeData.town_name
+                      homeData.trans_SlNo = unsyncedHomeData.trans_SlNo
+                      homeData.yr = unsyncedHomeData.yr
+                      
+                      // Append the created HomeData object to homeDataArr
+                      homeDataArr.append(homeData)
+            }
+        }
+    }
+    
+    func toSeperateDCR(istoAppend: Bool? = false) {
         homeDataArr = DBManager.shared.getHomeData()
-        dump(homeDataArr)
+        if istoAppend ?? false {
+            appendUnsyncedCalls()
+        }
+     
+        
         
         let totalFWs =  homeDataArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F"
@@ -1340,7 +1375,7 @@ class MainVC : UIViewController {
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                         self.toretryDCRupload( date: "") {_ in
       
-                            self.todayCallSyncAction(self.btnSync)
+                          //  self.todayCallSyncAction(self.btnSync)
 
                             
                         }
@@ -1642,6 +1677,17 @@ class MainVC : UIViewController {
     }
     
     func setupUI() {
+        cellRegistration()
+        initView()
+        
+        self.toSeperateDCR()
+        self.updateDcr()
+        self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
+        toLoadCalenderData()
+        toLoadDcrCollection()
+        toLoadOutboxTable()
+        
+        rejectionVIew.isHidden = true
         toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
         toHideDeviateView(isTohide: true)
         backgroundView.isHidden = true
@@ -1748,26 +1794,19 @@ class MainVC : UIViewController {
         homeTitleLbl.setFont(font: .bold(size: .SUBHEADER))
         homeTitleLbl.text = "SAN Media Pvt Ltd.,"
         homeTitleLbl.textColor = .appWhiteColor
-        //        showMenuView.addTap {
-        //            print("Tapped")
-        //            let menuvc =   HomeSideMenuVC.initWithStory(self)
-        //            self.modalPresentationStyle = .custom
-        //            self.navigationController?.present(menuvc, animated: false)
-        //        }
+
         quickLinkTitle.setFont(font: .bold(size: .SUBHEADER))
         monthRangeLbl.setFont(font: .medium(size: .BODY))
         lblAverageDocCalls.setFont(font: .bold(size: .SUBHEADER))
         lblAnalysisName.setFont(font: .bold(size: .SUBHEADER))
-        //toSeperateDCR()
+  
         chartHolderView.layer.cornerRadius = 5
         chartHolderView.backgroundColor = .appWhiteColor
-        // self.toIntegrateChartView(.doctor, 0)
+ 
         month1View.layer.cornerRadius = 5
         month2View.layer.cornerRadius = 5
         month3View.layer.cornerRadius = 5
-        
-        //  month3View.isHidden = true
-        // month2View.isHidden = true
+
         month1VXview.backgroundColor = .appSelectionColor
         month2VXview.backgroundColor = .appSelectionColor
         month3VXview.backgroundColor = .appSelectionColor
@@ -1775,20 +1814,19 @@ class MainVC : UIViewController {
         month1Lbl.setFont(font: .bold(size: .BODY))
         month2Lbl.setFont(font: .bold(size: .BODY))
         month3Lbl.setFont(font: .bold(size: .BODY))
-        // configureSaveplanBtn(false)
+
     }
     
     @objc func dcrcallsAdded() {
-        self.toLoadOutboxTable()
+        self.toSeperateDCR(istoAppend: true)
+        self.updateDcr()
+        self.toLoadOutboxTable(isSynced: true)
         self.toLoadDcrCollection()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-       // CoreDataManager.shared.removeAllDayPlans()
-      //   self.toConfigureMydayPlan()
         
-      
         toPostDayplan() {
             
             if !Shared.instance.isDayplanSet {
@@ -1796,17 +1834,6 @@ class MainVC : UIViewController {
          }
         }
         
-        
-        rejectionVIew.isHidden = true
-        //   toConfigureDynamicHeader(false)
-        self.toSeperateDCR()
-        self.updateDcr()
-        self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
-        
-        toLoadCalenderData()
-        
-        toLoadDcrCollection()
-        toLoadOutboxTable()
     }
     
     func toLoadDcrCollection() {
@@ -1973,34 +2000,7 @@ class MainVC : UIViewController {
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        ///note - use below func to calculate Persistent Storage Size
-        
-      //  let storageSize = Pipelines.shared.calculatePersistentStorageSize()
-      //  print("Total Storage Size: \(storageSize ?? UInt64()) bytes")
- 
-        self.updateLinks()
-        setupUI()
-        if istoRedirecttoCheckin() {
-            checkinAction()
-        }
-        
-        
-        
-        if !isFromLaunch {
-            requestAuth()
-        }
-   
-            
-        
-        
-
-        
-        self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
-        
-        [btnNotification,btnSync,btnProfile].forEach({$0?.Border_Radius(border_height: 0, isborder: true, radius: 25)})
-        
+    func cellRegistration() {
         self.quickLinkCollectionView.register(UINib(nibName: "QuickLinkCell", bundle: nil), forCellWithReuseIdentifier: "QuickLinkCell")
         
         self.dcrCallsCollectionView.register(UINib(nibName: "DCRCallAnalysisCell", bundle: nil), forCellWithReuseIdentifier: "DCRCallAnalysisCell")
@@ -2027,10 +2027,30 @@ class MainVC : UIViewController {
         
         
         self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.updateLinks()
+        setupUI()
+        if istoRedirecttoCheckin() {
+            checkinAction()
+        }
+
+        if !isFromLaunch {
+            requestAuth()
+        }
+
+
+    }
+    
+    func initView() {
+        self.viewDate.Border_Radius(border_height: 0, isborder: true, radius: 10)
         
-        //
+        [btnNotification,btnSync,btnProfile].forEach({$0?.Border_Radius(border_height: 0, isborder: true, radius: 25)})
         
-        
+
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         self.quickLinkCollectionView.collectionViewLayout = layout
@@ -2050,30 +2070,17 @@ class MainVC : UIViewController {
         
         self.segmentControlForAnalysis.fillSelectedSegment()
         
-        //        [viewWorkType,viewHeadquarter,viewCluster,viewRemarks].forEach { view in
-        //            view.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
-        //            view.layer.borderWidth = 1.5
-        //            view.layer.cornerRadius = 10
-        //        }
-        
         [btnCall,btnActivity].forEach { button in
             button.layer.borderColor = AppColors.primaryColorWith_40per_alpha.cgColor
             button.layer.borderWidth = 1
         }
-        
-        
-        
-        //    self.updateCalender()
+
         
         self.updatePCPMChart()
         
         self.navigationController?.navigationBar.isHidden = true
         
-        
-       // self.fetchHome()
-        
     }
-    
     
     
     func toLoadCalenderData() {
@@ -2230,8 +2237,8 @@ class MainVC : UIViewController {
     
     
     
-    func toLoadOutboxTable() {
-        toSetupOutBoxDataSource()
+    func toLoadOutboxTable(isSynced: Bool? = true) {
+        toSetupOutBoxDataSource(isSynced: isSynced ?? false)
         outboxTableView.delegate = self
         outboxTableView.dataSource = self
         outboxTableView.reloadData()
@@ -2255,7 +2262,7 @@ class MainVC : UIViewController {
         
     }
     
-    func toSetupOutBoxDataSource() {
+    func toSetupOutBoxDataSource(isSynced: Bool) {
         
         self.outBoxDataArr?.removeAll()
         
@@ -2287,7 +2294,8 @@ class MainVC : UIViewController {
             toDdayCall.vstTime = aHomeData.dcr_dt ?? ""
             toDdayCall.submissionDate = aHomeData.dcr_dt ?? ""
             toDdayCall.designation = type == 1 ? "Doctor" : type == 2 ? "Chemist" : type == 3 ? "Stockist" : type == 4 ?  "UnlistedDr." : type == 5 ? "cip" : type == 6 ? "hospital" : ""
-           // toDdayCall.submissionStatus = "Waiting for sync"
+            toDdayCall.submissionStatus =  isSynced ? "Waiting for sync" : "Call aldready exists."
+            //
             self.outBoxDataArr?.append(toDdayCall)
         }
         toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]())
@@ -2484,15 +2492,10 @@ class MainVC : UIViewController {
     }
     
     
-    
-    @IBAction func todayCallSyncAction(_ sender: UIButton) {
-    //    let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
-        //  obj_sections[section].isLoading = true
-      //  if isConnected {
-        toSetParams()
+    func refreshDashboard() {
         self.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: true, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
             guard let welf = self else {return}
-            welf.toSeperateDCR()
+            welf.toSeperateDCR(istoAppend: true)
             welf.updateDcr()
             welf.toIntegrateChartView(welf.chartType, welf.cacheDCRindex)
             
@@ -2501,13 +2504,13 @@ class MainVC : UIViewController {
             welf.toLoadDcrCollection()
             welf.toLoadOutboxTable()
         }
-        
-//        } else {
-//            self.toCreateToast("Please connect to internet and try again later.")
-//        }
-        
-        
-        
+    }
+    
+    
+    @IBAction func todayCallSyncAction(_ sender: UIButton) {
+
+        toSetParams()
+
     }
     
     func toSetParams(date: Date? = Date()) {
@@ -2545,7 +2548,7 @@ class MainVC : UIViewController {
                 // Shared.instance.removeLoader(in: self.view)
                 self.setupCalls(response: response)
                 dump(response)
-              //  Shared.instance.removeLoaderInWindow()
+        
             case .failure(let error):
                 //  Shared.instance.removeLoader(in: self.view)
                 
@@ -2561,6 +2564,7 @@ class MainVC : UIViewController {
     func setupCalls(response: [TodayCallsModel]) {
         callsCountLbl.text = "Call Count: \(response.count)"
         toloadCallsTable()
+        refreshDashboard()
     }
     
     
@@ -2623,7 +2627,7 @@ class MainVC : UIViewController {
                     print(apiResponse)
                     print("ssusus")
                     
-                    if let response = apiResponse as? [[String : Any]]{
+                    if apiResponse is [[String : Any]]{
                         
                     }
                 }catch {
@@ -2639,7 +2643,7 @@ class MainVC : UIViewController {
     }
     
     private func fetch() {
-        let appsetup = AppDefaults.shared.getAppSetUp()
+        _ = AppDefaults.shared.getAppSetUp()
         
         let url = appMainURL + "homedashboard"
         
@@ -2663,7 +2667,7 @@ class MainVC : UIViewController {
                     print("ssusus")
                     
                     
-                    if let response = apiResponse as? [[String : Any]] {
+                    if apiResponse is [[String : Any]] {
                         
                     }
                 }catch {
@@ -2701,7 +2705,7 @@ class MainVC : UIViewController {
                     print(apiResponse)
                     print("ssusus")
                     
-                    if let response = apiResponse as? [[String : Any]] {
+                    if apiResponse is [[String : Any]] {
                         
                     }
                 }catch {
@@ -3210,7 +3214,7 @@ extension MainVC : collectionViewProtocols {
         case self.eventCollectionView :
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DayPlanEventCell", for: indexPath) as! DayPlanEventCell
             
-            let model = self.homeDataArr
+           // _ = self.homeDataArr
             
             cell.lblEvent.text = eventArr[indexPath.row]
             cell.lblEvent.textColor = colorArr[indexPath.row]
@@ -3540,12 +3544,18 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func navigateToSpecifiedMenu(type: MenuView.CellType) {
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: type)
-        let model = sessions?[selectedSessionIndex ?? 0]
+      //  let model = sessions?[selectedSessionIndex ?? 0]
         switch type {
             
         case .workType:
-            vc.selectedObject = model?.workType
+            
+            if let workType = sessions?[0].workType  {
+                vc.selectedObject = workType
+            }
+            
+         
             //self.fetchedWorkTypeObject
+      
         case .cluster:
             
             switch self.selectedSessionIndex {
@@ -3744,13 +3754,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                         var paramData = specificDateParams[index]
                         
                         // Check if "Entry_location" key exists
-                        if let entryLocation = paramData["Entry_location"] as? String {
+                        if let _ = paramData["Entry_location"] as? String {
                             // Update the value of "Entry_location" key
                             paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
                         }
                         
                         // Check if "address" key exists
-                        if let address = paramData["address"] as? String {
+                        if let _ = paramData["address"] as? String {
                             // Update the value of "address" key
                             paramData["address"] = userAddress ?? ""
                         }
@@ -3840,16 +3850,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
        //  let diapatchGroup = DispatchGroup()
        // diapatchGroup.enter()
-        var isSubmitted: Bool = false
+       
         self.sendAPIrequest(toSendData, paramData: params) { callstatus in
-            if callstatus.isCallSubmitted ?? false {
-              //  self.outBoxDataArr?.remove(at: index)
-                isSubmitted = true
-            } else {
-               // self.outBoxDataArr?[index].submissionStatus = callstatus.status ?? "Waiting to sync"
-                isSubmitted = false
-          
-            }
 
             let nextIndex = index + 1
             self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
@@ -3883,7 +3885,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     let callStatus = callstatus(status: response.msg ?? "", isCallSubmitted: response.isSuccess ?? false)
                     self.toCreateToast(response.msg ?? "Error uploading data try again later.")
                     self.toUpdateData(param: paramData, status: response.msg ?? "Yet to")
-                    //  self.toRemoveFailedHomeDictResponse(param: paramData)
+                    self.toRemoveFailedHomeDictResponse(param: paramData)
                     completion(callStatus)
                 }
                 //  Shared.instance.removeLoaderInWindow()
@@ -3906,33 +3908,19 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     @IBAction func didTapClearCalls() {
         
         
-  
-        
+        self.outboxCountVIew.isHidden = true
         self.outBoxDataArr?.removeAll()
-        
-      //  self.toRemoveFailedHomeDictResponse(param: paramData)
-        
         LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
+
+        CoreDataManager.shared.removeUnsyncedHomeData()
         
-        let context = DBManager.shared.managedContext()
-        let fetchRequest: NSFetchRequest<HomeData> = HomeData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isDataSentToAPI == %@", "0")
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            
-            for object in results {
-                context.delete(object)
-            }
-            
-            // Save the context to persist changes
-            DBManager.shared.saveContext()
-        } catch {
-            // Handle fetch error
-        }
-        
+        toSeperateDCR(istoAppend: false)
+        self.updateDcr()
         DispatchQueue.main.async {
+            
             self.toLoadOutboxTable()
+            self.toLoadDcrCollection()
+            self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
         }
     }
     
@@ -3942,7 +3930,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 
         let updatedSections = obj_sections.map { section -> Section in
             var updatedSection = section
-
+            
+            // Filter items in the section
+            updatedSection.items = section.items.filter { call in
+                // Assuming custCode is not an optional type
+                return call.custCode == custCodeToUpdate
+            }
+            
             updatedSection.items = section.items.map { call in
                 let updatedCall = call
                 
@@ -3953,15 +3947,33 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
                 return updatedCall
             }
-            
+            // Keep the section if it still has items after filtering
             return updatedSection
         }
         
-        obj_sections = updatedSections
+        
+        
+        
+        
+        // Assign the updated array back to obj_sections
+        obj_sections = updatedSections.filter({ section in
+            !section.items.isEmpty
+        })
+        
+        dump(obj_sections)
         
         DispatchQueue.main.async {
-            self.toLoadOutboxTable()
+           // self.toSetParams()
+            self.toLoadOutboxTable(isSynced: false)
         }
+        
+        
+        
+        
+        
+        
+        
+        
     }
     
     
@@ -3973,42 +3985,21 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             outBoxCallModel.custCode != param["CustCode"] as! String
         })
         
-        self.outBoxDataArr = filteredValues
         
         
-        self.homeDataArr.forEach { aHomeData in
-            if aHomeData.custCode == param["CustCode"] as? String {
-                aHomeData.isDataSentToAPI = "1"
-            }
-        }
-        let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
-        // let existingHomeData = masterData.homeData?.first { ($0 as! HomeData).custCode == identifier }
+            self.outBoxDataArr = filteredValues
         
-        
-        let context = DBManager.shared.managedContext()
-        
-        let fetchRequest: NSFetchRequest<HomeData> = HomeData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "custCode == %@", identifier ?? "")
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            if let existingObject = results.first {
-                // Object found, update isDataSentToAPI
-                existingObject.isDataSentToAPI = "1"
-                
-                // Save the context to persist changes
-                DBManager.shared.saveContext()
-            } else {
-                // Object not found, handle accordingly
-            }
-        } catch {
-            // Handle fetch error
-        }
+            self.toSeperateDCR(istoAppend: true)
+            self.updateDcr()
+            self.toLoadDcrCollection()
+            self.toLoadOutboxTable(isSynced: false)
+            self.toIntegrateChartView(.doctor, cacheDCRindex)
+         
+ 
     }
     
     func toRemoveOutboxandDefaultParams(param: JSON) {
-        
-        
+
         //to remove object from Local array and core data
         
         let filteredValues =  self.outBoxDataArr?.filter({ outBoxCallModel in
@@ -4018,27 +4009,22 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         self.outBoxDataArr = filteredValues
         
         
-        self.homeDataArr.forEach { aHomeData in
-            if aHomeData.custCode == param["CustCode"] as? String {
-                aHomeData.isDataSentToAPI = "1"
-            }
+        unsyncedhomeDataArr.removeAll { aHomeData in
+            return aHomeData.custCode == param["CustCode"] as? String
         }
         let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
-        // let existingHomeData = masterData.homeData?.first { ($0 as! HomeData).custCode == identifier }
-        
-        
+
         let context = DBManager.shared.managedContext()
-        
-        let fetchRequest: NSFetchRequest<HomeData> = HomeData.fetchRequest()
+
+        let fetchRequest: NSFetchRequest<UnsyncedHomeData> = UnsyncedHomeData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "custCode == %@", identifier ?? "")
-        
+
         do {
             let results = try context.fetch(fetchRequest)
             if let existingObject = results.first {
-                // Object found, update isDataSentToAPI
-                existingObject.isDataSentToAPI = "1"
                 
-                // Save the context to persist changes
+                context.delete(existingObject)
+
                 DBManager.shared.saveContext()
             } else {
                 // Object not found, handle accordingly
@@ -4121,6 +4107,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         
     }
+    
+    
     
     
     func toggleSection(_ header: CollapsibleTableViewHeader, section: Int) {
@@ -4646,8 +4634,8 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         let calendar = Calendar.current
 
-        let currentMonth = calendar.component(.month, from: selectedDate)
-        let selectedMonth = getCurrentMonth(from: selectedDate)
+        _ = calendar.component(.month, from: selectedDate)
+        _ = getCurrentMonth(from: selectedDate)
         // Get all dates in the current month
         let allDatesInCurrentMonth = getAllDatesInCurrentMonth(date: self.currentPage ?? Date())
         

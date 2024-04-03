@@ -1161,8 +1161,7 @@ class AddCallinfoView : BaseView {
        case jointWork = "JFW / Others"
 
     }
-    
-    
+
     @IBAction func didTapSearchTF(_ sender: UITextField) {
         self.searchText = sender.text ?? ""
         self.yetToloadContentsTable.reloadData()
@@ -1264,7 +1263,7 @@ class AddCallinfoView : BaseView {
     var selectedAddcompetitorSection: Int = 0
     var selectedAddcompetitorProductRow: Int = 0
     var selectedAddcompetitorRow: Int = 0
-
+    var customerCheckoutView: CustomerCheckoutView?
     var selectedCompetitor: Competitor?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
@@ -1301,6 +1300,62 @@ class AddCallinfoView : BaseView {
         
         
         tpDeviateReasonView?.frame = CGRect(x: tpDeviateVIewcenterX, y: tpDeviateVIewcenterY, width: tpDeviateVIewwidth, height: tpDeviateVIewheight)
+        
+        
+        
+        
+        let checkinDetailsVIewwidth = self.bounds.width / 3
+        let checkinDetailsVIewheight = self.bounds.height / 2.3
+        
+        let checkinDetailsVIewcenterX = self.bounds.midX - (checkinDetailsVIewwidth / 2)
+        let checkinDetailsVIewcenterY = self.bounds.midY - (checkinDetailsVIewheight / 2)
+        
+        
+        customerCheckoutView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
+        
+        
+    }
+    
+    func checkoutAction(checkin: CheckinInfo? = nil) {
+        backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
+        
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                
+            case customerCheckoutView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+          
+                
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        
+        customerCheckoutView = self.addCallinfoVC.loadCustomView(nibname: XIBs.customerCheckoutView) as? CustomerCheckoutView
+        customerCheckoutView?.delegate = self
+        customerCheckoutView?.chckinInfo = checkin
+        //customerCheckoutView?.userstrtisticsVM = self.userststisticsVM
+        //customerCheckoutView?.appsetup = self.appSetups
+
+        
+        
+        self.addSubview(customerCheckoutView ?? CustomerCheckoutView())
         
         
     }
@@ -1349,6 +1404,10 @@ class AddCallinfoView : BaseView {
                
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
+                
+            case customerCheckoutView:
+                 aAddedView.removeFromSuperview()
+                 aAddedView.alpha = 0
                 
             default:
                 aAddedView.isUserInteractionEnabled = true
@@ -1420,7 +1479,9 @@ class AddCallinfoView : BaseView {
             self.addCallinfoVC.navigationController?.present(vc, animated: false)
         }
         saveView.addTap {
-            self.addCallinfoVC.setupParam()
+           // self.addCallinfoVC.setupParam()
+         //   self.checkoutAction()
+            self.fetchLocationAndCheckout()
         }
         
     }
@@ -1499,7 +1560,7 @@ class AddCallinfoView : BaseView {
                              
         btnAddRCPA.addTarget(self, action: #selector(rcpaAddCompetitorAction(_:)), for: .touchUpInside)
         
-        
+    
        
                              
         curvedVIews.forEach {
@@ -1534,6 +1595,10 @@ class AddCallinfoView : BaseView {
         clearView.layer.borderWidth = 1
         clearView.layer.cornerRadius = 5
         
+        backgroundView.addTap {
+            self.didClose()
+        }
+        
     }
     
     @IBAction func productQtyAction(_ sender: UITextField) {
@@ -1542,6 +1607,56 @@ class AddCallinfoView : BaseView {
         rateLbl.text = "\(rateInt)"
         valuelbl.text = "\(rateInt * qtyInt)"
         
+    }
+    
+    
+    func getCurrentFormattedDateString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy hh:mm a"
+        return dateFormatter.string(from: Date())
+    }
+    
+    func fetchLocationAndCheckout() {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {return}
+            guard let coordinates = coordinates else {
+                
+                welf.showAlert()
+                
+                return
+            }
+            
+            Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+                guard let welf = self else {return}
+                
+                
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                
+                let currentDate = Date()
+                let dateString = dateFormatter.string(from: currentDate)
+                
+                let datestr = dateString
+                
+
+                
+                let callInfo : CheckinInfo = CheckinInfo(address: address ?? "", checkinDateTime: "", checkOutDateTime: datestr, latitude: coordinates.latitude ?? Double(), longitude: coordinates.longitude ?? Double(), dateStr: "", checkinTime: "", checkOutTime: "")
+                
+//                callInfo.address = address ?? ""
+//                callInfo.latitude = coordinates.latitude ?? Double()
+//                callInfo.longitude = coordinates.longitude ?? Double()
+//                callInfo.dcrTime = welf.getCurrentFormattedDateString()
+                
+                welf.checkoutAction(checkin: callInfo)
+                
+                
+                
+            }
+            
+            
+            
+        }
     }
     
     
@@ -1651,6 +1766,9 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
         handleAddedRemarks(remarksStr: remarksStr)
 
     }
+    
+    
+    
     
     
 }

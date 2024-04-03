@@ -273,9 +273,12 @@ class AddCallinfoVC: BaseViewController {
            // Shared.instance.showLoaderInWindow()
             postDCTdata(toSendData, paramData: params) { result in
                 switch result {
-                case .success(_ ):
-                    NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                    completion(true)
+                case .success(let model):
+                   
+                      
+                        completion(model.isSuccess ?? false )
+                
+             
                 case .failure(let error):
                   
                     self.toCreateToast("\(error)")
@@ -314,20 +317,17 @@ class AddCallinfoVC: BaseViewController {
                 dbparam["Trans_SlNo"] = ""
                 dbparam["AMSLNo"] = ""
                 dbparam["isDataSentToAPI"] = issussess == true ?  "1" : "0"
-                dbparam["successMessage"] = "Waiting to sync"
+                dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
                 var dbparamArr = [[String: Any]]()
                 dbparamArr.append(dbparam)
                 let masterData = DBManager.shared.getMasterData()
-                var HomeDataSetupArray = [HomeData]()
+                var HomeDataSetupArray = [UnsyncedHomeData]()
                 for (index,homeData) in dbparamArr.enumerated() {
         
-                     let identifier = homeData["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
-                    let existingHomeData = masterData.homeData?.first { ($0 as! HomeData).custCode == identifier }
-        
-                 //   if existingHomeData == nil {
+             
                         let contextNew = DBManager.shared.managedContext()
-                        let HomeDataEntity = NSEntityDescription.entity(forEntityName: "HomeData", in: contextNew)
-                        let HomeDataSetupItem = HomeData(entity: HomeDataEntity!, insertInto: contextNew)
+                        let HomeDataEntity = NSEntityDescription.entity(forEntityName: "UnsyncedHomeData", in: contextNew)
+                        let HomeDataSetupItem = UnsyncedHomeData(entity: HomeDataEntity!, insertInto: contextNew)
                     
                      if  self.dcrCall.type == .chemist {
                          HomeDataSetupItem.custType = "2"
@@ -351,18 +351,18 @@ class AddCallinfoVC: BaseViewController {
                         HomeDataSetupItem.setValues(fromDictionary: homeData)
                         HomeDataSetupItem.index = Int16(index)
                         HomeDataSetupArray.append(HomeDataSetupItem)
-                 //   }
+              
                 }
         
                 HomeDataSetupArray.forEach{ (type) in
-                    masterData.addToHomeData(type)
+                    masterData.addToUnsyncedHomeData(type)
                 }
                 DBManager.shared.saveContext()
         
         if !issussess {
             saveParamoutboxParamtoDefaults(param: param)
         }
-        
+        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
     
 
     }

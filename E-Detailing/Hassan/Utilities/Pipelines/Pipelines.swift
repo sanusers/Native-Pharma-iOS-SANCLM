@@ -11,6 +11,9 @@ import Foundation
 import UIKit
 import MapKit
 
+
+
+
 struct CheckinInfo {
     var address: String?
     var checkinDateTime: String?

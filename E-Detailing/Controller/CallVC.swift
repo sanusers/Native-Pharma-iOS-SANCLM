@@ -147,8 +147,31 @@ extension CallVC : addedSubViewsDelegate {
     
     func showAlert() {
         print("Yet to implement")
+        showAlertToEnableLocation()
     }
     
+    
+    
+    func showAlertToEnableLocation() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+        commonAlert.addAdditionalCancelAction {
+            print("yes action")
+            self.redirectToSettings()
+            
+        }
+    }
+    
+    func redirectToSettings() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL)
+        }
+    }
 
     func didClose() {
        backgroundView.isHidden = true
@@ -157,6 +180,10 @@ extension CallVC : addedSubViewsDelegate {
             switch aAddedView {
 
             case dcrfiltersView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 
@@ -182,6 +209,14 @@ extension CallVC : addedSubViewsDelegate {
             case dcrfiltersView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
+                
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+                guard let callViewModel = self.selectedDCRcall else {return}
+                
+                self.navigateToPrecallVC(dcrCall: callViewModel, index: self.selectedDCRIndex ?? 0)
                 
             default:
                 aAddedView.isUserInteractionEnabled = true
@@ -230,13 +265,13 @@ class CallVC : UIViewController {
     var searchText : String = ""
     var dcrfiltersView:  DCRfiltersView?
     private var CallListArray = CallListViewModel()
-    
+    var selectedDCRcall: CallViewModel?
     var addedDCRVIewHeight: CGFloat = 60 + 130 + 70
     
     var type : DCRType!
-    
+    var selectedDCRIndex: Int? = nil
     var filterscase: FilteredCase?
-    
+    var checkinVIew: CustomerCheckinView?
     @IBAction func didTapFiltersBtn(_ sender: UIButton) {
         filtersAction()
     }
@@ -320,6 +355,18 @@ class CallVC : UIViewController {
         
         
         dcrfiltersView?.frame = CGRect(x: tpDeviateVIewcenterX, y: tpDeviateVIewcenterY, width: tpDeviateVIewwidth, height: tpDeviateVIewheight)
+        
+        
+        let checkinVIewwidth = view.bounds.width / 3
+        let checkinVIewheight = view.bounds.height / 2
+        
+        let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = view.bounds.midY - (checkinVIewheight / 2)
+        
+        
+        checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
+        
+        
     }
     
     override func viewDidLoad() {
@@ -346,9 +393,112 @@ class CallVC : UIViewController {
         self.type = .doctor
     }
     
-    deinit {
-        print("ok bye")
+    
+    func checkinAction(dcrCall : CallViewModel) {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {return}
+            guard let coordinates = coordinates else {
+                
+                welf.showAlert()
+                
+                return
+            }
+            
+            Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+                guard let welf = self else {return}
+                
+                
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                
+                let currentDate = Date()
+                let dateString = dateFormatter.string(from: currentDate)
+                
+                let datestr = dateString
+                
+                ///time
+                dateFormatter.dateFormat = "HH:mm:ss"
+                
+                let timeString = dateFormatter.string(from: currentDate)
+                
+                let timestr = (timeString)
+                dcrCall.address = address ?? ""
+                dcrCall.latitude = coordinates.latitude ?? Double()
+                dcrCall.longitude = coordinates.longitude ?? Double()
+                dcrCall.dcrTime = welf.getCurrentFormattedDateString()
+                welf.checkinDetailsAction(dcrCall : dcrCall)
+                
+                
+                
+            }
+            
+            
+            
+        }
     }
+    
+    
+    func getCurrentFormattedDateString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy hh:mm a"
+        return dateFormatter.string(from: Date())
+    }
+    
+
+    
+    func navigateToPrecallVC(dcrCall: CallViewModel, index: Int) {
+        let precallvc = UIStoryboard.preCallVC
+        precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: index, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+        self.navigationController?.pushViewController(precallvc, animated: true)
+    }
+    
+    func checkinDetailsAction(dcrCall : CallViewModel) {
+        self.selectedDCRcall = dcrCall
+        backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
+        //  backgroundView.toAddBlurtoVIew()
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                
+//            case checkinDetailsView:
+//                aAddedView.removeFromSuperview()
+//                aAddedView.isUserInteractionEnabled = true
+//                aAddedView.alpha = 1
+//
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+          
+                
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        checkinVIew = self.loadCustomView(nibname: XIBs.customerCheckinVIew) as? CustomerCheckinView
+        checkinVIew?.delegate = self
+        checkinVIew?.dcrCall = dcrCall
+        checkinVIew?.setupUI()
+        //checkinVIew?.userstrtisticsVM = self.userststisticsVM
+        //checkinVIew?.appsetup = self.appSetups
+
+        
+        
+        self.view.addSubview(checkinVIew ?? CustomerCheckinView())
+        
+    }
+    
+    
+ 
     
     
     func filtersAction() {
@@ -538,9 +688,11 @@ extension CallVC : collectionViewProtocols {
         
         switch collectionView {
             case self.callCollectionView:
-                let precallvc = UIStoryboard.preCallVC
-            precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
-                self.navigationController?.pushViewController(precallvc, animated: true)
+            self.selectedDCRIndex = indexPath.row
+            let adcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+           // self.checkinDetailsAction(dcrCall: adcrCall)
+            self.checkinAction(dcrCall: adcrCall)
+
             case self.headerCollectionView:
                 self.type = self.CallListArray.fetchAtIndex(indexPath.row).type
                 self.headerCollectionView.reloadData()

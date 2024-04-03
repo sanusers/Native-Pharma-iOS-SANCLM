@@ -16,6 +16,8 @@ enum XIBs: String {
     case tpDeviateReasonView = "TPdeviateReasonView"
     case dcrfiltersView = "DCRfiltersView"
     case jfwView = "JfwView"
+    case customerCheckinVIew = "CustomerCheckinView"
+    case customerCheckoutView = "CustomerCheckoutView"
     var nib: UINib {
         return UINib(nibName: self.rawValue, bundle: nil)
     }

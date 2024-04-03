@@ -874,7 +874,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
             yAxis.axisMinimum = 0
          
-        if yRangeMax <= 10  {
+        if xAxis.axisMinimum == 15 && xAxis.axisMaximum == 30  {
             yAxis.axisMaximum = 100
         } else {
             yAxis.axisMaximum =  Double(yRangeMax) * 1.5

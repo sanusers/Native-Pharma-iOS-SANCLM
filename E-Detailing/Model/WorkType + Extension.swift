@@ -23,6 +23,62 @@ import CoreData
 //trans_SlNo: String?
 //yr: String?
 
+
+extension UnsyncedHomeData {
+    func setValues(fromDictionary dictionary: [String:Any])    {
+        
+        
+        if let codeValue = dictionary["CustCode"] as? String{
+            custCode = codeValue
+        }
+        
+        if let codeValue = dictionary["CustType"] as? String {
+            custType = codeValue
+        }
+        if let eTabsValue = dictionary["FW_Indicator"] as? String{
+            fw_Indicator = eTabsValue
+        }
+        if let fwFlgValue = dictionary["Dcr_dt"] as? String  {
+            dcr_dt = fwFlgValue
+        }
+        if let sfCodeValue = dictionary["month_name"] as? String{
+            month_name = sfCodeValue
+        }
+        if let tpDCRValue = dictionary["Mnth"] as? Int{
+            mnth = String(tpDCRValue)
+        }
+        if let tpDCRValue = dictionary["Yr"] as? Int{
+            yr = String(tpDCRValue)
+        }
+        if let tpDCRValue = dictionary["CustName"] as? String{
+            custName = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["town_code"] as? String{
+            town_code = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["town_name"] as? String{
+            town_name = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["Dcr_flag"] as? Int{
+            dcr_flag = String(tpDCRValue)
+        }
+        if let tpDCRValue = dictionary["SF_Code"] as? String{
+            sf_Code = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["Trans_SlNo"] as? String{
+            trans_SlNo = tpDCRValue
+        }
+        if let tpDCRValue = dictionary["AMSLNo"] as? String{
+            anslNo = tpDCRValue
+        }
+
+        if let tpDCRValue = dictionary["isDataSentToAPI"] as? String {
+            isDataSentToAPI = tpDCRValue
+        }
+        
+    }
+}
+
 extension HomeData {
     func setValues(fromDictionary dictionary: [String:Any])    {
         

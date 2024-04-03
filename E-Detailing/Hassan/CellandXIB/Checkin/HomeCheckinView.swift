@@ -48,26 +48,6 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
     func  callAPI() {
         guard let appsetup = self.appsetup else {return}
         
-//    http://edetailing.sanffa.info/iOSServer/db_api.php/?axn=save%2Factivity
-//
-//    {
-//    "tableName": "savetp_attendance",
-//    "sfcode": "MR5940",
-//    "division_code": "63,",
-//    "lat": 13.03001856,
-//    "long": 80.24146891,
-//    "address": "No 4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035, India",
-//    "update": "0",
-//    "Appver": "V2.0.8",
-//    "Mod": "Android-Edet",
-//    "sf_emp_id": "12",
-//    "sfname": "Shiva Kumar MR 1",
-//    "Employee_Id": "",
-//    "Check_In": "14:19:54",
-//    "Check_Out": "",
-//    "DateTime": "2024-02-28 14:19:54"
-//    }
-        ///date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
