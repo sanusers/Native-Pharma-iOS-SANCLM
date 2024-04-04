@@ -16,42 +16,6 @@ extension MenuView : UITextViewDelegate {
     
 }
 
-extension MenuView {
-//    func tableSetupAPI() {
-//        var tableSetupParams : [String : Any] {
-//            let appsetup = AppDefaults.shared.getAppSetUp()
-//
-//            let paramString = "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-//
-//            return ["data" : paramString]
-//        }
-//
-//
-//        sessionResponseVM!.getTableSetup(params: tableSetupParams, api: .tableSetup) { result in
-//            switch result {
-//            case .success(let response):
-//                print(response)
-//                let savefinish = NSKeyedArchiver.archiveRootObject(response, toFile: TableSetupModel.ArchiveURL.path)
-//                if !savefinish {
-//                    print("Error")
-//                }
-//
-////                do {
-////                    try AppDefaults.shared.toSaveEncodedData(object: response, key: .tourPlan) {_ in
-////
-////                    }
-////                } catch {
-////                    print("Unable to save")
-////                }
-//            case .failure(let error):
-//                print(error.localizedDescription)
-//            }
-//        }
-//
-//    }
-    
-    
-}
 
 extension MenuView {
     func toGetTourPlanResponse() {
@@ -135,6 +99,10 @@ extension MenuView {
                 //   return true
                 return territoryNeededSessions ?? [SessionDetail]()
             } else {
+                
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    
+                }
                 let territoryNotFilledSessions = territoryNeededSessions?.filter{ session in
                     // session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
                     session.HQCodes == "" || session.selectedClusterID!.isEmpty
@@ -605,7 +573,7 @@ class MenuView : BaseView{
     var isChemistNeeded = false
     var isSockistNeeded = false
     var isnewCustomerNeeded = false
-    
+    var isHQNeeded = false
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
         self.showMenu()
@@ -672,23 +640,23 @@ class MenuView : BaseView{
         addSessionView.layer.cornerRadius = 5
         addSessionView.layer.borderWidth = 1
         addSessionView.layer.borderColor = UIColor.systemGreen.cgColor
-        addSessionView.elevate(2)
+      //  addSessionView.elevate(2)
         
-        saveView.elevate(2)
+      //  saveView.elevate(2)
         saveView.layer.cornerRadius = 5
         
-        clearview.elevate(2)
+      //  clearview.elevate(2)
         clearview.layer.borderColor = UIColor.gray.cgColor
         clearview.layer.borderWidth = 1
         clearview.layer.cornerRadius = 5
-        countView.elevate(2)
+      //  countView.elevate(2)
         countView.layer.borderColor = UIColor.systemGreen.cgColor
         countView.layer.borderWidth = 1
         countView.layer.cornerRadius = 5
         
         
         
-        searchHolderView.elevate(2)
+      //  searchHolderView.elevate(2)
         searchHolderView.layer.borderColor = UIColor.lightGray.cgColor
         searchHolderView.layer.borderWidth = 0.5
         searchHolderView.layer.cornerRadius = 5
@@ -698,6 +666,16 @@ class MenuView : BaseView{
     }
 
     func toConfigureTableSetup() {
+        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+            self.isHQNeeded = false
+            cellStackHeightforFW =  cellStackHeightforFW - 75
+            cellHeightForFW =  cellHeightForFW - 75
+        } else {
+            self.isHQNeeded = true
+         
+        }
+        
         if tableSetup?.drNeed == "0" {
             self.isDocNeeded = true
         } else {
@@ -2189,6 +2167,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 cellViewArr.forEach { view in
                     switch view {
                         
+                    case cell.headQuatersView:
+                        if self.isHQNeeded {
+                            view.isHidden = false
+                        } else {
+                            view.isHidden = true
+                        }
+                        
+                        
                     case cell.jointCallView:
                         if self.isJointCallneeded {
                             view.isHidden = false
@@ -2295,8 +2281,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.isEmpty ?? true) {
                 var clusterNameArr = [String]()
                 var clusterCodeArr = [String]()
-                let selectedHQ = sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes
-                self.clusterArr = DBManager.shared.getTerritory(mapID: selectedHQ ?? "")
+                var selectedHQ = String()
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    selectedHQ = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                } else {
+                    selectedHQ = sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes ?? ""
+                }
+               
+                self.clusterArr = DBManager.shared.getTerritory(mapID: selectedHQ)
                 self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.forEach { key, value in
                         if key == cluster.code {

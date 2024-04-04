@@ -354,7 +354,6 @@
 		B287E62A29F29C1B0097974D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B287E62829F29C1B0097974D /* Main.storyboard */; };
 		B287E62C29F29C220097974D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B287E62B29F29C220097974D /* Assets.xcassets */; };
 		B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B287E62D29F29C220097974D /* LaunchScreen.storyboard */; };
-		B287E63829F29F7C0097974D /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B287E63729F29F7C0097974D /* HomeVC.swift */; };
 		B287E67D29F2A20F0097974D /* Satoshi-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = B287E63B29F2A20F0097974D /* Satoshi-Black.otf */; };
 		B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = B287E63C29F2A20F0097974D /* Satoshi-BlackItalic.otf */; };
 		B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B287E63D29F2A20F0097974D /* Satoshi-Bold.otf */; };
@@ -724,7 +723,6 @@
 		B287E62B29F29C220097974D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B287E62E29F29C220097974D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B287E63029F29C220097974D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B287E63729F29F7C0097974D /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		B287E63B29F2A20F0097974D /* Satoshi-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Black.otf"; sourceTree = "<group>"; };
 		B287E63C29F2A20F0097974D /* Satoshi-BlackItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-BlackItalic.otf"; sourceTree = "<group>"; };
 		B287E63D29F2A20F0097974D /* Satoshi-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Satoshi-Bold.otf"; sourceTree = "<group>"; };
@@ -1512,7 +1510,6 @@
 		B287E63629F29F6C0097974D /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				B287E63729F29F7C0097974D /* HomeVC.swift */,
 				38EDEA792A6A5F16000E857C /* MainVC.swift */,
 				38C537FB2A2201C9007D68C5 /* ConfigVC.swift */,
 				38BCA67A2A248838002C77F6 /* LoginVC.swift */,
@@ -1969,7 +1966,6 @@
 				380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */,
 				3813B35F2A20E9AE006F3B78 /* Config.swift in Sources */,
 				38EC6FB22B6242D10065A707 /* Media.swift in Sources */,
-				B287E63829F29F7C0097974D /* HomeVC.swift in Sources */,
 				3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */,
 				38BD4C1D2A29E39700A3A5BF /* UIStoryboard+Extensions.swift in Sources */,
 				38C855252A8CC9AB00C34A58 /* ProductViewModel.swift in Sources */,

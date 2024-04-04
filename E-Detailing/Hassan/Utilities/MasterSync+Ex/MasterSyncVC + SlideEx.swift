@@ -32,7 +32,7 @@ extension MasterSyncVC {
             if isFromLaunch {
                 if (type == .slides || type == .slideBrand) {
  
-                    moveToDownloadSlide()
+                    moveToDownloadSlide(isFromcache: true)
                     
                 } else {
                     moveToHome()
@@ -41,10 +41,10 @@ extension MasterSyncVC {
             } else  if (type == .slides) {
                 
                    
-                    let isNewSlideExists = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded)
+                let isNewSlideExists  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending)
                 //self.toCheckExistenceOfNewSlides()  ?? false
                     if !isNewSlideExists {
-                        moveToDownloadSlide()
+                        moveToDownloadSlide(isFromcache: true)
                     }
                     
                 
@@ -109,6 +109,14 @@ extension MasterSyncVC {
         self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
         self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
         
+        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
+            slideDownloadStatusLbl.text = "Tap to retry slide download"
+            retryVIew.isHidden = false
+            return true
+        }
+        
+        
         if !LocalStorage.shared.getBool(key: .isSlidesLoaded) ||  !LocalStorage.shared.getBool(key: .isSlidesGrouped) {
             if nonExistingSlides.isEmpty {
                 slideDownloadStatusLbl.isHidden  =  true
@@ -126,7 +134,7 @@ extension MasterSyncVC {
                 slideDownloadStatusLbl.text = "slides download in progress.."
                 retryVIew.isHidden = true
                 
-            } else if isfromHome  {
+            } else if isfromHome   {
                 slideDownloadStatusLbl.text = "Tap to retry slide download"
                 retryVIew.isHidden = false
             } else {

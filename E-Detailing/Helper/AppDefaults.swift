@@ -197,43 +197,62 @@ class AppDefaults {
     var eachDatePlan = EachDatePlan()
     let userdefaults = UserDefaults.standard
     var appSetup: AppSetUp?
-    
+    var appConfig: AppConfig?
     
     func getConfig() -> AppConfig {
-        
-        guard let config = self.get(key: .config, type: [String : Any]()) else {
-           return AppConfig(fromDictionary: [:])
-        }
-        
-        let configData = AppConfig(fromDictionary: config)
-        
-        if let config = configData.config {
+        let appData = UserDefaults.standard.data(forKey: keys.appSetUp.rawValue) ?? nil
+        guard let appData = appData else {return AppConfig()}
+        let decoder = JSONDecoder()
+        var isDecoded: Bool = false
+        do {
             
-            self.webUrl = config.webUrl
-            self.iosUrl = config.iosUrl
-            self.syncUrl = config.syncUrl
-            self.slideUrl = config.slideUrl
-            self.imgLogo = config.logoImg
-            self.reportUrl = config.reportUrl
+            let decodedData = try decoder.decode(AppConfig.self, from: appData)
+            isDecoded = true
+            self.appConfig = decodedData
+        } catch {
+            print("Unable to decode")
         }
-        return configData
+        if isDecoded {
+            self.webUrl = appConfig?.config.webUrl ?? ""
+            self.iosUrl = appConfig?.config.iosUrl ?? ""
+            self.syncUrl = appConfig?.config.syncUrl ?? ""
+            self.slideUrl = appConfig?.config.slideUrl ?? ""
+            self.imgLogo = appConfig?.config.logoImg ?? ""
+            self.reportUrl = appConfig?.config.reportUrl ?? ""
+            return appConfig ?? AppConfig()
+
+        } else {
+            return AppConfig()
+        }
     }
+    
+//    func getConfignew() -> AppConfig {
+//        
+//        guard let config = self.get(key: .config, type: [String : Any]()) else {
+//           return AppConfig(fromDictionary: [:])
+//        }
+//        
+//        let configData = AppConfig(fromDictionary: config)
+//        
+//        if let config = configData.config {
+//            
+//            self.webUrl = config.webUrl
+//            self.iosUrl = config.iosUrl
+//            self.syncUrl = config.syncUrl
+//            self.slideUrl = config.slideUrl
+//            self.imgLogo = config.logoImg
+//            self.reportUrl = config.reportUrl
+//        }
+//        return configData
+//    }
     
     
     func isConfigAdded () -> Bool {
-        guard let _ = self.get(key: .config, type: [String: Any]()) else {
-            return false
-        }
-        return true
+  
+        return LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConfigAdded)
     }
     
-//    func isLoggedIn() -> Bool {
-//        guard let appsetup = self.get(key: .appSetUp, type: [String : Any]())else{
-//            return false
-//        }
-//        
-//        return !appsetup.isEmpty
-//    }
+
     
     
         func isLoggedIn() -> Bool {

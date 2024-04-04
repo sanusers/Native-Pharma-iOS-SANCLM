@@ -8,16 +8,17 @@
 //
 
 import Foundation
+enum HomeError: String, Error {
+    
+case unableConnect = "Request time out"
+
+}
 
 class  HomeViewModal: BaseViewModel {
     
-    enum HomeError: String, Error {
-        
-    case unableConnect = "Request time out"
-   // case customError(message: String)
-    }
+
     
-    func getConfigData(params: JSON, api : APIEnums, _ result : @escaping (Result<[AppConfig],Error>) -> Void) {
+    func getConfigData(params: JSON, api : APIEnums, _ result : @escaping (Result<[AppConfig],HomeError>) -> Void) {
         
         ConnectionHandler.shared.getRequest(for: api, params: params)
             .responseDecode(to: [AppConfig].self, { (json) in

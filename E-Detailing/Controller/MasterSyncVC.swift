@@ -10,6 +10,15 @@ import UIKit
 import Alamofire
 import CoreData
 extension MasterSyncVC:  SlideDownloadVCDelegate {
+    func didEncounterError() {
+        isSlideDownloading = false
+        retryVIew.isHidden = false
+        downloadingBottomView.isHidden = false
+        self.slideDownloadStatusLbl.isHidden = false
+        self.slideDownloadStatusLbl.text = "Error downloading slides.."
+        return
+    }
+    
 
     
     func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool) {
@@ -69,23 +78,15 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
 
     
     func didDownloadCompleted() {
-   //     Shared.instance.removeLoaderInWindow()
-//        if isFromLaunch {
-//            
-//            toSetupAlert(desc: "Please wait while organizing slides data", istoNavigate: true)
-//
-//        } else {
-//            self.toCreateToast("Slide downloaded succeessfully.")
-//        }
-        
-        self.toCreateToast("Please wait while organizing slides data.")
 
-        Pipelines.shared.toGroupSlides(mastersyncVM: mastersyncVM ?? MasterSyncVM()) {
-            BackgroundTaskManager.shared.stopBackgroundTask()
-            Shared.instance.isSlideDownloading = false
-            Shared.instance.iscelliterating = false
-            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
-        }
+//        self.toCreateToast("Please wait while organizing slides data.")
+//
+//        Pipelines.shared.toGroupSlides(mastersyncVM: mastersyncVM ?? MasterSyncVM()) {
+//            BackgroundTaskManager.shared.stopBackgroundTask()
+//            Shared.instance.isSlideDownloading = false
+//            Shared.instance.iscelliterating = false
+//            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+//        }
         
 
         
@@ -198,6 +199,8 @@ class MasterSyncVC : UIViewController {
             }
         }
     }
+    
+    
     
     var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
     
@@ -642,12 +645,6 @@ class MasterSyncVC : UIViewController {
                     print(error.localizedDescription)
                 }
             }
-            
-            
-//            if let index = masterData.firstIndex(of: type){
-//                animations[index] = false
-//                collectionView.reloadData()
-//            }
         case .myDayPlan:
             
             mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
@@ -681,7 +678,7 @@ class MasterSyncVC : UIViewController {
                         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
                         LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
                         
-                        welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem  ?? "") { _ in
+                        welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) , istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
                             
                             let subordinateArr =  DBManager.shared.getSubordinate()
                             let filteredHQ = subordinateArr.filter {  $0.id == dayPlan1?.SFMem }
@@ -690,7 +687,7 @@ class MasterSyncVC : UIViewController {
                                 welf.fetchedHQObject = cacheHQ
                                 welf.setHQlbl()
                                 
-                                welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan1?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan1?.SFMem ?? "") { _ in
+                                welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
                                     if dayPlan2 != nil {
                                         welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
                                             
@@ -718,25 +715,46 @@ class MasterSyncVC : UIViewController {
                         
                     } else {
                         
-                        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-                            if !selectedHQArr.isEmpty {
-                                let aSelectedHQ = selectedHQArr.first
-                                let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-                                if let aSelectedHQ = aSelectedHQ {
-                                    welf.fetchedHQObject =  CoreDataManager.shared.convertHeadQuartersToSubordinate(aSelectedHQ, context: context)
+                        
+                    //    if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR)  {
+                            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+                            
+                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: appdefaultSetup.sfCode ?? "")
+                            
+                            welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) , istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
+                                
+                                let subordinateArr =  DBManager.shared.getSubordinate()
+                                let filteredHQ = subordinateArr.filter {  $0.id == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) }
+                                if !filteredHQ.isEmpty {
+                                    let cacheHQ = filteredHQ.first
+                                    welf.fetchedHQObject = cacheHQ
+                                    welf.setHQlbl()
                                 }
-                                welf.lblHqName.text = aSelectedHQ?.name
-                            } else {
-                                welf.lblHqName.text =  "Select HQ"
+                                completion(true)
                             }
-                            completion(true)
-                        }
+                            return
+                      //  }
+                        
+                        
+//                        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
+//                            if !selectedHQArr.isEmpty {
+//                                let aSelectedHQ = selectedHQArr.first
+//                                let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//                                if let aSelectedHQ = aSelectedHQ {
+//                                    welf.fetchedHQObject =  CoreDataManager.shared.convertHeadQuartersToSubordinate(aSelectedHQ, context: context)
+//                                }
+//                                welf.lblHqName.text = aSelectedHQ?.name
+//                            } else {
+//                                welf.lblHqName.text =  "Select HQ"
+//                            }
+//                            completion(true)
+//                        }
                         
                         
                     }
 
                     
-                    completion(true)
+                  //  completion(true)
                 case .failure(let error):
                     welf.toCreateToast(error.rawValue)
                     
@@ -1148,10 +1166,7 @@ extension MasterSyncVC : collectionViewProtocols{
         }
         
         self.collectionView.reloadData()
-       // self.setLoader(pageType: .loading)
-    
-        
-        // Begin a background task
+
         backgroundTask = UIApplication.shared.beginBackgroundTask {
             // End the background task if the expiration handler is called
             UIApplication.shared.endBackgroundTask(self.backgroundTask)

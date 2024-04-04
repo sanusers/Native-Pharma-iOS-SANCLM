@@ -60,8 +60,15 @@ var LicenceKey : String  {
 //(infoPlist?.value(for: .App_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 var APIUrl : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
+
 var slideURL : String =   LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)
-var appMainURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
+var AppConfigURL: String = "" {
+    didSet {
+        
+    AppConfigURL = "http://\(AppConfigURL)/apps/ConfigiOS.json"
+     
+    }
+}
 var licenseKey : String = ""
 
 var  attachmentsUrl : String = ""
@@ -69,7 +76,7 @@ var  webEndPoint: String = ""
 var  iosEndPoint : String = ""
 var  syncEndPoint : String = ""
 var  slideEndPoint: String = ""
-//http://edetailing.sanffa.info/iOSServer/db_api.php?axn=
+
 
 var AppMainAPIURL : String  {
     get {

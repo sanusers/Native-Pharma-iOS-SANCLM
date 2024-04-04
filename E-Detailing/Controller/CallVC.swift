@@ -597,43 +597,12 @@ class CallVC : UIViewController {
         
         dcrList.append("Hospital")
         dcrList.append("CIP")
-        
-        self.dcrSegmentControl = UISegmentedControl(items: dcrList)
-        
-        self.dcrSegmentControl.translatesAutoresizingMaskIntoConstraints = false
-        self.dcrSegmentControl.selectedSegmentIndex = 0
-        self.dcrSegmentControl.addTarget(self, action: #selector(segmentControlAction(_:)), for: .valueChanged)
-        
-        self.viewSegmentControl.addSubview(self.dcrSegmentControl)
-        
-        let font = UIFont(name: "Satoshi-Bold", size: 18)!
-        self.dcrSegmentControl.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-        self.dcrSegmentControl.highlightSelectedSegment1()
-        
-       // self.dcrSegmentControl.backgroundColor = UIColor.red
-        
-        self.dcrSegmentControl.topAnchor.constraint(equalTo: self.viewSegmentControl.topAnchor,constant: 10).isActive = true
-        self.dcrSegmentControl.leadingAnchor.constraint(equalTo: self.viewSegmentControl.leadingAnchor, constant: 20).isActive = true
-        self.dcrSegmentControl.heightAnchor.constraint(equalTo: self.viewSegmentControl.heightAnchor, multiplier: 0.7).isActive = true
-        
-        
-        let lblUnderLine = UILabel()
-        lblUnderLine.backgroundColor = AppColors.primaryColorWith_25per_alpha
-        lblUnderLine.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.viewSegmentControl.addSubview(lblUnderLine)
-        
-        lblUnderLine.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
-        lblUnderLine.topAnchor.constraint(equalTo: self.dcrSegmentControl.bottomAnchor, constant: -6).isActive = true
-        lblUnderLine.leadingAnchor.constraint(equalTo: self.dcrSegmentControl.leadingAnchor, constant: 15).isActive = true
-        lblUnderLine.trailingAnchor.constraint(equalTo: self.viewSegmentControl.trailingAnchor, constant: -15).isActive = true
+
+
+
         
     }
-    
-    @objc func segmentControlAction (_ sender : UISegmentedControl){
-        self.dcrSegmentControl.underlinePosition()
-        self.callCollectionView.reloadData()
-    }
+
     
     
     @IBAction func backAction(_ sender: UIButton) {

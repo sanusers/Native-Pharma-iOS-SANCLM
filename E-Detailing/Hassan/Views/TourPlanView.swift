@@ -1703,7 +1703,7 @@ class TourPlanView: BaseView {
         
         btnSendFOrApproval.backgroundColor = .clear
         btnSendFOrApproval.tintColor = .appWhiteColor
-        titleHolder.elevate(2)
+       // titleHolder.elevate(2)
         titleHolder.backgroundColor = .appSelectionColor
         titleHolder.layer.cornerRadius = 5
         worksPlanTable.separatorStyle = .none
@@ -1711,13 +1711,13 @@ class TourPlanView: BaseView {
         cellRegistration()
         
         updateCalender()
-        calenderHolderView.elevate(2)
+       // calenderHolderView.elevate(2)
         calenderHolderView.layer.cornerRadius = 5
 
         bottomButtonsHolderView.layer.cornerRadius = 5
         generalButtonsHolder.layer.cornerRadius = 5
         
-        sessionTableHolderView.elevate(2)
+        //sessionTableHolderView.elevate(2)
         sessionTableHolderView.layer.cornerRadius = 5
       
     }

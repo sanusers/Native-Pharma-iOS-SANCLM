@@ -80,13 +80,13 @@ class BackgroundTaskManager {
 
         // Perform API calls in the background
          DispatchQueue.global(qos: .userInitiated).async {
-                Pipelines.shared.toGroupSlides(mastersyncVM: MasterSyncVM()) {
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
-                Shared.instance.isSlideDownloading = false
-                Shared.instance.iscelliterating = false
-                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
-                completion()
-            }
+//                Pipelines.shared.toGroupSlides(mastersyncVM: MasterSyncVM()) {
+//                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+//                Shared.instance.isSlideDownloading = false
+//                Shared.instance.iscelliterating = false
+//                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+//                completion()
+//            }
 
         }
     }

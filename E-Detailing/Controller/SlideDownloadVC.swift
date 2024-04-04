@@ -40,6 +40,7 @@ extension SlideDownloadVC : MediaDownloaderDelegate {
             params.isDownloadCompleted = true
             params.isFailed = false
             params.uuid = UUID()
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
         didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false, isfrorBackgroundTask: false, istoreturn: false) {_ in
            
         self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)}
@@ -55,7 +56,8 @@ extension SlideDownloadVC : MediaDownloaderDelegate {
              params.isDownloadCompleted = false
              params.isFailed = true
              params.uuid = UUID()
-        didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false, isfrorBackgroundTask: false, istoreturn: false) {_ in
+             LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: true)
+             didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false, isfrorBackgroundTask: false, istoreturn: false) {_ in
            
             self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
             
@@ -77,9 +79,11 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
         }
         
      // self.closeHolderView.isUserInteractionEnabled = false
+     self.tableView.isUserInteractionEnabled = !isDownloading
+        //!isDownloading
       guard isDownloadingInProgress  else {
           return }
-      self.tableView.isUserInteractionEnabled = !isDownloading
+    
       self.loadingIndex = index + 1
       self.arrayOfAllSlideObjects = arrayOfAllSlideObjects
 
@@ -96,11 +100,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             CoreDataManager.shared.updateSlidesInCoreData(savedSlides: element) { isUpdated in
                 if isUpdated {
                     DispatchQueue.global().async {
-                        // Perform subsequent tasks asynchronously on a background queue
-//                        self.mastersyncvm?.toGroupSlidesBrandWise() { _ in
-//                            
-//                        }
-                        
+
                         DispatchQueue.main.async {
                             // Update UI on the main queue after background tasks are completed
                              self.tableView.reloadData()
@@ -108,6 +108,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                             self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                             self.isDownloading = false
                             Shared.instance.iscelliterating = false
+                            Shared.instance.isSlideDownloading = false
                             self.closeHolderView.isUserInteractionEnabled = true
                             self.togroupSlides() {
                                 completion(true)
@@ -141,7 +142,15 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                         self.tableView.reloadData()
                                         self.tableView.isScrollEnabled = true
                                         self.tableView.isUserInteractionEnabled = true
-                                        self.toSetupAlert(text: "Slide downloading completed")
+                                        Shared.instance.iscelliterating = false
+                                        Shared.instance.isSlideDownloading = false
+                                        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
+                                            self.toSetupAlert(text: "Slide downloading completed")
+                                        } else {
+                                            self.toSetupAlert(text: "Slides download pending try syncing again", istoPoP: true)
+                                           
+                                        }
+                                      
                                     } else {
                                         BackgroundTaskManager.shared.stopBackgroundTask()
                                     }
@@ -197,6 +206,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
 protocol SlideDownloadVCDelegate: AnyObject {
     func didDownloadCompleted()
     func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool)
+    func didEncounterError()
 }
 
 typealias SlidesCallBack = (_ status: Bool) -> Void
@@ -269,6 +279,7 @@ class SlideDownloadVC : UIViewController {
         if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
             BackgroundTaskManager.shared.stopBackgroundTask()
             self.isDownloadingInProgress = false
+            
              _ = toCheckExistenceOfNewSlides()
             toSetTableVIewDataSource()
             startDownload(ifForsingleSeclection: false)
@@ -323,14 +334,17 @@ class SlideDownloadVC : UIViewController {
 
     
     
-    func toSetupAlert(text: String) {
+    func toSetupAlert(text: String, istoPoP : Bool? = false) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
-                // self.dismiss(animated: false) {
-              //  self.delegate?.didDownloadCompleted()
-            //}
+            if istoPoP ?? false {
+                self.delegate?.didEncounterError()
+                self.dismiss(animated: false)
+               
+            }
+   
         }
     }
     
@@ -493,22 +507,6 @@ class SlideDownloadVC : UIViewController {
         self.delegate?.didDownloadCompleted()
         completion()
         self.countLbl.text = "Download completed.."
-     //   Shared.instance.showLoaderInWindow()
-//        countLbl.text = "Please wait while organizing downloaded slides..."
-//        countLbl.textColor = .appLightPink
-//        Pipelines.shared.toGroupSlides(mastersyncVM: self.mastersyncvm ?? MasterSyncVM()) {
-//            self.closeHolderView.isHidden = false
-//            self.countLbl.text = "Download completed.."
-//            self.countLbl.textColor = .appTextColor
-//            BackgroundTaskManager.shared.stopBackgroundTask()
-//            self.isDownloading = false
-//            Shared.instance.isSlideDownloading = false
-//            Shared.instance.iscelliterating = false
-//            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
-//            self.delegate?.didDownloadCompleted()
-//            completion()
-//            
-//        }
     }
 
 
@@ -539,6 +537,7 @@ class SlideDownloadVC : UIViewController {
         if let cell = tableView.cellForRow(at: indexPath) as? SlideDownloaderCell {
             Shared.instance.iscelliterating = true
             self.isDownloadingInProgress = true
+            
             cell.toSendParamsToAPISerially(index: index, items: items, isForsingleRetry: isForsingleRetry)
             cell.delegate = self
            
@@ -867,9 +866,11 @@ class SlideDownloadVC : UIViewController {
             self.isDownloading = false
             isSlideDownloadCompleted = true
             Shared.instance.showLoaderInWindow()
-            toGroupSlidesBrandWise() {_ in
+            toGroupSlidesBrandWise() { _ in
+
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
             Shared.instance.removeLoaderInWindow()
-                completion()
+            completion()
             }
         }
     }

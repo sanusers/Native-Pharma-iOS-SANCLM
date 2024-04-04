@@ -220,7 +220,7 @@ class LeaveApplicationVC: UIViewController {
         
         let selectedLeaveType = self.selectedLeaveType
         
-        let url = appMainURL + "save/leavemodule"
+        let url = APIUrl + "save/leavemodule"
         
         let paramString = "{\"tableName\":\"saveleave\",\"sfcode\":\"\(appsetup.sfCode!)\",\"FDate\":\"\(fromDate)\",\"TDate\":\"\(toDate)\",\"LeaveType\":\"\(selectedLeaveType?.leaveSName ?? "")\",\"NOD\":\"2\",\"LvOnAdd\":\"\(leaveAddress)\",\"LvRem\":\"\(leaveRemarks)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"sf_emp_id\":\"\(appsetup.sfEmpId!)\",\"leave_typ_code\":\"\(selectedLeaveType?.leaveCode ?? "")\"}"
 
@@ -295,7 +295,7 @@ class LeaveApplicationVC: UIViewController {
         let fromDate = self.fromDate!.toString(format: "yyyy-MM-dd")
         let toDate = self.toDate!.toString(format: "yyyy-MM-dd")
         
-        let url = appMainURL + "table/leave"
+        let url = APIUrl + "table/leave"
         
         let paramString = "{\"tableName\":\"getlvlvalid\",\"sfcode\":\"\(appsetup.sfCode!)\",\"Fdt\":\"\(fromDate)\",\"Tdt\":\"\(toDate)\",\"LTy\":\"\(self.selectedLeaveType?.leaveSName ?? "")\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
@@ -326,7 +326,7 @@ class LeaveApplicationVC: UIViewController {
     private func fetchLeave() {
         
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let url = appMainURL + "table/leave"
+        let url = APIUrl + "table/leave"
         
         let paramString = "{\"tableName\":\"getleavestatus\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         

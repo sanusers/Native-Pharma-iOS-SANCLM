@@ -712,12 +712,12 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                    if welf.specifiedMenuVC.selectedObject  == model {
-                        self?.toCreateToast("Two plan works for same day is restricted.")
-                        return
-                    }
-                }
+//                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                    if welf.specifiedMenuVC.selectedObject  == model {
+//                        self?.toCreateToast("Two plan works for same day is restricted.")
+//                        return
+//                    }
+//                }
                 welf.selectedObject = model
                 welf.specifiedMenuVC.selectedObject = model
                 if welf.isSearched {
@@ -1732,20 +1732,27 @@ class SpecifiedMenuView: BaseView {
            bottomHolderHeight.constant = 0
            self.workTypeArr = DBManager.shared.getWorkType()
            if specifiedMenuVC.selectedObject != nil {
-               self.selectedObject = specifiedMenuVC.selectedObject as! WorkType
-               let docObj =  self.selectedObject as! WorkType
-               if !(isfromTF ?? false) {
-                   self.searchTF.text = docObj.name
-               }
-              
-               self.listedDocArr?.enumerated().forEach({ index, doctor in
-                   if doctor.id  == docObj.id {
-                       selectedIndex = index
+               let docObj  = specifiedMenuVC.selectedObject as! WorkType
+               self.workTypeArr?.enumerated().forEach({ index, doctor in
+                   if doctor.code  == docObj.code {
+                       self.workTypeArr?.remove(at: index)
                    }
                })
-              
-      
            }
+//           if specifiedMenuVC.selectedObject != nil {
+//               self.selectedObject = specifiedMenuVC.selectedObject as! WorkType
+//               let docObj =  self.selectedObject as! WorkType
+//               if !(isfromTF ?? false) {
+//                   self.searchTF.text = docObj.name
+//               }
+//              
+//               self.listedDocArr?.enumerated().forEach({ index, doctor in
+//                   if doctor.id  == docObj.id {
+//                       selectedIndex = index
+//                   }
+//               })
+//
+//           }
            
      
        case .clusterInfo:

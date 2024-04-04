@@ -42,12 +42,12 @@ extension UIStoryboard {
         return loginVc
     }
     
-    static var homeVC : HomeVC {
-        guard let  homeVC = UIStoryboard.main.instantiateViewController(withIdentifier: "HomeVC") as? HomeVC else{
-            fatalError("HomeVC couldn't be found in Storyboard file")
-        }
-        return homeVC
-    }
+//    static var homeVC : HomeVC {
+//        guard let  homeVC = UIStoryboard.main.instantiateViewController(withIdentifier: "HomeVC") as? HomeVC else{
+//            fatalError("HomeVC couldn't be found in Storyboard file")
+//        }
+//        return homeVC
+//    }
     
     
     static var mainVC : MainVC {

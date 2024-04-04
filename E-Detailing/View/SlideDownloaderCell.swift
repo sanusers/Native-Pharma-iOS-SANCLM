@@ -12,6 +12,7 @@ import UIKit
 
 protocol SlideDownloaderCellDelegate: AnyObject {
     func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, isForSingleSelection: Bool, isfrorBackgroundTask: Bool, istoreturn: Bool, completion: @escaping (Bool) -> Void)
+    
 }
 
 extension SlideDownloaderCell: MediaDownloaderDelegate {
@@ -24,7 +25,8 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             params.isFailed = false
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
-         delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
+           delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
         
     }
     
@@ -38,6 +40,8 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             print("Error downloading media: \(error)")
             lblDataBytes.text = "Error downloading media"
             btnRetry.isHidden = false
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: true)
+       // isSlidesDownloadPending
         delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
     }
     
@@ -212,6 +216,7 @@ extension MediaDownloader: URLSessionDownloadDelegate {
                 delegate?.mediaDownloader(self, didFinishDownloadingData: data)
             } catch {
                 print("Error reading downloaded data: \(error.localizedDescription)")
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: true)
                 delegate?.mediaDownloader(self, didEncounterError: error)
             }
         } else {
@@ -220,7 +225,7 @@ extension MediaDownloader: URLSessionDownloadDelegate {
             delegate?.mediaDownloader(self, didEncounterError: error)
         }
         
-        
+        Shared.instance.isSlideDownloading = false
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {

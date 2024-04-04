@@ -159,11 +159,11 @@ class LoginVC : UIViewController {
 
 
         if userId.isEmpty {
-            ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
+          //  ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
             return
 
         }else if password.isEmpty {
-            ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
+         //   ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
             return
         }
 

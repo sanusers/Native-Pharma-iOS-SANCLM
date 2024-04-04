@@ -163,13 +163,6 @@ class PresentationHomeView : BaseView {
  
     }
     
-    func groupSlides() {
-        Shared.instance.showLoaderInWindow()
-        Pipelines.shared.toGroupSlides(mastersyncVM: presentationHomeVC.mastersyncVM ?? MasterSyncVM()) {
-            Shared.instance.removeLoaderInWindow()
-            self.retriveSavedPresentations()
-        }
-    }
     
     
     

@@ -51,11 +51,11 @@ final class ConnectionHandler : NSObject {
         }
         
         if api.method == .get {
-            return self.getRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
+            return self.getRequest(forAPI: api == .none ? AppConfigURL  + api.rawValue : APIUrl + api.rawValue,
                                    params: params,
                                    CacheAttribute: api.cacheAttribute ?  .none : api)
         } else {
-            return self.postRequest(forAPI: api == .none ? APIUrl + api.rawValue : appMainURL + api.rawValue,
+            return self.postRequest(forAPI: api == .none ? AppConfigURL  + api.rawValue : APIUrl  + api.rawValue,
                                     params: params, CacheAttribute: api)
         }
     }

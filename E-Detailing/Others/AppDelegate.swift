@@ -34,7 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupRootViewControllers(isFromlaunch: Bool? = false) {
         
         if !AppDefaults.shared.isConfigAdded() {
-            self.window?.rootViewController = UINavigationController.init(rootViewController: ConfigVC.initWithStory()) 
+            
+            self.window?.rootViewController = UINavigationController.init(rootViewController: ConfigVC.initWithStory(homeVM: HomeViewModal()))
+                                                                      
         } else {
 
             if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {

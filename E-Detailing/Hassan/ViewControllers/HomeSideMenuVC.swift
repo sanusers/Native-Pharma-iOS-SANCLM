@@ -15,6 +15,7 @@ import UIKit
 class HomeSideMenuVC: BaseViewController {
     @IBOutlet weak var menuView : HomeSideMenuView!
     var menuDelegate : MenuResponseProtocol?
+    weak var delegate: HomeSideMenuViewDelegate?
     //MARK:- view life cycle
     override func viewDidLoad() {
         super.viewDidLoad()

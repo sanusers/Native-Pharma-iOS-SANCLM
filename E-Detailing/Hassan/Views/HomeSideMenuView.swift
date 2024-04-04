@@ -23,6 +23,10 @@ class MenuItemModel{
 }
 
 
+protocol HomeSideMenuViewDelegate : AnyObject {
+    func refreshDashBoard()
+}
+
 extension HomeSideMenuView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
        return menuItemArr.count
@@ -71,7 +75,7 @@ class HomeSideMenuView : BaseView{
     }
     
     var menuVC :  HomeSideMenuVC!
-  
+    
     @IBOutlet var closeHolderView: UIView!
     @IBOutlet var topContainerView: UIView!
     
@@ -138,8 +142,8 @@ class HomeSideMenuView : BaseView{
         let myResource : MenuItems = MenuItems(menuName: "My Resource", menuIcon: UIImage(named: "SideMenuMyResource") ?? UIImage(), VC: resourceVC)
         menuItemArr.append(myResource)
         
-        
-        let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "application") ?? UIImage(), VC: nil)
+        let leaveVC = UIStoryboard.leaveVC
+        let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "application") ?? UIImage(), VC: leaveVC)
         menuItemArr.append(leaveApplication)
         
         let reportsVC = ReportsVC.initWithStory(pageType: .reports)
@@ -150,8 +154,8 @@ class HomeSideMenuView : BaseView{
         let activity : MenuItems = MenuItems(menuName: "Activity", menuIcon: UIImage(named: "SideMenuActivity") ?? UIImage(), VC: nil)
         menuItemArr.append(activity)
         
-        
-        let nearMe : MenuItems = MenuItems(menuName: "Near Me", menuIcon: UIImage(named: "SideMenuNearMe") ?? UIImage(), VC: nil)
+        let nearMeVC = UIStoryboard.nearMeVC
+        let nearMe : MenuItems = MenuItems(menuName: "Near Me", menuIcon: UIImage(named: "SideMenuNearMe") ?? UIImage(), VC: nearMeVC)
         menuItemArr.append(nearMe)
         
         

@@ -66,7 +66,7 @@ class TagVC : UIViewController {
         
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let urlStr = appMainURL + "geodetails"
+        let urlStr = APIUrl + "geodetails"
         
  //   http://crm.saneforce.in/iOSServer/db_module.php?axn=get/geodetails
         
@@ -124,7 +124,7 @@ class TagVC : UIViewController {
                     }
                 case .failure(let error):
                 
-                    ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
+                  //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
                     print(error)
                     return
             }
@@ -149,7 +149,7 @@ class TagVC : UIViewController {
         
         // http://crm.saneforce.in/iOSServer/db_api.php?axn=table/dcrmasterdata
         
-        let url = appMainURL + "table/dcrmasterdata"
+        let url = APIUrl + "table/dcrmasterdata"
         
         var paramsDict = ""
         var params : [String : Any] = [:]
