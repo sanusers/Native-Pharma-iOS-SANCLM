@@ -1695,7 +1695,7 @@ class MainVC : UIViewController {
 
     
     func toSetParams(date: Date? = Date(), isfromSyncCall: Bool, completion: @escaping () -> ()) {
-        Shared.instance.showLoader(in: self.viewLeftSegment)
+      //  Shared.instance.showLoader(in: self.viewCalls)
         let appsetup = AppDefaults.shared.getAppSetUp()
         let date = date?.toString(format: "yyyy-MM-dd HH:mm:ss")
         var params = [String : Any]()
@@ -1716,7 +1716,7 @@ class MainVC : UIViewController {
         
         print(params)
         getTodayCalls(toSendData, paramData: params, istosyncCall: isfromSyncCall) {
-            Shared.instance.removeLoader(in: self.viewLeftSegment)
+           // Shared.instance.removeLoader(in: self.viewCalls)
             completion()
             
         }

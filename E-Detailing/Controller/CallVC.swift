@@ -423,10 +423,10 @@ class CallVC : UIViewController {
                 let timeString = dateFormatter.string(from: currentDate)
                 
                 let timestr = (timeString)
-                dcrCall.address = address ?? ""
-                dcrCall.latitude = coordinates.latitude ?? Double()
-                dcrCall.longitude = coordinates.longitude ?? Double()
-                dcrCall.dcrTime = welf.getCurrentFormattedDateString()
+                dcrCall.customerCheckinAddress = address ?? ""
+                dcrCall.checkinlatitude = coordinates.latitude ?? Double()
+                dcrCall.checkinlongitude = coordinates.longitude ?? Double()
+                dcrCall.dcrCheckinTime = welf.getCurrentFormattedDateString()
                 welf.checkinDetailsAction(dcrCall : dcrCall)
                 
                 

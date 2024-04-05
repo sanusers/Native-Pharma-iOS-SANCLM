@@ -33,7 +33,7 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
         titleLbl.textColor = .appTextColor
         
         self.dcrNameLbl.text = dcrCall.name
-        self.checkinDetailsLbl.text = dcrCall.dcrTime
+        self.checkinDetailsLbl.text = dcrCall.dcrCheckinTime
         
         self.btnCheckin.addTarget(self, action: #selector(didUserCheckin), for: .touchUpInside)
         

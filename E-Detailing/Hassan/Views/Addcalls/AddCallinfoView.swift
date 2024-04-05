@@ -1316,7 +1316,7 @@ class AddCallinfoView : BaseView {
         
     }
     
-    func checkoutAction(checkin: CheckinInfo? = nil) {
+    func checkoutAction(dcrCall: CallViewModel? = nil) {
         backgroundView.isHidden = false
         backGroundVXview.alpha = 0.3
         
@@ -1349,7 +1349,11 @@ class AddCallinfoView : BaseView {
         
         customerCheckoutView = self.addCallinfoVC.loadCustomView(nibname: XIBs.customerCheckoutView) as? CustomerCheckoutView
         customerCheckoutView?.delegate = self
-        customerCheckoutView?.chckinInfo = checkin
+        customerCheckoutView?.dcrCall = dcrCall
+        if let nonNillcall = dcrCall {
+            customerCheckoutView?.setupUI(dcrCall: nonNillcall)
+        }
+       
         //customerCheckoutView?.userstrtisticsVM = self.userststisticsVM
         //customerCheckoutView?.appsetup = self.appSetups
 
@@ -1640,15 +1644,9 @@ class AddCallinfoView : BaseView {
                 let datestr = dateString
                 
 
+               var dcrCall = welf.addCallinfoVC.dcrCall
                 
-                let callInfo : CheckinInfo = CheckinInfo(address: address ?? "", checkinDateTime: "", checkOutDateTime: datestr, latitude: coordinates.latitude ?? Double(), longitude: coordinates.longitude ?? Double(), dateStr: "", checkinTime: "", checkOutTime: "")
-                
-//                callInfo.address = address ?? ""
-//                callInfo.latitude = coordinates.latitude ?? Double()
-//                callInfo.longitude = coordinates.longitude ?? Double()
-//                callInfo.dcrTime = welf.getCurrentFormattedDateString()
-                
-                welf.checkoutAction(checkin: callInfo)
+                welf.checkoutAction(dcrCall: dcrCall)
                 
                 
                 

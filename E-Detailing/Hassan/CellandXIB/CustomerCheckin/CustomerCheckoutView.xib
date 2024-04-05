@@ -54,7 +54,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="24 Aug 2023, 12:35 PM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dPj-xh-7uF">
                                             <rect key="frame" x="184.5" y="46.5" width="1044.5" height="17.5"/>
                                             <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
-                                            <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -101,13 +101,13 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="13.030002833333252525," textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="683-M2-Wej">
                                                     <rect key="frame" x="0.0" y="0.0" width="1044.5" height="77.5"/>
                                                     <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
-                                                    <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="13.030002833333252525," textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4xx-pc-U7c">
                                                     <rect key="frame" x="0.0" y="77.5" width="1044.5" height="77.5"/>
                                                     <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
-                                                    <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -154,10 +154,10 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="vbM-vO-dXu">
                                             <rect key="frame" x="184.5" y="0.0" width="1044.5" height="155"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No 4, Chaimers Road," textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prk-J9-imU">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No address found." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prk-J9-imU">
                                                     <rect key="frame" x="0.0" y="0.0" width="1044.5" height="155"/>
                                                     <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
-                                                    <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -190,6 +190,9 @@
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" title="Close"/>
+                                    <connections>
+                                        <action selector="didTapcloseBtn:" destination="iN0-l3-epB" eventType="touchUpInside" id="VYV-VP-0YH"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -219,6 +222,7 @@
             <connections>
                 <outlet property="addressLbl" destination="prk-J9-imU" id="Sok-f5-YK8"/>
                 <outlet property="checkoutTimeLbl" destination="dPj-xh-7uF" id="BNG-1t-Coc"/>
+                <outlet property="closeBtn" destination="OgV-fn-egP" id="2bi-Wv-Yg1"/>
                 <outlet property="latitudeLbl" destination="683-M2-Wej" id="1cO-2e-gaV"/>
                 <outlet property="longitudeLbl" destination="4xx-pc-U7c" id="D3H-8N-wE6"/>
             </connections>
@@ -226,7 +230,7 @@
         </view>
     </objects>
     <resources>
-        <image name="Checkin" width="24" height="24"/>
+        <image name="Checkin" width="40" height="40"/>
         <image name="location-crosshairs" width="24" height="24"/>
         <image name="locationIcon" width="24" height="24"/>
         <systemColor name="systemBackgroundColor">
