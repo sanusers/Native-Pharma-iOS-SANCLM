@@ -694,7 +694,7 @@ extension AddCallinfoView: tableViewProtocols {
                     selectedComp.append(aAdditionalCompetitorsInfo.competitor ?? Competitor())
                 })
                 
-                let aCompetitorArr = selectedComp //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor ?? [Competitor]()
+              //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor ?? [Competitor]()
                 //competitor ?? [Competitor]()
                 cell.competitorsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo
                 cell.setupAddedCompetitors(count: selectedComp.count, competitors: selectedComp)
@@ -786,70 +786,14 @@ extension AddCallinfoView: tableViewProtocols {
        
         self.selectedAddcompetitorSection = section
         let vc  = SpecifiedMenuVC.initWithStory(self, celltype: .competitors)
+        vc.selectedObject =    self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorRow].addedProduct
+        
+
         vc.menuDelegate = self
         self.addCallinfoVC.modalPresentationStyle = .custom
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
     }
-    
-//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        
-//        switch self.segmentType[selectedSegmentsIndex] {
-//        case .rcppa:
-//            switch tableView {
-//            case yetToloadContentsTable:
-//                return UIView()
-//            case loadedContentsTable:
-//                // Dequeue the header view
-//                guard let footerview = loadedContentsTable.dequeueReusableHeaderFooterView(withIdentifier: "CompetitorsFooter") as? CompetitorsFooter else {
-//                    
-//                    return UIView()
-//                }
-//
-//                //footerview.btnAddcompetitor.addTarget(self, action: #selector(navigatetoSpecifiedMenu), for: .touchUpInside)
-//                footerview.btnAddcompetitor.isUserInteractionEnabled = false
-//                footerview.section = section
-//                footerview.viewAddcompetitor.addTap {
-//                    self.navigatetoSpecifiedMenu(rcpaSection: section)
-//                }
-//                
-//                self.selectedAddcompetitorSection = section
-//                let aCompetitorArr = self.rcpaDetailsModel[section].competitor ?? [Competitor]()
-//                footerview.setupAddedCompetitors(count: self.rcpaDetailsModel[section].competitor?.count ?? 0, competitors: aCompetitorArr)
-//                footerview.delegate = self
-//                return footerview
-//            default:
-//                return UIView()
-//            }
-//            
-//        default:
-//            return UIView()
-//        }
-//    }
-    
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        switch self.segmentType[selectedSegmentsIndex] {
-//        case .rcppa:
-// 
-//                //50 - header
-//                //50 - addbtn (40 + padding (10))
-//                //10 - top bottom padding
-//                //50 * count - each cell height
-//                if self.rcpaDetailsModel[section].competitor?.count ?? 0 == 0 {
-//                    //self.rcpaAddedListViewModel.addRcpaChemist(<#T##VM: RcpaAddedViewModel##RcpaAddedViewModel#>)
-//                    return 50
-//                } else {
-//                    return calculateSectionHeight(forSection: section)
-//                }
-//            
-//                //+ 10 + (50 * 3) + 50
-//              
-//            
-//          
-//        default:
-//            return 0
-//        }
-//    }
-    
+
     func calculateSectionHeight(forSection section: Int, index: Int) -> CGFloat {
         //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor?
         
@@ -1450,6 +1394,7 @@ class AddCallinfoView : BaseView {
         jfwView?.eventCaptureListViewModel = self.eventCaptureListViewModel
         jfwView?.jointWorkSelectedListViewModel = self.jointWorkSelectedListViewModel
         jfwView?.delegate = self
+        jfwView?.dcrCall = self.addCallinfoVC.dcrCall
         jfwView?.setupUI()
         self.addSubview(jfwView ?? JfwView())
     }
@@ -1483,8 +1428,7 @@ class AddCallinfoView : BaseView {
             self.addCallinfoVC.navigationController?.present(vc, animated: false)
         }
         saveView.addTap {
-           // self.addCallinfoVC.setupParam()
-         //   self.checkoutAction()
+   
             self.fetchLocationAndCheckout()
         }
         
@@ -1546,7 +1490,44 @@ class AddCallinfoView : BaseView {
     
     func toLoadSegments() {
         segmentsCollection.isScrollEnabled = false
-        segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+        if addCallinfoVC.dcrCall.call is DoctorFencing {
+       //     if appsetup.docr == 0 {
+                segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+//            } else {
+//                segmentType = [.products, .inputs, .additionalCalls, .jointWork]
+//            }
+           
+        }
+        
+        
+        if addCallinfoVC.dcrCall.call is Chemist {
+         //   if appsetup.chmRcpaNeed == 0 {
+                segmentType = [.products, .inputs, .rcppa, .jointWork]
+//            } else {
+//                segmentType = [.products, .inputs, .jointWork]
+//            }
+           
+        }
+        
+        if addCallinfoVC.dcrCall.call is Stockist {
+        //    if appsetup.stk == 0 {
+                segmentType = [.products, .inputs, .rcppa, .jointWork]
+//            } else {
+//                segmentType = [.products, .inputs, .jointWork]
+//            }
+           
+        }
+        
+        
+        if addCallinfoVC.dcrCall.call is UnListedDoctor {
+           // if appsetup.docPobNeed == 0 {
+                segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+//            } else {
+//                segmentType = [.products, .inputs, .jointWork]
+//            }
+           
+        }
+     
         self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
         segmentsCollection.delegate = self
         segmentsCollection.dataSource = self
@@ -1715,6 +1696,10 @@ extension AddCallinfoView : JfwViewDelegate {
 
 
 extension AddCallinfoView : addedSubViewsDelegate {
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        self.addCallinfoVC.setupParam(dcrCall: dcrCall)
+    }
+    
     
     func didUpdateFilters(filteredObjects: [NSManagedObject]) {
         print("Yet to implement")

@@ -9,7 +9,11 @@ import Foundation
 import UIKit
 
 
-class EventCaptureCell: UITableViewCell {
+protocol EventCaptureCellDelegate: AnyObject {
+    func didUpdate(title: String, description: String, index: Int)
+}
+
+class EventCaptureCell: UITableViewCell, UITextFieldDelegate {
     
     @IBOutlet var capturedImageHolder: UIView!
     
@@ -24,7 +28,10 @@ class EventCaptureCell: UITableViewCell {
     @IBOutlet weak var btnDelete: UIButton!
     
     @IBOutlet var descriptionHolder: UIView!
+    var delegate: EventCaptureCellDelegate?
     var remarks: String?
+    var title: String?
+    var indexpath: Int? = nil
     var eventCapture : EventCaptureViewModel! {
         didSet {
             self.imgView.image = eventCapture.image
@@ -52,6 +59,7 @@ class EventCaptureCell: UITableViewCell {
        // descriptionHolder.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.1).cgColor
         
         configureTextField()
+        txtName.delegate = self
     }
     
     
@@ -65,6 +73,29 @@ class EventCaptureCell: UITableViewCell {
         //remarksTV.text == "" ? "Description" : remarksTV.text
         txtDescription.textColor =  txtDescription.text == "Description" ? UIColor.lightGray : UIColor.black
     }
+    
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        switch textField {
+        case txtName:
+            // Construct the new text after replacement
+            let currentText = textField.text ?? "1"
+            guard let stringRange = Range(range, in: currentText) else {
+                return false
+            }
+            let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+            
+            // Update the text immediately
+            title = currentText
+            self.delegate?.didUpdate(title: title ?? "", description: txtDescription.text ?? "", index: indexpath ?? 0)
+   
+            return true
+        default:
+            return false
+        }
+    }
+
+    
 }
 
 extension EventCaptureCell: UITextViewDelegate {
@@ -84,7 +115,7 @@ extension EventCaptureCell: UITextViewDelegate {
         }
         self.remarks = textView.text == "Description" ? "" : textView.text
        // delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: 0)
-   
+        delegate?.didUpdate(title: title ?? "", description: textView.text, index: indexpath ?? 0)
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

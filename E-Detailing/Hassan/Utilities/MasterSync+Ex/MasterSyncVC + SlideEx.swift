@@ -143,6 +143,10 @@ extension MasterSyncVC {
                 downloadingBottomView.isHidden = true
             }
             return !nonExistingSlides.isEmpty
+        } else {
+            slideDownloadStatusLbl.isHidden = true
+            retryVIew.isHidden = true
+            downloadingBottomView.isHidden = true
         }
        //let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
        

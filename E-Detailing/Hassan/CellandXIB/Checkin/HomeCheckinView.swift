@@ -163,34 +163,34 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
             Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
                 welf.address = address
                 
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+             //   if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                     welf.callAPI()
-                } else {
-                    
-                    let dateFormatter = DateFormatter()
-    
-                    let currentDate = Date()
-                    
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    
-                    let upDatedDateString = dateFormatter.string(from: currentDate)
-                    
-                    
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: false)
-                    
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
-
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
-                    
-                    LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
-                    CoreDataManager.shared.removeAllCheckins()
-                    welf.saveLogininfoToCoreData() {_ in
-                        
-                        welf.delegate?.didUpdate()
-                        
-                    }
-
-                }
+//                } else {
+//                    
+//                    let dateFormatter = DateFormatter()
+//    
+//                    let currentDate = Date()
+//                    
+//                    dateFormatter.dateFormat = "yyyy-MM-dd"
+//                    
+//                    let upDatedDateString = dateFormatter.string(from: currentDate)
+//                    
+//                    
+//                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: false)
+//                    
+//                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+//
+//                    LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+//                    
+//                    LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+//                    CoreDataManager.shared.removeAllCheckins()
+//                    welf.saveLogininfoToCoreData() {_ in
+//                        
+//                        welf.delegate?.didUpdate()
+//                        
+//                    }
+//
+//                }
               
             }
             

@@ -141,6 +141,7 @@ class SlideDownloaderCell : UITableViewCell  {
         let params = items[index]
         let filePath = params.filePath
         let url =  slideURL+filePath
+        print(url)
         let type = mimeTypeForPath(path: url)
         params.utType = type
         

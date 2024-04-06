@@ -150,7 +150,7 @@ class DBManager {
             self.saveVisitControlData(values: Values)
         case .stockBalance:
             self.saveStockBalance(values: Values)
-        case .mapCompDet:
+        case .mappedCompetitors:
             self.saveMapCompDetData(values: Values)
         case .empty:
             break

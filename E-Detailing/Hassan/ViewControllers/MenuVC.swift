@@ -83,7 +83,7 @@ class MenuVC: BaseViewController {
             guard let welf = self else {return}
             completion(true)
             Shared.instance.removeLoaderInWindow()
-            welf.toCreateToast("Clusters synced successfully")
+           // welf.toCreateToast("Clusters synced successfully")
             
         }
     }

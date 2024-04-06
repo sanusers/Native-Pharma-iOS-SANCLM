@@ -11,12 +11,12 @@ import UIKit
 
 extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.todayCallsModel?.count ?? 0
+        return self.todayCallsModel.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: CalldetailsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CalldetailsCVC", for: indexPath) as! CalldetailsCVC
-        let model = self.todayCallsModel?[indexPath.row] ?? TodayCallsModel()
+        let model = self.todayCallsModel[indexPath.row]
         cell.topopulateCell(model)
         return cell
     }
@@ -43,7 +43,22 @@ class OutboxDetailsTVC: UITableViewCell {
     
     var callsExpandState: cellState = .callsNotExpanded
     var eventExpandState: cellState = .eventNotExpanded
-    var todayCallsModel: [TodayCallsModel]?
+    var todayCallsModel: [TodayCallsModel] = []  {
+        didSet {
+            let intime = self.todayCallsModel.first?.vstTime ?? ""
+            
+            let inDateStr = intime.toDate(format: "yyyy-MM-dd HH:mm:ss")
+            
+           
+            
+            checkinLbl.text =  "Check IN - \(inDateStr.toString(format: "hh:mm a"))"
+            
+            
+            let outtime = self.todayCallsModel.last?.vstTime ?? ""
+            let outDateStr = outtime.toDate(format: "yyyy-MM-dd HH:mm:ss")
+            checkoutinfoLbl.text = "Check OUT - \(outDateStr.toString(format: "hh:mm a"))"
+        }
+    }
     
     @IBOutlet var dcrCallDetailsCollection: UICollectionView!
     
@@ -135,7 +150,7 @@ class OutboxDetailsTVC: UITableViewCell {
     
     
     func toSetCellHeight(callsExpandState: cellState) {
-        let count = self.todayCallsModel?.count ?? 0
+        let count = self.todayCallsModel.count
         switch callsExpandState {
         case .callsExpanded:
             self.callsExpandState = callsExpandState
@@ -207,6 +222,7 @@ class OutboxDetailsTVC: UITableViewCell {
 //        callststusView.layer.cornerRadius = 3
 //        callStatusVxVIew.backgroundColor = .appLightPink
 //        callStatusLbl.textColor = .appLightPink
+        
     }
     
 

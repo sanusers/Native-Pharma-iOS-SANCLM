@@ -265,7 +265,7 @@ class CallListViewModel {
 }
 
 
-class CallViewModel {
+public class CallViewModel {
     
     let call : AnyObject
     var type : DCRType

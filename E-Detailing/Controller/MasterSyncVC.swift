@@ -561,7 +561,6 @@ class MasterSyncVC : UIViewController {
         self.dcrList.append(MasterCellData(cellType: MasterCellType.syncAll,isSelected: false))
         
         self.masterData.append(MasterInfo.myDayPlan)
-       
         self.masterData.append(MasterInfo.doctorFencing)
         self.masterData.append(MasterInfo.chemists)
         self.masterData.append(MasterInfo.stockists)
@@ -574,7 +573,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.tourPlanStatus)
         self.masterData.append(MasterInfo.leaveType)
         self.masterData.append(MasterInfo.visitControl)
-        self.masterData.append(MasterInfo.mapCompDet)
+        self.masterData.append(MasterInfo.mappedCompetitors)
         self.masterData.append(MasterInfo.stockBalance)
         self.masterData.append(MasterInfo.subordinate)
         self.masterData.append(MasterInfo.subordinateMGR)
@@ -896,8 +895,11 @@ extension MasterSyncVC : tableViewProtocols {
         
         self.loadedSlideInfo = []
       
-        self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType, MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
+
+        
+        self.masterData = [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.docFeedback, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors, MasterInfo.clusters,  MasterInfo.inputs ,MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.competitors, MasterInfo.mappedCompetitors, MasterInfo.leaveType, MasterInfo.homeSetup, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup, MasterInfo.subordinate, MasterInfo.subordinateMGR, MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
+//        [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
+//                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType, MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
         
         cacheMasterData = masterData
         
@@ -1050,7 +1052,7 @@ extension MasterSyncVC : collectionViewProtocols{
             //String(DBManager.shared.getVisitControl().count)
         case .leaveType:
             cell.lblCount.text = String(DBManager.shared.getLeaveType().count)
-        case .mapCompDet:
+        case .mappedCompetitors:
             cell.lblCount.text = String(DBManager.shared.getMapCompDet().count)
         case .docFeedback:
             cell.lblCount.text = String(DBManager.shared.getFeedback().count)
@@ -1116,6 +1118,8 @@ extension MasterSyncVC : collectionViewProtocols{
         case .none:
             cell.lblCount.text = "Yet to"
 
+        case .productcategory:
+            cell.lblCount.text = ""
         }
         
         if MasterInfo.syncAll.rawValue == self.masterData[indexPath.row].rawValue {

@@ -2455,10 +2455,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 welf.clusterArr = DBManager.shared.getTerritory(mapID:  id)
                 if welf.clusterArr?.count == 0 || welf.clusterArr == nil && LocalStorage.shared.getBool(key: .isConnectedToNetwork)  {
-                    Shared.instance.showLoaderInWindow()
+                   
                     print("Call api")
                     
                     welf.menuVC.toUpdateDCR(mapID: id) { _ in
+                        
+                        print("HQ identifier -- > \(id)" )
                         welf.clusterArr = DBManager.shared.getTerritory(mapID:  id);
                         
                         welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
@@ -2472,10 +2474,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         } else {
                             welf.toCreateToast("Please select work type")
                         }
-                        Shared.instance.removeLoaderInWindow()
+                      
                     }
                     
                 } else {
+                    welf.clusterArr = DBManager.shared.getTerritory(mapID:  id)
                     welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.count ?? 0)
                     if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""    {
                         isToproceed = true

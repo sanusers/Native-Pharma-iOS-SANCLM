@@ -26,7 +26,7 @@ class AddCallinfoVC: BaseViewController {
     }
     
     
-    func setupParam() {
+    func setupParam(dcrCall: CallViewModel) {
         var productData = [[String : Any]]()
         var inputData = [[String : Any]]()
         var jointWorkData = [[String : Any]]()
@@ -38,7 +38,6 @@ class AddCallinfoVC: BaseViewController {
         let inputValue = self.addCallinfoView.inputSelectedListViewModel.inputData()
         let jointWorkValue = self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
         let additionalCallValue = self.addCallinfoView.additionalCallListViewModel.getAdditionalCallData()
-        
         let rcpaValue =  self.addCallinfoView.rcpaDetailsModel
         
         
@@ -182,7 +181,7 @@ class AddCallinfoVC: BaseViewController {
         params["ModTime"] = date
         params["ReqDt"] = date
         params["vstTime"] = date
-        params["Remarks"] =  ""
+        params["Remarks"] =  self.addCallinfoView.overallRemarks ?? ""
         //self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
         params["amc"] = ""
         params["sign_path"] = ""
@@ -192,7 +191,10 @@ class AddCallinfoVC: BaseViewController {
         params["EventImageName"] = ""
         params["DCSUPOB"] =  ""
         //self.txtPob.text ?? ""
-        params["Drcallfeedbackcode"] = ""
+        if let overallFeedback = self.addCallinfoView.overallFeedback {
+            params["Drcallfeedbackcode"] = overallFeedback.id ?? ""
+        }
+        
         //(self.selectedFeedback == nil) ? "" : (self.selectedFeedback.code ?? "") ?? ""
         params["sample_validation"] = "0"
         params["input_validation"] = "0"
@@ -221,8 +223,12 @@ class AddCallinfoVC: BaseViewController {
                 toSendData["data"] = jsonDatum
                 welf.callDCRScaeapi(toSendData: toSendData, params: params, cusType: cusType) { isPosted in
                     Shared.instance.removeLoaderInWindow()
-            
-                    welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: params)
+                    if !isPosted {
+                        welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: params)
+                    } else {
+                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                    }
+                
                     
                     welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                 }
@@ -305,19 +311,21 @@ class AddCallinfoVC: BaseViewController {
                 dbparam["CustCode"] = dcrCall.code
                 dbparam["CustType"] = cusType
                 dbparam["FW_Indicator"] = "F"
-                dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd")
+                dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
                 dbparam["month_name"] = Date().toString(format: "MMMM")
                 dbparam["Mnth"] = Date().toString(format: "MM")
                 dbparam["Yr"] =  Date().toString(format: "YYYY")
                 dbparam["CustName"] = dcrCall.name
-                dbparam["town_code"] = ""
-                dbparam["town_name"] = ""
+                dbparam["town_code"] = dcrCall.townCode
+                dbparam["town_name"] = dcrCall.territory
                 dbparam["Dcr_flag"] = ""
                 dbparam["SF_Code"] = appsetup.sfCode
                 dbparam["Trans_SlNo"] = ""
                 dbparam["AMSLNo"] = ""
                 dbparam["isDataSentToAPI"] = issussess == true ?  "1" : "0"
                 dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
+                 dbparam["checkinTime"] = dcrCall.dcrCheckinTime
+                 dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
                 var dbparamArr = [[String: Any]]()
                 dbparamArr.append(dbparam)
                 let masterData = DBManager.shared.getMasterData()
@@ -362,6 +370,7 @@ class AddCallinfoVC: BaseViewController {
         if !issussess {
             saveParamoutboxParamtoDefaults(param: param)
         }
+        
         NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
     
 

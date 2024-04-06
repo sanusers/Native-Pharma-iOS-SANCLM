@@ -12,10 +12,19 @@ import Alamofire
 import UIKit
 import CoreData
 
+extension LoginVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        return true
+    }
+}
+
+
 class LoginVC : UIViewController {
     
     
     func setupui() {
+        txtUserName.delegate = self
+        txtPassWord.delegate = self
         contentsHolderview.elevate(2)
         contentsHolderview.layer.cornerRadius = 5
         lblUserID.setFont(font: .bold(size: .BODY))

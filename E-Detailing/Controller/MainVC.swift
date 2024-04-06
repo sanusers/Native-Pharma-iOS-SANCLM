@@ -325,13 +325,13 @@ class MainVC : UIViewController {
         }
     }
     
-    func refreshUI() {
-        toSeperateDCR()
+    func refreshUI(issynced: Bool? = false) {
+        toSeperateDCR(istoAppend: true)
         updateDcr()
         toIntegrateChartView(self.chartType, self.cacheDCRindex)
         toLoadCalenderData()
         toLoadDcrCollection()
-        toLoadOutboxTable()
+        toLoadOutboxTable(isSynced: issynced ?? false)
         toloadCallsTable()
     }
     
@@ -376,16 +376,21 @@ class MainVC : UIViewController {
         layout.scrollDirection = .horizontal
         self.quickLinkCollectionView.collectionViewLayout = layout
         
-        let layout1 = UICollectionViewFlowLayout()
+        if let layout = self.analysisCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal
+            layout.collectionView?.isScrollEnabled = true
+        }
         
-        layout1.scrollDirection = .horizontal
+
         
-        self.dcrCallsCollectionView.collectionViewLayout = layout1
-        self.analysisCollectionView.collectionViewLayout = layout1
+        
+        if let layout = self.dcrCallsCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal
+            layout.collectionView?.isScrollEnabled = true
+        }
         
         self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .left))
         self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .right))
-        
         
         
         [btnCall,btnActivity].forEach { button in
@@ -870,47 +875,54 @@ class MainVC : UIViewController {
     
     
     func appendUnsyncedCalls() {
-        if let unsyncedhomeDataArr = DBManager.shared.geUnsyncedtHomeData() {
-            
-            for unsyncedHomeData in unsyncedhomeDataArr {
-                let homeData = HomeData(context: self.context)
-                      homeData.anslNo = unsyncedHomeData.anslNo
-                      homeData.custCode = unsyncedHomeData.custCode
-                      homeData.custName = unsyncedHomeData.custName
-                      homeData.custType = unsyncedHomeData.custType
-                      homeData.dcr_dt = unsyncedHomeData.dcr_dt
-                      homeData.dcr_flag = unsyncedHomeData.dcr_flag
-                      homeData.editflag = unsyncedHomeData.editflag
-                      homeData.fw_Indicator = unsyncedHomeData.fw_Indicator
-                      homeData.index = unsyncedHomeData.index
-                      homeData.isDataSentToAPI = unsyncedHomeData.isDataSentToAPI
-                      homeData.mnth = unsyncedHomeData.mnth
-                      homeData.month_name = unsyncedHomeData.month_name
-                      homeData.rejectionReason = unsyncedHomeData.rejectionReason
-                      homeData.sf_Code = unsyncedHomeData.sf_Code
-                      homeData.town_code = unsyncedHomeData.town_code
-                      homeData.town_name = unsyncedHomeData.town_name
-                      homeData.trans_SlNo = unsyncedHomeData.trans_SlNo
-                      homeData.yr = unsyncedHomeData.yr
-                      
-                      // Append the created HomeData object to homeDataArr
-                      homeDataArr.append(homeData)
-            }
+        
+        guard  let tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData() else{ return }
+        self.unsyncedhomeDataArr =  tempUnsyncedArr
+
+        
+    }
+    
+    func mergeCalls() {
+        for unsyncedHomeData in unsyncedhomeDataArr {
+            let homeData = HomeData(context: self.context)
+                  homeData.anslNo = unsyncedHomeData.anslNo
+                  homeData.custCode = unsyncedHomeData.custCode
+                  homeData.custName = unsyncedHomeData.custName
+                  homeData.custType = unsyncedHomeData.custType
+                  homeData.dcr_dt = unsyncedHomeData.dcr_dt
+                  homeData.dcr_flag = unsyncedHomeData.dcr_flag
+                  homeData.editflag = unsyncedHomeData.editflag
+                  homeData.fw_Indicator = unsyncedHomeData.fw_Indicator
+                  homeData.index = unsyncedHomeData.index
+                  homeData.isDataSentToAPI = unsyncedHomeData.isDataSentToAPI
+                  homeData.mnth = unsyncedHomeData.mnth
+                  homeData.month_name = unsyncedHomeData.month_name
+                  homeData.rejectionReason = unsyncedHomeData.rejectionReason
+                  homeData.sf_Code = unsyncedHomeData.sf_Code
+                  homeData.town_code = unsyncedHomeData.town_code
+                  homeData.town_name = unsyncedHomeData.town_name
+                  homeData.trans_SlNo = unsyncedHomeData.trans_SlNo
+                  homeData.yr = unsyncedHomeData.yr
+                  
+                  // Append the created HomeData object to homeDataArr
+                  homeDataArr.append(homeData)
         }
     }
     
     func toSeperateDCR(istoAppend: Bool? = false) {
+        
         homeDataArr = DBManager.shared.getHomeData()
-        if istoAppend ?? false {
-            appendUnsyncedCalls()
-        }
-     
-        
-        
+        self.appendUnsyncedCalls()
+
         let totalFWs =  homeDataArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F"
         }
-        self.totalFWCount = totalFWs.count
+        self.totalFWCount = totalFWs.count + self.unsyncedhomeDataArr.count
+        
+        if istoAppend ?? false {
+            mergeCalls()
+        }
+        
         
         doctorArr =  homeDataArr.filter { aHomeData in
             aHomeData.custType == "1"
@@ -1253,10 +1265,13 @@ class MainVC : UIViewController {
     }
     
     @objc func dcrcallsAdded() {
-        self.toSeperateDCR(istoAppend: true)
-        self.updateDcr()
-        self.toLoadOutboxTable(isSynced: true)
-        self.toLoadDcrCollection()
+
+        toSetParams(isfromSyncCall: true) {
+           // self.toLoadOutboxTable(isSynced: true)
+            self.refreshDashboard() {}
+        }
+      
+ 
     }
     
     func toLoadDcrCollection() {
@@ -1614,11 +1629,11 @@ class MainVC : UIViewController {
     
     func toSetupOutBoxDataSource(isSynced: Bool) {
         
+       // toSeperateDCR(istoAppend: isSynced)
+        
         self.outBoxDataArr?.removeAll()
         
-        let outBoxDataArr =  self.homeDataArr.filter { aHomeData in
-            aHomeData.isDataSentToAPI == "0"
-        }
+        let outBoxDataArr =  self.unsyncedhomeDataArr
         
         if !outBoxDataArr.isEmpty {
             outboxCountVIew.isHidden = false
@@ -1662,13 +1677,12 @@ class MainVC : UIViewController {
         var callsByDay: [String: [TodayCallsModel]] = [:]
         
         // Create a DateFormatter to parse the vstTime
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+    
         
         // Iterate through the array and organize elements by day
         for call in outboxArr {
-            if let date = dateFormatter.date(from: call.vstTime) {
-                let dayString = dateFormatter.string(from: date)
+             let date = call.vstTime.toDate() 
+                let dayString = date.toString(format: "yyyy-MM-dd")
                 
                 // Check if the day key exists in the dictionary
                 if callsByDay[dayString] == nil {
@@ -1676,7 +1690,7 @@ class MainVC : UIViewController {
                 } else {
                     callsByDay[dayString]?.append(call)
                 }
-            }
+            
         }
         obj_sections.removeAll()
         // Iterate through callsByDay and create Section objects
@@ -1732,9 +1746,9 @@ class MainVC : UIViewController {
                 self.todayCallsModel = response
                 self.callsCountLbl.text = "Call Count: \(response.count)"
                 if istosyncCall ?? false {
-                    self.refreshDashboard() {
+                    
                         completion()
-                    }
+                    
                 } else {
                     completion()
                 }
@@ -1795,34 +1809,7 @@ class MainVC : UIViewController {
         self.viewPcpmChart.maxValue = CGFloat(truncating: 10.0)
         self.viewPcpmChart.startProgress(to: CGFloat(truncating: 4.0), duration: 2)
     }
-    
-    
-    private func updateSegmentForDcr() {
-        
-        //  let font = UIFont(name: "Satoshi-Bold", size: 14)!
-        //  self.segmentControlForDcr.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-        //  self.segmentControlForDcr.highlightSelectedSegment()
-        
-    }
-    
-    //    private func updateCalender () {
-    //
-    //        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
-    //
-    //        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
-    //
-    //        self.calendar.appearance.todayColor = UIColor.clear
-    //        self.calendar.appearance.weekdayTextColor = color
-    //        self.calendar.appearance.headerTitleColor = headerColor
-    //        self.calendar.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 18)
-    //        self.calendar.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 16)
-    //        self.calendar.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 16)
-    //        self.calendar.appearance.borderRadius = 0
-    //        self.calendar.scrollDirection = .vertical
-    //        self.calendar.register(FSCalendarCell.self, forCellReuseIdentifier: "DateCell")
-    //        self.calendar.reloadData()
-    //    }
-    
+
     private func updateLinks () {
         
         let presentationColor = UIColor.appGreen
@@ -1846,11 +1833,11 @@ class MainVC : UIViewController {
         
     }
     
-    func isDateInCurrentMonthAndYear(_ dateString: String?, currentDate: Date) -> Bool {
+    func isDateInCurrentMonthAndYear(_ dateString: String?, currentDate: Date, iftosyncOutbox: Bool? = false) -> Bool {
         guard let dateString = dateString else { return false }
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = iftosyncOutbox ?? false ?  "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd"
         if let dcrDate = dateFormatter.date(from: dateString) {
             let calendar = Calendar.current
             let currentMonth = calendar.component(.month, from: currentDate)
@@ -1870,44 +1857,101 @@ class MainVC : UIViewController {
         // Get the current date
         let currentDate = Date()
         // Filter the array based on the current month and year
-        let DoctorfilteredArray = doctorArr.filter { model in
-            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+
+        if appSetups.docNeed == 0 {
+            let unsyncedDoc = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+                 aUnsyncedHomeData.custType == "1"
+             }
+             
+             let unsyncedDocilteredArray = unsyncedDoc.filter { model in
+                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+             }
+             
+             let doctorCount = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
+             
+             
+             let DoctorfilteredArray = doctorArr.filter { model in
+                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+             }
+             
+             self.dcrCount.append(DcrCount(name: "Doctor Calls",color: .appGreen,count: doctorCount.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:  DoctorfilteredArray.count + unsyncedDocilteredArray.count))
+        }
+
+        if appSetups.chmNeed == 0 {
+            let unsyncedChemist = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+                 aUnsyncedHomeData.custType == "2"
+             }
+            
+            
+            let unsyncedChemistilteredArray = unsyncedChemist.filter { model in
+                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+            }
+            
+            let chemistCount = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
+            
+            let ChemistfilteredArray = chemistArr.filter { model in
+                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+            }
+            
+            self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: chemistCount.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount:  ChemistfilteredArray.count + unsyncedChemistilteredArray.count))
         }
         
-        self.dcrCount.append(DcrCount(name: "Doctor Calls",color: .appGreen,count: DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:  DoctorfilteredArray.count))
         
-        
-        let ChemistfilteredArray = chemistArr.filter { model in
-            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        if appSetups.stkNeed == 0 {
+            let unsyncedStockist = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+                 aUnsyncedHomeData.custType == "3"
+             }
+            
+            let unsyncedStockistilteredArray = unsyncedStockist.filter { model in
+                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+            }
+            
+            let stockistFilteredArray = stockistArr.filter { model in
+                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+            }
+             
+            
+            let stockistCount = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
+            
+            self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: stockistFilteredArray.count + unsyncedStockistilteredArray.count))
         }
         
-        self.dcrCount.append(DcrCount(name: "Chemist Calls",color: .appBlue,count: DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount: ChemistfilteredArray.count))
         
-        let stockistFilteredArray = stockistArr.filter { model in
-            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+        if appSetups.unlNeed == 0 {
+            
+            let unsyncedunlistedDoc = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+                 aUnsyncedHomeData.custType == "4"
+             }
+            let unsyncedunlistedDocilteredArray = unsyncedunlistedDoc.filter { model in
+                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+            }
+            
+            let unlistedDocFilteredArray = unlistedDocArr.filter { model in
+                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+            }
+            
+            let unlistedDocCount = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
+            
+            
+            self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: unlistedDocFilteredArray.count + unsyncedunlistedDocilteredArray.count))
         }
+
         
-        self.dcrCount.append(DcrCount(name: "Stockist Calls",color: .appLightPink,count: DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: stockistFilteredArray.count))
-        
-        let unlistedDocFilteredArray = unlistedDocArr.filter { model in
-            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
-        }
-        
-        self.dcrCount.append(DcrCount(name: "UnListed Doctor Calls",color: .appLightTextColor.withAlphaComponent(0.2) ,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: unlistedDocFilteredArray.count))
+
         
         
         
-        let cipFilteredArray = cipArr.filter { model in
-            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
-        }
-        self.dcrCount.append(DcrCount(name: "Cip Calls",color: .appYellow,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipFilteredArray.count))
-        
-        
-        let hospitalFilteredArray = cipArr.filter { model in
-            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
-        }
-        
-        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: .appBrown,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalFilteredArray.count))
+//        let cipFilteredArray = cipArr.filter { model in
+//            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+//        }
+//        self.dcrCount.append(DcrCount(name: "Cip Calls",color: .appYellow,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "cip") ?? UIImage(), callsCount: cipFilteredArray.count))
+//        
+//        
+//        let hospitalFilteredArray = cipArr.filter { model in
+//            return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
+//        }
+//        
+//        self.dcrCount.append(DcrCount(name: "Hospital Calls",color: .appBrown,count: DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count.description, image: UIImage(named: "hospital") ?? UIImage(), callsCount: hospitalFilteredArray.count))
         
     }
     
@@ -2213,7 +2257,11 @@ extension MainVC {
 
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
 
-        toSetParams(isfromSyncCall: true) {}
+        toSetParams(isfromSyncCall: true) {
+            self.refreshDashboard {
+                
+            }
+        }
 
     }
 
@@ -3467,22 +3515,14 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
             
             let dateString = obj_sections[section].date
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            
-            if let date = dateFormatter.date(from: dateString) {
-                let outputFormatter = DateFormatter()
-                outputFormatter.dateFormat = "MMMM dd, yyyy"
+     
+                let date = dateString.toDate()
+          
                 
-                let formattedDate = outputFormatter.string(from: date)
+                let formattedDate = date.toString(format: "MMMM dd, yyyy")
                 print(formattedDate)  // Output: January 19, 2024
                 header?.dateLbl.text = formattedDate
-            } else {
-                print("Error parsing date")
-            }
-            
-            
-            
+
             return header
             
         } else {
@@ -3539,6 +3579,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     
                 }
             } else {
+                if localParamArr.isEmpty {
+                    completion(true)
+                }
                 localParamArr.forEach { key, value in
                     if key == date {
                         dump(value)
@@ -3668,11 +3711,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
         }
     }
-    
-    
 
-    
-    
     func toUpdateData(param: JSON, status: String?) {
         let custCodeToUpdate = param["CustCode"] as! String
 
@@ -3698,11 +3737,6 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             // Keep the section if it still has items after filtering
             return updatedSection
         }
-        
-        
-        
-        
-        
         // Assign the updated array back to obj_sections
         obj_sections = updatedSections.filter({ section in
             !section.items.isEmpty
@@ -3714,14 +3748,6 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
            // self.toSetParams()
             self.toLoadOutboxTable(isSynced: false)
         }
-        
-        
-        
-        
-        
-        
-        
-        
     }
     
     
@@ -3736,12 +3762,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         
             self.outBoxDataArr = filteredValues
-        
-            self.toSeperateDCR(istoAppend: true)
-            self.updateDcr()
-            self.toLoadDcrCollection()
-            self.toLoadOutboxTable(isSynced: false)
-            self.toIntegrateChartView(.doctor, cacheDCRindex)
+            self.refreshUI(issynced: true)
          
  
     }
@@ -3848,11 +3869,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         print(obj_sections)
         
-        DispatchQueue.main.async {
-           // self.toSetParams()
-            self.toLoadOutboxTable()
-        }
+        self.dcrcallsAdded()
         
+//        DispatchQueue.main.async {
+//           // self.toSetParams()
+//            self.toLoadOutboxTable()
+//        }
+//        
         
     }
     
@@ -4658,6 +4681,10 @@ extension MainVC : SessionInfoTVCDelegate {
 }
 
 extension MainVC : addedSubViewsDelegate {
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        print("Yet to implement")
+    }
+    
     func didUpdateFilters(filteredObjects: [NSManagedObject]) {
         print("yes action")
     }

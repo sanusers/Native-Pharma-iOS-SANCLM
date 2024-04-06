@@ -85,7 +85,7 @@ enum MasterCellType : Int {
         case .syncAll:
             return [MasterInfo.slides,MasterInfo.worktype]
         case .listedDoctor:
-            return [MasterInfo.doctorFencing,MasterInfo.doctorClass,MasterInfo.speciality,MasterInfo.qualifications,MasterInfo.competitors,MasterInfo.departments,MasterInfo.docFeedback,MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
+            return [MasterInfo.doctorFencing,MasterInfo.speciality,MasterInfo.qualifications, MasterInfo.category,MasterInfo.departments,MasterInfo.doctorClass, MasterInfo.docFeedback,MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
             //MasterInfo.category,
         case .chemist:
             return [MasterInfo.chemists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
@@ -102,7 +102,7 @@ enum MasterCellType : Int {
         case .slides:
             return [MasterInfo.slides,MasterInfo.slideBrand,MasterInfo.slideSpeciality,MasterInfo.syncAll]
         case .Product:
-            return [MasterInfo.products, MasterInfo.category, MasterInfo.brands, MasterInfo.syncAll]
+            return [MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.competitors, MasterInfo.mappedCompetitors, MasterInfo.empty, MasterInfo.syncAll]
         case .input:
             return [MasterInfo.inputs,   MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .cluster:
@@ -136,7 +136,8 @@ enum `MasterInfo` : String, CaseIterable {
     case myDayPlan = "My Day Plan"
     case worktype = "Work Types"
     case headquartes = "Headquarters"
-    case competitors = "Competitors"
+    case competitors = "Competitor Product"
+    case mappedCompetitors = "Mapped Competitor Product"
     case inputs = "Inputs"
     case slideBrand = "Slide Brand"
     case products = "Products"
@@ -146,8 +147,9 @@ enum `MasterInfo` : String, CaseIterable {
     case departments = "Departments"
     case speciality = "Speciality"
     case category = "Category"
+    case productcategory = "Product Category"
     case qualifications = "Qualifications"
-    case doctorClass = "Doctorclass"
+    case doctorClass = "Class"
     case docTypes = "DocTypes"
     case ratingDetails = "Rating Details"
     case ratingFeedbacks = "Rating Feedbacks"
@@ -174,7 +176,6 @@ enum `MasterInfo` : String, CaseIterable {
     case tourPlanStatus = "Tour Plan Status"
     case visitControl = "Visit Control"
     case stockBalance = "Stock Balance"
-    case mapCompDet = "map Comp Det"
     case empty = "Empty"
     case syncAll = "Sync All"
     case getTP = "Tour Plan"
@@ -239,7 +240,7 @@ enum `MasterInfo` : String, CaseIterable {
         case .leaveType:
             return String(format: "%@table/leave", mainUrl)
             
-        case .tourPlanStatus,.visitControl,.stockBalance,.mapCompDet:
+        case .tourPlanStatus,.visitControl,.stockBalance,.mappedCompetitors:
             return String(format: "%@table/additionaldcrmasterdata", mainUrl)
         
         case .products,.inputs,.brands,.competitors :
@@ -354,7 +355,7 @@ enum `MasterInfo` : String, CaseIterable {
             return MasterSyncParams.visitControlParams
         case .stockBalance:
             return MasterSyncParams.stockBalanceParams
-        case .mapCompDet:
+        case .mappedCompetitors:
             return MasterSyncParams.mapCompdetParams
         case .empty:
             return [String : Any]()
@@ -375,6 +376,8 @@ enum `MasterInfo` : String, CaseIterable {
             return [String: Any]()
         case .tourPlanSetup:
             return MasterSyncParams.tourplanSetupParams
+        case .productcategory:
+            return [String : Any]()
         }
  
     }
@@ -531,7 +534,7 @@ struct MasterSyncParams {
     static var competitorParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getmap_compdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let paramString = "{\"tableName\":\"getcompdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]
     } // getmap_compdet getcompdet

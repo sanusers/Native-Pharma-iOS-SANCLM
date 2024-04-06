@@ -149,6 +149,8 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
         case self.eventCaptureTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "EventCaptureCell", for: indexPath) as! EventCaptureCell
             cell.selectionStyle = .none
+            cell.delegate = self
+            cell.indexpath = indexPath.row
             cell.eventCapture = self.eventCaptureListViewModel?.fetchAtIndex(indexPath.row)
             cell.btnDelete.addTarget(self, action: #selector(deleteEventCapture(_:)), for: .touchUpInside)
             cell.txtName.addTarget(self, action: #selector(imageTitleEdit(_:)), for: .editingChanged)
@@ -263,6 +265,7 @@ class JfwView: UIView {
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     var eventCaptureListViewModel : EventCaptureListViewModel?
     var jointWorkSelectedListViewModel: JointWorksListViewModel?
+    var dcrCall: CallViewModel!
     func initTaps() {
         overallFeedbackCurvedView.addTap {
             let vc = SpecifiedMenuVC.initWithStory(self, celltype: .feedback)
@@ -351,6 +354,24 @@ class JfwView: UIView {
      }
     
     func setupUI() {
+        
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        if self.dcrCall.call is DoctorFencing {
+           if appsetup.docPobNeed != 0 {
+               viewPOB.isHidden = true
+            }
+            
+            if appsetup.docJointWrkNeed != 0 {
+                jwCurvedView.isHidden = true
+            }
+            
+            
+        }
+        
+        
+        
+        
       //  viewEventCaptureSegment.isHidden = true
         selectedfeedbackLbl.setFont(font: .medium(size: .BODY))
        // lblEnterRemarks.setFont(font: .medium(size: .BODY))
@@ -447,6 +468,22 @@ class JfwView: UIView {
 }
 
 
+
+
+extension JfwView: EventCaptureCellDelegate {
+    func didUpdate(title: String, description: String, index: Int) {
+        let eventCapture = self.eventCaptureListViewModel?.fetchAtIndex(index)
+        
+        eventCapture?.eventCapture.title = title
+        
+        eventCapture?.eventCapture.description = description
+        
+    }
+    
+
+    
+    
+}
 
 
 extension JfwView: UITextFieldDelegate {

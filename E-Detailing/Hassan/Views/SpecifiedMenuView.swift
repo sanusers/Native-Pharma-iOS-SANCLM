@@ -1761,17 +1761,14 @@ class SpecifiedMenuView: BaseView {
            
        case .competitors:
            bottomHolderHeight.constant = 80
-           let competitorArr  =  DBManager.shared.getCompetitor()
-           let productArr = DBManager.shared.getProduct()
            var tempCompetitor: [Competitor] = []
-           productArr.forEach { aProduct in
-               competitorArr.forEach { acompetitor in
-                   if acompetitor.ourProductCode ==   aProduct.code {
-                       tempCompetitor.append(acompetitor)
-                   }
-               }
-             
+           let competitorArr  =  DBManager.shared.getCompetitor()
+           if let product = self.specifiedMenuVC.selectedObject as? Product {
+               
+               tempCompetitor = competitorArr.filter {$0.ourProductCode == product.code }
            }
+          
+
            self.competitorsArr = tempCompetitor
        case .cluster:
                

@@ -937,7 +937,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         // Apply the changes
         lineChartView.notifyDataSetChanged()
-        lineChartView.animate(xAxisDuration: 0.5, yAxisDuration: 0, easingOption: .easeInOutCubic)
+       // lineChartView.animate(xAxisDuration: 0.5, yAxisDuration: 0, easingOption: .easeInOutCubic)
         
     }
     

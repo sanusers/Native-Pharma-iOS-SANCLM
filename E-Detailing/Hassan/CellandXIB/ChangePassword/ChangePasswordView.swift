@@ -10,6 +10,7 @@
 public protocol addedSubViewsDelegate: AnyObject {
     func didClose()
     func didUpdate()
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel)
     func showAlert()
     func didUpdateFilters(filteredObjects: [NSManagedObject])
 }

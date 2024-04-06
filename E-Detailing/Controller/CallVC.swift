@@ -92,6 +92,10 @@ struct FilteredCase {
 }
 
 extension CallVC : addedSubViewsDelegate {
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        print("Yet to implement")
+    }
+    
     
 
     
@@ -660,7 +664,211 @@ extension CallVC : collectionViewProtocols {
             self.selectedDCRIndex = indexPath.row
             let adcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
            // self.checkinDetailsAction(dcrCall: adcrCall)
-            self.checkinAction(dcrCall: adcrCall)
+            
+            let homeDataArr : [HomeData] = DBManager.shared.getHomeData()
+       
+       
+            switch self.type {
+                
+            case .doctor:
+                let doctorArr =  homeDataArr.filter { aHomeData in
+                    aHomeData.custType == "1"
+                }
+                
+                
+
+                
+                if let addedDcrCall = adcrCall.call as? DoctorFencing {
+                    
+                    if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
+                        let filteredArray = unsyncedArr.filter { aHomeData in
+                              if aHomeData.custCode == adcrCall.code {
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  if dcrDateString == currentDateStr {
+                                      return true
+                                  }
+                              }
+                              return false
+                          }
+                        if !filteredArray.isEmpty  {
+                            self.toCreateToast("Doctor aldready visited today")
+                            return
+                        }
+                    }
+                    
+                    
+                  let filteredArray = doctorArr.filter { aHomeData in
+                        if aHomeData.custCode == adcrCall.code {
+                            let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                            let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            if dcrDateString == currentDateStr {
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                    if !filteredArray.isEmpty  {
+                        self.toCreateToast("Doctor aldready visited today")
+                        return
+                    } else {
+                        self.checkinAction(dcrCall: adcrCall)
+                    }
+                }
+                
+            case .chemist:
+                let   chemistArr =  homeDataArr.filter { aHomeData in
+                       aHomeData.custType == "2"
+                   }
+                
+
+                
+                
+                if let addedDcrCall = adcrCall.call as? Chemist {
+                    
+                    if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
+                        let filteredArray = unsyncedArr.filter { aHomeData in
+                              if aHomeData.custCode == adcrCall.code {
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  if dcrDateString == currentDateStr {
+                                      return true
+                                  }
+                              }
+                              return false
+                          }
+                        if !filteredArray.isEmpty  {
+                            self.toCreateToast("Chemist aldready visited today")
+                            return
+                        }
+                    }
+                    
+                  let filteredArray = chemistArr.filter { aHomeData in
+                        if aHomeData.custCode == adcrCall.code {
+                            let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                            let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            if dcrDateString == currentDateStr {
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                    if !filteredArray.isEmpty  {
+                        self.toCreateToast("Chemist aldready visited today")
+                        return
+                    } else {
+                        self.checkinAction(dcrCall: adcrCall)
+                    }
+                }
+                
+                
+               case .stockist:
+                let  stockistArr =  homeDataArr.filter { aHomeData in
+                       aHomeData.custType == "3"
+
+                   }
+                
+                
+                
+                if let addedDcrCall = adcrCall.call as? Stockist {
+                    
+                    if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
+                        let filteredArray = unsyncedArr.filter { aHomeData in
+                              if aHomeData.custCode == adcrCall.code {
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  if dcrDateString == currentDateStr {
+                                      return true
+                                  }
+                              }
+                              return false
+                          }
+                        if !filteredArray.isEmpty  {
+                            self.toCreateToast("Stockist aldready visited today")
+                            return
+                        }
+                    }
+                    
+                  let filteredArray = stockistArr.filter { aHomeData in
+                        if aHomeData.custCode == adcrCall.code {
+                            let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                            let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            if dcrDateString == currentDateStr {
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                    if !filteredArray.isEmpty  {
+                        self.toCreateToast("Stockist aldready visited today")
+                        return
+                    } else {
+                        self.checkinAction(dcrCall: adcrCall)
+                    }
+                }
+            case .unlistedDoctor:
+                let  unlistedDocArr =  homeDataArr.filter { aHomeData in
+                       aHomeData.custType == "4"
+                   }
+                
+                if let addedDcrCall = adcrCall.call as? UnListedDoctor {
+                    
+                    if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
+                        let filteredArray = unsyncedArr.filter { aHomeData in
+                              if aHomeData.custCode == adcrCall.code {
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  if dcrDateString == currentDateStr {
+                                      return true
+                                  }
+                              }
+                              return false
+                          }
+                        if !filteredArray.isEmpty  {
+                            self.toCreateToast("Doctor aldready visited today")
+                            return
+                        }
+                    }
+                    
+                    
+                  let filteredArray = unlistedDocArr.filter { aHomeData in
+                        if aHomeData.custCode == adcrCall.code {
+                            let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                            let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            if dcrDateString == currentDateStr {
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                    if !filteredArray.isEmpty  {
+                        self.toCreateToast("Doctor aldready visited today")
+                        return
+                    } else {
+                        self.checkinAction(dcrCall: adcrCall)
+                    }
+                }
+            case .cip:
+                let    cipArr =  homeDataArr.filter { aHomeData in
+                       aHomeData.custType == "5"
+                   }
+            case .hospital:
+                // homeDataList.filter{ $0.custCode == }
+                let  hospitalArr   =  homeDataArr.filter { aHomeData in
+                       aHomeData.custType == "6"
+                   }
+            default:
+                print("")
+            }
+        
 
             case self.headerCollectionView:
                 self.type = self.CallListArray.fetchAtIndex(indexPath.row).type

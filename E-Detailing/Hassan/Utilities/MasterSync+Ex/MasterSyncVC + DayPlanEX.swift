@@ -61,9 +61,9 @@ extension MasterSyncVC: MenuResponseProtocol {
                             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
                             self.setHQlbl()
                             self.isDayPlanSynced = true
-                            self.toCreateToast("Clusters synced successfully")
+                           // self.toCreateToast("Clusters synced successfully")
                         }
-               
+                        self.collectionView.reloadData()
                        // self.collectionView.reloadData()
                     case .failure(_):
                         tosyncMasterData.forEach { masterType in

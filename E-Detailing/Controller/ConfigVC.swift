@@ -9,7 +9,11 @@ import Foundation
 import UIKit
 
 
-
+extension ConfigVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        return true
+    }
+}
 
 class ConfigVC : UIViewController {
 
@@ -27,6 +31,7 @@ class ConfigVC : UIViewController {
         @IBOutlet weak var txtDeviceId: UITextField!
         @IBOutlet weak var txtLanguage: UITextField!
     
+
         @IBOutlet var statusBarView: UIView!
         @IBOutlet var lblPoweredBy: UILabel!
         var config = [AppConfig]()
@@ -42,7 +47,8 @@ class ConfigVC : UIViewController {
         }
     
         func setupUI() {
-    
+            txtWebUrl.delegate = self
+            txtLicenceKey.delegate = self
             let headerLbl: [UILabel] = [languageLbl, devieIDLbl, languageLbl, licenceKeyLbl, pageTitle, lblURL]
             headerLbl.forEach {
                 $0.setFont(font: .bold(size: .BODY))
@@ -137,7 +143,7 @@ class ConfigVC : UIViewController {
             return
         }
         
-        if let formattedURL = self.convertToURLFormat(userEnteredText: AppConfigURL) {
+        if let formattedURL = self.convertToURLFormat(userEnteredText: self.txtWebUrl.text ?? "") {
             print(formattedURL)
             attachmentsUrl = formattedURL
         } else {

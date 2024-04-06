@@ -533,6 +533,8 @@
     </entity>
     <entity name="UnsyncedHomeData" representedClassName="UnsyncedHomeData" syncable="YES" codeGenerationType="class">
         <attribute name="anslNo" optional="YES" attributeType="String"/>
+        <attribute name="checkintime" optional="YES" attributeType="String"/>
+        <attribute name="checkoutTime" optional="YES" attributeType="String"/>
         <attribute name="custCode" optional="YES" attributeType="String"/>
         <attribute name="custName" optional="YES" attributeType="String"/>
         <attribute name="custType" optional="YES" attributeType="String"/>

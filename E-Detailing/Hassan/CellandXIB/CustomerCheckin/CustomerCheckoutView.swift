@@ -24,7 +24,11 @@ class CustomerCheckoutView: UIView {
     var dcrCall: CallViewModel?
     
     @IBAction func didTapcloseBtn(_ sender: UIButton) {
-        delegate?.didUpdate()
+        guard let dcrCall = self.dcrCall else {
+            delegate?.didUpdate()
+            return
+        }
+        delegate?.didUpdateCustomerCheckin(dcrCall: dcrCall)
         //object: AnyObject
     }
     
@@ -97,17 +101,11 @@ class CustomerCheckoutView: UIView {
                 let dateString = dateFormatter.string(from: currentDate)
                 
                 let datestr = dateString
-                
-                ///time
-                dateFormatter.dateFormat = "HH:mm:ss"
-                
-                let timeString = dateFormatter.string(from: currentDate)
-                
-                let timestr = (timeString)
+
                 dcrCall.customerCheckOutAddress = address ?? ""
                 dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
                 dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
-                dcrCall.dcrCheckOutTime = welf.getCurrentFormattedDateString()
+                dcrCall.dcrCheckOutTime = dateString
                // welf.checkinDetailsAction(dcrCall : dcrCall)
                 welf.dcrCall = dcrCall
                 DispatchQueue.main.async {

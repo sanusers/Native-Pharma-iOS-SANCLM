@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,14 +17,14 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="3ji-qJ-dij" customClass="DCRCallAnalysisCell" customModule="E_Detailing" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="267" height="167"/>
+            <rect key="frame" x="0.0" y="0.0" width="275" height="134"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="Mon-8M-Y2m">
-                <rect key="frame" x="0.0" y="0.0" width="267" height="167"/>
+            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Mon-8M-Y2m">
+                <rect key="frame" x="0.0" y="0.0" width="275" height="134"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEb-x8-LFw">
-                        <rect key="frame" x="0.0" y="0.0" width="267" height="170"/>
+                        <rect key="frame" x="0.0" y="0.0" width="275" height="134"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrowtriangle.down.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Eqq-KQ-lZH">
                                 <rect key="frame" x="15" y="107" width="25" height="16"/>
@@ -34,7 +34,7 @@
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5AC-j3-ifV" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="267" height="110"/>
+                                <rect key="frame" x="0.0" y="0.0" width="275" height="110"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Doctor Calls" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vYZ-5Y-koy">
                                         <rect key="frame" x="15" y="15" width="108" height="25"/>
@@ -43,7 +43,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vmG-Vh-vOm" customClass="UICircularProgressRing" customModule="UICircularProgressRing">
-                                        <rect key="frame" x="202" y="46.5" width="50" height="50"/>
+                                        <rect key="frame" x="210" y="46.5" width="50" height="50"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="hG6-VJ-pGS"/>
@@ -74,10 +74,10 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UXU-gK-Qub">
-                                <rect key="frame" x="0.0" y="0.0" width="267" height="110"/>
+                                <rect key="frame" x="0.0" y="0.0" width="275" height="110"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aMY-xC-YQc">
-                                        <rect key="frame" x="202" y="46.5" width="50" height="50"/>
+                                        <rect key="frame" x="210" y="46.5" width="50" height="50"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Stockist" translatesAutoresizingMaskIntoConstraints="NO" id="nzz-bh-gDj">
                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -120,7 +120,6 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="5AC-j3-ifV" secondAttribute="trailing" id="4dq-hF-o7x"/>
-                            <constraint firstAttribute="height" constant="170" id="75B-Ys-Lxs"/>
                             <constraint firstItem="Eqq-KQ-lZH" firstAttribute="top" secondItem="5AC-j3-ifV" secondAttribute="bottom" constant="-5" id="8Sn-SS-d0f"/>
                             <constraint firstItem="UXU-gK-Qub" firstAttribute="centerX" secondItem="5AC-j3-ifV" secondAttribute="centerX" id="NOa-Xx-ZXd"/>
                             <constraint firstItem="5AC-j3-ifV" firstAttribute="top" secondItem="zEb-x8-LFw" secondAttribute="top" id="Pf5-5G-cQ3"/>
@@ -139,7 +138,7 @@
                     <constraint firstAttribute="bottom" secondItem="zEb-x8-LFw" secondAttribute="bottom" id="q6H-Kv-sD9"/>
                 </constraints>
             </collectionViewCellContentView>
-            <size key="customSize" width="237" height="169"/>
+            <size key="customSize" width="245" height="136"/>
             <connections>
                 <outlet property="callsDescLbl" destination="XFp-6r-mHJ" id="Slh-tK-Pe7"/>
                 <outlet property="callsIV" destination="nzz-bh-gDj" id="cb5-Zx-HXP"/>
@@ -151,7 +150,7 @@
                 <outlet property="viewDoctor" destination="5AC-j3-ifV" id="dgV-37-7XU"/>
                 <outlet property="viewManager" destination="UXU-gK-Qub" id="vUY-DA-mBc"/>
             </connections>
-            <point key="canvasLocation" x="293.04878048780489" y="84.152542372881356"/>
+            <point key="canvasLocation" x="295.2439024390244" y="75.762711864406782"/>
         </collectionViewCell>
     </objects>
     <resources>

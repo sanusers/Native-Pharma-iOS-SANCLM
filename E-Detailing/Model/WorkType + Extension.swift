@@ -76,6 +76,15 @@ extension UnsyncedHomeData {
             isDataSentToAPI = tpDCRValue
         }
         
+        
+        if let checkin = dictionary["checkinTime"] as? String {
+            checkintime = checkin
+        }
+        
+        if let checkout = dictionary["checkOutTime"] as? String {
+            checkoutTime = checkout
+        }
+   
     }
 }
 
