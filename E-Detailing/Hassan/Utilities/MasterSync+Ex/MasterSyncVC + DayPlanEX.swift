@@ -26,21 +26,24 @@ extension MasterSyncVC: MenuResponseProtocol {
 
         case .headQuater:
             
-     
+            guard let selectedObject = selectedObject as? Subordinate else {
+                return
+            }
 
+           // self.fetchedHQObject = selectedObject
             let aHQobj = HQModel()
-            aHQobj.code = self.fetchedHQObject?.id ?? ""
-            aHQobj.mapId = self.fetchedHQObject?.mapId ?? ""
-            aHQobj.name = self.fetchedHQObject?.name ?? ""
-            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? ""
-            aHQobj.steps = self.fetchedHQObject?.steps ?? ""
-            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? ""
+            aHQobj.code = selectedObject.id ?? ""
+            aHQobj.mapId = selectedObject.mapId ?? ""
+            aHQobj.name = selectedObject.name ?? ""
+            aHQobj.reportingToSF = selectedObject.reportingToSF ?? ""
+            aHQobj.steps = selectedObject.steps ?? ""
+            aHQobj.sfHQ = selectedObject.sfHq ?? ""
 
             
             
-            let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
-            
-            if territories.isEmpty  {
+            let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
+            if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) || territories.isEmpty  {
                 //&& LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
                 let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
                 // Set loading status based on MasterInfo for each element in the array
@@ -48,23 +51,21 @@ extension MasterSyncVC: MenuResponseProtocol {
                     MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
                 }
                 self.collectionView.reloadData()
-              //  Shared.instance.showLoaderInWindow()
-                masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { response in
+            
+                masterVM?.fetchMasterData(type: .clusters, sfCode: selectedObject.id ?? "", istoUpdateDCRlist: true, mapID: selectedObject.id ?? "") { response in
                     switch response.result {
                     case .success(_):
                         tosyncMasterData.forEach { masterType in
                             MasterInfoState.loadingStatusDict[masterType] = .loaded
                         }
-                        self.fetchedHQObject = selectedObject as? Subordinate
+                        self.fetchedHQObject = selectedObject
                         CoreDataManager.shared.removeHQ()
                         CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
-                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
                             self.setHQlbl()
                             self.isDayPlanSynced = true
-                           // self.toCreateToast("Clusters synced successfully")
                         }
-                        self.collectionView.reloadData()
-                       // self.collectionView.reloadData()
+                  
                     case .failure(_):
                         tosyncMasterData.forEach { masterType in
                             MasterInfoState.loadingStatusDict[masterType] = .error
@@ -73,17 +74,12 @@ extension MasterSyncVC: MenuResponseProtocol {
                     }
                 }
             } else {
-                self.fetchedHQObject = selectedObject as? Subordinate
+                self.fetchedHQObject = selectedObject
                 CoreDataManager.shared.removeHQ()
                 CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
-                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
                     self.setHQlbl()
                 }
-                //                            CoreDataManager.shared.toRetriveSavedHQ { HQModelarr in
-                //                                dump(HQModelarr)
-                //                            }
-                
-                // self.collectionView.reloadData()
             }
 
            

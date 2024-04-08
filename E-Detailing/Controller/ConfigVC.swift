@@ -75,7 +75,7 @@ class ConfigVC : UIViewController {
             statusBarView.backgroundColor = .appTextColor
     
             txtWebUrl.text = "sanffa.info"
-            txtLicenceKey.text = "ed19"
+            txtLicenceKey.text = "sandemo"
         }
 
 

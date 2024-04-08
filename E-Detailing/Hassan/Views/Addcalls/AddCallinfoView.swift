@@ -627,7 +627,55 @@ extension AddCallinfoView: tableViewProtocols {
                 //cell.btnSelected.addTarget(self, action: #selector(additionalCallSelectionAction(_:)), for: .touchUpInside)
                 cell.btnSelected.isUserInteractionEnabled = false
                 cell.addTap {
-                    self.additionalCallSelectionAction(cell.btnSelected)
+                    
+                    let doctorArr =  DBManager.shared.getHomeData().filter { aHomeData in
+                        aHomeData.custType == "1"
+                    }
+
+                    
+                    
+                    if let addedDcrCall =   cell.additionalCall.Object as? DoctorFencing {
+                        
+                        if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
+                            let filteredArray = unsyncedArr.filter { aHomeData in
+                                  if aHomeData.custCode == addedDcrCall.code {
+                                      let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                      let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                                      let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                      if dcrDateString == currentDateStr {
+                                          return true
+                                      }
+                                  }
+                                  return false
+                              }
+                            if !filteredArray.isEmpty  {
+                                self.toCreateToast("Doctor aldready visited today")
+                                return
+                            }
+                        }
+                        
+                        
+                      let filteredArray = doctorArr.filter { aHomeData in
+                            if aHomeData.custCode == addedDcrCall.code {
+                                let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
+                                let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                if dcrDateString == currentDateStr {
+                                    return true
+                                }
+                            }
+                            return false
+                        }
+                        if !filteredArray.isEmpty  {
+                            self.toCreateToast("Doctor aldready visited today")
+                            return
+                        } else {
+                            self.additionalCallSelectionAction(cell.btnSelected)
+                        }
+                    }
+                    
+                    
+                 
                 }
                 return cell
                 
@@ -1276,6 +1324,10 @@ class AddCallinfoView : BaseView {
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
                 
+                
+            case jfwView:
+                aAddedView.alpha = 0.3
+                
             case backgroundView:
                 aAddedView.isUserInteractionEnabled = true
               
@@ -1497,6 +1549,7 @@ class AddCallinfoView : BaseView {
 //                segmentType = [.products, .inputs, .additionalCalls, .jointWork]
 //            }
            
+          
         }
         
         
@@ -1584,6 +1637,8 @@ class AddCallinfoView : BaseView {
             self.didClose()
         }
         
+        self.titleLbl.text = addCallinfoVC.dcrCall.name
+ 
     }
     
     @IBAction func productQtyAction(_ sender: UITextField) {
@@ -1697,7 +1752,13 @@ extension AddCallinfoView : JfwViewDelegate {
 
 extension AddCallinfoView : addedSubViewsDelegate {
     func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+//        if let jfwView = self.jfwView {
+//            jfwView.alpha = 0.3
+//        }
+        
         self.addCallinfoVC.setupParam(dcrCall: dcrCall)
+
+    
     }
     
     
@@ -1737,7 +1798,7 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
             case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-            
+  
                 
             default:
                 aAddedView.isUserInteractionEnabled = true

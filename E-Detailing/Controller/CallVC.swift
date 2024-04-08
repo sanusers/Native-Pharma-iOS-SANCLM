@@ -301,7 +301,8 @@ class CallVC : UIViewController {
                 
                 if !asubordinate.isEmpty {
                  //  self.fetchedHQObject = asubordinate.first
-                 //   LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                    self.toloadCallsCollection()
                 }
             
               
@@ -328,6 +329,12 @@ class CallVC : UIViewController {
         self.backgroundView.addTap {
             self.didClose()
         }
+    }
+    
+    func toloadCallsCollection() {
+        callCollectionView.delegate = self
+        callCollectionView.dataSource = self
+        callCollectionView.reloadData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -682,7 +689,7 @@ extension CallVC : collectionViewProtocols {
                     
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
-                              if aHomeData.custCode == adcrCall.code {
+                              if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")
@@ -730,7 +737,7 @@ extension CallVC : collectionViewProtocols {
                     
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
-                              if aHomeData.custCode == adcrCall.code {
+                              if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")
@@ -778,7 +785,7 @@ extension CallVC : collectionViewProtocols {
                     
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
-                              if aHomeData.custCode == adcrCall.code {
+                              if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")
@@ -821,7 +828,7 @@ extension CallVC : collectionViewProtocols {
                     
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
-                              if aHomeData.custCode == adcrCall.code {
+                              if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")

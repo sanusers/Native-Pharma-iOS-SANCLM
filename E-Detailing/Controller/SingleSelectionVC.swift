@@ -21,13 +21,13 @@ class SingleSelectionVC : UIViewController {
     var searchTitle : String!
     var selectionData = [AnyObject]()
     var originalData = [AnyObject]()
-    
+    var prevObj: [AnyObject]?
     
     var selectionList = [SelectionList]()
     var originalList = [SelectionList]()
     
     var isFromStruct : Bool!
-  
+    weak var delegate: SingleSelectionVCDelegate?
     var completion : SelectionCallBack?
     
     override func viewDidLoad() {
@@ -50,6 +50,10 @@ class SingleSelectionVC : UIViewController {
         self.dismiss(animated: true)
     }
     
+}
+
+protocol SingleSelectionVCDelegate: AnyObject {
+    func didUpdate(selectedObj: AnyObject, index: Int)
 }
 
 extension SingleSelectionVC : tableViewProtocols {
@@ -99,17 +103,29 @@ extension SingleSelectionVC : tableViewProtocols {
         
         
         let lists = self.selectionData[indexPath.row]
+
         
         if let index = self.originalData.firstIndex(where: { (list) -> Bool in
             
             print(self.originalData)
             return list.code ?? "" == lists.code ?? ""
         }){
-            if let completion = self.completion {
-                completion(index)
+            var isExists: Bool = false
+            if let prevObjs = self.prevObj as? [Product], let tempList = lists as? Product {
+                prevObjs.enumerated().forEach { index, prevObj in
+                    if prevObj.code == tempList.code {
+                        self.toCreateToast("Product already selected.")
+                        isExists = true
+                    }
+                }
             }
+            if !isExists {
+                self.delegate?.didUpdate(selectedObj: lists, index: index)
+                self.dismiss(animated: true)
+            }
+           
         }
-        self.dismiss(animated: true)
+        
     }
 }
 

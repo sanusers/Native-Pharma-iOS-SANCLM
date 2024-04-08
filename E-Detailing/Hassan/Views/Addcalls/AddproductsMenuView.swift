@@ -147,6 +147,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
+            self.selectedProductIndexpaths.remove(at: indexPath.row)
             self.addproductsMenuVC?.additionalCallListViewModel?.deleteProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
             self.additionalCallSampleInputTableView.reloadData()
         case .inputs:
@@ -164,33 +165,36 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
         
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
+          
             let products = DBManager.shared.getProduct()
             
             let selectionVC = UIStoryboard.singleSelectionVC
             selectionVC.selectionData = products
-            selectionVC.didSelectCompletion { selectedIndex in
-                
-                if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
-                    cell.lblName.text = products[selectedIndex].name
-                }
-                
-                self.addproductsMenuVC?.additionalCallListViewModel?.updateProductAtSection(self.selectedDoctorIndex, index: indexPath.row, product: products[selectedIndex])
-                
+            
+            self.selectedProductIndex = indexPath
+            
+            if  !selectedProductIndexpaths.isEmpty  {
+                // Handle the case when selectedProductIndex is nil
+                selectionVC.prevObj = selectedProductIndexpaths
+              
             }
+
+          
+            selectionVC.delegate = self
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
         case .inputs:
-            
+          //  self.selectedInputIndex = indexPath
             let inputs = DBManager.shared.getInput()
             
             let selectionVC = UIStoryboard.singleSelectionVC
             selectionVC.selectionData = inputs
-            selectionVC.didSelectCompletion { selectedIndex in
-                if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
-                    cell.lblName.text = inputs[selectedIndex].name
-                }
-                self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
-            }
+//            selectionVC.didSelectCompletion { selectedIndex in
+//                if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
+//                    cell.lblName.text = inputs[selectedIndex].name
+//                }
+//                self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
+//            }
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
         }
@@ -304,7 +308,9 @@ class AddproductsMenuView: BaseView {
     @IBOutlet var btnAddtype: UIButton!
     
     @IBOutlet var clearView: UIView!
-    
+    var selectedProductIndexpaths = [Product]()
+    var selectedProductIndex : IndexPath?
+    var selectedInputIndexpaths = [Input]()
     var selectedSegmentsIndex: Int = 0
     private var animationDuration : Double = 1.0
     private let aniamteionWaitTime : TimeInterval = 0.15
@@ -500,4 +506,39 @@ class AddproductsMenuView: BaseView {
             
         }
     }
+}
+
+
+extension AddproductsMenuView: SingleSelectionVCDelegate {
+    func didUpdate(selectedObj: AnyObject, index: Int) {
+        
+        switch self.segmentType[self.selectedSegmentsIndex] {
+            
+        case .inputs:
+            print("Yet to")
+        case .products:
+
+            if let productObj = selectedObj as? Product {
+              // self.selectedProductIndexpaths = [IndexPath]()
+                guard let selectedProductIndex = self.selectedProductIndex else{ return }
+                // Check if an object with the same code already exists in the array
+                if let index = selectedProductIndexpaths.firstIndex(where: { $0.code == productObj.code }) {
+                    // If an object with the same code exists, update it with productObj
+                    selectedProductIndexpaths[index] = productObj
+                } else {
+                    // If no object with the same code exists, append productObj to the array
+                    selectedProductIndexpaths.append(productObj)
+                }
+                self.addproductsMenuVC?.additionalCallListViewModel?.updateProductAtSection(self.selectedDoctorIndex, index: selectedProductIndex.row , product: productObj)
+            }
+    
+            self.additionalCallSampleInputTableView.reloadData()
+        }
+
+    }
+    
+    
+
+    
+    
 }

@@ -1136,6 +1136,27 @@ class DBManager {
         self.saveContext()
     }
     
+    
+    func deleteStockistData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.stockist?.allObjects as? [Stockist]{
+            let data = prevList.filter{$0.mapId == id}
+            _ = data.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    
+    func deleteUnListedDoctorData(id : String) {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.unListedDoc?.allObjects as? [UnListedDoctor]{
+            let data = prevList.filter{$0.mapId == id}
+            _ = data.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    
     func saveStockistData(values : [[String :Any]],id : String) {
         self.deleteStockistData(id: id)
         let masterData = self.getMasterData()
@@ -1157,13 +1178,6 @@ class DBManager {
         self.saveContext()
     }
     
-    func deleteStockistData(id : String) {
-        let masterData = self.getMasterData()
-        if let prevList = masterData.stockist?.allObjects as? [Stockist]{
-            _ = prevList.map{self.managedContext().delete($0)}
-        }
-        self.saveContext()
-    }
     
     func saveUnListedDoctorData(values : [[String : Any]],id : String) {
         self.deleteUnListedDoctorData(id: id)
@@ -1186,13 +1200,6 @@ class DBManager {
         self.saveContext()
     }
     
-    func deleteUnListedDoctorData(id : String) {
-        let masterData = self.getMasterData()
-        if let prevList = masterData.unListedDoc?.allObjects as? [UnListedDoctor]{
-            _ = prevList.map{self.managedContext().delete($0)}
-        }
-        self.saveContext()
-    }
     
     func saveWorkTypeData(values : [[String : Any]]){
         self.deleteWorkTypeData()

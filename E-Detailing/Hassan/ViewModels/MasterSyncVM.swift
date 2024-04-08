@@ -261,25 +261,49 @@ class MasterSyncVM {
         
         //Doctor,Chemist,Stokiest,Unlistered,Cip,Hospital,Cluste
      
-        dcrEntries.forEach { aMasterInfo in
-            dispatchgroup.enter()
-            
-            fetchMasterData(type: aMasterInfo, sfCode: getRSF ?? "", istoUpdateDCRlist: true, mapID: mapID) { _ in
-                print("Syncing \(aMasterInfo.rawValue)")
-               
-               dispatchgroup.leave()
-                
-            }
+        fetchDCR(index: 0, dcrEntries: dcrEntries, mapID: mapID) { _ in
+            completion(true)
         }
         
-        dispatchgroup.notify(queue: .main) {
-            // All async tasks are completed
+//        dcrEntries.forEach { aMasterInfo in
+//            dispatchgroup.enter()
+//            
+//            fetchMasterData(type: aMasterInfo, sfCode: getRSF ?? "", istoUpdateDCRlist: true, mapID: mapID) { _ in
+//                print("Syncing \(aMasterInfo.rawValue)")
+//               
+//               dispatchgroup.leave()
+//                
+//            }
+//        }
+//        
+//        dispatchgroup.notify(queue: .main) {
+//            // All async tasks are completed
+//            self.isUpdating = false
+//            self.isSyncCompleted = true
+//            print("DCR list sync completed")
+//            completion(true)
+//       
+//        }
+        
+    }
+    
+    
+    func fetchDCR(index: Int, dcrEntries : [MasterInfo], mapID: String, completion: @escaping (Bool) -> ()) {
+        if index >= dcrEntries.count {
             self.isUpdating = false
             self.isSyncCompleted = true
             print("DCR list sync completed")
             completion(true)
-       
+            return
         }
+        
+        let aMasterInfo = dcrEntries[index]
+        fetchMasterData(type: aMasterInfo, sfCode: getRSF ?? "", istoUpdateDCRlist: true, mapID: mapID) { _ in
+            print("Syncing \(aMasterInfo.rawValue)")
+            self.fetchDCR(index: index + 1, dcrEntries: dcrEntries, mapID: mapID, completion: completion)
+            
+        }
+        
         
     }
     

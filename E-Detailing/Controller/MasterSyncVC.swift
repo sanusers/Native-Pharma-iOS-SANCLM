@@ -315,11 +315,9 @@ class MasterSyncVC : UIViewController {
     }
     
     func addobservers() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(syncTapped), name: Notification.Name("synced"), object: nil)
-//        
-//        NotificationCenter.default.addObserver(self, selector: #selector(hqModified) , name: NSNotification.Name("HQmodified"), object: nil)
+
         
-                NotificationCenter.default.addObserver(self, selector: #selector(dcrCallAdded) , name: NSNotification.Name("callsAdded"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dcrCallAdded) , name: NSNotification.Name("callsAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
     }
@@ -379,10 +377,13 @@ class MasterSyncVC : UIViewController {
             
               
   
- 
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
                 
             }
-            self.collectionView.reloadData()
+    
+            
             return
         }
             let aHQobj = HQModel()
@@ -401,13 +402,19 @@ class MasterSyncVC : UIViewController {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
         self.lblHqName.text =   self.fetchedHQObject?.name
-        self.collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
        
     }
     
     @IBAction func headquarterAction(_ sender: UIButton) {
       //  let headquarter = DBManager.shared.getSubordinate()
 
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+            return
+        }
+        
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
         
         vc.menuDelegate = self

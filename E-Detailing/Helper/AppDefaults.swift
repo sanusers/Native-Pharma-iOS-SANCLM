@@ -200,7 +200,7 @@ class AppDefaults {
     var appConfig: AppConfig?
     
     func getConfig() -> AppConfig {
-        let appData = UserDefaults.standard.data(forKey: keys.appSetUp.rawValue) ?? nil
+        let appData = UserDefaults.standard.data(forKey: keys.config.rawValue) ?? nil
         guard let appData = appData else {return AppConfig()}
         let decoder = JSONDecoder()
         var isDecoded: Bool = false

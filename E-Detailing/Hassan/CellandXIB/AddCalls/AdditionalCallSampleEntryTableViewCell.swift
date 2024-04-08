@@ -25,7 +25,7 @@ class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
     var product : ProductViewModel! {
         didSet {
             self.lblName.text = product.name == "" ? "Select" : product.name
-            self.lblName.textColor = product.name == "" ?  .appLightTextColor : .appTextColor
+            self.lblName.textColor = .appTextColor
             //product.name == "" ? . : product.name
             self.txtAvailableStock.text = product.availableCount
             self.txtSampleStock.text = product.sampleCount
@@ -46,15 +46,31 @@ class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
         super.awakeFromNib()
         
         txtSampleStock.layer.cornerRadius = 5
-        txtSampleStock.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
-        txtSampleStock.layer.borderWidth = 1
+//        txtSampleStock.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+//        txtSampleStock.layer.borderWidth = 1
         
         txtAvailableStock.layer.cornerRadius = 5
-       // txtAvailableStock.layer.borderColor = UIColor.appLightTextColor.cgColor
-       // txtAvailableStock.layer.borderWidth = 1
+//        txtAvailableStock.layer.borderColor = UIColor.appLightTextColor.cgColor
+//        txtAvailableStock.layer.borderWidth = 1
         
         viewProduct.layer.cornerRadius = 5
         viewProduct.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         viewProduct.layer.borderWidth = 1
+        
+        [txtSampleStock,txtAvailableStock].forEach { textfield in
+            if textfield != txtAvailableStock {
+                textfield?.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+                textfield?.layer.borderWidth = 1
+          
+            }
+            textfield?.layer.cornerRadius = 5
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: textfield?.frame.height ?? 50))
+            
+            textfield?.leftView = paddingView
+            textfield?.leftViewMode = .always
+            
+        }
+        
+        
     }
 }

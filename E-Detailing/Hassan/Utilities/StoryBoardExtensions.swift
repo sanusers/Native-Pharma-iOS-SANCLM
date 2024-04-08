@@ -25,9 +25,7 @@ extension UIStoryboard {
     func instantiateViewController<T>() -> T where T: ReusableView {
         return instantiateViewController(withIdentifier: T.reuseIdentifier) as! T
     }
-    /**
 
-     */
     func instantiateIDViewController<T>() -> T where T: ReusableView {
         return instantiateViewController(withIdentifier: T.reuseIdentifier + "ID") as! T
     }

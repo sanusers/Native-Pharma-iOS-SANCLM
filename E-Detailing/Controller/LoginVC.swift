@@ -19,7 +19,25 @@ extension LoginVC: UITextFieldDelegate {
 }
 
 
+extension LoginVC: MediaDownloaderDelegate {
+    func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
+        print("")
+    }
+    
+    func mediaDownloader(_ downloader: MediaDownloader, didFinishDownloadingData data: Data?) {
+        print("")
+        self.imgLogo.image = UIImage(data: data ?? Data())
+        
+    }
+    
+    func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: any Error) {
+        print("Error no slide found")
+    }
+}
+
 class LoginVC : UIViewController {
+
+    
     
     
     func setupui() {
@@ -39,8 +57,8 @@ class LoginVC : UIViewController {
         lblPoweredBy.setFont(font: .medium(size: .BODY))
         lblPoweredBy.textColor = .appLightTextColor
         
-        txtUserName.text = "dmr02"
-        txtPassWord.text = "02"
+        txtUserName.text = "mgr123"
+        txtPassWord.text = "123"
     }
     @IBOutlet var contentsHolderview: UIView!
     
@@ -72,9 +90,9 @@ class LoginVC : UIViewController {
         self.homeVM = HomeViewModal()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         setupui()
-//        let data = AppDefaults.shared.getConfig()
-//
-//
+        let data = AppDefaults.shared.getConfig()
+
+
 //        Dispatch.background {
 //            // do stuff
 //            print("Data fetching")
@@ -89,8 +107,11 @@ class LoginVC : UIViewController {
 //            }
 //        }
 //        }
+        Pipelines.shared.downloadData(mediaURL: data.config.logoImg, delegate: self)
 
     }
+    
+    
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)

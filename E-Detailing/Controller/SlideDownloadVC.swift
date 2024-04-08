@@ -367,7 +367,7 @@ class SlideDownloadVC : UIViewController {
                            self.isConnected = true
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
-                           self.startDownload(ifForsingleSeclection: false)
+                          // self.startDownload(ifForsingleSeclection: false)
                        }
                    }
                }

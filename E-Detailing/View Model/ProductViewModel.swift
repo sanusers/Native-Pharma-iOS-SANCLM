@@ -11,6 +11,12 @@ class ProductSelectedListViewModel {
     
     private var productViewModel = [ProductViewModel]()
     
+    func fetchAllProducts() -> [Product]? {
+        return productViewModel.map { $0.product.product ?? Product() }
+        
+    }
+    
+    
     func fetchProductData(_ index : Int , searchText : String , type : DCRType , selectedDoctorCode : String) -> Objects {
         
         if type == DCRType.doctor {
