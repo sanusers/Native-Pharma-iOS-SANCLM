@@ -34,7 +34,8 @@ class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
     
     var input : InputViewModel!{
         didSet {
-            self.lblName.text = input.name
+            self.lblName.text = input.name == "" ? "Select" :  input.name
+            self.lblName.textColor = .appTextColor
             self.txtAvailableStock.text = input.input.availableCount
             self.txtSampleStock.text = input.inputCount
         }

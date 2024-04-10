@@ -98,14 +98,16 @@ class AdditionalCallsListViewModel {
         if additionalCallListViewModel.isEmpty {
             return 0
         }
-        return additionalCallListViewModel[section].productSelectedListViewModel.numberOfRows()
+        return additionalCallListViewModel[section].productSelectedListViewModel.fetchAllProducts()?.count ?? 0
+        //numberOfRows()
     }
     
     func numberOfInputsInSection(_ section : Int) -> Int {
         if additionalCallListViewModel.isEmpty {
             return 0
         }
-        return additionalCallListViewModel[section].inputSelectedListViewModel.numberOfRows()
+        return additionalCallListViewModel[section].inputSelectedListViewModel.fetchAllInput()?.count ?? 0
+            //.numberOfRows()
     }
     
 }

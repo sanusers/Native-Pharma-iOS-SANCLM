@@ -12,6 +12,12 @@ class InputSelectedListViewModel {
     private var inputViewModel = [InputViewModel]()
     
     
+    func fetchAllInput() -> [Input]? {
+        return inputViewModel.map { $0.input.input ?? Input() }
+        
+    }
+    
+    
     func fetchInputData(_ index : Int, searchText : String) -> Objects {
         let input = searchText == "" ? DBManager.shared.getInput() : DBManager.shared.getInput().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         

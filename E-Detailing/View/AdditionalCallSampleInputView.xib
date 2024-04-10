@@ -75,7 +75,7 @@
                                                     <rect key="frame" x="2" y="11.5" width="86.5" height="27.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hS9-bg-RRM">
-                                                            <rect key="frame" x="2.5" y="0.0" width="82" height="27.5"/>
+                                                            <rect key="frame" x="13" y="0.0" width="60.5" height="27.5"/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -84,7 +84,7 @@
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                     <constraints>
-                                                        <constraint firstItem="hS9-bg-RRM" firstAttribute="width" secondItem="J0G-Y9-dh6" secondAttribute="width" multiplier="0.95" id="ISw-i6-KPX"/>
+                                                        <constraint firstItem="hS9-bg-RRM" firstAttribute="width" secondItem="J0G-Y9-dh6" secondAttribute="width" multiplier="0.7" id="ISw-i6-KPX"/>
                                                         <constraint firstItem="hS9-bg-RRM" firstAttribute="centerX" secondItem="J0G-Y9-dh6" secondAttribute="centerX" id="Zkb-el-2jA"/>
                                                         <constraint firstItem="hS9-bg-RRM" firstAttribute="height" secondItem="J0G-Y9-dh6" secondAttribute="height" id="gen-ft-ovB"/>
                                                         <constraint firstItem="hS9-bg-RRM" firstAttribute="centerY" secondItem="J0G-Y9-dh6" secondAttribute="centerY" id="w7k-6P-iYA"/>
@@ -124,7 +124,7 @@
                                                     <rect key="frame" x="2" y="11.5" width="86.5" height="27.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AJ4-0D-vpZ">
-                                                            <rect key="frame" x="2.5" y="0.0" width="82" height="27.5"/>
+                                                            <rect key="frame" x="13" y="0.0" width="60.5" height="27.5"/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -135,7 +135,7 @@
                                                     <constraints>
                                                         <constraint firstItem="AJ4-0D-vpZ" firstAttribute="height" secondItem="Giw-S2-pMt" secondAttribute="height" id="0g3-e6-phF"/>
                                                         <constraint firstItem="AJ4-0D-vpZ" firstAttribute="centerX" secondItem="Giw-S2-pMt" secondAttribute="centerX" id="0pZ-x9-JtG"/>
-                                                        <constraint firstItem="AJ4-0D-vpZ" firstAttribute="width" secondItem="Giw-S2-pMt" secondAttribute="width" multiplier="0.95" id="JlE-SF-axQ"/>
+                                                        <constraint firstItem="AJ4-0D-vpZ" firstAttribute="width" secondItem="Giw-S2-pMt" secondAttribute="width" multiplier="0.7" id="JlE-SF-axQ"/>
                                                         <constraint firstItem="AJ4-0D-vpZ" firstAttribute="centerY" secondItem="Giw-S2-pMt" secondAttribute="centerY" id="txF-Ne-ydM"/>
                                                     </constraints>
                                                 </view>

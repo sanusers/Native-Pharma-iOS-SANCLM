@@ -30,19 +30,19 @@ class AdditionalCallSampleInputView: UIView {
         inputQtyCurvedView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
     }
     
-    var product : ProductViewModel! {
+    var product : Product! {
         didSet {
             lblProduct.text = product.name
-            lblProductQty.text = product.sampleCount
+           // lblProductQty.text = product.sampleCount
 
         }
     }
     
-    var input : InputViewModel! {
+    var input : Input! {
         didSet {
 
             lblInput.text = input.name
-            lblInputQty.text = input.inputCount
+           // lblInputQty.text = input.inputCount
         }
     }
     

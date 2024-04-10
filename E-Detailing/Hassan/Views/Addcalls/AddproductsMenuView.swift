@@ -172,9 +172,14 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             selectionVC.selectionData = products
             
             self.selectedProductIndex = indexPath
-            
+           
             if  !selectedProductIndexpaths.isEmpty  {
-                // Handle the case when selectedProductIndex is nil
+                // Handle the case whe n selectedProductIndex is nil
+                if selectedProductIndexpaths.count - 1 >= indexPath.row {
+                    cacheProduct = selectedProductIndexpaths[indexPath.row]
+                    selectedProductIndexpaths.remove(at: indexPath.row)
+                }
+               
                 selectionVC.prevObj = selectedProductIndexpaths
               
             }
@@ -184,17 +189,23 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
         case .inputs:
-          //  self.selectedInputIndex = indexPath
+          
             let inputs = DBManager.shared.getInput()
             
             let selectionVC = UIStoryboard.singleSelectionVC
+            self.selectedInputIndex = indexPath
             selectionVC.selectionData = inputs
-//            selectionVC.didSelectCompletion { selectedIndex in
-//                if let cell = self.additionalCallSampleInputTableView.cellForRow(at: indexPath) as? AdditionalCallSampleEntryTableViewCell {
-//                    cell.lblName.text = inputs[selectedIndex].name
-//                }
-//                self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: indexPath.row, input: inputs[selectedIndex])
-//            }
+            if  !selectedInputIndexpaths.isEmpty  {
+                // Handle the case whe n selectedProductIndex is nil
+                if selectedInputIndexpaths.count - 1 >= indexPath.row {
+                    cacheInput = selectedInputIndexpaths[indexPath.row]
+                    selectedInputIndexpaths.remove(at: indexPath.row)
+                }
+               
+                selectionVC.prevObj = selectedInputIndexpaths
+              
+            }
+            selectionVC.delegate = self
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
         }
@@ -309,7 +320,10 @@ class AddproductsMenuView: BaseView {
     
     @IBOutlet var clearView: UIView!
     var selectedProductIndexpaths = [Product]()
+    var cacheProduct = Product()
+    var cacheInput = Input()
     var selectedProductIndex : IndexPath?
+    var selectedInputIndex : IndexPath?
     var selectedInputIndexpaths = [Input]()
     var selectedSegmentsIndex: Int = 0
     private var animationDuration : Double = 1.0
@@ -326,10 +340,12 @@ class AddproductsMenuView: BaseView {
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
             self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(product: nil, isDetailed: false, sampleCount: "", rxCount:"", rcpaCount: "", availableCount: "", totalCount: "")))
+            self.selectedInputIndexpaths.append(Input())
             toLoadData()
        
         case .inputs:
             self.addproductsMenuVC?.additionalCallListViewModel?.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "")))
+            self.selectedProductIndexpaths.append(Product())
             toLoadData()
           
         }
@@ -422,6 +438,23 @@ class AddproductsMenuView: BaseView {
     func initGestures() {
         clearView.addTap {
             guard let productSelectedListViewModel = self.addproductsMenuVC.productSelectedListViewModel, let additionalCallListViewModel = self.addproductsMenuVC.additionalCallListViewModel else  {return}
+            
+            let  inputCount = additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
+            
+            
+            let productCount = additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
+            
+            
+            if inputCount > productCount {
+                self.toCreateToast("Input count is greater then product count")
+                return
+            }
+            
+            if productCount > inputCount {
+                self.toCreateToast("Please select Input")
+                return
+            }
+            
             self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
             self.hideMenuAndDismiss()
         }
@@ -515,7 +548,20 @@ extension AddproductsMenuView: SingleSelectionVCDelegate {
         switch self.segmentType[self.selectedSegmentsIndex] {
             
         case .inputs:
-            print("Yet to")
+            if let inputObj = selectedObj as? Input {
+              // self.selectedProductIndexpaths = [IndexPath]()
+                guard let selectedInputIndex = self.selectedInputIndex else{ return }
+                // Check if an object with the same code already exists in the array
+                if let index = selectedInputIndexpaths.firstIndex(where: { $0.code == inputObj.code }) {
+                    // If an object with the same code exists, update it with productObj
+                    selectedInputIndexpaths[index] = inputObj
+                } else {
+                    // If no object with the same code exists, append productObj to the array
+                    selectedInputIndexpaths.append(inputObj)
+                }
+                self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: selectedInputIndex.row , input: inputObj)
+                self.additionalCallSampleInputTableView.reloadData()
+            }
         case .products:
 
             if let productObj = selectedObj as? Product {
@@ -530,9 +576,10 @@ extension AddproductsMenuView: SingleSelectionVCDelegate {
                     selectedProductIndexpaths.append(productObj)
                 }
                 self.addproductsMenuVC?.additionalCallListViewModel?.updateProductAtSection(self.selectedDoctorIndex, index: selectedProductIndex.row , product: productObj)
+                self.additionalCallSampleInputTableView.reloadData()
             }
     
-            self.additionalCallSampleInputTableView.reloadData()
+       
         }
 
     }

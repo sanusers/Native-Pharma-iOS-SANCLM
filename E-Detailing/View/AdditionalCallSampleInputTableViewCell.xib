@@ -91,7 +91,7 @@
                                                         <rect key="frame" x="2" y="11.5" width="84.5" height="27.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="05" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gWW-ZR-Jhs">
-                                                                <rect key="frame" x="2" y="0.0" width="80.5" height="27.5"/>
+                                                                <rect key="frame" x="12.5" y="0.0" width="59" height="27.5"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -102,7 +102,7 @@
                                                         <constraints>
                                                             <constraint firstItem="gWW-ZR-Jhs" firstAttribute="centerY" secondItem="0Q4-q6-DNT" secondAttribute="centerY" id="EHC-Bk-Zsf"/>
                                                             <constraint firstItem="gWW-ZR-Jhs" firstAttribute="centerX" secondItem="0Q4-q6-DNT" secondAttribute="centerX" id="Y80-Uj-9rJ"/>
-                                                            <constraint firstItem="gWW-ZR-Jhs" firstAttribute="width" secondItem="0Q4-q6-DNT" secondAttribute="width" multiplier="0.95" id="vPR-0Q-UbI"/>
+                                                            <constraint firstItem="gWW-ZR-Jhs" firstAttribute="width" secondItem="0Q4-q6-DNT" secondAttribute="width" multiplier="0.7" id="vPR-0Q-UbI"/>
                                                             <constraint firstItem="gWW-ZR-Jhs" firstAttribute="height" secondItem="0Q4-q6-DNT" secondAttribute="height" id="wuI-9A-uDA"/>
                                                         </constraints>
                                                     </view>
@@ -140,7 +140,7 @@
                                                         <rect key="frame" x="2" y="11.5" width="84.5" height="27.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="05" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RlG-cs-yzU">
-                                                                <rect key="frame" x="2" y="0.0" width="80.5" height="27.5"/>
+                                                                <rect key="frame" x="13" y="0.0" width="59" height="27.5"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -149,7 +149,7 @@
                                                         </subviews>
                                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstItem="RlG-cs-yzU" firstAttribute="width" secondItem="AFg-06-MU3" secondAttribute="width" multiplier="0.95" id="G72-ko-gTL"/>
+                                                            <constraint firstItem="RlG-cs-yzU" firstAttribute="width" secondItem="AFg-06-MU3" secondAttribute="width" multiplier="0.7" id="G72-ko-gTL"/>
                                                             <constraint firstItem="RlG-cs-yzU" firstAttribute="height" secondItem="AFg-06-MU3" secondAttribute="height" id="a3C-DK-mD5"/>
                                                             <constraint firstItem="RlG-cs-yzU" firstAttribute="centerX" secondItem="AFg-06-MU3" secondAttribute="centerX" id="eWm-zk-wwK"/>
                                                             <constraint firstItem="RlG-cs-yzU" firstAttribute="centerY" secondItem="AFg-06-MU3" secondAttribute="centerY" id="jDf-xo-47a"/>

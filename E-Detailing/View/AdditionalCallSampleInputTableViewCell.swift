@@ -47,6 +47,9 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
         inputQtyCorneredView.layer.cornerRadius = 3
         inputQtyCorneredView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         
+        
+        
+        
        
     }
     
@@ -61,12 +64,22 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 if additionalCall.productSelectedListViewModel.numberOfRows() != 0 || additionalCall.inputSelectedListViewModel.numberOfRows() != 0{
                     
                     
-                    let productCount = additionalCall.productSelectedListViewModel.numberOfRows()
-                    let inputCount = additionalCall.inputSelectedListViewModel.numberOfRows()
+                    let productCount =      additionalCall.productSelectedListViewModel.fetchAllProducts()?.count ?? 0
+                    //additionalCall.productSelectedListViewModel.numberOfRows()
+                    let inputCount = additionalCall.inputSelectedListViewModel.fetchAllInput()?.count ?? 0
+                    //additionalCall.inputSelectedListViewModel.numberOfRows()
                     
-                    var products = additionalCall.productSelectedListViewModel.productData()
+                  //  var products = additionalCall.productSelectedListViewModel.productData()
                     
-                    var inputs = additionalCall.inputSelectedListViewModel.inputData()
+                 //   var inputs = additionalCall.inputSelectedListViewModel.inputData()
+                    
+                    var optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
+                    //productData()
+                    
+                    var optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
+                    //inputData()
+                    guard var inputs = optionalinputs else {return}
+                    guard var products  = optionalproducts else {return}
                     
                     if inputCount != 0 {
                         self.lblInputQty.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).inputCount
@@ -106,7 +119,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                             productView.input = input
                             
                             if index < productCount  { // || index == productCount
-                                productView.product = additionalCall.productSelectedListViewModel.fetchDataAtIndex(index)
+                                productView.product = products[index] //additionalCall.productSelectedListViewModel.fetchDataAtIndex(index)
                             }
                             
                             if index == 0 {
@@ -150,7 +163,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                             productView.product = product
                             
                             if index < inputCount { // || index == inputCount
-                                productView.input = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(index)
+                                productView.input = inputs[index] //additionalCall.inputSelectedListViewModel.fetchDataAtIndex(index)
                             }
                             
                             if index == 0 {
@@ -180,16 +193,31 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     }
                 }
             }else {
-                let productCount = additionalCall.productSelectedListViewModel.numberOfRows()
-                let inputCount = additionalCall.inputSelectedListViewModel.numberOfRows()
+                let productCount =
                 
-                var products = additionalCall.productSelectedListViewModel.productData()
                 
-                var inputs = additionalCall.inputSelectedListViewModel.inputData()
+                additionalCall.productSelectedListViewModel.fetchAllProducts()?.count ?? 0
+                
+                
+               // additionalCall.productSelectedListViewModel.numberOfRows()
+                let inputCount =
+                
+                additionalCall.inputSelectedListViewModel.fetchAllInput()?.count ?? 0
+                
+               // additionalCall.inputSelectedListViewModel.numberOfRows()
+                
+                var optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
+                //productData()
+                
+                var optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
+                //inputData()
+                guard var inputs = optionalinputs else {return}
+                guard var products  = optionalproducts else {return}
                 
                 if inputCount != 0 {
+                
                     self.lblInputQty.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).inputCount
-                    self.lblInputName.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).name
+                    self.lblInputName.text = inputs[0].name //additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).name
                     
                     inputs.removeFirst()
                 }else {
@@ -199,7 +227,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                 if productCount != 0 {
                     self.lblProductName.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).name
-                    self.lblProductQty.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
+                    self.lblProductQty.text = products[0].name //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
                     
                     products.removeFirst()
                 }else {

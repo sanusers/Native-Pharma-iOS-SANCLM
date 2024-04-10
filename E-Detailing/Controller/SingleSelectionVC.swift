@@ -119,6 +119,16 @@ extension SingleSelectionVC : tableViewProtocols {
                     }
                 }
             }
+            
+            if let prevObjs = self.prevObj as? [Input], let tempList = lists as? Input {
+                prevObjs.enumerated().forEach { index, prevObj in
+                    if prevObj.code == tempList.code {
+                        self.toCreateToast("Input already selected.")
+                        isExists = true
+                    }
+                }
+            }
+            
             if !isExists {
                 self.delegate?.didUpdate(selectedObj: lists, index: index)
                 self.dismiss(animated: true)
