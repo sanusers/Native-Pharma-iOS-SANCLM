@@ -16,6 +16,10 @@ class ProductSelectedListViewModel {
         
     }
     
+    func fetchAllProductData() -> [ProductData]? {
+        return productViewModel.map { $0.product }
+        
+    }
     
     func fetchProductData(_ index : Int , searchText : String , type : DCRType , selectedDoctorCode : String) -> Objects {
         
@@ -178,6 +182,14 @@ class ProductViewModel {
     var isDetailed : Bool {
         return product.isDetailed
     }
+    
+    var stockistName : String {
+        return product.stockistName
+    }
+    
+    var stockistCode : String {
+        return product.stockistCode
+    }
 }
  
 struct ProductData {
@@ -189,6 +201,8 @@ struct ProductData {
     var rcpaCount : String
     var availableCount : String
     var totalCount : String
+    var stockistName: String
+    var stockistCode: String
     
     mutating func updateProduct(_ selectedProduct : Product) {
         product = selectedProduct

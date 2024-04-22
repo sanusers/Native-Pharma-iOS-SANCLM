@@ -310,19 +310,41 @@ class MainVC : UIViewController {
 //            
 //        }
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            toPostDayplan() {
-                if !Shared.instance.isDayplanSet {
-                    self.toSetDayplan() {
-                        self.refreshUI()
-                    }
-             }
+        
+        ReachabilityManager.isReachable() { [weak self] reachability in
+            guard let welf = self else {return}
+        
+            switch reachability.reachability.connection {
+                
+            case .unavailable, .none:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                welf.toConfigureMydayPlan()
+                welf.refreshUI()
+            case .wifi, .cellular:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                welf.toPostDayplan() {
+                   // if !Shared.instance.isDayplanSet {
+                        welf.toSetDayplan() {
+                            welf.refreshUI()
+                        }
+                  //  } else {
+                      //  welf.refreshUI()
+                  //  }
+                }
+          
+        
             }
-        } else {
-            toConfigureMydayPlan()
-            refreshUI()
-
+            
         }
+        
+        
+        
+//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+//   
+//        } else {
+//          
+//
+//        }
     }
     
     func refreshUI(issynced: Bool? = false) {
@@ -336,7 +358,7 @@ class MainVC : UIViewController {
     }
     
     func refreshDashboard(completion: @escaping () -> ()) {
-        self.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: true, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
+        self.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
             guard let welf = self else {return}
             welf.refreshUI()
             completion()

@@ -32,7 +32,7 @@ extension MasterSyncVC {
             if isFromLaunch {
                 if (type == .slides || type == .slideBrand) {
  
-                 //   moveToDownloadSlide(isFromcache: true)
+                    moveToDownloadSlide(isFromcache: true)
                     
                 } else {
                     moveToHome()
@@ -44,7 +44,7 @@ extension MasterSyncVC {
                 let isNewSlideExists  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending)
                 //self.toCheckExistenceOfNewSlides()  ?? false
                     if !isNewSlideExists {
-                   //     moveToDownloadSlide(isFromcache: true)
+                        moveToDownloadSlide(isFromcache: true)
                     }
                     
                 

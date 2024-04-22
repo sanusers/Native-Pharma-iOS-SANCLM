@@ -59,7 +59,8 @@ class ViewDayReportVC: BaseViewController {
         param["division_code"] = appdefaultSetup?.divisionCode
         //"8"
         //appdefaultSetup.divisionCode
-        param["Rsf"] = appdefaultSetup?.sfCode
+        param["Rsf"] =  LocalStorage.shared.getString(key: .selectedRSFID)
+        //appdefaultSetup?.sfCode
         //"MR0026"
         //appdefaultSetup.sfCode
         param["Designation"] = appdefaultSetup?.dsName

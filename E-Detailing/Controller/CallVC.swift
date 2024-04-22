@@ -439,7 +439,7 @@ class CallVC : UIViewController {
                 dcrCall.customerCheckinAddress = address ?? ""
                 dcrCall.checkinlatitude = coordinates.latitude ?? Double()
                 dcrCall.checkinlongitude = coordinates.longitude ?? Double()
-                dcrCall.dcrCheckinTime = welf.getCurrentFormattedDateString()
+                dcrCall.dcrCheckinTime = datestr
                 welf.checkinDetailsAction(dcrCall : dcrCall)
                 
                 

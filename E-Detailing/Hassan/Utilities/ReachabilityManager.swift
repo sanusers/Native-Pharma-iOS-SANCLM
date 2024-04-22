@@ -49,27 +49,23 @@ class ReachabilityManager : NSObject {
         // Do something globally here!    }
     }
     static func stopNotifier() -> Void {
-        // Stop the network status notifier
-        // do {
-        //    try
+  
         (ReachabilityManager.sharedInstance.reachability).stopNotifier()
-        
-        //  } catch {
-        //      print("Error stopping notifier")
-        
-        //   }
+
         
     }
     
     static func isReachable(completed: @escaping (ReachabilityManager) -> Void) {
-        if (ReachabilityManager.sharedInstance.reachability).connection != .unavailable {            completed(ReachabilityManager.sharedInstance)
+        if (ReachabilityManager.sharedInstance.reachability).connection != .unavailable { 
+            completed(ReachabilityManager.sharedInstance)
             
         }
         
     }
     
     static func isUnreachable(completed: @escaping (ReachabilityManager) -> Void) {
-        if (ReachabilityManager.sharedInstance.reachability).connection == .unavailable {            completed(ReachabilityManager.sharedInstance)
+        if (ReachabilityManager.sharedInstance.reachability).connection == .unavailable { 
+            completed(ReachabilityManager.sharedInstance)
             
         }
         
@@ -78,7 +74,8 @@ class ReachabilityManager : NSObject {
     
     
     static func isReachableViaWWAN(completed: @escaping (ReachabilityManager) -> Void) {
-        if (ReachabilityManager.sharedInstance.reachability).connection == .cellular {            completed(ReachabilityManager.sharedInstance)
+        if (ReachabilityManager.sharedInstance.reachability).connection == .cellular {
+            completed(ReachabilityManager.sharedInstance)
             
         }
         

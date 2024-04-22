@@ -59,9 +59,9 @@ protocol SingleSelectionVCDelegate: AnyObject {
 extension SingleSelectionVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if self.isFromStruct == true {
-            return self.selectionList.count
-        }
+//        if self.isFromStruct == true {
+//            return self.selectionList.count
+//        }
         
         return self.selectionData.count
     }
@@ -71,11 +71,9 @@ extension SingleSelectionVC : tableViewProtocols {
         
      //   cell.lblName.text = self.selectionData[indexPath.row].name
         cell.selectionStyle = .none
-        if self.isFromStruct == true {
-            cell.lblName.text = self.selectionList[indexPath.row].name
-        }else {
+    
             cell.lblName.text = self.selectionData[indexPath.row].name
-        }
+        
         return cell
     }
     
@@ -86,23 +84,23 @@ extension SingleSelectionVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         
-        if self.isFromStruct == true {
-            let lists = self.selectionList[indexPath.row]
-            
-            if let index = self.originalList.firstIndex(where: { (list) -> Bool in
-                
-                return list.code == lists.code
-            }){
-                if let completion = self.completion {
-                    completion(index)
-                }  
-            }
-            self.dismiss(animated: true)
-            return 
-        }
+//        if self.isFromStruct == true {
+//            let lists = self.selectionList[indexPath.row]
+//            
+//            if let index = self.originalList.firstIndex(where: { (list) -> Bool in
+//                
+//                return list.code == lists.code
+//            }){
+//                if let completion = self.completion {
+//                    completion(index)
+//                }  
+//            }
+//            self.dismiss(animated: true)
+//            return 
+//        }
         
         
-        let lists = self.selectionData[indexPath.row]
+        let lists = self.originalData[indexPath.row]
 
         
         if let index = self.originalData.firstIndex(where: { (list) -> Bool in

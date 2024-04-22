@@ -27,107 +27,7 @@ class AddCallinfoVC: BaseViewController {
     
     
     func setupParam(dcrCall: CallViewModel) {
-        var productData = [[String : Any]]()
-        var inputData = [[String : Any]]()
-        var jointWorkData = [[String : Any]]()
-        var additionalCallData = [[String : Any]]()
-        var rcpaData = [[String : Any]]()
         
-        
-        let productValue = self.addCallinfoView.productSelectedListViewModel.productData()
-        let inputValue = self.addCallinfoView.inputSelectedListViewModel.inputData()
-        let jointWorkValue = self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
-        let additionalCallValue = self.addCallinfoView.additionalCallListViewModel.getAdditionalCallData()
-        let rcpaValue =  self.addCallinfoView.rcpaDetailsModel
-        
-        
-        let slides : [String : Any] = ["Slide" : "", "SlidePath" : "", "SlideRemarks" : "", "SlideType" : "", "SlideRating" : "", "Times" : "times"]
-        
-        for product in productValue {
-            let product : [String : Any] = ["Code" : product.code , "Name" : product.name, "Group" : "", "ProdFeedbk" : "", "Rating" : "", "Timesline" : "timesLine", "Appver" : "", "Mod" : "", "SmpQty" : product.sampleCount, "RxQty" : product.rxCount , "prdfeed" : "", "Type" : "", "StockistName" : "", "StockistCode" : "", "Slides" : slides]
-            productData.append(product)
-        }
-        
-        
-        for input in inputValue{
-            let input = ["Code" : input.code , "Name" : input.name, "IQty" : input.inputCount]
-            inputData.append(input)
-        }
-
-        for jointWork in jointWorkValue{
-            let jointWork = ["Code" : jointWork.code , "Name" : jointWork.name]
-            jointWorkData.append(jointWork)
-        }
-
-        for call in additionalCallValue {
-
-            let products = call.productSelectedListViewModel.productData()
-
-            let inputs = call.inputSelectedListViewModel.inputData()
-
-            var callProductData = [[String : Any]]()
-            var callInputData = [[String : Any]]()
-
-            for input in inputs{
-                let input = ["Code" : input.code , "Name" : input.name, "IQty" : input.inputCount]
-                callInputData.append(input)
-            }
-
-            for product in products {
-                let product : [String : Any] = ["Code" : product.code , "Name" : product.name,"SmpQty" : product.sampleCount]
-                callProductData.append(product)
-            }
-
-            let adcuss : [String : Any] = ["Code" : call.docCode, "Name" : call.docName,"town_code" : call.docTownCode ,"town_name" : call.docTownName, "Products" : callProductData , "Inputs" : callInputData]
-            additionalCallData.append(adcuss)
-        }
-        
-        for rcpa in rcpaValue {
-
-            let rcpaChemist = ["Name" : rcpa.addedChemist?.name , "Code" : rcpa.addedChemist?.code]
-
-            rcpa.addedProductDetails?.addedProduct?.forEach{ aAddedProduct in
-              
-                var competitorData = [[String : Any]]()
-                var productCode : String =    aAddedProduct.addedProduct?.code ?? ""
-                var productName : String =  aAddedProduct.addedProduct?.name ?? ""
-
-//                for j in 0..<rcpa.rcpaChemist.products[i].rcpas.count {
-//                    productCode = rcpa.rcpaChemist.products[i].rcpas[j].product?.code ?? ""
-//                    productName = rcpa.rcpaChemist.products[i].rcpas[j].product?.name ?? ""
-//
-//                    let competitors  = [ "CPQty" : rcpa.rcpaChemist.products[i].rcpas[j].competitorQty,
-//                                         "CPRate" : rcpa.rcpaChemist.products[i].rcpas[j].competitorRate,
-//                                         "CPValue" : rcpa.rcpaChemist.products[i].rcpas[j].competitorTotal,
-//                                         "CompCode" : rcpa.rcpaChemist.products[i].rcpas[j].competitorCompanyCode,
-//                                         "CompName" : rcpa.rcpaChemist.products[i].rcpas[j].competitorCompanyName,
-//                                         "CompPCode" : rcpa.rcpaChemist.products[i].rcpas[j].competitorBrandCode,
-//                                         "CompPName" : rcpa.rcpaChemist.products[i].rcpas[j].competitorBrandName,
-//                                         "Chemname" : rcpa.chemistName,
-//                                         "Chemcode" : rcpa.chemistCode,
-//                                         "CPRemarks" : rcpa.rcpaChemist.products[i].rcpas[j].remarks
-//                    ]
-//
-//                    competitorData.append(competitors)
-//                }
-
-                let rcpa : [String : Any] = [ "Chemists" : [rcpaChemist],
-                             "OPCode" : productCode, //rcpa.rcpaChemist.products[i].product.code ?? "",
-                             "OPName" : productName, // rcpa.rcpaChemist.products[i].product.name ?? "",
-                             "OPQty" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedQuantity) ,
-                             "OPRate" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedRate),
-                             "OPValue" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedValue),
-                             "Competitors" : competitorData
-                ]
-
-                rcpaData.append(rcpa)
-
-            }
-             // rcpaData.append(rcpa)
-        }
-        
-        let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
-
         var cusType : String = ""
 
         switch self.dcrCall.type {
@@ -145,59 +45,239 @@ class AddCallinfoVC: BaseViewController {
                 cusType = "4"
         }
         
-        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        var productData = [[String : Any]]()
+        var inputData = [[String : Any]]()
+        var jointWorkData = [[String : Any]]()
+        var additionalCallData = [[String : Any]]()
+        var rcpaData = [[String : Any]]()
         
-        var params = [String : Any]()
-        params["tableName"] = "postDCRdata"
-        params["JointWork"] = jointWorkData
-        params["Inputs"] = inputData
-        params["Products"] = productData
-        params["AdCuss"] = additionalCallData
-        params["RCPAEntry"] = rcpaData
-        params["CateCode"] = dcrCall.cateCode
-        params["CusType"] = cusType
-        params["CustCode"] = dcrCall.code
-        params["CustName"] = dcrCall.name
-        params["Entry_location"] = "0.0:0.0"
-        params["sfcode"] = appsetup.sfCode ?? ""
-        params["Rsf"] = appsetup.sfCode ?? ""
-        params["sf_type"] = "\(appsetup.sfType ?? 0)"
-        params["Designation"] = appsetup.dsName ?? ""
-        params["state_code"] = appsetup.stateCode ?? ""
-        params["subdivision_code"] = appsetup.subDivisionCode ?? ""
-        params["division_code"] = divisionCode
-        params["AppUserSF"] = appsetup.sfCode ?? ""
-        params["SFName"] = appsetup.sfName ?? ""
-        params["SpecCode"] = dcrCall.specialityCode
-        params["mappedProds"] = ""
-        params["mode"]  = "0"
-        params["Appver"] = "iEdet.1.1"
-        params["Mod"] = "ios-Edet-New"
-        params["WT_code"] = "2748"
-        params["WTName"] = "Field Work"
-        params["FWFlg"] = "F"
-        params["town_code"] = dcrCall.townCode
-        params["town_name"] = dcrCall.townName
-        params["ModTime"] = date
-        params["ReqDt"] = date
-        params["vstTime"] = date
-        params["Remarks"] =  self.addCallinfoView.overallRemarks ?? ""
-        //self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
-        params["amc"] = ""
-        params["sign_path"] = ""
-        params["SignImageName"] = ""
-        params["filepath"] = ""
-        params["EventCapture"] = ""
-        params["EventImageName"] = ""
-        params["DCSUPOB"] =  ""
-        //self.txtPob.text ?? ""
-        if let overallFeedback = self.addCallinfoView.overallFeedback {
-            params["Drcallfeedbackcode"] = overallFeedback.id ?? ""
+        
+        let productValue = self.addCallinfoView.productSelectedListViewModel.productData()
+        let inputValue = self.addCallinfoView.inputSelectedListViewModel.inputData()
+        let jointWorkValue = self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
+        let additionalCallValue = self.addCallinfoView.additionalCallListViewModel.getAdditionalCallData()
+        
+        let rcpaValue =  self.addCallinfoView.rcpaDetailsModel
+        
+        
+       
+        
+        var addedDCRCallsParam: [String: Any] = [:]
+        
+        //Joint works
+        var addedJointworks = [[String: Any]]()
+        addedJointworks.removeAll()
+
+        for jointWork in jointWorkValue{
+            
+            var aJointwork = [String: Any]()
+            aJointwork["Code"] = jointWork.code
+            aJointwork["Name"] = jointWork.name
+            
+            addedJointworks.append(aJointwork)
         }
         
-        //(self.selectedFeedback == nil) ? "" : (self.selectedFeedback.code ?? "") ?? ""
-        params["sample_validation"] = "0"
-        params["input_validation"] = "0"
+        addedDCRCallsParam["JointWork"] = addedJointworks
+        
+        
+        //Inputs
+        var addedInput = [[String: Any]]()
+        for input in inputValue{
+            var aInput = [String: Any]()
+            aInput["Code"] = input.code
+            aInput["Name"] = input.name
+            aInput["IQty"] = input.inputCount
+            addedInput.append(aInput)
+        }
+        
+        
+        
+        
+        addedDCRCallsParam["Inputs"] = addedInput
+        
+        
+        
+        //Products
+        var addedProducts = [[String: Any]]()
+        addedProducts.removeAll()
+      //  let slides : [String : Any] = ["Slide" : "", "SlidePath" : "", "SlideRemarks" : "", "SlideType" : "", "SlideRating" : "", "Times" : "times"]
+        
+        
+        for product in productValue {
+            var aproduct : [String : Any] = [:]
+            aproduct["Code"] = product.code
+            aproduct["Name"] =  product.name
+            aproduct["Group"] = ""
+            aproduct["ProdFeedbk"] = ""
+            aproduct["Rating"] = ""
+            var timesLine = [String: Any]()
+            timesLine["sTm"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+            timesLine["eTm"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+            aproduct["Timesline"] = timesLine
+            aproduct["Appver"] = "Test.S.1.0"
+            aproduct["Mod"] = "iOS-Edet"
+            aproduct["SmpQty"] = product.sampleCount
+            aproduct["RcpaQty"] = product.rxCount
+            aproduct["Promoted"] = "0"
+            aproduct["Type"] = "1"
+            aproduct["StockistName"] = product.stockistName
+            aproduct["StockistCode"] = product.stockistCode
+            aproduct["Slides"] = [[String: Any]]()
+            addedProducts.append(aproduct)
+        }
+        
+        addedDCRCallsParam["Products"] = addedProducts
+        
+        //Additional Customers
+        var additionalCustomerParams = [[String: Any]]()
+        additionalCustomerParams.removeAll()
+        additionalCallValue.enumerated().forEach { index, call in
+            var aAdditioanlcall : [String : Any] = [:]
+            aAdditioanlcall["Code"] = call.docCode
+            aAdditioanlcall["Name"] = call.docName
+            aAdditioanlcall["town_code"] = call.docTownCode
+            aAdditioanlcall["town_name"] = call.docTownName
+          
+            //Additional call products
+            if let productValue = call.productSelectedListViewModel.fetchAllProductData() {
+                var products: [[String: Any]] = [[:]]
+                products.removeAll()
+                for product in productValue {
+                    var aproduct : [String : Any] = [:]
+                    aproduct["Code"] = product.product?.code
+                    aproduct["Name"] =  product.product?.name
+                    aproduct["SmpQty"] = product.sampleCount
+                    products.append(aproduct)
+                }
+                aAdditioanlcall["Products"] = products
+            }
+
+            
+            //Additional call Inputs
+            if  let inputValue = call.inputSelectedListViewModel.fetchAllInputData() {
+                var addedInput = [[String: Any]]()
+                for input in inputValue{
+                    var aInput = [String: Any]()
+                    aInput["Code"] = input.input?.code
+                    aInput["Name"] = input.input?.name
+                    aInput["InpQty"] = input.inputCount
+                    addedInput.append(aInput)
+                }
+                aAdditioanlcall["Inputs"] = addedInput
+            }
+
+            additionalCustomerParams.append(aAdditioanlcall)
+        }
+        
+        addedDCRCallsParam["AdCuss"] = additionalCustomerParams
+        
+        //RCPA Entry
+       
+        var entryRCPAparam : [[String: Any]] = [[:]]
+        entryRCPAparam.removeAll()
+        
+        
+        for rcpa in rcpaValue {
+            var aRCPAdetail: [String: Any] = [:]
+            aRCPAdetail["Trans_SlNo"] = ""
+            aRCPAdetail["ADetSLNo"] = ""
+            aRCPAdetail["CustCode"] = rcpa.addedChemist?.code
+            aRCPAdetail["CustName"] = rcpa.addedChemist?.name
+            aRCPAdetail["vstTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+            aRCPAdetail["CustType"] = cusType
+            aRCPAdetail["Synced"] = "1"
+            entryRCPAparam.append(aRCPAdetail)
+            
+            
+ //           let rcpaChemist = ["Name" : rcpa.addedChemist?.name , "Code" : rcpa.addedChemist?.code]
+
+//            rcpa.addedProductDetails?.addedProduct?.forEach{ aAddedProduct in
+//              
+//                var competitorData = [[String : Any]]()
+//                var productCode : String =    aAddedProduct.addedProduct?.code ?? ""
+//                var productName : String =  aAddedProduct.addedProduct?.name ?? ""
+//                let rcpa : [String : Any] = [ "Chemists" : [rcpaChemist],
+//                             "OPCode" : productCode, //rcpa.rcpaChemist.products[i].product.code ?? "",
+//                             "OPName" : productName, // rcpa.rcpaChemist.products[i].product.name ?? "",
+//                             "OPQty" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedQuantity) ,
+//                             "OPRate" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedRate),
+//                             "OPValue" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedValue),
+//                             "Competitors" : competitorData
+//                ]
+//
+//                rcpaData.append(rcpa)
+//
+//            }
+
+        }
+        addedDCRCallsParam["RCPAEntry"] = entryRCPAparam
+        
+       
+//Joint works
+
+        var addedJointWorks  : [[String: Any]] = [[:]]
+     
+       
+        let selectedJWs =  self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
+        for aJointWork in selectedJWs {
+            var ajointWorkParam: [String: Any] = [:]
+            ajointWorkParam["Code"] = aJointWork.code
+            ajointWorkParam["Name"] = aJointWork.name
+            addedJointWorks.append(ajointWorkParam)
+        }
+        addedDCRCallsParam["JWWrk"] = addedJointWorks
+        
+        
+        let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
+        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        
+        addedDCRCallsParam["tableName"] = "postDCRdata"
+        addedDCRCallsParam["CateCode"] = dcrCall.cateCode
+        addedDCRCallsParam["CusType"] = cusType
+        addedDCRCallsParam["CustCode"] = dcrCall.code
+        addedDCRCallsParam["CustName"] = dcrCall.name
+     
+        addedDCRCallsParam["sfcode"] = appsetup.sfCode ?? ""
+        addedDCRCallsParam["Rsf"] = appsetup.sfCode ?? ""
+        addedDCRCallsParam["sf_type"] = "\(appsetup.sfType ?? 0)"
+        addedDCRCallsParam["Designation"] = appsetup.dsName ?? ""
+        addedDCRCallsParam["state_code"] = appsetup.stateCode ?? ""
+        addedDCRCallsParam["subdivision_code"] = appsetup.subDivisionCode ?? ""
+        addedDCRCallsParam["division_code"] = divisionCode
+        addedDCRCallsParam["AppUserSF"] = appsetup.sfCode ?? ""
+        addedDCRCallsParam["SFName"] = appsetup.sfName ?? ""
+        addedDCRCallsParam["SpecCode"] = dcrCall.specialityCode
+        addedDCRCallsParam["mappedProds"] = ""
+        addedDCRCallsParam["mode"]  = "0"
+        addedDCRCallsParam["Appver"] = "iEdet.1.1"
+        addedDCRCallsParam["Mod"] = "ios-Edet-New"
+        addedDCRCallsParam["WT_code"] = "2748"
+        addedDCRCallsParam["WTName"] = "Field Work"
+        addedDCRCallsParam["FWFlg"] = "F"
+        addedDCRCallsParam["town_code"] = dcrCall.townCode
+        addedDCRCallsParam["town_name"] = dcrCall.townName
+        addedDCRCallsParam["ModTime"] = date
+        addedDCRCallsParam["ReqDt"] = date
+        addedDCRCallsParam["vstTime"] = date
+        addedDCRCallsParam["Remarks"] =  self.addCallinfoView.overallRemarks ?? ""
+        //self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
+        addedDCRCallsParam["amc"] = ""
+        addedDCRCallsParam["hospital_code"] = ""
+        addedDCRCallsParam["hospital_name"] = ""
+        addedDCRCallsParam["sample_validation"]  = "0"
+        addedDCRCallsParam["input_validation"]  = "0"
+        addedDCRCallsParam["sign_path"] = ""
+        addedDCRCallsParam["SignImageName"] = ""
+        addedDCRCallsParam["DCSUPOB"] =  self.addCallinfoView.pobValue
+       // addedDCRCallsParam["checkout"] = dcrCall.dcrCheckinTime
+       // addedDCRCallsParam["checkin"] = date
+        //self.txtPob.text ?? ""
+        if let overallFeedback = self.addCallinfoView.overallFeedback {
+            addedDCRCallsParam["Drcallfeedbackcode"] = overallFeedback.id ?? ""
+            addedDCRCallsParam["Drcallfeedbackname"] = overallFeedback.name ?? ""
+        }
+        addedDCRCallsParam["sample_validation"] = "0"
+        addedDCRCallsParam["input_validation"] = "0"
        
 
       //  Pipelines.shared.getAddressString(latitude: <#T##Double#>, longitude: <#T##Double#>, completion: <#T##(String?) -> Void#>)
@@ -209,34 +289,50 @@ class AddCallinfoVC: BaseViewController {
                 welf.showAlert()
                 return
             }
+            
             welf.latitude = coordinates?.latitude
             welf.longitude = coordinates?.longitude
+            
+            addedDCRCallsParam["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+   
+            
             Shared.instance.showLoaderInWindow()
-            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
-                welf.address = address
-                params["address"] =  address
-                params["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-                //String(format: "%.6f:%.6f", welf.latitude ??  Double(), welf.longitude ??  Double())
-                let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
-                var toSendData = [String : Any]()
-
-                toSendData["data"] = jsonDatum
-                welf.callDCRScaeapi(toSendData: toSendData, params: params, cusType: cusType) { isPosted in
-                    Shared.instance.removeLoaderInWindow()
-                    if !isPosted {
-                        welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: params)
-                    } else {
-                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                    }
-                
+            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {[weak self] address in
+                guard let welf = self else {return}
+                guard let fetchedAddress = address else {
                     
-                    welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-                }
+                    let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                    var toSendData = [String : Any]()
+                    toSendData["data"] = jsonDatum
+                    welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
+                    
+                    return}
+            
+                welf.address = fetchedAddress
+                addedDCRCallsParam["address"] =  fetchedAddress
+                let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                var toSendData = [String : Any]()
+                toSendData["data"] = jsonDatum
+                welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
             }
             
         }
 
      
+    }
+    
+    func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String) {
+        callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) {[weak self] isPosted in
+            guard let welf = self else {return}
+            Shared.instance.removeLoaderInWindow()
+            if !isPosted {
+                welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam)
+            } else {
+                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+            }
+
+            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+        }
     }
     
     func showAlertToEnableLocation() {

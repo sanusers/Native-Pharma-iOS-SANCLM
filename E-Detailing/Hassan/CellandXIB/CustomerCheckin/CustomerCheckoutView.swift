@@ -33,6 +33,10 @@ class CustomerCheckoutView: UIView {
     }
     
     func setLabels(dcrCall: CallViewModel) {
+        longitudeLbl.setFont(font: .medium(size: .BODY))
+        latitudeLbl.setFont(font: .medium(size: .BODY))
+        addressLbl.setFont(font: .medium(size: .BODY))
+        checkoutTimeLbl.setFont(font: .medium(size: .BODY))
         longitudeLbl.text = "\(dcrCall.checkOutlongitude)"
         latitudeLbl.text = "\(dcrCall.checkOutlatitude)"
         addressLbl.text = dcrCall.customerCheckOutAddress

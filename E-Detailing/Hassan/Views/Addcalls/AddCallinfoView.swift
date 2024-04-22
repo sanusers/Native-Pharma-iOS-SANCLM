@@ -10,9 +10,6 @@ import UIKit
 import CoreData
 extension AddCallinfoView: MenuResponseProtocol {
     func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
-        
-        
-        
         self.productSelectedListViewModel = product
         self.additionalCallListViewModel = additioncall
         self.additionalCallListViewModel.updateInCallSection(index, isView: false)
@@ -435,7 +432,7 @@ extension AddCallinfoView {
                 cell.lblName.textColor =    cell.btnSelected.isSelected ? .appTextColor : .appLightTextColor
             }
            
-            self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "")))
+            self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")))
             self.toloadContentsTable()
         }
     }
@@ -1142,7 +1139,7 @@ class AddCallinfoView : BaseView {
         }
     }
     
- var productSelectedListViewModel = ProductSelectedListViewModel()
+      var productSelectedListViewModel = ProductSelectedListViewModel()
      var additionalCallListViewModel = AdditionalCallsListViewModel()
    enum  SegmentType : String {
         case detailed = "Detailed"
@@ -1679,8 +1676,10 @@ class AddCallinfoView : BaseView {
                 
                 let datestr = dateString
                 
-
+                welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
+                welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
                var dcrCall = welf.addCallinfoVC.dcrCall
+                
                 
                 welf.checkoutAction(dcrCall: dcrCall)
                 

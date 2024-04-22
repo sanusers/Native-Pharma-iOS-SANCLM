@@ -73,10 +73,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     
                  //   var inputs = additionalCall.inputSelectedListViewModel.inputData()
                     
-                    var optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
+                    let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
                     //productData()
                     
-                    var optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
+                    let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
                     //inputData()
                     guard var inputs = optionalinputs else {return}
                     guard var products  = optionalproducts else {return}
@@ -161,9 +161,15 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                                 self.heightViewAdditionalSampleInputList.isActive = false
                             }
                             productView.product = product
-                            
-                            if index < inputCount { // || index == inputCount
-                                productView.input = inputs[index] //additionalCall.inputSelectedListViewModel.fetchDataAtIndex(index)
+                            productView.productQty = additionalCall.productSelectedListViewModel.fetchDataAtIndex(index + 1).sampleCount
+                            if index < inputs.count {
+                                productView.input = inputs[index]
+                                productView.inputQty = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(index + 1).inputCount
+                            } else {
+                                // Handle the case where index is out of range
+                                // For example, provide a default value or handle the error
+                                print("Index is out of range.")
+                                // You might want to provide a default input or inputQty value here
                             }
                             
                             if index == 0 {
@@ -206,10 +212,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                // additionalCall.inputSelectedListViewModel.numberOfRows()
                 
-                var optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
-                //productData()
+                let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
+           
                 
-                var optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
+                let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
                 //inputData()
                 guard var inputs = optionalinputs else {return}
                 guard var products  = optionalproducts else {return}
@@ -227,7 +233,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                 if productCount != 0 {
                     self.lblProductName.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).name
-                    self.lblProductQty.text = products[0].name //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
+                    self.lblProductQty.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
                     
                     products.removeFirst()
                 }else {
