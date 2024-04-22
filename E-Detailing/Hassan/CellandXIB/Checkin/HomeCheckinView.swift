@@ -73,6 +73,8 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
         guard let ainfo = chckinInfo else {return}
         
         guard let userstrtisticsVM = userstrtisticsVM else {return}
+    
+        
         Pipelines.shared.callCheckinCheckoutAPI(userstrtisticsVM: userstrtisticsVM, model: ainfo, appsetup: appsetup) { result in
             
             switch result {
@@ -160,13 +162,8 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
             welf.latitude = coordinates?.latitude
             welf.longitude = coordinates?.longitude
             
-            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
-                welf.address = address
-                
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                    welf.callAPI()
-                } else {
-                    
+            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+
                     let dateFormatter = DateFormatter()
     
                     let currentDate = Date()
@@ -190,7 +187,15 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                         
                     }
 
-                }
+                
+            }
+            
+            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
+                welf.address = address
+                
+            
+                    welf.callAPI()
+              
               
             }
             

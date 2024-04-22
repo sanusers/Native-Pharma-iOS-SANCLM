@@ -25,8 +25,9 @@ extension MasterSyncVC: MenuResponseProtocol {
         switch type {
 
         case .headQuater:
-            
+            Shared.instance.isFetchingHQ = true
             guard let selectedObject = selectedObject as? Subordinate else {
+                Shared.instance.isFetchingHQ = false
                 return
             }
 

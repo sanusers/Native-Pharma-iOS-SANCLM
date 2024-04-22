@@ -311,7 +311,33 @@ class MainVC : UIViewController {
 //        }
         
         
-        ReachabilityManager.isReachable() { [weak self] reachability in
+        network.isReachable() { [weak self] reachability in
+            guard let welf = self else {return}
+        
+            switch reachability.reachability.connection {
+                
+            case .unavailable, .none:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                welf.toConfigureMydayPlan()
+                welf.refreshUI()
+            case .wifi, .cellular:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                welf.toPostDayplan() {
+                   // if !Shared.instance.isDayplanSet {
+                        welf.toSetDayplan() {
+                            welf.refreshUI()
+                        }
+                  //  } else {
+                      //  welf.refreshUI()
+                  //  }
+                }
+          
+        
+            }
+            
+        }
+        
+        network.isUnreachable() { [weak self] reachability in
             guard let welf = self else {return}
         
             switch reachability.reachability.connection {

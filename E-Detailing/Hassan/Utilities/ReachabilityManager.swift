@@ -48,14 +48,14 @@ class ReachabilityManager : NSObject {
         NotificationCenter.default.post(name: NSNotification.Name("connectionChanged"), object: reachability, userInfo: connectionDict)
         // Do something globally here!    }
     }
-    static func stopNotifier() -> Void {
+     func stopNotifier() -> Void {
   
         (ReachabilityManager.sharedInstance.reachability).stopNotifier()
 
         
     }
     
-    static func isReachable(completed: @escaping (ReachabilityManager) -> Void) {
+     func isReachable(completed: @escaping (ReachabilityManager) -> Void) {
         if (ReachabilityManager.sharedInstance.reachability).connection != .unavailable { 
             completed(ReachabilityManager.sharedInstance)
             
@@ -63,7 +63,7 @@ class ReachabilityManager : NSObject {
         
     }
     
-    static func isUnreachable(completed: @escaping (ReachabilityManager) -> Void) {
+     func isUnreachable(completed: @escaping (ReachabilityManager) -> Void) {
         if (ReachabilityManager.sharedInstance.reachability).connection == .unavailable { 
             completed(ReachabilityManager.sharedInstance)
             
@@ -73,7 +73,7 @@ class ReachabilityManager : NSObject {
     
     
     
-    static func isReachableViaWWAN(completed: @escaping (ReachabilityManager) -> Void) {
+     func isReachableViaWWAN(completed: @escaping (ReachabilityManager) -> Void) {
         if (ReachabilityManager.sharedInstance.reachability).connection == .cellular {
             completed(ReachabilityManager.sharedInstance)
             
@@ -81,7 +81,7 @@ class ReachabilityManager : NSObject {
         
     }
     
-    static func isReachableViaWiFi(completed: @escaping (ReachabilityManager) -> Void) {
+     func isReachableViaWiFi(completed: @escaping (ReachabilityManager) -> Void) {
         if (ReachabilityManager.sharedInstance.reachability).connection == .wifi {
             completed(ReachabilityManager.sharedInstance)
             

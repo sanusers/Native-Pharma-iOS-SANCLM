@@ -17,6 +17,7 @@ class Shared {
     var isDayplanSet = false
     var iscelliterating: Bool = false
     var isSlideDownloading: Bool = false
+    var isFetchingHQ: Bool = false
 }
 //MARK:- UserDefaults property observers
 

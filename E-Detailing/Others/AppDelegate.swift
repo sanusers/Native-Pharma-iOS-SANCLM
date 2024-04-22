@@ -15,7 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var shared : AppDelegate{
         return UIApplication.shared.delegate as! AppDelegate
     }
-   
+    
+    let network: ReachabilityManager = ReachabilityManager.sharedInstance
+    
+    
     var window: UIWindow?
 
     
@@ -23,11 +26,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         GMSServices.provideAPIKey(GooglePlacesApiKey)
-        
+        checkReachability()
         self.setupRootViewControllers(isFromlaunch: false)
-        // Enable IQKeyboardManager
-              IQKeyboardManager.shared.enable = true
+        IQKeyboardManager.shared.enable = true
         return true
+    }
+    
+    
+    func checkReachability() {
+        network.isReachable() {  reachability in
+            
+            
+            switch reachability.reachability.connection {
+                
+            case .unavailable, .none:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                
+            case .wifi, .cellular:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+            }
+        }
+
+        network.isUnreachable() { reachability in
+         
+            
+            switch reachability.reachability.connection {
+                
+            case .unavailable, .none:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                
+            case .wifi, .cellular:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                
+            }
+            
+            
+        }
+        
     }
     
     
@@ -40,11 +75,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
 
             if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
+             
                 BackgroundTaskManager.shared.stopBackgroundTask()
                 
                 self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: isFromlaunch ?? false, ViewModel: UserStatisticsVM()))
 
             }else if AppDefaults.shared.isLoggedIn() {
+                
                 let mastersyncVC = MasterSyncVC.initWithStory()
                 mastersyncVC.isFromLaunch = true
                 self.window?.rootViewController = UINavigationController.init(rootViewController:mastersyncVC)

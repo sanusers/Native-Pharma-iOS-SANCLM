@@ -59,16 +59,27 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     }
     
     
-    func toSetupAlert(desc: String, istoNavigate: Bool) {
+    func toSetupAlert(desc: String, istoNavigate: Bool, istoNavigatetoSettings : Bool? = false) {
         downloadAlertSet = true
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+          if istoNavigatetoSettings ?? false {
+              self.navigateTosettings()
+            }
             print("no action")
 
         }
     }
     
+    
+    func navigateTosettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
     
     
     
@@ -223,7 +234,13 @@ class MasterSyncVC : UIViewController {
         }else {
             selectedMasterGroupIndex = nil
 
-            syncAllAction(self)
+           // if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                syncAllAction(self)
+          //  } else {
+            //  toSetupAlert(desc: "please connect to internet for initial setups", istoNavigate: false, istoNavigatetoSettings: true)
+        //    }
+            
+           
             
           
             
@@ -383,7 +400,7 @@ class MasterSyncVC : UIViewController {
                 
             }
     
-            
+            Shared.instance.isFetchingHQ = false
             return
         }
             let aHQobj = HQModel()
@@ -402,6 +419,7 @@ class MasterSyncVC : UIViewController {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
         self.lblHqName.text =   self.fetchedHQObject?.name
+        Shared.instance.isFetchingHQ = false
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
@@ -411,7 +429,11 @@ class MasterSyncVC : UIViewController {
     @IBAction func headquarterAction(_ sender: UIButton) {
       //  let headquarter = DBManager.shared.getSubordinate()
 
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+        if   Shared.instance.isFetchingHQ {
+            self.toCreateToast("Syncing please wait")
+            return
+        }
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR)  {
             return
         }
         
