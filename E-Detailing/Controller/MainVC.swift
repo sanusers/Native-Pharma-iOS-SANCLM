@@ -2437,7 +2437,7 @@ extension MainVC {
                     
                 } else {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: true)
-                    
+                 //   welf.masterVM?.toUpdateDataBase(aDayplan: <#T##DayPlan#>, completion: <#T##(Bool) -> ()#>)
                    // welf.toConfigureMydayPlan()
                     nonNilSession.indices.forEach { index in
                         nonNilSession[index].isRetrived = true

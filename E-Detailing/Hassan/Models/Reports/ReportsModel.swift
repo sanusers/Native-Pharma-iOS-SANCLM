@@ -141,7 +141,7 @@ class DetailedReportsModel: Codable {
     let dcrAddr: String
     var isRCPAExtended: Bool
     var isCellExtended: Bool
-    
+    var promotedProducts: String
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = container.safeDecodeValue(forKey: .name)
@@ -162,6 +162,7 @@ class DetailedReportsModel: Codable {
         self.checkin = container.safeDecodeValue(forKey: .checkin)
         self.vstloc = container.safeDecodeValue(forKey: .vstloc)
         self.dcrAddr = container.safeDecodeValue(forKey: .dcrAddr)
+        self.promotedProducts = container.safeDecodeValue(forKey: .promotedProducts)
         isRCPAExtended = false
         isCellExtended = false
     }
@@ -181,6 +182,7 @@ class DetailedReportsModel: Codable {
             case transDetailSlno = "Trans_Detail_Slno"
             case checkout, checkin, vstloc
             case dcrAddr = "Dcr_addr"
+            case promotedProducts = "promoted_product"
         }
     
     init() {
@@ -204,6 +206,7 @@ class DetailedReportsModel: Codable {
         self.checkin = String()
         self.vstloc = String()
         self.dcrAddr = String()
+        self.promotedProducts  = String()
     }
     
 }

@@ -32,8 +32,9 @@ extension ChangePasswordView: UITextFieldDelegate {
             return true
         }
         
-        let updatedText = text.replacingCharacters(in: range, with: string)
-        
+        let updatedText = text.replacingCharacters(in: range, with: string).replacingOccurrences(of: " ", with: "")
+       
+           
         switch textField {
         case oldPasswordTF:
             if updatedText == userPassword {
@@ -57,7 +58,7 @@ extension ChangePasswordView: UITextFieldDelegate {
                 isRepeatPasswordVerified = false
             }
             
-            if updatedText.count >= 3 {
+            if updatedText.count >= 3 &&  updatedText != appsetup.sfPassword  {
                 //&& updatedText.containsSpecialCharacter
                 newpasswordStr = updatedText
                 passwordValidationLbl.isHidden = true
@@ -65,20 +66,20 @@ extension ChangePasswordView: UITextFieldDelegate {
                 checkButtonStatus()
             } else {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = "Password should be minimum 3 characters."
+                passwordValidationLbl.text = "Entered passsword is same as old password"
                 //"Password should be alphanumeric, special character, min 8 char, combination upper case."
                 isNewPasswordVerified = false
                 checkButtonStatus()
             }
             
         case repeatPasswordTF:
-            if updatedText == newPasswordTF.text {
+            if updatedText == newPasswordTF.text &&  isNewPasswordVerified {
                 passwordValidationLbl.isHidden = true
                 isRepeatPasswordVerified = true
                 checkButtonStatus()
             } else {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = "Repeated password is incorrect"
+                passwordValidationLbl.text = isNewPasswordVerified ? "Repeated password is incorrect" : "Entered passsword is same as old password"
                 isRepeatPasswordVerified = false
                 checkButtonStatus()
             }
@@ -240,7 +241,7 @@ class ChangePasswordView: UIView {
         
         
         
-        userStatisticsVM?.updateUserPassword(params: toSendData, api: .updatePassword, paramData: param) {result in
+        userStatisticsVM?.updateUserPassword(params: toSendData, api: .saveMAsterData, paramData: param) {result in
             
             switch result {
                 

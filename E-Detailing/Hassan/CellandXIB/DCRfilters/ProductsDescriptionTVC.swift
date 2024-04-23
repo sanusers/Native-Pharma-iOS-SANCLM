@@ -34,12 +34,16 @@ class ProductsDescriptionTVC: UITableViewCell {
 //        samplesLbl.text =
         
         self.productLbl.text = modelStr.prodName
-        if modelStr.isDemoProductCell {
-            self.promoterLbl.text = modelStr.isPromoted ? "Yes" : ""
+        let tickIconString = "\u{2713}"
+        print(tickIconString) // This will print: ✓
+        if let promoted = modelStr.isPromoted {
+            let promotedIcon =  promoted ? tickIconString : "x"
+           // isPromoted = promotedIcon
+            self.promoterLbl.text =  promotedIcon
+            self.promoterLbl.textColor = promoted ? .appGreen : .appTextColor
         } else {
-            self.promoterLbl.text = modelStr.isPromoted ? "Yes" : "No"
+            self.promoterLbl.text = ""
         }
-        
         self.samplesLbl.text = modelStr.noOfSamples == "" ? "-" :  String(modelStr.noOfSamples.dropLast())
         self.rxQTYlbl.text = modelStr.rxQTY == "" ? "-" :   String(modelStr.rxQTY.dropLast())
         self.rcpaLbl.text = modelStr.rcpa == "" ? "-" :  String(modelStr.rcpa.dropLast())

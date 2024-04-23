@@ -18,6 +18,9 @@ enum XIBs: String {
     case jfwView = "JfwView"
     case customerCheckinVIew = "CustomerCheckinView"
     case customerCheckoutView = "CustomerCheckoutView"
+    
+    case productSectionReusableView = "ProductSectionReusableView"
+    
     var nib: UINib {
         return UINib(nibName: self.rawValue, bundle: nil)
     }
@@ -28,6 +31,21 @@ extension UIViewController {
         // Load the XIB
          let nib = nibname.nib
         if let customView = nib.instantiate(withOwner: nil, options: nil).first as? UIView {
+            // Configure your custom view if needed
+            return customView
+        }
+
+        // Return a default view if loading fails
+        return nil
+    }
+}
+
+
+extension UICollectionReusableView {
+     func loadCustomView(nibname: XIBs) -> UICollectionReusableView? {
+        // Load the XIB
+         let nib = nibname.nib
+        if let customView = nib.instantiate(withOwner: nil, options: nil).first as? UICollectionReusableView {
             // Configure your custom view if needed
             return customView
         }

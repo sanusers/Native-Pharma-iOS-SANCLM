@@ -23,8 +23,6 @@
 		38107C4E2B36F1B900ACEDF3 /* VisitInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C4C2B36F1B900ACEDF3 /* VisitInfoCVC.xib */; };
 		38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C4F2B36F2A700ACEDF3 /* TimeInfoCVC.swift */; };
 		38107C522B36F2A700ACEDF3 /* TimeInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C502B36F2A700ACEDF3 /* TimeInfoCVC.xib */; };
-		38107C552B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C532B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift */; };
-		38107C562B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C542B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib */; };
 		38107C592B36F86C00ACEDF3 /* rcpaCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C572B36F86C00ACEDF3 /* rcpaCVC.swift */; };
 		38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C582B36F86C00ACEDF3 /* rcpaCVC.xib */; };
 		38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C5C2B36F97E00ACEDF3 /* ReportsCVC.swift */; };
@@ -312,6 +310,8 @@
 		38F289B72B0CB59A00045D4F /* EditSessionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B52B0CB59A00045D4F /* EditSessionTVC.swift */; };
 		38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */; };
 		38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F289B92B0CDFD800045D4F /* BackupCodes.swift */; };
+		38F33A722BD79324005EC7B0 /* ProductSectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38F33A712BD79324005EC7B0 /* ProductSectionReusableView.xib */; };
+		38F33A752BD794C3005EC7B0 /* ProductSectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F33A742BD794C3005EC7B0 /* ProductSectionReusableView.swift */; };
 		38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F4B8142A49979100BD4FD2 /* WorkType + Extension.swift */; };
 		38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F4B8162A49C92400BD4FD2 /* MyDayPlan + Extension.swift */; };
 		38F515852AA33E090069FC6B /* RcpaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F515842AA33E090069FC6B /* RcpaViewModel.swift */; };
@@ -388,8 +388,6 @@
 		38107C4C2B36F1B900ACEDF3 /* VisitInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VisitInfoCVC.xib; sourceTree = "<group>"; };
 		38107C4F2B36F2A700ACEDF3 /* TimeInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInfoCVC.swift; sourceTree = "<group>"; };
 		38107C502B36F2A700ACEDF3 /* TimeInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeInfoCVC.xib; sourceTree = "<group>"; };
-		38107C532B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSectionTitleCVC.swift; sourceTree = "<group>"; };
-		38107C542B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSectionTitleCVC.xib; sourceTree = "<group>"; };
 		38107C572B36F86C00ACEDF3 /* rcpaCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rcpaCVC.swift; sourceTree = "<group>"; };
 		38107C582B36F86C00ACEDF3 /* rcpaCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = rcpaCVC.xib; sourceTree = "<group>"; };
 		38107C5C2B36F97E00ACEDF3 /* ReportsCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsCVC.swift; sourceTree = "<group>"; };
@@ -678,6 +676,8 @@
 		38F289B52B0CB59A00045D4F /* EditSessionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSessionTVC.swift; sourceTree = "<group>"; };
 		38F289B62B0CB59A00045D4F /* EditSessionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditSessionTVC.xib; sourceTree = "<group>"; };
 		38F289B92B0CDFD800045D4F /* BackupCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCodes.swift; sourceTree = "<group>"; };
+		38F33A712BD79324005EC7B0 /* ProductSectionReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSectionReusableView.xib; sourceTree = "<group>"; };
+		38F33A742BD794C3005EC7B0 /* ProductSectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSectionReusableView.swift; sourceTree = "<group>"; };
 		38F4B8142A49979100BD4FD2 /* WorkType + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorkType + Extension.swift"; sourceTree = "<group>"; };
 		38F4B8162A49C92400BD4FD2 /* MyDayPlan + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyDayPlan + Extension.swift"; sourceTree = "<group>"; };
 		38F515842AA33E090069FC6B /* RcpaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaViewModel.swift; sourceTree = "<group>"; };
@@ -760,8 +760,6 @@
 				38107C4C2B36F1B900ACEDF3 /* VisitInfoCVC.xib */,
 				38107C4F2B36F2A700ACEDF3 /* TimeInfoCVC.swift */,
 				38107C502B36F2A700ACEDF3 /* TimeInfoCVC.xib */,
-				38107C532B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift */,
-				38107C542B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib */,
 				38107C572B36F86C00ACEDF3 /* rcpaCVC.swift */,
 				38107C582B36F86C00ACEDF3 /* rcpaCVC.xib */,
 				38107C5C2B36F97E00ACEDF3 /* ReportsCVC.swift */,
@@ -773,6 +771,8 @@
 				38107C652B37056600ACEDF3 /* ProductsDescriptionCVC.swift */,
 				38107C662B37056600ACEDF3 /* ProductsDescriptionCVC.xib */,
 				38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */,
+				38F33A712BD79324005EC7B0 /* ProductSectionReusableView.xib */,
+				38F33A742BD794C3005EC7B0 /* ProductSectionReusableView.swift */,
 			);
 			path = ReportsViewMore;
 			sourceTree = "<group>";
@@ -1724,7 +1724,6 @@
 				38CA1FE52B6102AB00AFCFD2 /* SelectPresentationCVC.xib in Resources */,
 				38FAA1722B7F263500714AA2 /* MyDayPlanTVC.xib in Resources */,
 				386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */,
-				38107C562B36F62A00ACEDF3 /* ProductSectionTitleCVC.xib in Resources */,
 				38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */,
 				387B8A2E2BB3DCDA007F38AB /* _demo.xcconfig in Resources */,
 				38CA1FDD2B60E61900AFCFD2 /* BrandsNameTVC.xib in Resources */,
@@ -1791,6 +1790,7 @@
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
 				386A61D92BB2AC7000363C6C /* RCPASectionheader.xib in Resources */,
 				38FD4F042BBD763000EF9D3D /* CustomerCheckinView.xib in Resources */,
+				38F33A722BD79324005EC7B0 /* ProductSectionReusableView.xib in Resources */,
 				3865F8D62AFCE3BF009AB984 /* worksPlanTVC.xib in Resources */,
 				38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */,
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
@@ -2049,6 +2049,7 @@
 				38E5E4612AEBB39B00AF053A /* JointWorkTableViewCell.swift in Sources */,
 				3865F8D12AFCCF62009AB984 /* StoryBoardExtensions.swift in Sources */,
 				3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */,
+				38F33A752BD794C3005EC7B0 /* ProductSectionReusableView.swift in Sources */,
 				38E3DF752B8F66F50093DF4B /* HomeCheckinDetailsView.swift in Sources */,
 				38D738232B120A6F00162548 /* TableSetupModel.swift in Sources */,
 				3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */,
@@ -2101,7 +2102,6 @@
 				38E3C35E2AF9FA0400623C33 /* APIenums.swift in Sources */,
 				3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */,
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,
-				38107C552B36F62A00ACEDF3 /* ProductSectionTitleCVC.swift in Sources */,
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,

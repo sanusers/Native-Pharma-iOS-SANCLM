@@ -35,7 +35,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 return 1
             }
         case 2:
-            return  productStrArr.count
+            return   productStrArr.count
         case 3:
             return 1
         default:
@@ -112,23 +112,32 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
 
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        // Create and return the header view
-        if indexPath.section == 2 {
-            if kind == UICollectionView.elementKindSectionHeader {
-                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CustomHeaderView.identifier, for: indexPath) as! CustomHeaderView
-                headerView.titleLabel.text = "Product"
-                return headerView
-            }
-        }
+    func collectionView(_ collectionView: UICollectionView,
+      viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+      switch kind {
+      case UICollectionView.elementKindSectionHeader:
 
-        return UICollectionReusableView()
+          let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                            withReuseIdentifier: "\(ProductSectionReusableView.self)",
+                            for: indexPath)  // Or simply withReuseIdentifier: "Item1HeaderView"
+          headerView.backgroundColor = .clear
+          guard let typedHeaderView = headerView as? ProductSectionReusableView else { return headerView
+          }
+
+          return typedHeaderView
+      default:
+          print("No header")
+      }
+
+      return UICollectionReusableView()
     }
+
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         // Return the size of your header
         if section == 2 {
-            return CGSize(width: collectionView.frame.width, height: 50)
+            return CGSize(width: collectionView.frame.width, height: 70)
         } else {
             return CGSize()
         }
@@ -150,20 +159,14 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             return cell
         case 2:
             
-            
-            switch indexPath.row {
-            case 0:
-                let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
-                cell.holderVoew.backgroundColor = .appGreyColor
-                return cell
-            default:
+
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                 let modelStr = self.productStrArr[indexPath.row]
 
                 cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
-            }
+
         case 3:
             let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
             cell.addTap {
@@ -180,16 +183,16 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 switch indexPath.section {
                     //MARK: - rcpa cell (+1 section)
                 case 4:
-                    switch indexPath.row {
-                    case 0:
-                        let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
-                        cell.holderVoew.backgroundColor = .appGreyColor
-                        return cell
-                    default:
+//                    switch indexPath.row {
+//                    case 0:
+//                        let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
+//                        cell.holderVoew.backgroundColor = .appGreyColor
+//                        return cell
+                  //  default:
                         let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                         cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
                         return cell
-                    }
+                   // }
                 case 5:
                     let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
                     return cell
@@ -240,7 +243,7 @@ protocol ViewAllInfoTVCDelegate: AnyObject {
 
 struct SampleProduct {
     let prodName: String
-    let isPromoted: Bool
+    let isPromoted: Bool?
     let noOfSamples : String
     let rxQTY: String
     let rcpa: String
@@ -286,21 +289,30 @@ class ViewAllInfoTVC: UITableViewCell {
     
     func toSetDataSourceForProducts() {
         productStrArr.removeAll()
-        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
+     //   productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
         
        if detailedReportModel?.products != "" {
            var prodArr =  detailedReportModel?.products.components(separatedBy: ",")
-           if prodArr?.last == "" {
+         //  if prodArr?.last == "" {
                prodArr?.removeLast()
+         //  }
+           
+           let filteredComponents = prodArr?.map { anElement -> String in
+               var modifiedElement = anElement
+               if modifiedElement.first == " " {
+                   modifiedElement.removeFirst()
+               }
+               return modifiedElement
            }
-           prodArr?.forEach { prod in
+           
+           filteredComponents?.forEach { prod in
                var prodString : [String] = []
                prodString.append(contentsOf: prod.components(separatedBy: "("))
                prodString = prodString.map({ aprod in
                    aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
                })
                var name: String = ""
-               var isPromoted: String = ""
+               var isPromoted: Bool = false
                var noOfsamples: String = ""
                var rxQty: String = ""
                var rcpa: String  = ""
@@ -311,24 +323,53 @@ class ViewAllInfoTVC: UITableViewCell {
                    case 0 :
                        name = prod
                    case 1:
-                       isPromoted = prod
-                   case 2:
                        noOfsamples = prod
-                   case 3:
+                   case 2:
                        rxQty = prod
-                   case 4:
-                       rcpa = prod
+                   case 3:
+                       if let index = prod.firstIndex(of: "^") {
+                           let startIndex = prod.index(after: index)
+                           let numberString = String(prod[startIndex...])
+                           rcpa = numberString
+                           print(numberString) // This will print "5"
+                       } else {
+                           print("'^' not found in the expression.")
+                           rcpa = "-"
+                       }
+                      
+   
                    default:
                        print("default")
                    }
                }
-               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted.replacingOccurrences(of: " ", with: "") == "0" ? true : false, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false)
+               
+        
+               let promotdProduct = self.detailedReportModel?.promotedProducts
+               guard let promotdProduct = promotdProduct else {return}
+      
+               // Split the promotedProduct string by the "$" delimiter
+               let components = promotdProduct.components(separatedBy: "$")
+
+               // Extract words after the "$" sign
+               let words = components.compactMap { $0.components(separatedBy: " ").first }
+
+               // Check if any of the extracted words matches the name
+               if words.contains(where: { $0 == name.components(separatedBy: " ").first }) {
+                   print("The 'promotedProduct' contains '\(name)'")
+                   isPromoted = true
+               } else {
+                   print("The 'promotedProduct' does not contain '\(name)'")
+                   isPromoted = false
+               }
+               
+               
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false)
                
              //  let aProduct = SampleProduct(prodName: prodString[0].isEmpty ? "" : prodString[0] , isPromoted: prodString[1].isEmpty ? false : prodString[1].contains("0") ? true : false, noOfSamples:  prodString[2].isEmpty ? "" : prodString[2] , rxQTY:  prodString[3].isEmpty ? "" : prodString[3] , rcpa:  prodString[4].isEmpty ? "" : prodString[4])
                productStrArr.append(aProduct)
            }
        } else {
-           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: nil, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
        }
 
         
@@ -349,7 +390,7 @@ class ViewAllInfoTVC: UITableViewCell {
         
         extendedInfoCollection.register(UINib(nibName: "VisitInfoCVC", bundle: nil), forCellWithReuseIdentifier: "VisitInfoCVC")
         extendedInfoCollection.register(UINib(nibName: "TimeInfoCVC", bundle: nil), forCellWithReuseIdentifier: "TimeInfoCVC")
-        extendedInfoCollection.register(UINib(nibName: "ProductSectionTitleCVC", bundle: nil), forCellWithReuseIdentifier: "ProductSectionTitleCVC")
+//        extendedInfoCollection.register(UINib(nibName: "ProductSectionTitleCVC", bundle: nil), forCellWithReuseIdentifier: "ProductSectionTitleCVC")
         extendedInfoCollection.register(UINib(nibName: "rcpaCVC", bundle: nil), forCellWithReuseIdentifier: "rcpaCVC")
         extendedInfoCollection.register(UINib(nibName: "ReportsCVC", bundle: nil), forCellWithReuseIdentifier: "ReportsCVC")
         extendedInfoCollection.register(UINib(nibName: "ViewmoreCVC", bundle: nil), forCellWithReuseIdentifier: "ViewmoreCVC")
@@ -357,6 +398,9 @@ class ViewAllInfoTVC: UITableViewCell {
         extendedInfoCollection.register(UINib(nibName: "ProductsDescriptionCVC", bundle: nil), forCellWithReuseIdentifier: "ProductsDescriptionCVC")
         
         extendedInfoCollection.register(CustomHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CustomHeaderView.identifier)
+        
+        extendedInfoCollection.register(ProductSectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ProductSectionReusableView")
+        
         
     }
 
