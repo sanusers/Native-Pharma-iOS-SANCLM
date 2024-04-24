@@ -101,6 +101,11 @@
 		38866E7A2BB2E11800F9E576 /* CompetitorsDetailsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38866E782BB2E11800F9E576 /* CompetitorsDetailsHeader.swift */; };
 		38866E7B2BB2E11800F9E576 /* CompetitorsDetailsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38866E792BB2E11800F9E576 /* CompetitorsDetailsHeader.xib */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
+		38B18B712BD93AD7001FC958 /* InputSectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B18B6E2BD93AD7001FC958 /* InputSectionReusableView.swift */; };
+		38B18B722BD93AD7001FC958 /* ProductSectionTitleCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B18B6F2BD93AD7001FC958 /* ProductSectionTitleCVC.swift */; };
+		38B18B732BD93AD7001FC958 /* ProductSectionTitleCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38B18B702BD93AD7001FC958 /* ProductSectionTitleCVC.xib */; };
+		38B18B762BD93BC1001FC958 /* InputDescriptionCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38B18B752BD93BC1001FC958 /* InputDescriptionCVC.xib */; };
+		38B18B772BD93BC1001FC958 /* InputDescriptionCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B18B742BD93BC1001FC958 /* InputDescriptionCVC.swift */; };
 		38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */; };
 		38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */; };
 		38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */; };
@@ -466,6 +471,11 @@
 		38866E782BB2E11800F9E576 /* CompetitorsDetailsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompetitorsDetailsHeader.swift; sourceTree = "<group>"; };
 		38866E792BB2E11800F9E576 /* CompetitorsDetailsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CompetitorsDetailsHeader.xib; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
+		38B18B6E2BD93AD7001FC958 /* InputSectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSectionReusableView.swift; sourceTree = "<group>"; };
+		38B18B6F2BD93AD7001FC958 /* ProductSectionTitleCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSectionTitleCVC.swift; sourceTree = "<group>"; };
+		38B18B702BD93AD7001FC958 /* ProductSectionTitleCVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductSectionTitleCVC.xib; sourceTree = "<group>"; };
+		38B18B742BD93BC1001FC958 /* InputDescriptionCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDescriptionCVC.swift; sourceTree = "<group>"; };
+		38B18B752BD93BC1001FC958 /* InputDescriptionCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputDescriptionCVC.xib; sourceTree = "<group>"; };
 		38B52CE12B29CC8900CF30D9 /* PopoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverVC.swift; sourceTree = "<group>"; };
 		38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRGraphModel.swift; sourceTree = "<group>"; };
 		38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLineChartView.swift; sourceTree = "<group>"; };
@@ -756,6 +766,9 @@
 		38107C4A2B36F18900ACEDF3 /* ReportsViewMore */ = {
 			isa = PBXGroup;
 			children = (
+				38B18B6E2BD93AD7001FC958 /* InputSectionReusableView.swift */,
+				38B18B6F2BD93AD7001FC958 /* ProductSectionTitleCVC.swift */,
+				38B18B702BD93AD7001FC958 /* ProductSectionTitleCVC.xib */,
 				38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */,
 				38107C4C2B36F1B900ACEDF3 /* VisitInfoCVC.xib */,
 				38107C4F2B36F2A700ACEDF3 /* TimeInfoCVC.swift */,
@@ -773,6 +786,8 @@
 				38FADFAC2B3C04D200632C2F /* CustomCollectionHeader.swift */,
 				38F33A712BD79324005EC7B0 /* ProductSectionReusableView.xib */,
 				38F33A742BD794C3005EC7B0 /* ProductSectionReusableView.swift */,
+				38B18B742BD93BC1001FC958 /* InputDescriptionCVC.swift */,
+				38B18B752BD93BC1001FC958 /* InputDescriptionCVC.xib */,
 			);
 			path = ReportsViewMore;
 			sourceTree = "<group>";
@@ -1716,6 +1731,7 @@
 				384555702BA9C87F00F6CE1A /* ProductsInfoHeader.xib in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
+				38B18B732BD93AD7001FC958 /* ProductSectionTitleCVC.xib in Resources */,
 				3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */,
 				38EF4C672B749DAE00F78F2E /* BrandsPreviewCVC.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
@@ -1765,6 +1781,7 @@
 				38C600DA2A93332100C733AF /* InputSampleTableViewCell.xib in Resources */,
 				38C1C43B2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib in Resources */,
 				B287E68629F2A20F0097974D /* Satoshi-Regular.otf in Resources */,
+				38B18B762BD93BC1001FC958 /* InputDescriptionCVC.xib in Resources */,
 				B287E62C29F29C220097974D /* Assets.xcassets in Resources */,
 				38CD60DD2A865AC1006FFB39 /* ProductRatingTableViewCell.xib in Resources */,
 				38E3E53A2A80C78700AE5AF6 /* DoctorCallCell.xib in Resources */,
@@ -1937,6 +1954,7 @@
 				38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */,
 				38FD4F022BBD714700EF9D3D /* CustomerCheckinView.swift in Sources */,
 				38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */,
+				38B18B712BD93AD7001FC958 /* InputSectionReusableView.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38DD14B12B4FBAA70036384F /* Shared.swift in Sources */,
 				38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */,
@@ -2015,6 +2033,7 @@
 				38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */,
 				38E189262BB16DF60093C446 /* JfwView.swift in Sources */,
 				381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */,
+				38B18B722BD93AD7001FC958 /* ProductSectionTitleCVC.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
 				38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */,
 				38FA7EEB2BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift in Sources */,
@@ -2042,6 +2061,7 @@
 				38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */,
 				38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */,
 				38E6598C2B33195C00E7BF42 /* DetailedReportView.swift in Sources */,
+				38B18B772BD93BC1001FC958 /* InputDescriptionCVC.swift in Sources */,
 				3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */,
 				3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */,
 				38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */,

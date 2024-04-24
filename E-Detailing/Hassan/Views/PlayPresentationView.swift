@@ -58,7 +58,9 @@ class  PlayPresentationView: BaseView {
             self.viewMInimize.isHidden = true
             self.viewClosePreview.isHidden = playPresentationVC.pagetype == .detailing ? true : false
             backHolderView.isHidden = playPresentationVC.pagetype == .detailing ? true : false
-            self.loadedCollectionHolderView.isHidden = false
+            if playPresentationVC.pagetype == .detailing {
+                self.loadedCollectionHolderView.isHidden = false
+            }
             self.previewCollectionHolderView.isHidden = false
             NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
            
