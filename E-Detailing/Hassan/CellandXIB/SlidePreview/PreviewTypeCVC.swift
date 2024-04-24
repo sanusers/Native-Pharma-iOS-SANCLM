@@ -16,12 +16,30 @@ class PreviewTypeCVC: UICollectionViewCell {
     @IBOutlet var titleLbl: UILabel!
     
     @IBOutlet var selectionView: UIView!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        titleLbl.setFont(font: .bold(size:  .BODY))
-        selectionView.backgroundColor = .appTextColor
+        selectionView.isHidden = true
+        holderVIew.isHidden = true
+
+    }
+   
+    func setupUI(pageType: PreviewHomeView.pageType) {
+        if pageType == .detailing {
+            holderVIew.isHidden = false
+            holderVIew.backgroundColor = .appTextColor
+            titleLbl.textColor = .appWhiteColor
+            titleLbl.setFont(font: .medium(size:  .BODY))
+            holderVIew.layer.cornerRadius = 5
+        } else {
+            selectionView.isHidden = false
+            selectionView.backgroundColor = .appTextColor
+            holderVIew.isHidden = true
+            titleLbl.setFont(font: .bold(size:  .BODY))
+            titleLbl.textColor = .appTextColor
+            holderVIew.layer.cornerRadius = 5
+        }
     }
     
     

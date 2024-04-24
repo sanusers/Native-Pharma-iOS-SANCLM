@@ -18,9 +18,9 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
         case .showRCPA:
            
             //MARK: - rcpa cell (+1 section)
-            return 7
+            return 8
         case .hideRCPA:
-            return 6
+            return 7
         }
     }
     
@@ -35,9 +35,16 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 return 1
             }
         case 2:
-            return   productStrArr.count
+            return  productStrArr.count
+            
         case 3:
+            return inputStrArr.count
+            
+        case 4:
             return 1
+            
+            
+            
         default:
             switch self.cellType {
                 
@@ -73,8 +80,10 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
       
         case 2:
             return CGSize(width: collectionView.width, height: 40)
-            
         case 3:
+            return CGSize(width: collectionView.width, height: 40)
+            
+        case 4:
             return CGSize(width: collectionView.width, height: 60)
         default:
             switch self.cellType {
@@ -84,21 +93,21 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
                     
                     //MARK: - rcpa cell (+1 section)
-                case 4:
+                case 5:
                     return CGSize(width: collectionView.width, height: 40)
                     
-                case 5:
-                    return CGSize(width: collectionView.width, height: 75)
                 case 6:
+                    return CGSize(width: collectionView.width, height: 75)
+                case 7:
                     return CGSize(width: collectionView.width, height: 50)
                 default:
                     return CGSize()
                 }
             case .hideRCPA:
                 switch indexPath.section {
-                case 4:
-                    return CGSize(width: collectionView.width, height: 75)
                 case 5:
+                    return CGSize(width: collectionView.width, height: 75)
+                case 6:
                     return CGSize(width: collectionView.width, height: 50)
                 default:
                     return CGSize()
@@ -114,21 +123,41 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView,
       viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-      switch kind {
-      case UICollectionView.elementKindSectionHeader:
+        switch indexPath.section {
+        case 2:
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
 
-          let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                            withReuseIdentifier: "\(ProductSectionReusableView.self)",
-                            for: indexPath)  // Or simply withReuseIdentifier: "Item1HeaderView"
-          headerView.backgroundColor = .clear
-          guard let typedHeaderView = headerView as? ProductSectionReusableView else { return headerView
-          }
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                  withReuseIdentifier: "\(ProductSectionReusableView.self)",
+                                  for: indexPath)  // Or simply withReuseIdentifier: "Item1HeaderView"
+                headerView.backgroundColor = .clear
+                guard let typedHeaderView = headerView as? ProductSectionReusableView else { return headerView
+                }
 
-          return typedHeaderView
-      default:
-          print("No header")
-      }
+                return typedHeaderView
+            default:
+                print("No header")
+            }
+        case 3:
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                  withReuseIdentifier: "\(InputSectionReusableView.self)",
+                                  for: indexPath)  // Or simply withReuseIdentifier: "Item1HeaderView"
+                headerView.backgroundColor = .clear
+                guard let typedHeaderView = headerView as? InputSectionReusableView else { return headerView
+                }
+
+                return typedHeaderView
+            default:
+                print("No header")
+            }
+        default:
+            return UICollectionReusableView()
+        }
+
 
       return UICollectionReusableView()
     }
@@ -136,11 +165,12 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         // Return the size of your header
-        if section == 2 {
+        if section == 2 || section == 3   {
             return CGSize(width: collectionView.frame.width, height: 70)
         } else {
             return CGSize()
         }
+        
        
     }
     
@@ -166,8 +196,19 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
-
+            
         case 3:
+            
+
+                let cell: InputDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "InputDescriptionCVC", for: indexPath) as! InputDescriptionCVC
+                let modelStr = self.inputStrArr[indexPath.row]
+
+                cell.topopulateCell(modelStr: modelStr)
+                
+                return cell
+            
+
+        case 4:
             let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
             cell.addTap {
                 self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
@@ -182,23 +223,18 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             case .showRCPA:
                 switch indexPath.section {
                     //MARK: - rcpa cell (+1 section)
-                case 4:
-//                    switch indexPath.row {
-//                    case 0:
-//                        let cell: ProductSectionTitleCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductSectionTitleCVC", for: indexPath) as! ProductSectionTitleCVC
-//                        cell.holderVoew.backgroundColor = .appGreyColor
-//                        return cell
-                  //  default:
+                case 5:
+
                         let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                         cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
                         return cell
-                   // }
-                case 5:
+         
+                case 6:
                     let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
                     return cell
                     
                     
-                case 6:
+                case 7:
                     let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
                     cell.addTap {
                         
@@ -211,10 +247,11 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 }
             case .hideRCPA:
                 switch indexPath.section {
-                case 4:
-                    let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
-                    return cell
                 case 5:
+                    let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
+                    cell.remarksDesc.text =  self.reportModel?.remarks ?? "-"
+                    return cell
+                case 6:
                     let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
                     cell.addTap {
                         
@@ -250,15 +287,20 @@ struct SampleProduct {
     let isDemoProductCell: Bool
 }
 
-class ViewAllInfoTVC: UITableViewCell {
+struct SampleInput {
+    let prodName: String
+    let noOfSamples : String
+}
 
+class ViewAllInfoTVC: UITableViewCell {
+    
     enum CellType {
         case showRCPA
         case hideRCPA
     }
     
     
-
+    
     
     @IBOutlet var extendedInfoCollection: UICollectionView!
     weak var delegate: ViewAllInfoTVCDelegate?
@@ -268,6 +310,7 @@ class ViewAllInfoTVC: UITableViewCell {
     var reportModel: ReportsModel?
     var detailedReportModel: DetailedReportsModel?
     var productStrArr : [SampleProduct] = []
+    var inputStrArr: [SampleInput] = []
     var typeImage: UIImage?
     var isTohideLocationInfo = false
     var selectedIndex : Int? = nil
@@ -278,7 +321,7 @@ class ViewAllInfoTVC: UITableViewCell {
         extendedInfoCollection.layer.cornerRadius = 5
         extendedInfoCollection.isScrollEnabled = false
         cellRegistration()
-       // toLoadData()
+        // toLoadData()
     }
     
     func hideLocationSection() {
@@ -287,15 +330,68 @@ class ViewAllInfoTVC: UITableViewCell {
         }
     }
     
+    func toSetDataSourceForInputs()   {
+        inputStrArr.removeAll()
+        //detailedReportModel?.gifts
+        if detailedReportModel?.gifts != "" {
+            var inputArr =  detailedReportModel?.gifts.components(separatedBy: ",")
+            
+            inputArr?.removeLast()
+            
+            let filteredComponents = inputArr?.map { anElement -> String in
+                var modifiedElement = anElement
+                if modifiedElement.first == " " {
+                    modifiedElement.removeFirst()
+                }
+                return modifiedElement
+            }
+            filteredComponents?.forEach { prod in
+                var prodString : [String] = []
+                prodString.append(contentsOf: prod.components(separatedBy: "("))
+                prodString = prodString.map({ aprod in
+                    aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+                })
+                var name: String = ""
+            
+                var noOfsamples: String = ""
+
+                prodString.enumerated().forEach {prodindex, prod in
+              
+                   // let sampleProduct: SampleProduct
+                    switch prodindex {
+                    case 0 :
+                        name = prod
+                    case 1:
+                        noOfsamples = prod
+                    default:
+                        print("default")
+                    }
+                }
+                
+         
+                
+                
+                let aInput = SampleInput(prodName: name, noOfSamples: noOfsamples)
+
+                self.inputStrArr.append(aInput)
+            }
+
+        } else {
+            inputStrArr.append(SampleInput(prodName: "-", noOfSamples: "-"))
+        }
+            
+            
+    }
+    
     func toSetDataSourceForProducts() {
         productStrArr.removeAll()
      //   productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
         
        if detailedReportModel?.products != "" {
            var prodArr =  detailedReportModel?.products.components(separatedBy: ",")
-         //  if prodArr?.last == "" {
+     
                prodArr?.removeLast()
-         //  }
+      
            
            let filteredComponents = prodArr?.map { anElement -> String in
                var modifiedElement = anElement
@@ -345,13 +441,17 @@ class ViewAllInfoTVC: UITableViewCell {
                
         
                let promotdProduct = self.detailedReportModel?.promotedProducts
-               guard let promotdProduct = promotdProduct else {return}
+               guard let promotdProduct = promotdProduct, promotdProduct != "" else {
+                   return}
       
                // Split the promotedProduct string by the "$" delimiter
                let components = promotdProduct.components(separatedBy: "$")
 
-               // Extract words after the "$" sign
-               let words = components.compactMap { $0.components(separatedBy: " ").first }
+               // Process each component to remove "#" character
+               let namesWithoutHash = components.map { $0.replacingOccurrences(of: "#", with: "") }
+
+               // Extract words after the "$" sign and flatten the resulting array
+               let words = namesWithoutHash.flatMap { $0.components(separatedBy: " ") }
 
                // Check if any of the extracted words matches the name
                if words.contains(where: { $0 == name.components(separatedBy: " ").first }) {
@@ -397,9 +497,14 @@ class ViewAllInfoTVC: UITableViewCell {
         
         extendedInfoCollection.register(UINib(nibName: "ProductsDescriptionCVC", bundle: nil), forCellWithReuseIdentifier: "ProductsDescriptionCVC")
         
+        extendedInfoCollection.register(UINib(nibName: "InputDescriptionCVC", bundle: nil), forCellWithReuseIdentifier: "InputDescriptionCVC")
+        
+        
         extendedInfoCollection.register(CustomHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CustomHeaderView.identifier)
         
         extendedInfoCollection.register(ProductSectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ProductSectionReusableView")
+        
+        extendedInfoCollection.register(InputSectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "InputSectionReusableView")
         
         
     }

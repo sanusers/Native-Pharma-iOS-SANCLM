@@ -1019,6 +1019,9 @@ Chennai</string>
                                                 <state key="normal" title="Skip &amp; Submit">
                                                     <color key="titleColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="skipDetailingAction:" destination="Upd-gx-jF7" eventType="touchUpInside" id="fGI-2e-d9n"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7hX-aH-ayL">
                                                 <rect key="frame" x="1017.5" y="25" width="147.5" height="49.5"/>

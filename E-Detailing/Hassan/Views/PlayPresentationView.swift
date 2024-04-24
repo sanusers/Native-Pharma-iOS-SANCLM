@@ -9,7 +9,10 @@
 
 import Foundation
 import UIKit
-
+protocol PlayPresentationViewDelegate: AnyObject {
+    func didUserDetailedSlides(slideID: [String])
+    func popAndRefresh(kind: PreviewHomeView.PreviewType)
+}
 
 
 class  PlayPresentationView: BaseView {
@@ -21,7 +24,20 @@ class  PlayPresentationView: BaseView {
         
     }
     
+    
+    enum PreviewType: String {
+        case home = "Home"
+        case brand = "Brand Matrix"
+        case speciality = "Speciality"
+        case customPresentation = "Custom Presentation"
+    }
+    
     enum PageState {
+        case expanded
+        case minimized
+    }
+    
+    enum ShareState {
         case expanded
         case minimized
     }
@@ -33,15 +49,17 @@ class  PlayPresentationView: BaseView {
             
         case .expanded:
             self.viewMInimize.isHidden = false
-            self.viewClosePreview.isHidden = true
-            backHolderView.isHidden = true
+            self.viewClosePreview.isHidden = playPresentationVC.pagetype == .detailing ? true : true
+            backHolderView.isHidden =  playPresentationVC.pagetype == .detailing ? true : true
             self.loadedCollectionHolderView.isHidden = true
+            self.previewCollectionHolderView.isHidden = true
             NotificationCenter.default.post(name: NSNotification.Name("viewExpanded"), object: nil)
         case .minimized:
             self.viewMInimize.isHidden = true
-            self.viewClosePreview.isHidden = false
-            backHolderView.isHidden = false
+            self.viewClosePreview.isHidden = playPresentationVC.pagetype == .detailing ? true : false
+            backHolderView.isHidden = playPresentationVC.pagetype == .detailing ? true : false
             self.loadedCollectionHolderView.isHidden = false
+            self.previewCollectionHolderView.isHidden = false
             NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
            
         }
@@ -51,6 +69,13 @@ class  PlayPresentationView: BaseView {
 //            self.setPageType(.expanded)
 //        }
         
+    }
+    
+    func setPreviewType(_ previewType: PreviewHomeView.PreviewType) {
+        
+       
+        self.playPresentationVC.navigationController?.popViewController(animated: true)
+        self.playPresentationVC.delegete?.popAndRefresh(kind: previewType)
     }
     
     var playPresentationVC : PlayPresentationVC!
@@ -72,9 +97,15 @@ class  PlayPresentationView: BaseView {
     @IBOutlet var backHolderView: UIView!
     
     @IBOutlet var backlbl: UILabel!
+    
+    @IBOutlet var previewCollectionHolderView: UIView!
+    @IBOutlet var previewTypeCollection: UICollectionView!
+    var previewType: [PreviewType] = []
     var pageState : PageState = .expanded
     var selectedLoadPresentationIndex : Int? = 0
     var selectedSlideModel : [SlidesModel]?
+    var previewTypeIndex: Int = 0
+    var detailedSlideIDs: [Int] = []
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.playPresentationVC = baseVC as? PlayPresentationVC
@@ -84,8 +115,24 @@ class  PlayPresentationView: BaseView {
       
         toLoadloadedSlidesCollection()
         toLoadPlayingSlideCollection()
-       // cellRegistration()
-       // toLoadPresentationCollection()
+        if playPresentationVC.pagetype == .detailing {
+            previewCollectionHolderView.isHidden = false
+            toLoadPreviewCollection()
+            backHolderView.isHidden = true
+            viewClosePreview.isHidden = true
+            
+        } else {
+            previewCollectionHolderView.isHidden = true
+           // backHolderView.isHidden = false
+           // viewClosePreview.isHidden = false
+        }
+
+    }
+    
+    func toLoadPreviewCollection() {
+        previewTypeCollection.delegate = self
+        previewTypeCollection.dataSource = self
+        previewTypeCollection.reloadData()
     }
     
     func toLoadPlayingSlideCollection() {
@@ -114,6 +161,15 @@ class  PlayPresentationView: BaseView {
             PlayingSlidelayout.scrollDirection = .horizontal
             PlayingSlidelayout.collectionView?.isScrollEnabled = true
         }
+        
+        
+        if  let previewTypelayout = self.previewTypeCollection.collectionViewLayout as? UICollectionViewFlowLayout  {
+            previewTypelayout.scrollDirection = .horizontal
+            previewTypelayout.collectionView?.isScrollEnabled = true
+        }
+        
+        previewTypeCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
+        
         PlayingSlideCollection.register(UINib(nibName: "PlayPDFCVC", bundle: nil), forCellWithReuseIdentifier: "PlayPDFCVC")
       
         PlayingSlideCollection.register(UINib(nibName: "VideoPlayerCVC", bundle: nil), forCellWithReuseIdentifier: "VideoPlayerCVC")
@@ -139,6 +195,7 @@ class  PlayPresentationView: BaseView {
     }
     
     func  setupUI() {
+        previewCollectionHolderView.isHidden = true
         navigationBackground.backgroundColor = .appTextColor
         self.selectedSlideModel = playPresentationVC.selectedSlideModel
         loadedcollectionVxView.backgroundColor = .appTextColor
@@ -150,6 +207,7 @@ class  PlayPresentationView: BaseView {
         backlbl.textColor = .appWhiteColor
         backlbl.setFont(font: .bold(size: .BODY))
         backHolderView.backgroundColor = .appTextColor
+        previewType = [.home, .brand, .speciality, .customPresentation]
     }
     
     func initView() {
@@ -213,7 +271,16 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return selectedSlideModel?.count ?? 0
+        switch collectionView {
+        case PlayingSlideCollection, loadedSlidesCollection:
+            return selectedSlideModel?.count ?? 0
+        case previewTypeCollection:
+            return previewType.count
+            
+        default:
+            return Int()
+        }
+      
     }
     
     
@@ -225,6 +292,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
  
         case PlayingSlideCollection:
             let model =  self.selectedSlideModel?[indexPath.row]
+            self.detailedSlideIDs.append(model?.slideId ?? Int())
             switch model?.utType {
             case "application/pdf":
                 let cell: PlayPDFCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayPDFCVC", for: indexPath) as! PlayPDFCVC
@@ -309,6 +377,32 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             
             return cell
             
+        case previewTypeCollection:
+            let cell: PreviewTypeCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "PreviewTypeCVC", for: indexPath) as! PreviewTypeCVC
+            cell.setupUI(pageType: playPresentationVC.pagetype)
+
+            cell.titleLbl.text = previewType[indexPath.row].rawValue
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.previewTypeIndex  = indexPath.row
+              
+                welf.previewTypeCollection.reloadData()
+
+                switch welf.previewType[welf.previewTypeIndex] {
+                case .home:
+                    welf.setPreviewType(PreviewHomeView.PreviewType.home)
+                case .brand :
+                    welf.setPreviewType(PreviewHomeView.PreviewType.brand)
+                case .speciality:
+                    welf.setPreviewType(PreviewHomeView.PreviewType.speciality)
+                case .customPresentation:
+                    welf.setPreviewType(PreviewHomeView.PreviewType.customPresentation)
+                }
+                }
+               
+            return cell
+            
         default:
             return UICollectionViewCell()
         }
@@ -325,6 +419,9 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             //150 cell width padding 10
             
             return CGSize(width: 170, height: 110)
+            
+        case previewTypeCollection:
+            return CGSize(width: previewType[indexPath.item].rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height / 1.7)
         default:
             return CGSize()
         }

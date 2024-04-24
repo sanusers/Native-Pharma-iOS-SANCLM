@@ -7,6 +7,7 @@
 //  Copyright © 2024 san eforce. All rights reserved. 07/02/24.
 //
 
+
 import Foundation
 import UIKit
 import CoreData
@@ -21,8 +22,15 @@ extension PreviewHomeView: MenuResponseProtocol {
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
         print("Yet to implement")
         switch type {
-            
+        case .speciality:
+            if previewHomeVC.pageType == .detailing {
+                self.fetchedSpecialityObject = selectedObject as? Speciality
+                self.selectedSpecialityLbl.text = self.fetchedSpecialityObject?.name ?? "-"
+                setDoctorSpeciality(specialityCode: self.fetchedSpecialityObject?.code ?? "")
+                self.setPreviewType(.speciality)
+            }
 
+            
         case .listedDoctor:
             dump(selectedObject)
             self.fetchedObject = selectedObject as? DoctorFencing
@@ -32,7 +40,6 @@ extension PreviewHomeView: MenuResponseProtocol {
             let mProd = fetchedObject?.mProd ?? ""
             let specialityCode = fetchedObject?.specialityCode ?? ""
 
-   
             switch self.previewType[previewTypeIndex] {
                 
             case .home:
@@ -77,9 +84,6 @@ extension PreviewHomeView: MenuResponseProtocol {
                         
                     }
                 }
-                
-                
-               // self.brandsMatrixSlideModel?.forEach{ $0.groupedSlide = $0.groupedSlide.filter { $0.slideId == Int(mProd) } }
                 self.setPreviewType(.brand)
             case .speciality:
         
@@ -95,7 +99,7 @@ extension PreviewHomeView: MenuResponseProtocol {
                         
                         return specialityCodesArray.contains(specialityCode)}
                 }
-                
+                dump(specialitySlideModel)
                 self.setPreviewType(.speciality)
             case .customPresentation:
                 print("Implemented")
@@ -106,6 +110,72 @@ extension PreviewHomeView: MenuResponseProtocol {
             print("Yet to implement")
         }
        
+    }
+    
+    func setDoctorSpeciality(specialityCode: String) {
+
+        let specialityCode = fetchedObject?.specialityCode ?? ""
+                self.specialitySlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
+                
+                self.specialitySlideModel?.forEach { brandModel in
+                    
+                        brandModel.groupedSlide = brandModel.groupedSlide.filter {
+                            
+                        let specialityCodes = $0.specialityCode
+                        
+                        let specialityCodesArray = specialityCodes.components(separatedBy: ",").compactMap { String($0) }
+                        
+                        return specialityCodesArray.contains(specialityCode)}
+                }
+        dump(self.specialitySlideModel)
+    }
+    
+    func mapBrandMatrix(selectedObject: NSObject) {
+        dump(selectedObject)
+        self.fetchedObject = selectedObject as? DoctorFencing
+        dump(fetchedObject?.mappProducts)
+        self.selectDoctorsLbl.text = fetchedObject?.name ?? ""
+        let mapProd = fetchedObject?.mappProducts ?? ""
+        let mProd = fetchedObject?.mProd ?? ""
+        _ = fetchedObject?.specialityCode ?? ""
+        self.brandsMatrixSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
+        
+        var mapProdCodeArr : [String] = []
+        if mapProd != "" {
+            do {
+                let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
+                let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
+
+        
+                for i in stride(from: 0, to: matches.count, by: 2) {
+                    let match = matches[i]
+                    let number = (mapProd as NSString).substring(with: match.range)
+                    mapProdCodeArr.append(number)
+                }
+
+                print(mapProdCodeArr)
+            } catch {
+                print("Error creating regular expression: \(error.localizedDescription)")
+            }
+        }
+        
+        
+        // Split the includedIDs string into an array of individual IDs
+        let includedmProdsIDArray = mProd.components(separatedBy: ",").compactMap { ($0) }
+
+        // Filter out groupedSlide with slideId in includedIDsArray
+        self.brandsMatrixSlideModel?.forEach { brandModel in
+            brandModel.groupedSlide = brandModel.groupedSlide.filter { slide in
+                let cleanedProductDetailCode = slide.productDetailCode.trimmingCharacters(in: CharacterSet(charactersIn: ","))
+                if slide.productDetailCode == "" {
+                    return false
+                } else {
+                    return mapProdCodeArr.contains("\(slide.code)") || includedmProdsIDArray.contains(cleanedProductDetailCode)
+                }
+              
+                
+            }
+        }
     }
     
     func selectedType(_ type: MenuView.CellType, index: Int) {
@@ -125,8 +195,62 @@ extension PreviewHomeView: MenuResponseProtocol {
 
 extension PreviewHomeView:  SelectedPreviewTypesCVCDelegate {
     func didPlayTapped(playerModel: [SlidesModel]) {
-        let vc = PlayPresentationVC.initWithStory(model:  playerModel)
+        let vc = PlayPresentationVC.initWithStory(model:  playerModel, pagetype: self.previewHomeVC.pageType)
+        if previewHomeVC.pageType == .detailing {
+            vc.delegete = self
+        }
         self.previewHomeVC.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+}
+
+
+
+extension PreviewHomeView:  PlayPresentationViewDelegate {
+    
+    
+    func setupSegmentsSlides(kind: PreviewType) {
+        var allSlides: [SlidesModel] = []
+        switch kind {
+         
+        case .home:
+            allSlides.removeAll()
+            self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
+            self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
+                allSlides.append(contentsOf: aGroupedBrandsSlideModel.groupedSlide)
+            })
+            print(allSlides.count)
+          
+        case .brand:
+            guard let docCall = self.previewHomeVC.dcrCall?.call as? DoctorFencing else {return}
+            self.mapBrandMatrix(selectedObject: docCall)
+            allSlides.removeAll()
+            self.brandsMatrixSlideModel?.forEach({ aGroupedBrandsSlideModel in
+                allSlides.append(contentsOf: aGroupedBrandsSlideModel.groupedSlide)
+            })
+            print(allSlides.count)
+        case .speciality:
+            guard let docCall = self.previewHomeVC.dcrCall?.call as? DoctorFencing else {return}
+            self.setDoctorSpeciality(specialityCode: docCall.specialityCode ?? "")
+            allSlides.removeAll()
+            self.specialitySlideModel?.forEach({ aGroupedBrandsSlideModel in
+                allSlides.append(contentsOf: aGroupedBrandsSlideModel.groupedSlide)
+            })
+            print(allSlides.count)
+        case .customPresentation:
+            print("Yet to ")
+        }
+        
+        didPlayTapped(playerModel: allSlides)
+    }
+    
+    func didUserDetailedSlides(slideID: [String]) {
+        
+    }
+    
+    func popAndRefresh(kind: PreviewType) {
+        setupSegmentsSlides(kind: kind)
     }
     
     
@@ -245,6 +369,11 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
 
 class PreviewHomeView : BaseView {
     
+    enum pageType {
+        case preview
+        case detailing
+    }
+    
     enum PreviewType: String {
         case home = "Home"
         case brand = "Brand Matrix"
@@ -262,7 +391,8 @@ class PreviewHomeView : BaseView {
         switch previewType {
            
         case .home:
-           
+            selectSpecialityView.isHidden = true
+            infoView.isHidden = true
             doctorSelectorVIewHeight.constant = 0
             self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
             if groupedBrandsSlideModel?.count == 0 {
@@ -271,6 +401,21 @@ class PreviewHomeView : BaseView {
                 self.toSetPageType(pageType: .exists)
             }
         case .brand:
+            selectSpecialityView.isHidden = true
+            if self.previewHomeVC.pageType == .detailing {
+                if let docCall = previewHomeVC.dcrCall?.call as? DoctorFencing {
+                    self.fetchedObject = docCall
+                    guard let fetchedObject = self.fetchedObject else {return}
+                    mapBrandMatrix(selectedObject: fetchedObject)
+                   
+                }
+                infoView.isHidden = false
+                doctorSelectionVIew.isHidden = true
+            } else {
+                infoView.isHidden = true
+                doctorSelectionVIew.isHidden = false
+            }
+            
             if self.fetchedObject == nil {
                 self.selectNotifyLbl.text = "Select listed doctors to view content"
             } else {
@@ -295,6 +440,27 @@ class PreviewHomeView : BaseView {
           
           
         case .speciality:
+            selectSpecialityView.isHidden = false
+            if self.previewHomeVC.pageType == .detailing {
+                if let docCall = previewHomeVC.dcrCall?.call as? DoctorFencing {
+                    self.fetchedObject = docCall
+                    guard let fetchedObject = self.fetchedObject else {return}
+                    if let fetchedSpecialityObject = self.fetchedSpecialityObject {
+                        selectedSpecialityLbl.text = fetchedSpecialityObject.name ?? "-"
+                    } else {
+                        selectedSpecialityLbl.text = fetchedObject.speciality ?? "-"
+                    }
+            
+                    setDoctorSpeciality(specialityCode: fetchedObject.specialityCode ?? "")
+                   
+                }
+                infoView.isHidden = false
+                doctorSelectionVIew.isHidden = true
+            } else {
+                infoView.isHidden = true
+                doctorSelectionVIew.isHidden = false
+            }
+            
             if self.fetchedObject == nil {
                 self.selectNotifyLbl.text = "Select listed doctors to view content"
             } else {
@@ -308,7 +474,8 @@ class PreviewHomeView : BaseView {
             }
           
         case .customPresentation:
-            
+            selectSpecialityView.isHidden = true
+            infoView.isHidden = true
             self.selectNotifyLbl.text = "No saved presentation found!"
             doctorSelectorVIewHeight.constant = 0
             retriveSavedPresentations()
@@ -321,6 +488,10 @@ class PreviewHomeView : BaseView {
     
     @IBOutlet var backHolderView: UIView!
     
+    @IBOutlet var selectedSpecialityLbl: UILabel!
+    @IBOutlet var selectSpecialityView: UIView!
+    @IBOutlet var infoLbl: UILabel!
+    @IBOutlet var infoView: UIView!
     @IBOutlet var doctorSelectionVIew: UIView!
     @IBOutlet var previewTypeCollection: UICollectionView!
     
@@ -341,6 +512,7 @@ class PreviewHomeView : BaseView {
     @IBOutlet var decendingIV: UIImageView!
     @IBOutlet var ascendingIV: UIImageView!
     var fetchedObject:  DoctorFencing?
+    var fetchedSpecialityObject: Speciality?
     enum SortState {
         case ascending
         case decending
@@ -353,7 +525,7 @@ class PreviewHomeView : BaseView {
     var brandsMatrixSlideModel : [GroupedBrandsSlideModel]?
     var specialitySlideModel : [GroupedBrandsSlideModel]?
     var sortState: SortState = .ascending
-    
+    var pageType: pageType = .preview
     func setBrandsData() {
         self.listedDocArr = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
     }
@@ -411,7 +583,7 @@ class PreviewHomeView : BaseView {
         if let savePresentationArr = self.savePresentationArr {
             let selectedPresentation = savePresentationArr[index]
             selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
-               var selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                     aSlidesModel.isSelected == true
                 }
               
@@ -480,6 +652,17 @@ class PreviewHomeView : BaseView {
     
     func initView() {
         
+        self.selectSpecialityView.addTap {
+            [weak self] in
+                guard let welf = self else {return}
+
+                let menuvc = SpecifiedMenuVC.initWithStory(welf, celltype: .speciality)
+                menuvc.selectedObject = welf.fetchedSpecialityObject
+                menuvc.previewType = welf.previewType[welf.previewTypeIndex]
+                welf.previewHomeVC.modalPresentationStyle = .custom
+                welf.previewHomeVC.navigationController?.present(menuvc, animated: false)
+        }
+        
         self.doctorSelectionVIew.addTap { [weak self] in
             guard let welf = self else {return}
 
@@ -510,11 +693,17 @@ class PreviewHomeView : BaseView {
     }
     
     func setupUI() {
+        
+        selectSpecialityView.layer.cornerRadius = 5
+        selectSpecialityView.layer.borderWidth = 1
+        selectSpecialityView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         presentationCollectionVIew.backgroundColor = .clear
         presentationCollectionVIew.isPagingEnabled = false
         sortSwitchStack.layer.cornerRadius = 3
         sortSwitchStack.layer.borderWidth = 1
         sortSwitchStack.layer.borderColor = UIColor.appLightTextColor.cgColor
+        infoLbl.setFont(font: .bold(size: .BODY))
+        infoLbl.textColor = .appLightTextColor
         titleLbl.setFont(font: .bold(size: .SUBHEADER))
         titleLbl.textColor = .appWhiteColor
         seperatorView.backgroundColor = .appLightTextColor.withAlphaComponent(0.5)
@@ -533,6 +722,11 @@ class PreviewHomeView : BaseView {
         setSortVIew()
         cellRegistration()
         toLoadPreviewCollection()
+        if  previewHomeVC.pageType == .detailing {
+            titleLbl.text = previewHomeVC.dcrCall?.name
+        } else {
+            titleLbl.text = "Preview"
+        }
         //toLoadPreviewLoadedCollection()
     }
 }

@@ -163,7 +163,8 @@ extension String {
     func toDate(format: String = "yyyy-MM-dd HH:mm:ss", timeZone: TimeZone? = nil) -> Date{
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = format
-        dateformatter.timeZone = timeZone == nil ? TimeZone(abbreviation: "UTC") : timeZone
+        dateformatter.timeZone = timeZone == nil ?  TimeZone.current : timeZone
+        //TimeZone(abbreviation: "UTC") : timeZone
         return dateformatter.date(from: self) ?? Date()
     }
 }
@@ -172,7 +173,8 @@ extension Date{
     func toString(format: String = "hh:mm a",  timeZone: TimeZone? = nil) -> String{
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        formatter.timeZone = timeZone == nil ? TimeZone(abbreviation: "UTC") : timeZone
+        formatter.timeZone = timeZone == nil  ? TimeZone.current : timeZone
+        //TimeZone(abbreviation: "UTC") : timeZone
         return formatter.string(from: self)
     }
 }

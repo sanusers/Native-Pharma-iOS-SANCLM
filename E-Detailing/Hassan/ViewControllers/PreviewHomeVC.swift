@@ -11,15 +11,18 @@ import Foundation
 import UIKit
 class PreviewHomeVC: BaseViewController {
     @IBOutlet var previewHomeView: PreviewHomeView!
-    
+    var dcrCall : CallViewModel?
+    var pageType: PreviewHomeView.pageType = .preview
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-    class func initWithStory() -> PreviewHomeVC {
+    class func initWithStory(previewType: PreviewHomeView.pageType? = .preview, dcrCall: CallViewModel? = nil) -> PreviewHomeVC {
+        
         let reportsVC : PreviewHomeVC = UIStoryboard.Hassan.instantiateViewController()
-
+        reportsVC.pageType = previewType ?? .preview
+        reportsVC.dcrCall = dcrCall
         return reportsVC
     }
 }

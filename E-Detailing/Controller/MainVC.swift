@@ -3037,19 +3037,19 @@ extension MainVC : collectionViewProtocols {
                 let model = self.dcrCount[indexPath.row]
                 self.cacheDCRindex = indexPath.row
                 self.selectedCallIndex = indexPath.row
-                if model.name == "Doctor Calls" {
+                if model.name == "Listed Doctor" {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.doctor, indexPath.row)
                     self.lblAverageDocCalls.text = "Average Doctor Calls"
-                } else if model.name == "Chemist Calls" {
+                } else if model.name == "Chemist" {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.chemist, indexPath.row)
                     self.lblAverageDocCalls.text = "Average Chemist Calls"
-                } else if model.name == "Stockist Calls" {
+                } else if model.name == "Stockist" {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.stockist, indexPath.row)
                     self.lblAverageDocCalls.text = "Average Stockist Calls"
-                } else if model.name == "UnListed Doctor Calls" {
+                } else if model.name == "UnListed Doctor" {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.unlistedDoctor, indexPath.row)
                     self.lblAverageDocCalls.text = "Average UnListed Doctor Calls"

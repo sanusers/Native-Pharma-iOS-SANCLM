@@ -45,11 +45,11 @@ class AddCallinfoVC: BaseViewController {
                 cusType = "4"
         }
         
-        var productData = [[String : Any]]()
-        var inputData = [[String : Any]]()
-        var jointWorkData = [[String : Any]]()
-        var additionalCallData = [[String : Any]]()
-        var rcpaData = [[String : Any]]()
+      //  var productData = [[String : Any]]()
+      //  var inputData = [[String : Any]]()
+       // var jointWorkData = [[String : Any]]()
+       // var additionalCallData = [[String : Any]]()
+       // var rcpaData = [[String : Any]]()
         
         
         let productValue = self.addCallinfoView.productSelectedListViewModel.productData()
@@ -107,7 +107,7 @@ class AddCallinfoVC: BaseViewController {
             var aproduct : [String : Any] = [:]
             aproduct["Code"] = product.code
             aproduct["Name"] =  product.name
-            aproduct["Group"] = ""
+            aproduct["Group"] = "0"
             aproduct["ProdFeedbk"] = ""
             aproduct["Rating"] = ""
             var timesLine = [String: Any]()
@@ -117,9 +117,10 @@ class AddCallinfoVC: BaseViewController {
             aproduct["Appver"] = "Test.S.1.0"
             aproduct["Mod"] = "iOS-Edet"
             aproduct["SmpQty"] = product.sampleCount
-            aproduct["RcpaQty"] = product.rxCount
-            aproduct["Promoted"] = "0"
-            aproduct["Type"] = "1"
+            aproduct["RcpaQty"] = product.rcpaCount
+            aproduct["RxQty"] = product.rxCount
+            aproduct["Promoted"] = product.isDetailed ? "0" : "1"
+            aproduct["Type"] = cusType
             aproduct["StockistName"] = product.stockistName
             aproduct["StockistCode"] = product.stockistCode
             aproduct["Slides"] = [[String: Any]]()
@@ -238,7 +239,8 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["CustName"] = dcrCall.name
      
         addedDCRCallsParam["sfcode"] = appsetup.sfCode ?? ""
-        addedDCRCallsParam["Rsf"] = appsetup.sfCode ?? ""
+        addedDCRCallsParam["Rsf"] =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        //appsetup.sfCode ?? ""
         addedDCRCallsParam["sf_type"] = "\(appsetup.sfType ?? 0)"
         addedDCRCallsParam["Designation"] = appsetup.dsName ?? ""
         addedDCRCallsParam["state_code"] = appsetup.stateCode ?? ""

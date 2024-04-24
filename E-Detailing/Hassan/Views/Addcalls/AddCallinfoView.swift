@@ -572,6 +572,7 @@ extension AddCallinfoView: tableViewProtocols {
                 cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
                 cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
                 cell.btnDeviation.addTarget(self, action: #selector(productDetailedSelection(_:)), for: .touchUpInside)
+             
                 cell.txtSampleQty.delegate = self
                 cell.txtRxQty.delegate = self
                 cell.txtRcpaQty.delegate = self

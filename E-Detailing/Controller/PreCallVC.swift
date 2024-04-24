@@ -345,24 +345,25 @@ class PreCallVC : UIViewController {
         
         btnSkip.layer.cornerRadius = 5
         btnSkip.layer.borderWidth = 1
-        btnSkip.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
-        //btnSkip.backgroundColor = .appGreyColor
+        btnSkip.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        btnSkip.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         
         
         btnStartdetailing.layer.cornerRadius = 5
         btnStartdetailing.backgroundColor = .appTextColor
 
     }
-
-    @IBAction func startDetailingAction(_ sender: UIButton) {
-        
-        
-//        let productVC = UIStoryboard.productVC
-//        productVC.dcrCall = self.dcrCall
-//        self.navigationController?.pushViewController(productVC, animated: true)
-////        
+    @IBAction func skipDetailingAction(_ sender: Any) {
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userStatisticsVM ?? UserStatisticsVM())
         vc.dcrCall = self.dcrCall
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+        
+    }
+    
+    @IBAction func startDetailingAction(_ sender: UIButton) {
+        
+        let vc = PreviewHomeVC.initWithStory(previewType: .detailing, dcrCall: self.dcrCall)
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
