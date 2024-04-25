@@ -237,7 +237,6 @@ class CoreDataManager {
         }
     }
     
-    
     private func convertToSavedSlidesCDModel(_ slidesModels: [SlidesModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
         let cdSlidesModels = NSMutableSet()
         let groupDispatchGroup = DispatchGroup()

@@ -18,6 +18,7 @@ enum XIBs: String {
     case jfwView = "JfwView"
     case customerCheckinVIew = "CustomerCheckinView"
     case customerCheckoutView = "CustomerCheckoutView"
+    case detailedSlideInfoView = "DetailedSlideInfoView"
     
     case productSectionReusableView = "ProductSectionReusableView"
     

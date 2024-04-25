@@ -364,6 +364,7 @@ class PreCallVC : UIViewController {
     @IBAction func startDetailingAction(_ sender: UIButton) {
         
         let vc = PreviewHomeVC.initWithStory(previewType: .detailing, dcrCall: self.dcrCall)
+        vc.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -501,3 +502,12 @@ class PreCallVC : UIViewController {
 }
 
 
+
+
+extension PreCallVC:  PreviewHomeViewDelegate {
+    func didUserDetailedSlide() {
+        self.skipDetailingAction(self.btnSkip!)
+    }
+    
+    
+}

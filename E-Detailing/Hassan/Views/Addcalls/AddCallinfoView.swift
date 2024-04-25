@@ -1072,14 +1072,15 @@ class AddCallinfoView : BaseView {
         case .detailed:
             setupSearchTF()
             didClose()
-            jfwExceptionView.isHidden = false
+            jfwExceptionView.isHidden = true
             viewnoRCPA.isHidden = true
             rcpaEntryView.isHidden = true
-            yetToloadContentsTable.isHidden = false
+            yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .clear
-            loadedContentsTable.isHidden = false
-            toloadYettables()
-            toloadContentsTable()
+            loadedContentsTable.isHidden = true
+            //toloadYettables()
+            //toloadContentsTable()
+            detailedInfoAction()
         case .products:
             setupSearchTF()
             didClose()
@@ -1138,6 +1139,7 @@ class AddCallinfoView : BaseView {
             jfwExceptionView.isHidden = true
             jfwAction()
         }
+
     }
     
       var productSelectedListViewModel = ProductSelectedListViewModel()
@@ -1240,6 +1242,7 @@ class AddCallinfoView : BaseView {
      var jointWorkSelectedListViewModel = JointWorksListViewModel()
      var tpDeviateReasonView:  TPdeviateReasonView?
      var jfwView : JfwView?
+    var detailedSlideInfoView: DetailedSlideInfoView?
     var pobValue: String?
     var overallFeedback: Feedback?
     var overallRemarks: String?
@@ -1280,7 +1283,7 @@ class AddCallinfoView : BaseView {
         
         self.jfwView?.frame = CGRect(x: changePasswordViewcenterX, y: segmentCollectionHolder.bottom + 5, width: changePasswordViewwidth, height: changePasswordViewheight)
         
-        
+        self.detailedSlideInfoView?.frame = CGRect(x: changePasswordViewcenterX, y: segmentCollectionHolder.bottom + 5, width: changePasswordViewwidth, height: changePasswordViewheight)
         
         let  tpDeviateVIewwidth = self.bounds.width / 1.7
         let  tpDeviateVIewheight = self.bounds.height / 2.7
@@ -1324,6 +1327,9 @@ class AddCallinfoView : BaseView {
                 
                 
             case jfwView:
+                aAddedView.alpha = 0.3
+                
+            case detailedSlideInfoView:
                 aAddedView.alpha = 0.3
                 
             case backgroundView:
@@ -1397,7 +1403,9 @@ class AddCallinfoView : BaseView {
             case jfwView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-                
+            case detailedSlideInfoView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
             case tpDeviateReasonView:
                
                 aAddedView.removeFromSuperview()
@@ -1415,7 +1423,40 @@ class AddCallinfoView : BaseView {
             
         }
     }
-    
+    func detailedInfoAction() {
+        
+        
+        
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case detailedSlideInfoView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = true
+                
+                
+            }
+            
+        }
+        
+        detailedSlideInfoView = self.addCallinfoVC.loadCustomView(nibname: XIBs.detailedSlideInfoView) as? DetailedSlideInfoView
+      //  jfwView?.rootVC = self.addCallinfoVC
+      //  jfwView?.pobValue = self.pobValue ?? nil
+       // jfwView?.overallFeedback = self.overallFeedback ?? nil
+      //  jfwView?.overallRemark = self.overallRemarks ?? nil
+       // jfwView?.eventCaptureListViewModel = self.eventCaptureListViewModel
+       // jfwView?.jointWorkSelectedListViewModel = self.jointWorkSelectedListViewModel
+       // jfwView?.delegate = self
+       // jfwView?.dcrCall = self.addCallinfoVC.dcrCall
+        detailedSlideInfoView?.setupui()
+        self.addSubview(detailedSlideInfoView ?? DetailedSlideInfoView())
+        
+    }
     
     func jfwAction() {
 
@@ -1542,7 +1583,12 @@ class AddCallinfoView : BaseView {
         segmentsCollection.isScrollEnabled = false
         if addCallinfoVC.dcrCall.call is DoctorFencing {
        //     if appsetup.docr == 0 {
+            if Shared.instance.isDetailed {
+                segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
+            } else {
                 segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+            }
+               
 //            } else {
 //                segmentType = [.products, .inputs, .additionalCalls, .jointWork]
 //            }
@@ -1553,18 +1599,18 @@ class AddCallinfoView : BaseView {
         
         if addCallinfoVC.dcrCall.call is Chemist {
          //   if appsetup.chmRcpaNeed == 0 {
-                segmentType = [.products, .inputs, .rcppa, .jointWork]
+                segmentType = [.detailed, .products, .inputs, .rcppa, .jointWork]
 //            } else {
-//                segmentType = [.products, .inputs, .jointWork]
+//                segmentType = [.detailed, .products, .inputs, .jointWork]
 //            }
            
         }
         
         if addCallinfoVC.dcrCall.call is Stockist {
         //    if appsetup.stk == 0 {
-                segmentType = [.products, .inputs, .rcppa, .jointWork]
+                segmentType = [.detailed, .products, .inputs, .rcppa, .jointWork]
 //            } else {
-//                segmentType = [.products, .inputs, .jointWork]
+//                segmentType = [.detailed, .products, .inputs, .jointWork]
 //            }
            
         }
@@ -1572,9 +1618,9 @@ class AddCallinfoView : BaseView {
         
         if addCallinfoVC.dcrCall.call is UnListedDoctor {
            // if appsetup.docPobNeed == 0 {
-                segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+                segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
 //            } else {
-//                segmentType = [.products, .inputs, .jointWork]
+//                segmentType = [.detailed, .products, .inputs, .jointWork]
 //            }
            
         }
@@ -1675,11 +1721,11 @@ class AddCallinfoView : BaseView {
                 let currentDate = Date()
                 let dateString = dateFormatter.string(from: currentDate)
                 
-                let datestr = dateString
+                _ = dateString
                 
                 welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
                 welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
-               var dcrCall = welf.addCallinfoVC.dcrCall
+                let dcrCall = welf.addCallinfoVC.dcrCall
                 
                 
                 welf.checkoutAction(dcrCall: dcrCall)

@@ -15,6 +15,8 @@ class InputDescriptionCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        inputName.setFont(font: .medium(size: .BODY))
+        inputCount.setFont(font: .medium(size: .BODY))
     }
     
     func topopulateCell(modelStr: SampleInput) {

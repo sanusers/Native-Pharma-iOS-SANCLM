@@ -127,6 +127,12 @@
 		38C4245E2A2B4DB1004A89EF /* MasterSyncCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4245D2A2B4DB1004A89EF /* MasterSyncCell.xib */; };
 		38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4245F2A2B4DC5004A89EF /* MasterSyncCell.swift */; };
 		38C44CC42A404DB6009D7B68 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C44CC32A404DB6009D7B68 /* DBManager.swift */; };
+		38C464962BDA8B3A00B7F377 /* DetailedSlideInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C464952BDA8B3A00B7F377 /* DetailedSlideInfoView.xib */; };
+		38C464982BDA8B7F00B7F377 /* DetailedSlideInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C464972BDA8B7F00B7F377 /* DetailedSlideInfoView.swift */; };
+		38C4649B2BDA8C6600B7F377 /* DetailedInfoHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4649A2BDA8C6600B7F377 /* DetailedInfoHeader.xib */; };
+		38C4649C2BDA8C6600B7F377 /* DetailedInfoHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C464992BDA8C6600B7F377 /* DetailedInfoHeader.swift */; };
+		38C4649F2BDA8D8C00B7F377 /* DetailedInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4649E2BDA8D8C00B7F377 /* DetailedInfoTVC.xib */; };
+		38C464A02BDA8D8C00B7F377 /* DetailedInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4649D2BDA8D8C00B7F377 /* DetailedInfoTVC.swift */; };
 		38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */; };
 		38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */; };
 		38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 38C485B02A2F45E9005D1533 /* E-Detailing.xcdatamodeld */; };
@@ -496,6 +502,12 @@
 		38C4245D2A2B4DB1004A89EF /* MasterSyncCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MasterSyncCell.xib; sourceTree = "<group>"; };
 		38C4245F2A2B4DC5004A89EF /* MasterSyncCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncCell.swift; sourceTree = "<group>"; };
 		38C44CC32A404DB6009D7B68 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
+		38C464952BDA8B3A00B7F377 /* DetailedSlideInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailedSlideInfoView.xib; sourceTree = "<group>"; };
+		38C464972BDA8B7F00B7F377 /* DetailedSlideInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedSlideInfoView.swift; sourceTree = "<group>"; };
+		38C464992BDA8C6600B7F377 /* DetailedInfoHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedInfoHeader.swift; sourceTree = "<group>"; };
+		38C4649A2BDA8C6600B7F377 /* DetailedInfoHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailedInfoHeader.xib; sourceTree = "<group>"; };
+		38C4649D2BDA8D8C00B7F377 /* DetailedInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedInfoTVC.swift; sourceTree = "<group>"; };
+		38C4649E2BDA8D8C00B7F377 /* DetailedInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailedInfoTVC.xib; sourceTree = "<group>"; };
 		38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionVC.swift; sourceTree = "<group>"; };
 		38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StockBalance + Extension.swift"; sourceTree = "<group>"; };
 		38C485B12A2F45E9005D1533 /* E-Detailing.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "E-Detailing.xcdatamodel"; sourceTree = "<group>"; };
@@ -1436,6 +1448,12 @@
 				38866E752BB2DBC800F9E576 /* CompetitorsDetailsCell.xib */,
 				38111E1B2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift */,
 				38111E1C2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib */,
+				38C464952BDA8B3A00B7F377 /* DetailedSlideInfoView.xib */,
+				38C464972BDA8B7F00B7F377 /* DetailedSlideInfoView.swift */,
+				38C464992BDA8C6600B7F377 /* DetailedInfoHeader.swift */,
+				38C4649A2BDA8C6600B7F377 /* DetailedInfoHeader.xib */,
+				38C4649D2BDA8D8C00B7F377 /* DetailedInfoTVC.swift */,
+				38C4649E2BDA8D8C00B7F377 /* DetailedInfoTVC.xib */,
 			);
 			path = AddCalls;
 			sourceTree = "<group>";
@@ -1715,7 +1733,9 @@
 				38DD14B82B4FEEF60036384F /* HomeSideMenuTVC.xib in Resources */,
 				38C41C2B2B8E06F40013361E /* ChangePasswordView.xib in Resources */,
 				38E6B0922B9866B80014AF1E /* resourceInfoTVC.xib in Resources */,
+				38C4649F2BDA8D8C00B7F377 /* DetailedInfoTVC.xib in Resources */,
 				B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */,
+				38C464962BDA8B3A00B7F377 /* DetailedSlideInfoView.xib in Resources */,
 				38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */,
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38107C632B36FA0400ACEDF3 /* ViewmoreCVC.xib in Resources */,
@@ -1792,6 +1812,7 @@
 				B287E62A29F29C1B0097974D /* Main.storyboard in Resources */,
 				38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */,
 				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
+				38C4649B2BDA8C6600B7F377 /* DetailedInfoHeader.xib in Resources */,
 				3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
@@ -1972,6 +1993,7 @@
 				38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */,
 				38FDD4152B99881500566A04 /* CommonResouceInfoTVC.swift in Sources */,
 				387BDB032BAB1E20002B5E7D /* AddCallinfoVC.swift in Sources */,
+				38C464982BDA8B7F00B7F377 /* DetailedSlideInfoView.swift in Sources */,
 				38107C592B36F86C00ACEDF3 /* rcpaCVC.swift in Sources */,
 				3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */,
 				38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */,
@@ -1996,6 +2018,7 @@
 				38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */,
 				38CA1FD92B60DBBA00AFCFD2 /* CreatePresentationVC.swift in Sources */,
 				38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */,
+				38C464A02BDA8D8C00B7F377 /* DetailedInfoTVC.swift in Sources */,
 				38145EC62B3459E100DD7B4E /* WTsheetCVC.swift in Sources */,
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
 				38DAADED2B59505C00966B33 /* CalldetailsCVC.swift in Sources */,
@@ -2096,6 +2119,7 @@
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
 				3845556B2BA9C62B00F6CE1A /* ProductdetailsHeader.swift in Sources */,
 				38EF4C662B749DAE00F78F2E /* BrandsPreviewCVC.swift in Sources */,
+				38C4649C2BDA8C6600B7F377 /* DetailedInfoHeader.swift in Sources */,
 				38866E762BB2DBC800F9E576 /* CompetitorsDetailsCell.swift in Sources */,
 				38C0F2482A41A10500C4ACB9 /* ProductSlide + Extension.swift in Sources */,
 				38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */,

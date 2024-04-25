@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct AdditionalCompetitorsInfo {
     var competitor: Competitor?
     var qty: String?

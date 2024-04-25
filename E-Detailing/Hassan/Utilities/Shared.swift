@@ -18,6 +18,8 @@ class Shared {
     var iscelliterating: Bool = false
     var isSlideDownloading: Bool = false
     var isFetchingHQ: Bool = false
+    var detailedSlides: [DetailedSlide] = []
+    var isDetailed: Bool = false
 }
 //MARK:- UserDefaults property observers
 

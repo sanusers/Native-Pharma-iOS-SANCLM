@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 class PreviewHomeVC: BaseViewController {
     @IBOutlet var previewHomeView: PreviewHomeView!
+    var delegate: PreviewHomeViewDelegate?
     var dcrCall : CallViewModel?
     var pageType: PreviewHomeView.pageType = .preview
     override func viewDidLoad() {

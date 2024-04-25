@@ -31,7 +31,7 @@ extension TPdeviateReasonView: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        self.remarks = textView.text == "Type here.." ? "" : textView.text
+      //  self.remarks = textView.text == "Type here.." ? "" : textView.text
      
         // Combine the textView text and the replacement text to
         // create the updated text string
@@ -60,6 +60,7 @@ extension TPdeviateReasonView: UITextViewDelegate {
         // For every other case, the text should change with the usual
         // behavior...
         else {
+            self.remarks = updatedText
             return true
         }
 
@@ -136,7 +137,7 @@ class TPdeviateReasonView : UIView {
         remarksTV.backgroundColor = .appSelectionColor
         remarksTV.layer.cornerRadius = 5
         remarksTV.textColor = .appTextColor
-        remarksTV.font = UIFont(name: "Satoshi-Medium", size: 14)
+       // remarksTV.font = UIFont(name: "Satoshi-Medium", size: 14)
         remarksTV.delegate = self
         //remarksTV.text == "" ? "Type here.." : remarksTV.text
         remarksTV.textColor =  remarksTV.text == "Type here.." ? UIColor.lightGray : UIColor.black

@@ -12,6 +12,11 @@ import Foundation
 import UIKit
 import CoreData
 
+
+protocol PreviewHomeViewDelegate: AnyObject {
+    func didUserDetailedSlide()
+}
+
 extension PreviewHomeView: MenuResponseProtocol {
     func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel,index: Int) {
         print("Yet to implement")
@@ -198,8 +203,12 @@ extension PreviewHomeView:  SelectedPreviewTypesCVCDelegate {
         let vc = PlayPresentationVC.initWithStory(model:  playerModel, pagetype: self.previewHomeVC.pageType)
         if previewHomeVC.pageType == .detailing {
             vc.delegete = self
+            self.previewHomeVC.navigationController?.pushViewController(vc, animated: false)
+        } else {
+            self.previewHomeVC.navigationController?.pushViewController(vc, animated: true)
         }
-        self.previewHomeVC.navigationController?.pushViewController(vc, animated: true)
+
+       
     }
     
     
@@ -240,12 +249,18 @@ extension PreviewHomeView:  PlayPresentationViewDelegate {
             print(allSlides.count)
         case .customPresentation:
             print("Yet to ")
+            retriveSavedPresentations()
+            allSlides = toSetupAllPlayerModel()
+            
         }
         
         didPlayTapped(playerModel: allSlides)
     }
     
-    func didUserDetailedSlides(slideID: [String]) {
+    func didUserDetailedSlides() {
+      //  self.previewHomeVC.navigationController?.popViewController(animated: false)
+      //  self.previewHomeVC.delegate?.didUserDetailedSlide()
+        
         
     }
     
@@ -511,6 +526,8 @@ class PreviewHomeView : BaseView {
     @IBOutlet var doctorSelectorVIewHeight: NSLayoutConstraint!
     @IBOutlet var decendingIV: UIImageView!
     @IBOutlet var ascendingIV: UIImageView!
+    
+    @IBOutlet var viewFinishDetailing: UIView!
     var fetchedObject:  DoctorFencing?
     var fetchedSpecialityObject: Speciality?
     enum SortState {
@@ -590,6 +607,25 @@ class PreviewHomeView : BaseView {
                 selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
             })
          
+        }
+      
+        selectedSlidesModelArr.sort{$0.index < $1.index}
+        return selectedSlidesModelArr
+        
+    }
+    
+    func toSetupAllPlayerModel() -> [SlidesModel] {
+        var selectedSlidesModelArr = [SlidesModel]()
+        if let savePresentationArr = self.savePresentationArr {
+            savePresentationArr.forEach { selectedPresentation in
+                selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
+                    let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                        aSlidesModel.isSelected == true
+                    }
+                  
+                    selectedSlidesModelArr.append(contentsOf: selectedSlidesModelElement)
+                })
+            }
         }
       
         selectedSlidesModelArr.sort{$0.index < $1.index}
@@ -689,6 +725,11 @@ class PreviewHomeView : BaseView {
             welf.sortState = .decending
                 welf.setSortVIew()
         }
+        
+        viewFinishDetailing.addTap {
+            self.previewHomeVC.navigationController?.popViewController(animated: false)
+            self.previewHomeVC.delegate?.didUserDetailedSlide()
+        }
   
     }
     
@@ -714,6 +755,7 @@ class PreviewHomeView : BaseView {
         selectNotifyLbl.textColor = .appTextColor
         doctorSelectionVIew.layer.borderWidth = 1
         doctorSelectionVIew.layer.cornerRadius = 5
+        viewFinishDetailing.layer.cornerRadius = 5
         doctorSelectionVIew.layer.borderColor = UIColor.appLightTextColor.cgColor
         selectDoctorsLbl.setFont(font: .medium(size: .BODY))
         selectDoctorsLbl.textColor = .appTextColor
@@ -724,8 +766,10 @@ class PreviewHomeView : BaseView {
         toLoadPreviewCollection()
         if  previewHomeVC.pageType == .detailing {
             titleLbl.text = previewHomeVC.dcrCall?.name
+            viewFinishDetailing.isHidden = false
         } else {
             titleLbl.text = "Preview"
+            viewFinishDetailing.isHidden = true
         }
         //toLoadPreviewLoadedCollection()
     }
