@@ -49,17 +49,17 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xdl-rc-HuR">
                                         <rect key="frame" x="195.66666666666666" y="0.0" width="111.66666666666666" height="41"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rating stars" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ic2-m9-G29">
-                                                <rect key="frame" x="-9" y="11.666666666666666" width="74" height="17.666666666666671"/>
-                                                <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
-                                                <color key="textColor" red="0.20784313730000001" green="0.22352941179999999" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vSH-LJ-pB8">
+                                                <rect key="frame" x="11" y="4" width="89.666666666666671" height="33"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="ic2-m9-G29" firstAttribute="centerX" secondItem="xdl-rc-HuR" secondAttribute="centerX" multiplier="0.5" id="bFb-kg-C1N"/>
-                                            <constraint firstItem="ic2-m9-G29" firstAttribute="centerY" secondItem="xdl-rc-HuR" secondAttribute="centerY" id="bot-Ia-BIb"/>
+                                            <constraint firstItem="vSH-LJ-pB8" firstAttribute="width" secondItem="xdl-rc-HuR" secondAttribute="width" multiplier="0.8" id="36G-OK-9gx"/>
+                                            <constraint firstItem="vSH-LJ-pB8" firstAttribute="centerY" secondItem="xdl-rc-HuR" secondAttribute="centerY" id="3ag-5M-cc3"/>
+                                            <constraint firstItem="vSH-LJ-pB8" firstAttribute="centerX" secondItem="xdl-rc-HuR" secondAttribute="centerX" id="8qN-SI-NRa"/>
+                                            <constraint firstItem="vSH-LJ-pB8" firstAttribute="height" secondItem="xdl-rc-HuR" secondAttribute="height" multiplier="0.8" id="fyz-gH-MHU"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jRw-hl-Oz7">
@@ -138,7 +138,7 @@
             <connections>
                 <outlet property="brandName" destination="0XK-rv-1I5" id="hAd-Fh-dj0"/>
                 <outlet property="commentsIV" destination="Nxh-Hb-akm" id="pVZ-J4-8tl"/>
-                <outlet property="reviewLbl" destination="ic2-m9-G29" id="6LE-tw-vyV"/>
+                <outlet property="reviewView" destination="vSH-LJ-pB8" id="p9J-nH-eF7"/>
                 <outlet property="timeLine" destination="afP-sL-6IV" id="kXP-h5-Dak"/>
             </connections>
             <point key="canvasLocation" x="245.03816793893128" y="-33.450704225352112"/>

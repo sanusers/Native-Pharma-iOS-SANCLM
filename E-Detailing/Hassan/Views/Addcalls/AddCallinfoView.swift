@@ -1066,6 +1066,7 @@ class AddCallinfoView : BaseView {
     }
     
     func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
+      
         switch segmentType {
             
           
@@ -1084,17 +1085,22 @@ class AddCallinfoView : BaseView {
         case .products:
             setupSearchTF()
             didClose()
+            detailedSlideInfoView?.removeFromSuperview()
+           
             jfwExceptionView.isHidden = false
             viewnoRCPA.isHidden = true
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
             yettoaddSectionView.backgroundColor = .clear
             loadedContentsTable.isHidden = false
+            self.detailedSlideInfoView?.removeFromSuperview()
             toloadYettables()
             toloadContentsTable()
         case .inputs:
             setupSearchTF()
             didClose()
+            detailedSlideInfoView?.removeFromSuperview()
+            
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
@@ -1106,6 +1112,7 @@ class AddCallinfoView : BaseView {
         case .additionalCalls:
             setupSearchTF()
             didClose()
+            detailedSlideInfoView?.removeFromSuperview()
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
             yetToloadContentsTable.isHidden = false
@@ -1117,6 +1124,8 @@ class AddCallinfoView : BaseView {
         case .rcppa:
             setupSearchTF()
             didClose()
+            detailedSlideInfoView?.removeFromSuperview()
+            detailedSlideInfoView?.alpha = 0
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = false
             yetToloadContentsTable.isHidden = true
@@ -1136,6 +1145,7 @@ class AddCallinfoView : BaseView {
             //toloadContentsTable()
         case .jointWork:
             setupSearchTF()
+            detailedSlideInfoView?.removeFromSuperview()
             jfwExceptionView.isHidden = true
             jfwAction()
         }
@@ -1228,7 +1238,7 @@ class AddCallinfoView : BaseView {
     
     @IBOutlet var backgroundView: UIView!
     
-    
+    var selectedSegment: SegmentType = .detailed
     var selectedDoctorIndex = 0
     var searchText: String = ""
     var selectedSegmentsIndex: Int = 0
@@ -1252,6 +1262,7 @@ class AddCallinfoView : BaseView {
     var selectedChemistRcpa : AnyObject?
     var productQty: String = "1"
     var rateInt: Int = 0
+    var selectedProductIndex: Int = 0
     var selectedProductRcpa : AnyObject?
     var selectedAddcompetitorSection: Int = 0
     var selectedAddcompetitorProductRow: Int = 0
@@ -1276,7 +1287,7 @@ class AddCallinfoView : BaseView {
         super.didLayoutSubviews(baseVC: baseVC)
         
         let changePasswordViewwidth = self.bounds.width
-        let changePasswordViewheight = self.bounds.height / 1.5
+        let changePasswordViewheight = self.bounds.height / 1.4
         
         let changePasswordViewcenterX = self.bounds.midX - (changePasswordViewwidth / 2)
        // let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
@@ -1374,6 +1385,10 @@ class AddCallinfoView : BaseView {
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+                
+            case detailedSlideInfoView:
+                detailedSlideInfoView?.alpha = 0.3
+                
             case backgroundView:
                 aAddedView.isUserInteractionEnabled = true
             default:
@@ -1388,7 +1403,9 @@ class AddCallinfoView : BaseView {
         
         tpDeviateReasonView = self.addCallinfoVC.loadCustomView(nibname: XIBs.tpDeviateReasonView) as? TPdeviateReasonView
         tpDeviateReasonView?.delegate = self
-        
+        if self.segmentType[selectedSegmentsIndex] == .detailed {
+            tpDeviateReasonView?.productIndex = self.selectedProductIndex
+        }
         tpDeviateReasonView?.addedSubviewDelegate = self
         tpDeviateReasonView?.isForRemarks = isForremarks
         tpDeviateReasonView?.remarks = remarksStr == "" ? nil :  remarksStr
@@ -1407,9 +1424,9 @@ class AddCallinfoView : BaseView {
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
             case tpDeviateReasonView:
-               
-                aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0
+               print("Yet to implement TPdeviation")
+               // aAddedView.removeFromSuperview()
+               // aAddedView.alpha = 0
                 
             case customerCheckoutView:
                  aAddedView.removeFromSuperview()
@@ -1445,6 +1462,7 @@ class AddCallinfoView : BaseView {
         }
         
         detailedSlideInfoView = self.addCallinfoVC.loadCustomView(nibname: XIBs.detailedSlideInfoView) as? DetailedSlideInfoView
+        detailedSlideInfoView?.delegate = self
       //  jfwView?.rootVC = self.addCallinfoVC
       //  jfwView?.pobValue = self.pobValue ?? nil
        // jfwView?.overallFeedback = self.overallFeedback ?? nil
@@ -1586,7 +1604,7 @@ class AddCallinfoView : BaseView {
             if Shared.instance.isDetailed {
                 segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
             } else {
-                segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+                segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
             }
                
 //            } else {
@@ -1834,6 +1852,10 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
         self.loadedContentsTable.reloadData()
     }
     
+    func handleProductsRemarks(remarksStr: String, index: Int) {
+        Shared.instance.detailedSlides[index].remarks = remarksStr
+    }
+    
     func remarksAdded(remarksStr: String, index: Int) {
         
         dump(remarksStr)
@@ -1853,12 +1875,29 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
             }
 
         }
-        handleAddedRemarks(remarksStr: remarksStr)
+        if self.segmentType[selectedSegmentsIndex] == .detailed {
+            handleProductsRemarks(remarksStr: remarksStr, index: index)
+        } else {
+            handleAddedRemarks(remarksStr: remarksStr)
+        }
+       
 
     }
     
     
     
     
+    
+}
+extension AddCallinfoView :  DetailedSlideInfoViewDelegate {
+    func didCommentTapped(comments: String, index: Int) {
+        let addedcomments = Shared.instance.detailedSlides[index].remarks == nil ? comments :  Shared.instance.detailedSlides[index].remarks
+        competitorCommentAction(isForremarks: true, remarksStr: addedcomments)
+        self.selectedProductIndex = index
+    }
+    
+    func didRatingTapped(rating: Int, index: Int) {
+        Shared.instance.detailedSlides[index].remarksValue = Float(rating)
+    }
     
 }

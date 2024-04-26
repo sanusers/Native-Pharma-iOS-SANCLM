@@ -28,6 +28,16 @@ class AddCallinfoVC: BaseViewController {
     
     func setupParam(dcrCall: CallViewModel) {
         
+        
+        let persistentContainer = appdelegate.persistentContainer
+        let managedObjectContext = persistentContainer.viewContext
+        var savedPath : String = ""
+        if let persistentStore = managedObjectContext.persistentStoreCoordinator?.persistentStores.first {
+            if let storeURL = persistentStore.url {
+                print("Core Data SQLite file path: \(storeURL)")
+                savedPath = "\(storeURL)"
+            }
+        }
         var cusType : String = ""
 
         switch self.dcrCall.type {
@@ -94,10 +104,113 @@ class AddCallinfoVC: BaseViewController {
         
         
         addedDCRCallsParam["Inputs"] = addedInput
+        //Products Detailed
+        // Assuming you have detailedSlides array
+        var detailedSlides = Shared.instance.detailedSlides
+
+        // Create a dictionary to group slides by brandCode
+        var groupedSlides: [Int: [SlidesModel]] = [:]
+
+        // Group slides by brandCode
+        for slide in detailedSlides {
+            if let brandCode = slide.brandCode {
+                if groupedSlides[brandCode] == nil {
+                    groupedSlides[brandCode] = []
+                }
+                if let slides = slide.groupedSlides {
+                    groupedSlides[brandCode]?.append(contentsOf: slides)
+                }
+            }
+        }
+
+        // Iterate through the detailedSlides array and update each DetailedSlide object
+        for (index, detailedSlide) in detailedSlides.enumerated() {
+            if let groupedSlidesForBrand = groupedSlides[detailedSlide.brandCode ?? Int()] {
+                detailedSlides[index].groupedSlides = groupedSlidesForBrand
+            }
+        }
+
+        // Create a dictionary to group DetailedSlides by brandCode
+        var groupedDetailedSlides: [Int: [DetailedSlide]] = [:]
+
+        // Group DetailedSlides by brandCode
+        for slide in detailedSlides {
+            if let brandCode = slide.brandCode {
+                if groupedDetailedSlides[brandCode] == nil {
+                    groupedDetailedSlides[brandCode] = []
+                }
+                groupedDetailedSlides[brandCode]?.append(slide)
+            }
+        }
+
+        // Convert the groupedSlides dictionary into an array of arrays
+        let mappedArray = groupedDetailedSlides.values.map { $0 }
+
         
         
         
-        //Products
+        var addedDetailedProducts = [[String: Any]]()
+        addedDetailedProducts.removeAll()
+        
+        
+//        mappedArray.forEach { DetailedSlide in
+//            <#code#>
+//        }
+        
+        
+        
+        detailedSlides.forEach { mainDetailedSlide in
+            var aproduct : [String : Any] = [:]
+            // groupedSlides.forEach
+            aproduct["Code"] = mainDetailedSlide.brandCode
+            aproduct["Group"] = "1"
+            aproduct["ProdFeedbk"] = ""
+            aproduct["Rating"] = ""
+            aproduct["Appver"] = "Test.S.1.0"
+            aproduct["Mod"] = "iOS-Edet"
+            aproduct["Type"] = cusType
+            var timesLine = [String: Any]()
+            timesLine["sTm"] = mainDetailedSlide.startTime ?? ""
+            timesLine["eTm"] = mainDetailedSlide.endTime ?? ""
+            aproduct["Timesline"] = timesLine
+            
+            mainDetailedSlide.groupedSlides?.enumerated().forEach {index, aDetailedSlide in
+                
+                aproduct["Name"] = aDetailedSlide.name
+     
+                
+                aproduct["Slides"] = [[String: Any]]()
+                var aslideParamArr = [[String: Any]]()
+               // aslideParamArr.removeAll()
+                var aSlideParam: [String :Any] = [:]
+                aSlideParam["Slide"] = aDetailedSlide.name
+                aSlideParam["SlidePath"] = savedPath
+                aSlideParam["Scribbles"] = ""
+                aSlideParam["SlideRemarks"] = mainDetailedSlide.remarks
+                aSlideParam["SlideType"] =  aDetailedSlide.fileType
+                aSlideParam["SlideRating"] = mainDetailedSlide.remarksValue
+                aSlideParam["Times"] = [[String: Any]]()
+                var previewTimeArr:  [[String : Any]] = [[:]]
+                previewTimeArr.removeAll()
+                var previewTime : [String: Any] = [:]
+                previewTime["sTm"] = mainDetailedSlide.startTime
+                previewTime["eTm"] = mainDetailedSlide.endTime
+                previewTimeArr.append(previewTime)
+                aSlideParam["Times"] = previewTimeArr
+                aslideParamArr.append(aSlideParam)
+                aproduct["Slides"] = aslideParamArr
+            }
+            
+            addedDetailedProducts.append(aproduct)
+        }
+ 
+        
+        
+        
+        dump(addedDetailedProducts)
+        
+        
+        //Products not Detailed
         var addedProducts = [[String: Any]]()
         addedProducts.removeAll()
       //  let slides : [String : Any] = ["Slide" : "", "SlidePath" : "", "SlideRemarks" : "", "SlideType" : "", "SlideRating" : "", "Times" : "times"]
@@ -127,7 +240,7 @@ class AddCallinfoVC: BaseViewController {
             addedProducts.append(aproduct)
         }
         
-        addedDCRCallsParam["Products"] = addedProducts
+        addedDCRCallsParam["Products"] = addedProducts + addedDetailedProducts
         
         //Additional Customers
         var additionalCustomerParams = [[String: Any]]()

@@ -170,6 +170,8 @@ extension String {
 }
 
 extension Date{
+    
+
     func toString(format: String = "hh:mm a",  timeZone: TimeZone? = nil) -> String{
         let formatter = DateFormatter()
         formatter.dateFormat = format

@@ -83,6 +83,7 @@
 		386BEA122B7383830083D61F /* previewHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA112B7383830083D61F /* previewHomeView.swift */; };
 		386BEA152B739A480083D61F /* SelectedPreviewTypesCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */; };
 		386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */; };
+		386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */; };
 		387B8A2E2BB3DCDA007F38AB /* _demo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */; };
 		387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */; };
 		387BDB002BAB1DCB002B5E7D /* AddCallinfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */; };
@@ -459,6 +460,7 @@
 		386BEA112B7383830083D61F /* previewHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = previewHomeView.swift; sourceTree = "<group>"; };
 		386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedPreviewTypesCVC.swift; sourceTree = "<group>"; };
 		386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedPreviewTypesCVC.xib; sourceTree = "<group>"; };
+		386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTimer.swift; sourceTree = "<group>"; };
 		387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _demo.xcconfig; sourceTree = "<group>"; };
 		387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _live.xcconfig; sourceTree = "<group>"; };
 		387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCallinfoView.swift; sourceTree = "<group>"; };
@@ -1090,6 +1092,7 @@
 				38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */,
 				38E3DF702B8F2DBA0093DF4B /* Viewcontroller + Ex.swift */,
 				38CACEAB2BA96464006BFA62 /* BackgroundTaskManager.swift */,
+				386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2144,6 +2147,7 @@
 				B2A711F629FBE1D3003A25BF /* Model.swift in Sources */,
 				38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */,
 				38E3C35E2AF9FA0400623C33 /* APIenums.swift in Sources */,
+				386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */,
 				3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */,
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,

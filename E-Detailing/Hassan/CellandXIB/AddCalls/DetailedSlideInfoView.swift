@@ -8,6 +8,18 @@
 import Foundation
 import UIKit
 
+protocol DetailedSlideInfoViewDelegate: AnyObject {
+    func didCommentTapped(comments: String, index: Int)
+    func didRatingTapped(rating: Int, index: Int)
+    
+}
+
+extension DetailedSlideInfoView: DetailedInfoTVCDelegate {
+    func didRatingAdded(rating: Float, index: Int) {
+        self.delegate?.didRatingTapped(rating: Int(rating), index: index)
+    }
+}
+
 extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Shared.instance.detailedSlides.count
@@ -16,8 +28,22 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: DetailedInfoTVC = tableView.dequeueReusableCell(withIdentifier: "DetailedInfoTVC", for: indexPath) as! DetailedInfoTVC
         let model =  Shared.instance.detailedSlides[indexPath.row]
-        let idStr =  model.slideID ?? Int()
-        cell.brandName.text = "\(idStr)"
+        let name =  model.slidesModel?.name
+        cell.brandName.text = name
+        cell.delegate = self
+        //cell.selectedIndex = indexPath.row
+        //cell.currentRating = Int(model.remarksValue ?? 0)
+        cell.setupUI(currentRating: Int(model.remarksValue ?? 0), selectedIndex: indexPath.row)
+        let startTimeStr = model.startTime ?? ""
+        let endtimeStr = model.endTime ?? ""
+       let startTime = startTimeStr.toDate()
+        let endTime = endtimeStr.toDate()
+        cell.timeLine.text = "\(startTime.toString(format: "HH:mm:ss", timeZone: nil)) - \(endTime.toString(format: "HH:mm:ss", timeZone: nil))"
+        let remarksStr =   Shared.instance.detailedSlides[indexPath.row].remarks 
+        cell.commentsIV.addTap {
+            self.delegate?.didCommentTapped(comments: model.remarks ?? "", index: indexPath.row)
+        }
+        
         return cell
     }
     
@@ -43,10 +69,10 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
 class DetailedSlideInfoView: UIView {
     
     @IBOutlet var detailedInfoTable: UITableView!
-    var detailedSlideInfoModal: [DetailedSlideInfoModal] = []
+    var delegate: DetailedSlideInfoViewDelegate?
     func setupui() {
         self.backgroundColor = .clear
-        self.layer.cornerRadius = 5
+        self.detailedInfoTable.layer.cornerRadius = 5
         cellRegistration()
         toLoadData()
        // toSetDataSorce()
@@ -54,30 +80,6 @@ class DetailedSlideInfoView: UIView {
     }
     
     
-    struct DetailedSlideInfoModal {
-        var brandName: Int?
-    }
-    
-    func toSetDataSorce() {
-        
-        
-        
-       let groupedSlides = CoreDataManager.shared.retriveGroupedSlides()
-        groupedSlides.forEach { aGroupedBrandsSlideModel in
-            aGroupedBrandsSlideModel.groupedSlide.forEach { aSlidesModel in
-                if Shared.instance.detailedSlides.contains(where: { aDetailedSlide in
-                    aDetailedSlide.slideID == aSlidesModel.slideId
-                }) {
-                    let aDetailedSlideInfoModal = DetailedSlideInfoModal(brandName: aGroupedBrandsSlideModel.productBrdCode)
-                    detailedSlideInfoModal.append(aDetailedSlideInfoModal)
-                }
-                    
-            }
-        }
-        
-        
-        dump(detailedSlideInfoModal)
-    }
     
     func toLoadData() {
         detailedInfoTable.delegate = self

@@ -78,6 +78,7 @@ extension TPdeviateReasonView: UITextViewDelegate {
     }
 }
 
+
 class TPdeviateReasonView : UIView {
     
     @IBOutlet var titleLbl: UILabel!
@@ -93,6 +94,7 @@ class TPdeviateReasonView : UIView {
     @IBOutlet var btnsend: ShadowButton!
     weak var delegate : SessionInfoTVCDelegate?
     var isForRemarks: Bool = false
+    var productIndex: Int = 0
     weak var addedSubviewDelegate: addedSubViewsDelegate?
     var remarks: String?
     func setupui() {
@@ -122,12 +124,11 @@ class TPdeviateReasonView : UIView {
     }
     @IBAction func didTapSend(_ sender: Any) {
         addedSubviewDelegate?.didUpdate()
-        delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: 0)
-        
+            self.delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: productIndex)
     }
     @IBAction func didTapCancel(_ sender: Any) {
         addedSubviewDelegate?.didClose()
-        delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: 0)
+        delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: productIndex)
     }
     
     
