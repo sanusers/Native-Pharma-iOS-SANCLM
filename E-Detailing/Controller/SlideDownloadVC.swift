@@ -96,26 +96,28 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
             self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
             let element = arrayOfAllSlideObjects[index]
-
+            Shared.instance.showLoaderInWindow()
             CoreDataManager.shared.updateSlidesInCoreData(savedSlides: element) { isUpdated in
                 if isUpdated {
-                    DispatchQueue.global().async {
+                  //  DispatchQueue.global().async {
 
                         DispatchQueue.main.async {
                             // Update UI on the main queue after background tasks are completed
                              self.tableView.reloadData()
-                            LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
+                           // LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
                             self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                             self.isDownloading = false
                             Shared.instance.iscelliterating = false
                             Shared.instance.isSlideDownloading = false
                             self.closeHolderView.isUserInteractionEnabled = true
-                            self.togroupSlides() {
-                                completion(true)
+                           
+                            self.toGroupSlidesBrandWise() { _ in
+                            LocalStorage.shared.setSting( LocalStorage.LocalValue.slideDownloadIndex, text: "")
+                            Shared.instance.removeLoaderInWindow()
+                              
                             }
-                          //  self.startDownload(ifForsingleSeclection: true)
                             
-                        }
+                     //   }
                     }
                 }
             }
@@ -854,6 +856,41 @@ class SlideDownloadVC : UIViewController {
 
 
     }
+    
+//    func checkifSyncIsCompleted(_ isFromLaunch: Bool, completion: @escaping () -> ()){
+//        let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
+//
+//        let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
+//        
+//        let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
+//        
+//        let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) ||  !$0.isDownloadCompleted }
+//        
+//       if nonExistingSlides.isEmpty {
+//           LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
+//           self.isDownloading = false
+//           isSlideDownloadCompleted = true
+//           Shared.instance.showLoaderInWindow()
+//           toGroupSlidesBrandWise() { _ in
+//               
+//               LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
+//               Shared.instance.removeLoaderInWindow()
+//               completion()
+//           }
+//           } else {
+//               LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
+//               LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+//               self.isDownloading = false
+//               isSlideDownloadCompleted = false
+//               Shared.instance.showLoaderInWindow()
+//               toGroupSlidesBrandWise() { _ in
+//                   
+//                   LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: false)
+//                   Shared.instance.removeLoaderInWindow()
+//                   completion()
+//               }
+//           }
+//    }
 
     
     
@@ -867,8 +904,7 @@ class SlideDownloadVC : UIViewController {
             isSlideDownloadCompleted = true
             Shared.instance.showLoaderInWindow()
             toGroupSlidesBrandWise() { _ in
-
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
             Shared.instance.removeLoaderInWindow()
             completion()
             }

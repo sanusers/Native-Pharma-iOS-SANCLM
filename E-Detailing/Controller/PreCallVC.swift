@@ -78,7 +78,7 @@ extension PreCallVC: UITableViewDelegate, UITableViewDataSource {
         default:
             let cell: ProductsDescriptionTVC = tableView.dequeueReusableCell(withIdentifier: "ProductsDescriptionTVC", for: indexPath) as! ProductsDescriptionTVC
             let model = self.productStrArr[indexPath.row]
-            cell.topopulateCell(modelStr: model)
+            cell.topopulateCell(modelStr: model, isforPreCall: true)
             cell.selectionStyle = .none
             return cell
         }
@@ -446,49 +446,67 @@ class PreCallVC : UIViewController {
     
     func toSetDataSourceForProducts(detailedReportModel: PrecallsModel?) {
         productStrArr.removeAll()
-        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
+        productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true, remarks: "No remarks found."))
         
        if detailedReportModel?.sampleProduct != "" {
            var prodArr =  detailedReportModel?.sampleProduct.components(separatedBy: ",")
            if prodArr?.last == "" {
                prodArr?.removeLast()
            }
-           prodArr?.forEach { prod in
+           let filteredComponents = prodArr?.map { anElement -> String in
+               var modifiedElement = anElement
+               if modifiedElement.first == " " {
+                   modifiedElement.removeFirst()
+               }
+               return modifiedElement
+           }
+           
+           
+           filteredComponents?.forEach { prod in
                var prodString : [String] = []
                prodString.append(contentsOf: prod.components(separatedBy: "("))
                prodString = prodString.map({ aprod in
                    aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
                })
                var name: String = ""
-               var isPromoted: String = ""
+               var isPromoted: Bool = false
                var noOfsamples: String = ""
                var rxQty: String = ""
                var rcpa: String  = ""
                prodString.enumerated().forEach {prodindex, prod in
-             
-                  // let sampleProduct: SampleProduct
+                   
+                   // let sampleProduct: SampleProduct
                    switch prodindex {
                    case 0 :
                        name = prod
                    case 1:
-                       isPromoted = prod
-                   case 2:
                        noOfsamples = prod
-                   case 3:
+                   case 2:
                        rxQty = prod
-                   case 4:
-                       rcpa = prod
+                   case 3:
+                       if let index = prod.firstIndex(of: "^") {
+                           let startIndex = prod.index(after: index)
+                           let numberString = String(prod[startIndex...])
+                           rcpa = numberString
+                           print(numberString) // This will print "5"
+                       } else {
+                           print("'^' not found in the expression.")
+                           rcpa = "-"
+                       }
+                       
+                       
                    default:
                        print("default")
                    }
                }
-               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted.replacingOccurrences(of: " ", with: "") == "0" ? true : false, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false)
                
-             //  let aProduct = SampleProduct(prodName: prodString[0].isEmpty ? "" : prodString[0] , isPromoted: prodString[1].isEmpty ? false : prodString[1].contains("0") ? true : false, noOfSamples:  prodString[2].isEmpty ? "" : prodString[2] , rxQTY:  prodString[3].isEmpty ? "" : prodString[3] , rcpa:  prodString[4].isEmpty ? "" : prodString[4])
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false, remarks: detailedReportModel?.remarks ?? "")
                productStrArr.append(aProduct)
            }
+           
+           
        } else {
-           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true, remarks: "No remarks found"))
        }
 
         

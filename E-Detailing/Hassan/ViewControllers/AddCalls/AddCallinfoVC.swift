@@ -68,7 +68,7 @@ class AddCallinfoVC: BaseViewController {
         let additionalCallValue = self.addCallinfoView.additionalCallListViewModel.getAdditionalCallData()
         
         let rcpaValue =  self.addCallinfoView.rcpaDetailsModel
-        
+        let evenetCaptureValue = self.addCallinfoView.eventCaptureListViewModel
         
        
         
@@ -152,61 +152,62 @@ class AddCallinfoVC: BaseViewController {
         var addedDetailedProducts = [[String: Any]]()
         addedDetailedProducts.removeAll()
         
-        
+        dump(mappedArray)
 //        mappedArray.forEach { DetailedSlide in
-//            <#code#>
+//
 //        }
         
-        
-        
-        detailedSlides.forEach { mainDetailedSlide in
-            var aproduct : [String : Any] = [:]
-            // groupedSlides.forEach
-            aproduct["Code"] = mainDetailedSlide.brandCode
-            aproduct["Group"] = "1"
-            aproduct["ProdFeedbk"] = ""
-            aproduct["Rating"] = ""
-            aproduct["Appver"] = "Test.S.1.0"
-            aproduct["Mod"] = "iOS-Edet"
-            aproduct["Type"] = cusType
-            var timesLine = [String: Any]()
-            timesLine["sTm"] = mainDetailedSlide.startTime ?? ""
-            timesLine["eTm"] = mainDetailedSlide.endTime ?? ""
-            aproduct["Timesline"] = timesLine
-            
-            mainDetailedSlide.groupedSlides?.enumerated().forEach {index, aDetailedSlide in
-                
-                aproduct["Name"] = aDetailedSlide.name
-     
+        mappedArray.forEach { detailedSlideArr in
+            var groupSlides: [SlidesModel] = []
+            detailedSlideArr.forEach { aDetailedSlide in
+                if let aSlideModel = aDetailedSlide.slidesModel {
+                    groupSlides.append(aSlideModel)
+                }
+            }
+            let optionalDetailedSlide = detailedSlideArr.first
+            if let aDetailedSlide = optionalDetailedSlide  {
+                var aproduct : [String : Any] = [:]
+                // groupedSlides.forEach
+                aproduct["Code"] = aDetailedSlide.brandCode
+                aproduct["Group"] = "1"
+                aproduct["ProdFeedbk"] = ""
+                aproduct["Rating"] = ""
+                aproduct["Appver"] = "Test.S.1.0"
+                aproduct["Mod"] = "iOS-Edet"
+                aproduct["Type"] = cusType
+                var timesLine = [String: Any]()
+                timesLine["sTm"] = aDetailedSlide.startTime ?? ""
+                timesLine["eTm"] = detailedSlideArr.last?.endTime ?? ""
+                aproduct["Timesline"] = timesLine
                 
                 aproduct["Slides"] = [[String: Any]]()
                 var aslideParamArr = [[String: Any]]()
-               // aslideParamArr.removeAll()
-                var aSlideParam: [String :Any] = [:]
-                aSlideParam["Slide"] = aDetailedSlide.name
-                aSlideParam["SlidePath"] = savedPath
-                aSlideParam["Scribbles"] = ""
-                aSlideParam["SlideRemarks"] = mainDetailedSlide.remarks
-                aSlideParam["SlideType"] =  aDetailedSlide.fileType
-                aSlideParam["SlideRating"] = mainDetailedSlide.remarksValue
-                aSlideParam["Times"] = [[String: Any]]()
-                var previewTimeArr:  [[String : Any]] = [[:]]
-                previewTimeArr.removeAll()
-                var previewTime : [String: Any] = [:]
-                previewTime["sTm"] = mainDetailedSlide.startTime
-                previewTime["eTm"] = mainDetailedSlide.endTime
-                previewTimeArr.append(previewTime)
-                aSlideParam["Times"] = previewTimeArr
-                aslideParamArr.append(aSlideParam)
+                groupSlides.enumerated().forEach {index, aSlide in
+                    
+                    aproduct["Name"] = aSlide.name
+                    var aSlideParam: [String :Any] = [:]
+                    aSlideParam["Slide"] = aSlide.name
+                    aSlideParam["SlidePath"] = savedPath
+                    aSlideParam["Scribbles"] = ""
+                    aSlideParam["SlideRemarks"] = aDetailedSlide.remarks
+                    aSlideParam["SlideType"] =  aSlide.fileType
+                    aSlideParam["SlideRating"] = aDetailedSlide.remarksValue
+                    aSlideParam["Times"] = [[String: Any]]()
+                    var previewTimeArr:  [[String : Any]] = [[:]]
+                    previewTimeArr.removeAll()
+                    var previewTime : [String: Any] = [:]
+                    previewTime.removeAll()
+                    previewTime["sTm"] = detailedSlideArr[index].startTime
+                    previewTime["eTm"] = detailedSlideArr[index].endTime
+                    previewTimeArr.append(previewTime)
+                    aSlideParam["Times"] = previewTimeArr
+                    aslideParamArr.append(aSlideParam)
+                  
+                }
                 aproduct["Slides"] = aslideParamArr
+                addedDetailedProducts.append(aproduct)
             }
-            
-            addedDetailedProducts.append(aproduct)
         }
- 
-        
-        
-        
         dump(addedDetailedProducts)
         
         
@@ -327,6 +328,8 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["RCPAEntry"] = entryRCPAparam
         
        
+        
+        
 //Joint works
 
         var addedJointWorks  : [[String: Any]] = [[:]]
@@ -341,6 +344,39 @@ class AddCallinfoVC: BaseViewController {
         }
         addedDCRCallsParam["JWWrk"] = addedJointWorks
         
+        
+//        "EventCapture":[
+//        {
+//        "EventCapture":"True",
+//        "EventImageName":"MR5940_1679482_27042024161708.jpeg",
+//        "EventImageTitle":"",
+//        "EventImageDescription":"",
+//        "Eventfilepath":""
+//        },
+//        {
+//        "EventCapture":"True",
+//        "EventImageName":"MR5940_1679482_27042024161656.jpeg",
+//        "EventImageTitle":"",
+//        "EventImageDescription":"",
+//        "Eventfilepath":""
+//        }
+//        ],
+        
+        
+        addedDCRCallsParam["EventCapture"] = [[String: Any]]()
+        var addedDCRCallsParamArr : [[String: Any]] = [[:]]
+        addedDCRCallsParamArr.removeAll()
+        let aEventDatum = evenetCaptureValue.EventCaptureData()
+        aEventDatum.forEach { eventCaptureViewModel in
+            var aCapturedEvent : [String: Any] = [:]
+            aCapturedEvent["EventCapture"] = "True"
+            aCapturedEvent["EventImageName"] = eventCaptureViewModel.image.description
+            aCapturedEvent["EventImageTitle"] = eventCaptureViewModel.title
+            aCapturedEvent["EventImageDescription"] = eventCaptureViewModel.description
+            aCapturedEvent["Eventfilepath"] = savedPath
+            addedDCRCallsParamArr.append(aCapturedEvent)
+        }
+        addedDCRCallsParam["EventCapture"]  = addedDCRCallsParamArr
         
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
         let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -412,24 +448,34 @@ class AddCallinfoVC: BaseViewController {
    
             
             Shared.instance.showLoaderInWindow()
-            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {[weak self] address in
-                guard let welf = self else {return}
-                guard let fetchedAddress = address else {
-                    
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {[weak self] address in
+                    guard let welf = self else {return}
+                    guard let fetchedAddress = address else {
+                        
+                        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                        var toSendData = [String : Any]()
+                        toSendData["data"] = jsonDatum
+                        welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
+                        
+                        return}
+                
+                    welf.address = fetchedAddress
+                    addedDCRCallsParam["address"] =  fetchedAddress
                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
                     var toSendData = [String : Any]()
                     toSendData["data"] = jsonDatum
                     welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
-                    
-                    return}
-            
-                welf.address = fetchedAddress
-                addedDCRCallsParam["address"] =  fetchedAddress
+                }
+            } else {
+                welf.address = ""
+                addedDCRCallsParam["address"] =  ""
                 let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
                 var toSendData = [String : Any]()
                 toSendData["data"] = jsonDatum
                 welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
             }
+
             
         }
 
@@ -440,6 +486,7 @@ class AddCallinfoVC: BaseViewController {
         callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) {[weak self] isPosted in
             guard let welf = self else {return}
             Shared.instance.removeLoaderInWindow()
+            Shared.instance.detailedSlides = []
             if !isPosted {
                 welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam)
             } else {

@@ -11,10 +11,12 @@ class InputDescriptionCVC: UICollectionViewCell {
 
     @IBOutlet var inputName: UILabel!
     
+    @IBOutlet var seperatorView: UIView!
     @IBOutlet var inputCount: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        seperatorView.backgroundColor = .appSelectionColor
         inputName.setFont(font: .medium(size: .BODY))
         inputCount.setFont(font: .medium(size: .BODY))
     }

@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 class PlayPresentationVC: BaseViewController {
     weak var delegete: PlayPresentationViewDelegate?
+    var previewTypeIndex: Int = 0
     var selectedSlideModel: [SlidesModel]?
     @IBOutlet var playPresentationView: PlayPresentationView!
     var pagetype: PreviewHomeView.pageType = .preview

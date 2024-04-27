@@ -211,10 +211,10 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
         case 4:
             let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
             cell.addTap {
-                self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-                self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped: self.cellType  == .hideRCPA ?  false : true, index: self.selectedIndex ?? 0)
+               // self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
+               // self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped: self.cellType  == .hideRCPA ?  false : true, index: self.selectedIndex ?? 0)
                 //self.cellType == .showRCPA ? true : false
-                self.extendedInfoCollection.reloadData()
+             //   self.extendedInfoCollection.reloadData()
             }
             return cell
         default:
@@ -226,7 +226,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 case 5:
 
                         let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-                        cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
+                    cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true, remarks: "-"))
                         return cell
          
                 case 6:
@@ -285,6 +285,7 @@ struct SampleProduct {
     let rxQTY: String
     let rcpa: String
     let isDemoProductCell: Bool
+    let remarks: String?
 }
 
 struct SampleInput {
@@ -334,18 +335,23 @@ class ViewAllInfoTVC: UITableViewCell {
         inputStrArr.removeAll()
         //detailedReportModel?.gifts
         if detailedReportModel?.gifts != "" {
-            var inputArr =  detailedReportModel?.gifts.components(separatedBy: ",")
+            var inputArr = [String]()
             
-            inputArr?.removeLast()
+            inputArr = detailedReportModel?.gifts.components(separatedBy: ",") ?? [String]()
+            inputArr.removeLast()
+            if inputArr.count == 0 {
+                inputArr.append(detailedReportModel?.gifts ?? String())
+            }
+          
             
-            let filteredComponents = inputArr?.map { anElement -> String in
+            let filteredComponents = inputArr.map { anElement -> String in
                 var modifiedElement = anElement
                 if modifiedElement.first == " " {
                     modifiedElement.removeFirst()
                 }
                 return modifiedElement
             }
-            filteredComponents?.forEach { prod in
+            filteredComponents.forEach { prod in
                 var prodString : [String] = []
                 prodString.append(contentsOf: prod.components(separatedBy: "("))
                 prodString = prodString.map({ aprod in
@@ -377,7 +383,7 @@ class ViewAllInfoTVC: UITableViewCell {
             }
 
         } else {
-            inputStrArr.append(SampleInput(prodName: "-", noOfSamples: "-"))
+            inputStrArr.append(SampleInput(prodName: "No inputs", noOfSamples: ""))
         }
             
             
@@ -442,6 +448,10 @@ class ViewAllInfoTVC: UITableViewCell {
         
                let promotdProduct = self.detailedReportModel?.promotedProducts
                guard let promotdProduct = promotdProduct, promotdProduct != "" else {
+                   let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false, remarks: detailedReportModel?.remarks ?? "-")
+                   
+                   productStrArr.append(aProduct)
+                   
                    return}
       
                // Split the promotedProduct string by the "$" delimiter
@@ -463,20 +473,15 @@ class ViewAllInfoTVC: UITableViewCell {
                }
                
                
-               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false)
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false, remarks: detailedReportModel?.remarks ?? "-")
                
-             //  let aProduct = SampleProduct(prodName: prodString[0].isEmpty ? "" : prodString[0] , isPromoted: prodString[1].isEmpty ? false : prodString[1].contains("0") ? true : false, noOfSamples:  prodString[2].isEmpty ? "" : prodString[2] , rxQTY:  prodString[3].isEmpty ? "" : prodString[3] , rcpa:  prodString[4].isEmpty ? "" : prodString[4])
                productStrArr.append(aProduct)
            }
        } else {
-           productStrArr.append(SampleProduct(prodName: "-", isPromoted: nil, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true))
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: nil, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true, remarks: "-"))
        }
 
-        
-        //productStrArr.append(contentsOf: detailedReportModel?.products.components(separatedBy: ",") ?? [])
-  
-        
-        
+        dump(productStrArr)
          
     }
     

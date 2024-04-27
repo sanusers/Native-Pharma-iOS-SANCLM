@@ -99,7 +99,7 @@ extension MasterSyncVC {
         let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
 
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
-        let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
+        let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) ||  !$0.isDownloadCompleted }
 
         isNewSlideExists = !nonExistingSlides.isEmpty
         
@@ -118,6 +118,7 @@ extension MasterSyncVC {
         
         
         if !LocalStorage.shared.getBool(key: .isSlidesLoaded) ||  !LocalStorage.shared.getBool(key: .isSlidesGrouped) {
+        
             if nonExistingSlides.isEmpty {
                 slideDownloadStatusLbl.isHidden  =  true
                 downloadingBottomView.isHidden =  true

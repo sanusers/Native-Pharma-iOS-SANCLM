@@ -274,10 +274,7 @@ class MainVC : UIViewController {
             self.toIntegrateChartView(.doctor, 0)
         }
     }
-    
-    
 
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -300,9 +297,9 @@ class MainVC : UIViewController {
             checkinAction()
         }
 
-        if !isFromLaunch {
-            requestAuth()
-        }
+//        if !isFromLaunch {
+//            requestAuth()
+//        }
 
 
 //        self.toretryDCRupload( date: "") {[weak self] _ in
@@ -1313,20 +1310,18 @@ class MainVC : UIViewController {
     }
     
     @objc func dcrcallsAdded() {
-
-        toSetParams(isfromSyncCall: true) {
-           // self.toLoadOutboxTable(isSynced: true)
-            self.refreshDashboard() {}
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            toSetParams(isfromSyncCall: true) {
+               // self.toLoadOutboxTable(isSynced: true)
+                self.refreshDashboard() {}
+            }
         }
-      
- 
     }
     
     func toLoadDcrCollection() {
         dcrCallsCollectionView.delegate = self
         dcrCallsCollectionView.dataSource = self
         dcrCallsCollectionView.reloadData()
-        
     }
     
     

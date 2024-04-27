@@ -161,9 +161,9 @@ extension MasterSyncVC {
             switch result {
             case .success(let response):
                 dump(response)
-                completion(.success(response))
+               // completion(.success(response))
                 // Continue to the next API call recursively
-                responseModel = response
+               // responseModel = response
                 self.makeAPICalls(sessions: sessions, currentIndex: currentIndex + 1, completion: completion)
                 
             case .failure(let error):

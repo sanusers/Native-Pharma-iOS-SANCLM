@@ -375,7 +375,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                //25 elevation padding, 60 header height (product)
                 
                 
-               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA Cell - 60, Remarks - 75, show options - 50, 25 - cache)
+               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA Cell - 60, Remarks - 75, show options - 50, 20 - cache)
                 
                 var timeinfoHeight = CGFloat()
                  if self.viewDayReportVC.isToReduceLocationHeight {
@@ -388,8 +388,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
                 let inputCellHeight = toCalculateInputHeight(index: indexPath.row)
                 return 170 + timeinfoHeight + 60 + productCellHeight + 60 + inputCellHeight + 60 + 75 + 50 + 20
-                //+ 25
-                //595 + 10 + 60
+     
             } else if model?.isRCPAExtended == true  && model?.isCellExtended == true {
                 // 50 - elevation padding
                 // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40 Each, RCPA - 60, Remarks - 75, show options - 50 )
@@ -401,11 +400,9 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 }
                 let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
                 let inputCellHeight = toCalculateInputHeight(index: indexPath.row)
-                 return 170 + timeinfoHeight + 60 + productCellHeight + 60 +  inputCellHeight + 60 + 75 + 50  + 130 + 10
-                //+ 50
-                
-                
-               // return 595 + 100 + 10 + 60
+                 return 170 + timeinfoHeight + 60 + productCellHeight + 60 +  inputCellHeight + 60 + 75 + 50 + 10
+                //yet to configure RCPA -  + 130 
+   
             } else {
                 return CGFloat()
             }
@@ -414,14 +411,21 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func toCalculateProductsHeight(index : Int) -> CGFloat {
+        var eachCellSize : Int = 0
         var productStrArr : [String] = []
         productStrArr.removeAll()
         productStrArr.append("This is Title String")
-        productStrArr.append(contentsOf: self.detailedReportsModelArr?[index].products.components(separatedBy: ",") ?? [])
-        if productStrArr.last ==  "  )" {
-            productStrArr.removeLast()
+        if self.detailedReportsModelArr?[index].products != "" {
+            productStrArr.append(contentsOf: self.detailedReportsModelArr?[index].products.components(separatedBy: ",") ?? [])
+            if productStrArr.last ==  "  )" {
+                productStrArr.removeLast()
+            }
+            eachCellSize  = 40
+        } else {
+            eachCellSize  = 60
         }
-        let eachCellSize = 40
+
+       
 //        if productStrArr.count >= 4 {
 //            eachCellSize = 40
 //        }
@@ -435,14 +439,21 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func toCalculateInputHeight(index : Int) -> CGFloat {
+        var eachCellSize : Int = 0
         var productStrArr : [String] = []
         productStrArr.removeAll()
         productStrArr.append("This is Title String")
-        productStrArr.append(contentsOf: self.detailedReportsModelArr?[index].gifts.components(separatedBy: ",") ?? [])
-        if productStrArr.last ==  "  )" {
-            productStrArr.removeLast()
+        if self.detailedReportsModelArr?[index].gifts != "" {
+            productStrArr.append(contentsOf: self.detailedReportsModelArr?[index].gifts.components(separatedBy: ",") ?? [])
+            if productStrArr.last ==  "  )" {
+                productStrArr.removeLast()
+            }
+             eachCellSize = 40
+        } else {
+            eachCellSize = 60
         }
-        let eachCellSize = 40
+
+       
 //        if productStrArr.count >= 4 {
 //            eachCellSize = 40
 //        }

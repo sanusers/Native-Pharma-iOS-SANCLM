@@ -202,6 +202,7 @@ extension PreviewHomeView:  SelectedPreviewTypesCVCDelegate {
     func didPlayTapped(playerModel: [SlidesModel]) {
         let vc = PlayPresentationVC.initWithStory(model:  playerModel, pagetype: self.previewHomeVC.pageType)
         if previewHomeVC.pageType == .detailing {
+            vc.previewTypeIndex = self.previewTypeIndex
             vc.delegete = self
             self.previewHomeVC.navigationController?.pushViewController(vc, animated: false)
         } else {
@@ -710,6 +711,7 @@ class PreviewHomeView : BaseView {
         }
         
         backHolderView.addTap {
+            Shared.instance.detailedSlides = []
             self.previewHomeVC.navigationController?.popViewController(animated: true)
         }
         

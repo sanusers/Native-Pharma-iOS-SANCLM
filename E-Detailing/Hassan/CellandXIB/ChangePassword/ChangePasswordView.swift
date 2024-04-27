@@ -58,7 +58,16 @@ extension ChangePasswordView: UITextFieldDelegate {
                 isRepeatPasswordVerified = false
             }
             
-            if updatedText.count >= 3 &&  updatedText != appsetup.sfPassword  {
+            if updatedText.count < 3 {
+                passwordValidationLbl.isHidden = false
+                passwordValidationLbl.text = "Password must be 3 digits or more"
+                //"Password should be alphanumeric, special character, min 8 char, combination upper case."
+                isNewPasswordVerified = false
+                checkButtonStatus()
+                return true
+            }
+            
+            if updatedText != appsetup.sfPassword  {
                 //&& updatedText.containsSpecialCharacter
                 newpasswordStr = updatedText
                 passwordValidationLbl.isHidden = true

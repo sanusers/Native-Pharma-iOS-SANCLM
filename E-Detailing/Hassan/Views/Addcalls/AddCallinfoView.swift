@@ -1420,13 +1420,12 @@ class AddCallinfoView : BaseView {
             case jfwView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-            case detailedSlideInfoView:
+//            case detailedSlideInfoView:
+//                aAddedView.removeFromSuperview()
+//                aAddedView.alpha = 0
+            case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-            case tpDeviateReasonView:
-               print("Yet to implement TPdeviation")
-               // aAddedView.removeFromSuperview()
-               // aAddedView.alpha = 0
                 
             case customerCheckoutView:
                  aAddedView.removeFromSuperview()
@@ -1727,30 +1726,39 @@ class AddCallinfoView : BaseView {
                 
                 return
             }
-            
-            Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
-                guard let welf = self else {return}
-                
-                
-                
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                
-                let currentDate = Date()
-                let dateString = dateFormatter.string(from: currentDate)
-                
-                _ = dateString
-                
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+                    guard let welf = self else {return}
+//                    let dateFormatter = DateFormatter()
+//                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//                    
+//                    let currentDate = Date()
+//                    let dateString = dateFormatter.string(from: currentDate)
+//                    
+//                    _ = dateString
+                    
+                    welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
+                    welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                    welf.addCallinfoVC.dcrCall.customerCheckOutAddress = address ?? "No address found"
+                    let dcrCall = welf.addCallinfoVC.dcrCall
+                    
+                    
+                    welf.checkoutAction(dcrCall: dcrCall)
+                    
+                    
+                    
+                }
+            } else {
                 welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
                 welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                welf.addCallinfoVC.dcrCall.customerCheckOutAddress = "No Address found"
                 let dcrCall = welf.addCallinfoVC.dcrCall
                 
                 
                 welf.checkoutAction(dcrCall: dcrCall)
-                
-                
-                
             }
+            
+
             
             
             

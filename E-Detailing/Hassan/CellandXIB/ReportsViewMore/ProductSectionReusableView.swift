@@ -12,9 +12,10 @@ class ProductSectionReusableView: UICollectionReusableView {
     let sectionTitle: UILabel = {
         let label = UILabel()
         label.textColor = .appLightTextColor
+        label.backgroundColor = .clear
         label.text = "Product"
         label.clipsToBounds = true
-        label.backgroundColor = .appWhiteColor
+        label.backgroundColor = .clear
         label.setFont(font: .medium(size: .BODY))
         return label
     }()
@@ -23,6 +24,7 @@ class ProductSectionReusableView: UICollectionReusableView {
         let label = PaddedLabel()
         label.text = "Product Name"
         label.textColor = .appTextColor
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
         // Define right padding
@@ -34,6 +36,7 @@ class ProductSectionReusableView: UICollectionReusableView {
     let promoterLbl: UILabel = {
         let label = UILabel()
         label.text = "Promoted"
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.textColor = .appTextColor
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
@@ -43,6 +46,7 @@ class ProductSectionReusableView: UICollectionReusableView {
     let samplesLbl: UILabel = {
         let label = UILabel()
         label.text = "Samples"
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.textColor = .appTextColor
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
@@ -51,6 +55,7 @@ class ProductSectionReusableView: UICollectionReusableView {
     
     let rxQTYlbl: UILabel = {
         let label = UILabel()
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.text = "Rx(Qty)"
         label.textColor = .appTextColor
         label.clipsToBounds = true
@@ -60,6 +65,7 @@ class ProductSectionReusableView: UICollectionReusableView {
     
     let rcpaLbl: UILabel = {
         let label = UILabel()
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.text = "RCPA"
         label.textColor = .appTextColor
         label.clipsToBounds = true
@@ -70,10 +76,12 @@ class ProductSectionReusableView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
        // addSubviews()
+       // self.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+      //  self.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
        // addSubviews()
     }
     
@@ -84,10 +92,10 @@ class ProductSectionReusableView: UICollectionReusableView {
         // Create a stack view
         let stackView = UIStackView()
         stackView.axis = .horizontal
+        stackView.backgroundColor = .clear
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
         stackView.spacing = 0
-        stackView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         stackView.layer.cornerRadius = 5
 //
         

@@ -46,6 +46,7 @@ class CustomerCheckoutView: UIView {
     func setupUI(dcrCall: CallViewModel) {
         self.layer.cornerRadius = 5
         checkOutAction(dcrCall: dcrCall)
+       // setLabels(dcrCall: dcrCall)
 
     }
     
@@ -92,21 +93,32 @@ class CustomerCheckoutView: UIView {
                 
                 return
             }
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             
-            Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
-                guard let welf = self else {return}
-                
-                
-                
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                
-                let currentDate = Date()
-                let dateString = dateFormatter.string(from: currentDate)
-                
-                let datestr = dateString
+            let currentDate = Date()
+            let dateString = dateFormatter.string(from: currentDate)
+            
+            let datestr = dateString
 
-                dcrCall.customerCheckOutAddress = address ?? ""
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                
+                Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+                    guard let welf = self else {return}
+                    dcrCall.customerCheckOutAddress = address ?? "No address found"
+                    dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
+                    dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                    dcrCall.dcrCheckOutTime = dateString
+                   // welf.checkinDetailsAction(dcrCall : dcrCall)
+                    welf.dcrCall = dcrCall
+          
+                    DispatchQueue.main.async {
+                        welf.setLabels(dcrCall: dcrCall)
+                    }
+                    
+                }
+            } else {
+                dcrCall.customerCheckOutAddress = "No address found"
                 dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
                 dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
                 dcrCall.dcrCheckOutTime = dateString
@@ -115,9 +127,8 @@ class CustomerCheckoutView: UIView {
                 DispatchQueue.main.async {
                     welf.setLabels(dcrCall: dcrCall)
                 }
-               
-                
             }
+
         }
     }
     

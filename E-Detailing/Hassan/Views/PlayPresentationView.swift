@@ -87,17 +87,18 @@ class  PlayPresentationView: BaseView {
             self.viewMInimize.isHidden = false
             self.viewClosePreview.isHidden = playPresentationVC.pagetype == .detailing ? true : true
             backHolderView.isHidden =  playPresentationVC.pagetype == .detailing ? true : true
+            
             self.loadedCollectionHolderView.isHidden = true
             self.previewCollectionHolderView.isHidden = true
             NotificationCenter.default.post(name: NSNotification.Name("viewExpanded"), object: nil)
         case .minimized:
             self.viewMInimize.isHidden = true
             self.viewClosePreview.isHidden = playPresentationVC.pagetype == .detailing ? true : false
-            backHolderView.isHidden = playPresentationVC.pagetype == .detailing ? true : false
-            if playPresentationVC.pagetype == .detailing {
-                self.loadedCollectionHolderView.isHidden = false
-            }
-            self.previewCollectionHolderView.isHidden = false
+            self.backHolderView.isHidden = playPresentationVC.pagetype == .detailing ? true : false
+           
+            self.previewCollectionHolderView.isHidden = playPresentationVC.pagetype == .detailing ? false : true
+            self.loadedCollectionHolderView.isHidden = false
+            
             NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
            
         }
@@ -187,8 +188,9 @@ class  PlayPresentationView: BaseView {
     var previewTypeIndex: Int = 0
     var detailedSlide: [DetailedSlide] = []
     var selectedSlideID: Int?
+    var previousSlideID: Int?
     var selectedSlideURL: String?
-    var backgroundTimer : BackgroundTimer?
+    var backgroundTimer = BackgroundTimer()
     var finalIndex: Int? = nil
 
     override func didLayoutSubviews(baseVC: BaseViewController) {
@@ -216,9 +218,9 @@ class  PlayPresentationView: BaseView {
     func toHandleLastSlide() {
         var lastSlide = Shared.instance.detailedSlides.last
         
-        let slideTime = backgroundTimer?.stop()
-        let startTime = slideTime?.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
-        let endTime = slideTime?.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+        let slideTime = backgroundTimer.stop()
+        let startTime = slideTime.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+        let endTime = slideTime.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
       
         lastSlide?.startTime = startTime
         lastSlide?.endTime = endTime
@@ -250,7 +252,7 @@ class  PlayPresentationView: BaseView {
         remarksIV.addTap {
             guard let selectedSlideID = self.selectedSlideID else {return}
             var addedRemars: String?
-            self.detailedSlide.forEach { aDetailedSlide in
+            Shared.instance.detailedSlides.forEach { aDetailedSlide in
                 if aDetailedSlide.slideID == selectedSlideID {
                     addedRemars = aDetailedSlide.remarks
                 }
@@ -259,10 +261,16 @@ class  PlayPresentationView: BaseView {
         }
         
         stopIV.addTap {
-            self.toHandleLastSlide()
-            self.toRetriveModelsFromCoreData()
-            self.playPresentationVC.navigationController?.popViewController(animated: false)
-            self.playPresentationVC.delegete?.didUserDetailedSlides()
+            if self.playPresentationVC.pagetype == .detailing {
+                self.toHandleLastSlide()
+                self.toRetriveModelsFromCoreData()
+                self.playPresentationVC.navigationController?.popViewController(animated: false)
+                self.playPresentationVC.delegete?.didUserDetailedSlides()
+            } else {
+                self.playPresentationVC.navigationController?.popViewController(animated: true)
+            }
+     
+       
         }
         
     }
@@ -359,11 +367,11 @@ class  PlayPresentationView: BaseView {
     func setupLikes() {
         guard let slideID = self.selectedSlideID else { return }
         
-        if let existingIndex = self.detailedSlide.firstIndex(where: { $0.slideID == slideID }) {
-            self.detailedSlide[existingIndex].isLiked = !(self.detailedSlide[existingIndex].isLiked ?? false)
-            self.detailedSlide[existingIndex].isDisliked = false
-            updateLikeUI(isLiked: self.detailedSlide[existingIndex].isLiked ?? false)
-            updateDisLikeUI(isDisLiked: self.detailedSlide[existingIndex].isDisliked ?? false)
+        if let existingIndex = Shared.instance.detailedSlides.firstIndex(where: { $0.slideID == slideID }) {
+            Shared.instance.detailedSlides[existingIndex].isLiked = !(Shared.instance.detailedSlides[existingIndex].isLiked ?? false)
+            Shared.instance.detailedSlides[existingIndex].isDisliked = false
+            updateLikeUI(isLiked: Shared.instance.detailedSlides[existingIndex].isLiked ?? false)
+            updateDisLikeUI(isDisLiked: Shared.instance.detailedSlides[existingIndex].isDisliked ?? false)
         }
         
     }
@@ -371,11 +379,11 @@ class  PlayPresentationView: BaseView {
     func setupDisLikes() {
         guard let slideID = self.selectedSlideID else { return }
         
-        if let existingIndex = self.detailedSlide.firstIndex(where: { $0.slideID == slideID }) {
-            self.detailedSlide[existingIndex].isDisliked = !(self.detailedSlide[existingIndex].isDisliked ?? false)
-            self.detailedSlide[existingIndex].isLiked = false
-            updateDisLikeUI(isDisLiked: self.detailedSlide[existingIndex].isDisliked ?? false)
-            updateLikeUI(isLiked: self.detailedSlide[existingIndex].isLiked ?? false)
+        if let existingIndex = Shared.instance.detailedSlides.firstIndex(where: { $0.slideID == slideID }) {
+            Shared.instance.detailedSlides[existingIndex].isDisliked = !(Shared.instance.detailedSlides[existingIndex].isDisliked ?? false)
+            Shared.instance.detailedSlides[existingIndex].isLiked = false
+            updateDisLikeUI(isDisLiked: Shared.instance.detailedSlides[existingIndex].isDisliked ?? false)
+            updateLikeUI(isLiked: Shared.instance.detailedSlides[existingIndex].isLiked ?? false)
         }
         
     }
@@ -384,8 +392,8 @@ class  PlayPresentationView: BaseView {
     
     func updateRemarks(remarksStr: String) {
         guard let slideID = self.selectedSlideID else { return }
-        if let existingIndex = self.detailedSlide.firstIndex(where: { $0.slideID == slideID }) {
-            self.detailedSlide[existingIndex].remarks = remarksStr
+        if let existingIndex = Shared.instance.detailedSlides.firstIndex(where: { $0.slideID == slideID }) {
+            Shared.instance.detailedSlides[existingIndex].remarks = remarksStr
            
             updateRemarksIV(isAdded: remarksStr != "" ? true : false)
         }
@@ -404,15 +412,15 @@ class  PlayPresentationView: BaseView {
     
     func populateDetailedSlide(isLiked: Bool? = nil, isDisliked: Bool? = nil, remarks: String? = nil, isShared: Bool? = nil, startTime: String? = nil, endTime: String? = nil) {
         guard let slideID = self.selectedSlideID else { return }
-        if let existingIndex = self.detailedSlide.firstIndex(where: { $0.slideID == slideID }) {
+        if let existingIndex = Shared.instance.detailedSlides.firstIndex(where: { $0.slideID == slideID }) {
             
-            self.detailedSlide[existingIndex].isLiked = self.detailedSlide[existingIndex].isLiked ?? false
-            self.detailedSlide[existingIndex].isDisliked =  self.detailedSlide[existingIndex].isDisliked ?? false
-            self.detailedSlide[existingIndex].remarks =  self.detailedSlide[existingIndex].remarks ?? nil
-            self.detailedSlide[existingIndex].isShared = isShared
-            updateLikeUI(isLiked: self.detailedSlide[existingIndex].isLiked ?? false)
-            updateDisLikeUI(isDisLiked: self.detailedSlide[existingIndex].isDisliked ?? false)
-            if let _ =  self.detailedSlide[existingIndex].remarks {
+            Shared.instance.detailedSlides[existingIndex].isLiked = Shared.instance.detailedSlides[existingIndex].isLiked ?? false
+            Shared.instance.detailedSlides[existingIndex].isDisliked =  Shared.instance.detailedSlides[existingIndex].isDisliked ?? false
+            Shared.instance.detailedSlides[existingIndex].remarks =  Shared.instance.detailedSlides[existingIndex].remarks ?? nil
+            Shared.instance.detailedSlides[existingIndex].isShared = isShared
+            updateLikeUI(isLiked: Shared.instance.detailedSlides[existingIndex].isLiked ?? false)
+            updateDisLikeUI(isDisLiked: Shared.instance.detailedSlides[existingIndex].isDisliked ?? false)
+            if let _ =  Shared.instance.detailedSlides[existingIndex].remarks {
                 updateRemarksIV(isAdded: true)
             } else {
                 updateRemarksIV(isAdded: false)
@@ -426,7 +434,7 @@ class  PlayPresentationView: BaseView {
          
         } else {
             let adetailedSlide = DetailedSlide(slideID: slideID, isLiked: isLiked ?? false, isDisliked: isDisliked ?? false, remarks: remarks, isShared: isShared)
-            self.detailedSlide.append(adetailedSlide)
+            Shared.instance.detailedSlides.append(adetailedSlide)
             updateLikeUI(isLiked: isLiked ?? false)
             updateDisLikeUI(isDisLiked: isLiked ?? false)
         }
@@ -478,6 +486,18 @@ class  PlayPresentationView: BaseView {
             toLoadPreviewCollection()
             backHolderView.isHidden = true
             viewClosePreview.isHidden = true
+            
+            switch previewType[playPresentationVC.previewTypeIndex] {
+            case .home:
+                self.previewTypeCollection.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
+            case .brand :
+                self.previewTypeCollection.scrollToItem(at: IndexPath(item: 1, section: 0), at: .centeredHorizontally, animated: false)
+            case .speciality:
+                self.previewTypeCollection.scrollToItem(at: IndexPath(item: 2, section: 0), at: .centeredHorizontally, animated: false)
+            case .customPresentation:
+                self.previewTypeCollection.scrollToItem(at: IndexPath(item: 3, section: 0), at: .centeredHorizontally, animated: false)
+            }
+            
             
         } else {
             previewCollectionHolderView.isHidden = true
@@ -554,6 +574,7 @@ class  PlayPresentationView: BaseView {
     }
     
     func  setupUI() {
+        self.previewTypeIndex = playPresentationVC.previewTypeIndex
         viewNopresentation.isHidden = true
         previewCollectionHolderView.isHidden = true
         backgroundView.isHidden = true
@@ -576,7 +597,7 @@ class  PlayPresentationView: BaseView {
             self.selectedSlideID =  self.selectedSlideModel?[0].slideId ?? Int()
             self.selectedSlideURL = slideURL+(self.selectedSlideModel?[0].filePath ?? String())
             self.backgroundTimer = BackgroundTimer()
-          //  self.populateDetailedSlide()
+            self.backgroundTimer.start()
             self.toHandleFirstSlide()
         }
         
@@ -603,6 +624,9 @@ class  PlayPresentationView: BaseView {
         backlbl.setFont(font: .bold(size: .BODY))
         backHolderView.backgroundColor = .appTextColor
         previewType = [.home, .brand, .speciality, .customPresentation]
+
+        
+   
     }
     
     func initView() {
@@ -650,13 +674,14 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
 //    }
 
      func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+         
          switch collectionView {
          case PlayingSlideCollection:
-             let slideTime = backgroundTimer?.stop()
-             let startTime = slideTime?.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
-             let endTime = slideTime?.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+             let slideTime = backgroundTimer.stop()
+             let startTime = slideTime.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+             let endTime = slideTime.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
          
-             var lastSlide = self.detailedSlide.last
+             var lastSlide = Shared.instance.detailedSlides.last
              lastSlide?.startTime = startTime
              lastSlide?.endTime = endTime
              
@@ -665,8 +690,19 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
              guard let lastSlideElement = lastSlide else {
                  return
              }
-             Shared.instance.detailedSlides.append(lastSlideElement)
+       
+             var exceptionExistingSlide = Shared.instance.detailedSlides.filter{ $0.slideID ==  selectedSlideID }.first
+             
+             if var existingSlide = exceptionExistingSlide {
+                 existingSlide.startTime = startTime
+                 existingSlide.endTime = endTime
+             }
+             
+           //  Shared.instance.detailedSlides = Shared.instance.detailedSlides.filter{ $0.slideID !=  selectedSlideID }
+             
+          //   Shared.instance.detailedSlides.append(lastSlideElement)
              dump(Shared.instance.detailedSlides)
+             self.backgroundTimer.start()
          default:
              print("Yet to")
          }
@@ -682,7 +718,11 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         switch collectionView {
         case PlayingSlideCollection:
-            self.backgroundTimer?.start()
+            
+            
+            
+            let model =  self.selectedSlideModel?[indexPath.row]
+            self.selectedSlideURL = slideURL+(model?.filePath ?? String())
         default:
             print("Yet to")
         }
@@ -704,7 +744,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                 self.loadedSlidesCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
                 let model =  self.selectedSlideModel?[indexPath.row]
                 self.selectedSlideID = model?.slideId ?? Int()
-                self.selectedSlideURL = slideURL+(model?.filePath ?? String())
+                
                 self.populateDetailedSlide()
             }
         }
@@ -828,6 +868,12 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             cell.setupUI(pageType: playPresentationVC.pagetype)
 
             cell.titleLbl.text = previewType[indexPath.row].rawValue
+            
+//            if indexPath.row == previewTypeIndex {
+//                cell.holderVIew.backgroundColor = .appTextColor
+//            } else {
+//                cell.holderVIew.backgroundColor = .appLightTextColor
+//            }
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}

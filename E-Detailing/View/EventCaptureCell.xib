@@ -11,8 +11,8 @@
         <array key="Satoshi-Bold.otf">
             <string>Satoshi-Bold</string>
         </array>
-        <array key="Satoshi-Medium.otf">
-            <string>Satoshi-Medium</string>
+        <array key="Satoshi-Regular.otf">
+            <string>Satoshi-Regular</string>
         </array>
     </customFonts>
     <objects>
@@ -73,7 +73,7 @@
                                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Jst-bC-qje">
                                                         <rect key="frame" x="0.0" y="4.5" width="281" height="73.5"/>
                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                                        <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
+                                                        <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     </textView>
                                                 </subviews>

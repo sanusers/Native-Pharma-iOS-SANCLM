@@ -11,6 +11,7 @@ class InputSectionReusableView: UICollectionReusableView {
     let sectionTitle: UILabel = {
         let label = UILabel()
         label.textColor = .appLightTextColor
+        label.backgroundColor = .clear
         label.text = "Input"
         label.clipsToBounds = true
         label.backgroundColor = .appWhiteColor
@@ -22,6 +23,7 @@ class InputSectionReusableView: UICollectionReusableView {
         let label = PaddedLabel()
         label.text = "Input Name"
         label.textColor = .appTextColor
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
         // Define right padding
@@ -36,6 +38,7 @@ class InputSectionReusableView: UICollectionReusableView {
         let label = UILabel()
         label.text = "Samples"
         label.textColor = .appTextColor
+        label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
         return label
@@ -45,11 +48,13 @@ class InputSectionReusableView: UICollectionReusableView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+      //  self.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
        // addSubviews()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+      //  self.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
        // addSubviews()
     }
     
@@ -63,7 +68,6 @@ class InputSectionReusableView: UICollectionReusableView {
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
         stackView.spacing = 0
-        stackView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         stackView.layer.cornerRadius = 5
 
         
