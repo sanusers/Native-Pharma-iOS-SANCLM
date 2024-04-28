@@ -41,9 +41,10 @@ extension MasterSyncVC {
             } else  if (type == .slides) {
                 
                    
-                let isNewSlideExists  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending)
+                //let isNewSlideExists  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending)
                 //self.toCheckExistenceOfNewSlides()  ?? false
-                    if !isNewSlideExists {
+              //  _ = toCheckExistenceOfNewSlides()
+                    if isNewSlideExists {
                         moveToDownloadSlide(isFromcache: true)
                     }
                     
@@ -99,9 +100,11 @@ extension MasterSyncVC {
         let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
 
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
-        let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) ||  !$0.isDownloadCompleted }
+        let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 
-        isNewSlideExists = !nonExistingSlides.isEmpty
+        let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
+        
+        isNewSlideExists = !notDownloadedSlides.isEmpty || !nonExistingSlides.isEmpty
         
         
         // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
@@ -110,7 +113,7 @@ extension MasterSyncVC {
         self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
         
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) || isNewSlideExists {
             slideDownloadStatusLbl.text = "Tap to retry slide download"
             retryVIew.isHidden = false
             return true

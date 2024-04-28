@@ -12,8 +12,13 @@ import UIKit
 extension RcpaAddedListTableViewCell: CompetitorsDetailsCellDelagate {
     func didUpdateQuantity(qty: String, index: Int) {
         self.competitorsInfo?[index].qty = qty
+        //if let competitorCell = cell as? CompetitorsDetailsCell {
+         //   self.delegate?.didTapEditCompetitor(competitor: competitorCell.competitor, section: self.section ?? 0, index: self.index ?? 0, competitorIndex: index)
+        //}
+     
         self.toloadData()
     }
+
     
     
 }
@@ -30,6 +35,9 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
         }
         cell.delegate = self
         cell.index = indexPath.row
+        cell.qtyTF.text =  self.competitorsInfo?[indexPath.row].qty ?? ""
+        cell.rateLbl.text = competitorRate
+        cell.valueLbl.text = competirorValue
         cell.commentsHolder.alpha = 0.5
         cell.selectionStyle = .none
         
@@ -47,6 +55,7 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
             guard let section = self.section, let index = self.index else {return}
             self.delegate?.didTapEditCompetitor(competitor:  cell.competitor , section: section, index: index, competitorIndex: indexPath.row)
         }
+        
         
         return cell
     }
@@ -104,6 +113,9 @@ class RcpaAddedListTableViewCell : UITableViewCell {
     var rowcount: Int?
     var section: Int?
     var index: Int?
+    var competitorquantity: String?
+    var competitorRate: String?
+    var competirorValue: String?
     var competitors: [Competitor]?
     var competitorsInfo : [AdditionalCompetitorsInfo]?
     func setupAddedCompetitors(count: Int, competitors: [Competitor]) {

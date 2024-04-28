@@ -664,6 +664,8 @@ struct MasterSyncParams {
     static var mapCompdetParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
+       // {"tableName":"getmapcompdet","sfcode":"MR5940","division_code":"63,","Rsf":"","sf_type":"1","ReqDt":"2024-04-28 13:46:13.5770","Designation":"MR","state_code":"2","subdivision_code":"86,"}
+        
         let paramString = "{\"tableName\":\"getmapcompdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         return ["data" : paramString]

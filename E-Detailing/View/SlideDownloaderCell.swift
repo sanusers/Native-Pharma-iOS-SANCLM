@@ -25,7 +25,7 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             params.isFailed = false
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
+      //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
            delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
         
     }

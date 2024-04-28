@@ -297,17 +297,6 @@ class MainVC : UIViewController {
             checkinAction()
         }
 
-//        if !isFromLaunch {
-//            requestAuth()
-//        }
-
-
-//        self.toretryDCRupload( date: "") {[weak self] _ in
-//            guard let welf = self else {return}
-//            
-//        }
-        
-        
         network.isReachable() { [weak self] reachability in
             guard let welf = self else {return}
         
@@ -1310,12 +1299,12 @@ class MainVC : UIViewController {
     }
     
     @objc func dcrcallsAdded() {
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+       // if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             toSetParams(isfromSyncCall: true) {
                // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {}
-            }
-        }
+           }
+     
     }
     
     func toLoadDcrCollection() {

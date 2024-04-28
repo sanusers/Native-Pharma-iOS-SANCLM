@@ -105,7 +105,12 @@ extension MenuView {
                 }
                 let territoryNotFilledSessions = territoryNeededSessions?.filter{ session in
                     // session.selectedHeadQuaterID.isEmpty  || session.selectedClusterID.isEmpty
-                    session.HQCodes == "" || session.selectedClusterID!.isEmpty
+                    if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                        session.selectedClusterID!.isEmpty
+                    } else {
+                        session.HQCodes == "" || session.selectedClusterID!.isEmpty
+                    }
+                   
                     
                 }
                 
@@ -1964,7 +1969,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             var clusterNameArr = [String]()
             var clusterCodeArr = [String]()
             if !(sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.isEmpty ?? true) {
-                let selectedHQ = sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes
+                let selectedHQ = sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes == "" ? LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) : sessionDetailsArr.sessionDetails?[indexPath.row].HQCodes
                 self.clusterArr = DBManager.shared.getTerritory(mapID: selectedHQ ?? "")
                 self.clusterArr?.forEach({ cluster in
                     sessionDetailsArr.sessionDetails?[indexPath.row].selectedClusterID?.forEach { key, value in

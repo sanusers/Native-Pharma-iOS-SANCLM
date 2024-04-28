@@ -76,7 +76,7 @@ extension AddCallinfoView {
 
     
 ///RCPA
-    ///
+
 
     @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
         guard let selectedChemist = selectedChemistRcpa as? Chemist,
@@ -138,6 +138,8 @@ extension AddCallinfoView {
         tempaddedProductDetails.addedQuantity = existingRCPADetails.addedProductDetails?.addedQuantity
         tempaddedProductDetails.addedProduct =  existingRCPADetails.addedProductDetails?.addedProduct
         
+        var isAppended: Bool = false
+        
         existingRCPADetails.addedProductDetails?.addedProduct?.enumerated().forEach{index, addedProduct in
             
             if addedProduct.addedProduct?.code == product.code {
@@ -153,25 +155,13 @@ extension AddCallinfoView {
                 tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
                 tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
                 let aProductWithCompetiors = ProductWithCompetiors(addedProduct: product, competitorsInfo: nil)
-                tempaddedProductDetails.addedProduct?.append(aProductWithCompetiors)
+                if !isAppended {
+                    tempaddedProductDetails.addedProduct?.append(aProductWithCompetiors)
+                }
+                isAppended = true
             }
         }
         
-//        if let existingProductIndex = existingRCPADetails.addedProductDetails?.addedProduct?.firstIndex(where: { $0.code == product.code }) {
-//            // Update existing product if found
-//            tempaddedProductDetails.addedQuantity?[existingProductIndex]  = existingRCPADetails.addedProductDetails?.addedQuantity?[existingProductIndex] ?? ""
-//            tempaddedProductDetails.addedRate?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedRate?[existingProductIndex] ?? ""
-//            tempaddedProductDetails.addedValue?[existingProductIndex] = existingRCPADetails.addedProductDetails?.addedValue?[existingProductIndex] ?? ""
-//            tempaddedProductDetails.addedProduct?[existingProductIndex] = product
-//        } else {
-//            // Add new product if it doesn't exist
-//            tempaddedProductDetails.addedQuantity?.append(contentsOf: addedQuantity)
-//            tempaddedProductDetails.addedValue?.append(contentsOf: addedValue)
-//            tempaddedProductDetails.addedRate?.append(contentsOf: addedRate)
-//            tempaddedProductDetails.addedTotal?.append(contentsOf: addedTotal)
-//            tempaddedProductDetails.addedProduct?.append(product)
-//            
-//        }
 
         existingRCPADetails.addedProductDetails = tempaddedProductDetails
         
@@ -708,10 +698,11 @@ extension AddCallinfoView: tableViewProtocols {
             case loadedContentsTable:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
             
-                    cell.rcpaProduct = self.rcpaDetailsModel[indexPath.section]
+                cell.rcpaProduct = self.rcpaDetailsModel[indexPath.section]
                 let productsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails
                 cell.lblName.text = productsInfo?.addedProduct?[indexPath.row].addedProduct?.name ?? ""
                 //[indexPath.row].name
+     
                 cell.section = indexPath.section
                 cell.index = indexPath.row
                 cell.lblQty.text = productsInfo?.addedQuantity?[indexPath.row] ?? ""
@@ -719,6 +710,10 @@ extension AddCallinfoView: tableViewProtocols {
                 cell.lblRate.text = productsInfo?.addedRate?[indexPath.row] ?? ""
                 cell.lblValue.text = productsInfo?.addedValue?[indexPath.row] ?? ""
                 cell.lblTotal.text = summonedTotal(rate:  cell.lblRate.text ?? "", quantity: cell.lblQty.text ?? "")
+                
+               
+                cell.competitorRate = cell.lblRate.text ?? ""
+                cell.competirorValue = cell.lblValue.text ?? ""
                 
                 cell.selectionStyle = .none
           
@@ -1272,6 +1267,7 @@ class AddCallinfoView : BaseView {
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
        setupUI()
        toLoadSegments()
         cellregistration()
@@ -1318,6 +1314,28 @@ class AddCallinfoView : BaseView {
         customerCheckoutView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
         
         
+    }
+    
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+            if let status = dict["Type"] as? String{
+                DispatchQueue.main.async {
+                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
+                        
+                        self.toCreateToast("Please check your internet connection.")
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                        //  self.toConfigureMydayPlan()
+                        
+                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
+                        
+                        self.toCreateToast("You are now connected.")
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                    }
+                }
+            }
+        }
     }
     
     func checkoutAction(dcrCall: CallViewModel? = nil) {

@@ -287,45 +287,94 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["AdCuss"] = additionalCustomerParams
         
         //RCPA Entry
-       
-        var entryRCPAparam : [[String: Any]] = [[:]]
-        entryRCPAparam.removeAll()
         
+//        "RCPAEntry":[
+//        {
+//        "Chemists":[
+//        {
+//        "Name":"KOVAI SIDDHA(A)",
+//        "Code":"925833"
+//        }
+//        ],
+//        "OPCode":"3681",
+//        "OPName":"GUTSIL Alworm 50mg",
+//        "OPQty":"15",
+//        "OPRate":"45",
+//        "OPValue":"675",
+//        "OPTotal":"1125.0",
+//        "Competitors":[
+//        {
+//        "CPQty":"10",
+//        "CPRate":"45",
+//        "CPValue":"450",
+//        "CompCode":"101",
+//        "CompName":"SunPharma",
+//        "CompPCode":"84",
+//        "CompPName":"Glycomate",
+//        "Chemname":"KOVAI SIDDHA(A)",
+//        "Chemcode":"925833",
+//        "CPRemarks":""
+//        }
+//        ]
+//        }
+//        ],
+       
+        var entryRCPAparamArr : [[String: Any]] = [[:]]
+        entryRCPAparamArr.removeAll()
+      
         
         for rcpa in rcpaValue {
-            var aRCPAdetail: [String: Any] = [:]
-            aRCPAdetail["Trans_SlNo"] = ""
-            aRCPAdetail["ADetSLNo"] = ""
-            aRCPAdetail["CustCode"] = rcpa.addedChemist?.code
-            aRCPAdetail["CustName"] = rcpa.addedChemist?.name
-            aRCPAdetail["vstTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-            aRCPAdetail["CustType"] = cusType
-            aRCPAdetail["Synced"] = "1"
-            entryRCPAparam.append(aRCPAdetail)
+            var entryRCPAparam = [String: Any]()
+            var chemistArr = [[String: Any]]()
+            var rcpaChemist = [String: Any]()
+            rcpaChemist["Name"] =  rcpa.addedChemist?.name
+            rcpaChemist["Code"] = rcpa.addedChemist?.code
+            chemistArr.append(rcpaChemist)
             
+            entryRCPAparam["Chemists"] = chemistArr
             
- //           let rcpaChemist = ["Name" : rcpa.addedChemist?.name , "Code" : rcpa.addedChemist?.code]
+            rcpa.addedProductDetails?.addedProduct?.enumerated().forEach{ index, aAddedProduct in
+                let productCode : String =    aAddedProduct.addedProduct?.code ?? ""
+                let productName : String =  aAddedProduct.addedProduct?.name ?? ""
+                
+                entryRCPAparam["OPCode"] = productCode
+                entryRCPAparam["OPName"] = productName
+                entryRCPAparam["OPQty"] =  rcpa.addedProductDetails?.addedQuantity?[index]
+                entryRCPAparam["OPRate"] = rcpa.addedProductDetails?.addedRate?[index]
+                entryRCPAparam["OPValue"] = rcpa.addedProductDetails?.addedValue?[index]
+                entryRCPAparam["OPTotal"] = rcpa.addedProductDetails?.addedTotal?[index]
+                
+                var competitorArr = [[String: Any]]()
+             
+                
+                if let addedCompetitors: [AdditionalCompetitorsInfo] =  aAddedProduct.competitorsInfo {
+                    addedCompetitors.forEach { aAdditionalCompetitorsInfo in
+                        var aCompatitorParam = [String: Any]()
+                        aCompatitorParam["CPQty"] = aAdditionalCompetitorsInfo.qty
+                        aCompatitorParam["CPRate"] =  rcpa.addedProductDetails?.addedRate?[index]
+                        //aAdditionalCompetitorsInfo.rate
+                        aCompatitorParam["CPValue"] =  rcpa.addedProductDetails?.addedValue?[index]
+                        //aAdditionalCompetitorsInfo.value
+                        aCompatitorParam["CompCode"] = aAdditionalCompetitorsInfo.competitor?.compSlNo
+                        aCompatitorParam["CompName"] = aAdditionalCompetitorsInfo.competitor?.compName
+                        aCompatitorParam["CompPCode"] = aAdditionalCompetitorsInfo.competitor?.compProductSlNo
+                        aCompatitorParam["CompPName"] = aAdditionalCompetitorsInfo.competitor?.compProductName
+                        aCompatitorParam["CPRemarks"] = aAdditionalCompetitorsInfo.remarks
+                        aCompatitorParam["Chemname"] =  rcpa.addedChemist?.name
+                        aCompatitorParam["Chemcode"] =  rcpa.addedChemist?.code
+                        competitorArr.append(aCompatitorParam)
+                    }
+                }
+                
+                entryRCPAparam["Competitors"] = competitorArr
 
-//            rcpa.addedProductDetails?.addedProduct?.forEach{ aAddedProduct in
-//              
-//                var competitorData = [[String : Any]]()
-//                var productCode : String =    aAddedProduct.addedProduct?.code ?? ""
-//                var productName : String =  aAddedProduct.addedProduct?.name ?? ""
-//                let rcpa : [String : Any] = [ "Chemists" : [rcpaChemist],
-//                             "OPCode" : productCode, //rcpa.rcpaChemist.products[i].product.code ?? "",
-//                             "OPName" : productName, // rcpa.rcpaChemist.products[i].product.name ?? "",
-//                             "OPQty" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedQuantity) ,
-//                             "OPRate" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedRate),
-//                             "OPValue" : sumOfQuantities(corelatedStringArr: rcpa.addedProductDetails?.addedValue),
-//                             "Competitors" : competitorData
-//                ]
-//
-//                rcpaData.append(rcpa)
-//
-//            }
-
+            }
+            entryRCPAparamArr.append(entryRCPAparam)
         }
-        addedDCRCallsParam["RCPAEntry"] = entryRCPAparam
+        
+        
+        
+        addedDCRCallsParam["RCPAEntry"] = entryRCPAparamArr
         
        
         
@@ -343,25 +392,6 @@ class AddCallinfoVC: BaseViewController {
             addedJointWorks.append(ajointWorkParam)
         }
         addedDCRCallsParam["JWWrk"] = addedJointWorks
-        
-        
-//        "EventCapture":[
-//        {
-//        "EventCapture":"True",
-//        "EventImageName":"MR5940_1679482_27042024161708.jpeg",
-//        "EventImageTitle":"",
-//        "EventImageDescription":"",
-//        "Eventfilepath":""
-//        },
-//        {
-//        "EventCapture":"True",
-//        "EventImageName":"MR5940_1679482_27042024161656.jpeg",
-//        "EventImageTitle":"",
-//        "EventImageDescription":"",
-//        "Eventfilepath":""
-//        }
-//        ],
-        
         
         addedDCRCallsParam["EventCapture"] = [[String: Any]]()
         var addedDCRCallsParamArr : [[String: Any]] = [[:]]
@@ -447,8 +477,9 @@ class AddCallinfoVC: BaseViewController {
             addedDCRCallsParam["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
    
             
-            Shared.instance.showLoaderInWindow()
+        
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+             
                 Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {[weak self] address in
                     guard let welf = self else {return}
                     guard let fetchedAddress = address else {
@@ -473,7 +504,7 @@ class AddCallinfoVC: BaseViewController {
                 let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
                 var toSendData = [String : Any]()
                 toSendData["data"] = jsonDatum
-                welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
+                welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false)
             }
 
             
@@ -482,7 +513,14 @@ class AddCallinfoVC: BaseViewController {
      
     }
     
-    func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String) {
+    func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true) {
+        if !(isConnectedToNW ?? false)  {
+            saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: addedDCRCallsParam)
+            NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+            popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+            return
+        }
+        Shared.instance.showLoaderInWindow()
         callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) {[weak self] isPosted in
             guard let welf = self else {return}
             Shared.instance.removeLoaderInWindow()

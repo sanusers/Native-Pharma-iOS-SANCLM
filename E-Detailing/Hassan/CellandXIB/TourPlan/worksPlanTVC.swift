@@ -110,9 +110,16 @@ class worksPlanTVC: UITableViewCell {
                   if  session.jwName != "" {
                       jointCallstr.append(session.jwName ?? "")
                     }
-                  if  session.HQCodes != "" {
-                      headQuartersstr.append(session.HQCodes ?? "")
-                    }
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    if  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) != "" {
+                        headQuartersstr.append(session.HQCodes ?? "")
+                      }
+                } else {
+                    if  session.HQCodes != "" {
+                        headQuartersstr.append(session.HQCodes ?? "")
+                      }
+                }
+ 
                   if  session.clusterCode != "" {
                       clusterstr.append(session.clusterName ?? "")
                     }
@@ -153,15 +160,16 @@ class worksPlanTVC: UITableViewCell {
                 let sessionImage =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: count)
                 sessionImages?.append(sessionImage)
             }
-//            if clusterstr.count > 0 {
-//                var count = 0
-//                clusterstr.forEach { str in
-//                   let countstr = str.components(separatedBy: ",")
-//                    count += countstr.count
-//                }
-//                let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
-//                sessionImages?.append(sessionImage)
-//            }
+            
+            if clusterstr.count > 0 {
+                var count = 0
+                clusterstr.forEach { str in
+                   let countstr = str.components(separatedBy: ",")
+                    count += countstr.count
+                }
+                let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
+                sessionImages?.append(sessionImage)
+            }
             
             if jointcallstr.count > 0 {
                 var count = 0

@@ -747,7 +747,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             self.competitorsArr?.forEach({ cluster in
                 //  dump(cluster.code)
                 selectedCompetitorID.forEach { id, isSelected in
-                    if id == cluster.ourProductCode {
+                    if id == cluster.compProductSlNo {
 
                         if isSelected  {
                             if cluster.compProductName ==  cell.competitorProduct?.text {
@@ -766,17 +766,17 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 guard let welf = self else {return}
                  var selectedCompetitorID = welf.selectedCompetitorID
                 
-                if let _ = selectedCompetitorID[model?.ourProductCode ?? ""] {
+                if let _ = selectedCompetitorID[model?.compProductSlNo ?? ""] {
 
-                    selectedCompetitorID[model?.ourProductCode ?? ""] =
-                        !(selectedCompetitorID[model?.ourProductCode ?? ""] ?? false)
+                    selectedCompetitorID[model?.compProductSlNo ?? ""] =
+                        !(selectedCompetitorID[model?.compProductSlNo ?? ""] ?? false)
 
-                    if selectedCompetitorID[model?.ourProductCode ?? ""] == false {
-                        selectedCompetitorID.removeValue(forKey: model?.ourProductCode ?? "")
+                    if selectedCompetitorID[model?.compProductSlNo ?? ""] == false {
+                        selectedCompetitorID.removeValue(forKey: model?.compProductSlNo ?? "")
                     }
 
                 } else {
-                    selectedCompetitorID[model?.ourProductCode ?? ""] = true
+                    selectedCompetitorID[model?.compProductSlNo ?? ""] = true
                 }
                 
                 welf.selectedCompetitorID = selectedCompetitorID
@@ -1509,7 +1509,7 @@ class SpecifiedMenuView: BaseView {
 
       
             welf.filteredCompetitors = welf.competitorsArr?.filter { territory in
-                guard let code = territory.ourProductCode else {
+                guard let code = territory.compProductSlNo else {
                     return false
                 }
                 return welf.selectedCompetitorID[code] == true
@@ -1761,15 +1761,21 @@ class SpecifiedMenuView: BaseView {
            
        case .competitors:
            bottomHolderHeight.constant = 80
-           var tempCompetitor: [Competitor] = []
-           let competitorArr  =  DBManager.shared.getCompetitor()
+           var tempCompetitor: [MapCompDet] = []
+           var mappedCompetitor = [Competitor]()
+           let competitorArr  =  DBManager.shared.getMapCompDet()
            if let product = self.specifiedMenuVC.selectedObject as? Product {
                
-               tempCompetitor = competitorArr.filter {$0.ourProductCode == product.code }
+               tempCompetitor = competitorArr.filter {$0.ourProductCode == product.code}
+               tempCompetitor.forEach { aMapCompDet in
+                  let parstedArr = parseCompetitors(from: aMapCompDet.competitorProductBulk ?? "", ourProductCode:  product.code ?? "" , ourProductName: product.name ?? "")
+                   mappedCompetitor.append(contentsOf: parstedArr)
+               }
            }
-          
 
-           self.competitorsArr = tempCompetitor
+       
+    
+           self.competitorsArr = mappedCompetitor
        case .cluster:
                
            bottomHolderHeight.constant = 80
@@ -1899,6 +1905,46 @@ class SpecifiedMenuView: BaseView {
         
         
     }
+    
+    func parseCompetitors(from string: String, ourProductCode: String, ourProductName: String) -> [Competitor] {
+        let entries = string.components(separatedBy: "/")
+        var competitors: [Competitor] = []
+        
+        for entry in entries {
+            let components = entry.components(separatedBy: "~")
+            if components.count == 2 {
+                let productComponents = components[0].components(separatedBy: "#")
+                let brandComponents = components[1].components(separatedBy: "$")
+                if productComponents.count == 2 && brandComponents.count == 2 {
+                    let compProductName = productComponents[1]
+                    let compProductSlNo = productComponents[0]
+                    let compName = brandComponents[1]
+                    let compSlNo = brandComponents[0]
+                
+                    guard let competitorEntity = NSEntityDescription.entity(forEntityName: "Competitor", in: self.context)
+                         // let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+                    else {
+                        fatalError("Entity not found")
+                    }
+                    
+                    let temporaryCompetitor = NSManagedObject(entity: competitorEntity, insertInto: nil)  as! Competitor
+                    
+                   // let acompetitor = Competitor()
+                    temporaryCompetitor.compProductName = compProductName
+                    temporaryCompetitor.compProductSlNo = compProductSlNo
+                    temporaryCompetitor.compName = compName
+                    temporaryCompetitor.compSlNo = compSlNo
+                    temporaryCompetitor.ourProductCode = ourProductCode
+                    temporaryCompetitor.ourProductName = ourProductName
+                    //(compProductName: compProductName, compProductSlNo: compProductSlNo, compName: compName, compSlNo: compSlNo)
+                    competitors.append(temporaryCompetitor)
+                }
+            }
+        }
+        dump(competitors)
+        return competitors
+    }
+
     
 }
 

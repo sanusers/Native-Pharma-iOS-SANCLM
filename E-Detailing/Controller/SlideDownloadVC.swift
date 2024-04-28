@@ -40,7 +40,7 @@ extension SlideDownloadVC : MediaDownloaderDelegate {
             params.isDownloadCompleted = true
             params.isFailed = false
             params.uuid = UUID()
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
+        //LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
         didDownloadCompleted(arrayOfAllSlideObjects: arrayOfAllSlideObjects, index: self.loadingIndex, isForSingleSelection: false, isfrorBackgroundTask: false, istoreturn: false) {_ in
            
         self.delegate?.isBackgroundSyncInprogress(isCompleted: true, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)}
@@ -129,7 +129,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
             let aSlidesModel = arrayOfAllSlideObjects[index]
 
-            CoreDataManager.shared.updateSlidesInCoreData(savedSlides: aSlidesModel) { isInstanceSaved in
+            CoreDataManager.shared.saveSlidesToCoreData(savedSlides: aSlidesModel)  { isInstanceSaved in
                 if isInstanceSaved {
 
                     guard index + 1 < arrayOfAllSlideObjects.count else {
@@ -490,7 +490,7 @@ class SlideDownloadVC : UIViewController {
 
         // Extract slideId values from each array
         let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
-
+        let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
         let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 

@@ -45,6 +45,8 @@ class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func setupUI() {
+        
+       
         qtyTF.delegate = self
  
        // rateLbl.text = competitor?.

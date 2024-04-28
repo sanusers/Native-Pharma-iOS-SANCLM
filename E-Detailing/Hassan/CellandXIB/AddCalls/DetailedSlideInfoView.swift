@@ -62,24 +62,28 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.height / 10
     }
-    
-    
 }
  
 class DetailedSlideInfoView: UIView {
     
     @IBOutlet var detailedInfoTable: UITableView!
     var delegate: DetailedSlideInfoViewDelegate?
+    var detailedSlides : [DetailedSlide] = Shared.instance.detailedSlides
     func setupui() {
         self.backgroundColor = .clear
         self.detailedInfoTable.layer.cornerRadius = 5
+    //    toSetDataSource()
         cellRegistration()
         toLoadData()
        // toSetDataSorce()
        
     }
     
-    
+//    func toSetDataSource() {
+//
+//        self.detailedSlides.filter {$0.brandCode. }
+//
+//    }
     
     func toLoadData() {
         detailedInfoTable.delegate = self
