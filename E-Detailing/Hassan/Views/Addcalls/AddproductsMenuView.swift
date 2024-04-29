@@ -171,6 +171,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             let products = DBManager.shared.getProduct()
             
             let selectionVC = UIStoryboard.singleSelectionVC
+            selectionVC.titleString = "Select Product"
             selectionVC.selectionData = products
             
             self.selectedProductIndex = indexPath
@@ -195,6 +196,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             let inputs = DBManager.shared.getInput()
             
             let selectionVC = UIStoryboard.singleSelectionVC
+            selectionVC.titleString = "Select Input"
             self.selectedInputIndex = indexPath
             selectionVC.selectionData = inputs
             if  selectedInputIndexpaths != nil  {
@@ -340,13 +342,13 @@ class AddproductsMenuView: BaseView {
       //  toLoadData()
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-            self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(isDetailed: false, sampleCount: "0", rxCount: "0", rcpaCount: "0", availableCount: "0", totalCount: "0", stockistName: "", stockistCode: "")))
+            self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(isDetailed: false, sampleCount: "0", rxCount: "0", rcpaCount: "0", availableCount: "", totalCount: "0", stockistName: "", stockistCode: "")))
             
             self.selectedInputIndexpaths  = [Input]()
             toLoadData()
        
         case .inputs:
-            self.addproductsMenuVC?.additionalCallListViewModel?.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "")))
+            self.addproductsMenuVC?.additionalCallListViewModel?.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "0")))
             self.selectedProductIndexpaths = [Product]()
             toLoadData()
           

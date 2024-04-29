@@ -46,6 +46,7 @@ extension TPdeviateReasonView: UITextViewDelegate {
             textView.textColor = UIColor.lightGray
 
             textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+            self.remarks = updatedText
         }
 
         // Else if the text view's placeholder is showing and the

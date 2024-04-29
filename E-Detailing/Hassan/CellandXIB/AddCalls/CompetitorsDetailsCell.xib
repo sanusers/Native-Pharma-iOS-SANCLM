@@ -96,9 +96,9 @@
                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Qty" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="biN-xs-Ya1">
                                                         <rect key="frame" x="9.9999999999999964" y="13.333333333333337" width="50.666666666666657" height="18.666666666666671"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                                         <connections>
-                                                            <action selector="didtapQtyLbl:" destination="KGk-i7-Jjw" eventType="editingDidEnd" id="YeF-ir-qKZ"/>
+                                                            <action selector="didtapQtyLbl:" destination="KGk-i7-Jjw" eventType="editingDidEnd" id="wf2-K1-yVy"/>
                                                         </connections>
                                                     </textField>
                                                 </subviews>
@@ -253,7 +253,8 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="commentsHolder" destination="Wdf-yx-bhQ" id="2VN-ED-pZU"/>
+                <outlet property="commentsHolder" destination="Wdf-yx-bhQ" id="gqS-cz-bIG"/>
+                <outlet property="commentsIV" destination="XpS-nu-cjZ" id="1SC-5W-Atn"/>
                 <outlet property="compCompanyHolder" destination="Wpx-pr-QA2" id="7Qh-bd-6qY"/>
                 <outlet property="compCompanyLbl" destination="rl3-bf-Bpe" id="0Ml-PE-yu4"/>
                 <outlet property="compProductHolder" destination="amv-JX-8h8" id="WQC-El-weO"/>
@@ -276,7 +277,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray6Color">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

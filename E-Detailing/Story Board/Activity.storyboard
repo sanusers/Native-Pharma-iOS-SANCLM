@@ -78,8 +78,43 @@
                                                     <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6er-lf-piF">
+                                                    <rect key="frame" x="530" y="4.5" width="35" height="35"/>
+                                                    <subviews>
+                                                        <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cpj-Wx-LlS">
+                                                            <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
+                                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="cft-Cq-P6r">
+                                                                <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            </view>
+                                                            <color key="backgroundColor" systemColor="systemGreenColor"/>
+                                                            <blurEffect style="regular"/>
+                                                        </visualEffectView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SM " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZWg-vu-cgC">
+                                                            <rect key="frame" x="3.5" y="0.0" width="28" height="35"/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
+                                                            <color key="textColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="bottom" secondItem="cpj-Wx-LlS" secondAttribute="bottom" id="62V-Iy-j3U"/>
+                                                        <constraint firstAttribute="width" secondItem="ZWg-vu-cgC" secondAttribute="width" multiplier="1.25" id="9aS-Wt-7BQ"/>
+                                                        <constraint firstAttribute="trailing" secondItem="cpj-Wx-LlS" secondAttribute="trailing" id="HrE-34-gaB"/>
+                                                        <constraint firstItem="ZWg-vu-cgC" firstAttribute="height" secondItem="6er-lf-piF" secondAttribute="height" id="cVA-UK-McB"/>
+                                                        <constraint firstItem="cpj-Wx-LlS" firstAttribute="leading" secondItem="6er-lf-piF" secondAttribute="leading" id="e4j-Vo-kGR"/>
+                                                        <constraint firstAttribute="height" constant="35" id="eVh-sj-NcW"/>
+                                                        <constraint firstItem="ZWg-vu-cgC" firstAttribute="centerX" secondItem="6er-lf-piF" secondAttribute="centerX" id="jnC-py-DWA"/>
+                                                        <constraint firstItem="cpj-Wx-LlS" firstAttribute="top" secondItem="6er-lf-piF" secondAttribute="top" id="pNh-3X-Y3W"/>
+                                                        <constraint firstItem="ZWg-vu-cgC" firstAttribute="centerY" secondItem="6er-lf-piF" secondAttribute="centerY" id="qX0-ag-hvM"/>
+                                                    </constraints>
+                                                </view>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="6er-lf-piF" secondAttribute="trailing" constant="15" id="7TC-tb-Uw2"/>
+                                                <constraint firstItem="6er-lf-piF" firstAttribute="centerY" secondItem="pNH-L8-eRc" secondAttribute="centerY" id="JmY-k5-TpC"/>
                                                 <constraint firstItem="52S-fz-vKv" firstAttribute="leading" secondItem="pNH-L8-eRc" secondAttribute="leading" constant="15" id="jTY-qW-p4G"/>
                                                 <constraint firstItem="52S-fz-vKv" firstAttribute="centerY" secondItem="pNH-L8-eRc" secondAttribute="centerY" id="mUz-tX-Ghf"/>
                                                 <constraint firstAttribute="trailing" secondItem="52S-fz-vKv" secondAttribute="trailing" constant="15" id="uK8-83-wUu"/>
@@ -87,6 +122,9 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="lblName" destination="52S-fz-vKv" id="nhu-pB-bM8"/>
+                                            <outlet property="lblSample" destination="ZWg-vu-cgC" id="AkN-zr-HDa"/>
+                                            <outlet property="samplesVXview" destination="cpj-Wx-LlS" id="pJE-r3-CjN"/>
+                                            <outlet property="samplesView" destination="6er-lf-piF" id="kxx-Gc-dUg"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -3021,16 +3059,16 @@ Chennai</string>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

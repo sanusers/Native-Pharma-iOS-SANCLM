@@ -1462,17 +1462,36 @@ class DBManager {
         self.deleteProductData(id: id)
         let masterData = self.getMasterData()
         var productArray = [Product]()
+        
         for (index,product) in values.enumerated(){
             let contextNew = self.managedContext()
             let productEntity = NSEntityDescription.entity(forEntityName: "Product", in: contextNew)
             let productItem = Product(entity: productEntity!, insertInto: contextNew)
             productItem.setValues(fromDictionary: product, id: id)
-            productItem.index = Int16(index)
+           // productItem.index = Int16(index)
             productArray.append(productItem)
         }
         if let list = masterData.product?.allObjects as? [Product]{
             _ = list.map{masterData.removeFromProduct($0)}
         }
+        // Filter products by different modes
+        let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
+        let saleSampleArr = productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
+        let sampleArr = productArray.filter { $0.productMode?.lowercased() == "sample" }
+        
+        productArray.removeAll()
+        productArray.append(contentsOf: saleArr)
+        productArray.append(contentsOf: saleSampleArr)
+        productArray.append(contentsOf: sampleArr)
+        
+        // Reorder indices starting from 0
+        for (index, product) in productArray.enumerated() {
+            product.index = Int16(index) // Assuming index is an Int16 property in Product entity
+        }
+        
+        // Sort array based on indices
+        let sortedArray = productArray.sorted { $0.index < $1.index }
+        
         productArray.forEach { (product) in
             masterData.addToProduct(product)
         }
@@ -2158,7 +2177,34 @@ class DBManager {
         return array
     }
     
-    func getProduct() -> [Product]{
+//    func getProduct() -> [Product]{
+//        let masterData = self.getMasterData()
+//        guard var productArray = masterData.product?.allObjects as? [Product] else{
+//            return [Product]()
+//        }
+//
+//        
+//        
+//      //  var productArr = DBManager.shared.getProduct()
+//        let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
+//        let SaleSampleArr =  productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
+//        let sampleArr = productArray.filter { $0.productMode?.lowercased() == "sample" }
+//        
+//        productArray.removeAll()
+//        productArray.append(contentsOf: saleArr)
+//        productArray.append(contentsOf: SaleSampleArr)
+//        productArray.append(contentsOf: sampleArr)
+//        
+//        
+//                let array = productArray.sorted{(item1 , item2 ) -> Bool in
+//                    return item1.index < item2.index
+//                }
+//        
+//        return array
+//    }
+    
+    
+    func getProduct() -> [Product] {
         let masterData = self.getMasterData()
         guard let productArray = masterData.product?.allObjects as? [Product] else{
             return [Product]()

@@ -36,7 +36,7 @@ class AdditionalCallsListViewModel {
         additionalCallListViewModel.removeAll{$0.docCode == id}
     }
         
-    func fetchAdditionalCallData(_ index : Int , searchText : String) -> Objects {
+    func fetchAdditionalCallData(_ index : Int , searchText : String, code: Int? = nil) -> Objects {
         let additionalCall = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) : DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
         let value = self.getAdditionalCallData()

@@ -11,11 +11,13 @@ import UIKit
 
 
 class SingleSelectionTableViewCell: UITableViewCell {
-    
+
     
     @IBOutlet weak var lblName: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
     }
+
+    
 }

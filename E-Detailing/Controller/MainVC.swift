@@ -3198,8 +3198,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             cell.optionsBtn.addTap {
                 print("Tapped -->")
                 let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsBtn, onframe: CGRect(), pagetype: .calls)
-                // vc.delegate = self
-                //  vc.selectedIndex = indexPath.row
+                 vc.delegate = self
+                 vc.selectedIndex = indexPath.row
                 self.navigationController?.present(vc, animated: true)
             }
             return cell
@@ -4597,15 +4597,83 @@ extension MainVC: PopOverVCDelegate {
     
     func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
         print("Yet to implement")
+        if index == 1 {
+            
+         
+            toSetupDeleteAlert(index: SelectedArrIndex)
+            
+                
+         //  crm.saneforce.in/iOSServer/db_module.php?axn=delete/dcr
+            //{"sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","amc":"GP4-1253","CusType":"1","sample_validation":"0","input_validation":"0"}
+        }
     }
     
     func logoutAction() {
+        
         print("Yet to implement")
         
         Pipelines.shared.doLogout()
         
     }
     
+    func toSetupDeleteAlert(index: Int) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Are you sure calls ", okAction: "Yes" , cancelAction: "No")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            
+            self.toDeleteAddedDCRCall(index: index)
+        }
+        
+        commonAlert.addAdditionalCancelAction {
+            print("Yes action")
+         
+        
+        }
+    }
+    
+    func toDeleteAddedDCRCall(index: Int) {
+        let model: TodayCallsModel = self.todayCallsModel?[index] ?? TodayCallsModel()
+        
+        //  {"sfcode":"MGR0941","division_code":"63,","Rsf":"MR5990","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","amc":"DP3-1344","CusType":"1","sample_validation":"0","input_validation":"0"}
+        var param = [String: Any]()
+        param["sfcode"] = appSetups.sfCode
+        param["division_code"] = appSetups.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appSetups.sfType
+        param["Designation"] = appSetups.desig
+        param["state_code"] = appSetups.stateCode
+        param["subdivision_code"] = appSetups.subDivisionCode
+        param["amc"] = model.aDetSLNo
+        param["CusType"] = model.custType
+        param["sample_validation"] = "0"
+        param["input_validation"] = "0"
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        
+        var toSendData = [String: Any]()
+        toSendData["data"] = jsonDatum
+        print(param)
+        
+        self.userststisticsVM?.deleteAddedcalls(params: toSendData, api: .deleteCall, paramData: param) {result in
+            
+            switch result {
+                
+            case .success(let response):
+                dump(response)
+                self.toCreateToast("Calls deleted Successfully")
+                self.toSetParams(isfromSyncCall: true) {
+                    self.refreshDashboard {
+                        
+                    }
+                }
+            case .failure(let error):
+                self.toCreateToast(error.localizedDescription)
+            }
+            
+        }
+    }
     
     
     func deviateAction(isForremarks: Bool) {

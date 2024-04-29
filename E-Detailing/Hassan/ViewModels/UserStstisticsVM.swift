@@ -103,6 +103,20 @@ class UserStatisticsVM {
         })
     }
     
+    //Delete Added Call
+  //  {"sfcode":"MGR0941","division_code":"63,","Rsf":"MR5990","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","amc":"DP3-1344","CusType":"1","sample_validation":"0","input_validation":"0"}
+    
+    func deleteAddedcalls(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<JSON,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData).responseJSON() { json in
+            result(.success(json))
+            dump(json)
+        }.responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+ 
+    }
+    
 }
 
 

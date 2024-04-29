@@ -28,7 +28,7 @@ enum APIEnums : String{
     case updatePassword = "save/chpwd"
     case home = "home"
     case saveMAsterData = "save/masterdata"
-   
+   case deleteCall = "delete/dcr"
 }
 
 

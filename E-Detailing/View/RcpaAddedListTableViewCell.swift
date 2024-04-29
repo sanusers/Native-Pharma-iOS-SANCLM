@@ -12,10 +12,22 @@ import UIKit
 extension RcpaAddedListTableViewCell: CompetitorsDetailsCellDelagate {
     func didUpdateQuantity(qty: String, index: Int) {
         self.competitorsInfo?[index].qty = qty
-        //if let competitorCell = cell as? CompetitorsDetailsCell {
-         //   self.delegate?.didTapEditCompetitor(competitor: competitorCell.competitor, section: self.section ?? 0, index: self.index ?? 0, competitorIndex: index)
-        //}
-     
+        
+        if let quantity = Int(qty) {
+            let rate = (Int(competitorRate ?? "0") ?? 0) * quantity
+            self.competitorsInfo?[index].rate = "\(rate)"
+            
+            let value = (Int(competirorValue ?? "0") ?? 0) * quantity
+            self.competitorsInfo?[index].value = "\(value)"
+            
+        }
+        
+        
+        
+        self.delegate?.didUpdateComperirorValue(additionalCompetitorsInfo: self.competitorsInfo![index], section: section!, index: self.index!, competitorIndex: index)
+        
+
+        
         self.toloadData()
     }
 
@@ -33,17 +45,35 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
         if let competitors = self.competitors {
             cell.competitor =  competitors[indexPath.row]
         }
+        //cell.setupUI()
         cell.delegate = self
         cell.index = indexPath.row
         cell.qtyTF.text =  self.competitorsInfo?[indexPath.row].qty ?? ""
-        cell.rateLbl.text = competitorRate
-        cell.valueLbl.text = competirorValue
-        cell.commentsHolder.alpha = 0.5
-        cell.selectionStyle = .none
+        if let quantity = Int(cell.qtyTF.text ?? "1") {
+            let rate = (Int(competitorRate ?? "0") ?? 0) * quantity
+            cell.rateLbl.text = "\(rate)"
+            
+            let value = (Int(competirorValue ?? "0") ?? 0) * quantity
+            cell.valueLbl.text = "\(value)"
+            
+        } else {
+            cell.rateLbl.text = competitorRate
+            cell.valueLbl.text = competirorValue
+        }
         
+    
+        cell.selectionStyle = .none
+        cell.commentsIV.tintColor = .appTextColor
         if let competitorsInfo = self.competitorsInfo {
             let selectedCompetitorsInfo = competitorsInfo[indexPath.row]
-            cell.commentsHolder.alpha =   selectedCompetitorsInfo.remarks != "" || selectedCompetitorsInfo.remarks != nil ?  1 : 0.5
+            //cell.commentsIV.alpha =   selectedCompetitorsInfo.remarks != "" || selectedCompetitorsInfo.remarks != nil ?  1 : 0.5
+            if let remarksStr = selectedCompetitorsInfo.remarks {
+               // let remarksStr = selectedCompetitorsInfo.remarks
+                cell.didCommentsAdded = !remarksStr.isEmpty ?  true : false
+            } else {
+                cell.didCommentsAdded  = false
+            }
+         
         }
         
         cell.deleteHolder.addTap {

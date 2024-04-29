@@ -13,6 +13,7 @@
 
 import Foundation
 import UIKit
+import MobileCoreServices
 //import SDWebImage
 
 private var AssociatedObjectHandle: UInt8 = 25
@@ -939,3 +940,18 @@ extension UISegmentedControl {
 //    }
 //    
 //}
+extension URL {
+    
+    func getMimeType() -> String {
+        let pethExtension = self.pathExtension
+        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as NSString, nil)?.takeRetainedValue() {
+            if let type = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+                return type as String
+            }
+     
+        }
+        return "application/octet-stream"
+    }
+    
+   
+}

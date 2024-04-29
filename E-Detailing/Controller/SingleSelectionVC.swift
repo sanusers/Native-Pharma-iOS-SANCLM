@@ -18,11 +18,11 @@ class SingleSelectionVC : UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var searchTitle : String!
+    //var searchTitle : String!
     var selectionData = [AnyObject]()
     var originalData = [AnyObject]()
     var prevObj: [AnyObject]?
-    
+    var titleString: String?
     var selectionList = [SelectionList]()
     var originalList = [SelectionList]()
     
@@ -32,7 +32,7 @@ class SingleSelectionVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.lblName.text = self.searchTitle
+        self.lblName.text = titleString ?? ""
         self.originalData = self.selectionData
         
         self.originalList = self.selectionList
@@ -69,10 +69,14 @@ extension SingleSelectionVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SingleSelectionCell", for: indexPath) as! SingleSelectionCell
         
-     //   cell.lblName.text = self.selectionData[indexPath.row].name
+    
         cell.selectionStyle = .none
     
             cell.lblName.text = self.selectionData[indexPath.row].name
+        if let selectedProduct = self.selectionData[indexPath.row] as? Product {
+            cell.product = selectedProduct
+        }
+     
         
         return cell
     }
@@ -140,6 +144,53 @@ extension SingleSelectionVC : tableViewProtocols {
 class SingleSelectionCell : UITableViewCell {
     
     @IBOutlet weak var lblName: UILabel!
+    
+    
+    @IBOutlet var samplesVXview: UIVisualEffectView!
+    
+    @IBOutlet var samplesView: UIView!
+    
+    @IBOutlet weak var lblSample: UILabel!
+    
+    
+    var product : Product! {
+        
+        didSet {
+            lblName.text = product.name
+            
+            let productMode = product.productMode ?? ""
+            
+            if productMode == "Sale/Sample" {
+                lblSample.text = "SM/SL"
+                lblSample.textColor = .appLightTextColor
+                samplesVXview.backgroundColor = .appLightTextColor
+            }else if productMode == "Sample" {
+                lblSample.text = " SM "
+                lblSample.textColor = .appLightPink
+                samplesVXview.backgroundColor = .appLightPink
+                
+            }else if productMode == "Sale" {
+                lblSample.text = " SL "
+                lblSample.textColor = .appBlue
+                samplesVXview.backgroundColor = .appBlue
+            }
+            
+//            if product.priority != "" {
+//                lblSample.text = product.priority
+//                lblSample.textColor = UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(1.0))
+//                samplesVXview.backgroundColor = UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.15))
+//            }
+//            
+//            btnSelected.isSelected = product.isSelected
+//            if product.isSelected {
+//                lblName.textColor = .appTextColor
+//            } else {
+//                lblName.textColor = .appLightTextColor
+//            }
+         
+            
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

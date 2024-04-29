@@ -32,7 +32,7 @@ class ProductNameWithSampleTableViewCell : UITableViewCell {
             
             let productMode = product.Object.productMode ?? ""
             
-            if productMode == "Sale/Sample"{
+            if productMode == "Sale/Sample" {
                 lblSample.text = "SM/SL"
                 lblSample.textColor = .appLightTextColor
                 samplesVXview.backgroundColor = .appLightTextColor

@@ -552,14 +552,38 @@ extension AddCallinfoView: tableViewProtocols {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ProductSampleTableViewCell", for: indexPath) as! ProductSampleTableViewCell
                 cell.selectionStyle = .none
-                cell.productSample = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
+                let model = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
+                cell.productSample = model
+                
+                
+//                let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
+//                let SaleSampleArr =  productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
+//                let sampleArr = productArray.filter { $0.productMode?.lowercased() == "sample" }
+                
+                /*  SL -> sale -> disable samples SM -> Sample -> Disable RX SM/SL -> Enable both*/
+                
+                if model.product.product?.productMode?.lowercased() == "sale" {
+                    cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
+                    cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
+                    cell.txtSampleQty.isUserInteractionEnabled = false
+                    cell.txtRxQty.isUserInteractionEnabled = true
+                } else if  model.product.product?.productMode?.lowercased() == "sale/sample" {
+                    cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
+                    cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
+                    cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
+                    
+                } else if model.product.product?.productMode?.lowercased() == "sample" {
+                    cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
+                    cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
+                    cell.txtRxQty.isUserInteractionEnabled = false
+                    cell.txtSampleQty.isUserInteractionEnabled = true
+                }
                 cell.btnDelete.addTarget(self, action: #selector(deleteProduct(_:)), for: .touchUpInside)
                 cell.btnDelete.tag = indexPath.row
                 cell.txtRxQty.tag = indexPath.row
                 cell.txtRcpaQty.tag = indexPath.row
                 cell.txtSampleQty.tag = indexPath.row
-                cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
-                cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
+      
                 cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
                 cell.btnDeviation.addTarget(self, action: #selector(productDetailedSelection(_:)), for: .touchUpInside)
              
@@ -613,14 +637,21 @@ extension AddCallinfoView: tableViewProtocols {
                 cell.selectionStyle = .none
                 cell.additionalCall = self.additionalCallListViewModel.fetchAdditionalCallData(indexPath.row, searchText: self.searchText)
                 //cell.btnSelected.addTarget(self, action: #selector(additionalCallSelectionAction(_:)), for: .touchUpInside)
+
                 cell.btnSelected.isUserInteractionEnabled = false
                 cell.addTap {
-                    
                     let doctorArr =  DBManager.shared.getHomeData().filter { aHomeData in
                         aHomeData.custType == "1"
                     }
-
                     
+                    if let addedDcrCall =   cell.additionalCall.Object as? DoctorFencing {
+                        if let doctorCall = self.addCallinfoVC.dcrCall.call   as? DoctorFencing  {
+                            if addedDcrCall.code == doctorCall.code {
+                                self.toCreateToast("OOPS! Addition call is same as selected call")
+                                return
+                            }
+                        }
+                    }
                     
                     if let addedDcrCall =   cell.additionalCall.Object as? DoctorFencing {
                         
@@ -827,7 +858,10 @@ extension AddCallinfoView: tableViewProtocols {
        
         self.selectedAddcompetitorSection = section
         let vc  = SpecifiedMenuVC.initWithStory(self, celltype: .competitors)
-        vc.selectedObject =    self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorRow].addedProduct
+        if let addedProduct = self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct {
+            vc.selectedObject = addedProduct[selectedAddcompetitorRow].addedProduct
+        }
+       // vc.selectedObject =    self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorRow].addedProduct
         
 
         vc.menuDelegate = self
@@ -1264,6 +1298,7 @@ class AddCallinfoView : BaseView {
     var selectedAddcompetitorRow: Int = 0
     var customerCheckoutView: CustomerCheckoutView?
     var selectedCompetitor: Competitor?
+    var additionalCompetitorsInfo: AdditionalCompetitorsInfo?
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
@@ -1696,6 +1731,7 @@ class AddCallinfoView : BaseView {
         
         valueCurvedVIew.backgroundColor = .appLightTextColor.withAlphaComponent(0.1)
         productQtyTF.delegate = self
+        productQtyTF.text = "1"
         loadedContentsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         contentsSectionVIew.layer.cornerRadius = 5
@@ -1788,6 +1824,19 @@ class AddCallinfoView : BaseView {
 
 
 extension AddCallinfoView : CompetitorsFooterDelegate {
+    func didUpdateComperirorValue(additionalCompetitorsInfo: AdditionalCompetitorsInfo, section: Int, index: Int, competitorIndex: Int) {
+//        self.additionalCompetitorsInfo = additionalCompetitorsInfo
+//        selectedAddcompetitorRow = competitorIndex
+//        selectedAddcompetitorSection = section
+//        selectedAddcompetitorProductRow = index
+        
+        
+        self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?[competitorIndex] = additionalCompetitorsInfo
+        
+        self.loadedContentsTable.reloadData()
+        
+    }
+    
     func didTapEditCompetitor(competitor: Competitor, section: Int, index: Int, competitorIndex: Int) {
       //  selectedProductIndex = index
         selectedCompetitor = competitor
@@ -1806,7 +1855,9 @@ extension AddCallinfoView : CompetitorsFooterDelegate {
     }
     
     func didTapdeleteCompetitor(competitor: Competitor, section: Int, index: Int, competitorIndex: Int) {
+        
         self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?.remove(at: competitorIndex)
+        
         
       //  self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].removeCompetitorInfo(forCompetitor: competitor)
         
@@ -1873,6 +1924,7 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
     func handleAddedRemarks(remarksStr: String) {
 
       //  let aCompetitorInfo = AdditionalCompetitorsInfo(competitor: selectedCompetitor, qty: "", remarks: remarksStr, rate: "", value: "")
+        
         self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorProductRow].competitorsInfo?[selectedAddcompetitorRow].remarks = remarksStr
         
         self.loadedContentsTable.reloadData()

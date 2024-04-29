@@ -1813,18 +1813,18 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
             self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: modal?.isForWeekoff, isforHoliday: modal?.isForHoliday)
         }
         
-        cell.optionsIV.addTap {
-            
-            
-            print("Tapped -->")
-            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 50), on: cell.optionsIV, onframe: CGRect(), pagetype: .TP)
-            vc.delegate = self
-            vc.selectedIndex = indexPath.row
-            self.tourplanVC.navigationController?.present(vc, animated: true)
-//            self.toRemoveSession(modal ?? SessionDetailsArr())
-//            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
-//            self.toToggleApprovalState(false)
-        }
+//        cell.optionsIV.addTap {
+//            
+//            
+//            print("Tapped -->")
+//            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 50), on: cell.optionsIV, onframe: CGRect(), pagetype: .TP)
+//            vc.delegate = self
+//            vc.selectedIndex = indexPath.row
+//            self.tourplanVC.navigationController?.present(vc, animated: true)
+////            self.toRemoveSession(modal ?? SessionDetailsArr())
+////            LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+////            self.toToggleApprovalState(false)
+//        }
         return cell
     }
     

@@ -12,6 +12,24 @@ protocol CompetitorsDetailsCellDelagate : AnyObject {
     func didUpdateQuantity(qty: String, index: Int)
 }
 
+extension CompetitorsDetailsCell {
+
+    
+    
+    
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        // Get the updated text after the replacement
+//        let currentText = (textField.text ?? "") as NSString
+//        let updatedText = currentText.replacingCharacters(in: range, with: string)
+//
+//        delegate?.didUpdateQuantity(qty: updatedText, index: index)
+//   
+//        
+//        return true // Return true to allow the change
+//    }
+    
+}
+
 
 class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     
@@ -32,8 +50,21 @@ class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     @IBOutlet var rateLbl: UILabel!
     @IBOutlet var rateHolder: UIView!
     @IBOutlet var deleteHolder: UIView!
+    
     @IBOutlet var commentsHolder: UIView!
+    @IBOutlet var commentsIV: UIImageView!
     weak var delegate: CompetitorsDetailsCellDelagate?
+    
+    var didCommentsAdded: Bool  = false {
+        didSet {
+            if didCommentsAdded  {
+                commentsIV.tintColor = .appLightPink
+            } else {
+                commentsIV.tintColor = .appTextColor
+            }
+        }
+    }
+    
     var index: Int = 0
    // var productDetail: ProductDetails?
     
@@ -43,25 +74,27 @@ class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
             compCompanyLbl.text = competitor?.compName ?? ""
         }
     }
+
     
     func setupUI() {
-        
-       
+
         qtyTF.delegate = self
- 
+       // commentsIV.tintColor = .appTextColor
        // rateLbl.text = competitor?.
     }
     
     @IBAction func didtapQtyLbl(_ sender: UITextField) {
         
         self.delegate?.didUpdateQuantity(qty: sender.text ?? "", index: index)
+        sender.becomeFirstResponder()
         
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
+        setupUI() 
+       // reloadTextField()
         let curvedViews : [UIView] = [compCompanyHolder, compProductHolder, rateHolder, valueHolder]
         
         curvedViews.forEach {

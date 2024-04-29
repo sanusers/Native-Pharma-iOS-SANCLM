@@ -232,31 +232,122 @@ final class ConnectionHandler : NSObject {
         return responseHandler
     }
     
+    
+    func imageUploadService(urlString:String, parameters:[String:Any], image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
+            
+        //Shared.instance.showLoaderInWindow()
+        //UIApplication.shared.beginIgnoringInteractionEvents()
+        AF.upload(multipartFormData: { (multipartFormData) in
+           
+            if let doc = docurl, doc != URL(string: "") {
+                var fileData = Data()
+                let imageType = docurl?.getMimeType()
+                
+                //docurl?.getMimeType()
+                let fileName =   docurl?.lastPathComponent
+                //String(Date().timeIntervalSince1970 * 1000) + ".\(imageType ?? "")"
+                do {
+                    fileData = try! Data(contentsOf: docurl!)
+                    
+                }
+                    let imgData: Data? = fileData
+                    if imgData != nil {
+                        multipartFormData.append(fileData, withName: "image",fileName: fileName, mimeType: "\(imageType ?? "")")
+                    }
+            } else {
+                if let images = image,images.count > 0 {
+                    for (index,orgimage) in images.enumerated() {
+                        let imageType = "jpeg"
+                       let fileName = String(Date().timeIntervalSince1970 * 1000) + "Image.\(imageType)"
+                        let imgData: Data? = orgimage.jpegData(compressionQuality: 0.4)
+                        if imgData != nil {
+                            multipartFormData.append(imgData!, withName: imageName[index],fileName: fileName, mimeType: "\(imageName)/\(imageType)")
+                        }
+                    }
+
+                }
+            }
+            
+            
+
+            
+            for (key, value) in parameters {
+                multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
+            } //Optional for extra parameters
+        }, to: "\("")\(urlString)")
+        .responseJSON(completionHandler: { response in
+           // Shared.instance.removeLoaderInWindow()
+                UIApplication.shared.endIgnoringInteractionEvents()
+           
+           switch response.result {
+           case .success(let value):
+               let responseDict = value as! [String : Any]
+//            if self.userIsActive(from: responseDict)  {
+                print("ØØ  \(responseDict)")
+                complete(responseDict)
+//            }
+               print(responseDict)
+           case .failure(let error):
+               print(error)
+               onError(error)
+               if error._code == 4 {
+                  // self.appDelegatee.createToastMessage("We are having trouble fetching the menu. Please try again.")
+               }
+               else {
+                //   self.appDelegatee.createToastMessage(error.localizedDescription)
+               }
+           }
+           
+           
+          
+
+       })
+    }
+    
+//    func toUploadCapturedEvents(for api : APIEnums,
+//                                params : JSON,
+//                                data:JSON, eventCaptureListViewModel: EventCaptureListViewModel? = nil) {
+//        if let evenetCaptureValue = eventCaptureListViewModel {
+//            let aEventDatum = evenetCaptureValue.EventCaptureData()
+//            var addedDCRCallsParam: [String: Any] = [:]
+//            var addedDCRCallsParamArr : [[String: Any]] = [[:]]
+//            addedDCRCallsParamArr.removeAll()
+//            addedDCRCallsParam["EventCapture"] = [[String: Any]]()
+//            aEventDatum.forEach { eventCaptureViewModel in
+//                var aCapturedEvent : [String: Any] = [:]
+//                aCapturedEvent["EventCapture"] = "True"
+//                aCapturedEvent["EventImageName"] = eventCaptureViewModel.image.description
+//                aCapturedEvent["EventImageTitle"] = eventCaptureViewModel.title
+//                aCapturedEvent["EventImageDescription"] = eventCaptureViewModel.description
+//                aCapturedEvent["Eventfilepath"] =  "" //savedPath""
+//                let imageType = "jpeg"
+//                let imageName = eventCaptureViewModel.image.description
+//                let fileName = String(Date().timeIntervalSince1970 * 1000) + "Image.\(imageType)"
+//                let imgData: Data? =  eventCaptureViewModel.image.jpegData(compressionQuality: 0.4)
+//                if imgData != nil {
+//                    multipartFormData.append(imgData!, withName: imageName, fileName: fileName, mimeType: "\(imageName)/\(imageType)")
+//                }
+//                
+//                addedDCRCallsParamArr.append(aCapturedEvent)
+//                
+//            }
+//        }
+//        
+//    }
+    
+    
     func uploadRequest(for api : APIEnums,
                        params : JSON,
-                       data:JSON, imageName:String = "image")-> APIResponseProtocol {
+                       data:JSON, eventCaptureListViewModel: EventCaptureListViewModel? = nil) -> APIResponseProtocol {
         let startTime = Date()
         let responseHandler = APIResponseHandler()
         let param = params
-       // param["token"] = LocalStorage.shared.getString(key: .accessToken)
-     //   dump(param["tableName"])
- 
-        
-        //uberSupport.showProgressInWindow(showAnimation: true)
+
         print(params)
         
         AF.upload(multipartFormData: { (multipartFormData) in
             for (key, value) in param {
                 let multipartData = value as? Data ?? Data()
-               // "\(value)".data(using: String.Encoding.utf8) ?? Data()
-                
-//                if let tempjsonString = String(data: multipartData, encoding: .utf8) {
-//                    print(tempjsonString)
-//                    multipartFormData.append(Data(tempjsonString.utf8), withName: "Data")
-//                }
-                
-              
-                
                 multipartFormData.append(multipartData, withName: key as String)
                 _ = String(data: multipartData, encoding: .utf8)
             }
@@ -283,7 +374,8 @@ final class ConnectionHandler : NSObject {
                     //                                       self.appDelegate.createToastMessage(err.localizedDescription, bgColor: .black, textColor: .white)
                     return
                 }
-
+            
+                
                 if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
@@ -505,6 +597,11 @@ final class ConnectionHandler : NSObject {
                             }
                         }
                         
+                    } else {
+                        if api == .deleteCall {
+                            responseHandler.handleSuccess(value: JSON(), data: Data() )
+                            
+                        }
                     }
                 }
                 
