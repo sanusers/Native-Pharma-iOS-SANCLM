@@ -9,11 +9,12 @@ import Foundation
 import UIKit
 import CoreData
 class AddCallinfoVC: BaseViewController {
+    
     @IBOutlet var addCallinfoView: AddCallinfoView!
     let appsetup = AppDefaults.shared.getAppSetUp()
     var dcrCall : CallViewModel!
     var userStatisticsVM: UserStatisticsVM?
- 
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var  latitude: Double?
     var longitude: Double?
     var address: String?
@@ -758,8 +759,129 @@ class AddCallinfoVC: BaseViewController {
         }
         return sum
     }
-    
+    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, completion: @escaping (Bool) -> Void) {
+        let context = self.context
+        
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: "AddedDCRCall", in: context) else {
+            print("Failed to get entity description")
+            completion(false)
+            return
+        }
+        
+        let aDCRCallEntity = AddedDCRCall(entity: entityDescription, insertInto: context)
+        aDCRCallEntity.addedCallID = addedCallID
+        aDCRCallEntity.isDataSent = isDataSent
+        
+        let dispatchGroup = DispatchGroup()
+        
+        var productViewModel: ProductViewModelCDEntity?
+        var inputViewModel: InputViewModelCDEntity?
+        var jointWorkViewModel: JointWorkViewModelCDEntity?
+        var additionalCallViewModel: AdditionalCallCDModel?
+        
+        // Enter dispatch group for each CoreDataManager function
+        dispatchGroup.enter()
+        CoreDataManager.shared.toReturnProductViewModelCDModel(addedProducts: self.addCallinfoView.productSelectedListViewModel) { viewModel in
+            productViewModel = viewModel
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        CoreDataManager.shared.toReturnInputViewModelCDModel(addedinputs: self.addCallinfoView.inputSelectedListViewModel) { viewModel in
+            inputViewModel = viewModel
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        CoreDataManager.shared.toReturnJointWorkViewModelCDModel(addedJonintWorks: self.addCallinfoView.jointWorkSelectedListViewModel) { viewModel in
+            jointWorkViewModel = viewModel
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        CoreDataManager.shared.toReturnAdditionalCallCDModel(addedAdditionalCalls: self.addCallinfoView.additionalCallListViewModel) { viewModel in
+            additionalCallViewModel = viewModel
+            dispatchGroup.leave()
+        }
+        
+        // Notify completion when all tasks in the dispatch group are completed
+        dispatchGroup.notify(queue: .main) {
+            // Assign retrieved view models to entity
+            if let viewModel = productViewModel {
+                aDCRCallEntity.productViewModel = viewModel
+            }
+            if let viewModel = inputViewModel {
+                aDCRCallEntity.inputViewModel = viewModel
+            }
+            if let viewModel = jointWorkViewModel {
+                aDCRCallEntity.jointWorkViewModel = viewModel
+            }
+            if let viewModel = additionalCallViewModel {
+                aDCRCallEntity.additionalCallViewModel = viewModel
+            }
+            
+            // Save to Core Data
+            do {
+                try context.save()
+                completion(true)
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                completion(false)
+            }
+        }
+    }
 
+    
+//    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, completion: @escaping(Bool) -> Void) {
+//        
+//        let context = self.context
+// 
+//        if let entityDescription = NSEntityDescription.entity(forEntityName: "AddedDCRCall", in: context) {
+//      
+//            let aDCRCallEntity = AddedDCRCall(entity: entityDescription, insertInto: context)
+//            aDCRCallEntity.addedCallID = addedCallID
+//            aDCRCallEntity.isDataSent = isDataSent
+//       
+//            CoreDataManager.shared.toReturnProductViewModelCDModel(addedProducts: self.addCallinfoView.productSelectedListViewModel) { (productViewModel: ProductViewModelCDEntity?) in
+//                // Handle the result here
+//                if let nonNilproductViewModel = productViewModel {
+//                    aDCRCallEntity.productViewModel = nonNilproductViewModel
+//                }
+//         
+//            }
+//          
+//            CoreDataManager.shared.toReturnInputViewModelCDModel(addedinputs: self.addCallinfoView.inputSelectedListViewModel) { inputVIewModel in
+//                if let nonNilinputVIewModel = inputVIewModel {
+//                    aDCRCallEntity.inputViewModel = nonNilinputVIewModel
+//                }
+//         
+//            }
+//            
+//      
+//            CoreDataManager.shared.toReturnJointWorkViewModelCDModel(addedJonintWorks: self.addCallinfoView.jointWorkSelectedListViewModel) { jointWorkViewModel in
+//                if let nonNiljointWorkViewModel = jointWorkViewModel {
+//                    aDCRCallEntity.jointWorkViewModel = nonNiljointWorkViewModel
+//                }
+//             
+//            }
+//            
+//         
+//            CoreDataManager.shared.toReturnAdditionalCallCDModel(addedAdditionalCalls: self.addCallinfoView.additionalCallListViewModel) { additionalCallVM in
+//                if let nonNiladditionalCallVM = additionalCallVM {
+//                    aDCRCallEntity.additionalCallViewModel = nonNiladditionalCallVM
+//                }
+//           
+//            }
+//  
+//                do {
+//                    try context.save()
+//                    completion(true)
+//                } catch {
+//                    print("Failed to save to Core Data: \(error)")
+//                    completion(false)
+//                }
+//        }
+//    }
     
 }
 

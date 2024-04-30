@@ -8,7 +8,7 @@
 import Foundation
 
 class InputSelectedListViewModel {
-    
+    var uuid: UUID?
     private var inputViewModel = [InputViewModel]()
     
     

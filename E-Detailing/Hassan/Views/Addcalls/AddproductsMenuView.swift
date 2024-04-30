@@ -171,6 +171,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             let products = DBManager.shared.getProduct()
             
             let selectionVC = UIStoryboard.singleSelectionVC
+            selectionVC.isForinputs = false
             selectionVC.titleString = "Select Product"
             selectionVC.selectionData = products
             
@@ -196,6 +197,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             let inputs = DBManager.shared.getInput()
             
             let selectionVC = UIStoryboard.singleSelectionVC
+            selectionVC.isForinputs = true
             selectionVC.titleString = "Select Input"
             self.selectedInputIndex = indexPath
             selectionVC.selectionData = inputs

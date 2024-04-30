@@ -25,7 +25,7 @@ class SingleSelectionVC : UIViewController {
     var titleString: String?
     var selectionList = [SelectionList]()
     var originalList = [SelectionList]()
-    
+    var isForinputs: Bool = true
     var isFromStruct : Bool!
     weak var delegate: SingleSelectionVCDelegate?
     var completion : SelectionCallBack?
@@ -71,8 +71,13 @@ extension SingleSelectionVC : tableViewProtocols {
         
     
         cell.selectionStyle = .none
-    
-            cell.lblName.text = self.selectionData[indexPath.row].name
+        if isForinputs {
+            cell.samplesView.isHidden = true
+        } else {
+            cell.samplesView.isHidden = false
+        }
+        
+        cell.lblName.text = self.selectionData[indexPath.row].name
         if let selectedProduct = self.selectionData[indexPath.row] as? Product {
             cell.product = selectedProduct
         }
@@ -194,6 +199,7 @@ class SingleSelectionCell : UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

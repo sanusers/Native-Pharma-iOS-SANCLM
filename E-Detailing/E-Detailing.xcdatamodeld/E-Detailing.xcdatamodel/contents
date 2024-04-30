@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AddedDCRCall" representedClassName="AddedDCRCall" syncable="YES" codeGenerationType="class">
+        <attribute name="addedCallID" optional="YES" attributeType="String"/>
+        <attribute name="isDataSent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="additionalCallViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AdditionalCallCDModel"/>
+        <relationship name="inputViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
+        <relationship name="jointWorkViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="JointWorkViewModelCDEntity"/>
+        <relationship name="productViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductViewModelCDEntity"/>
+    </entity>
+    <entity name="AdditionalCallCDModel" representedClassName="AdditionalCallCDModel" syncable="YES" codeGenerationType="class">
+        <relationship name="additionalCall" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DoctorFencing"/>
+        <relationship name="inputs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InputDataCDModel"/>
+        <relationship name="inputSelectedListViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDataCDModel"/>
+        <relationship name="productSelectedListViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductViewModelCDEntity"/>
+    </entity>
+    <entity name="AdditionalCallViewModelCDEntity" representedClassName="AdditionalCallViewModelCDEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="additionalCallViewModel" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AdditionalCallCDModel"/>
+    </entity>
     <entity name="Brand" representedClassName="Brand" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -122,7 +140,6 @@
         <attribute name="wortTypeCode" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Efff" representedClassName="Efff" syncable="YES" codeGenerationType="class">
-        <attribute name="attribute" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="timeZone" optional="YES" attributeType="String"/>
         <attribute name="timeZoneType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -214,6 +231,11 @@
         <relationship name="effF" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="effT" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
     </entity>
+    <entity name="InputDataCDModel" representedClassName="InputDataCDModel" syncable="YES" codeGenerationType="class">
+        <attribute name="availableCount" optional="YES" attributeType="String"/>
+        <attribute name="inputCount" optional="YES" attributeType="String"/>
+        <relationship name="input" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Input"/>
+    </entity>
     <entity name="InputStockBalance" representedClassName="InputStockBalance" syncable="YES" codeGenerationType="class">
         <attribute name="balanceStock" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="code" optional="YES" attributeType="String"/>
@@ -221,6 +243,11 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="sfCode" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="InputViewModelCDEntity" representedClassName="InputViewModelCDEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="orderSeq" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="inputViewModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
     </entity>
     <entity name="JointWork" representedClassName="JointWork" syncable="YES" codeGenerationType="class">
         <attribute name="actFlg" optional="YES" attributeType="String"/>
@@ -237,6 +264,12 @@
         <attribute name="sfType" optional="YES" attributeType="String"/>
         <attribute name="steps" optional="YES" attributeType="String"/>
         <attribute name="usrDfdUserName" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="JointWorkDataCDModel" representedClassName="JointWorkDataCDModel" syncable="YES" codeGenerationType="class">
+        <relationship name="jointWork" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="JointWork"/>
+    </entity>
+    <entity name="JointWorkViewModelCDEntity" representedClassName="JointWorkViewModelCDEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="jointWorkViewModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="JointWorkDataCDModel"/>
     </entity>
     <entity name="LeaveType" representedClassName="LeaveType" syncable="YES" codeGenerationType="class">
         <attribute name="activeFlag" optional="YES" attributeType="String"/>
@@ -317,6 +350,17 @@
         <attribute name="productMode" optional="YES" attributeType="String"/>
         <attribute name="pSlNo" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="ProductDataCDModel" representedClassName="ProductDataCDModel" syncable="YES" codeGenerationType="class">
+        <attribute name="availableCount" optional="YES" attributeType="String"/>
+        <attribute name="isDetailed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="rcpaCount" optional="YES" attributeType="String"/>
+        <attribute name="rxCount" optional="YES" attributeType="String"/>
+        <attribute name="sampleCount" optional="YES" attributeType="String"/>
+        <attribute name="stockistCode" optional="YES" attributeType="String"/>
+        <attribute name="stockistName" optional="YES" attributeType="String"/>
+        <attribute name="totalCount" optional="YES" attributeType="String"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product"/>
+    </entity>
     <entity name="ProductSlides" representedClassName="ProductSlides" syncable="YES" codeGenerationType="class">
         <attribute name="camp" optional="YES" attributeType="String"/>
         <attribute name="categoryCode" optional="YES" attributeType="String"/>
@@ -343,6 +387,11 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="pack" optional="YES" attributeType="String"/>
         <attribute name="sfCode" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="ProductViewModelCDEntity" representedClassName="ProductViewModelCDEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="orderSeq" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="productViewModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDataCDModel"/>
     </entity>
     <entity name="Qualifications" representedClassName="Qualifications" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>

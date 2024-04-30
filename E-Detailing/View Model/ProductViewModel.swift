@@ -8,7 +8,8 @@
 import Foundation
 
 class ProductSelectedListViewModel {
-    
+
+    var uuid: UUID?
     private var productViewModel = [ProductViewModel]()
     
     func fetchAllProducts() -> [Product]? {
@@ -139,9 +140,8 @@ class ProductSelectedListViewModel {
         productViewModel[index].product.updateProduct(product)
     }
 }
-
 class ProductViewModel {
-    
+
     var product : ProductData
     
     init(product: ProductData) {
