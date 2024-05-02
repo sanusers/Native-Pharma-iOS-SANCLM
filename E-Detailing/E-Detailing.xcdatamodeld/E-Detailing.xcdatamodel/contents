@@ -3,10 +3,15 @@
     <entity name="AddedDCRCall" representedClassName="AddedDCRCall" syncable="YES" codeGenerationType="class">
         <attribute name="addedCallID" optional="YES" attributeType="String"/>
         <attribute name="isDataSent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="outBoxParam" optional="YES" attributeType="Binary"/>
+        <attribute name="overallRemarks" optional="YES" attributeType="String"/>
+        <attribute name="pobValue" optional="YES" attributeType="String"/>
         <relationship name="additionalCallViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AdditionalCallCDModel"/>
         <relationship name="inputViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
         <relationship name="jointWorkViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="JointWorkViewModelCDEntity"/>
+        <relationship name="overAllFeedBack" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feedback"/>
         <relationship name="productViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductViewModelCDEntity"/>
+        <relationship name="rcpaDetailsModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RCPAdetailsCDEntity"/>
     </entity>
     <entity name="AdditionalCallCDModel" representedClassName="AdditionalCallCDModel" syncable="YES" codeGenerationType="class">
         <relationship name="additionalCall" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DoctorFencing"/>
@@ -17,6 +22,13 @@
     </entity>
     <entity name="AdditionalCallViewModelCDEntity" representedClassName="AdditionalCallViewModelCDEntity" syncable="YES" codeGenerationType="class">
         <relationship name="additionalCallViewModel" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AdditionalCallCDModel"/>
+    </entity>
+    <entity name="AdditionalCompetitorsInfoCDModel" representedClassName="AdditionalCompetitorsInfoCDModel" syncable="YES" codeGenerationType="class">
+        <attribute name="qty" optional="YES" attributeType="String"/>
+        <attribute name="rate" optional="YES" attributeType="String"/>
+        <attribute name="remarks" optional="YES" attributeType="String"/>
+        <attribute name="value" optional="YES" attributeType="String"/>
+        <relationship name="competitor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Competitor"/>
     </entity>
     <entity name="Brand" representedClassName="Brand" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
@@ -247,7 +259,7 @@
     <entity name="InputViewModelCDEntity" representedClassName="InputViewModelCDEntity" syncable="YES" codeGenerationType="class">
         <attribute name="orderSeq" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="inputViewModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
+        <relationship name="inputViewModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InputDataCDModel"/>
     </entity>
     <entity name="JointWork" representedClassName="JointWork" syncable="YES" codeGenerationType="class">
         <attribute name="actFlg" optional="YES" attributeType="String"/>
@@ -361,6 +373,13 @@
         <attribute name="totalCount" optional="YES" attributeType="String"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product"/>
     </entity>
+    <entity name="ProductDetailsCDModel" representedClassName="ProductDetailsCDModel" syncable="YES" codeGenerationType="class">
+        <attribute name="addedQuantity" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="addedRate" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="addedTotal" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="addedValue" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <relationship name="addedProductArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductWithCompetiorsCDModel"/>
+    </entity>
     <entity name="ProductSlides" representedClassName="ProductSlides" syncable="YES" codeGenerationType="class">
         <attribute name="camp" optional="YES" attributeType="String"/>
         <attribute name="categoryCode" optional="YES" attributeType="String"/>
@@ -393,12 +412,23 @@
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="productViewModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDataCDModel"/>
     </entity>
+    <entity name="ProductWithCompetiorsCDModel" representedClassName="ProductWithCompetiorsCDModel" syncable="YES" codeGenerationType="class">
+        <relationship name="addedProduct" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product"/>
+        <relationship name="competitorsInfoArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AdditionalCompetitorsInfoCDModel"/>
+    </entity>
     <entity name="Qualifications" representedClassName="Qualifications" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="divisionCode" optional="YES" attributeType="String"/>
         <attribute name="doctorQualificationName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="RCPAdetailsCDEntity" representedClassName="RCPAdetailsCDEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="rcpadtailsCDModelArr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RCPAdetailsCDModel"/>
+    </entity>
+    <entity name="RCPAdetailsCDModel" representedClassName="RCPAdetailsCDModel" syncable="YES" codeGenerationType="class">
+        <relationship name="addedChemist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chemist"/>
+        <relationship name="addedProductDetails" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductDetailsCDModel"/>
     </entity>
     <entity name="SavedCDPresentation" representedClassName="SavedCDPresentation" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>

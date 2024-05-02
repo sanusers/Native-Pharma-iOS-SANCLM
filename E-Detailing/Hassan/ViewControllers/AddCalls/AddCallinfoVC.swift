@@ -18,7 +18,7 @@ class AddCallinfoVC: BaseViewController {
     var  latitude: Double?
     var longitude: Double?
     var address: String?
-    
+    var outboxDatum: Data?
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
         let reportsVC : AddCallinfoVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.userStatisticsVM = viewmodel
@@ -287,39 +287,7 @@ class AddCallinfoVC: BaseViewController {
         
         addedDCRCallsParam["AdCuss"] = additionalCustomerParams
         
-        //RCPA Entry
-        
-//        "RCPAEntry":[
-//        {
-//        "Chemists":[
-//        {
-//        "Name":"KOVAI SIDDHA(A)",
-//        "Code":"925833"
-//        }
-//        ],
-//        "OPCode":"3681",
-//        "OPName":"GUTSIL Alworm 50mg",
-//        "OPQty":"15",
-//        "OPRate":"45",
-//        "OPValue":"675",
-//        "OPTotal":"1125.0",
-//        "Competitors":[
-//        {
-//        "CPQty":"10",
-//        "CPRate":"45",
-//        "CPValue":"450",
-//        "CompCode":"101",
-//        "CompName":"SunPharma",
-//        "CompPCode":"84",
-//        "CompPName":"Glycomate",
-//        "Chemname":"KOVAI SIDDHA(A)",
-//        "Chemcode":"925833",
-//        "CPRemarks":""
-//        }
-//        ]
-//        }
-//        ],
-       
+
         var entryRCPAparamArr : [[String: Any]] = [[:]]
         entryRCPAparamArr.removeAll()
       
@@ -486,6 +454,7 @@ class AddCallinfoVC: BaseViewController {
                     guard let fetchedAddress = address else {
                         
                         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                        welf.outboxDatum = jsonDatum
                         var toSendData = [String : Any]()
                         toSendData["data"] = jsonDatum
                         welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
@@ -495,6 +464,7 @@ class AddCallinfoVC: BaseViewController {
                     welf.address = fetchedAddress
                     addedDCRCallsParam["address"] =  fetchedAddress
                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                    welf.outboxDatum = jsonDatum
                     var toSendData = [String : Any]()
                     toSendData["data"] = jsonDatum
                     welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
@@ -503,6 +473,7 @@ class AddCallinfoVC: BaseViewController {
                 welf.address = ""
                 addedDCRCallsParam["address"] =  ""
                 let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                welf.outboxDatum = jsonDatum
                 var toSendData = [String : Any]()
                 toSendData["data"] = jsonDatum
                 welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false)
@@ -621,8 +592,8 @@ class AddCallinfoVC: BaseViewController {
                 dbparam["AMSLNo"] = ""
                 dbparam["isDataSentToAPI"] = issussess == true ?  "1" : "0"
                 dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
-                 dbparam["checkinTime"] = dcrCall.dcrCheckinTime
-                 dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
+                dbparam["checkinTime"] = dcrCall.dcrCheckinTime
+                dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
                 var dbparamArr = [[String: Any]]()
                 dbparamArr.append(dbparam)
                 let masterData = DBManager.shared.getMasterData()
@@ -759,7 +730,7 @@ class AddCallinfoVC: BaseViewController {
         }
         return sum
     }
-    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, completion: @escaping (Bool) -> Void) {
+    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, OutboxParam: Data , completion: @escaping (Bool) -> Void) {
         let context = self.context
         
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "AddedDCRCall", in: context) else {
@@ -778,7 +749,7 @@ class AddCallinfoVC: BaseViewController {
         var inputViewModel: InputViewModelCDEntity?
         var jointWorkViewModel: JointWorkViewModelCDEntity?
         var additionalCallViewModel: AdditionalCallCDModel?
-        
+        var rcpaDetailsModel : RCPAdetailsCDEntity?
         // Enter dispatch group for each CoreDataManager function
         dispatchGroup.enter()
         CoreDataManager.shared.toReturnProductViewModelCDModel(addedProducts: self.addCallinfoView.productSelectedListViewModel) { viewModel in
@@ -804,6 +775,29 @@ class AddCallinfoVC: BaseViewController {
             dispatchGroup.leave()
         }
         
+        dispatchGroup.enter()
+        
+        CoreDataManager.shared.toReturnRCPAdetailsCDEntity(rcpadtailsCDModels: self.addCallinfoView.rcpaDetailsModel) { viewModel in
+            rcpaDetailsModel = viewModel
+            dispatchGroup.leave()
+        }
+        
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "Feedback", in: context) {
+            let aFeedback = Feedback(entity: entityDescription, insertInto: context)
+//            @NSManaged public var id: String?
+//            @NSManaged public var index: Int16
+//            @NSManaged public var name: String?
+            let userFeedback = self.addCallinfoView.overallFeedback
+            aFeedback.name = userFeedback?.name
+            aFeedback.id = userFeedback?.id
+            aFeedback.index = userFeedback?.index ?? 0
+            
+            aDCRCallEntity.overAllFeedBack = aFeedback
+        }
+        
+        aDCRCallEntity.overallRemarks = self.addCallinfoView.overallRemarks ?? ""
+        aDCRCallEntity.pobValue =  self.addCallinfoView.pobValue
+        
         // Notify completion when all tasks in the dispatch group are completed
         dispatchGroup.notify(queue: .main) {
             // Assign retrieved view models to entity
@@ -818,6 +812,10 @@ class AddCallinfoVC: BaseViewController {
             }
             if let viewModel = additionalCallViewModel {
                 aDCRCallEntity.additionalCallViewModel = viewModel
+            }
+            
+            if let viewModel = rcpaDetailsModel {
+                aDCRCallEntity.rcpaDetailsModel = viewModel
             }
             
             // Save to Core Data

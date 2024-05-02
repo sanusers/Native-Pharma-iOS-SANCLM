@@ -68,7 +68,7 @@ class EventCaptureCell: UITableViewCell, UITextFieldDelegate {
         txtDescription.backgroundColor = .appTextColor.withAlphaComponent(0.05)
         txtDescription.layer.cornerRadius = 5
         txtDescription.textColor = .appTextColor
-        txtDescription.font = UIFont(name: "Satoshi-Bold", size: 14)
+        txtDescription.font = UIFont(name: "Satoshi-Medium", size: 14)
         txtDescription.delegate = self
         //remarksTV.text == "" ? "Description" : remarksTV.text
         txtDescription.textColor =  txtDescription.text == "Description" ? UIColor.lightGray : UIColor.black
