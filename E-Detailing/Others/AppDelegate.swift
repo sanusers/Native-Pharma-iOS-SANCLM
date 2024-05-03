@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  E-Detailing
 //
-//  Created by PARTH on 21/04/23.
+//  Created by SANEFORCE on 21/04/23.
 //
 
 import UIKit
@@ -26,11 +26,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         GMSServices.provideAPIKey(GooglePlacesApiKey)
-        checkReachability()
-        self.setupRootViewControllers(isFromlaunch: false)
+        addObserverForTimeZoneChange()
+        makeSplashView(isFirstTime: true)
         IQKeyboardManager.shared.enable = true
         return true
     }
+    
+    func addObserverForTimeZoneChange() {
+        NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
+    }
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+     
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+            self.makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
+        }
+    
+    }
+    
+    @objc func timeZoneChanged() {
+        makeSplashView(isFirstTime: true)
+    }
+    
+    func makeSplashView(isFirstTime:Bool, isTimeZoneChanged: Bool? = false)
+    {
+        let splashView = SplashVC.initWithStory()
+        splashView.isFirstTimeLaunch = isFirstTime
+        splashView.isTimeZoneChanged = isTimeZoneChanged ?? false
+        window?.rootViewController = splashView
+        window?.makeKeyAndVisible()
+    }
+    
     
     
     func checkReachability() {
@@ -44,7 +70,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+            
             }
+        
         }
 
         network.isUnreachable() { reachability in
@@ -57,9 +85,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+             
                 
             }
             
+          
             
         }
         

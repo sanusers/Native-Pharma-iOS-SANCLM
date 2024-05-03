@@ -19,6 +19,13 @@ class AddCallinfoVC: BaseViewController {
     var longitude: Double?
     var address: String?
     var outboxDatum: Data?
+    
+    var rcpaDetailsModel :  [RCPAdetailsModal] = []
+    var eventCaptureListViewModel = EventCaptureListViewModel()
+    var jointWorkSelectedListViewModel = JointWorksListViewModel()
+    var productSelectedListViewModel = ProductSelectedListViewModel()
+    var additionalCallListViewModel = AdditionalCallsListViewModel()
+    
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
         let reportsVC : AddCallinfoVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.userStatisticsVM = viewmodel
@@ -476,6 +483,17 @@ class AddCallinfoVC: BaseViewController {
                 welf.outboxDatum = jsonDatum
                 var toSendData = [String : Any]()
                 toSendData["data"] = jsonDatum
+                
+                
+//                welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+//                    CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
+//                        
+//                        dump(addedDCRcall)
+//                        
+//                        
+//                    }
+//                }
+                
                 welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false)
             }
 
@@ -797,7 +815,7 @@ class AddCallinfoVC: BaseViewController {
         
         aDCRCallEntity.overallRemarks = self.addCallinfoView.overallRemarks ?? ""
         aDCRCallEntity.pobValue =  self.addCallinfoView.pobValue
-        
+        aDCRCallEntity.outBoxParam = OutboxParam
         // Notify completion when all tasks in the dispatch group are completed
         dispatchGroup.notify(queue: .main) {
             // Assign retrieved view models to entity

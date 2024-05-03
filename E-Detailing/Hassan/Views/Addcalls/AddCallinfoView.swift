@@ -1590,15 +1590,15 @@ class AddCallinfoView : BaseView {
         }
         saveView.addTap {
    
-           // self.fetchLocationAndCheckout()
-            self.addCallinfoVC.toSaveaDCRcall(addedCallID: "1", isDataSent: false) { isSaved in
-                CoreDataManager.shared.tofetchaSavedCalls(callID: "1") { addedDCRcall in
-                    
-                dump(addedDCRcall)
-                    
-                    
-                }
-            }
+            self.fetchLocationAndCheckout()
+//            self.addCallinfoVC.toSaveaDCRcall(addedCallID: "1", isDataSent: false) { isSaved in
+//                CoreDataManager.shared.tofetchaSavedCalls(callID: "1") { addedDCRcall in
+//                    
+//                dump(addedDCRcall)
+//                    
+//                    
+//                }
+//            }
         }
         
     }
@@ -2095,70 +2095,6 @@ extension CoreDataManager {
         }
     }
     
-//    func convertToProductWithCompetitorModelArr(_ productWithCompetiors: [ProductWithCompetiors], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
-//       let productWithCompetitorSet = NSMutableSet()
-//
-//       // Create a dispatch group to handle asynchronous tasks
-//       let dispatchGroup = DispatchGroup()
-//
-//       // Iterate over each GroupedBrandsSlideModel
-//       for productWithCompetior in productWithCompetiors {
-//           dispatchGroup.enter()
-//
-//           if let entityDescription = NSEntityDescription.entity(forEntityName: "ProductWithCompetiorsCDModel", in: context) {
-//               let productWithCompetiorsCDModel = ProductWithCompetiorsCDModel(entity: entityDescription, insertInto: context)
-// 
-//              
-//               
-//               if let entityDescription = NSEntityDescription.entity(forEntityName: "Product", in: context) {
-//                   
-//                   let productCDModel = Product(entity: entityDescription, insertInto: context)
-//                   productCDModel.name = productWithCompetior.addedProduct?.name
-//                   productCDModel.actFlg = productWithCompetior.addedProduct?.actFlg
-//                   productCDModel.cateId = productWithCompetior.addedProduct?.cateId
-//                   productCDModel.code = productWithCompetior.addedProduct?.code
-//                   productCDModel.divisionCode = productWithCompetior.addedProduct?.divisionCode
-//                   productCDModel.dRate = productWithCompetior.addedProduct?.dRate
-//                   productCDModel.index = productWithCompetior.addedProduct?.index ?? 0
-//                   productCDModel.mapId = productWithCompetior.addedProduct?.mapId
-//                   productCDModel.noOfSamples = productWithCompetior.addedProduct?.noOfSamples
-//                   productCDModel.productMode = productWithCompetior.addedProduct?.productMode
-//                   productCDModel.pSlNo = productWithCompetior.addedProduct?.pSlNo
-//                   
-//                   productWithCompetiorsCDModel.addedProduct = productCDModel
-//                   // Add to set
-//                 //  productViewModelsSet.add(productDataCDModel)
-//               }
-//               
-//               
-//               
-//               
-//               
-//               if let competitorsInfo = productWithCompetior.competitorsInfo  {
-//                   convertToCompetitorinfoArr(competitorsInfo, context: context) { additionalCompetitorSet in
-//                       productWithCompetiorsCDModel.competitorsInfoArr = additionalCompetitorSet
-//                       // Add to set
-//                       productWithCompetitorSet.add(productWithCompetiorsCDModel)
-//                       dispatchGroup.leave()
-//                     }
-//               } else {
-//                   // Add to set
-//                   productWithCompetitorSet.add(productWithCompetiorsCDModel)
-//                   dispatchGroup.leave()
-//               }
-//
-//            
-//
-//           }
-//       }
-//
-//       // Notify the completion handler when all tasks in the dispatch group are complete
-//       dispatchGroup.notify(queue: .main) {
-//           completion(productWithCompetitorSet)
-//       }
-//   }
-    
-    
     func toReturnaddedProductDetailsCDEntity(addedProductDetails: ProductDetails, completion: @escaping (ProductDetailsCDModel?) -> Void) {
         
         
@@ -2211,10 +2147,6 @@ extension CoreDataManager {
                     let aRCPAdetailsEntity = RCPAdetailsCDModel(entity: entityDescription, insertInto: context)
 
                     // Convert properties
-
-                  
-                    
-                    
                     if let entityDescription = NSEntityDescription.entity(forEntityName: "Chemist", in: context) {
                         let aChemist = Chemist(entity: entityDescription, insertInto: context)
                         aChemist.addr = addedRCPAdetails.addedChemist?.addr
@@ -2234,7 +2166,6 @@ extension CoreDataManager {
                         aChemist.sfCode = addedRCPAdetails.addedChemist?.sfCode
                         aChemist.townCode = addedRCPAdetails.addedChemist?.townCode
                         aChemist.townName = addedRCPAdetails.addedChemist?.townName
-                        
                         aRCPAdetailsEntity.addedChemist = aChemist
                         
                     }
@@ -2253,31 +2184,6 @@ extension CoreDataManager {
 
     }
     
-//    func toReturnRCPAdetailsCDEntity(rcpadtailsCDModels: [RCPAdetailsModal], completion: @escaping (RCPAdetailsCDEntity?) -> Void) {
-//        let context = self.context
-//        
-//        // Create a new managed object
-//        if let entityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDEntity", in: context) {
-//            let aRCPAdetailsCDArrEntity = RCPAdetailsCDEntity(entity: entityDescription, insertInto: context)
-//            
-//            // Convert and add
-//            let rcpaDetailsCDModelSet = NSMutableSet()
-//            for rcpadtailsCDModel in  rcpadtailsCDModels {
-//                toReturnRCPAdetailsCDModel(addedRCPAdetails: rcpadtailsCDModel) { rcpaDetailsCDModel in
-//                    if let   nonNillRCPAdetailsCDModel  = rcpaDetailsCDModel {
-//                        rcpaDetailsCDModelSet.add(nonNillRCPAdetailsCDModel)
-//                    }
-//                   
-//                }
-//            }
-//            aRCPAdetailsCDArrEntity.rcpadtailsCDModelArr = rcpaDetailsCDModelSet
-//            
-//            // Call completion handler
-//            completion(aRCPAdetailsCDArrEntity)
-//        } else {
-//            completion(nil)
-//        }
-//    }
     
     func toReturnRCPAdetailsCDEntity(rcpadtailsCDModels: [RCPAdetailsModal], completion: @escaping (RCPAdetailsCDEntity?) -> Void) {
         let context = self.context
@@ -2462,9 +2368,32 @@ extension CoreDataManager {
            if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWorkDataCDModel", in: context) {
                let jointWorkDataCDModel = JointWorkDataCDModel(entity: entityDescription, insertInto: context)
  
-               jointWorkDataCDModel.jointWork = jointWorkViewModel.jointWork
+              
+               if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWork", in: context) {
+                   let jwCDModel = JointWork(entity: entityDescription, insertInto: context)
+                   jwCDModel.actFlg = jointWorkViewModel.jointWork.actFlg
+                   jwCDModel.code = jointWorkViewModel.jointWork.code
+                   jwCDModel.desig = jointWorkViewModel.jointWork.desig
+                   jwCDModel.divisionCode = jointWorkViewModel.jointWork.divisionCode
+                   jwCDModel.index = jointWorkViewModel.jointWork.index
+                   jwCDModel.mapId = jointWorkViewModel.jointWork.mapId
+                   jwCDModel.name = jointWorkViewModel.jointWork.name
+                   jwCDModel.ownDiv = jointWorkViewModel.jointWork.ownDiv
+                   jwCDModel.reportingToSF = jointWorkViewModel.jointWork.reportingToSF
+                   jwCDModel.sfName = jointWorkViewModel.jointWork.sfName
+                   jwCDModel.sfStatus = jointWorkViewModel.jointWork.sfStatus
+                   jwCDModel.sfType = jointWorkViewModel.jointWork.sfType
+                   jwCDModel.steps = jointWorkViewModel.jointWork.steps
+                   jwCDModel.usrDfdUserName = jointWorkViewModel.jointWork.usrDfdUserName
+                   
+                   
+                   jointWorkDataCDModel.jointWork = jwCDModel
+               }
+               
+               
                // Add to set
                jointWorkViewModelsSet.add(jointWorkDataCDModel)
+               dispatchGroup.leave()
            }
        }
 

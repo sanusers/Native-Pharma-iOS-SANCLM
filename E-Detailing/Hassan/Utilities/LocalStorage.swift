@@ -51,6 +51,7 @@ class LocalStorage {
         case isUserLoggedIn
         case isConfigAdded
         case isSlidesDownloadPending
+        case isTimeZoneChanged
     }
     
     enum Offsets: String {

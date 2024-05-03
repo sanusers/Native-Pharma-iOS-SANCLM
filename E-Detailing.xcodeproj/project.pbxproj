@@ -332,6 +332,8 @@
 		38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E512A55A4650051BFEA /* Speciality + Extension.swift */; };
 		38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38F8431D2A5E8493009018AB /* SideMenu.storyboard */; };
 		38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */; };
+		38F9331F2BE4D5F800D5A195 /* SplashVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */; };
+		38F933212BE4D61200D5A195 /* SplashVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F933202BE4D61200D5A195 /* SplashVC.swift */; };
 		38FA7EE72BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FA7EE52BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.swift */; };
 		38FA7EE82BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FA7EE62BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.xib */; };
 		38FA7EEB2BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FA7EE92BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift */; };
@@ -710,6 +712,8 @@
 		38F72E512A55A4650051BFEA /* Speciality + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Speciality + Extension.swift"; sourceTree = "<group>"; };
 		38F8431D2A5E8493009018AB /* SideMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SideMenu.storyboard; sourceTree = "<group>"; };
 		38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApplicationVC.swift; sourceTree = "<group>"; };
+		38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashVIew.swift; sourceTree = "<group>"; };
+		38F933202BE4D61200D5A195 /* SplashVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashVC.swift; sourceTree = "<group>"; };
 		38FA7EE52BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalCallSampleEntryTableViewCell.swift; sourceTree = "<group>"; };
 		38FA7EE62BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallSampleEntryTableViewCell.xib; sourceTree = "<group>"; };
 		38FA7EE92BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAdditionalproductsHeader.swift; sourceTree = "<group>"; };
@@ -914,6 +918,7 @@
 				386BEA0F2B7383450083D61F /* PreviewHomeVC.swift */,
 				38EF4C682B74D78900F78F2E /* SpecifiedTypeMenuVC.swift */,
 				380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */,
+				38F933202BE4D61200D5A195 /* SplashVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -937,6 +942,7 @@
 				38EF4C6A2B74D7B700F78F2E /* SpecifiedMenuView.swift */,
 				38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */,
 				380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */,
+				38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1987,6 +1993,7 @@
 				38C4D5AA2A84F92D00D7C5E0 /* ProductNameTableViewCell.swift in Sources */,
 				38FADFAA2B3BE11400632C2F /* WorkTypeCell.swift in Sources */,
 				38107C672B37056600ACEDF3 /* ProductsDescriptionCVC.swift in Sources */,
+				38F9331F2BE4D5F800D5A195 /* SplashVIew.swift in Sources */,
 				385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */,
 				38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */,
 				38D528AC2A9A251300AD3F78 /* TaggingListVC.swift in Sources */,
@@ -2065,6 +2072,7 @@
 				38FA7EEB2BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift in Sources */,
 				38C673242A3C2DCA00528E36 /* Login.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
+				38F933212BE4D61200D5A195 /* SplashVC.swift in Sources */,
 				38FAA15C2B7F229200714AA2 /* MasterSyncVM.swift in Sources */,
 				380566262B983AFD00BB9117 /* DCRdetailViewEditVC.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,

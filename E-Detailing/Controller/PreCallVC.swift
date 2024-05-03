@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 extension PreCallVC : collectionViewProtocols {
     
@@ -222,6 +223,7 @@ class PreCallVC : UIViewController {
     var isDatafetched: Bool = false
     var userStatisticsVM: UserStatisticsVM?
     var productStrArr : [SampleProduct] = []
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     func toloadProductsTable() {
         productsTable.delegate = self
         productsTable.dataSource = self
@@ -356,10 +358,80 @@ class PreCallVC : UIViewController {
     @IBAction func skipDetailingAction(_ sender: Any) {
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userStatisticsVM ?? UserStatisticsVM())
         vc.dcrCall = self.dcrCall
-        self.navigationController?.pushViewController(vc, animated: true)
+        
+        CoreDataManager.shared.tofetchaSavedCalls(callID: self.dcrCall.code) { addedDCRcall in
+            
+            dump(addedDCRcall)
+            
+            let context = self.context
+            let ftchedDCRcall = addedDCRcall?.first
+
+           // vc.rcpaDetailsModel = ftchedDCRcall?.rcpaDetailsModel
+            
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDEntity", in: context) {
+                // dispatchGroup.enter()
+                let rcpaDetailsCDEntity = RCPAdetailsCDEntity(entity: entityDescription, insertInto: context)
+                
+                if let rcpaDetailsCDModelArr = rcpaDetailsCDEntity.rcpadtailsCDModelArr  {
+                    
+                    rcpaDetailsCDModelArr.forEach { aRCPAdetailsCDModel in
+                        if let aRCPAdetailsCDModel = aRCPAdetailsCDModel as? RCPAdetailsCDModel {
+                            let addedChemist = aRCPAdetailsCDModel.addedChemist
+                            
+                            if let  productDetailsCDModel = aRCPAdetailsCDModel.addedProductDetails {
+                                productDetailsCDModel.addedQuantity
+                                productDetailsCDModel.addedRate
+                                productDetailsCDModel.addedTotal
+                                productDetailsCDModel.addedValue
+                                if let addedProductArr = productDetailsCDModel.addedProductArr {
+                                    addedProductArr.forEach { addedProductWithCompetitor in
+                                        if let addedProductWithCompetitor = addedProductWithCompetitor as? ProductWithCompetiorsCDModel {
+                                            addedProductWithCompetitor.addedProduct
+                                            if let competitorsInfoArr = addedProductWithCompetitor.competitorsInfoArr {
+                                                competitorsInfoArr.forEach { additionalCompetitorsInfoCDModel in
+                                                    if let additionalCompetitorsInfoCDModel = additionalCompetitorsInfoCDModel as? AdditionalCompetitorsInfoCDModel {
+                                                        additionalCompetitorsInfoCDModel.competitor
+                                                        additionalCompetitorsInfoCDModel.qty
+                                                        additionalCompetitorsInfoCDModel.rate
+                                                        additionalCompetitorsInfoCDModel.remarks
+                                                        additionalCompetitorsInfoCDModel.value
+                                                        
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                  
+    
+                            
+                        }
+                    }
+                    
+                }
+            }
+            
+           // vc.eventCaptureListViewModel = ftchedDCRcall.eve
+           // vc.jointWorkSelectedListViewModel = ftchedDCRcall?.jointWorkViewModel
+           // vc.productSelectedListViewModel = ftchedDCRcall?.productViewModel
+           // vc.additionalCallListViewModel = ftchedDCRcall?.additionalCallViewModel
+            
+            
+            
+        }
+        
+       // self.navigationController?.pushViewController(vc, animated: true)
         
         
     }
+    
+//    func toRetriveRCPAfromCDentity(rcpaEntity: RCPAdetailsCDEntity) {
+//        
+//        RCPAdetailsCDEntity.
+//        
+//        
+//    }
     
     @IBAction func startDetailingAction(_ sender: UIButton) {
         
