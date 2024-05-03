@@ -361,67 +361,178 @@ class PreCallVC : UIViewController {
         
         CoreDataManager.shared.tofetchaSavedCalls(callID: self.dcrCall.code) { addedDCRcall in
             
+       
+            
             dump(addedDCRcall)
+            
             
             let context = self.context
             let ftchedDCRcall = addedDCRcall?.first
-
-           // vc.rcpaDetailsModel = ftchedDCRcall?.rcpaDetailsModel
             
-            if let entityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDEntity", in: context) {
-                // dispatchGroup.enter()
-                let rcpaDetailsCDEntity = RCPAdetailsCDEntity(entity: entityDescription, insertInto: context)
+            
+            
+            
+            
+            //Input
+            if let inputEntityDescription  = NSEntityDescription.entity(forEntityName: "InputViewModelCDEntity", in: context) {
+                let inputDetailsCDEntity = ftchedDCRcall?.inputViewModel ?? InputViewModelCDEntity(entity: inputEntityDescription, insertInto: context)
                 
+                let inputSelectedListViewModel = InputSelectedListViewModel()
+                inputSelectedListViewModel.uuid = inputDetailsCDEntity.uuid
+                
+                var inputViewModelArr =  [InputViewModel]()
+                if let inputViewModelCDArr = inputDetailsCDEntity.inputViewModelArr {
+                    inputViewModelCDArr.forEach { inputDataCDModel in
+                        var aProductData = InputData(availableCount: "", inputCount: "")
+                        if let ainputDataCDModel = inputDataCDModel as? InputDataCDModel {
+                          
+                            aProductData.availableCount = ainputDataCDModel.availableCount ?? ""
+                            aProductData.inputCount = ainputDataCDModel.inputCount ?? ""
+                            aProductData.input = aProductData.input
+                            
+                          let inputViewModel = InputViewModel(input: aProductData)
+                          inputViewModelArr.append(inputViewModel)
+                        }
+                    }
+                }
+                inputSelectedListViewModel.inputViewModel = inputViewModelArr
+                vc.inputSelectedListViewModel = inputSelectedListViewModel
+            }
+            
+            //Product
+            if let producEntityDescription  = NSEntityDescription.entity(forEntityName: "ProductViewModelCDEntity", in: context) {
+                let productDetailsCDEntity = ftchedDCRcall?.productViewModel ?? ProductViewModelCDEntity(entity: producEntityDescription, insertInto: context)
+                ///ProductSelectedListViewModel
+                
+                let productSelectedListViewModel = ProductSelectedListViewModel()
+                productSelectedListViewModel.uuid = productDetailsCDEntity.uuid
+                
+                
+                var productViewModelArr =  [ProductViewModel]()
+                
+                if let productViewModelCDArr =  productDetailsCDEntity.productViewModelArr {
+                    productViewModelCDArr.forEach { productDetailsCDModel in
+                        var aProductData = ProductData(isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")
+                
+                        if let aproductDetailsCDModel = productDetailsCDModel as? ProductDataCDModel {
+                            
+                            aProductData.product = aproductDetailsCDModel.product
+                            
+                            aProductData.availableCount = aproductDetailsCDModel.availableCount ?? ""
+                            aProductData.isDetailed = aproductDetailsCDModel.isDetailed
+                            aProductData.rcpaCount = aproductDetailsCDModel.rcpaCount ?? ""
+                            aProductData.rxCount = aproductDetailsCDModel.rxCount ?? ""
+                            aProductData.sampleCount = aproductDetailsCDModel.sampleCount ?? ""
+                            aProductData.stockistCode = aproductDetailsCDModel.stockistCode ?? ""
+                            aProductData.stockistName = aproductDetailsCDModel.stockistName ?? ""
+                            aProductData.totalCount = aproductDetailsCDModel.totalCount ?? ""
+                            
+                            let productViewModel = ProductViewModel(product: aProductData)
+                            productViewModelArr.append(productViewModel)
+                        }
+                    }
+                }
+                productSelectedListViewModel.productViewModel = productViewModelArr
+                vc.productSelectedListViewModel = productSelectedListViewModel
+            }
+            
+            
+            //RCPA
+            if let rcpaEntityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDEntity", in: context) {
+                // dispatchGroup.enter()
+                let rcpaDetailsCDEntity = ftchedDCRcall?.rcpaDetailsModel ?? RCPAdetailsCDEntity(entity: rcpaEntityDescription, insertInto: context)
+                
+                
+                ///[RCPAdetailsModal]
+                var rcpaDetailsModelArr = [RCPAdetailsModal]()
+
                 if let rcpaDetailsCDModelArr = rcpaDetailsCDEntity.rcpadtailsCDModelArr  {
                     
                     rcpaDetailsCDModelArr.forEach { aRCPAdetailsCDModel in
+                        
+                        ///RCPAdetailsModal
+                        let rcpaDetailsModel =  RCPAdetailsModal()
+                        
                         if let aRCPAdetailsCDModel = aRCPAdetailsCDModel as? RCPAdetailsCDModel {
                             let addedChemist = aRCPAdetailsCDModel.addedChemist
+                            rcpaDetailsModel.addedChemist = addedChemist
+                            
+                            ///ProductDetails
+                            var aproductDetails = ProductDetails()
                             
                             if let  productDetailsCDModel = aRCPAdetailsCDModel.addedProductDetails {
-                                productDetailsCDModel.addedQuantity
-                                productDetailsCDModel.addedRate
-                                productDetailsCDModel.addedTotal
-                                productDetailsCDModel.addedValue
+                          
+                                
+                                aproductDetails.addedQuantity = productDetailsCDModel.addedQuantity
+                                aproductDetails.addedRate =   productDetailsCDModel.addedRate
+                                aproductDetails.addedTotal = productDetailsCDModel.addedTotal
+                                aproductDetails.addedValue =  productDetailsCDModel.addedValue
+                              
+                                ///[ProductWithCompetiors]
+                                var  addedProductsArr = [ProductWithCompetiors]()
+                                
                                 if let addedProductArr = productDetailsCDModel.addedProductArr {
                                     addedProductArr.forEach { addedProductWithCompetitor in
+                                        
+                                        ///ProductWithCompetiors
+                                        var addedProduct = ProductWithCompetiors()
+                                        
                                         if let addedProductWithCompetitor = addedProductWithCompetitor as? ProductWithCompetiorsCDModel {
-                                            addedProductWithCompetitor.addedProduct
+        
+                                            addedProduct.addedProduct = addedProductWithCompetitor.addedProduct
+                                            
+                                            ///AdditionalCompetitorsInfo
+                                            var additionalCompetitorsInfoArr =  [AdditionalCompetitorsInfo]()
+                                            
                                             if let competitorsInfoArr = addedProductWithCompetitor.competitorsInfoArr {
                                                 competitorsInfoArr.forEach { additionalCompetitorsInfoCDModel in
+                                                    
                                                     if let additionalCompetitorsInfoCDModel = additionalCompetitorsInfoCDModel as? AdditionalCompetitorsInfoCDModel {
-                                                        additionalCompetitorsInfoCDModel.competitor
-                                                        additionalCompetitorsInfoCDModel.qty
-                                                        additionalCompetitorsInfoCDModel.rate
-                                                        additionalCompetitorsInfoCDModel.remarks
-                                                        additionalCompetitorsInfoCDModel.value
                                                         
+                                                        ///AdditionalCompetitorsInfo
+                                                        
+                                                        var additionalCompetitorsInfo = AdditionalCompetitorsInfo()
+                                                        
+                                                        additionalCompetitorsInfo.competitor =  additionalCompetitorsInfoCDModel.competitor
+                                                        additionalCompetitorsInfo.qty =  additionalCompetitorsInfoCDModel.qty
+                                                        additionalCompetitorsInfo.rate = additionalCompetitorsInfoCDModel.rate
+                                                        additionalCompetitorsInfo.remarks = additionalCompetitorsInfoCDModel.remarks
+                                                        additionalCompetitorsInfo.value = additionalCompetitorsInfoCDModel.value
+                                                        additionalCompetitorsInfoArr.append(additionalCompetitorsInfo)
                                                     }
                                                 }
+                                                addedProduct.competitorsInfo = additionalCompetitorsInfoArr
                                             }
+                                           
                                         }
+                                        addedProductsArr.append(addedProduct)
+                                        
                                     }
+                                    aproductDetails.addedProduct = addedProductsArr
                                 }
+                                
+                                rcpaDetailsModel.addedProductDetails = aproductDetails
                             }
-                  
-    
-                            
                         }
+                        rcpaDetailsModelArr.append(rcpaDetailsModel)
                     }
                     
                 }
+                 dump(rcpaDetailsModelArr)
+                vc.rcpaDetailsModel = rcpaDetailsModelArr
+                self.navigationController?.pushViewController(vc, animated: true)
             }
             
-           // vc.eventCaptureListViewModel = ftchedDCRcall.eve
-           // vc.jointWorkSelectedListViewModel = ftchedDCRcall?.jointWorkViewModel
+          //  vc.eventCaptureListViewModel = ftchedDCRcall.eve
+          //  vc.jointWorkSelectedListViewModel = ftchedDCRcall?.jointWorkViewModel
            // vc.productSelectedListViewModel = ftchedDCRcall?.productViewModel
-           // vc.additionalCallListViewModel = ftchedDCRcall?.additionalCallViewModel
-            
+          //  vc.additionalCallListViewModel = ftchedDCRcall?.additionalCallViewModel
+        
             
             
         }
         
-       // self.navigationController?.pushViewController(vc, animated: true)
+   
         
         
     }

@@ -25,7 +25,7 @@ class AddCallinfoVC: BaseViewController {
     var jointWorkSelectedListViewModel = JointWorksListViewModel()
     var productSelectedListViewModel = ProductSelectedListViewModel()
     var additionalCallListViewModel = AdditionalCallsListViewModel()
-    
+    var inputSelectedListViewModel = InputSelectedListViewModel()
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
         let reportsVC : AddCallinfoVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.userStatisticsVM = viewmodel
@@ -464,8 +464,15 @@ class AddCallinfoVC: BaseViewController {
                         welf.outboxDatum = jsonDatum
                         var toSendData = [String : Any]()
                         toSendData["data"] = jsonDatum
-                        welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
-                        
+                       // welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
+                        welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                            CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
+                                
+                                dump(addedDCRcall)
+                                
+                                
+                            }
+                        }
                         return}
                 
                     welf.address = fetchedAddress
@@ -474,7 +481,15 @@ class AddCallinfoVC: BaseViewController {
                     welf.outboxDatum = jsonDatum
                     var toSendData = [String : Any]()
                     toSendData["data"] = jsonDatum
-                    welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
+                   // welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
+                    welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                        CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
+                            
+                            dump(addedDCRcall)
+                            
+                            
+                        }
+                    }
                 }
             } else {
                 welf.address = ""
@@ -485,16 +500,16 @@ class AddCallinfoVC: BaseViewController {
                 toSendData["data"] = jsonDatum
                 
                 
-//                welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
-//                    CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
-//                        
-//                        dump(addedDCRcall)
-//                        
-//                        
-//                    }
-//                }
+                welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                    CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
+                        
+                        dump(addedDCRcall)
+                        
+                        
+                    }
+                }
                 
-                welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false)
+               // welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false)
             }
 
             
@@ -748,9 +763,28 @@ class AddCallinfoVC: BaseViewController {
         }
         return sum
     }
+    
+    func removeAllAddedCalls() {
+        let fetchRequest: NSFetchRequest<AddedDCRCall> = NSFetchRequest(entityName: "AddedDCRCall")
+
+        do {
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
     func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, OutboxParam: Data , completion: @escaping (Bool) -> Void) {
-        let context = self.context
         
+        removeAllAddedCalls()
+        
+        let context = self.context
+
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "AddedDCRCall", in: context) else {
             print("Failed to get entity description")
             completion(false)
@@ -848,56 +882,7 @@ class AddCallinfoVC: BaseViewController {
     }
 
     
-//    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, completion: @escaping(Bool) -> Void) {
-//        
-//        let context = self.context
-// 
-//        if let entityDescription = NSEntityDescription.entity(forEntityName: "AddedDCRCall", in: context) {
-//      
-//            let aDCRCallEntity = AddedDCRCall(entity: entityDescription, insertInto: context)
-//            aDCRCallEntity.addedCallID = addedCallID
-//            aDCRCallEntity.isDataSent = isDataSent
-//       
-//            CoreDataManager.shared.toReturnProductViewModelCDModel(addedProducts: self.addCallinfoView.productSelectedListViewModel) { (productViewModel: ProductViewModelCDEntity?) in
-//                // Handle the result here
-//                if let nonNilproductViewModel = productViewModel {
-//                    aDCRCallEntity.productViewModel = nonNilproductViewModel
-//                }
-//         
-//            }
-//          
-//            CoreDataManager.shared.toReturnInputViewModelCDModel(addedinputs: self.addCallinfoView.inputSelectedListViewModel) { inputVIewModel in
-//                if let nonNilinputVIewModel = inputVIewModel {
-//                    aDCRCallEntity.inputViewModel = nonNilinputVIewModel
-//                }
-//         
-//            }
-//            
-//      
-//            CoreDataManager.shared.toReturnJointWorkViewModelCDModel(addedJonintWorks: self.addCallinfoView.jointWorkSelectedListViewModel) { jointWorkViewModel in
-//                if let nonNiljointWorkViewModel = jointWorkViewModel {
-//                    aDCRCallEntity.jointWorkViewModel = nonNiljointWorkViewModel
-//                }
-//             
-//            }
-//            
-//         
-//            CoreDataManager.shared.toReturnAdditionalCallCDModel(addedAdditionalCalls: self.addCallinfoView.additionalCallListViewModel) { additionalCallVM in
-//                if let nonNiladditionalCallVM = additionalCallVM {
-//                    aDCRCallEntity.additionalCallViewModel = nonNiladditionalCallVM
-//                }
-//           
-//            }
-//  
-//                do {
-//                    try context.save()
-//                    completion(true)
-//                } catch {
-//                    print("Failed to save to Core Data: \(error)")
-//                    completion(false)
-//                }
-//        }
-//    }
+
     
 }
 

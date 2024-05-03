@@ -1299,12 +1299,29 @@ class AddCallinfoView : BaseView {
     var customerCheckoutView: CustomerCheckoutView?
     var selectedCompetitor: Competitor?
     var additionalCompetitorsInfo: AdditionalCompetitorsInfo?
+    
+    func initDataSource() {
+        if !addCallinfoVC.rcpaDetailsModel.isEmpty {
+            self.rcpaDetailsModel = addCallinfoVC.rcpaDetailsModel
+        }
+        
+        if !addCallinfoVC.productSelectedListViewModel.productViewModel.isEmpty {
+            self.productSelectedListViewModel = addCallinfoVC.productSelectedListViewModel
+        }
+        
+        
+        if !addCallinfoVC.inputSelectedListViewModel.inputViewModel.isEmpty {
+            self.inputSelectedListViewModel = addCallinfoVC.inputSelectedListViewModel
+        }
+    }
+    
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
-       setupUI()
-       toLoadSegments()
+        initDataSource()
+        setupUI()
+        toLoadSegments()
         cellregistration()
         toloadYettables()
         initVIews()
@@ -2266,7 +2283,7 @@ extension CoreDataManager {
         for additioncallData in additioncallDatum {
             dispatchGroup.enter()
             
-            convertToInputViewModelArr(additioncallData.inputs, context: context) { inputViewModelSet in
+            convertToInputViewModelArr(additioncallData.inputs, inputs: [Input()], context: context) { inputViewModelSet in
                 aAdditionalCallEntity.inputs = inputViewModelSet
                 dispatchGroup.leave()
             }
@@ -2420,7 +2437,7 @@ extension CoreDataManager {
                         
                         // Convert and add
             
-                        convertToInputViewModelArr(addedinputs.inputData(), context: context){ inputViewModelSet in
+                        convertToInputViewModelArr(addedinputs.inputData(), inputs: addedinputs.fetchAllInput()!, context: context){ inputViewModelSet in
                             aInputEntity.inputViewModelArr = inputViewModelSet as! NSMutableSet
     
                             completion(aInputEntity)
@@ -2435,14 +2452,14 @@ extension CoreDataManager {
         }
     
     
-        func convertToInputViewModelArr(_ inputViewModels: [InputViewModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+    func convertToInputViewModelArr(_ inputViewModels: [InputViewModel], inputs: [Input], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
            let inputViewModelsSet = NSMutableSet()
     
            // Create a dispatch group to handle asynchronous tasks
            let dispatchGroup = DispatchGroup()
     
            // Iterate over each GroupedBrandsSlideModel
-           for inputViewModel in inputViewModels {
+        for (index, inputViewModel) in inputViewModels.enumerated() {
                dispatchGroup.enter()
     
                if let entityDescription = NSEntityDescription.entity(forEntityName: "InputDataCDModel", in: context) {
@@ -2454,14 +2471,14 @@ extension CoreDataManager {
                    // Fetch or create the corresponding Input managed object
                    if let entityDescription = NSEntityDescription.entity(forEntityName: "Input", in: context) {
                        let inputCDModel = Input(entity: entityDescription, insertInto: context)
-                       inputCDModel.name =  inputViewModel.input.input?.name
-                       inputCDModel.code =  inputViewModel.input.input?.code
-                       inputCDModel.index = inputViewModel.input.input?.index ?? 0
-                       inputCDModel.mapId = inputViewModel.input.input?.mapId
+                       inputCDModel.name =  inputs[index].name
+                       inputCDModel.code =  inputs[index].code
+                       inputCDModel.index = inputs[index].index
+                       inputCDModel.mapId = inputs[index].mapId
        
                        
-                       let effF = inputViewModel.input.input?.effF
-                       let effT = inputViewModel.input.input?.effT
+                       let effF = inputs[index].effF
+                       let effT = inputs[index].effT
                        if let entityDescription = NSEntityDescription.entity(forEntityName: "Efff", in: context) {
                            let effFCDModel = Efff(entity: entityDescription, insertInto: context)
                            

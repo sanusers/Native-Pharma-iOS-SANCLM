@@ -10,7 +10,7 @@ import Foundation
 class ProductSelectedListViewModel {
 
     var uuid: UUID?
-    private var productViewModel = [ProductViewModel]()
+     var productViewModel = [ProductViewModel]()
     
     func fetchAllProducts() -> [Product]? {
         return productViewModel.map { $0.product.product ?? Product() }

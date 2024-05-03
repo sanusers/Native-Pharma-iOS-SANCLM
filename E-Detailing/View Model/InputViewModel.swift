@@ -9,7 +9,7 @@ import Foundation
 
 class InputSelectedListViewModel {
     var uuid: UUID?
-    private var inputViewModel = [InputViewModel]()
+     var inputViewModel = [InputViewModel]()
     
     
     func fetchAllInput() -> [Input]? {
