@@ -19,7 +19,9 @@ class AddCallinfoVC: BaseViewController {
     var longitude: Double?
     var address: String?
     var outboxDatum: Data?
-    
+    var pobValue: String?
+    var overallRemarks: String?
+    var overallFeedback: Feedback?
     var rcpaDetailsModel :  [RCPAdetailsModal] = []
     var eventCaptureListViewModel = EventCaptureListViewModel()
     var jointWorkSelectedListViewModel = JointWorksListViewModel()
@@ -459,21 +461,18 @@ class AddCallinfoVC: BaseViewController {
                 Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {[weak self] address in
                     guard let welf = self else {return}
                     guard let fetchedAddress = address else {
-                        
                         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
                         welf.outboxDatum = jsonDatum
                         var toSendData = [String : Any]()
                         toSendData["data"] = jsonDatum
-                       // welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
-                        welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
-                            CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
-                                
-                                dump(addedDCRcall)
-                                
-                                
+                        welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) {completion in
+                            welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                                welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                             }
                         }
-                        return}
+                        
+                        return
+                    }
                 
                     welf.address = fetchedAddress
                     addedDCRCallsParam["address"] =  fetchedAddress
@@ -481,15 +480,12 @@ class AddCallinfoVC: BaseViewController {
                     welf.outboxDatum = jsonDatum
                     var toSendData = [String : Any]()
                     toSendData["data"] = jsonDatum
-                   // welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType)
-                    welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
-                        CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
-                            
-                            dump(addedDCRcall)
-                            
-                            
+                    welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
+                        welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                         }
                     }
+         
                 }
             } else {
                 welf.address = ""
@@ -498,18 +494,12 @@ class AddCallinfoVC: BaseViewController {
                 welf.outboxDatum = jsonDatum
                 var toSendData = [String : Any]()
                 toSendData["data"] = jsonDatum
-                
-                
-                welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
-                    CoreDataManager.shared.tofetchaSavedCalls(callID: "3107585") { addedDCRcall in
-                        
-                        dump(addedDCRcall)
-                        
-                        
+
+                welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false, outboxParam: jsonDatum) { completion in
+                    welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                        welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                     }
                 }
-                
-               // welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false)
             }
 
             
@@ -518,11 +508,14 @@ class AddCallinfoVC: BaseViewController {
      
     }
     
-    func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true) {
+    func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true, outboxParam: Data? = nil, completion: @escaping (Bool) -> ()) {
         if !(isConnectedToNW ?? false)  {
-            saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: addedDCRCallsParam)
-            NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-            popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+            toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) { isSaved in
+                self.saveCallsToDB(issussess: false, appsetup: self.appsetup, cusType: cusType, param: addedDCRCallsParam)
+                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+              
+            }
             return
         }
         Shared.instance.showLoaderInWindow()
@@ -535,8 +528,8 @@ class AddCallinfoVC: BaseViewController {
             } else {
                 NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
             }
-
-            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+            completion(true)
+            
         }
     }
     
@@ -575,7 +568,7 @@ class AddCallinfoVC: BaseViewController {
             }
         }
     
-    func callDCRScaeapi(toSendData: JSON, params: JSON, cusType: String, completion: @escaping (Bool) -> () ) {
+    func callDCRScaeapi(toSendData: JSON, params: JSON, cusType: String, completion: @escaping (Bool) -> ()) {
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
            // Shared.instance.showLoaderInWindow()
             postDCTdata(toSendData, paramData: params) { result in
@@ -781,7 +774,7 @@ class AddCallinfoVC: BaseViewController {
     
     func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, OutboxParam: Data , completion: @escaping (Bool) -> Void) {
         
-        removeAllAddedCalls()
+       // removeAllAddedCalls()
         
         let context = self.context
 
@@ -800,7 +793,7 @@ class AddCallinfoVC: BaseViewController {
         var productViewModel: ProductViewModelCDEntity?
         var inputViewModel: InputViewModelCDEntity?
         var jointWorkViewModel: JointWorkViewModelCDEntity?
-        var additionalCallViewModel: AdditionalCallCDModel?
+        var additionalCallViewModel: AdditionalCallViewModelCDEntity?
         var rcpaDetailsModel : RCPAdetailsCDEntity?
         // Enter dispatch group for each CoreDataManager function
         dispatchGroup.enter()
@@ -822,7 +815,7 @@ class AddCallinfoVC: BaseViewController {
         }
         
         dispatchGroup.enter()
-        CoreDataManager.shared.toReturnAdditionalCallCDModel(addedAdditionalCalls: self.addCallinfoView.additionalCallListViewModel) { viewModel in
+        CoreDataManager.shared.toReturnAdditionalCallVM(addedAdditionalCalls: self.addCallinfoView.additionalCallListViewModel) { viewModel in
             additionalCallViewModel = viewModel
             dispatchGroup.leave()
         }
@@ -836,10 +829,8 @@ class AddCallinfoVC: BaseViewController {
         
         if let entityDescription = NSEntityDescription.entity(forEntityName: "Feedback", in: context) {
             let aFeedback = Feedback(entity: entityDescription, insertInto: context)
-//            @NSManaged public var id: String?
-//            @NSManaged public var index: Int16
-//            @NSManaged public var name: String?
             let userFeedback = self.addCallinfoView.overallFeedback
+            
             aFeedback.name = userFeedback?.name
             aFeedback.id = userFeedback?.id
             aFeedback.index = userFeedback?.index ?? 0

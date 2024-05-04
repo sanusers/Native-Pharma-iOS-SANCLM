@@ -355,13 +355,18 @@ class PreCallVC : UIViewController {
         btnStartdetailing.backgroundColor = .appTextColor
 
     }
+
+    
     @IBAction func skipDetailingAction(_ sender: Any) {
+        
+   
+        
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userStatisticsVM ?? UserStatisticsVM())
         vc.dcrCall = self.dcrCall
         
         CoreDataManager.shared.tofetchaSavedCalls(callID: self.dcrCall.code) { addedDCRcall in
             
-       
+            
             
             dump(addedDCRcall)
             
@@ -369,7 +374,168 @@ class PreCallVC : UIViewController {
             let context = self.context
             let ftchedDCRcall = addedDCRcall?.first
             
+            //[AdditionalCallViewModel]
+            //Additional call
+            let aAdditionalcallVM =     AdditionalCallsListViewModel()
             
+            if let additionalCallEntityDescription  = NSEntityDescription.entity(forEntityName: "AdditionalCallViewModelCDEntity", in: context) {
+                let additionalCallCDEntity = ftchedDCRcall?.additionalCallViewModel ?? AdditionalCallViewModelCDEntity(entity: additionalCallEntityDescription, insertInto: context)
+                
+                
+                
+                
+                if let addedAdditionalCall = additionalCallCDEntity.additionalCallViewModel {
+                    addedAdditionalCall.forEach { additionalCallCDModel in
+                        if let additionalCallCDModel = additionalCallCDModel as? AdditionalCallCDModel {
+                            let aAdditionalCall = AdditionalCallViewModel(additionalCall: nil, isView: false)
+                            aAdditionalCall.additionalCall = additionalCallCDModel.additionalCall
+                            if let productViewModelEntityDescription  = NSEntityDescription.entity(forEntityName: "ProductViewModelCDEntity", in: context) {
+                                
+                                let productSelectedListViewModel = ProductSelectedListViewModel()
+                                var productViewModelArr = [ProductViewModel]()
+                                
+                                let productSelectedListViewModelntity = additionalCallCDModel.productSelectedListViewModel ?? ProductViewModelCDEntity(entity: productViewModelEntityDescription, insertInto: context)
+                                if let productViewModelEntityArr = productSelectedListViewModelntity.productViewModelArr {
+                                    productViewModelEntityArr.forEach({ productDataCDModel in
+                                        if let productDataCDModel = productDataCDModel as? ProductDataCDModel {
+                                            var aProductData = ProductData(isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")
+                                            
+                                            
+                                            aProductData.isDetailed = productDataCDModel.isDetailed
+                                            aProductData.sampleCount = productDataCDModel.sampleCount ?? ""
+                                            aProductData.rxCount = productDataCDModel.rxCount ?? ""
+                                            aProductData.rcpaCount = productDataCDModel.rcpaCount ?? ""
+                                            aProductData.availableCount = productDataCDModel.availableCount ?? ""
+                                            aProductData.totalCount = productDataCDModel.totalCount ?? ""
+                                            aProductData.stockistName = productDataCDModel.stockistName ?? ""
+                                            aProductData.stockistCode = productDataCDModel.stockistCode ?? ""
+                                            
+                                            aProductData.product =  productDataCDModel.product
+                                            
+                                            let aproductViewModel = ProductViewModel(product: aProductData)
+                                            
+                                            productViewModelArr.append(aproductViewModel)
+                                        }
+                                    })
+                                    productSelectedListViewModel.productViewModel = productViewModelArr
+                                }
+                                aAdditionalCall.productSelectedListViewModel = productSelectedListViewModel
+                            }
+                            
+                            
+                            
+                            
+                            if let inputViewModelEntityDescription  = NSEntityDescription.entity(forEntityName: "InputViewModelCDEntity", in: context) {
+                                let inputSelectedListViewModelEntity = additionalCallCDModel.inputSelectedListViewModel ?? InputViewModelCDEntity(entity: inputViewModelEntityDescription, insertInto: context)
+                                let inputSelectedListViewModel = InputSelectedListViewModel()
+                                var inputViewModelArr = [InputViewModel]()
+                                
+                                if let inputViewModelEntityArr = inputSelectedListViewModelEntity.inputViewModelArr {
+                                    inputViewModelEntityArr.forEach({ inputDataCDModel in
+                                        if let inputDataCDModel = inputDataCDModel as? InputDataCDModel {
+                                            
+                                            var  aInputData = InputData(availableCount: "", inputCount: "")
+                                            aInputData.availableCount = inputDataCDModel.availableCount ?? ""
+                                            aInputData.inputCount = inputDataCDModel.inputCount ?? ""
+                                            aInputData.input = inputDataCDModel.input
+                                            let inputViewModel = InputViewModel(input: aInputData)
+                                            inputViewModelArr.append(inputViewModel)
+                                            
+                                        }
+                                    })
+                                    inputSelectedListViewModel.inputViewModel = inputViewModelArr
+                                }
+                                
+                                aAdditionalCall.inputSelectedListViewModel = inputSelectedListViewModel
+                            }
+                            
+                            
+                            if let inpuEntityDescription  = NSEntityDescription.entity(forEntityName: "InputDataCDModel", in: context) {
+                                _ = additionalCallCDModel.inputs ?? InputDataCDModel(entity: inpuEntityDescription, insertInto: context)
+                                
+                                var inputs  = [InputViewModel]()
+                                
+                                if let  inputDataCDModelArr = additionalCallCDModel.inputs {
+                                    inputDataCDModelArr.forEach { inputDataCDModel in
+                                        if let inputDataCDModel = inputDataCDModel as? InputDataCDModel {
+                                            
+                                            var  aInputData = InputData(availableCount: "", inputCount: "")
+                                            aInputData.availableCount = inputDataCDModel.availableCount ?? ""
+                                            aInputData.inputCount = inputDataCDModel.inputCount ?? ""
+                                            aInputData.input = inputDataCDModel.input
+                                            
+                                            
+                                            let ainput = InputViewModel(input: aInputData)
+                                            inputs.append(ainput)
+                                        }
+                                    }
+                                }
+                                aAdditionalCall.inputs = inputs
+                            }
+                            
+                            
+                            if let productEntityDescription  = NSEntityDescription.entity(forEntityName: "ProductDataCDModel", in: context) {
+                                _ = additionalCallCDModel.products ?? ProductDataCDModel(entity: productEntityDescription, insertInto: context)
+                                
+                                var products = [ProductViewModel]()
+                                
+                                if let  productDataCDModelArr = additionalCallCDModel.products {
+                                    
+                                    productDataCDModelArr.forEach { productDataCDModel in
+                                        if let productDataCDModel = productDataCDModel as? ProductDataCDModel {
+                                            var aProductData = ProductData(isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")
+                                            
+                                            
+                                            aProductData.isDetailed = productDataCDModel.isDetailed
+                                            aProductData.sampleCount = productDataCDModel.sampleCount ?? ""
+                                            aProductData.rxCount = productDataCDModel.rxCount ?? ""
+                                            aProductData.rcpaCount = productDataCDModel.rcpaCount ?? ""
+                                            aProductData.availableCount = productDataCDModel.availableCount ?? ""
+                                            aProductData.totalCount = productDataCDModel.totalCount ?? ""
+                                            aProductData.stockistName = productDataCDModel.stockistName ?? ""
+                                            aProductData.stockistCode = productDataCDModel.stockistCode ?? ""
+                                            
+                                            aProductData.product =  productDataCDModel.product
+                                            
+                                            let aproductViewModel = ProductViewModel(product: aProductData)
+                                            
+                                            products.append(aproductViewModel)
+                                        }
+                                    }
+                                    
+                                }
+                                aAdditionalCall.products = products
+                            }
+                            
+                            
+                            aAdditionalcallVM.addAdditionalCallViewModel(aAdditionalCall)
+                        }
+                    }
+                }
+
+                vc.additionalCallListViewModel = aAdditionalcallVM
+                
+            }
+            
+            //feecback
+            if let userfeedback  =  ftchedDCRcall?.overAllFeedBack {
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "Feedback", in: context) {
+                    let aFeedback = Feedback(entity: entityDescription, insertInto: context)
+                    aFeedback.name = userfeedback.name
+                    aFeedback.id = userfeedback.id
+                    aFeedback.index = userfeedback.index
+                    vc.overallFeedback = aFeedback
+                }
+            }
+
+            //remarks || pob
+            if let rematksValue  =  ftchedDCRcall?.overallRemarks {
+                vc.overallRemarks = rematksValue
+            }
+            
+            if let pobValue  =  ftchedDCRcall?.pobValue {
+                vc.pobValue = pobValue
+            }
             
             
             
@@ -388,7 +554,7 @@ class PreCallVC : UIViewController {
                           
                             aProductData.availableCount = ainputDataCDModel.availableCount ?? ""
                             aProductData.inputCount = ainputDataCDModel.inputCount ?? ""
-                            aProductData.input = aProductData.input
+                            aProductData.input = ainputDataCDModel.input
                             
                           let inputViewModel = InputViewModel(input: aProductData)
                           inputViewModelArr.append(inputViewModel)
@@ -436,6 +602,38 @@ class PreCallVC : UIViewController {
                 vc.productSelectedListViewModel = productSelectedListViewModel
             }
             
+            
+            //Jointwork
+            if let jwEntityDescription  = NSEntityDescription.entity(forEntityName: "JointWorkViewModelCDEntity", in: context) {
+                let jwDetailsCDEntity = ftchedDCRcall?.jointWorkViewModel ?? JointWorkViewModelCDEntity(entity: jwEntityDescription, insertInto: context)
+                ///ProductSelectedListViewModel
+                
+                let jwSelectedListViewModel = JointWorksListViewModel()
+                
+                
+                
+                var jwViewModelArr =  [JointWorkViewModel]()
+                
+                if let jwViewModelCDArr =  jwDetailsCDEntity.jointWorkViewModelArr {
+                    jwViewModelCDArr.forEach { jwDetailsCDModel in
+                       
+                
+                        if let ajwDetailsCDModel = jwDetailsCDModel as? JointWorkDataCDModel {
+                            
+                            if let jointWork = ajwDetailsCDModel.jointWork {
+                                var ajwData = JointWorkViewModel(jointWork: jointWork)
+                                jwViewModelArr.append(ajwData)
+                                jwSelectedListViewModel.addJointWorkViewModel(ajwData)
+                            }
+                         
+                        }
+                        
+                    }
+                  
+                }
+               // productSelectedListViewModel.productViewModel = productViewModelArr
+                vc.jointWorkSelectedListViewModel = jwSelectedListViewModel
+            }
             
             //RCPA
             if let rcpaEntityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDEntity", in: context) {
@@ -520,16 +718,9 @@ class PreCallVC : UIViewController {
                 }
                  dump(rcpaDetailsModelArr)
                 vc.rcpaDetailsModel = rcpaDetailsModelArr
-                self.navigationController?.pushViewController(vc, animated: true)
+             
             }
-            
-          //  vc.eventCaptureListViewModel = ftchedDCRcall.eve
-          //  vc.jointWorkSelectedListViewModel = ftchedDCRcall?.jointWorkViewModel
-           // vc.productSelectedListViewModel = ftchedDCRcall?.productViewModel
-          //  vc.additionalCallListViewModel = ftchedDCRcall?.additionalCallViewModel
-        
-            
-            
+            self.navigationController?.pushViewController(vc, animated: true)
         }
         
    
@@ -652,7 +843,7 @@ class PreCallVC : UIViewController {
                    aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
                })
                var name: String = ""
-               var isPromoted: Bool = false
+               let isPromoted: Bool = false
                var noOfsamples: String = ""
                var rxQty: String = ""
                var rcpa: String  = ""

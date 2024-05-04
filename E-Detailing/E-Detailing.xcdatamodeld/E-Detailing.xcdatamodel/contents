@@ -6,7 +6,7 @@
         <attribute name="outBoxParam" optional="YES" attributeType="Binary"/>
         <attribute name="overallRemarks" optional="YES" attributeType="String"/>
         <attribute name="pobValue" optional="YES" attributeType="String"/>
-        <relationship name="additionalCallViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AdditionalCallCDModel"/>
+        <relationship name="additionalCallViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AdditionalCallViewModelCDEntity"/>
         <relationship name="inputViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
         <relationship name="jointWorkViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="JointWorkViewModelCDEntity"/>
         <relationship name="overAllFeedBack" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feedback"/>

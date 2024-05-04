@@ -9,12 +9,9 @@ target 'E-Detailing' do
 pod 'Charts'
 pod 'FSCalendar'
 pod 'UICircularProgressRing'
-#pod 'ExpyTableView'
 pod 'Alamofire'
 pod 'ReachabilitySwift'
 pod 'GoogleMaps'
-#pod 'SVProgressHUD'
-#pod 'Toast-Swift'
 pod 'IQKeyboardManagerSwift'
 pod 'SSZipArchive'
 end

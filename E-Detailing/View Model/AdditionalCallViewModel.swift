@@ -10,7 +10,7 @@ import Foundation
 
 class AdditionalCallsListViewModel {
     
-    private var additionalCallListViewModel = [AdditionalCallViewModel] ()
+     var additionalCallListViewModel = [AdditionalCallViewModel] ()
     
     func addAdditionalCallViewModel(_ vm : AdditionalCallViewModel) {
         additionalCallListViewModel.append(vm)
@@ -114,18 +114,18 @@ class AdditionalCallsListViewModel {
 
 class AdditionalCallViewModel {
     
-    let additionalCall : DoctorFencing
+    var additionalCall : DoctorFencing?
     var isView : Bool
     
     var productSelectedListViewModel = ProductSelectedListViewModel()
     var inputSelectedListViewModel = InputSelectedListViewModel()
     
-    let products = [ProductViewModel]()
+    var products = [ProductViewModel]()
     
-    let inputs  = [InputViewModel]()
+    var inputs  = [InputViewModel]()
     
-    init(additionalCall: DoctorFencing, isView: Bool, productSelectedListViewModel: ProductSelectedListViewModel = ProductSelectedListViewModel(), inputSelectedListViewModel: InputSelectedListViewModel = InputSelectedListViewModel()) {
-        self.additionalCall = additionalCall
+    init(additionalCall: DoctorFencing?, isView: Bool, productSelectedListViewModel: ProductSelectedListViewModel = ProductSelectedListViewModel(), inputSelectedListViewModel: InputSelectedListViewModel = InputSelectedListViewModel()) {
+        self.additionalCall = additionalCall ?? nil
         self.isView = isView
         self.productSelectedListViewModel = productSelectedListViewModel
         self.inputSelectedListViewModel = inputSelectedListViewModel
@@ -133,19 +133,19 @@ class AdditionalCallViewModel {
     
     
     var docName : String {
-        return additionalCall.name ?? ""
+        return additionalCall?.name ?? ""
     }
     
     var docCode : String {
-        return additionalCall.code ?? ""
+        return additionalCall?.code ?? ""
     }
     
     var docTownCode : String {
-        return additionalCall.townCode ?? ""
+        return additionalCall?.townCode ?? ""
     }
     
     var docTownName : String {
-        return additionalCall.townName ?? ""
+        return additionalCall?.townName ?? ""
     }
     
 }

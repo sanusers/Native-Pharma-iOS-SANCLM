@@ -10,7 +10,7 @@ import Foundation
 
 class JointWorksListViewModel {
     
-    private var jointWorksListViewModel = [JointWorkViewModel] ()
+     var jointWorksListViewModel = [JointWorkViewModel] ()
     
     func addJointWorkViewModel(_ vm : JointWorkViewModel) {
         jointWorksListViewModel.append(vm)

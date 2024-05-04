@@ -3206,6 +3206,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         case self.outboxTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "OutboxDetailsTVC", for: indexPath) as! OutboxDetailsTVC
             let model = obj_sections[indexPath.section].items
+            cell.delegate = self
+            cell.viewController = self
             cell.todayCallsModel = model
             //[indexPath.row]
             //self.outBoxDataArr
@@ -4929,6 +4931,26 @@ extension Calendar {
 extension MainVC :  HomeSideMenuViewDelegate {
     func refreshDashBoard() {
         print("Yet to refresh dashboard")
+    }
+    
+    
+}
+
+
+extension MainVC: OutboxDetailsTVCDelegate {
+    func didTapoutboxEdit(dcrCall: TodayCallsModel) {
+        print("Tapped")
+        dump(dcrCall)
+        let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+       let filteredDoctores = listedDocters.filter { aDoctorFencing in
+            aDoctorFencing.code == dcrCall.custCode
+        }
+        guard let nonNilDoctors = filteredDoctores.first else {
+            
+            
+            return}
+        let aCallVM = CallViewModel(call: nonNilDoctors , type: DCRType.doctor)
+        editDCRcall(call: aCallVM, type: DCRType.doctor)
     }
     
     

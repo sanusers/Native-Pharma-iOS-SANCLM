@@ -1313,6 +1313,29 @@ class AddCallinfoView : BaseView {
         if !addCallinfoVC.inputSelectedListViewModel.inputViewModel.isEmpty {
             self.inputSelectedListViewModel = addCallinfoVC.inputSelectedListViewModel
         }
+        
+        if !addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel.isEmpty {
+            self.additionalCallListViewModel = addCallinfoVC.additionalCallListViewModel
+        }
+        
+        if !addCallinfoVC.jointWorkSelectedListViewModel.jointWorksListViewModel.isEmpty {
+            self.jointWorkSelectedListViewModel = addCallinfoVC.jointWorkSelectedListViewModel
+        }
+        
+        
+        if let userfeedBack = addCallinfoVC.overallFeedback {
+            self.overallFeedback = userfeedBack
+        }
+        
+        if let pobvalue = addCallinfoVC.pobValue {
+            self.pobValue = pobvalue
+        }
+        
+        
+        if let remarksvalue = addCallinfoVC.overallRemarks {
+            self.overallRemarks = remarksvalue
+        }
+        
     }
     
     override func didLoad(baseVC: BaseViewController) {
@@ -2264,51 +2287,125 @@ extension CoreDataManager {
 
 extension CoreDataManager {
     
-    func toReturnAdditionalCallCDModel(addedAdditionalCalls: AdditionalCallsListViewModel, completion: @escaping (AdditionalCallCDModel?) -> Void) {
+    
+    
+    func toReturnAdditionalCallVM(addedAdditionalCalls: AdditionalCallsListViewModel, completion: @escaping (AdditionalCallViewModelCDEntity?) -> Void) {
         let context = self.context
         
-        // Create a new managed object
-        guard let entityDescription = NSEntityDescription.entity(forEntityName: "AdditionalCallCDModel", in: context) else {
-            print("Failed to get entity description")
+        if let additionalCallCDentityDescription = NSEntityDescription.entity(forEntityName: "AdditionalCallViewModelCDEntity", in: context) {
+            
+            let aAdditionalCallEntity = AdditionalCallViewModelCDEntity(entity: additionalCallCDentityDescription, insertInto: context)
+            
+           
+            convertToAdditionalCallCDModel(addedAdditionalCalls: addedAdditionalCalls) { additionalCallCDModelset in
+                
+                
+                aAdditionalCallEntity.additionalCallViewModel = additionalCallCDModelset
+                
+                completion(aAdditionalCallEntity)
+            }
+        } else {
             completion(nil)
-            return
         }
+    }
+    
+    
+    func convertToAdditionalCallCDModel(addedAdditionalCalls: AdditionalCallsListViewModel, completion: @escaping (NSSet) -> Void) {
         
-        let aAdditionalCallEntity = AdditionalCallCDModel(entity: entityDescription, insertInto: context)
+        let context = self.context
+        let additionalCallCDModelset = NSMutableSet()
+
         let additioncallDatum = addedAdditionalCalls.getAdditionalCallData()
-        
+
         let dispatchGroup = DispatchGroup()
         
         // Iterate over each additional call data
         for additioncallData in additioncallDatum {
-            dispatchGroup.enter()
+        
+            // Create a new managed object
+            if let additionalCallCDentityDescription = NSEntityDescription.entity(forEntityName: "AdditionalCallCDModel", in: context) {
+                
+                let aAdditionalCallEntity = AdditionalCallCDModel(entity: additionalCallCDentityDescription, insertInto: context)
+                
+                
+                if let additionalDocCallEntityDescription  = NSEntityDescription.entity(forEntityName: "DoctorFencing", in: context) {
+                    let additionalDocCallCDEntity =  DoctorFencing(entity: additionalDocCallEntityDescription, insertInto: context)
+
+                  
+                    additionalDocCallCDEntity.addrs =  additioncallData.additionalCall?.addrs ?? ""
+                    additionalDocCallCDEntity.category = additioncallData.additionalCall?.category ?? ""
+                    additionalDocCallCDEntity.categoryCode = additioncallData.additionalCall?.categoryCode ?? ""
+                    additionalDocCallCDEntity.code = additioncallData.additionalCall?.code ?? ""
+                    additionalDocCallCDEntity.dob = additioncallData.additionalCall?.dob ?? ""
+                    additionalDocCallCDEntity.docDesig = additioncallData.additionalCall?.docDesig ?? ""
+                    additionalDocCallCDEntity.docEmail = additioncallData.additionalCall?.docEmail ?? ""
+                    additionalDocCallCDEntity.dow = additioncallData.additionalCall?.dow ?? ""
+                    additionalDocCallCDEntity.drSex = additioncallData.additionalCall?.drSex ?? ""
+                    additionalDocCallCDEntity.geoTagCnt = additioncallData.additionalCall?.geoTagCnt ?? ""
+                    additionalDocCallCDEntity.hosAddr = additioncallData.additionalCall?.hosAddr ?? ""
+                    additionalDocCallCDEntity.index = additioncallData.additionalCall?.index ?? 0
+                    additionalDocCallCDEntity.lat = additioncallData.additionalCall?.lat ?? ""
+                    additionalDocCallCDEntity.long = additioncallData.additionalCall?.long ?? ""
+                    additionalDocCallCDEntity.mapId = additioncallData.additionalCall?.mapId ?? ""
+                    additionalDocCallCDEntity.mappProducts = additioncallData.additionalCall?.mappProducts ?? ""
+                    additionalDocCallCDEntity.maxGeoMap = additioncallData.additionalCall?.maxGeoMap ?? ""
+                    additionalDocCallCDEntity.mobile = additioncallData.additionalCall?.mobile ?? ""
+                    additionalDocCallCDEntity.mProd = additioncallData.additionalCall?.mProd ?? ""
+                    additionalDocCallCDEntity.name = additioncallData.additionalCall?.name ?? ""
+                    additionalDocCallCDEntity.phone = additioncallData.additionalCall?.phone ?? ""
+                    additionalDocCallCDEntity.plcyAcptFl = additioncallData.additionalCall?.plcyAcptFl ?? ""
+                    additionalDocCallCDEntity.productCode = additioncallData.additionalCall?.productCode ?? ""
+                    additionalDocCallCDEntity.resAddr = additioncallData.additionalCall?.resAddr ?? ""
+                    additionalDocCallCDEntity.sfCode = additioncallData.additionalCall?.sfCode ?? ""
+                    additionalDocCallCDEntity.speciality = additioncallData.additionalCall?.speciality ?? ""
+                    additionalDocCallCDEntity.specialityCode = additioncallData.additionalCall?.specialityCode ?? ""
+                    additionalDocCallCDEntity.townCode = additioncallData.additionalCall?.townCode ?? ""
+                    additionalDocCallCDEntity.townName = additioncallData.additionalCall?.townName ?? ""
+                    additionalDocCallCDEntity.uRwId = additioncallData.additionalCall?.uRwId ?? ""
+                    
+                    aAdditionalCallEntity.additionalCall = additionalDocCallCDEntity
+                    
+                }
+                
+                
+                dispatchGroup.enter()
+                let inputArr: [Input] = additioncallData.inputSelectedListViewModel.inputViewModel.map { aInputViewModel in
+                    return  aInputViewModel.input.input ?? Input()
+                }
+                convertToInputViewModelArr(additioncallData.inputSelectedListViewModel.inputViewModel, inputs: inputArr, context: context) { inputViewModelSet in
+                    aAdditionalCallEntity.inputs = inputViewModelSet
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.enter()
+                convertToProductViewModelArr(additioncallData.productSelectedListViewModel.productViewModel, context: context) { productModelSet in
+                    aAdditionalCallEntity.products = productModelSet
+                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.enter()
+                toReturnInputViewModelCDModel(addedinputs: additioncallData.inputSelectedListViewModel) { inputsViewModel in
+                    aAdditionalCallEntity.inputSelectedListViewModel = inputsViewModel
+                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.enter()
+                toReturnProductViewModelCDModel(addedProducts: additioncallData.productSelectedListViewModel) { productsViewModel in
+                    aAdditionalCallEntity.productSelectedListViewModel = productsViewModel
+                    dispatchGroup.leave()
+                }
+                
+                additionalCallCDModelset.add(aAdditionalCallEntity)
+            }
             
-            convertToInputViewModelArr(additioncallData.inputs, inputs: [Input()], context: context) { inputViewModelSet in
-                aAdditionalCallEntity.inputs = inputViewModelSet
-                dispatchGroup.leave()
-            }
-            dispatchGroup.enter()
-            convertToProductViewModelArr(additioncallData.products, context: context) { productModelSet in
-                aAdditionalCallEntity.products = productModelSet
-                dispatchGroup.leave()
-            }
+
             
-            dispatchGroup.enter()
-            toReturnInputViewModelCDModel(addedinputs: additioncallData.inputSelectedListViewModel) { inputsViewModel in
-                aAdditionalCallEntity.inputSelectedListViewModel = inputsViewModel
-                dispatchGroup.leave()
-            }
-            
-            dispatchGroup.enter()
-            toReturnProductViewModelCDModel(addedProducts: additioncallData.productSelectedListViewModel) { productsViewModel in
-                aAdditionalCallEntity.productSelectedListViewModel = productsViewModel
-                dispatchGroup.leave()
-            }
+          
         }
         
         // Notify completion when all tasks in the dispatch group are completed
         dispatchGroup.notify(queue: .main) {
-            completion(aAdditionalCallEntity)
+
+            completion(additionalCallCDModelset)
         }
     }
 
@@ -2330,6 +2427,7 @@ extension CoreDataManager {
                jointWorkDataCDModel.jointWork = jointWorkViewModel.jointWork
                // Add to set
                jointWorkViewModelsSet.add(jointWorkDataCDModel)
+               dispatchGroup.leave()
            }
        }
 
@@ -2352,10 +2450,6 @@ extension CoreDataManager {
                    // dispatchGroup.enter()
                     let ajwEntity = JointWorkViewModelCDEntity(entity: entityDescription, insertInto: context)
 
-                    // Convert properties
-                  //  aInputEntity.uuid = UUID()
-                    
-                    // Convert and add
               
                     convertToJointworkViewModelArr(addedJonintWorks.getJointWorkData(), context: context){ jwViewModelSet in
                         ajwEntity.jointWorkViewModelArr = jwViewModelSet

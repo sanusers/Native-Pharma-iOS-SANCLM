@@ -309,6 +309,7 @@
 		38EA3D172AFDED4C00DA7018 /* SessionInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */; };
 		38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */; };
 		38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38EBB8902A6BD447008E007C /* QuickLinkCell.xib */; };
+		38EC46B72BE654D100754234 /* DCRcallsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EC46B62BE654D100754234 /* DCRcallsHandler.swift */; };
 		38EC6FB22B6242D10065A707 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EC6FB12B6242D10065A707 /* Media.swift */; };
 		38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EDEA792A6A5F16000E857C /* MainVC.swift */; };
 		38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */; };
@@ -689,6 +690,7 @@
 		38EA3D152AFDED4C00DA7018 /* SessionInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SessionInfoTVC.xib; sourceTree = "<group>"; };
 		38EBB88E2A6BD43B008E007C /* QuickLinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLinkCell.swift; sourceTree = "<group>"; };
 		38EBB8902A6BD447008E007C /* QuickLinkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickLinkCell.xib; sourceTree = "<group>"; };
+		38EC46B62BE654D100754234 /* DCRcallsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRcallsHandler.swift; sourceTree = "<group>"; };
 		38EC6FB12B6242D10065A707 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		38EDEA792A6A5F16000E857C /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		38EF48932B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MasterSyncVC + SlideEx.swift"; sourceTree = "<group>"; };
@@ -1099,6 +1101,7 @@
 				38E3DF702B8F2DBA0093DF4B /* Viewcontroller + Ex.swift */,
 				38CACEAB2BA96464006BFA62 /* BackgroundTaskManager.swift */,
 				386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */,
+				38EC46B62BE654D100754234 /* DCRcallsHandler.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1964,6 +1967,7 @@
 				38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */,
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
 				38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */,
+				38EC46B72BE654D100754234 /* DCRcallsHandler.swift in Sources */,
 				38D528AA2A9A0AE600AD3F78 /* NearMeVC.swift in Sources */,
 				38CCDE7B2A5442E5007AA5FF /* JointWork + Extension.swift in Sources */,
 				38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */,

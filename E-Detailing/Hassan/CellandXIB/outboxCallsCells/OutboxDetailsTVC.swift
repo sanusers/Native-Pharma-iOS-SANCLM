@@ -9,6 +9,43 @@
 
 import UIKit
 
+protocol OutboxDetailsTVCDelegate: AnyObject {
+    func didTapoutboxEdit(dcrCall: TodayCallsModel)
+}
+
+
+
+extension OutboxDetailsTVC: PopOverVCDelegate {
+    
+    func logoutAction() {
+        print("Log out")
+    }
+    
+    func changePasswordAction() {
+        print("Change password")
+    }
+    
+    func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
+        if index == 0 {
+         //   let modal = self.tempArrofPlan?[SelectedArrIndex]
+          //  self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: modal?.isForWeekoff, isforHoliday: false)
+            let model = self.todayCallsModel[SelectedArrIndex]
+            self.delegate?.didTapoutboxEdit(dcrCall: model)
+            
+            
+        }
+        
+        else if index == 1 {
+         //   let modal = self.tempArrofPlan?[SelectedArrIndex]
+         //   self.toRemoveSession(modal ?? SessionDetailsArr())
+           // LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
+           // self.toToggleApprovalState(false)
+        }
+    }
+    
+    
+}
+
 extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.todayCallsModel.count
@@ -18,6 +55,15 @@ extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSourc
         let cell: CalldetailsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CalldetailsCVC", for: indexPath) as! CalldetailsCVC
         let model = self.todayCallsModel[indexPath.row]
         cell.topopulateCell(model)
+        
+        cell.optionsHolderView.addTap {
+            print("Tapped -->")
+            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsIV, onframe: CGRect(), pagetype: .calls)
+             vc.delegate = self
+             vc.selectedIndex = indexPath.row
+            self.viewController?.navigationController?.present(vc, animated: true)
+        }
+        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -43,6 +89,8 @@ class OutboxDetailsTVC: UITableViewCell {
     
     var callsExpandState: cellState = .callsNotExpanded
     var eventExpandState: cellState = .eventNotExpanded
+    var viewController: UIViewController?
+    var delegate: OutboxDetailsTVCDelegate?
     var todayCallsModel: [TodayCallsModel] = []  {
         didSet {
             let intime = self.todayCallsModel.first?.vstTime ?? ""

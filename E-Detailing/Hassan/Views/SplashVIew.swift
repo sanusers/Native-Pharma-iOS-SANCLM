@@ -12,23 +12,33 @@ import CoreLocation
 
 extension SplashView: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status != previousAuthorizationStatus {
+       // if status != previousAuthorizationStatus {
             switch status {
             case .authorizedWhenInUse, .authorizedAlways:
                 print("Location services enabled")
                 // Perform your actions here or notify the user
+              
+                    timeZoneChanged()
+                
             case .denied, .restricted:
                 print("Location services disabled")
-                // setupNoGPSalert()
+               
+                setupNoGPSalert()
+                Pipelines.shared.requestAuth() {_ in}
             case .notDetermined:
                 print("Location services not determined")
+                setupNoGPSalert()
+                Pipelines.shared.requestAuth() {_ in}
             @unknown default:
                 break
             }
             previousAuthorizationStatus = status
-        }
+      //  }
         
         print(previousAuthorizationStatus)
+        
+
+
     }
 }
 
@@ -47,10 +57,15 @@ class SplashView: BaseView{
         super.didLoad(baseVC: baseVC)
         self.splashVC = baseVC as? SplashVC
         setupUI()
-        //initView()
-        //locationManager.delegate = self
+        locationManager.delegate = self
         checkReachability()
         addObserverForTimeZoneChange()
+        
+        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+            setUIfortimeZoneChanges()
+        } else {
+            onSetRootViewController()
+        }
         
     }
     
@@ -61,7 +76,7 @@ class SplashView: BaseView{
         }
     
     func setUIfortimeZoneChanges() {
-       lblMenuTitle.text = "OOPS! you have accidentally changed time zone. Set the time zone to update automatically."
+       lblMenuTitle.text = "OOPS! you have accidentally changed time zone. Update the time zone to set automatically."
        btnLogout.isHidden = false
        
     }
@@ -69,7 +84,7 @@ class SplashView: BaseView{
     
     func setupNoGPSalert() {
   
-        lblMenuTitle.text = "App requires user location. please enable location services"
+        lblMenuTitle.text = "Location permission reqired to validate timezone."
         btnLogout.isHidden = false
     }
     
@@ -93,14 +108,21 @@ class SplashView: BaseView{
                     if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
                         
                         self.toCreateToast("Please check your internet connection.")
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                       LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                         self.setupNoNetworkAlert()
+//                        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+//                            self.setupNoNetworkAlert()
+//                        } else {
+//                            self.onSetRootViewController()
+//                        }
+                        
+                    
                         
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
                         self.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                        self.timeZoneChanged()
+                       self.timeZoneChanged()
                     }
                 }
             }
@@ -166,15 +188,17 @@ class SplashView: BaseView{
     
     @objc func timeZoneChanged() {
         //var isManualTimeZoneChange = false
+        
         Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
             guard let nonNilcoordinates = coordinates else {
-                welf.toSetupAlert(text: "Location permission reqired.")
+               // welf.toSetupAlert(text: "Location permission reqired to validate timezone.")
                 welf.setupNoGPSalert()
                 return}
             
             let location = CLLocation(latitude: nonNilcoordinates.latitude ?? Double(), longitude: nonNilcoordinates.longitude ?? Double())
-           // let now = location.timestamp
+          
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isTimeZoneChanged, value: true)
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                 CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
                     guard let placemark = placemarks?.first else {
@@ -186,13 +210,13 @@ class SplashView: BaseView{
                         let actualTimeZone = timeZone.identifier
                         var localTimeZoneIdentifier: String { return TimeZone.current.identifier }
                         if actualTimeZone == localTimeZoneIdentifier {
-                            welf.onSetRootViewController()
                             LocalStorage.shared.setBool(LocalStorage.LocalValue.isTimeZoneChanged, value: false)
                             welf.lblMenuTitle.text = "Welcome back!"
                             welf.btnLogout.isHidden = true
+                            welf.onSetRootViewController()
                             return
                         } else {
-                            welf.toSetupAlert(text: "Oops! Time zone changed. Changing time zone can affect app behavior.")
+                           // welf.toSetupAlert(text: "Oops! Time zone changed. Changing time zone can affect app behavior.")
                             LocalStorage.shared.setBool(LocalStorage.LocalValue.isTimeZoneChanged, value: true)
                             welf.setUIfortimeZoneChanges()
                         }
@@ -203,10 +227,11 @@ class SplashView: BaseView{
                     }
                 }
             } else {
-             
+                if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
                     welf.setupNoNetworkAlert()
-         
-              
+                } else {
+                    welf.onSetRootViewController()
+                }
             }
         }
         
