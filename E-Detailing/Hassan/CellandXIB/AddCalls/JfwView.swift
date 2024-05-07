@@ -431,7 +431,7 @@ class JfwView: UIView {
         jointWorkTableView.register(UINib(nibName: "JointWorkTableViewCell", bundle: nil), forCellReuseIdentifier: "JointWorkTableViewCell")
         
         if let overallFeedback = self.overallFeedback {
-            selectedfeedbackLbl.text = overallFeedback.name == "" ? "Select Overall Feedback" :  overallFeedback.name
+            selectedfeedbackLbl.text = overallFeedback.name == "" || overallFeedback.name == nil  ? "Select Overall Feedback" :  overallFeedback.name
         }
         
         if let pobValue = self.pobValue {

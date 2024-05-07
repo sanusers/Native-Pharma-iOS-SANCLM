@@ -195,11 +195,11 @@ extension AddCallinfoView {
         chemistObj = nil
         lblSeclectedDCRName.text = "Select Chemist Name"
         lblSelectedProductName.text = "Select Product Name"
-        self.productQtyTF.text = ""
-        self.productQtyTF.placeholder = "Enter Qty"
+        //self.productQtyTF.placeholder = "Enter Qty"
+        self.productQtyTF.text = "1"
         self.rateLbl.text = ""
         self.valuelbl.text = ""
-        self.productQty = "1"
+ 
         self.loadedContentsTable.isHidden = false
         self.viewnoRCPA.isHidden = true
     }
@@ -300,7 +300,7 @@ extension AddCallinfoView {
             }
             
 
-            self.additionalCallListViewModel.addAdditionalCallViewModel(AdditionalCallViewModel(additionalCall: additionalCallValue.Object as! DoctorFencing, isView: false))
+            self.additionalCallListViewModel.addAdditionalCallViewModel(AdditionalCallViewModel(additionalCall: additionalCallValue.Object as? DoctorFencing, isView: false))
             self.loadedContentsTable.reloadData()
         }
     }
@@ -1101,7 +1101,7 @@ class AddCallinfoView : BaseView {
           
         case .detailed:
             setupSearchTF()
-            didClose()
+            segmentsdidClose()
             jfwExceptionView.isHidden = true
             viewnoRCPA.isHidden = true
             rcpaEntryView.isHidden = true
@@ -1113,7 +1113,7 @@ class AddCallinfoView : BaseView {
             detailedInfoAction()
         case .products:
             setupSearchTF()
-            didClose()
+            segmentsdidClose()
             detailedSlideInfoView?.removeFromSuperview()
            
             jfwExceptionView.isHidden = false
@@ -1127,7 +1127,7 @@ class AddCallinfoView : BaseView {
             toloadContentsTable()
         case .inputs:
             setupSearchTF()
-            didClose()
+            segmentsdidClose()
             detailedSlideInfoView?.removeFromSuperview()
             
             jfwExceptionView.isHidden = false
@@ -1140,7 +1140,7 @@ class AddCallinfoView : BaseView {
             toloadContentsTable()
         case .additionalCalls:
             setupSearchTF()
-            didClose()
+            segmentsdidClose()
             detailedSlideInfoView?.removeFromSuperview()
             jfwExceptionView.isHidden = false
             rcpaEntryView.isHidden = true
@@ -1152,7 +1152,7 @@ class AddCallinfoView : BaseView {
             toloadContentsTable()
         case .rcppa:
             setupSearchTF()
-            didClose()
+            segmentsdidClose()
             detailedSlideInfoView?.removeFromSuperview()
             detailedSlideInfoView?.alpha = 0
             jfwExceptionView.isHidden = false
@@ -1464,7 +1464,12 @@ class AddCallinfoView : BaseView {
         
         
         self.addSubview(customerCheckoutView ?? CustomerCheckoutView())
-        
+        // Ensure the backgroundView is behind the customerCheckoutView
+        if let index = self.subviews.firstIndex(of: customerCheckoutView ?? UIView()) {
+            self.insertSubview(backgroundView, at: index - 1)
+        } else {
+            self.insertSubview(backgroundView, at: 0)
+        }
         
     }
     
@@ -1506,23 +1511,48 @@ class AddCallinfoView : BaseView {
         self.addSubview(tpDeviateReasonView ?? TPdeviateReasonView())
     }
     
+    func segmentsdidClose() {
+        self.backgroundView.isHidden = true
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+                
+                
+            case jfwView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+
+            case tpDeviateReasonView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+
+            case customerCheckoutView:
+                 aAddedView.removeFromSuperview()
+                 aAddedView.alpha = 0
+                
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+            }
+            
+        }
+    }
+    
+    
     func didClose() {
         self.backgroundView.isHidden = true
         self.subviews.forEach { aAddedView in
             switch aAddedView {
-            case jfwView:
-                aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0
-//            case detailedSlideInfoView:
-//                aAddedView.removeFromSuperview()
-//                aAddedView.alpha = 0
+                
             case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-                
+
             case customerCheckoutView:
                  aAddedView.removeFromSuperview()
                  aAddedView.alpha = 0
+                
                 
             default:
                 aAddedView.isUserInteractionEnabled = true
@@ -1555,14 +1585,6 @@ class AddCallinfoView : BaseView {
         
         detailedSlideInfoView = self.addCallinfoVC.loadCustomView(nibname: XIBs.detailedSlideInfoView) as? DetailedSlideInfoView
         detailedSlideInfoView?.delegate = self
-      //  jfwView?.rootVC = self.addCallinfoVC
-      //  jfwView?.pobValue = self.pobValue ?? nil
-       // jfwView?.overallFeedback = self.overallFeedback ?? nil
-      //  jfwView?.overallRemark = self.overallRemarks ?? nil
-       // jfwView?.eventCaptureListViewModel = self.eventCaptureListViewModel
-       // jfwView?.jointWorkSelectedListViewModel = self.jointWorkSelectedListViewModel
-       // jfwView?.delegate = self
-       // jfwView?.dcrCall = self.addCallinfoVC.dcrCall
         detailedSlideInfoView?.setupui()
         self.addSubview(detailedSlideInfoView ?? DetailedSlideInfoView())
         
@@ -1831,20 +1853,11 @@ class AddCallinfoView : BaseView {
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                 Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
                     guard let welf = self else {return}
-//                    let dateFormatter = DateFormatter()
-//                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//                    
-//                    let currentDate = Date()
-//                    let dateString = dateFormatter.string(from: currentDate)
-//                    
-//                    _ = dateString
-                    
+
                     welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
                     welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
                     welf.addCallinfoVC.dcrCall.customerCheckOutAddress = address ?? "No address found"
                     let dcrCall = welf.addCallinfoVC.dcrCall
-                    
-                    
                     welf.checkoutAction(dcrCall: dcrCall)
                     
                     
@@ -1956,12 +1969,33 @@ extension AddCallinfoView : addedSubViewsDelegate {
     }
     
     func showAlert() {
-        print("Yet to implement")
+        showAlertToEnableLocation()
     }
     
     
     func didUpdate() {
         print("Yet to implement")
+    }
+    
+    func showAlertToEnableLocation() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings to submit call.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+        commonAlert.addAdditionalCancelAction {
+            print("yes action")
+            self.redirectToSettings()
+            
+        }
+    }
+    
+    func redirectToSettings() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL)
+        }
     }
 
 }

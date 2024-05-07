@@ -10,7 +10,7 @@
 import Foundation
 import UIKit
 import MapKit
-
+import GoogleMaps
 
 
 
@@ -36,12 +36,14 @@ class Pipelines  {
     static let shared = Pipelines()
     
     let appDelegate =  UIApplication.shared.delegate as! AppDelegate
-    
+    let geocoder = GMSGeocoder()
    
     var window: UIWindow?
     
     func doLogout() {
         window = appDelegate.window
+        //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserLoggedIn)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
         self.window?.rootViewController = UINavigationController.init(rootViewController: LoginVC.initWithStory())
     }
     
@@ -188,17 +190,79 @@ class Pipelines  {
     }
 
     
-//    func toGroupSlides(mastersyncVM: MasterSyncVM, completion: @escaping () -> ()) {
-//        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) {
-//  
-//            mastersyncVM.toGroupSlidesBrandWise() { isgrouped in
-//            
-//                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesGrouped, value: true)
-//                completion()
-//        }
-//        } else {
-//            completion()
-//        }
-//    }
+//    func getAddressString(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
+//
+//         let geoCoder = CLGeocoder()
+//        let location = CLLocation(latitude: latitude , longitude: longitude )
+//
+//         geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+//
+//             var placeMark: CLPlacemark!
+//             placeMark = placemarks?[0]
+//             completion(self.displayLocationInfo(placemark: placeMark))
+//
+//         })
+//     }
+    
+    
+    func displayLocationInfo(placemark: CLPlacemark?) -> String    {
+
+          var locality =  ""
+          var postalCode =  ""
+          var administrativeArea = ""
+          var country = ""
+          var sublocality = ""
+          var throughfare = ""
+
+          var name = ""
+
+          if let containsPlacemark = placemark {
+              //stop updating location to save battery life
+              //            locationManager.stopUpdatingLocation()
+              locality = (containsPlacemark.locality != nil) ? containsPlacemark.locality! : ""
+              postalCode = (containsPlacemark.postalCode != nil) ? containsPlacemark.postalCode! : ""
+              administrativeArea = (containsPlacemark.administrativeArea != nil) ? containsPlacemark.administrativeArea! : ""
+              country = (containsPlacemark.country != nil) ? containsPlacemark.country! : ""
+              sublocality = (containsPlacemark.subLocality != nil) ? containsPlacemark.subLocality! : ""
+              throughfare = (containsPlacemark.thoroughfare != nil) ? containsPlacemark.thoroughfare! : ""
+
+          }
+
+          var adr: String  = ""
+
+          if throughfare != "" {
+
+              adr = throughfare + ", "
+
+          }
+          if sublocality != "" {
+
+              adr = adr + sublocality + ", "
+
+          }
+          if locality != "" {
+
+              adr = adr + locality + ", "
+
+          }
+          if administrativeArea != "" {
+
+              adr = adr + administrativeArea + ", "
+
+          }
+          if postalCode != "" {
+
+              adr = adr + postalCode + ", "
+
+          }
+          if country != "" {
+
+              adr = adr + country
+          }
+
+          print(adr)
+
+          return adr
+      }
     
 }

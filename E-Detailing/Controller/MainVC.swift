@@ -2253,8 +2253,8 @@ extension MainVC {
         
         self.outboxCountVIew.isHidden = true
         self.outBoxDataArr?.removeAll()
-        LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
-
+        //LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
+        CoreDataManager.shared.removeAllOutboxParams()
         CoreDataManager.shared.removeUnsyncedHomeData()
         
         toSeperateDCR(istoAppend: false)
@@ -3571,67 +3571,49 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
             guard let welf = self else{return}
             userAddress = address
-
-            let paramData = LocalStorage.shared.getData(key: .outboxParams)
-            var localParamArr = [String: [[String: Any]]]()
-            do {
-                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-                dump(localParamArr)
-            } catch {
-                //  self.toCreateToast("unable to retrive")
-                completion(false)
-            }
-            
-            var specificDateParams : [[String: Any]] = [[:]]
             
             
-            if date.isEmpty {
-                localParamArr.forEach { key, value in
-                    
-                    specificDateParams = value
-                    
-                    
-                    for index in 0..<specificDateParams.count {
-                        var paramData = specificDateParams[index]
-                        
-                        // Check if "Entry_location" key exists
-                        if let _ = paramData["Entry_location"] as? String {
-                            // Update the value of "Entry_location" key
-                            paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-                        }
-                        
-                        // Check if "address" key exists
-                        if let _ = paramData["address"] as? String {
-                            // Update the value of "address" key
-                            paramData["address"] = userAddress ?? ""
-                        }
-                        
-                        // Update the dictionary in specificDateParams array
-                        specificDateParams[index] = paramData
-                    }
-                    
-                    
+            CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+                guard let aoutboxCDM = outboxCDMs.first else {
+                    completion(false)
+                    return}
+                
+                let coreparamDatum = aoutboxCDM.unSyncedParams
+                
+                guard let paramData = coreparamDatum else {
+                    completion(false)
+                    return}
+                
+                
+                var localParamArr = [String: [[String: Any]]]()
+                do {
+                    localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+                    dump(localParamArr)
+                } catch {
+                    //  self.toCreateToast("unable to retrive")
+                    completion(false)
                 }
-            } else {
-                if localParamArr.isEmpty {
-                    completion(true)
-                }
-                localParamArr.forEach { key, value in
-                    if key == date {
-                        dump(value)
+                
+                var specificDateParams : [[String: Any]] = [[:]]
+                
+                
+                if date.isEmpty {
+                    localParamArr.forEach { key, value in
+                        
                         specificDateParams = value
-
+                        
+                        
                         for index in 0..<specificDateParams.count {
                             var paramData = specificDateParams[index]
                             
                             // Check if "Entry_location" key exists
-                            if paramData["Entry_location"] is String {
+                            if let _ = paramData["Entry_location"] as? String {
                                 // Update the value of "Entry_location" key
                                 paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
                             }
                             
                             // Check if "address" key exists
-                            if paramData["address"] is String {
+                            if let _ = paramData["address"] as? String {
                                 // Update the value of "address" key
                                 paramData["address"] = userAddress ?? ""
                             }
@@ -3640,22 +3622,60 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                             specificDateParams[index] = paramData
                         }
                         
+                        
                     }
-                }
-            }
-            
-            print("specificDateParams has \(specificDateParams.count) values")
-            if !localParamArr.isEmpty {
-                welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
-                    if isCompleted {
+                } else {
+                    if localParamArr.isEmpty {
                         completion(true)
                     }
+                    localParamArr.forEach { key, value in
+                        if key == date {
+                            dump(value)
+                            specificDateParams = value
+
+                            for index in 0..<specificDateParams.count {
+                                var paramData = specificDateParams[index]
+                                
+                                // Check if "Entry_location" key exists
+                                if paramData["Entry_location"] is String {
+                                    // Update the value of "Entry_location" key
+                                    paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+                                }
+                                
+                                // Check if "address" key exists
+                                if paramData["address"] is String {
+                                    // Update the value of "address" key
+                                    paramData["address"] = userAddress ?? ""
+                                }
+                                
+                                // Update the dictionary in specificDateParams array
+                                specificDateParams[index] = paramData
+                            }
+                            
+                        }
+                    }
                 }
-            } else {
-           
-                completion(true)
+                
+                print("specificDateParams has \(specificDateParams.count) values")
+                if !localParamArr.isEmpty {
+                
+                    welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
+                      
+                        if isCompleted {
+                         
+                            completion(true)
+                        }
+                    }
+                } else {
+               
+                    completion(true)
+                }
+                
             }
             
+
+           // let paramData = LocalStorage.shared.getData(key: .outboxParams)
+
             
             }
         
@@ -3713,16 +3733,21 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (callstatus) -> Void) {
       //  Shared.instance.showLoaderInWindow()
+        Shared.instance.showLoaderInWindow()
         userststisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
+            Shared.instance.removeLoaderInWindow()
             switch result {
+              
             case .success(let response):
                 print(response)
             
                 dump(response)
                 if response.isSuccess ?? false {
                     let callStatus = callstatus(status: response.msg ?? "", isCallSubmitted: response.isSuccess ?? false)
-                    self.toRemoveOutboxandDefaultParams(param: paramData)
-                    completion(callStatus)
+                    self.toRemoveOutboxandDefaultParams(param: paramData) { isRemoved in
+                        completion(callStatus)
+                    }
+                  
                 } else {
                     let callStatus = callstatus(status: response.msg ?? "", isCallSubmitted: response.isSuccess ?? false)
                     self.toCreateToast(response.msg ?? "Error uploading data try again later.")
@@ -3800,8 +3825,161 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
          
  
     }
+//    
+//    func toRemoveOutboxandDefaultParams(param: JSON, completion: @escaping (Bool) -> Void) {
+//
+//        //to remove object from Local array and core data
+//        
+//        let filteredValues =  self.outBoxDataArr?.filter({ outBoxCallModel in
+//            outBoxCallModel.custCode != param["CustCode"] as! String
+//        })
+//        
+//        self.outBoxDataArr = filteredValues
+//        
+//        
+//        unsyncedhomeDataArr.removeAll { aHomeData in
+//            return aHomeData.custCode == param["CustCode"] as? String
+//        }
+//        let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
+//
+//        let context = DBManager.shared.managedContext()
+//
+//        let fetchRequest: NSFetchRequest<UnsyncedHomeData> = UnsyncedHomeData.fetchRequest()
+//        fetchRequest.predicate = NSPredicate(format: "custCode == %@", identifier ?? "")
+//
+//        do {
+//            let results = try context.fetch(fetchRequest)
+//            if let existingObject = results.first {
+//                
+//                context.delete(existingObject)
+//
+//                DBManager.shared.saveContext()
+//            } else {
+//                // Object not found, handle accordingly
+//            }
+//        } catch {
+//            // Handle fetch error
+//        }
+//        
+//        
+//        //to remove values from User defaults values
+//        CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+//            guard let aoutboxCDM = outboxCDMs.first else {
+//                completion(false)
+//                return}
+//            
+//            let coreparamDatum = aoutboxCDM.unSyncedParams
+//             
+//            guard let paramData = coreparamDatum else {
+//                completion(false)
+//                return}
+//            
+//          
+//            
+//            
+//            var localParamArr = [String: [[String: Any]]]()
+//            do {
+//                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+//                dump(localParamArr)
+//            } catch {
+//                self.toCreateToast("unable to retrive")
+//            }
+//            
+//            let custCodeToRemove = param["CustCode"] as! String
+//
+//            // Iterate through the dictionary and filter out elements with the specified CustCode
+//            localParamArr = localParamArr.mapValues { callsArray in
+//                return callsArray.filter { call in
+//                    if let custCode = call["CustCode"] as? String {
+//                        if custCode == custCodeToRemove {
+//                            print("Removing element with CustCode: \(custCode)")
+//                            return false
+//                        }
+//                    }
+//                    return true
+//                }
+//            }
+//            // Remove entries where the filtered array is empty
+//            localParamArr = localParamArr.filter { _, callsArray in
+//                return !callsArray.isEmpty
+//            }
+//            
+//            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+//            
+//          
+//            if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
+//                let OutBoxParamCDModel = OutBoxParam(entity: entityDescription, insertInto: context)
+//                
+//                OutBoxParamCDModel.unSyncedParams = jsonDatum
+//                // Save to Core Data
+//                do {
+//                    try context.save()
+//                    updateSections(custCodeToRemove: custCodeToRemove)
+//                    completion(true)
+//                } catch {
+//                    print("Failed to save to Core Data: \(error)")
+//                    completion(false)
+//              
+//                }
+//                
+//            }
+//        }
+//
+//
+//        
+//    }
     
-    func toRemoveOutboxandDefaultParams(param: JSON) {
+    func updateSections(custCodeToRemove: String) {
+        // Create a new array with modified sections
+        let updatedSections = obj_sections.map { section -> Section in
+            var updatedSection = section
+
+            // Filter items in the section
+            updatedSection.items = section.items.filter { call in
+                // Assuming custCode is not an optional type
+                return call.custCode != custCodeToRemove
+            }
+
+            // Keep the section if it still has items after filtering
+            return updatedSection
+        }
+
+        // Assign the updated array back to obj_sections
+        obj_sections = updatedSections.filter({ section in
+            !section.items.isEmpty
+        })
+
+        print(obj_sections)
+    }
+    
+    func toSaveaParamData(jsonDatum: Data, completion: @escaping () -> ()) {
+        
+
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
+            let OutBoxParamCDModel = OutBoxParam(entity: entityDescription, insertInto: context)
+            
+            
+            OutBoxParamCDModel.unSyncedParams = jsonDatum
+            
+            // Save to Core Data
+            do {
+                try context.save()
+                completion()
+           
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                
+             
+            }
+            
+        }
+        
+ 
+        
+    }
+    
+    
+    func toRemoveOutboxandDefaultParams(param: JSON, completion: @escaping (Bool) -> ()) {
 
         //to remove object from Local array and core data
         
@@ -3836,80 +4014,82 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             // Handle fetch error
         }
         
-        
-        //to remove values from User defaults values
-        
-        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
+
+       // let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
         
         
-        var localParamArr = [String: [[String: Any]]]()
-        do {
-            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-            dump(localParamArr)
-        } catch {
-            self.toCreateToast("unable to retrive")
-        }
-        
-        
-        let custCodeToRemove = param["CustCode"] as! String
-        
-        // Iterate through the dictionary and filter out elements with the specified CustCode
-        localParamArr = localParamArr.mapValues { callsArray in
-            return callsArray.filter { call in
-                if let custCode = call["CustCode"] as? String {
-                    if custCode == custCodeToRemove {
-                        print("Removing element with CustCode: \(custCode)")
-                        return false
-                    }
-                }
-                return true
+        CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+            guard let aoutboxCDM = outboxCDMs.first else {
+                completion(false)
+                return
             }
+            
+            let coreparamDatum = aoutboxCDM.unSyncedParams
+            
+            guard let paramData = coreparamDatum else {
+                completion(false)
+                return}
+            var localParamArr = [String: [[String: Any]]]()
+            do {
+                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+                dump(localParamArr)
+            } catch {
+                self.toCreateToast("unable to retrive")
+            }
+            
+            
+            let custCodeToRemove = param["CustCode"] as! String
+            
+            // Iterate through the dictionary and filter out elements with the specified CustCode
+            localParamArr = localParamArr.mapValues { callsArray in
+                return callsArray.filter { call in
+                    if let custCode = call["CustCode"] as? String {
+                        if custCode == custCodeToRemove {
+                            print("Removing element with CustCode: \(custCode)")
+                            return false
+                        }
+                    }
+                    return true
+                }
+            }
+            // Remove entries where the filtered array is empty
+            localParamArr = localParamArr.filter { _, callsArray in
+                return !callsArray.isEmpty
+            }
+            
+            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+            
+
+            toSaveaParamData(jsonDatum: jsonDatum) { }
+            // Create a new array with modified sections
+            let updatedSections = obj_sections.map { section -> Section in
+                var updatedSection = section
+                
+                // Filter items in the section
+                updatedSection.items = section.items.filter { call in
+                    // Assuming custCode is not an optional type
+                    return call.custCode != custCodeToRemove
+                }
+                
+                // Keep the section if it still has items after filtering
+                return updatedSection
+            }
+            // Assign the updated array back to obj_sections
+            obj_sections = updatedSections.filter({ section in
+                !section.items.isEmpty
+            })
+            
+            print(obj_sections)
+            
+            self.dcrcallsAdded()
+            completion(true)
         }
-        // Remove entries where the filtered array is empty
-        localParamArr = localParamArr.filter { _, callsArray in
-            return !callsArray.isEmpty
-        }
-        
-        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
         
 
         
-        LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
         
+
         
-        
-        // Create a new array with modified sections
-        let updatedSections = obj_sections.map { section -> Section in
-            var updatedSection = section
-            
-            // Filter items in the section
-            updatedSection.items = section.items.filter { call in
-                // Assuming custCode is not an optional type
-                return call.custCode != custCodeToRemove
-            }
-            
-            // Keep the section if it still has items after filtering
-            return updatedSection
-        }
-        
-        
-        
-        
-        
-        // Assign the updated array back to obj_sections
-        obj_sections = updatedSections.filter({ section in
-            !section.items.isEmpty
-        })
-        
-        print(obj_sections)
-        
-        self.dcrcallsAdded()
-        
-//        DispatchQueue.main.async {
-//           // self.toSetParams()
-//            self.toLoadOutboxTable()
-//        }
-//        
         
     }
     
@@ -4486,13 +4666,16 @@ extension MainVC : UIViewControllerTransitioningDelegate{
 extension MainVC : outboxCollapseTVCDelegate {
     func didTapRefresh(_ refreshIndex: Int) {
         
-      //  let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
+        let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
         //  obj_sections[section].isLoading = true
-       // if isConnected {
-            self.toretryDCRupload(date: obj_sections[refreshIndex].date) {_ in }
-       // } else {
-          //  self.toCreateToast("Please connect to internet and try again later.")
-      //  }
+        if isConnected {
+            self.toretryDCRupload(date: obj_sections[refreshIndex].date) {_ in
+            
+                self.toCreateToast("Sync completed")
+            }
+        } else {
+            self.toCreateToast("Please connect to internet and try again later.")
+        }
 
     }
     
@@ -4603,10 +4786,10 @@ extension MainVC: PopOverVCDelegate {
             
          
             toSetupDeleteAlert(index: SelectedArrIndex)
-            
-                
-         //  crm.saneforce.in/iOSServer/db_module.php?axn=delete/dcr
-            //{"sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","amc":"GP4-1253","CusType":"1","sample_validation":"0","input_validation":"0"}
+
+        } else {
+            let aCall = self.todayCallsModel?[SelectedArrIndex] ?? TodayCallsModel()
+            didTapoutboxEdit(dcrCall: aCall)
         }
     }
     
@@ -4634,10 +4817,26 @@ extension MainVC: PopOverVCDelegate {
         }
     }
     
+    func removeAllAddedCall(id: String) {
+        let fetchRequest: NSFetchRequest<AddedDCRCall> = AddedDCRCall.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "addedCallID == %@", id)
+
+        do {
+            let existingCalls = try context.fetch(fetchRequest)
+            for call in existingCalls {
+                context.delete(call)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting existing calls: \(error)")
+        }
+    }
+    
     func toDeleteAddedDCRCall(index: Int) {
         let model: TodayCallsModel = self.todayCallsModel?[index] ?? TodayCallsModel()
-        
         //  {"sfcode":"MGR0941","division_code":"63,","Rsf":"MR5990","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","amc":"DP3-1344","CusType":"1","sample_validation":"0","input_validation":"0"}
+        Shared.instance.showLoaderInWindow()
         var param = [String: Any]()
         param["sfcode"] = appSetups.sfCode
         param["division_code"] = appSetups.divisionCode
@@ -4659,19 +4858,21 @@ extension MainVC: PopOverVCDelegate {
         print(param)
         
         self.userststisticsVM?.deleteAddedcalls(params: toSendData, api: .deleteCall, paramData: param) {result in
-            
+           
             switch result {
                 
             case .success(let response):
                 dump(response)
                 self.toCreateToast("Calls deleted Successfully")
+               // self.removeAllAddedCall(id: model.custCode)
                 self.toSetParams(isfromSyncCall: true) {
                     self.refreshDashboard {
-                        
+                        Shared.instance.removeLoaderInWindow()
                     }
                 }
             case .failure(let error):
                 self.toCreateToast(error.localizedDescription)
+                Shared.instance.removeLoaderInWindow()
             }
             
         }

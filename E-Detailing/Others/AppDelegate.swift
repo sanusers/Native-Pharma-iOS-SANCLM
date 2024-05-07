@@ -27,7 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSServices.provideAPIKey(GooglePlacesApiKey)
         addObserverForTimeZoneChange()
-        makeSplashView(isFirstTime: true)
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+            makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
+        } else {
+            makeSplashView(isFirstTime: true)
+        }
         IQKeyboardManager.shared.enable = true
         return true
     }
@@ -40,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
             self.makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
-        }
+        } 
     
     }
     
@@ -58,6 +62,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
+    func applicationSignificantTimeChange(_ application: UIApplication)  {
+        
+        NotificationCenter.default.post(name: UIApplication.significantTimeChangeNotification, object: nil)
+        
+    }
     
     func checkReachability() {
         network.isReachable() {  reachability in

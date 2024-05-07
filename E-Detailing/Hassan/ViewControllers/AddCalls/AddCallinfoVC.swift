@@ -15,10 +15,6 @@ class AddCallinfoVC: BaseViewController {
     var dcrCall : CallViewModel!
     var userStatisticsVM: UserStatisticsVM?
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var  latitude: Double?
-    var longitude: Double?
-    var address: String?
-    var outboxDatum: Data?
     var pobValue: String?
     var overallRemarks: String?
     var overallFeedback: Feedback?
@@ -28,6 +24,8 @@ class AddCallinfoVC: BaseViewController {
     var productSelectedListViewModel = ProductSelectedListViewModel()
     var additionalCallListViewModel = AdditionalCallsListViewModel()
     var inputSelectedListViewModel = InputSelectedListViewModel()
+    var outBoxDataArr : [TodayCallsModel]?
+    var unsyncedhomeDataArr = [UnsyncedHomeData]()
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
         let reportsVC : AddCallinfoVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.userStatisticsVM = viewmodel
@@ -65,13 +63,7 @@ class AddCallinfoVC: BaseViewController {
                 cusType = "4"
         }
         
-      //  var productData = [[String : Any]]()
-      //  var inputData = [[String : Any]]()
-       // var jointWorkData = [[String : Any]]()
-       // var additionalCallData = [[String : Any]]()
-       // var rcpaData = [[String : Any]]()
-        
-        
+
         let productValue = self.addCallinfoView.productSelectedListViewModel.productData()
         let inputValue = self.addCallinfoView.inputSelectedListViewModel.inputData()
         let jointWorkValue = self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
@@ -397,7 +389,6 @@ class AddCallinfoVC: BaseViewController {
      
         addedDCRCallsParam["sfcode"] = appsetup.sfCode ?? ""
         addedDCRCallsParam["Rsf"] =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        //appsetup.sfCode ?? ""
         addedDCRCallsParam["sf_type"] = "\(appsetup.sfType ?? 0)"
         addedDCRCallsParam["Designation"] = appsetup.dsName ?? ""
         addedDCRCallsParam["state_code"] = appsetup.stateCode ?? ""
@@ -437,99 +428,47 @@ class AddCallinfoVC: BaseViewController {
         }
         addedDCRCallsParam["sample_validation"] = "0"
         addedDCRCallsParam["input_validation"] = "0"
-       
 
-      //  Pipelines.shared.getAddressString(latitude: <#T##Double#>, longitude: <#T##Double#>, completion: <#T##(String?) -> Void#>)
-       // let param = ["data" : params.toString()]
-
-        Pipelines.shared.requestAuth() {[weak self] coordinates in
-            guard let welf = self else {return}
-            guard coordinates != nil else {
-                welf.showAlert()
-                return
-            }
-            
-            welf.latitude = coordinates?.latitude
-            welf.longitude = coordinates?.longitude
-            
-            addedDCRCallsParam["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-   
-            
-        
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-             
-                Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) {[weak self] address in
-                    guard let welf = self else {return}
-                    guard let fetchedAddress = address else {
-                        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-                        welf.outboxDatum = jsonDatum
-                        var toSendData = [String : Any]()
-                        toSendData["data"] = jsonDatum
-                        welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) {completion in
-                            welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
-                                welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-                            }
-                        }
-                        
-                        return
-                    }
-                
-                    welf.address = fetchedAddress
-                    addedDCRCallsParam["address"] =  fetchedAddress
+                    addedDCRCallsParam["address"] =  self.dcrCall.customerCheckOutAddress
                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-                    welf.outboxDatum = jsonDatum
                     var toSendData = [String : Any]()
                     toSendData["data"] = jsonDatum
-                    welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
-                        welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
-                            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-                        }
+                    postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
+                        self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                     }
-         
-                }
             } else {
-                welf.address = ""
                 addedDCRCallsParam["address"] =  ""
-                let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-                welf.outboxDatum = jsonDatum
-                var toSendData = [String : Any]()
-                toSendData["data"] = jsonDatum
-
-                welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, isConnectedToNW: false, outboxParam: jsonDatum) { completion in
-                    welf.toSaveaDCRcall(addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: jsonDatum) { isSaved in
+                toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
+                    guard let welf = self else {return}
+                    welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
+                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
                         welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                     }
+               
                 }
+              
             }
-
-            
-        }
-
-     
     }
     
     func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true, outboxParam: Data? = nil, completion: @escaping (Bool) -> ()) {
-        if !(isConnectedToNW ?? false)  {
-            toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) { isSaved in
-                self.saveCallsToDB(issussess: false, appsetup: self.appsetup, cusType: cusType, param: addedDCRCallsParam)
-                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-              
-            }
-            return
-        }
         Shared.instance.showLoaderInWindow()
-        callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) {[weak self] isPosted in
+        toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
             guard let welf = self else {return}
-            Shared.instance.removeLoaderInWindow()
-            Shared.instance.detailedSlides = []
-            if !isPosted {
-                welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam)
-            } else {
-                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+            welf.callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { isPosted in
+                Shared.instance.removeLoaderInWindow()
+                Shared.instance.detailedSlides = []
+                if !isPosted {
+                    welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
+                        completion(true)
+                    }
+                } else {
+                    NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                    completion(true)
+                }
+             
+                
             }
-            completion(true)
-            
         }
     }
     
@@ -569,8 +508,7 @@ class AddCallinfoVC: BaseViewController {
         }
     
     func callDCRScaeapi(toSendData: JSON, params: JSON, cusType: String, completion: @escaping (Bool) -> ()) {
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-           // Shared.instance.showLoaderInWindow()
+
             postDCTdata(toSendData, paramData: params) { result in
                 switch result {
                 case .success(let model):
@@ -588,90 +526,246 @@ class AddCallinfoVC: BaseViewController {
                 }
               
             }
-        } else {
-           completion(false)
+ 
+    }
+    
+    func postDCTdata(_ param: [String: Any], paramData: JSON, _ completion : @escaping (Result<DCRCallesponseModel, UserStatisticsError>) -> Void)  {
+       
+        userStatisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
+            completion(result)
         }
+    }
+    
+    func saveCallsToDB(issussess: Bool, appsetup: AppSetUp, cusType : String, param: [String: Any], completion: @escaping() -> ()) {
+
         
-        func postDCTdata(_ param: [String: Any], paramData: JSON, _ completion : @escaping (Result<DCRCallesponseModel, UserStatisticsError>) -> Void)  {
-           
-            userStatisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
-                completion(result)
+        if !issussess {
+           // saveParamoutboxParamtoDefaults(param: param)
+            saveParamoutboxParamtoCoreData(param: param, issussess: issussess, appsetup: appsetup, cusType: cusType) {isSaved in
+            
+                completion()
+            }
+        } else {
+            
+            touUdateOutboxandDefaultParams(param: param) {isSave in
+                
+                completion()
+            }
+            
+        }
+    }
+    
+    
+    func toSaveunsyncedHomeData(issussess: Bool, appsetup: AppSetUp, cusType : String) {
+        
+        
+        // Define the unique identifier
+        let custCode = dcrCall.code
+        
+        // Fetch existing UnsyncedHomeData entity with the same CustCode
+        let context = DBManager.shared.managedContext()
+        let fetchRequest: NSFetchRequest<UnsyncedHomeData> = UnsyncedHomeData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", custCode)
+
+        do {
+            let existingEntities = try context.fetch(fetchRequest)
+            
+            if let existingEntity = existingEntities.first {
+                existingEntity.custCode = dcrCall.code
+                existingEntity.custType = cusType
+                existingEntity.fw_Indicator = "F"
+                existingEntity.dcr_dt = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+                existingEntity.month_name = Date().toString(format: "MMMM")
+                existingEntity.mnth = Date().toString(format: "MM")
+                existingEntity.yr =  Date().toString(format: "YYYY")
+                existingEntity.custName = dcrCall.name
+                existingEntity.town_code = dcrCall.townCode
+                existingEntity.town_name = dcrCall.territory
+                existingEntity.dcr_flag = ""
+                existingEntity.sf_Code = appsetup.sfCode
+                existingEntity.trans_SlNo = ""
+                existingEntity.anslNo = ""
+                existingEntity.isDataSentToAPI = issussess == true ?  "1" : "0"
+                //dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
+                existingEntity.checkintime = dcrCall.dcrCheckinTime
+                existingEntity.checkoutTime = dcrCall.dcrCheckOutTime
+                
+                if  self.dcrCall.type == .chemist {
+                    existingEntity.custType = "2"
+                  }
+                  if  self.dcrCall.type == .stockist {
+                      existingEntity.custType = "3"
+                    }
+                  if  self.dcrCall.type == .doctor {
+                      existingEntity.custType = "1"
+                    }
+                  if  self.dcrCall.type == .hospital {
+                      existingEntity.custType = "6"
+                    }
+                  if  self.dcrCall.type == .unlistedDoctor {
+                      existingEntity.custType = "4"
+                    }
+                  if  self.dcrCall.type == .cip
+                  {
+                      existingEntity.custType = "5"
+                    }
+                
+                DBManager.shared.saveContext()
+                return
+            }
+        } catch {
+            // Handle fetch error
+        }
+        var dbparam = [String: Any]()
+        dbparam["CustCode"] = dcrCall.code
+        dbparam["CustType"] = cusType
+        dbparam["FW_Indicator"] = "F"
+        dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        dbparam["month_name"] = Date().toString(format: "MMMM")
+        dbparam["Mnth"] = Date().toString(format: "MM")
+        dbparam["Yr"] =  Date().toString(format: "YYYY")
+        dbparam["CustName"] = dcrCall.name
+        dbparam["town_code"] = dcrCall.townCode
+        dbparam["town_name"] = dcrCall.territory
+        dbparam["Dcr_flag"] = ""
+        dbparam["SF_Code"] = appsetup.sfCode
+        dbparam["Trans_SlNo"] = ""
+        dbparam["AMSLNo"] = ""
+        dbparam["isDataSentToAPI"] = issussess == true ?  "1" : "0"
+        dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
+        dbparam["checkinTime"] = dcrCall.dcrCheckinTime
+        dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
+        var dbparamArr = [[String: Any]]()
+        dbparamArr.append(dbparam)
+        let masterData = DBManager.shared.getMasterData()
+        var HomeDataSetupArray = [UnsyncedHomeData]()
+        for (index,homeData) in dbparamArr.enumerated() {
+
+     
+                let contextNew = DBManager.shared.managedContext()
+                let HomeDataEntity = NSEntityDescription.entity(forEntityName: "UnsyncedHomeData", in: contextNew)
+                let HomeDataSetupItem = UnsyncedHomeData(entity: HomeDataEntity!, insertInto: contextNew)
+            
+             if  self.dcrCall.type == .chemist {
+                 HomeDataSetupItem.custType = "2"
+               }
+               if  self.dcrCall.type == .stockist {
+                   HomeDataSetupItem.custType = "3"
+                 }
+               if  self.dcrCall.type == .doctor {
+                   HomeDataSetupItem.custType = "1"
+                 }
+               if  self.dcrCall.type == .hospital {
+                   HomeDataSetupItem.custType = "6"
+                 }
+               if  self.dcrCall.type == .unlistedDoctor {
+                   HomeDataSetupItem.custType = "4"
+                 }
+               if  self.dcrCall.type == .cip
+               {
+                   HomeDataSetupItem.custType = "5"
+                 }
+                HomeDataSetupItem.setValues(fromDictionary: homeData)
+                HomeDataSetupItem.index = Int16(index)
+                HomeDataSetupArray.append(HomeDataSetupItem)
+      
+        }
+
+        HomeDataSetupArray.forEach{ (type) in
+            masterData.addToUnsyncedHomeData(type)
+        }
+        DBManager.shared.saveContext()
+    }
+    
+    
+    func touUdateOutboxandDefaultParams(param: JSON, completion: @escaping (Bool) -> Void) {
+        CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+            guard let aoutboxCDM = outboxCDMs.first else {
+                completion(false)
+                return
+            }
+            
+            let coreparamDatum = aoutboxCDM.unSyncedParams
+            
+            guard let paramData = coreparamDatum else {
+                completion(false)
+                return
+            }
+            
+            var localParamArr = [String: [[String: Any]]]()
+            do {
+                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+                dump(localParamArr)
+            } catch {
+                self.toCreateToast("unable to retrive")
+            }
+            
+            let custCodeToUpdate = param["CustCode"] as! String
+            
+            // Iterate through the dictionary and update elements with the specified CustCode
+            localParamArr = localParamArr.mapValues { callsArray in
+                return callsArray.map { call in
+                    var updatedCall = call
+                    if let custCode = call["CustCode"] as? String, custCode == custCodeToUpdate {
+                        // Update properties of the call
+                        // For example:
+                        // updatedCall["PropertyKey"] = newValue
+                        updatedCall = param
+                    }
+                    return updatedCall
+                }
+            }
+            
+            // Convert the modified dictionary back to JSON data
+            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+            
+            // Update the existing OutBoxParam entity
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
+                let OutBoxParamCDModel = OutBoxParam(entity: entityDescription, insertInto: context)
+                
+                OutBoxParamCDModel.unSyncedParams = jsonDatum
+                
+                // Save to Core Data
+                do {
+                    try context.save()
+                    completion(true)
+                } catch {
+                    print("Failed to save to Core Data: \(error)")
+                    completion(false)
+                }
             }
         }
     }
     
-    func saveCallsToDB(issussess: Bool, appsetup: AppSetUp, cusType : String, param: [String: Any]) {
-                var dbparam = [String: Any]()
-                dbparam["CustCode"] = dcrCall.code
-                dbparam["CustType"] = cusType
-                dbparam["FW_Indicator"] = "F"
-                dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-                dbparam["month_name"] = Date().toString(format: "MMMM")
-                dbparam["Mnth"] = Date().toString(format: "MM")
-                dbparam["Yr"] =  Date().toString(format: "YYYY")
-                dbparam["CustName"] = dcrCall.name
-                dbparam["town_code"] = dcrCall.townCode
-                dbparam["town_name"] = dcrCall.territory
-                dbparam["Dcr_flag"] = ""
-                dbparam["SF_Code"] = appsetup.sfCode
-                dbparam["Trans_SlNo"] = ""
-                dbparam["AMSLNo"] = ""
-                dbparam["isDataSentToAPI"] = issussess == true ?  "1" : "0"
-                dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
-                dbparam["checkinTime"] = dcrCall.dcrCheckinTime
-                dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
-                var dbparamArr = [[String: Any]]()
-                dbparamArr.append(dbparam)
-                let masterData = DBManager.shared.getMasterData()
-                var HomeDataSetupArray = [UnsyncedHomeData]()
-                for (index,homeData) in dbparamArr.enumerated() {
+    
+    func toSaveaParamData(jsonDatum: Data, completion: @escaping () -> ()) {
         
+
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
+            let OutBoxParamCDModel = OutBoxParam(entity: entityDescription, insertInto: context)
+            
+            
+            OutBoxParamCDModel.unSyncedParams = jsonDatum
+            
+            // Save to Core Data
+            do {
+                try context.save()
+                completion()
+           
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                
              
-                        let contextNew = DBManager.shared.managedContext()
-                        let HomeDataEntity = NSEntityDescription.entity(forEntityName: "UnsyncedHomeData", in: contextNew)
-                        let HomeDataSetupItem = UnsyncedHomeData(entity: HomeDataEntity!, insertInto: contextNew)
-                    
-                     if  self.dcrCall.type == .chemist {
-                         HomeDataSetupItem.custType = "2"
-                       }
-                       if  self.dcrCall.type == .stockist {
-                           HomeDataSetupItem.custType = "3"
-                         }
-                       if  self.dcrCall.type == .doctor {
-                           HomeDataSetupItem.custType = "1"
-                         }
-                       if  self.dcrCall.type == .hospital {
-                           HomeDataSetupItem.custType = "6"
-                         }
-                       if  self.dcrCall.type == .unlistedDoctor {
-                           HomeDataSetupItem.custType = "4"
-                         }
-                       if  self.dcrCall.type == .cip
-                       {
-                           HomeDataSetupItem.custType = "5"
-                         }
-                        HomeDataSetupItem.setValues(fromDictionary: homeData)
-                        HomeDataSetupItem.index = Int16(index)
-                        HomeDataSetupArray.append(HomeDataSetupItem)
-              
-                }
-        
-                HomeDataSetupArray.forEach{ (type) in
-                    masterData.addToUnsyncedHomeData(type)
-                }
-                DBManager.shared.saveContext()
-        
-        if !issussess {
-            saveParamoutboxParamtoDefaults(param: param)
+            }
+            
         }
         
-        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-    
-
+ 
+        
     }
     
-    func saveParamoutboxParamtoDefaults(param: JSON) {
-        
+    
+    func saveParamoutboxParamtoCoreData(param: JSON, issussess: Bool, appsetup: AppSetUp, cusType : String, completion: @escaping (Bool)->Void){
         var callsByDay: [String: [[String: Any]]] = [:]
         
         let paramdate = param["vstTime"]
@@ -693,52 +787,153 @@ class AddCallinfoVC: BaseViewController {
             }
         }
         
+        
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: callsByDay)
-        
-        
-        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
-        if paramData.isEmpty {
-            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
-            return
-        }
-        var localParamArr = [String: [[String: Any]]]()
- 
-        do {
-            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-            dump(localParamArr)
-        } catch {
-            self.toCreateToast("unable to retrive")
-        }
-        
-        
-        var matchFound = Bool()
-        for (_, calls) in localParamArr {
-            for call in calls {
-                // if let vstTime = call["vstTime"] as? String,
-                if  let custCode = call["CustCode"] as? String,
-                    //   vstTime == param["vstTime"] as? String,
-                    custCode == param["CustCode"] as? String {
-                    // Match found, do something with the matching call
-                    matchFound = true
-                    print("Match found for CustCode: \(custCode)")
-                    // vstTime: \(vstTime),
-                    
+
+        CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+            guard let aoutboxCDM = outboxCDMs.first else {
+                CoreDataManager.shared.removeAllOutboxParams()
+                toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                toSaveaParamData(jsonDatum: jsonDatum) {
+                    completion(true)
+                   
+                }
+                return
+               }
+            
+            let coreparamDatum = aoutboxCDM.unSyncedParams
+            
+            guard let paramData = coreparamDatum else {return
+                
+            }
+            var localParamArr = [String: [[String: Any]]]()
+            
+            do {
+                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+                dump(localParamArr)
+            } catch {
+                self.toCreateToast("unable to retrive")
+            }
+            if paramData.isEmpty {
+                toSaveaParamData(jsonDatum: jsonDatum) {
+                    completion(true)
                 }
             }
-        }
-        
-        if !matchFound {
-            // Check if the day key exists in the dictionary
-            if localParamArr[dayString] == nil {
-                localParamArr[dayString] = [param]
-            } else {
-                localParamArr[dayString]?.append(param)
-            }
-            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+
             
-            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+            
+            var matchFound = Bool()
+            for (_, calls) in localParamArr {
+                for call in calls {
+                    // if let vstTime = call["vstTime"] as? String,
+                    if  let custCode = call["CustCode"] as? String,
+                        //   vstTime == param["vstTime"] as? String,
+                        custCode == param["CustCode"] as? String {
+                        // Match found, do something with the matching call
+                        matchFound = true
+                        print("Match found for CustCode: \(custCode)")
+                        toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                        touUdateOutboxandDefaultParams(param: param) {_ in
+                            completion(true)
+                            return
+                        }
+                        
+                        
+                    }
+                }
+            }
+            
+            if !matchFound {
+                // Check if the day key exists in the dictionary
+                if localParamArr[dayString] == nil {
+                    localParamArr[dayString] = [param]
+                } else {
+                    localParamArr[dayString]?.append(param)
+                }
+                
+                let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+                toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                toSaveaParamData(jsonDatum: jsonDatum) {
+                    completion(true)
+                }
+//                touUdateOutboxandDefaultParams(param: localParamArr) {_ in
+//                    completion(true)
+//                    return
+//                }
+            }
+            
         }
     }
+    
+//    func saveParamoutboxParamtoDefaults(param: JSON) {
+//        
+//        var callsByDay: [String: [[String: Any]]] = [:]
+//        
+//        let paramdate = param["vstTime"]
+//        var dayString = String()
+//        
+//        // Create a DateFormatter to parse the vstTime
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//        
+//        if let date = dateFormatter.date(from: paramdate as! String) {
+//            dateFormatter.dateFormat = "yyyy-MM-dd"
+//             dayString = dateFormatter.string(from: date)
+//            
+//            // Check if the day key exists in the dictionary
+//            if callsByDay[dayString] == nil {
+//                callsByDay[dayString] = [param]
+//            } else {
+//                callsByDay[dayString]?.append(param)
+//            }
+//        }
+//        
+//        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: callsByDay)
+//        
+//        
+//        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
+//        if paramData.isEmpty {
+//            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+//            return
+//        }
+//        var localParamArr = [String: [[String: Any]]]()
+// 
+//        do {
+//            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+//            dump(localParamArr)
+//        } catch {
+//            self.toCreateToast("unable to retrive")
+//        }
+//        
+//        
+//        var matchFound = Bool()
+//        for (_, calls) in localParamArr {
+//            for call in calls {
+//                // if let vstTime = call["vstTime"] as? String,
+//                if  let custCode = call["CustCode"] as? String,
+//                    //   vstTime == param["vstTime"] as? String,
+//                    custCode == param["CustCode"] as? String {
+//                    // Match found, do something with the matching call
+//                    matchFound = true
+//                    print("Match found for CustCode: \(custCode)")
+//                    // vstTime: \(vstTime),
+//                    
+//                }
+//            }
+//        }
+//        
+//        if !matchFound {
+//            // Check if the day key exists in the dictionary
+//            if localParamArr[dayString] == nil {
+//                localParamArr[dayString] = [param]
+//            } else {
+//                localParamArr[dayString]?.append(param)
+//            }
+//            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+//            
+//            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
+//        }
+//    }
     
     func sumOfQuantities(corelatedStringArr: [String]?) -> Int {
         guard let quantities = corelatedStringArr else {
@@ -757,24 +952,25 @@ class AddCallinfoVC: BaseViewController {
         return sum
     }
     
-    func removeAllAddedCalls() {
-        let fetchRequest: NSFetchRequest<AddedDCRCall> = NSFetchRequest(entityName: "AddedDCRCall")
+    func removeAllAddedCall(id: String) {
+        let fetchRequest: NSFetchRequest<AddedDCRCall> = AddedDCRCall.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "addedCallID == %@", id)
 
         do {
-            let slideBrands = try context.fetch(fetchRequest)
-            for brand in slideBrands {
-                context.delete(brand)
+            let existingCalls = try context.fetch(fetchRequest)
+            for call in existingCalls {
+                context.delete(call)
             }
 
             try context.save()
         } catch {
-            print("Error deleting slide brands: \(error)")
+            print("Error deleting existing calls: \(error)")
         }
     }
     
-    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, OutboxParam: Data , completion: @escaping (Bool) -> Void) {
+    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, OutboxParam: Data? = nil , completion: @escaping (Bool) -> Void) {
         
-       // removeAllAddedCalls()
+        removeAllAddedCall(id: addedCallID)
         
         let context = self.context
 
@@ -878,3 +1074,60 @@ class AddCallinfoVC: BaseViewController {
 }
 
 
+extension CoreDataManager {
+    
+    //Outbox param
+    func toFetchAllOutboxParams(completion: ([OutBoxParam]) -> () )  {
+        //unSyncedParams
+        do {
+           let savedOutBoxParam = try  context.fetch(OutBoxParam.fetchRequest())
+            completion(savedOutBoxParam)
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+    
+    func removeAllOutboxParams() {
+        let fetchRequest: NSFetchRequest<OutBoxParam> = NSFetchRequest(entityName: "OutBoxParam")
+
+        do {
+            let outBoxParams = try context.fetch(fetchRequest)
+            for param in outBoxParams {
+                context.delete(param)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    
+    func saveBrandSlidesToCoreData(updatedParams: Data  , completion: (Bool) -> ()) {
+ 
+                let context = self.context
+                
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
+                    let outBoxParamCDM = OutBoxParam(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+
+                    outBoxParamCDM.unSyncedParams = updatedParams
+
+                    // Save to Core Data
+                    do {
+                        try context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+                
+        
+        
+    }
+    
+}

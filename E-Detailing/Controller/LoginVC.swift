@@ -73,11 +73,63 @@ class LoginVC : UIViewController {
     @IBOutlet weak var lblVersion: UILabel!
 
     @IBOutlet weak var imgLogo: UIImageView!
+    let network: ReachabilityManager = ReachabilityManager.sharedInstance
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var homeVM: HomeViewModal?
 
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     
+    func addObserverForTimeZoneChange() {
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+
+    }
+    
+    
+    func toSetupAlert(text: String, istoValidate : Bool? = false) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("no action")
+           // self.openSettings()
+
+   
+        }
+    }
+    
+    func checkReachability() {
+        network.isReachable() {  reachability in
+            
+            
+            switch reachability.reachability.connection {
+                
+            case .unavailable, .none:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                self.toSetupAlert(text: "Internet connection is required to login user.")
+            case .wifi, .cellular:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+               
+            }
+            
+         
+        }
+
+        network.isUnreachable() { reachability in
+         
+            
+            switch reachability.reachability.connection {
+                
+            case .unavailable, .none:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                self.toSetupAlert(text: "Internet connection is required to login user.")
+            case .wifi, .cellular:
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+             
+                
+            }
+        }
+       
+        
+    }
     
     class func initWithStory() -> LoginVC {
         let loginVC : LoginVC = UIStoryboard.Hassan.instantiateViewController()
@@ -90,6 +142,8 @@ class LoginVC : UIViewController {
         self.homeVM = HomeViewModal()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         setupui()
+        checkReachability()
+        addObserverForTimeZoneChange()
         let data = AppDefaults.shared.getConfig()
 
 
@@ -128,6 +182,24 @@ class LoginVC : UIViewController {
             startBackgroundTaskWithLoader(delegate: appDelegate)
         }
                 
+    }
+    
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+            if let status = dict["Type"] as? String{
+                DispatchQueue.main.async {
+                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue {
+                        
+                        self.toCreateToast("Please check your internet connection.")
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                    }
+                }
+            }
+        }
     }
 
     func doUserLogin(_ param: [String: Any], paramData: JSON) {
@@ -188,7 +260,10 @@ class LoginVC : UIViewController {
 
     @IBAction func loginAction(_ sender: UIButton) {
         
-        
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            self.toSetupAlert(text: "Internet connection is required to login user.")
+            return
+        }
         
 
         let userId = self.txtUserName.text ?? ""
@@ -196,11 +271,13 @@ class LoginVC : UIViewController {
 
 
         if userId.isEmpty {
-          //  ConfigVC().showToast(controller: self, message: "Please Enter User ID", seconds: 2)
+            self.toCreateToast("Please Enter User ID")
+          
             return
 
         }else if password.isEmpty {
-         //   ConfigVC().showToast(controller: self, message: "Please Enter Password", seconds: 2)
+            self.toCreateToast("Please Enter Password")
+        
             return
         }
 

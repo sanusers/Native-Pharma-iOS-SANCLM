@@ -29,7 +29,6 @@ class LocalStorage {
         case TPisForFinalDate
         case isMR
         case offsets
-        case outboxParams
         case slideResponse
         case BrandSlideResponse
         case isConnectedToNetwork

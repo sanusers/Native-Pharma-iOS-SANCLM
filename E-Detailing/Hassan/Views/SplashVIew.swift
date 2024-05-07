@@ -12,33 +12,49 @@ import CoreLocation
 
 extension SplashView: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-       // if status != previousAuthorizationStatus {
-            switch status {
-            case .authorizedWhenInUse, .authorizedAlways:
-                print("Location services enabled")
-                // Perform your actions here or notify the user
-              
-                    timeZoneChanged()
-                
-            case .denied, .restricted:
-                print("Location services disabled")
-               
-                setupNoGPSalert()
-                Pipelines.shared.requestAuth() {_ in}
-            case .notDetermined:
-                print("Location services not determined")
-                setupNoGPSalert()
-                Pipelines.shared.requestAuth() {_ in}
-            @unknown default:
-                break
+      
+   
+        
+        if let rootViewController = UIApplication.shared.delegate?.window??.rootViewController {
+            if let navigationController = rootViewController as? UINavigationController {
+                if let visibleViewController = navigationController.visibleViewController {
+                    if visibleViewController is SplashVC {
+                        manageCLAuthorizationStatus(status: status)
+                    } else {
+                       // isVisibleController = false
+                        return
+                    }
+                }
+            } else {
+                manageCLAuthorizationStatus(status: status)
             }
-            previousAuthorizationStatus = status
-      //  }
-        
-        print(previousAuthorizationStatus)
+        }
+
         
 
 
+    }
+    
+    func manageCLAuthorizationStatus(status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("Location services enabled")
+            // Perform your actions here or notify the user
+          
+                timeZoneChanged()
+            
+        case .denied, .restricted:
+            print("Location services disabled")
+           
+            setupNoGPSalert()
+            Pipelines.shared.requestAuth() {_ in}
+        case .notDetermined:
+            print("Location services not determined")
+            setupNoGPSalert()
+            Pipelines.shared.requestAuth() {_ in}
+        @unknown default:
+            break
+        }
     }
 }
 
@@ -61,11 +77,11 @@ class SplashView: BaseView{
         checkReachability()
         addObserverForTimeZoneChange()
         
-        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
-            setUIfortimeZoneChanges()
-        } else {
-            onSetRootViewController()
-        }
+//        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+//            setUIfortimeZoneChanges()
+//        } else {
+//            onSetRootViewController()
+//        }
         
     }
     
@@ -109,20 +125,40 @@ class SplashView: BaseView{
                         
                         self.toCreateToast("Please check your internet connection.")
                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                        self.setupNoNetworkAlert()
-//                        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
-//                            self.setupNoNetworkAlert()
-//                        } else {
-//                            self.onSetRootViewController()
-//                        }
-                        
-                    
-                        
+                        if let rootViewController = UIApplication.shared.delegate?.window??.rootViewController {
+                            if let navigationController = rootViewController as? UINavigationController {
+                                if let visibleViewController = navigationController.visibleViewController {
+                                    if visibleViewController is SplashVC {
+                                        // Your code
+                                        self.setupNoNetworkAlert()
+                                    }
+                                }
+                            } else {
+                                self.setupNoNetworkAlert()
+                            }
+                        }
+                      
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
-                        self.toCreateToast("You are now connected.")
+                      
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                       self.timeZoneChanged()
+                        
+                        if let rootViewController = UIApplication.shared.delegate?.window??.rootViewController {
+                            if let navigationController = rootViewController as? UINavigationController {
+                                if let visibleViewController = navigationController.visibleViewController {
+                                    if visibleViewController is SplashVC {
+                                        // Your code
+                                        self.toCreateToast("You are now connected.")
+                                        self.timeZoneChanged()
+                                    }
+                                }
+                            } else {
+                                self.toCreateToast("You are now connected.")
+                                self.timeZoneChanged()
+                            }
+                        }
+                        
+                   
                     }
                 }
             }

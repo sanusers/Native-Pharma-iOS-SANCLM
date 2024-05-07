@@ -349,6 +349,9 @@
         <attribute name="workTypeName" optional="YES" attributeType="String"/>
         <relationship name="tpdt" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
     </entity>
+    <entity name="OutBoxParam" representedClassName="OutBoxParam" syncable="YES" codeGenerationType="class">
+        <attribute name="unSyncedParams" optional="YES" attributeType="Binary"/>
+    </entity>
     <entity name="Product" representedClassName="Product" syncable="YES" codeGenerationType="class">
         <attribute name="actFlg" optional="YES" attributeType="String"/>
         <attribute name="cateId" optional="YES" attributeType="String"/>
