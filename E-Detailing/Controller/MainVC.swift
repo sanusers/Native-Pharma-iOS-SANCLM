@@ -3658,11 +3658,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
                 print("specificDateParams has \(specificDateParams.count) values")
                 if !localParamArr.isEmpty {
-                
+                  
                     welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
-                      
+                    
                         if isCompleted {
-                         
+                          
                             completion(true)
                         }
                     }
@@ -3689,10 +3689,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     
     func toSendParamsToAPISerially(index: Int, items: [JSON], completion: @escaping (Bool) -> Void) {
-        
+        Shared.instance.showLoaderInWindow()
         guard index < items.count else {
             // All items processed, exit the recursion
-            
+            Shared.instance.removeLoaderInWindow()
             completion(true)
             return
         }
@@ -3706,7 +3706,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         toSendData["data"] = jsonDatum
         
         if params.isEmpty {
+            Shared.instance.removeLoaderInWindow()
             completion(true)
+            
             return
         }
         
@@ -3733,9 +3735,9 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (callstatus) -> Void) {
       //  Shared.instance.showLoaderInWindow()
-        Shared.instance.showLoaderInWindow()
+     
         userststisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
-            Shared.instance.removeLoaderInWindow()
+        
             switch result {
               
             case .success(let response):
@@ -3953,29 +3955,39 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func toSaveaParamData(jsonDatum: Data, completion: @escaping () -> ()) {
+        let managedObjectContext = DBManager.shared.managedContext() // Assuming DBManager.shared.managedContext() returns the managed object context
         
-
-        if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
-            let OutBoxParamCDModel = OutBoxParam(entity: entityDescription, insertInto: context)
-            
-            
-            OutBoxParamCDModel.unSyncedParams = jsonDatum
+        // Fetch existing OutBoxParam entities and delete them
+        let fetchRequest: NSFetchRequest<OutBoxParam> = OutBoxParam.fetchRequest()
+        do {
+            let existingParams = try managedObjectContext.fetch(fetchRequest)
+            for param in existingParams {
+                managedObjectContext.delete(param)
+            }
+        } catch {
+            print("Failed to fetch existing OutBoxParam entities: \(error)")
+            // Handle error
+            completion()
+            return
+        }
+        
+        // Create a new OutBoxParam entity and assign the jsonDatum
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: managedObjectContext) {
+            let outBoxParam = OutBoxParam(entity: entityDescription, insertInto: managedObjectContext)
+            outBoxParam.unSyncedParams = jsonDatum
             
             // Save to Core Data
             do {
-                try context.save()
+                try managedObjectContext.save()
                 completion()
-           
             } catch {
                 print("Failed to save to Core Data: \(error)")
-                
-             
+                // Handle error
             }
-            
+        } else {
+            print("Entity description not found.")
+            // Handle error
         }
-        
- 
-        
     }
     
     
@@ -4060,29 +4072,35 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
             
 
-            toSaveaParamData(jsonDatum: jsonDatum) { }
-            // Create a new array with modified sections
-            let updatedSections = obj_sections.map { section -> Section in
-                var updatedSection = section
+            toSaveaParamData(jsonDatum: jsonDatum) { 
                 
-                // Filter items in the section
-                updatedSection.items = section.items.filter { call in
-                    // Assuming custCode is not an optional type
-                    return call.custCode != custCodeToRemove
+                
+                // Create a new array with modified sections
+                let updatedSections = obj_sections.map { section -> Section in
+                    var updatedSection = section
+                    
+                    // Filter items in the section
+                    updatedSection.items = section.items.filter { call in
+                        // Assuming custCode is not an optional type
+                        return call.custCode != custCodeToRemove
+                    }
+                    
+                    // Keep the section if it still has items after filtering
+                    return updatedSection
                 }
+                // Assign the updated array back to obj_sections
+                obj_sections = updatedSections.filter({ section in
+                    !section.items.isEmpty
+                })
                 
-                // Keep the section if it still has items after filtering
-                return updatedSection
+                print(obj_sections)
+                
+                self.dcrcallsAdded()
+                
+                completion(true)
+                
             }
-            // Assign the updated array back to obj_sections
-            obj_sections = updatedSections.filter({ section in
-                !section.items.isEmpty
-            })
-            
-            print(obj_sections)
-            
-            self.dcrcallsAdded()
-            completion(true)
+
         }
         
 

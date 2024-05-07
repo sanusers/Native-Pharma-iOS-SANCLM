@@ -24,6 +24,7 @@ class AddCallinfoVC: BaseViewController {
     var productSelectedListViewModel = ProductSelectedListViewModel()
     var additionalCallListViewModel = AdditionalCallsListViewModel()
     var inputSelectedListViewModel = InputSelectedListViewModel()
+    var detailedSlides = [DetailedSlide]()
     var outBoxDataArr : [TodayCallsModel]?
     var unsyncedhomeDataArr = [UnsyncedHomeData]()
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
@@ -457,7 +458,6 @@ class AddCallinfoVC: BaseViewController {
             guard let welf = self else {return}
             welf.callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { isPosted in
                 Shared.instance.removeLoaderInWindow()
-                Shared.instance.detailedSlides = []
                 if !isPosted {
                     welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
                         completion(true)
@@ -545,13 +545,6 @@ class AddCallinfoVC: BaseViewController {
             
                 completion()
             }
-        } else {
-            
-            touUdateOutboxandDefaultParams(param: param) {isSave in
-                
-                completion()
-            }
-            
         }
     }
     
@@ -737,33 +730,41 @@ class AddCallinfoVC: BaseViewController {
         }
     }
     
-    
     func toSaveaParamData(jsonDatum: Data, completion: @escaping () -> ()) {
+        let managedObjectContext = DBManager.shared.managedContext() // Assuming DBManager.shared.managedContext() returns the managed object context
         
-
-        if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
-            let OutBoxParamCDModel = OutBoxParam(entity: entityDescription, insertInto: context)
-            
-            
-            OutBoxParamCDModel.unSyncedParams = jsonDatum
+        // Fetch existing OutBoxParam entities and delete them
+        let fetchRequest: NSFetchRequest<OutBoxParam> = OutBoxParam.fetchRequest()
+        do {
+            let existingParams = try managedObjectContext.fetch(fetchRequest)
+            for param in existingParams {
+                managedObjectContext.delete(param)
+            }
+        } catch {
+            print("Failed to fetch existing OutBoxParam entities: \(error)")
+            // Handle error
+            completion()
+            return
+        }
+        
+        // Create a new OutBoxParam entity and assign the jsonDatum
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: managedObjectContext) {
+            let outBoxParam = OutBoxParam(entity: entityDescription, insertInto: managedObjectContext)
+            outBoxParam.unSyncedParams = jsonDatum
             
             // Save to Core Data
             do {
-                try context.save()
+                try managedObjectContext.save()
                 completion()
-           
             } catch {
                 print("Failed to save to Core Data: \(error)")
-                
-             
+                // Handle error
             }
-            
+        } else {
+            print("Entity description not found.")
+            // Handle error
         }
-        
- 
-        
     }
-    
     
     func saveParamoutboxParamtoCoreData(param: JSON, issussess: Bool, appsetup: AppSetUp, cusType : String, completion: @escaping (Bool)->Void){
         var callsByDay: [String: [[String: Any]]] = [:]
@@ -806,11 +807,15 @@ class AddCallinfoVC: BaseViewController {
             guard let paramData = coreparamDatum else {return
                 
             }
+           
+            
             var localParamArr = [String: [[String: Any]]]()
             
             do {
                 localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
                 dump(localParamArr)
+            //    let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+                
             } catch {
                 self.toCreateToast("unable to retrive")
             }
@@ -856,84 +861,12 @@ class AddCallinfoVC: BaseViewController {
                 toSaveaParamData(jsonDatum: jsonDatum) {
                     completion(true)
                 }
-//                touUdateOutboxandDefaultParams(param: localParamArr) {_ in
-//                    completion(true)
-//                    return
-//                }
+
             }
             
         }
     }
     
-//    func saveParamoutboxParamtoDefaults(param: JSON) {
-//        
-//        var callsByDay: [String: [[String: Any]]] = [:]
-//        
-//        let paramdate = param["vstTime"]
-//        var dayString = String()
-//        
-//        // Create a DateFormatter to parse the vstTime
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//        
-//        if let date = dateFormatter.date(from: paramdate as! String) {
-//            dateFormatter.dateFormat = "yyyy-MM-dd"
-//             dayString = dateFormatter.string(from: date)
-//            
-//            // Check if the day key exists in the dictionary
-//            if callsByDay[dayString] == nil {
-//                callsByDay[dayString] = [param]
-//            } else {
-//                callsByDay[dayString]?.append(param)
-//            }
-//        }
-//        
-//        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: callsByDay)
-//        
-//        
-//        let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
-//        if paramData.isEmpty {
-//            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
-//            return
-//        }
-//        var localParamArr = [String: [[String: Any]]]()
-// 
-//        do {
-//            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-//            dump(localParamArr)
-//        } catch {
-//            self.toCreateToast("unable to retrive")
-//        }
-//        
-//        
-//        var matchFound = Bool()
-//        for (_, calls) in localParamArr {
-//            for call in calls {
-//                // if let vstTime = call["vstTime"] as? String,
-//                if  let custCode = call["CustCode"] as? String,
-//                    //   vstTime == param["vstTime"] as? String,
-//                    custCode == param["CustCode"] as? String {
-//                    // Match found, do something with the matching call
-//                    matchFound = true
-//                    print("Match found for CustCode: \(custCode)")
-//                    // vstTime: \(vstTime),
-//                    
-//                }
-//            }
-//        }
-//        
-//        if !matchFound {
-//            // Check if the day key exists in the dictionary
-//            if localParamArr[dayString] == nil {
-//                localParamArr[dayString] = [param]
-//            } else {
-//                localParamArr[dayString]?.append(param)
-//            }
-//            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
-//            
-//            LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: jsonDatum)
-//        }
-//    }
     
     func sumOfQuantities(corelatedStringArr: [String]?) -> Int {
         guard let quantities = corelatedStringArr else {
@@ -991,6 +924,8 @@ class AddCallinfoVC: BaseViewController {
         var jointWorkViewModel: JointWorkViewModelCDEntity?
         var additionalCallViewModel: AdditionalCallViewModelCDEntity?
         var rcpaDetailsModel : RCPAdetailsCDEntity?
+        var detailSlidesModel :  DetailedSlideCDEntity?
+        var eventCaptureViewModel : EventCaptureViewModelCDEntity?
         // Enter dispatch group for each CoreDataManager function
         dispatchGroup.enter()
         CoreDataManager.shared.toReturnProductViewModelCDModel(addedProducts: self.addCallinfoView.productSelectedListViewModel) { viewModel in
@@ -1022,6 +957,28 @@ class AddCallinfoVC: BaseViewController {
             rcpaDetailsModel = viewModel
             dispatchGroup.leave()
         }
+        
+        dispatchGroup.enter()
+        CoreDataManager.shared.toReturnDetailedSlideEntity(detailedSlides: Shared.instance.detailedSlides) { viewModel in
+            Shared.instance.detailedSlides = []
+            detailSlidesModel = viewModel
+            dispatchGroup.leave()
+        }
+        
+        
+        dispatchGroup.enter()
+        var eventCaptures = [EventCapture]()
+        let eventCaptureData = self.addCallinfoView.eventCaptureListViewModel.EventCaptureData()
+        
+        eventCaptureData.forEach { aEventCaptureViewModel in
+            eventCaptures.append(aEventCaptureViewModel.eventCapture)
+        }
+        
+        CoreDataManager.shared.toReturnEventcaptureEntity(eventCaptures: eventCaptures) {  viewModel in
+            eventCaptureViewModel = viewModel
+            dispatchGroup.leave()
+        }
+        
         
         if let entityDescription = NSEntityDescription.entity(forEntityName: "Feedback", in: context) {
             let aFeedback = Feedback(entity: entityDescription, insertInto: context)
@@ -1055,6 +1012,14 @@ class AddCallinfoVC: BaseViewController {
             
             if let viewModel = rcpaDetailsModel {
                 aDCRCallEntity.rcpaDetailsModel = viewModel
+            }
+            
+            if let viewModel = detailSlidesModel {
+                aDCRCallEntity.detailedSlides = viewModel
+            }
+            
+            if let viewModel = eventCaptureViewModel {
+                aDCRCallEntity.capturedEvents = viewModel
             }
             
             // Save to Core Data

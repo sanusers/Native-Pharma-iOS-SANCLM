@@ -9,6 +9,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 
 class DayPlanSessions {
@@ -328,6 +329,98 @@ extension MainVC {
             guard (ftchedDCRcall != nil) else {return}
             //[AdditionalCallViewModel]
             //Additional call
+            
+            var eventCaptureListViewModel = EventCaptureListViewModel()
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "EventCaptureViewModelCDEntity", in: context){
+                if let detailedSlidesCDEntity = ftchedDCRcall?.capturedEvents {
+                    detailedSlidesCDEntity.capturedEvents?.forEach({ eventCaptureCDM in
+                        if let aEventCaptureCDM = eventCaptureCDM as? EventCaptureCDM {
+                            var aEventCapture = EventCapture()
+                            aEventCapture.image =  UIImage(data: aEventCaptureCDM.image ?? Data())
+                            aEventCapture.description = aEventCaptureCDM.imageDescription ?? ""
+                            aEventCapture.imageUrl = aEventCaptureCDM.imageUrl ?? ""
+                            aEventCapture.time = aEventCaptureCDM.time ?? ""
+                            aEventCapture.timeStamp = aEventCaptureCDM.timeStamp ?? ""
+                            aEventCapture.title = aEventCaptureCDM.title ?? ""
+                            
+                            
+                            let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
+                            eventCaptureListViewModel.addEventCapture(aEventCaptureViewModel)
+                        }
+                    })
+                        
+                    }
+                
+                vc.eventCaptureListViewModel = eventCaptureListViewModel
+                }
+            
+            
+            
+            
+            var detailedSlides = [DetailedSlide]()
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "DetailedSlideCDEntity", in: context){
+                
+                //let detailedSlideCDEntity = DetailedSlideCDEntity(entity: entityDescription, insertInto: context)
+                
+                if let detailedSlidesCDEntity = ftchedDCRcall?.detailedSlides {
+                    detailedSlidesCDEntity.detailedSlides?.forEach({ aDetailedSlideCD in
+                        if let aDetailedSlideCDM = aDetailedSlideCD as? DetailedSlideCDM {
+                            var aDetailedSlide = DetailedSlide()
+                            
+                            aDetailedSlide.brandCode = Int(aDetailedSlideCDM.brandCode ?? "0")
+                            aDetailedSlide.endTime = aDetailedSlideCDM.endTime
+                            aDetailedSlide.isDisliked = aDetailedSlideCDM.isDisliked
+                            aDetailedSlide.isLiked = aDetailedSlideCDM.isLiked
+                            aDetailedSlide.isShared = aDetailedSlideCDM.isShared
+                            aDetailedSlide.remarks = aDetailedSlideCDM.remarks
+                            aDetailedSlide.remarksValue = aDetailedSlideCDM.remarksValue
+                            aDetailedSlide.slideID =  Int(aDetailedSlideCDM.slideID ?? "0")
+                            aDetailedSlide.startTime = aDetailedSlideCDM.startTime
+                         
+                            
+               
+                             
+                                if let slidesModel = aDetailedSlideCDM.slidesModel {
+                                    
+                                    if let entityDescription = NSEntityDescription.entity(forEntityName: "SlidesCDModel", in: context){
+                                        
+                                    //    let aSlidesCDModelEntity = SlidesCDModel(entity: entityDescription, insertInto: context)
+                                        let aViewedSlide = SlidesModel()
+                                        aViewedSlide.code = Int(slidesModel.code)
+                                        aViewedSlide.camp = Int(slidesModel.camp)
+                                        aViewedSlide.productDetailCode = slidesModel.productDetailCode ?? ""
+                                        aViewedSlide.filePath = slidesModel.filePath ?? ""
+                                        aViewedSlide.group = Int(slidesModel.group)
+                                        aViewedSlide.specialityCode = slidesModel.specialityCode ?? ""
+                                        aViewedSlide.slideId = Int(slidesModel.slideId)
+                                        aViewedSlide.fileType = slidesModel.fileType ?? ""
+                                        aViewedSlide.categoryCode = slidesModel.categoryCode ?? ""
+                                        aViewedSlide.name = slidesModel.name ?? ""
+                                        aViewedSlide.noofSamples = Int(slidesModel.noofSamples)
+                                        aViewedSlide.ordNo = Int(slidesModel.ordNo)
+                                        aViewedSlide.priority = Int(slidesModel.priority)
+                                        aViewedSlide.slideData =  Data() //aCacheSlide.slideData ??
+                                        aViewedSlide.utType = slidesModel.utType ?? ""
+                                        aViewedSlide.isSelected = slidesModel.isSelected
+                                        aViewedSlide.isFailed = slidesModel.isFailed
+                                        aViewedSlide.isDownloadCompleted = slidesModel.isDownloadCompleted
+                                        
+                                        
+                                        aDetailedSlide.slidesModel = aViewedSlide
+                                    }
+                                }
+                            
+                            detailedSlides.append(aDetailedSlide)
+                        }
+                        
+                  
+                    })
+                    vc.detailedSlides = detailedSlides
+                }
+ 
+                
+        }
+            
             let aAdditionalcallVM =     AdditionalCallsListViewModel()
             
             if let additionalCallEntityDescription  = NSEntityDescription.entity(forEntityName: "AdditionalCallViewModelCDEntity", in: context) {
@@ -573,7 +666,7 @@ extension MainVC {
                         if let ajwDetailsCDModel = jwDetailsCDModel as? JointWorkDataCDModel {
                             
                             if let jointWork = ajwDetailsCDModel.jointWork {
-                                var ajwData = JointWorkViewModel(jointWork: jointWork)
+                                let ajwData = JointWorkViewModel(jointWork: jointWork)
                                 jwViewModelArr.append(ajwData)
                                 jwSelectedListViewModel.addJointWorkViewModel(ajwData)
                             }

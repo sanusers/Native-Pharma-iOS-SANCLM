@@ -11,7 +11,7 @@ import UIKit
 
 class EventCaptureListViewModel {
     
-    private var eventCaptureViewModel = [EventCaptureViewModel]()
+     var eventCaptureViewModel = [EventCaptureViewModel]()
     
     
     func addEventCapture(_ vm : EventCaptureViewModel) {

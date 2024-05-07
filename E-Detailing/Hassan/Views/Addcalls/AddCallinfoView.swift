@@ -1299,8 +1299,19 @@ class AddCallinfoView : BaseView {
     var customerCheckoutView: CustomerCheckoutView?
     var selectedCompetitor: Competitor?
     var additionalCompetitorsInfo: AdditionalCompetitorsInfo?
-    
+   
     func initDataSource() {
+        
+        if !addCallinfoVC.eventCaptureListViewModel.eventCaptureViewModel.isEmpty {
+            self.eventCaptureListViewModel = addCallinfoVC.eventCaptureListViewModel
+        }
+        
+        
+        if !addCallinfoVC.detailedSlides.isEmpty {
+            Shared.instance.detailedSlides = addCallinfoVC.detailedSlides
+        }
+        
+        
         if !addCallinfoVC.rcpaDetailsModel.isEmpty {
             self.rcpaDetailsModel = addCallinfoVC.rcpaDetailsModel
         }
@@ -2113,6 +2124,169 @@ extension CoreDataManager {
            completion(additionalCompetitorSet)
        }
    }
+    
+    
+    func toReturnEventcaptureEntity(eventCaptures: [EventCapture], completion: @escaping (EventCaptureViewModelCDEntity?) -> Void) {
+        
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "EventCaptureViewModelCDEntity", in: context) {
+           // dispatchGroup.enter()
+            let aEventCaptureEntity = EventCaptureViewModelCDEntity(entity: entityDescription, insertInto: context)
+            convertToEventcaptureArr(eventCaptures, context: context) {
+                capturedEentsSet in
+                    
+                aEventCaptureEntity.capturedEvents = capturedEentsSet
+                    completion(aEventCaptureEntity)
+                }
+            }
+
+
+
+}
+    
+    
+    
+    func convertToEventcaptureArr(_ eventCaptures: [EventCapture], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        let capturedEentsSet = NSMutableSet()
+        
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+        
+        // Iterate over each GroupedBrandsSlideModel
+        for eventCapture in eventCaptures {
+            dispatchGroup.enter()
+            
+            guard let entityDescriptioncapturedEvent = NSEntityDescription.entity(forEntityName: "EventCaptureCDM", in: context)
+            else {
+                dispatchGroup.leave()
+                continue
+            }
+            
+            let eventCaptureCDModel = EventCaptureCDM(entity: entityDescriptioncapturedEvent, insertInto: context)
+            
+            if let image = eventCapture.image {
+                // Convert UIImage to Data
+                if let imageData = image.pngData() {
+                    // Use imageData as needed (e.g., save to file, send over network)
+                    eventCaptureCDModel.image = imageData
+                } else {
+                    print("Failed to convert UIImage to Data.")
+                }
+            } else {
+                print("UIImage named 'exampleImage' not found.")
+            }
+            
+           
+            eventCaptureCDModel.imageDescription = eventCapture.description
+            eventCaptureCDModel.imageUrl = eventCapture.imageUrl
+            eventCaptureCDModel.time = eventCapture.title
+            eventCaptureCDModel.timeStamp = eventCapture.timeStamp
+            eventCaptureCDModel.title = eventCapture.title
+
+            
+            capturedEentsSet.add(eventCaptureCDModel)
+                dispatchGroup.leave()
+            
+        }
+        
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(capturedEentsSet)
+        }
+    }
+    
+    
+    
+    func toReturnDetailedSlideEntity(detailedSlides: [DetailedSlide], completion: @escaping (DetailedSlideCDEntity?) -> Void) {
+        
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "DetailedSlideCDEntity", in: context) {
+           // dispatchGroup.enter()
+            let aDetailedSlideEntity = DetailedSlideCDEntity(entity: entityDescription, insertInto: context)
+            convertToDetailedSlidesArr(detailedSlides, context: context) {
+                detailedSlidesSet in
+                    
+                aDetailedSlideEntity.detailedSlides = detailedSlidesSet
+                    completion(aDetailedSlideEntity)
+                }
+            }
+
+
+
+}
+    
+    
+    
+    func convertToDetailedSlidesArr(_ detailedSlides: [DetailedSlide], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        let detailedSlidesSet = NSMutableSet()
+        
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+        
+        // Iterate over each GroupedBrandsSlideModel
+        for detailedSlide in detailedSlides {
+            dispatchGroup.enter()
+            
+            guard let entityDescriptiondetailedslide = NSEntityDescription.entity(forEntityName: "DetailedSlideCDM", in: context)
+            else {
+                dispatchGroup.leave()
+                continue
+            }
+            
+            let detailedslideCDModel = DetailedSlideCDM(entity: entityDescriptiondetailedslide, insertInto: context)
+            
+            detailedslideCDModel.brandCode = "\(detailedSlide.brandCode ?? 0)"
+            detailedslideCDModel.endTime = detailedSlide.endTime
+            detailedslideCDModel.isDisliked = detailedSlide.isDisliked ?? false
+            detailedslideCDModel.isLiked = detailedSlide.isLiked ?? false
+            detailedslideCDModel.isShared = detailedSlide.isShared ?? false
+            detailedslideCDModel.remarks = detailedSlide.remarks
+            detailedslideCDModel.remarksValue = detailedSlide.remarksValue ?? 0
+            detailedslideCDModel.slideID =  "\(detailedSlide.slideID ?? 0)"
+            detailedslideCDModel.startTime = detailedSlide.startTime
+            
+            if let entityDescriptionslide = NSEntityDescription.entity(forEntityName: "SlidesCDModel", in: context) {
+                let slideCDModel = SlidesCDModel(entity: entityDescriptionslide, insertInto: context)
+                if let aCacheSlide = detailedSlide.slidesModel {
+                    
+                    slideCDModel.code = Int16(aCacheSlide.code)
+                    slideCDModel.camp = Int16(aCacheSlide.camp)
+                    slideCDModel.productDetailCode = aCacheSlide.productDetailCode
+                    slideCDModel.filePath = aCacheSlide.filePath
+                    slideCDModel.group = Int16(aCacheSlide.group)
+                    slideCDModel.specialityCode = aCacheSlide.specialityCode
+                    slideCDModel.slideId = Int16(aCacheSlide.slideId)
+                    slideCDModel.fileType = aCacheSlide.fileType
+                    slideCDModel.categoryCode = aCacheSlide.categoryCode
+                    slideCDModel.name = aCacheSlide.name
+                    slideCDModel.noofSamples = Int16(aCacheSlide.noofSamples)
+                    slideCDModel.ordNo = Int16(aCacheSlide.ordNo)
+                    slideCDModel.priority = Int16(aCacheSlide.priority)
+                    slideCDModel.slideData =  Data() //aCacheSlide.slideData ??
+                    slideCDModel.utType = aCacheSlide.utType
+                    slideCDModel.isSelected = aCacheSlide.isSelected
+                    slideCDModel.isFailed = aCacheSlide.isFailed
+                    slideCDModel.isDownloadCompleted = aCacheSlide.isDownloadCompleted
+                    
+                    detailedslideCDModel.slidesModel = slideCDModel
+                }
+            }
+          
+            
+            
+            detailedSlidesSet.add(detailedslideCDModel)
+                dispatchGroup.leave()
+            
+        }
+        
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(detailedSlidesSet)
+        }
+    }
+    
     
     
     func convertToProductWithCompetitorModelArr(_ productWithCompetiors: [ProductWithCompetiors], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {

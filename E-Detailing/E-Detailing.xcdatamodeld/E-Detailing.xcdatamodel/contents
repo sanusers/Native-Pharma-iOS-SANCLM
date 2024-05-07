@@ -7,6 +7,8 @@
         <attribute name="overallRemarks" optional="YES" attributeType="String"/>
         <attribute name="pobValue" optional="YES" attributeType="String"/>
         <relationship name="additionalCallViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AdditionalCallViewModelCDEntity"/>
+        <relationship name="capturedEvents" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EventCaptureViewModelCDEntity"/>
+        <relationship name="detailedSlides" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DetailedSlideCDEntity"/>
         <relationship name="inputViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="InputViewModelCDEntity"/>
         <relationship name="jointWorkViewModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="JointWorkViewModelCDEntity"/>
         <relationship name="overAllFeedBack" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Feedback"/>
@@ -88,6 +90,22 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="userName" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="DetailedSlideCDEntity" representedClassName="DetailedSlideCDEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="detailedSlides" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DetailedSlideCDM"/>
+    </entity>
+    <entity name="DetailedSlideCDM" representedClassName="DetailedSlideCDM" syncable="YES" codeGenerationType="class">
+        <attribute name="brandCode" optional="YES" attributeType="String"/>
+        <attribute name="endTime" optional="YES" attributeType="String"/>
+        <attribute name="isDisliked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isLiked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isShared" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="remarks" optional="YES" attributeType="String"/>
+        <attribute name="remarksValue" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="slideID" optional="YES" attributeType="String"/>
+        <attribute name="startTime" optional="YES" attributeType="String"/>
+        <relationship name="brand" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Brand"/>
+        <relationship name="slidesModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SlidesCDModel"/>
+    </entity>
     <entity name="DoctorCategory" representedClassName="DoctorCategory" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="divisionCode" optional="YES" attributeType="String"/>
@@ -155,6 +173,17 @@
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="timeZone" optional="YES" attributeType="String"/>
         <attribute name="timeZoneType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="EventCaptureCDM" representedClassName="EventCaptureCDM" syncable="YES" codeGenerationType="class">
+        <attribute name="image" optional="YES" attributeType="Binary"/>
+        <attribute name="imageDescription" optional="YES" attributeType="String"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
+        <attribute name="time" optional="YES" attributeType="String"/>
+        <attribute name="timeStamp" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="EventCaptureViewModelCDEntity" representedClassName="EventCaptureViewModelCDEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="capturedEvents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EventCaptureCDM"/>
     </entity>
     <entity name="Feedback" representedClassName="Feedback" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
