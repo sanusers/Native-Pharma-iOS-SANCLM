@@ -30,6 +30,7 @@ class DetailedInfoTVC: UITableViewCell, RatingStarViewDelegate {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+       
   
     }
     
@@ -133,18 +134,17 @@ class RatingStarView: UIView {
         }
     }
     
-    func handleTouchAtLocation(withTouches touches:Set<UITouch>)
-    {
-        guard let touchLocation = touches.first,
-              touchLocation.view?.tag == 5007 else {
+    func handleTouchAtLocation(withTouches touches: Set<UITouch>) {
+        guard let touchLocation = touches.first, touchLocation.view?.tag == 5007 else {
             return
         }
         
         let location = touchLocation.location(in: starStackView)
         var intRating: Int = currentRating
         
-        arrImageViews.forEach { imageView in
+        for imageView in arrImageViews {
             imageView.tintColor = .appYellow
+            
             if location.x > imageView.frame.origin.x {
                 if let index = arrImageViews.firstIndex(of: imageView) {
                     intRating = index + 1
@@ -152,56 +152,16 @@ class RatingStarView: UIView {
                 }
             } else {
                 if imageView.tag != 5009 {
-                    intRating -= 1
-                    
+                    //intRating -= 1
                     imageView.image = UIImage(systemName: "star")
                 }
             }
         }
+        
         delegate?.didRatingAdded(rating: Float(intRating))
     }
 
-    func setUpSwipeGestures() {
-        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(_:)))
-        swipeRightGesture.direction = .right
-        self.addGestureRecognizer(swipeRightGesture)
-        
-        let swipeLeftGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(_:)))
-        swipeLeftGesture.direction = .left
-        self.addGestureRecognizer(swipeLeftGesture)
-    }
-    
-    @objc func handleSwipeGesture(_ gesture: UISwipeGestureRecognizer) {
-        // Check if the swipe direction is right or left
-        let isSwipeRight = gesture.direction == .right
-        
-        // Determine the new rating based on the swipe direction
-        
-        currentRating = isSwipeRight ? min(currentRating + 1, maxRating) : max(currentRating - 1, minRating)
-        
-        let newRating =  currentRating
-        //isSwipeRight ? min(currentRating + 1, maxRating) : max(currentRating - 1, minRating)
-        
-        // Update the star images based on the new rating
-        updateStarsForRating(newRating)
-        
-        // Notify the delegate of the updated rating
-        delegate?.didRatingAdded(rating: Float(newRating))
-    }
-    
-    func updateStarsForRating(_ rating: Int) {
-        guard rating >= 0 && rating <= arrImageViews.count else {
-            return
-        }
-        
-        for (index, imageView) in arrImageViews.enumerated() {
-            if index < rating {
-                imageView.image = UIImage(systemName: "star.fill")
-            } else {
-                imageView.image = UIImage(systemName: "star")
-            }
-        }
-    }
+
    
 }
 

@@ -1514,6 +1514,8 @@ class AddCallinfoView : BaseView {
         tpDeviateReasonView?.delegate = self
         if self.segmentType[selectedSegmentsIndex] == .detailed {
             tpDeviateReasonView?.productIndex = self.selectedProductIndex
+        } else if  self.segmentType[selectedSegmentsIndex] == .rcppa  {
+          //  tpDeviateReasonView?.productIndex = self.selectedProductIndex
         }
         tpDeviateReasonView?.addedSubviewDelegate = self
         tpDeviateReasonView?.isForRemarks = isForremarks
@@ -1915,11 +1917,11 @@ extension AddCallinfoView : CompetitorsFooterDelegate {
         selectedAddcompetitorRow = competitorIndex
         selectedAddcompetitorSection = section
         selectedAddcompetitorProductRow = index
-     //   self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?[selectedAddcompetitorRow]
         
         guard let remarksStr : String? = self.rcpaDetailsModel[section].addedProductDetails?.addedProduct?[index].competitorsInfo?[selectedAddcompetitorRow].remarks else {
             
             self.competitorCommentAction(isForremarks: true, remarksStr: nil)
+            
             return}
         
          self.competitorCommentAction(isForremarks: true, remarksStr: remarksStr)
@@ -2025,6 +2027,7 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
     
     func handleProductsRemarks(remarksStr: String, index: Int) {
         Shared.instance.detailedSlides[index].remarks = remarksStr
+        detailedInfoAction()
     }
     
     func remarksAdded(remarksStr: String, index: Int) {
@@ -2054,17 +2057,13 @@ extension AddCallinfoView : SessionInfoTVCDelegate {
        
 
     }
-    
-    
-    
-    
-    
 }
 extension AddCallinfoView :  DetailedSlideInfoViewDelegate {
     func didCommentTapped(comments: String, index: Int) {
         let addedcomments = Shared.instance.detailedSlides[index].remarks == nil ? comments :  Shared.instance.detailedSlides[index].remarks
-        competitorCommentAction(isForremarks: true, remarksStr: addedcomments)
         self.selectedProductIndex = index
+        competitorCommentAction(isForremarks: true, remarksStr: addedcomments)
+       
     }
     
     func didRatingTapped(rating: Int, index: Int) {

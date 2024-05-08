@@ -31,15 +31,14 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
         let name =  model.slidesModel?.name
         cell.brandName.text = name
         cell.delegate = self
-        //cell.selectedIndex = indexPath.row
-        //cell.currentRating = Int(model.remarksValue ?? 0)
+        cell.commentsIV.alpha = model.remarks == nil || model.remarks == "" ? 0.5 : 1
         cell.setupUI(currentRating: Int(model.remarksValue ?? 0), selectedIndex: indexPath.row)
         let startTimeStr = model.startTime ?? ""
         let endtimeStr = model.endTime ?? ""
        let startTime = startTimeStr.toDate()
         let endTime = endtimeStr.toDate()
         cell.timeLine.text = "\(startTime.toString(format: "HH:mm:ss", timeZone: nil)) - \(endTime.toString(format: "HH:mm:ss", timeZone: nil))"
-        let remarksStr =   Shared.instance.detailedSlides[indexPath.row].remarks 
+       // let remarksStr =   Shared.instance.detailedSlides[indexPath.row].remarks
         cell.commentsIV.addTap {
             self.delegate?.didCommentTapped(comments: model.remarks ?? "", index: indexPath.row)
         }
@@ -72,18 +71,14 @@ class DetailedSlideInfoView: UIView {
     func setupui() {
         self.backgroundColor = .clear
         self.detailedInfoTable.layer.cornerRadius = 5
-    //    toSetDataSource()
+ 
         cellRegistration()
         toLoadData()
-       // toSetDataSorce()
+
        
     }
     
-//    func toSetDataSource() {
-//
-//        self.detailedSlides.filter {$0.brandCode. }
-//
-//    }
+
     
     func toLoadData() {
         detailedInfoTable.delegate = self

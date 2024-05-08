@@ -66,7 +66,7 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
         cell.commentsIV.tintColor = .appTextColor
         if let competitorsInfo = self.competitorsInfo {
             let selectedCompetitorsInfo = competitorsInfo[indexPath.row]
-            //cell.commentsIV.alpha =   selectedCompetitorsInfo.remarks != "" || selectedCompetitorsInfo.remarks != nil ?  1 : 0.5
+            cell.commentsIV.alpha =   selectedCompetitorsInfo.remarks != "" || selectedCompetitorsInfo.remarks != nil ?  1 : 0.5
             if let remarksStr = selectedCompetitorsInfo.remarks {
                // let remarksStr = selectedCompetitorsInfo.remarks
                 cell.didCommentsAdded = !remarksStr.isEmpty ?  true : false

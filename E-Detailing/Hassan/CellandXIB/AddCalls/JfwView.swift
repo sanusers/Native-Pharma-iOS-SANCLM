@@ -27,8 +27,24 @@ extension JfwView: MenuResponseProtocol {
         }
         
         
-        if let jwObj = selectedObject as? JointWork {
-            jointworkSelectionAction(obj: jwObj)
+        if let jwObjs = selectedObjects as? [JointWork] {
+            self.jointWorkSelectedListViewModel?.jointWorksListViewModel.removeAll()
+            
+    
+            
+            jwObjs.forEach { aJointWork in
+               
+            jointworkSelectionAction(obj: aJointWork)
+            }
+            
+            if !(jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
+                jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
+                    selectedJwID[aJointWork.code] = true
+                }
+            }
+            
+            dump(selectedJwID)
+            
         }
         
         self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
@@ -80,23 +96,12 @@ extension JfwView : UITextViewDelegate {
 
 extension JfwView: UITableViewDelegate, UITableViewDataSource {
     func jointworkSelectionAction(obj: JointWork) {
-//        let buttonPosition:CGPoint = sender.convert(CGPoint.zero, to:self.selectionTableView)
-//        guard let indexPath = self.selectionTableView.indexPathForRow(at: buttonPosition) else{
-//            return
-//        }
-        
-        let jointWorkValue = self.jointWorkSelectedListViewModel?.fetchJointWorkData(obj.code ?? "")
-        guard var jointWorkValue = jointWorkValue else {return}
-        jointWorkValue.isSelected = true
-        //jointWorkValue.isSelected ?  !jointWorkValue.isSelected : jointWorkValue.isSelected
-        if jointWorkValue.isSelected {
-            self.jointWorkSelectedListViewModel?.addJointWorkViewModel(JointWorkViewModel(jointWork: jointWorkValue.Object as! JointWork))
 
-        } else {
-            self.jointWorkSelectedListViewModel?.removeById(id: jointWorkValue.Object.code ?? "")
-        
-        }
-        
+    let jointWorkValue = JointWorkViewModel(jointWork: obj)
+ 
+
+    self.jointWorkSelectedListViewModel?.addJointWorkViewModel(jointWorkValue)
+
         self.jointWorkTableView.reloadData()
         self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
     }
@@ -117,6 +122,17 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
     @objc func addJointWork() {
 
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .jointCall)
+        
+        
+        if !(jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
+            jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
+                selectedJwID[aJointWork.code] = true
+            }
+        }
+
+        
+        
+        vc.selectedJwID = selectedJwID
         self.rootVC?.modalPresentationStyle = .custom
         self.rootVC?.navigationController?.present(vc, animated: false)
         
@@ -128,7 +144,18 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
             return
         }
         
+      
+        
         self.jointWorkSelectedListViewModel?.removeAtindex(indexPath.row)
+
+        
+        if !(jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
+            self.selectedJwID = [String: Bool]()
+            jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
+                selectedJwID[aJointWork.code] = true
+            }
+        }
+        
         self.jointWorkTableView.reloadData()
     }
     
@@ -156,8 +183,6 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
             cell.txtName.addTarget(self, action: #selector(imageTitleEdit(_:)), for: .editingChanged)
             cell.txtName.tag = indexPath.row
             cell.btnDelete.tag =  indexPath.row
-         //   cell.txtDescription.tag = indexPath.row
-          // cell.txtDescription.delegate = self
             return cell
             
             
@@ -254,6 +279,7 @@ class JfwView: UIView {
     
     @IBOutlet var remarksTF: UITextField!
     
+    var selectedJwID = [String: Bool]()
     var rootVC: UIViewController?
     var pobValue: String?
     var overallFeedback: Feedback?
@@ -368,10 +394,6 @@ class JfwView: UIView {
             
             
         }
-        
-        
-        
-        
       //  viewEventCaptureSegment.isHidden = true
         selectedfeedbackLbl.setFont(font: .medium(size: .BODY))
        // lblEnterRemarks.setFont(font: .medium(size: .BODY))

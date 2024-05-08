@@ -289,7 +289,7 @@ class AddCallinfoVC: BaseViewController {
         
         addedDCRCallsParam["AdCuss"] = additionalCustomerParams
         
-
+        var isCompetitorExist: Bool = false
         var entryRCPAparamArr : [[String: Any]] = [[:]]
         entryRCPAparamArr.removeAll()
       
@@ -338,15 +338,18 @@ class AddCallinfoVC: BaseViewController {
                 }
                 
                 entryRCPAparam["Competitors"] = competitorArr
-
+                isCompetitorExist = competitorArr.isEmpty ? false : true
             }
-            entryRCPAparamArr.append(entryRCPAparam)
+          
+                entryRCPAparamArr.append(entryRCPAparam)
+         
+          
         }
         
         
-        
-        addedDCRCallsParam["RCPAEntry"] = entryRCPAparamArr
-        
+        if isCompetitorExist {
+            addedDCRCallsParam["RCPAEntry"] = entryRCPAparamArr
+        }
        
         
         
@@ -463,14 +466,106 @@ class AddCallinfoVC: BaseViewController {
                         completion(true)
                     }
                 } else {
-                    NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                    completion(true)
+                    
+                    welf.toRemoveEditedCallOnline(param: addedDCRCallsParam) { _ in
+                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                        completion(true)
+                    }
+                 
                 }
              
                 
             }
         }
     }
+    
+    
+    func toRemoveEditedCallOnline(param: JSON, completion: @escaping (Bool) -> ()) {
+
+
+        let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
+
+        let context = DBManager.shared.managedContext()
+
+        let fetchRequest: NSFetchRequest<UnsyncedHomeData> = UnsyncedHomeData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", identifier ?? "")
+
+        do {
+            let results = try context.fetch(fetchRequest)
+            if let existingObject = results.first {
+                
+                context.delete(existingObject)
+
+                DBManager.shared.saveContext()
+            } else {
+                // Object not found, handle accordingly
+                completion(true)
+            }
+        } catch {
+            // Handle fetch error
+            completion(true)
+        }
+        
+
+       // let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.outboxParams)
+        
+        
+        CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+            guard let aoutboxCDM = outboxCDMs.first else {
+                completion(false)
+                return
+            }
+            
+            let coreparamDatum = aoutboxCDM.unSyncedParams
+            
+            guard let paramData = coreparamDatum else {
+                completion(false)
+                return}
+            var localParamArr = [String: [[String: Any]]]()
+            do {
+                localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+                dump(localParamArr)
+            } catch {
+                self.toCreateToast("unable to retrive")
+            }
+            
+            
+            let custCodeToRemove = param["CustCode"] as! String
+            
+            // Iterate through the dictionary and filter out elements with the specified CustCode
+            localParamArr = localParamArr.mapValues { callsArray in
+                return callsArray.filter { call in
+                    if let custCode = call["CustCode"] as? String {
+                        if custCode == custCodeToRemove {
+                            print("Removing element with CustCode: \(custCode)")
+                            return false
+                        }
+                    }
+                    return true
+                }
+            }
+            // Remove entries where the filtered array is empty
+            localParamArr = localParamArr.filter { _, callsArray in
+                return !callsArray.isEmpty
+            }
+            
+            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
+            
+
+            toSaveaParamData(jsonDatum: jsonDatum) {
+                
+
+                
+                completion(true)
+                
+            }
+
+        }
+
+        
+    }
+    
+
     
     func showAlertToEnableLocation() {
         let commonAlert = CommonAlert()
@@ -548,6 +643,14 @@ class AddCallinfoVC: BaseViewController {
         }
     }
     
+    
+    func toCheckandRemoveCoredataCallInstance() {
+        
+        
+        
+        
+        
+    }
     
     func toSaveunsyncedHomeData(issussess: Bool, appsetup: AppSetUp, cusType : String) {
         

@@ -238,6 +238,7 @@
 		38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D7F6E12B21D8830091B2CF /* LocalStorage.swift */; };
 		38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363A2A4C014B0032588D /* MasterSync.swift */; };
 		38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */; };
+		38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D95FF52BEB7E0900348FB8 /* EditCallinfoModel.swift */; };
 		38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */; };
 		38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */; };
 		38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */; };
@@ -618,6 +619,7 @@
 		38D7F6E12B21D8830091B2CF /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 		38D8363A2A4C014B0032588D /* MasterSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSync.swift; sourceTree = "<group>"; };
 		38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncTbCell.swift; sourceTree = "<group>"; };
+		38D95FF52BEB7E0900348FB8 /* EditCallinfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCallinfoModel.swift; sourceTree = "<group>"; };
 		38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearMeViewModel.swift; sourceTree = "<group>"; };
 		38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = outboxCollapseTVC.swift; sourceTree = "<group>"; };
 		38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = outboxCollapseTVC.xib; sourceTree = "<group>"; };
@@ -1070,6 +1072,7 @@
 			children = (
 				38BA66872B4685BC008C6D2C /* DCRGraphModel.swift */,
 				38D70F0D2B909F590033ED9C /* DCRdatesModel.swift */,
+				38D95FF52BEB7E0900348FB8 /* EditCallinfoModel.swift */,
 			);
 			path = DCR;
 			sourceTree = "<group>";
@@ -2149,6 +2152,7 @@
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
+				38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */,
 				38DD14B72B4FEEF60036384F /* HomeSideMenuTVC.swift in Sources */,
 				38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */,
 				38CBA4D22A9F80B3001992C4 /* TagViewCell.swift in Sources */,

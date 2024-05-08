@@ -917,23 +917,57 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             return cell
         case .jointCall:
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
-            titleLbl.text = "Feedback"
             cell.selectionStyle = .none
-        
-            var yetTosendModel: NSManagedObject?
-             if let modelArr = self.jointWorkArr{
-                 let model: JointWork = modelArr[indexPath.row]
-                 yetTosendModel = model
-                 cell.populateCell(model: model)
-              //   cell.setupHeight(type: cellType)
-             }
+            cell.setCheckBox(isToset: true)
+            titleLbl.text = "Select Joint work"
+            let model =  self.jointWorkArr?[indexPath.row]
+            cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
             
-            cell.addTap {
-                self.specifiedMenuVC.menuDelegate?.selectedType(.feedback, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
-                self.hideMenuAndDismiss()
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            
+            self.jointWorkArr?.forEach({ cluster in
+                //  dump(cluster.code)
+                selectedJwID.forEach { id, isSelected in
+                    if id == cluster.code {
+
+                        if isSelected  {
+                            if cluster.name ==  cell.lblName?.text {
+                                cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                            }
+                            
+                        } else {
+                            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        }
+                    } else {
+                    }
+                }
+            })
+
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                 var selectedClusterID = welf.selectedJwID
+                
+                if let _ = selectedClusterID[model?.code ?? ""] {
+
+                    selectedClusterID[model?.code ?? ""] =
+                        !(selectedClusterID[model?.code ?? ""] ?? false)
+
+                    if selectedClusterID[model?.code ?? ""] == false {
+                        selectedClusterID.removeValue(forKey: model?.code ?? "")
+                    }
+
+                } else {
+                    selectedClusterID[model?.code ?? ""] = true
+                }
+                
+                welf.selectedJwID = selectedClusterID
+                tableView.reloadData()
             }
-            
             return cell
+
         case .listedDoctor:
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
             cell.selectionStyle = .none
@@ -1398,7 +1432,7 @@ class SpecifiedMenuView: BaseView {
     var unlisteedDocArr : [UnListedDoctor]?
     var filteredTerritories: [Territory]?
     var filteredCompetitors: [Competitor]?
-    
+    var filteredJfw: [JointWork]?
     var inputsArr: [Input]?
     var productArr: [Product]?
     var visitControlArr : [VisitControl]?
@@ -1414,6 +1448,7 @@ class SpecifiedMenuView: BaseView {
     var selectedCode: Int?
     var previewType: String?
     var selectedClusterID = [String: Bool]()
+    var selectedJwID = [String: Bool]()
     var selectedCompetitorID = [String: Bool]()
     var isRejected = Bool()
     //MARK: UDF, gestures  and animations
@@ -1489,6 +1524,7 @@ class SpecifiedMenuView: BaseView {
             self.selectedCompetitorID = [String: Bool]()
             
             self.specifiedMenuVC.selectedClusterID = nil
+            
             self.selectedClusterID = [String: Bool]()
             self.menuTable.reloadData()
             
@@ -1514,6 +1550,15 @@ class SpecifiedMenuView: BaseView {
                 }
                 return welf.selectedCompetitorID[code] == true
             }
+            
+            
+            
+            welf.filteredJfw = welf.jointWorkArr?.filter { territory in
+                      guard let code = territory.code else {
+                          return false
+                      }
+                    return welf.selectedJwID[code] == true
+                  }
     
             
             welf.hideMenuAndDismiss()
@@ -1623,7 +1668,8 @@ class SpecifiedMenuView: BaseView {
             guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: context),
                   let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
                   let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
-                  let selectedCompetitorentity = NSEntityDescription.entity(forEntityName: "Competitor", in: context)
+                  let selectedCompetitorentity = NSEntityDescription.entity(forEntityName: "Competitor", in: context),
+                    let selectedJointWorkentity = NSEntityDescription.entity(forEntityName: "JointWork", in: context)
             else {
                 fatalError("Entity not found")
             }
@@ -1633,7 +1679,7 @@ class SpecifiedMenuView: BaseView {
             let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
             let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
             let temporaryselectedCompetitorsobj = NSManagedObject(entity: selectedCompetitorentity, insertInto: nil)  as! Competitor
-            
+        let temporaryselectedJointWorkobj = NSManagedObject(entity: selectedJointWorkentity, insertInto: nil)  as! JointWork
             switch cellType {
             case .headQuater:
                 
@@ -1652,6 +1698,18 @@ class SpecifiedMenuView: BaseView {
                 
             case .competitors:
                 specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedCompetitorsobj, selectedObjects: filteredCompetitors ?? [temporaryselectedCompetitorsobj])
+                
+            case .jointCall:
+                
+                
+                filteredJfw = jointWorkArr?.filter { territory in
+                          guard let code = territory.code else {
+                              return false
+                          }
+                        return selectedJwID[code] == true
+                      }
+                
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedJointWorkobj, selectedObjects: filteredJfw ?? [temporaryselectedJointWorkobj])
                 
             default:
                 print("Yet to implement")
@@ -1688,6 +1746,7 @@ class SpecifiedMenuView: BaseView {
     func toLoadRequiredData(isfromTF: Bool? = false) {
         var selectedIndex : Int?
         self.selectedClusterID = specifiedMenuVC.selectedClusterID ?? [String: Bool]()
+      
        switch self.cellType {
          
            
@@ -1828,8 +1887,11 @@ class SpecifiedMenuView: BaseView {
            }
         
        case .jointCall:
-           bottomHolderHeight.constant = 0
+           bottomHolderHeight.constant = 80
+           self.selectedJwID = specifiedMenuVC.selectedJwID ?? [String: Bool]()
            self.jointWorkArr = DBManager.shared.getJointWork()
+
+           
        case .listedDoctor, .doctorInfo:
            if specifiedMenuVC.previewType != nil {
                switch specifiedMenuVC.previewType {

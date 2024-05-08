@@ -20,6 +20,7 @@ class SpecifiedMenuVC : BaseViewController {
     var previewType: PreviewHomeView.PreviewType?
     var selectedClusterID: [String : Bool]?
     var selectedCompetitorsID: [String : Bool]?
+    var selectedJwID: [String : Bool]?
     var isFromfilter = Bool()
     
     override func viewDidLoad() {

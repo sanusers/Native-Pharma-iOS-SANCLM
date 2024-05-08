@@ -124,7 +124,7 @@ class TPdeviateReasonView : UIView {
         configureTextField()
     }
     @IBAction func didTapSend(_ sender: Any) {
-        addedSubviewDelegate?.didUpdate()
+            addedSubviewDelegate?.didUpdate()
             self.delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: productIndex)
     }
     @IBAction func didTapCancel(_ sender: Any) {
