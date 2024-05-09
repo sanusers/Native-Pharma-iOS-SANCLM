@@ -50,8 +50,8 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
         cell.index = indexPath.row
         cell.qtyTF.text =  self.competitorsInfo?[indexPath.row].qty ?? ""
         if let quantity = Int(cell.qtyTF.text ?? "1") {
-            let rate = (Int(competitorRate ?? "0") ?? 0) * quantity
-            cell.rateLbl.text = "\(rate)"
+           // let rate = (Int(competitorRate ?? "0") ?? 0) * quantity
+            cell.rateLbl.text = competitorRate
             
             let value = (Int(competirorValue ?? "0") ?? 0) * quantity
             cell.valueLbl.text = "\(value)"

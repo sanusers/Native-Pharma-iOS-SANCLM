@@ -859,7 +859,17 @@ extension AddCallinfoView: tableViewProtocols {
         self.selectedAddcompetitorSection = section
         let vc  = SpecifiedMenuVC.initWithStory(self, celltype: .competitors)
         if let addedProduct = self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct {
-            vc.selectedObject = addedProduct[selectedAddcompetitorRow].addedProduct
+            // Ensure selectedAddcompetitorRow is a valid index
+            guard selectedAddcompetitorRow < addedProduct.count else {
+                // Handle the case where selectedAddcompetitorRow is out of bounds
+                return
+            }
+
+            // Access the selected object from the addedProduct array at index selectedAddcompetitorRow
+            let selectedObject = addedProduct[selectedAddcompetitorRow].addedProduct
+
+            // Assign the selected object to vc.selectedObject
+            vc.selectedObject = selectedObject
         }
        // vc.selectedObject =    self.rcpaDetailsModel[selectedAddcompetitorSection].addedProductDetails?.addedProduct?[selectedAddcompetitorRow].addedProduct
         

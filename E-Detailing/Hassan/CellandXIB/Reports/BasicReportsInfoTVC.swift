@@ -119,6 +119,7 @@ class BasicReportsInfoTVC: UITableViewCell {
             holderStackHeightConst.constant = tempstackHeight
         } else {
             inAndoutInfoView.isHidden = false
+            tempstackHeight = tempstackHeight + 70
             inAndoutHeightConst.constant = 80
         }
         
@@ -138,6 +139,7 @@ class BasicReportsInfoTVC: UITableViewCell {
         } else {
             remarksAndPlansView.isHidden = false
             remarksAndPlansHeightConst.constant = 75
+            holderStackHeightConst.constant = tempstackHeight
         }
         
         switch model.typ {

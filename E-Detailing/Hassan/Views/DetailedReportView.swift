@@ -44,7 +44,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         if isTohideCheckin && isTohideCheckout  {
             tempCellHeight = tempCellHeight - 80
         } else {
-          // tempCellHeight += 80
+           tempCellHeight += 80
         }
         
         var count = Int()

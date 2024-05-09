@@ -289,67 +289,127 @@ class AddCallinfoVC: BaseViewController {
         
         addedDCRCallsParam["AdCuss"] = additionalCustomerParams
         
-        var isCompetitorExist: Bool = false
-        var entryRCPAparamArr : [[String: Any]] = [[:]]
-        entryRCPAparamArr.removeAll()
-      
+//        var isCompetitorExist: Bool = false
+//        var entryRCPAparamArr : [[String: Any]] = [[:]]
+//        entryRCPAparamArr.removeAll()
+//      
+//        
+//        for rcpa in rcpaValue {
+//            var entryRCPAparam = [String: Any]()
+//            var chemistArr = [[String: Any]]()
+//            var rcpaChemist = [String: Any]()
+//            rcpaChemist["Name"] =  rcpa.addedChemist?.name
+//            rcpaChemist["Code"] = rcpa.addedChemist?.code
+//            chemistArr.append(rcpaChemist)
+//            
+//            entryRCPAparam["Chemists"] = chemistArr
+//            
+//            rcpa.addedProductDetails?.addedProduct?.enumerated().forEach{ index, aAddedProduct in
+//                let productCode : String =    aAddedProduct.addedProduct?.code ?? ""
+//                let productName : String =  aAddedProduct.addedProduct?.name ?? ""
+//                
+//                entryRCPAparam["OPCode"] = productCode
+//                entryRCPAparam["OPName"] = productName
+//                entryRCPAparam["OPQty"] =  rcpa.addedProductDetails?.addedQuantity?[index]
+//                entryRCPAparam["OPRate"] = rcpa.addedProductDetails?.addedRate?[index]
+//                entryRCPAparam["OPValue"] = rcpa.addedProductDetails?.addedValue?[index]
+//                entryRCPAparam["OPTotal"] = rcpa.addedProductDetails?.addedTotal?[index]
+//                
+//                var competitorArr = [[String: Any]]()
+//             
+//                
+//                if let addedCompetitors: [AdditionalCompetitorsInfo] =  aAddedProduct.competitorsInfo {
+//                    addedCompetitors.forEach { aAdditionalCompetitorsInfo in
+//                        var aCompatitorParam = [String: Any]()
+//                        aCompatitorParam["CPQty"] = aAdditionalCompetitorsInfo.qty
+//                        aCompatitorParam["CPRate"] =  rcpa.addedProductDetails?.addedRate?[index]
+//                        //aAdditionalCompetitorsInfo.rate
+//                        aCompatitorParam["CPValue"] =  rcpa.addedProductDetails?.addedValue?[index]
+//                        //aAdditionalCompetitorsInfo.value
+//                        aCompatitorParam["CompCode"] = aAdditionalCompetitorsInfo.competitor?.compSlNo
+//                        aCompatitorParam["CompName"] = aAdditionalCompetitorsInfo.competitor?.compName
+//                        aCompatitorParam["CompPCode"] = aAdditionalCompetitorsInfo.competitor?.compProductSlNo
+//                        aCompatitorParam["CompPName"] = aAdditionalCompetitorsInfo.competitor?.compProductName
+//                        aCompatitorParam["CPRemarks"] = aAdditionalCompetitorsInfo.remarks
+//                        aCompatitorParam["Chemname"] =  rcpa.addedChemist?.name
+//                        aCompatitorParam["Chemcode"] =  rcpa.addedChemist?.code
+//                        competitorArr.append(aCompatitorParam)
+//                    }
+//                }
+//                
+//                entryRCPAparam["Competitors"] = competitorArr
+//                isCompetitorExist = competitorArr.isEmpty ? false : true
+//            }
+//          
+//                entryRCPAparamArr.append(entryRCPAparam)
+//         
+//          
+//        }
         
+        
+        
+        var rcpaEntry = [[String: Any]]()
+
         for rcpa in rcpaValue {
-            var entryRCPAparam = [String: Any]()
-            var chemistArr = [[String: Any]]()
-            var rcpaChemist = [String: Any]()
-            rcpaChemist["Name"] =  rcpa.addedChemist?.name
-            rcpaChemist["Code"] = rcpa.addedChemist?.code
-            chemistArr.append(rcpaChemist)
+            guard let addedChemist = rcpa.addedChemist,
+                  let addedProductDetails = rcpa.addedProductDetails,
+                  let addedProducts = addedProductDetails.addedProduct,
+                  let addedQuantities = addedProductDetails.addedQuantity,
+                  let addedRates = addedProductDetails.addedRate,
+                  let addedValues = addedProductDetails.addedValue,
+                  let addedTotals = addedProductDetails.addedTotal else {
+                continue
+            }
             
-            entryRCPAparam["Chemists"] = chemistArr
-            
-            rcpa.addedProductDetails?.addedProduct?.enumerated().forEach{ index, aAddedProduct in
-                let productCode : String =    aAddedProduct.addedProduct?.code ?? ""
-                let productName : String =  aAddedProduct.addedProduct?.name ?? ""
+            for (index, productWithCompetitors) in addedProducts.enumerated() {
+                var entryRCPAparam = [String: Any]()
                 
-                entryRCPAparam["OPCode"] = productCode
-                entryRCPAparam["OPName"] = productName
-                entryRCPAparam["OPQty"] =  rcpa.addedProductDetails?.addedQuantity?[index]
-                entryRCPAparam["OPRate"] = rcpa.addedProductDetails?.addedRate?[index]
-                entryRCPAparam["OPValue"] = rcpa.addedProductDetails?.addedValue?[index]
-                entryRCPAparam["OPTotal"] = rcpa.addedProductDetails?.addedTotal?[index]
+                // Chemist information
+                var chemistArr = [[String: Any]]()
+                var rcpaChemist = [String: Any]()
+                rcpaChemist["Name"] = addedChemist.name
+                rcpaChemist["Code"] = addedChemist.code
+                chemistArr.append(rcpaChemist)
+                entryRCPAparam["Chemists"] = chemistArr
                 
+                // Product information
+                if let addedProduct = productWithCompetitors.addedProduct {
+                    entryRCPAparam["OPCode"] = addedProduct.code ?? ""
+                    entryRCPAparam["OPName"] = addedProduct.name ?? ""
+                }
+                entryRCPAparam["OPQty"] = addedQuantities[index]
+                entryRCPAparam["OPRate"] = addedRates[index]
+                entryRCPAparam["OPValue"] = addedValues[index]
+                entryRCPAparam["OPTotal"] = addedTotals[index]
+                
+                // Competitors information
                 var competitorArr = [[String: Any]]()
-             
-                
-                if let addedCompetitors: [AdditionalCompetitorsInfo] =  aAddedProduct.competitorsInfo {
-                    addedCompetitors.forEach { aAdditionalCompetitorsInfo in
-                        var aCompatitorParam = [String: Any]()
-                        aCompatitorParam["CPQty"] = aAdditionalCompetitorsInfo.qty
-                        aCompatitorParam["CPRate"] =  rcpa.addedProductDetails?.addedRate?[index]
-                        //aAdditionalCompetitorsInfo.rate
-                        aCompatitorParam["CPValue"] =  rcpa.addedProductDetails?.addedValue?[index]
-                        //aAdditionalCompetitorsInfo.value
-                        aCompatitorParam["CompCode"] = aAdditionalCompetitorsInfo.competitor?.compSlNo
-                        aCompatitorParam["CompName"] = aAdditionalCompetitorsInfo.competitor?.compName
-                        aCompatitorParam["CompPCode"] = aAdditionalCompetitorsInfo.competitor?.compProductSlNo
-                        aCompatitorParam["CompPName"] = aAdditionalCompetitorsInfo.competitor?.compProductName
-                        aCompatitorParam["CPRemarks"] = aAdditionalCompetitorsInfo.remarks
-                        aCompatitorParam["Chemname"] =  rcpa.addedChemist?.name
-                        aCompatitorParam["Chemcode"] =  rcpa.addedChemist?.code
-                        competitorArr.append(aCompatitorParam)
+                if let competitorsInfo = productWithCompetitors.competitorsInfo {
+                    for competitorInfo in competitorsInfo {
+                        var competitorEntry = [String: Any]()
+                        competitorEntry["CPQty"] = competitorInfo.qty ?? ""
+                        competitorEntry["CPRate"] = competitorInfo.rate ?? ""
+                        competitorEntry["CPValue"] = competitorInfo.value ?? ""
+                        competitorEntry["CompCode"] = competitorInfo.competitor?.compSlNo ?? ""
+                        competitorEntry["CompName"] = competitorInfo.competitor?.compName ?? ""
+                        competitorEntry["CompPCode"] = competitorInfo.competitor?.compProductSlNo ?? ""
+                        competitorEntry["CompPName"] = competitorInfo.competitor?.compProductName ?? ""
+                        competitorEntry["Chemname"] = addedChemist.name
+                        competitorEntry["Chemcode"] = addedChemist.code
+                        competitorEntry["CPRemarks"] = competitorInfo.remarks ?? ""
+                        competitorArr.append(competitorEntry)
                     }
                 }
-                
                 entryRCPAparam["Competitors"] = competitorArr
-                isCompetitorExist = competitorArr.isEmpty ? false : true
+                
+                rcpaEntry.append(entryRCPAparam)
             }
-          
-                entryRCPAparamArr.append(entryRCPAparam)
-         
-          
         }
         
         
-        if isCompetitorExist {
-            addedDCRCallsParam["RCPAEntry"] = entryRCPAparamArr
-        }
+    //    if isCompetitorExist {
+            addedDCRCallsParam["RCPAEntry"] = rcpaEntry
+    //    }
        
         
         

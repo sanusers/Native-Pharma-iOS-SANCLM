@@ -70,72 +70,164 @@ extension MainVC {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+
+    
+//    func toCreateRCPAdetailsModel(rcpa: [RCPAHead]) -> [RCPAdetailsModal] {
+//        var rcpaDetailsModelArr :  [RCPAdetailsModal] = []
+//    
+//
+//        rcpa.forEach { aRCPAHead in
+//            let  rcpaDetailsModel = RCPAdetailsModal()
+//          let loadedChemists =  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+//            let selectedChemist = loadedChemists.filter { aChemist in
+//                aChemist.code == aRCPAHead.chmCode.replacingOccurrences(of: ",", with: "")
+//            }
+//          
+//            
+//            if let aChemistEntity = NSEntityDescription.entity(forEntityName: "Chemist", in: context) {
+//                let aChemistCDM = Chemist(entity: aChemistEntity, insertInto: context)
+//                
+//             let selectedChemist = selectedChemist.first
+//         
+//                aChemistCDM.chemistContact =  selectedChemist?.chemistContact
+//                aChemistCDM.chemistEmail = selectedChemist?.chemistEmail
+//                aChemistCDM.chemistFax = selectedChemist?.chemistFax
+//                aChemistCDM.chemistMobile = selectedChemist?.chemistMobile
+//                aChemistCDM.chemistPhone = selectedChemist?.chemistPhone
+//                aChemistCDM.code = selectedChemist?.code
+//                aChemistCDM.geoTagCnt = selectedChemist?.geoTagCnt
+//                aChemistCDM.lat = selectedChemist?.lat
+//                aChemistCDM.long = selectedChemist?.long
+//                aChemistCDM.mapId = selectedChemist?.mapId
+//                aChemistCDM.maxGeoMap = selectedChemist?.maxGeoMap
+//                aChemistCDM.name = selectedChemist?.name
+//                aChemistCDM.sfCode = selectedChemist?.sfCode
+//                aChemistCDM.townCode = selectedChemist?.townCode
+//                aChemistCDM.townName = selectedChemist?.townName
+//                
+//                
+//                rcpaDetailsModel.addedChemist = aChemistCDM
+//                
+//                
+//            }
+//            
+//           
+//            var addedProductWithCompetiors = [ProductWithCompetiors]()
+//            var aAddedProductWithCompetior = ProductWithCompetiors()
+//            
+//            
+//            let loadedProducts =  DBManager.shared.getProduct()
+//            aAddedProductWithCompetior.addedProduct = loadedProducts.filter({ aProduct in
+//                aProduct.code == aRCPAHead.opCode
+//            }).first
+//            var competitorsInfoArr = [AdditionalCompetitorsInfo]()
+//            aRCPAHead.rcpaDet.forEach { aRCPADet in
+//                var competitorsInfo = AdditionalCompetitorsInfo()
+//                if let aCompetitor = NSEntityDescription.entity(forEntityName: "Competitor", in: context) {
+//                    let aCompetitor = Competitor(entity: aCompetitor, insertInto: context)
+//                    if let  ourProduct = aAddedProductWithCompetior.addedProduct {
+//                        aCompetitor.compName = aRCPADet.compName
+//                        aCompetitor.compProductName = aRCPADet.compPName
+//                        aCompetitor.compProductSlNo = aRCPADet.compPCode
+//                       // aCompetitor.compSlNo = aRCPADet.
+//                        aCompetitor.index = Int16()
+//                        aCompetitor.ourProductCode = ourProduct.code
+//                        aCompetitor.ourProductName = ourProduct.name
+//                        competitorsInfo.competitor = aCompetitor
+//                    }
+//
+//                }
+//                competitorsInfo.remarks = aRCPADet.cpRemarks
+//                competitorsInfo.rate = "\(aRCPADet.cpRate)"
+//                competitorsInfo.value = "\(aRCPADet.cpValue)"
+//                competitorsInfo.qty = "\(aRCPADet.cpQty)"
+//                competitorsInfoArr.append(competitorsInfo)
+//            }
+//            
+//            aAddedProductWithCompetior.competitorsInfo = competitorsInfoArr
+//            addedProductWithCompetiors.append(aAddedProductWithCompetior)
+//            
+//            var aProductDetails =  ProductDetails()
+//            aProductDetails.addedProduct = addedProductWithCompetiors
+//            aProductDetails.addedQuantity = ["\(aRCPAHead.opQty)"]
+//            aProductDetails.addedRate = ["\(aRCPAHead.opRate)"]
+//            aProductDetails.addedValue = ["\(aRCPAHead.opValue)"]
+//            aProductDetails.addedTotal = ["\(aRCPAHead.opValue)"]
+//            
+//            
+//            rcpaDetailsModel.addedProductDetails = aProductDetails
+//            rcpaDetailsModelArr.append(rcpaDetailsModel)
+//        }
+//        
+//        
+//
+//
+//        
+//        return rcpaDetailsModelArr
+//    }
+    
     
     
     func toCreateRCPAdetailsModel(rcpa: [RCPAHead]) -> [RCPAdetailsModal] {
-        var rcpaDetailsModelArr :  [RCPAdetailsModal] = []
-    
-
+        var chemistModelsMap: [String: RCPAdetailsModal] = [:]
+        var rcpaDetailsModelArr : [RCPAdetailsModal] = []
         rcpa.forEach { aRCPAHead in
-            let  rcpaDetailsModel = RCPAdetailsModal()
-          let loadedChemists =  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
-            let selectedChemist = loadedChemists.filter { aChemist in
-                aChemist.code == aRCPAHead.chmCode
+            // Create or retrieve RCPAdetailsModal for the chemist
+            var isExistingElement: Bool = false
+            let chemistCode = aRCPAHead.chmCode.replacingOccurrences(of: ",", with: "")
+            let rcpaDetailsModel: RCPAdetailsModal
+            if let existingModel = chemistModelsMap[chemistCode] {
+                rcpaDetailsModel = existingModel
+                isExistingElement = true
+            } else {
+                rcpaDetailsModel = RCPAdetailsModal()
+                chemistModelsMap[chemistCode] = rcpaDetailsModel
+                isExistingElement = false
             }
-          
-            
-            if let aChemistEntity = NSEntityDescription.entity(forEntityName: "Chemist", in: context) {
-                let aChemistCDM = Chemist(entity: aChemistEntity, insertInto: context)
-                
-             let selectedChemist = selectedChemist.first
-         
-                aChemistCDM.chemistContact =  selectedChemist?.chemistContact
-                aChemistCDM.chemistEmail = selectedChemist?.chemistEmail
-                aChemistCDM.chemistFax = selectedChemist?.chemistFax
-                aChemistCDM.chemistMobile = selectedChemist?.chemistMobile
-                aChemistCDM.chemistPhone = selectedChemist?.chemistPhone
-                aChemistCDM.code = selectedChemist?.code
-                aChemistCDM.geoTagCnt = selectedChemist?.geoTagCnt
-                aChemistCDM.lat = selectedChemist?.lat
-                aChemistCDM.long = selectedChemist?.long
-                aChemistCDM.mapId = selectedChemist?.mapId
-                aChemistCDM.maxGeoMap = selectedChemist?.maxGeoMap
-                aChemistCDM.name = selectedChemist?.name
-                aChemistCDM.sfCode = selectedChemist?.sfCode
-                aChemistCDM.townCode = selectedChemist?.townCode
-                aChemistCDM.townName = selectedChemist?.townName
-                
-                
-                rcpaDetailsModel.addedChemist = aChemistCDM
-                
-                
+
+            // Populate RCPAdetailsModal with chemist details
+            let loadedChemists = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            if let selectedChemist = loadedChemists.first(where: { $0.code == chemistCode }) {
+                if let aChemistEntity = NSEntityDescription.entity(forEntityName: "Chemist", in: context) {
+                    let aChemistCDM = Chemist(entity: aChemistEntity, insertInto: context)
+                    aChemistCDM.chemistContact = selectedChemist.chemistContact
+                    aChemistCDM.chemistEmail = selectedChemist.chemistEmail
+                    aChemistCDM.chemistFax = selectedChemist.chemistFax
+                    aChemistCDM.chemistMobile = selectedChemist.chemistMobile
+                    aChemistCDM.chemistPhone = selectedChemist.chemistPhone
+                    aChemistCDM.code = selectedChemist.code
+                    aChemistCDM.geoTagCnt = selectedChemist.geoTagCnt
+                    aChemistCDM.lat = selectedChemist.lat
+                    aChemistCDM.long = selectedChemist.long
+                    aChemistCDM.mapId = selectedChemist.mapId
+                    aChemistCDM.maxGeoMap = selectedChemist.maxGeoMap
+                    aChemistCDM.name = selectedChemist.name
+                    aChemistCDM.sfCode = selectedChemist.sfCode
+                    aChemistCDM.townCode = selectedChemist.townCode
+                    aChemistCDM.townName = selectedChemist.townName
+                    rcpaDetailsModel.addedChemist = aChemistCDM
+                }
             }
-            
-           
-            var addedProductWithCompetiors = [ProductWithCompetiors]()
-            var aAddedProductWithCompetior = ProductWithCompetiors()
-            
-            
-            let loadedProducts =  DBManager.shared.getProduct()
-            aAddedProductWithCompetior.addedProduct = loadedProducts.filter({ aProduct in
-                aProduct.code == aRCPAHead.opCode
-            }).first
+
+            // Populate RCPAdetailsModal with product details
+            var addedProductWithCompetitors = [ProductWithCompetiors]()
+            var aAddedProductWithCompetitor = ProductWithCompetiors()
+            let loadedProducts = DBManager.shared.getProduct()
+            aAddedProductWithCompetitor.addedProduct = loadedProducts.first(where: { $0.code == aRCPAHead.opCode })
             var competitorsInfoArr = [AdditionalCompetitorsInfo]()
             aRCPAHead.rcpaDet.forEach { aRCPADet in
                 var competitorsInfo = AdditionalCompetitorsInfo()
-                if let aCompetitor = NSEntityDescription.entity(forEntityName: "Competitor", in: context) {
-                    let aCompetitor = Competitor(entity: aCompetitor, insertInto: context)
-                    if let  ourProduct = aAddedProductWithCompetior.addedProduct {
+                if let aCompetitorEntity = NSEntityDescription.entity(forEntityName: "Competitor", in: context) {
+                    let aCompetitor = Competitor(entity: aCompetitorEntity, insertInto: context)
+                    if let ourProduct = aAddedProductWithCompetitor.addedProduct {
                         aCompetitor.compName = aRCPADet.compName
                         aCompetitor.compProductName = aRCPADet.compPName
                         aCompetitor.compProductSlNo = aRCPADet.compPCode
-                       // aCompetitor.compSlNo = aRCPADet.
                         aCompetitor.index = Int16()
                         aCompetitor.ourProductCode = ourProduct.code
                         aCompetitor.ourProductName = ourProduct.name
                         competitorsInfo.competitor = aCompetitor
                     }
-
                 }
                 competitorsInfo.remarks = aRCPADet.cpRemarks
                 competitorsInfo.rate = "\(aRCPADet.cpRate)"
@@ -143,64 +235,32 @@ extension MainVC {
                 competitorsInfo.qty = "\(aRCPADet.cpQty)"
                 competitorsInfoArr.append(competitorsInfo)
             }
-            
-            aAddedProductWithCompetior.competitorsInfo = competitorsInfoArr
-            addedProductWithCompetiors.append(aAddedProductWithCompetior)
-            
-            var aProductDetails =  ProductDetails()
-            aProductDetails.addedProduct = addedProductWithCompetiors
-            aProductDetails.addedQuantity = ["\(aRCPAHead.opQty)"]
-            aProductDetails.addedRate = ["\(aRCPAHead.opRate)"]
-            aProductDetails.addedValue = ["\(aRCPAHead.opValue)"]
-            aProductDetails.addedTotal = ["\(aRCPAHead.opValue)"]
-            
-            
-            rcpaDetailsModel.addedProductDetails = aProductDetails
-            rcpaDetailsModelArr.append(rcpaDetailsModel)
-        }
-        
-        
-        
-        // Create a dictionary to group modal objects by chemist ID
-        var groupedByChemist: [String: [RCPAdetailsModal]] = [:]
-
-        // Group modal objects by chemist
-        for modal in rcpaDetailsModelArr {
-            if let chemistID = modal.addedChemist?.code {
-                if var existingArray = groupedByChemist[chemistID] {
-                    existingArray.append(modal)
-                    groupedByChemist[chemistID] = existingArray
-                } else {
-                    groupedByChemist[chemistID] = [modal]
-                }
+            aAddedProductWithCompetitor.competitorsInfo = competitorsInfoArr
+            addedProductWithCompetitors.append(aAddedProductWithCompetitor)
+            if isExistingElement {
+                var aProductDetails : ProductDetails = rcpaDetailsModel.addedProductDetails ?? ProductDetails()
+                aProductDetails.addedProduct?.append(contentsOf: addedProductWithCompetitors)
+                aProductDetails.addedQuantity?.append(contentsOf: ["\(aRCPAHead.opQty)"])
+                aProductDetails.addedRate?.append(contentsOf: ["\(aRCPAHead.opRate)"])
+                aProductDetails.addedTotal?.append(contentsOf: ["\(aRCPAHead.opValue)"])
+                rcpaDetailsModel.addedProductDetails = aProductDetails
+            }
+            else {
+                var aProductDetails : ProductDetails = ProductDetails()
+                aProductDetails.addedProduct = addedProductWithCompetitors
+                aProductDetails.addedQuantity = ["\(aRCPAHead.opQty)"]
+                aProductDetails.addedRate = ["\(aRCPAHead.opRate)"]
+                aProductDetails.addedTotal =  ["\(aRCPAHead.opValue)"]
+                rcpaDetailsModel.addedProductDetails = aProductDetails
+            }
+            if let index = rcpaDetailsModelArr.firstIndex(where: { $0.addedChemist?.code == chemistCode }) {
+                rcpaDetailsModelArr[index] = rcpaDetailsModel
+        } else {
+                rcpaDetailsModelArr.append(rcpaDetailsModel)
             }
         }
-
-        // Merge arrays for chemists with the same ID
-        for (chemistID, modals) in groupedByChemist {
-            if modals.count > 1 {
-                // Merge arrays
-                let mergedModal = modals.reduce(RCPAdetailsModal()) { (result, next) -> RCPAdetailsModal in
-                    result.addedProductDetails?.addedProduct?.append(contentsOf: next.addedProductDetails?.addedProduct ?? [])
-                    result.addedProductDetails?.addedQuantity?.append(contentsOf: next.addedProductDetails?.addedQuantity ?? [])
-                    
-                    result.addedProductDetails?.addedRate?.append(contentsOf: next.addedProductDetails?.addedRate ?? [])
-                    result.addedProductDetails?.addedValue?.append(contentsOf: next.addedProductDetails?.addedValue ?? [])
-                    result.addedProductDetails?.addedTotal?.append(contentsOf: next.addedProductDetails?.addedTotal ?? [])
-                    //result.totalValue = "\(Double(result.totalValue ?? "0") ?? 0 + Double(next.totalValue ?? "0") ?? 0)"
-                    return result
-                }
-                // Replace arrays with merged array
-                groupedByChemist[chemistID] = [mergedModal]
-            }
-        }
-
-        // Extract merged modals into an array
-        var mergedRCPADetailsModelArr: [RCPAdetailsModal] = []
-        for (_, modals) in groupedByChemist {
-            mergedRCPADetailsModelArr.append(contentsOf: modals)
-        }
         
-        return mergedRCPADetailsModelArr
+        // Return the values of the chemistModelsMap
+        return rcpaDetailsModelArr
     }
 }
