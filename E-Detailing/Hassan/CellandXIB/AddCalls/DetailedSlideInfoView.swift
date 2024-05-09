@@ -29,7 +29,10 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
         let cell: DetailedInfoTVC = tableView.dequeueReusableCell(withIdentifier: "DetailedInfoTVC", for: indexPath) as! DetailedInfoTVC
         let model =  Shared.instance.detailedSlides[indexPath.row]
         let name =  model.slidesModel?.name
-        cell.brandName.text = name
+        if let brand = model.brand as? Brand {
+            cell.brandName.text = brand.name
+        }
+       
         cell.delegate = self
         cell.commentsIV.alpha = model.remarks == nil || model.remarks == "" ? 0.5 : 1
         cell.setupUI(currentRating: Int(model.remarksValue ?? 0), selectedIndex: indexPath.row)
@@ -71,13 +74,28 @@ class DetailedSlideInfoView: UIView {
     func setupui() {
         self.backgroundColor = .clear
         self.detailedInfoTable.layer.cornerRadius = 5
- 
         cellRegistration()
         toLoadData()
 
-       
+     //   toGroupSlidesbrandWise()
     }
     
+//    
+//    func toGroupSlidesbrandWise() {
+//        
+//        var capturedBrandWiseGroupedSlides = [Int: [DetailedSlide]]()
+//
+//        detailedSlides.forEach { aDetailedSlide in
+//            if let brandCode = aDetailedSlide.brandCode {
+//                if var slidesArray = capturedBrandWiseGroupedSlides[brandCode] {
+//                    slidesArray.append(aDetailedSlide)
+//                    capturedBrandWiseGroupedSlides[brandCode] = slidesArray
+//                } else {
+//                    capturedBrandWiseGroupedSlides[brandCode] = [aDetailedSlide]
+//                }
+//            }
+//        }
+//    }
 
     
     func toLoadData() {

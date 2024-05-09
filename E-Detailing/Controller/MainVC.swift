@@ -1691,7 +1691,8 @@ class MainVC : UIViewController {
             toDdayCall.vstTime = aHomeData.dcr_dt ?? ""
             toDdayCall.submissionDate = aHomeData.dcr_dt ?? ""
             toDdayCall.designation = type == 1 ? "Doctor" : type == 2 ? "Chemist" : type == 3 ? "Stockist" : type == 4 ?  "UnlistedDr." : type == 5 ? "cip" : type == 6 ? "hospital" : ""
-            toDdayCall.submissionStatus =  isSynced ? "Waiting for sync" : "Call aldready exists."
+            
+            toDdayCall.submissionStatus =  aHomeData.rejectionReason  ?? "Waiting to sync"
             //
             self.outBoxDataArr?.append(toDdayCall)
         }
@@ -3775,6 +3776,28 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
 
     func toUpdateData(param: JSON, status: String?) {
         let custCodeToUpdate = param["CustCode"] as! String
+        
+        
+        let context = DBManager.shared.managedContext()
+        let fetchRequest: NSFetchRequest<UnsyncedHomeData> = UnsyncedHomeData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", custCodeToUpdate)
+
+        do {
+            let existingEntities = try context.fetch(fetchRequest)
+            
+            if let existingEntity = existingEntities.first {
+                existingEntity.rejectionReason = status
+                DBManager.shared.saveContext()
+            }
+        } catch {
+            // Handle fetch error
+        }
+//    self.unsyncedhomeDataArr.forEach { aUnsyncedHomeData in
+//        if aUnsyncedHomeData.custCode == custCodeToUpdate {
+//            aUnsyncedHomeData.rejectionReason = "status"
+//        }
+//      }
+
 
         let updatedSections = obj_sections.map { section -> Section in
             var updatedSection = section

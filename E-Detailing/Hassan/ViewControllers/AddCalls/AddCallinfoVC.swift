@@ -499,6 +499,7 @@ class AddCallinfoVC: BaseViewController {
                     var toSendData = [String : Any]()
                     toSendData["data"] = jsonDatum
                     postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
+                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
                         self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                     }
             } else {
@@ -742,6 +743,7 @@ class AddCallinfoVC: BaseViewController {
                 existingEntity.trans_SlNo = ""
                 existingEntity.anslNo = ""
                 existingEntity.isDataSentToAPI = issussess == true ?  "1" : "0"
+                existingEntity.rejectionReason = issussess ?   "Call already exists." : "Waiting to sync"
                 //dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
                 existingEntity.checkintime = dcrCall.dcrCheckinTime
                 existingEntity.checkoutTime = dcrCall.dcrCheckOutTime

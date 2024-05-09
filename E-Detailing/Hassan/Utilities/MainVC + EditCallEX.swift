@@ -7,7 +7,25 @@
 
 import Foundation
 import CoreData
+import UIKit
 extension MainVC {
+    
+    struct FetchedProductInfo {
+        let product: String?
+        let stock: String?
+        let sample: String?
+        let rxQty: String?
+        let rcpa: String?
+        
+    }
+    
+    struct AdditionalInfo {
+        var feedback: Feedback?
+        var pobValue: String?
+        var overallRemarks: String?
+        
+    }
+    
     func toCallEditAPI(dcrCall: TodayCallsModel) {
         Shared.instance.showLoaderInWindow()
      //   {"headerno":"DP8-681","detno":"DP8-816","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,","cusname":"A JAIN --- [ Doctor ]","custype":"1","pob":"1"}
@@ -57,6 +75,21 @@ extension MainVC {
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userststisticsVM ?? UserStatisticsVM())
         
         vc.rcpaDetailsModel =  toCreateRCPAdetailsModel(rcpa: model.rcpaHeadArr)
+        vc.productSelectedListViewModel = tocreateProductsViewModal(fetchedproducts: model.dcrDetailArr)
+        
+        vc.jointWorkSelectedListViewModel = toCreateJointWorksViewmodel(fetchedproducts: model.dcrDetailArr)
+        
+    
+        vc.detailedSlides = toReturnFetchedDetailedSlides(fetchedDetails: model.digitalHeadArr)
+        
+       let fetchedAdditionalInfo = toReturnAdditionalAttributes(details: model.dcrDetailArr)
+        
+        vc.pobValue = fetchedAdditionalInfo.pobValue
+        vc.overallFeedback = fetchedAdditionalInfo.feedback
+        vc.overallRemarks = fetchedAdditionalInfo.overallRemarks
+        
+        
+        vc.eventCaptureListViewModel = toCreateEventcaptureViewModel(fetchedCaptures: model.eventCaptureArr)
         
         guard let callvm = call as? CallViewModel else {
           
@@ -70,103 +103,220 @@ extension MainVC {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    
+    
+    func toReturnAdditionalAttributes(details: [DCRDetail]) -> AdditionalInfo{
+        
+        var fetchedInfo = AdditionalInfo()
+        
+        details.forEach { aDCRDetail in
+            fetchedInfo.overallRemarks = aDCRDetail.activityRemarks
+            fetchedInfo.pobValue = "\(aDCRDetail.pob)"
+            
+            
+            let cacheFeedback = DBManager.shared.getFeedback()
+            let fechedFeedback = cacheFeedback.filter { aFeedback in
+                aFeedback.name == aDCRDetail.callFeedback
+            }.first
+            
+            fetchedInfo.feedback = fechedFeedback
+            
+        }
+        
+        return fetchedInfo
+    }
+    
+    func transformStringToObjects(_ inputString: String) -> [FetchedProductInfo] {
+        var productInfoArray: [FetchedProductInfo] = []
 
+        // Split the input string by '#'
+        let components = inputString.components(separatedBy: "#")
+
+        // Process each component
+        for component in components {
+            let parts = component.components(separatedBy: "~")
+
+            if parts.count >= 2 {
+                let product = parts[0]
+                let details = parts[1].components(separatedBy: "^")
+
+                if details.count >= 2 { // Ensure there are at least four elements in 'details'
+                    let sample = details[0].components(separatedBy: "$")[0] // Extract sample
+                    let stock = details[0].components(separatedBy: "$")[2] // Extract stock
+                    let rxQty = details[0].components(separatedBy: "$")[1] // Extract rxQty
+                    let rcpa = details[1] // Extract rcpa
+
+                    // Create a FetchedProductInfo object and append it to the array
+                    let productInfo = FetchedProductInfo(product: product, stock: stock, sample: sample, rxQty: rxQty, rcpa: rcpa)
+                    productInfoArray.append(productInfo)
+                }
+            }
+        }
+
+
+        return productInfoArray
+    }
     
-//    func toCreateRCPAdetailsModel(rcpa: [RCPAHead]) -> [RCPAdetailsModal] {
-//        var rcpaDetailsModelArr :  [RCPAdetailsModal] = []
-//    
-//
-//        rcpa.forEach { aRCPAHead in
-//            let  rcpaDetailsModel = RCPAdetailsModal()
-//          let loadedChemists =  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
-//            let selectedChemist = loadedChemists.filter { aChemist in
-//                aChemist.code == aRCPAHead.chmCode.replacingOccurrences(of: ",", with: "")
-//            }
-//          
-//            
-//            if let aChemistEntity = NSEntityDescription.entity(forEntityName: "Chemist", in: context) {
-//                let aChemistCDM = Chemist(entity: aChemistEntity, insertInto: context)
-//                
-//             let selectedChemist = selectedChemist.first
-//         
-//                aChemistCDM.chemistContact =  selectedChemist?.chemistContact
-//                aChemistCDM.chemistEmail = selectedChemist?.chemistEmail
-//                aChemistCDM.chemistFax = selectedChemist?.chemistFax
-//                aChemistCDM.chemistMobile = selectedChemist?.chemistMobile
-//                aChemistCDM.chemistPhone = selectedChemist?.chemistPhone
-//                aChemistCDM.code = selectedChemist?.code
-//                aChemistCDM.geoTagCnt = selectedChemist?.geoTagCnt
-//                aChemistCDM.lat = selectedChemist?.lat
-//                aChemistCDM.long = selectedChemist?.long
-//                aChemistCDM.mapId = selectedChemist?.mapId
-//                aChemistCDM.maxGeoMap = selectedChemist?.maxGeoMap
-//                aChemistCDM.name = selectedChemist?.name
-//                aChemistCDM.sfCode = selectedChemist?.sfCode
-//                aChemistCDM.townCode = selectedChemist?.townCode
-//                aChemistCDM.townName = selectedChemist?.townName
-//                
-//                
-//                rcpaDetailsModel.addedChemist = aChemistCDM
-//                
-//                
-//            }
-//            
-//           
-//            var addedProductWithCompetiors = [ProductWithCompetiors]()
-//            var aAddedProductWithCompetior = ProductWithCompetiors()
-//            
-//            
-//            let loadedProducts =  DBManager.shared.getProduct()
-//            aAddedProductWithCompetior.addedProduct = loadedProducts.filter({ aProduct in
-//                aProduct.code == aRCPAHead.opCode
-//            }).first
-//            var competitorsInfoArr = [AdditionalCompetitorsInfo]()
-//            aRCPAHead.rcpaDet.forEach { aRCPADet in
-//                var competitorsInfo = AdditionalCompetitorsInfo()
-//                if let aCompetitor = NSEntityDescription.entity(forEntityName: "Competitor", in: context) {
-//                    let aCompetitor = Competitor(entity: aCompetitor, insertInto: context)
-//                    if let  ourProduct = aAddedProductWithCompetior.addedProduct {
-//                        aCompetitor.compName = aRCPADet.compName
-//                        aCompetitor.compProductName = aRCPADet.compPName
-//                        aCompetitor.compProductSlNo = aRCPADet.compPCode
-//                       // aCompetitor.compSlNo = aRCPADet.
-//                        aCompetitor.index = Int16()
-//                        aCompetitor.ourProductCode = ourProduct.code
-//                        aCompetitor.ourProductName = ourProduct.name
-//                        competitorsInfo.competitor = aCompetitor
-//                    }
-//
-//                }
-//                competitorsInfo.remarks = aRCPADet.cpRemarks
-//                competitorsInfo.rate = "\(aRCPADet.cpRate)"
-//                competitorsInfo.value = "\(aRCPADet.cpValue)"
-//                competitorsInfo.qty = "\(aRCPADet.cpQty)"
-//                competitorsInfoArr.append(competitorsInfo)
-//            }
-//            
-//            aAddedProductWithCompetior.competitorsInfo = competitorsInfoArr
-//            addedProductWithCompetiors.append(aAddedProductWithCompetior)
-//            
-//            var aProductDetails =  ProductDetails()
-//            aProductDetails.addedProduct = addedProductWithCompetiors
-//            aProductDetails.addedQuantity = ["\(aRCPAHead.opQty)"]
-//            aProductDetails.addedRate = ["\(aRCPAHead.opRate)"]
-//            aProductDetails.addedValue = ["\(aRCPAHead.opValue)"]
-//            aProductDetails.addedTotal = ["\(aRCPAHead.opValue)"]
-//            
-//            
-//            rcpaDetailsModel.addedProductDetails = aProductDetails
-//            rcpaDetailsModelArr.append(rcpaDetailsModel)
-//        }
-//        
-//        
-//
-//
-//        
-//        return rcpaDetailsModelArr
-//    }
+    func toReturnPromotedProductCodes(promotedProductsString: String) -> [String] {
+        var productCodes: [String] = []
+        
+        // Split the promotedProductsString by "#"
+        let components = promotedProductsString.components(separatedBy: "#")
+        
+        // Process each component
+        for component in components {
+            // Split the component by "$"
+            let parts = component.components(separatedBy: "$")
+            
+            // If there is at least one part, extract the product code
+            if let productCode = parts.first {
+                productCodes.append(productCode)
+            }
+        }
+        
+        return productCodes
+    }
     
     
+    func toReturnJointWorksCodes(jointWorkString: String) -> [String] {
+        var jwCodes: [String] = []
+        
+        // Split the promotedProductsString by "#"
+        let components = jointWorkString.components(separatedBy: "$$")
+        
+        // Process each component
+        for component in components {
+ 
+     
+                jwCodes.append(component)
+            
+        }
+        
+        return jwCodes
+    }
+
+    func toCreateEventcaptureViewModel(fetchedCaptures: [EventCaptureResponse]) -> EventCaptureListViewModel {
+        let fetchedEventCaptureListViewModel = EventCaptureListViewModel()
+        fetchedCaptures.forEach { aEventCaptureResponse in
+            var aEventCapture = EventCapture()
+            
+            
+            aEventCapture.image = UIImage(named: "masterSync")
+            aEventCapture.title = aEventCaptureResponse.title
+            aEventCapture.description = aEventCaptureResponse.remarks
+            aEventCapture.imageUrl = aEventCaptureResponse.imageUrl
+           // aEventCapture.time =
+          //  aEventCapture.timeStamp =
+            
+            
+            
+            let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
+            fetchedEventCaptureListViewModel.addEventCapture(aEventCaptureViewModel)
+        }
+        
+        return fetchedEventCaptureListViewModel
+    }
+    
+    
+    func toCreateJointWorksViewmodel(fetchedproducts: [DCRDetail]) -> JointWorksListViewModel {
+        
+       // var jointworks = [JointWork]()
+        let fetchedJointWorksListViewModel = JointWorksListViewModel()
+        
+        fetchedproducts.forEach { aDCRDetail in
+           let jwCodeString = aDCRDetail.workedWithCode
+            
+           let jwCodes = toReturnJointWorksCodes(jointWorkString: jwCodeString)
+            
+            
+            let cacheJointWork = DBManager.shared.getJointWork()
+            
+            let jointworks = cacheJointWork.filter { aJointWork in
+                return jwCodes.contains(aJointWork.code ?? "")
+            }
+            jointworks.forEach { aJointWork in
+                let aJointWorkViewModel = JointWorkViewModel(jointWork: aJointWork)
+                fetchedJointWorksListViewModel.addJointWorkViewModel(aJointWorkViewModel)
+            }
+           
+        }
+        
+        
+        
+        return fetchedJointWorksListViewModel
+    }
+    
+    
+    func toReturnFetchedDetailedSlides(fetchedDetails:  [DigitalHead]) -> [DetailedSlide] {
+        
+        var fetchedDetailedProduct = [DetailedSlide]()
+        
+       let detailedProducts = fetchedDetails.filter { aDigitalHead in
+            aDigitalHead.groupID == "1"
+        }
+        
+        detailedProducts.forEach { aDigitalHead in
+           
+            var aDetailedSlide = DetailedSlide()
+            aDetailedSlide.brandCode = Int(aDigitalHead.productCode)
+            aDetailedSlide.startTime = aDigitalHead.startTime.date
+            aDetailedSlide.endTime = aDigitalHead.endTime.date
+            
+            
+            let cacheBrand =  DBManager.shared.getBrands()
+            let detailedBrand =   cacheBrand.filter { aBrand in
+                aBrand.code == aDigitalHead.productCode
+            }.first
+            aDetailedSlide.brand = detailedBrand
+            aDetailedSlide.brandCode = Int(aDigitalHead.productCode)
+            aDetailedSlide.remarks = aDigitalHead.feedbackStatus
+            aDetailedSlide.remarksValue = Float(aDigitalHead.rating)
+            aDetailedSlide.groupedSlides  = [SlidesModel]()
+            aDigitalHead.digitalDet.forEach { aDigitalDet in
+                let aslidesModel: SlidesModel = SlidesModel()
+                aslidesModel.name = aDigitalDet.slideName
+                aslidesModel.fileType = aDigitalDet.slideType
+                aDetailedSlide.groupedSlides?.append(aslidesModel)
+            }
+            fetchedDetailedProduct.append(aDetailedSlide)
+        }
+        
+        return fetchedDetailedProduct
+    }
+    
+    
+    func tocreateProductsViewModal(fetchedproducts: [DCRDetail]) -> ProductSelectedListViewModel {
+        var fetchedProductInfoArr: [FetchedProductInfo] = []
+        
+        
+        let fetchedProductSelectedListViewModel = ProductSelectedListViewModel()
+        fetchedproducts.forEach { aDCRDetail in
+            let productCode = aDCRDetail.productCode
+            
+            fetchedProductInfoArr =  self.transformStringToObjects(productCode)
+            
+            fetchedProductInfoArr.forEach { aFetchedProductInfo in
+                
+                let cacheProducts = DBManager.shared.getProduct()
+                let addedProduct = cacheProducts.filter { aProduct in
+                    aProduct.code == aFetchedProductInfo.product
+                }.first
+                
+                let promotedProductString = aDCRDetail.promotedProduct
+                let promotedProductCodes = toReturnPromotedProductCodes(promotedProductsString: promotedProductString)
+                //promotedProduct.components(separatedBy: "#")
+                
+                let aProductData = ProductData(product: addedProduct, isDetailed: promotedProductCodes.contains(aFetchedProductInfo.product ?? ""), sampleCount: aFetchedProductInfo.sample ?? "", rxCount: aFetchedProductInfo.rxQty ?? "", rcpaCount: aFetchedProductInfo.rcpa ?? "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")
+                 let aProductVIewmodel = ProductViewModel(product: aProductData)
+                
+                fetchedProductSelectedListViewModel.addProductViewModel(aProductVIewmodel)
+                
+            }
+            
+        }
+        return fetchedProductSelectedListViewModel
+        
+    }
     
     func toCreateRCPAdetailsModel(rcpa: [RCPAHead]) -> [RCPAdetailsModal] {
         var chemistModelsMap: [String: RCPAdetailsModal] = [:]
@@ -242,6 +392,7 @@ extension MainVC {
                 aProductDetails.addedProduct?.append(contentsOf: addedProductWithCompetitors)
                 aProductDetails.addedQuantity?.append(contentsOf: ["\(aRCPAHead.opQty)"])
                 aProductDetails.addedRate?.append(contentsOf: ["\(aRCPAHead.opRate)"])
+                aProductDetails.addedValue?.append(contentsOf: ["\(aRCPAHead.opValue)"])
                 aProductDetails.addedTotal?.append(contentsOf: ["\(aRCPAHead.opValue)"])
                 rcpaDetailsModel.addedProductDetails = aProductDetails
             }
@@ -250,6 +401,7 @@ extension MainVC {
                 aProductDetails.addedProduct = addedProductWithCompetitors
                 aProductDetails.addedQuantity = ["\(aRCPAHead.opQty)"]
                 aProductDetails.addedRate = ["\(aRCPAHead.opRate)"]
+                aProductDetails.addedValue = ["\(aRCPAHead.opValue)"]
                 aProductDetails.addedTotal =  ["\(aRCPAHead.opValue)"]
                 rcpaDetailsModel.addedProductDetails = aProductDetails
             }

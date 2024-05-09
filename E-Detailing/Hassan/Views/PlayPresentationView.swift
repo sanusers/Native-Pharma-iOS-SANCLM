@@ -691,7 +691,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
                  return
              }
        
-             var exceptionExistingSlide = Shared.instance.detailedSlides.filter{ $0.slideID ==  selectedSlideID }.first
+             let exceptionExistingSlide = Shared.instance.detailedSlides.filter{ $0.slideID ==  selectedSlideID }.first
              
              if var existingSlide = exceptionExistingSlide {
                  existingSlide.startTime = startTime

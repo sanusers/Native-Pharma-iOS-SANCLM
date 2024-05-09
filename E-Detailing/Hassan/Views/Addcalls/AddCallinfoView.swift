@@ -975,6 +975,12 @@ extension AddCallinfoView: tableViewProtocols {
                     summonedTotal += intTotal
                 })
                 
+                productsInfo?.addedProduct?.forEach({ aProductWithCompetiors in
+                    aProductWithCompetiors.competitorsInfo?.forEach({ aAdditionalCompetitorsInfo in
+                        summonedTotal += Int(aAdditionalCompetitorsInfo.value ?? "0") ?? 0
+                    })
+                })
+                
                 headerView.summonedTotal.text = "\(summonedTotal).00"
                 headerView.deleteView.addTap {
                     self.rcpaDetailsModel.remove(at: section)
