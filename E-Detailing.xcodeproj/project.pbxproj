@@ -239,6 +239,7 @@
 		38D8363B2A4C014B0032588D /* MasterSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363A2A4C014B0032588D /* MasterSync.swift */; };
 		38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */; };
 		38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D95FF52BEB7E0900348FB8 /* EditCallinfoModel.swift */; };
+		38D95FF82BEB8EA300348FB8 /* MainVC + EditCallEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D95FF72BEB8EA300348FB8 /* MainVC + EditCallEX.swift */; };
 		38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */; };
 		38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */; };
 		38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */; };
@@ -620,6 +621,7 @@
 		38D8363A2A4C014B0032588D /* MasterSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSync.swift; sourceTree = "<group>"; };
 		38D8363C2A4C13C30032588D /* MasterSyncTbCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncTbCell.swift; sourceTree = "<group>"; };
 		38D95FF52BEB7E0900348FB8 /* EditCallinfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCallinfoModel.swift; sourceTree = "<group>"; };
+		38D95FF72BEB8EA300348FB8 /* MainVC + EditCallEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + EditCallEX.swift"; sourceTree = "<group>"; };
 		38DA83C42AA093D3001FE1A8 /* NearMeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearMeViewModel.swift; sourceTree = "<group>"; };
 		38DAADE32B58FFBA00966B33 /* outboxCollapseTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = outboxCollapseTVC.swift; sourceTree = "<group>"; };
 		38DAADE42B58FFBA00966B33 /* outboxCollapseTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = outboxCollapseTVC.xib; sourceTree = "<group>"; };
@@ -1105,6 +1107,7 @@
 				38CACEAB2BA96464006BFA62 /* BackgroundTaskManager.swift */,
 				386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */,
 				38EC46B62BE654D100754234 /* DCRcallsHandler.swift */,
+				38D95FF72BEB8EA300348FB8 /* MainVC + EditCallEX.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2150,6 +2153,7 @@
 				38F289BA2B0CDFD800045D4F /* BackupCodes.swift in Sources */,
 				38EA3D102AFDE66300DA7018 /* MenuVC.swift in Sources */,
 				38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */,
+				38D95FF82BEB8EA300348FB8 /* MainVC + EditCallEX.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
 				38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */,

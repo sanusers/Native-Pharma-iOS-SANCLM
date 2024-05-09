@@ -117,6 +117,19 @@ class UserStatisticsVM {
  
     }
     
+    
+    
+    func toEditAddedCall(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<EditCallinfoModel,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: EditCallinfoModel.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
 }
 
 

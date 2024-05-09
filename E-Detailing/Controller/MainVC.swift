@@ -4704,7 +4704,8 @@ extension MainVC: PopOverVCDelegate {
 
         } else {
             let aCall = self.todayCallsModel?[SelectedArrIndex] ?? TodayCallsModel()
-            didTapoutboxEdit(dcrCall: aCall)
+           // didTapoutboxEdit(dcrCall: aCall)
+            toCallEditAPI(dcrCall: aCall)
         }
     }
     

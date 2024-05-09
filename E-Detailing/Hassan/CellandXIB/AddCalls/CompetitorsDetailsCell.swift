@@ -79,14 +79,11 @@ class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
     func setupUI() {
 
         qtyTF.delegate = self
-       // commentsIV.tintColor = .appTextColor
-       // rateLbl.text = competitor?.
+
     }
     
     @IBAction func didtapQtyLbl(_ sender: UITextField) {
-        
         self.delegate?.didUpdateQuantity(qty: sender.text ?? "", index: index)
-        sender.becomeFirstResponder()
         
     }
     

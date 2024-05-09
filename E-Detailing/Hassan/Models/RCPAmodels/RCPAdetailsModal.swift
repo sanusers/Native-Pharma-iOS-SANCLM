@@ -36,16 +36,12 @@ struct ProductDetails {
     
     var addedChemist: Chemist?
     var addedProductDetails : ProductDetails?
-  //  var competitor: [Competitor]?
     var totalValue: String?
     
     init() {
     addedChemist = Chemist()
 
     addedProductDetails = ProductDetails()
- //   competitor = [Competitor]()
-
-        
         
     }
     

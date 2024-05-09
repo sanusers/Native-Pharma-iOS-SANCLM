@@ -330,8 +330,8 @@ extension MainVC {
             //[AdditionalCallViewModel]
             //Additional call
             
-            var eventCaptureListViewModel = EventCaptureListViewModel()
-            if let entityDescription = NSEntityDescription.entity(forEntityName: "EventCaptureViewModelCDEntity", in: context){
+            let eventCaptureListViewModel = EventCaptureListViewModel()
+         
                 if let detailedSlidesCDEntity = ftchedDCRcall?.capturedEvents {
                     detailedSlidesCDEntity.capturedEvents?.forEach({ eventCaptureCDM in
                         if let aEventCaptureCDM = eventCaptureCDM as? EventCaptureCDM {
@@ -352,13 +352,13 @@ extension MainVC {
                     }
                 
                 vc.eventCaptureListViewModel = eventCaptureListViewModel
-                }
+                
             
             
             
             
             var detailedSlides = [DetailedSlide]()
-            if let entityDescription = NSEntityDescription.entity(forEntityName: "DetailedSlideCDEntity", in: context){
+        
                 
                 //let detailedSlideCDEntity = DetailedSlideCDEntity(entity: entityDescription, insertInto: context)
                 
@@ -382,7 +382,7 @@ extension MainVC {
                              
                                 if let slidesModel = aDetailedSlideCDM.slidesModel {
                                     
-                                    if let entityDescription = NSEntityDescription.entity(forEntityName: "SlidesCDModel", in: context){
+                               
                                         
                                     //    let aSlidesCDModelEntity = SlidesCDModel(entity: entityDescription, insertInto: context)
                                         let aViewedSlide = SlidesModel()
@@ -407,7 +407,7 @@ extension MainVC {
                                         
                                         
                                         aDetailedSlide.slidesModel = aViewedSlide
-                                    }
+                                    
                                 }
                             
                             detailedSlides.append(aDetailedSlide)
@@ -419,7 +419,7 @@ extension MainVC {
                 }
  
                 
-        }
+        
             
             let aAdditionalcallVM =     AdditionalCallsListViewModel()
             
