@@ -30,6 +30,7 @@ enum APIEnums : String{
     case saveMAsterData = "save/masterdata"
     case deleteCall = "delete/dcr"
     case editCall = "edit/dcr"
+    case imageUpload = "save/image"
 }
 
 

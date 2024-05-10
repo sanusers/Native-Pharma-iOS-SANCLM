@@ -8,11 +8,13 @@
 //
 
 import Foundation
+import UIKit
 
 public enum UserStatisticsError: String, Error {
 case unableConnect = "An issue occured data will be saved to device"
     case failedTocheckin = "Failed to checkin please try again later"
     case failedToupdatePassword = "Failed to update password please try again later"
+    case failedTouploadImage = "Failed to upload captured events"
 }
 
 class UserStatisticsVM {
@@ -128,6 +130,21 @@ class UserStatisticsVM {
             print(error.description)
             result(.failure(UserStatisticsError.unableConnect))
         })
+    }
+    
+    
+    
+    func toUploadCapturedImage(params: Data, api : APIEnums, image: [UIImage], imageName:  [String], paramData: JSON,  custCode: String, _ result : @escaping (Result<JSON,UserStatisticsError>) -> Void) {
+        let urlString = APIUrl + api.rawValue
+        ConnectionHandler.shared.imageUploadService(urlString: urlString, parameters: params, image: image, imageName:  imageName, custCode: custCode) { response in
+            dump(response)
+            result(.success(response))
+        } onError: { err in
+            dump(err)
+            result(.failure(UserStatisticsError.failedTouploadImage))
+        }
+
+        
     }
     
 }

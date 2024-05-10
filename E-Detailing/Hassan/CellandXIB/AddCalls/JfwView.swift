@@ -47,7 +47,17 @@ extension JfwView: MenuResponseProtocol {
             
         }
         
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
         
     }
     
@@ -75,10 +85,25 @@ extension JfwView : UIImagePickerControllerDelegate , UINavigationControllerDele
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else{
             return
         }
+        
+
+        
         guard let eventCaptureListViewModel = self.eventCaptureListViewModel else {return}
-        eventCaptureListViewModel.addEventCapture(EventCaptureViewModel(eventCapture: EventCapture(image: image,title: "",description: "")))
+        eventCaptureListViewModel.addEventCapture(EventCaptureViewModel(eventCapture: EventCapture(image: image,title: "",description: "", imageUrl: UUID().uuidString)))
         self.eventCaptureTableView.reloadData()
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        
+        
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
+        self.delegate?.selectedObjects(eventcptureVM: eventCaptureListViewModel, jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
     }
 }
 

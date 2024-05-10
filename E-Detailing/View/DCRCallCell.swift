@@ -29,20 +29,20 @@ class DCRCallCell: UITableViewCell {
     }
     
     func topopulateCell(_ model: TodayCallsModel) {
-        nameLbl.text = "\(model.name)(\(model.designation))"
+        nameLbl.text =  "\(model.name)(\(model.designation))"
         timeLbl.text = model.vstTime
         
-        if model.designation == "Doctor" {
+        if model.custType == 1 {
             imgProfile.image = UIImage(named: "ListedDoctor")
-        } else if model.designation == "Chemist" {
+        } else if model.custType == 2 {
             imgProfile.image = UIImage(named: "Chemist")
-        } else if model.designation == "CIP" {
+        } else if model.custType == 5 {
             imgProfile.image = UIImage(named: "cip")
-        } else if model.designation == "UnlistedDr." {
+        } else if model.custType == 4 {
             imgProfile.image = UIImage(named: "Doctor")
-        } else if model.designation == "Hospital" {
+        } else if model.custType == 6 {
             imgProfile.image = UIImage(named: "hospital")
-        } else if model.designation == "Stockist" {
+        } else if model.custType == 3 {
             imgProfile.image = UIImage(named: "Stockist")
         }
         

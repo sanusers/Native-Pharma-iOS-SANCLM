@@ -1656,6 +1656,7 @@ class AddCallinfoView : BaseView {
         
         backHolderView.addTap {
             self.addCallinfoVC.navigationController?.popViewController(animated: true)
+            Shared.instance.detailedSlides = []
         }
         
         dcrNameCurvedView.addTap {
@@ -1752,10 +1753,11 @@ class AddCallinfoView : BaseView {
         segmentsCollection.isScrollEnabled = false
         if addCallinfoVC.dcrCall.call is DoctorFencing {
        //     if appsetup.docr == 0 {
-            if Shared.instance.isDetailed {
+            if Shared.instance.detailedSlides.count != 0 {
+        
                 segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
             } else {
-                segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
+                segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
             }
                
 //            } else {

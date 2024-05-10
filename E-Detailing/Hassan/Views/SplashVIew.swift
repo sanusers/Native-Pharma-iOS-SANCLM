@@ -73,9 +73,10 @@ class SplashView: BaseView{
         super.didLoad(baseVC: baseVC)
         self.splashVC = baseVC as? SplashVC
         setupUI()
-        locationManager.delegate = self
-        checkReachability()
-        addObserverForTimeZoneChange()
+        onSetRootViewController()
+ //       locationManager.delegate = self
+ //       checkReachability()
+ //       addObserverForTimeZoneChange()
         
 //        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
 //            setUIfortimeZoneChanges()

@@ -233,10 +233,8 @@ final class ConnectionHandler : NSObject {
     }
     
     
-    func imageUploadService(urlString:String, parameters:[String:Any], image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
-            
-        //Shared.instance.showLoaderInWindow()
-        //UIApplication.shared.beginIgnoringInteractionEvents()
+    func imageUploadService(urlString:String, parameters:Data, image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), custCode: String, complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
+ 
         AF.upload(multipartFormData: { (multipartFormData) in
            
             if let doc = docurl, doc != URL(string: "") {
@@ -258,10 +256,14 @@ final class ConnectionHandler : NSObject {
                 if let images = image,images.count > 0 {
                     for (index,orgimage) in images.enumerated() {
                         let imageType = "jpeg"
-                       let fileName = String(Date().timeIntervalSince1970 * 1000) + "Image.\(imageType)"
+                        let uuid = imageName[index].replacingOccurrences(of: "-", with: "")
+                        let appsetup = AppDefaults.shared.getAppSetUp()
+                        let code = appsetup.sfCode ?? ""
+                        let fileName =   code + "_" + custCode + uuid + ".jpeg"
+ 
                         let imgData: Data? = orgimage.jpegData(compressionQuality: 0.4)
                         if imgData != nil {
-                            multipartFormData.append(imgData!, withName: imageName[index],fileName: fileName, mimeType: "\(imageName)/\(imageType)")
+                            multipartFormData.append(imgData!, withName: "EventImg",fileName: fileName, mimeType: "\(imageType)")
                         }
                     }
 
@@ -271,21 +273,26 @@ final class ConnectionHandler : NSObject {
             
 
             
-            for (key, value) in parameters {
-                multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
-            } //Optional for extra parameters
+          //  for (key, value) in parameters {
+            //    multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
+                
+           // } //Optional for extra parameters
+            
+            //for (key, value) in parameters {
+                let multipartData = parameters 
+                multipartFormData.append(multipartData, withName: "data" as String)
+                _ = String(data: multipartData, encoding: .utf8)
+           // }
         }, to: "\("")\(urlString)")
         .responseJSON(completionHandler: { response in
            // Shared.instance.removeLoaderInWindow()
-                UIApplication.shared.endIgnoringInteractionEvents()
+               // UIApplication.shared.endIgnoringInteractionEvents()
            
            switch response.result {
            case .success(let value):
                let responseDict = value as! [String : Any]
-//            if self.userIsActive(from: responseDict)  {
                 print("ØØ  \(responseDict)")
                 complete(responseDict)
-//            }
                print(responseDict)
            case .failure(let error):
                print(error)
@@ -304,36 +311,6 @@ final class ConnectionHandler : NSObject {
        })
     }
     
-//    func toUploadCapturedEvents(for api : APIEnums,
-//                                params : JSON,
-//                                data:JSON, eventCaptureListViewModel: EventCaptureListViewModel? = nil) {
-//        if let evenetCaptureValue = eventCaptureListViewModel {
-//            let aEventDatum = evenetCaptureValue.EventCaptureData()
-//            var addedDCRCallsParam: [String: Any] = [:]
-//            var addedDCRCallsParamArr : [[String: Any]] = [[:]]
-//            addedDCRCallsParamArr.removeAll()
-//            addedDCRCallsParam["EventCapture"] = [[String: Any]]()
-//            aEventDatum.forEach { eventCaptureViewModel in
-//                var aCapturedEvent : [String: Any] = [:]
-//                aCapturedEvent["EventCapture"] = "True"
-//                aCapturedEvent["EventImageName"] = eventCaptureViewModel.image.description
-//                aCapturedEvent["EventImageTitle"] = eventCaptureViewModel.title
-//                aCapturedEvent["EventImageDescription"] = eventCaptureViewModel.description
-//                aCapturedEvent["Eventfilepath"] =  "" //savedPath""
-//                let imageType = "jpeg"
-//                let imageName = eventCaptureViewModel.image.description
-//                let fileName = String(Date().timeIntervalSince1970 * 1000) + "Image.\(imageType)"
-//                let imgData: Data? =  eventCaptureViewModel.image.jpegData(compressionQuality: 0.4)
-//                if imgData != nil {
-//                    multipartFormData.append(imgData!, withName: imageName, fileName: fileName, mimeType: "\(imageName)/\(imageType)")
-//                }
-//                
-//                addedDCRCallsParamArr.append(aCapturedEvent)
-//                
-//            }
-//        }
-//        
-//    }
     
     
     func uploadRequest(for api : APIEnums,

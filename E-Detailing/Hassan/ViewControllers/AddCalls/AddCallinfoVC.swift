@@ -111,64 +111,11 @@ class AddCallinfoVC: BaseViewController {
         // Assuming you have detailedSlides array
         var detailedSlides = Shared.instance.detailedSlides
 
-        // Create a dictionary to group slides by brandCode
-        var groupedSlides: [Int: [SlidesModel]] = [:]
-
-        // Group slides by brandCode
-        for slide in detailedSlides {
-            if let brandCode = slide.brandCode {
-                if groupedSlides[brandCode] == nil {
-                    groupedSlides[brandCode] = []
-                }
-                if let slides = slide.groupedSlides {
-                    groupedSlides[brandCode]?.append(contentsOf: slides)
-                }
-            }
-        }
-
-        // Iterate through the detailedSlides array and update each DetailedSlide object
-        for (index, detailedSlide) in detailedSlides.enumerated() {
-            if let groupedSlidesForBrand = groupedSlides[detailedSlide.brandCode ?? Int()] {
-                detailedSlides[index].groupedSlides = groupedSlidesForBrand
-            }
-        }
-
-        // Create a dictionary to group DetailedSlides by brandCode
-        var groupedDetailedSlides: [Int: [DetailedSlide]] = [:]
-
-        // Group DetailedSlides by brandCode
-        for slide in detailedSlides {
-            if let brandCode = slide.brandCode {
-                if groupedDetailedSlides[brandCode] == nil {
-                    groupedDetailedSlides[brandCode] = []
-                }
-                groupedDetailedSlides[brandCode]?.append(slide)
-            }
-        }
-
-        // Convert the groupedSlides dictionary into an array of arrays
-        let mappedArray = groupedDetailedSlides.values.map { $0 }
-
-        
-        
         
         var addedDetailedProducts = [[String: Any]]()
         addedDetailedProducts.removeAll()
-        
-        dump(mappedArray)
-//        mappedArray.forEach { DetailedSlide in
-//
-//        }
-        
-        mappedArray.forEach { detailedSlideArr in
-            var groupSlides: [SlidesModel] = []
-            detailedSlideArr.forEach { aDetailedSlide in
-                if let aSlideModel = aDetailedSlide.slidesModel {
-                    groupSlides.append(aSlideModel)
-                }
-            }
-            let optionalDetailedSlide = detailedSlideArr.first
-            if let aDetailedSlide = optionalDetailedSlide  {
+
+        detailedSlides.forEach { aDetailedSlide in
                 var aproduct : [String : Any] = [:]
                 // groupedSlides.forEach
                 aproduct["Code"] = aDetailedSlide.brandCode
@@ -180,12 +127,13 @@ class AddCallinfoVC: BaseViewController {
                 aproduct["Type"] = cusType
                 var timesLine = [String: Any]()
                 timesLine["sTm"] = aDetailedSlide.startTime ?? ""
-                timesLine["eTm"] = detailedSlideArr.last?.endTime ?? ""
+                timesLine["eTm"] = aDetailedSlide.endTime ?? ""
                 aproduct["Timesline"] = timesLine
                 
                 aproduct["Slides"] = [[String: Any]]()
                 var aslideParamArr = [[String: Any]]()
-                groupSlides.enumerated().forEach {index, aSlide in
+            
+                aDetailedSlide.groupedSlides?.enumerated().forEach {index, aSlide in
                     
                     aproduct["Name"] = aSlide.name
                     var aSlideParam: [String :Any] = [:]
@@ -200,8 +148,8 @@ class AddCallinfoVC: BaseViewController {
                     previewTimeArr.removeAll()
                     var previewTime : [String: Any] = [:]
                     previewTime.removeAll()
-                    previewTime["sTm"] = detailedSlideArr[index].startTime
-                    previewTime["eTm"] = detailedSlideArr[index].endTime
+                    previewTime["sTm"] = aDetailedSlide.startTime
+                    previewTime["eTm"] = aDetailedSlide.endTime
                     previewTimeArr.append(previewTime)
                     aSlideParam["Times"] = previewTimeArr
                     aslideParamArr.append(aSlideParam)
@@ -209,7 +157,7 @@ class AddCallinfoVC: BaseViewController {
                 }
                 aproduct["Slides"] = aslideParamArr
                 addedDetailedProducts.append(aproduct)
-            }
+            
         }
         dump(addedDetailedProducts)
         
@@ -289,63 +237,7 @@ class AddCallinfoVC: BaseViewController {
         
         addedDCRCallsParam["AdCuss"] = additionalCustomerParams
         
-//        var isCompetitorExist: Bool = false
-//        var entryRCPAparamArr : [[String: Any]] = [[:]]
-//        entryRCPAparamArr.removeAll()
-//      
-//        
-//        for rcpa in rcpaValue {
-//            var entryRCPAparam = [String: Any]()
-//            var chemistArr = [[String: Any]]()
-//            var rcpaChemist = [String: Any]()
-//            rcpaChemist["Name"] =  rcpa.addedChemist?.name
-//            rcpaChemist["Code"] = rcpa.addedChemist?.code
-//            chemistArr.append(rcpaChemist)
-//            
-//            entryRCPAparam["Chemists"] = chemistArr
-//            
-//            rcpa.addedProductDetails?.addedProduct?.enumerated().forEach{ index, aAddedProduct in
-//                let productCode : String =    aAddedProduct.addedProduct?.code ?? ""
-//                let productName : String =  aAddedProduct.addedProduct?.name ?? ""
-//                
-//                entryRCPAparam["OPCode"] = productCode
-//                entryRCPAparam["OPName"] = productName
-//                entryRCPAparam["OPQty"] =  rcpa.addedProductDetails?.addedQuantity?[index]
-//                entryRCPAparam["OPRate"] = rcpa.addedProductDetails?.addedRate?[index]
-//                entryRCPAparam["OPValue"] = rcpa.addedProductDetails?.addedValue?[index]
-//                entryRCPAparam["OPTotal"] = rcpa.addedProductDetails?.addedTotal?[index]
-//                
-//                var competitorArr = [[String: Any]]()
-//             
-//                
-//                if let addedCompetitors: [AdditionalCompetitorsInfo] =  aAddedProduct.competitorsInfo {
-//                    addedCompetitors.forEach { aAdditionalCompetitorsInfo in
-//                        var aCompatitorParam = [String: Any]()
-//                        aCompatitorParam["CPQty"] = aAdditionalCompetitorsInfo.qty
-//                        aCompatitorParam["CPRate"] =  rcpa.addedProductDetails?.addedRate?[index]
-//                        //aAdditionalCompetitorsInfo.rate
-//                        aCompatitorParam["CPValue"] =  rcpa.addedProductDetails?.addedValue?[index]
-//                        //aAdditionalCompetitorsInfo.value
-//                        aCompatitorParam["CompCode"] = aAdditionalCompetitorsInfo.competitor?.compSlNo
-//                        aCompatitorParam["CompName"] = aAdditionalCompetitorsInfo.competitor?.compName
-//                        aCompatitorParam["CompPCode"] = aAdditionalCompetitorsInfo.competitor?.compProductSlNo
-//                        aCompatitorParam["CompPName"] = aAdditionalCompetitorsInfo.competitor?.compProductName
-//                        aCompatitorParam["CPRemarks"] = aAdditionalCompetitorsInfo.remarks
-//                        aCompatitorParam["Chemname"] =  rcpa.addedChemist?.name
-//                        aCompatitorParam["Chemcode"] =  rcpa.addedChemist?.code
-//                        competitorArr.append(aCompatitorParam)
-//                    }
-//                }
-//                
-//                entryRCPAparam["Competitors"] = competitorArr
-//                isCompetitorExist = competitorArr.isEmpty ? false : true
-//            }
-//          
-//                entryRCPAparamArr.append(entryRCPAparam)
-//         
-//          
-//        }
-        
+
         
         
         var rcpaEntry = [[String: Any]]()
@@ -432,12 +324,29 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParamArr.removeAll()
         let aEventDatum = evenetCaptureValue.EventCaptureData()
         aEventDatum.forEach { eventCaptureViewModel in
-            var aCapturedEvent : [String: Any] = [:]
+            var aCapturedEvent: [String: Any] = [:]
+
+            // Mark EventCapture as "True"
             aCapturedEvent["EventCapture"] = "True"
-            aCapturedEvent["EventImageName"] = eventCaptureViewModel.image.description
+
+
+
+            // Combine the components of the EventImageName
+            let code = self.appsetup.sfCode ?? ""
+            let uuid = eventCaptureViewModel.eventCapture.imageUrl.replacingOccurrences(of: "-", with: "")
+            let eventImageName = code + "_" + dcrCall.code + uuid + ".jpeg"
+
+            // Assign the EventImageName to aCapturedEvent
+            aCapturedEvent["EventImageName"] = eventImageName
+
+            // Set EventImageTitle and EventImageDescription
             aCapturedEvent["EventImageTitle"] = eventCaptureViewModel.title
             aCapturedEvent["EventImageDescription"] = eventCaptureViewModel.description
+
+            // Set Eventfilepath
             aCapturedEvent["Eventfilepath"] = savedPath
+
+            // Append aCapturedEvent to addedDCRCallsParamArr
             addedDCRCallsParamArr.append(aCapturedEvent)
         }
         addedDCRCallsParam["EventCapture"]  = addedDCRCallsParamArr
@@ -487,8 +396,12 @@ class AddCallinfoVC: BaseViewController {
        // addedDCRCallsParam["checkin"] = date
         //self.txtPob.text ?? ""
         if let overallFeedback = self.addCallinfoView.overallFeedback {
-            addedDCRCallsParam["Drcallfeedbackcode"] = overallFeedback.id ?? ""
-            addedDCRCallsParam["Drcallfeedbackname"] = overallFeedback.name ?? ""
+            
+            if let id = overallFeedback.id   {
+                addedDCRCallsParam["Drcallfeedbackcode"] = id
+                addedDCRCallsParam["Drcallfeedbackname"] = overallFeedback.name ?? ""
+            }
+     
         }
         addedDCRCallsParam["sample_validation"] = "0"
         addedDCRCallsParam["input_validation"] = "0"
@@ -507,6 +420,7 @@ class AddCallinfoVC: BaseViewController {
                 toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
                     guard let welf = self else {return}
                     welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
+                        
                         NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
                         welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                     }
@@ -518,21 +432,51 @@ class AddCallinfoVC: BaseViewController {
     
     func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true, outboxParam: Data? = nil, completion: @escaping (Bool) -> ()) {
         Shared.instance.showLoaderInWindow()
+        
+        
+        
+        var param = [String: Any]()
+        param["tableName"] = "uploadphoto"
+        param["sfcode"] = appsetup.sfCode
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType
+        param["Designation"] = appsetup.desig
+        param["state_code"] = appsetup.stateCode
+        param["subdivision_code"] = appsetup.subDivisionCode
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
         toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
             guard let welf = self else {return}
             welf.callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { isPosted in
                 Shared.instance.removeLoaderInWindow()
                 if !isPosted {
                     welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
-                        completion(true)
+                        if !welf.addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.isEmpty {
+                            welf.cacheUnsyncedEvents(eventcaputreDate: Date(), eventcaptureparam: jsonDatum) { isSaved in
+                                completion(true)
+                            }
+                        } else {
+                            completion(true)
+                        }
                     }
                 } else {
-                    
-                    welf.toRemoveEditedCallOnline(param: addedDCRCallsParam) { _ in
-                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                        completion(true)
+                    let dispatchGroup = DispatchGroup()
+                    welf.addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.forEach { aEventCaptureViewModel in
+                        dispatchGroup.enter()
+                        welf.callSaveimageAPI(param: param, paramData: jsonDatum, evencaptures: aEventCaptureViewModel) { result in
+                            dispatchGroup.leave()
+                        }
                     }
-                 
+                    dispatchGroup.notify(queue: .main) {
+                        welf.toRemoveEditedCallOnline(param: addedDCRCallsParam) { _ in
+                            NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                            completion(true)
+                        }
+                    }
+                    
+              
                 }
              
                 
@@ -540,6 +484,76 @@ class AddCallinfoVC: BaseViewController {
         }
     }
     
+    
+    func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, _ completion : @escaping (Result<JSON, UserStatisticsError>) -> Void) {
+        
+  
+   
+        
+        userStatisticsVM?.toUploadCapturedImage(params: paramData, api: .imageUpload, image: [evencaptures.image], imageName: [evencaptures.eventCapture.imageUrl], paramData: param, custCode: dcrCall.code) { result in
+                
+                switch result {
+                    
+                case .success(let json):
+                    dump(json)
+                    completion(.success(json))
+                 
+                case .failure(let error):
+                    dump(error)
+                    let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+                    self.cacheUnsyncedEvents(eventcaputreDate: Date(), eventcaptureparam: jsonDatum) { isSaved in
+                        completion(.failure(UserStatisticsError.failedTouploadImage))
+                
+                    }
+                    
+                }
+            }
+
+        
+        
+    }
+    
+    func cacheUnsyncedEvents(eventcaputreDate: Date, eventcaptureparam: Data, completion: @escaping (Bool) -> ()) {
+        var eventCaptures = [EventCapture]()
+        let eventCaptureData = self.addCallinfoView.eventCaptureListViewModel.EventCaptureData()
+        
+        eventCaptureData.forEach { aEventCaptureViewModel in
+            eventCaptures.append(aEventCaptureViewModel.eventCapture)
+        }
+        
+        if let eventCapturesNSEntityDescription = NSEntityDescription.entity(forEntityName: "UnsyncedEventCaptures", in: context) {
+            
+            let eventCapturesCDM = UnsyncedEventCaptures(entity: eventCapturesNSEntityDescription, insertInto: context)
+            let dispatchGroup = DispatchGroup()
+           
+            eventCapturesCDM.eventcaptureDate  = eventcaputreDate
+            
+            eventCapturesCDM.eventcaptureParamData = eventcaptureparam
+            dispatchGroup.enter()
+            CoreDataManager.shared.toReturnEventcaptureEntity(eventCaptures: eventCaptures) { eventCaptureViewModelCDEntity in
+                eventCapturesCDM.unsyncedCapturedEvents = eventCaptureViewModelCDEntity
+                dispatchGroup.leave()
+            }
+            
+            do {
+                try context.save()
+                completion(true)
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                completion(false)
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                completion(true)
+                
+                
+            }
+        } else {
+            completion(false)
+        }
+        
+
+    }
     
     func toRemoveEditedCallOnline(param: JSON, completion: @escaping (Bool) -> ()) {
 
@@ -1023,6 +1037,7 @@ class AddCallinfoVC: BaseViewController {
                 
                 let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: localParamArr)
                 toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                
                 toSaveaParamData(jsonDatum: jsonDatum) {
                     completion(true)
                 }

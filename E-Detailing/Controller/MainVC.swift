@@ -2987,6 +2987,10 @@ extension MainVC : collectionViewProtocols {
                 case "Slide Preview":
                     let vc = PreviewHomeVC.initWithStory()
                     self.navigationController?.pushViewController(vc, animated: true)
+                    
+                case "Reports":
+                    let vc = ReportsVC.initWithStory(pageType: .reports)
+                    self.navigationController?.pushViewController(vc, animated: true)
                 case .none:
                     print("none")
                 case .some(_):

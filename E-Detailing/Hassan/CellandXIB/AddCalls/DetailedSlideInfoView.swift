@@ -35,6 +35,7 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
        
         cell.delegate = self
         cell.commentsIV.alpha = model.remarks == nil || model.remarks == "" ? 0.5 : 1
+        cell.commentsIV.tintColor = model.remarks == nil || model.remarks == "" ?  .label : .appLightPink
         cell.setupUI(currentRating: Int(model.remarksValue ?? 0), selectedIndex: indexPath.row)
         let startTimeStr = model.startTime ?? ""
         let endtimeStr = model.endTime ?? ""
@@ -74,28 +75,72 @@ class DetailedSlideInfoView: UIView {
     func setupui() {
         self.backgroundColor = .clear
         self.detailedInfoTable.layer.cornerRadius = 5
+        toGroupSlidesbrandWise()
         cellRegistration()
         toLoadData()
 
-     //   toGroupSlidesbrandWise()
+       
     }
     
-//    
-//    func toGroupSlidesbrandWise() {
-//        
-//        var capturedBrandWiseGroupedSlides = [Int: [DetailedSlide]]()
-//
-//        detailedSlides.forEach { aDetailedSlide in
-//            if let brandCode = aDetailedSlide.brandCode {
-//                if var slidesArray = capturedBrandWiseGroupedSlides[brandCode] {
-//                    slidesArray.append(aDetailedSlide)
-//                    capturedBrandWiseGroupedSlides[brandCode] = slidesArray
-//                } else {
-//                    capturedBrandWiseGroupedSlides[brandCode] = [aDetailedSlide]
-//                }
-//            }
-//        }
-//    }
+    
+    func toGroupSlidesbrandWise() {
+        
+        var capturedBrandWiseGroupedSlides = [Int: [DetailedSlide]]()
+
+        detailedSlides.forEach { aDetailedSlide in
+            if let brandCode = aDetailedSlide.brandCode {
+                if var slidesArray = capturedBrandWiseGroupedSlides[brandCode] {
+                    slidesArray.append(aDetailedSlide)
+                    capturedBrandWiseGroupedSlides[brandCode] = slidesArray
+                } else {
+                    capturedBrandWiseGroupedSlides[brandCode] = [aDetailedSlide]
+                }
+            }
+        }
+        let brands = capturedBrandWiseGroupedSlides.count
+        
+        
+        var brandWiseCategorizedSlides = [DetailedSlide]()
+        for (brandCode, detailedSlide) in capturedBrandWiseGroupedSlides {
+            var aDetailedSlide = DetailedSlide()
+            var filteredBrand : Brand?
+            if let cachedetailedSlide = detailedSlide.first {
+                aDetailedSlide = cachedetailedSlide
+                let cacheBrand = DBManager.shared.getBrands()
+                filteredBrand = cacheBrand.filter{ $0.code ==  "\(cachedetailedSlide.brandCode ?? 0)" }.first
+                aDetailedSlide.startTime = cachedetailedSlide.startTime
+            }
+            
+            if let lastSlide = detailedSlide.last {
+                aDetailedSlide.endTime = lastSlide.endTime
+            }
+ 
+            var groupedSlide = [SlidesModel]()
+            
+            detailedSlide.forEach { cacheSlides in
+                if let slidesModel = cacheSlides.slidesModel {
+                    groupedSlide.append(slidesModel)
+                }
+            }
+        
+            aDetailedSlide.groupedSlides = groupedSlide
+            aDetailedSlide.brand = filteredBrand
+//            aDetailedSlide.groupedSlides = groupedSlide
+//            aDetailedSlide.slidesModel = detailedSlide.fi
+//            aDetailedSlide.brand =
+//            aDetailedSlide.brandCode =
+//            aDetailedSlide.slideID =
+//            aDetailedSlide.isLiked =
+//            aDetailedSlide.isDisliked =
+//            aDetailedSlide.remarks =
+//            aDetailedSlide.remarksValue =
+//            aDetailedSlide.isShared =
+            brandWiseCategorizedSlides.append(aDetailedSlide)
+        }
+         dump(brandWiseCategorizedSlides)
+        Shared.instance.detailedSlides = brandWiseCategorizedSlides
+      
+    }
 
     
     func toLoadData() {

@@ -33,11 +33,27 @@ class TodayCallsModel: Codable {
         
         // Computed properties to extract name and designation
          name = custName.components(separatedBy: " --- ")[0]
-        
-         let components = custName.components(separatedBy: "[")
-        designation = components.count > 1 ? components[1].replacingOccurrences(of: "]", with: "").replacingOccurrences(of: " ", with: "") : ""
+//        
+//         let components = custName.components(separatedBy: "[")
+//        designation = components.count > 1 ? components[1].replacingOccurrences(of: "]", with: "").replacingOccurrences(of: " ", with: "") : ""
         submissionDate = ""
         submissionStatus = ""
+        
+        if custType == 1 {
+            designation = "Doctor"
+        } else if custType == 2 {
+            designation = "Chemist"
+        } else if custType == 5 {
+            designation = "cip"
+        } else if custType == 4 {
+            designation = "Doctor"
+        } else if custType == 6 {
+            designation = "hospital"
+        } else if custType == 3 {
+            designation = "Stockist"
+        } else {
+            designation = ""
+        }
     }
     
     

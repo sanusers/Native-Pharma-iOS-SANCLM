@@ -642,6 +642,12 @@
         <relationship name="dob" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="dow" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
     </entity>
+    <entity name="UnsyncedEventCaptures" representedClassName="UnsyncedEventCaptures" syncable="YES" codeGenerationType="class">
+        <attribute name="custCode" optional="YES" attributeType="String"/>
+        <attribute name="eventcaptureDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="eventcaptureParamData" optional="YES" attributeType="Binary"/>
+        <relationship name="unsyncedCapturedEvents" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EventCaptureViewModelCDEntity"/>
+    </entity>
     <entity name="UnsyncedHomeData" representedClassName="UnsyncedHomeData" syncable="YES" codeGenerationType="class">
         <attribute name="anslNo" optional="YES" attributeType="String"/>
         <attribute name="checkintime" optional="YES" attributeType="String"/>
