@@ -78,8 +78,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             return
         }
         
-     // self.closeHolderView.isUserInteractionEnabled = false
-     self.tableView.isUserInteractionEnabled = !isDownloading
+ 
+     self.tableView.isUserInteractionEnabled = false
+        //!isDownloading
         //!isDownloading
       guard isDownloadingInProgress  else {
           return }
@@ -522,7 +523,8 @@ class SlideDownloadVC : UIViewController {
         Shared.instance.isSlideDownloading = true
        
    
-        self.tableView.isUserInteractionEnabled = !self.isDownloading
+        self.tableView.isUserInteractionEnabled =  false
+        //!self.isDownloading
         guard index >= 0, index < items.count else {
             
 

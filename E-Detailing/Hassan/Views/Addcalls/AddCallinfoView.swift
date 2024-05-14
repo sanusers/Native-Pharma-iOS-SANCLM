@@ -1800,7 +1800,12 @@ class AddCallinfoView : BaseView {
         segmentsCollection.delegate = self
         segmentsCollection.dataSource = self
         segmentsCollection.reloadData()
-        self.setSegment(.detailed)
+        if Shared.instance.detailedSlides.count != 0 {
+            self.setSegment(.detailed)
+        } else {
+            self.setSegment(.products)
+        }
+       
     }
     
     

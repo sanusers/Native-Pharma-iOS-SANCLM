@@ -109,58 +109,164 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["Inputs"] = addedInput
         //Products Detailed
         // Assuming you have detailedSlides array
+ //       var detailedSlides = Shared.instance.detailedSlides
+
+        
+//        var addedDetailedProducts = [[String: Any]]()
+//        addedDetailedProducts.removeAll()
+//
+//        detailedSlides.forEach { aDetailedSlide in
+//                var aproduct : [String : Any] = [:]
+//                // groupedSlides.forEach
+//                aproduct["Code"] = aDetailedSlide.brandCode
+//                aproduct["Group"] = "1"
+//                aproduct["ProdFeedbk"] = ""
+//                aproduct["Rating"] = ""
+//                aproduct["Appver"] = "Test.S.1.0"
+//                aproduct["Mod"] = "iOS-Edet"
+//                aproduct["Type"] = cusType
+//                var timesLine = [String: Any]()
+//                timesLine["sTm"] = aDetailedSlide.startTime ?? ""
+//                timesLine["eTm"] = aDetailedSlide.endTime ?? ""
+//                aproduct["Timesline"] = timesLine
+//                
+//                aproduct["Slides"] = [[String: Any]]()
+//                var aslideParamArr = [[String: Any]]()
+//            
+//                aDetailedSlide.groupedSlides?.enumerated().forEach {index, aSlide in
+//                    
+//                    aproduct["Name"] = aSlide.name
+//                    var aSlideParam: [String :Any] = [:]
+//                    aSlideParam["Slide"] = aSlide.name
+//                    aSlideParam["SlidePath"] = savedPath
+//                    aSlideParam["Scribbles"] = ""
+//                    aSlideParam["SlideRemarks"] = aDetailedSlide.remarks
+//                    aSlideParam["SlideType"] =  aSlide.fileType
+//                    aSlideParam["SlideRating"] = aDetailedSlide.remarksValue
+//                    aSlideParam["Times"] = [[String: Any]]()
+//                    var previewTimeArr:  [[String : Any]] = [[:]]
+//                    previewTimeArr.removeAll()
+//                    var previewTime : [String: Any] = [:]
+//                    previewTime.removeAll()
+//                    previewTime["sTm"] = aDetailedSlide.startTime
+//                    previewTime["eTm"] = aDetailedSlide.endTime
+//                    previewTimeArr.append(previewTime)
+//                    aSlideParam["Times"] = previewTimeArr
+//                    aslideParamArr.append(aSlideParam)
+//                  
+//                }
+//                aproduct["Slides"] = aslideParamArr
+//                addedDetailedProducts.append(aproduct)
+//            
+//        }
+//        dump(addedDetailedProducts)
         var detailedSlides = Shared.instance.detailedSlides
 
-        
-        var addedDetailedProducts = [[String: Any]]()
-        addedDetailedProducts.removeAll()
+            // Create a dictionary to group slides by brandCode
+            var groupedSlides: [Int: [SlidesModel]] = [:]
 
-        detailedSlides.forEach { aDetailedSlide in
-                var aproduct : [String : Any] = [:]
-                // groupedSlides.forEach
-                aproduct["Code"] = aDetailedSlide.brandCode
-                aproduct["Group"] = "1"
-                aproduct["ProdFeedbk"] = ""
-                aproduct["Rating"] = ""
-                aproduct["Appver"] = "Test.S.1.0"
-                aproduct["Mod"] = "iOS-Edet"
-                aproduct["Type"] = cusType
-                var timesLine = [String: Any]()
-                timesLine["sTm"] = aDetailedSlide.startTime ?? ""
-                timesLine["eTm"] = aDetailedSlide.endTime ?? ""
-                aproduct["Timesline"] = timesLine
-                
-                aproduct["Slides"] = [[String: Any]]()
-                var aslideParamArr = [[String: Any]]()
-            
-                aDetailedSlide.groupedSlides?.enumerated().forEach {index, aSlide in
-                    
-                    aproduct["Name"] = aSlide.name
-                    var aSlideParam: [String :Any] = [:]
-                    aSlideParam["Slide"] = aSlide.name
-                    aSlideParam["SlidePath"] = savedPath
-                    aSlideParam["Scribbles"] = ""
-                    aSlideParam["SlideRemarks"] = aDetailedSlide.remarks
-                    aSlideParam["SlideType"] =  aSlide.fileType
-                    aSlideParam["SlideRating"] = aDetailedSlide.remarksValue
-                    aSlideParam["Times"] = [[String: Any]]()
-                    var previewTimeArr:  [[String : Any]] = [[:]]
-                    previewTimeArr.removeAll()
-                    var previewTime : [String: Any] = [:]
-                    previewTime.removeAll()
-                    previewTime["sTm"] = aDetailedSlide.startTime
-                    previewTime["eTm"] = aDetailedSlide.endTime
-                    previewTimeArr.append(previewTime)
-                    aSlideParam["Times"] = previewTimeArr
-                    aslideParamArr.append(aSlideParam)
-                  
+            // Group slides by brandCode
+            for slide in detailedSlides {
+                if let brandCode = slide.brandCode {
+                    if groupedSlides[brandCode] == nil {
+                        groupedSlides[brandCode] = []
+                    }
+                    if let slides = slide.groupedSlides {
+                        groupedSlides[brandCode]?.append(contentsOf: slides)
+                    }
                 }
-                aproduct["Slides"] = aslideParamArr
-                addedDetailedProducts.append(aproduct)
+            }
+
+            // Iterate through the detailedSlides array and update each DetailedSlide object
+            for (index, detailedSlide) in detailedSlides.enumerated() {
+                if let groupedSlidesForBrand = groupedSlides[detailedSlide.brandCode ?? Int()] {
+                    detailedSlides[index].groupedSlides = groupedSlidesForBrand
+                }
+            }
+
+            // Create a dictionary to group DetailedSlides by brandCode
+            var groupedDetailedSlides: [Int: [DetailedSlide]] = [:]
+
+            // Group DetailedSlides by brandCode
+            for slide in detailedSlides {
+                if let brandCode = slide.brandCode {
+                    if groupedDetailedSlides[brandCode] == nil {
+                        groupedDetailedSlides[brandCode] = []
+                    }
+                    groupedDetailedSlides[brandCode]?.append(slide)
+                }
+            }
+
+            // Convert the groupedSlides dictionary into an array of arrays
+        let mappedArray =  Shared.instance.detailedSlides
+        //groupedDetailedSlides.values.map { $0 }
+
             
-        }
-        dump(addedDetailedProducts)
-        
+            
+            
+            var addedDetailedProducts = [[String: Any]]()
+            addedDetailedProducts.removeAll()
+            
+            dump(mappedArray)
+    //        mappedArray.forEach { DetailedSlide in
+    //
+    //        }
+            
+            mappedArray.forEach { detailedSlideArr in
+                var groupSlides: [SlidesModel] = detailedSlideArr.groupedSlides ?? []
+//                detailedSlideArr.forEach { aDetailedSlide in
+//                    if let aSlideModel = aDetailedSlide.slidesModel {
+//                        groupSlides.append(aSlideModel)
+//                    }
+//                }
+                let optionalDetailedSlide =  detailedSlideArr.groupedSlides ?? []
+                //detailedSlideArr.first
+               
+                    var aproduct : [String : Any] = [:]
+                    // groupedSlides.forEach
+                    aproduct["Code"] =  detailedSlideArr.brandCode
+                    //aDetailedSlide.brandCode
+                    aproduct["Group"] = "1"
+                    aproduct["ProdFeedbk"] = detailedSlideArr.remarks
+                    aproduct["Rating"] = detailedSlideArr.remarksValue
+                    aproduct["Appver"] = "Test.S.1.0"
+                    aproduct["Mod"] = "iOS-Edet"
+                    aproduct["Type"] = cusType
+                    var timesLine = [String: Any]()
+                    timesLine["sTm"] = detailedSlideArr.startTime ?? ""
+                    timesLine["eTm"] = detailedSlideArr.endTime ?? ""
+                    aproduct["Timesline"] = timesLine
+                    
+                    aproduct["Slides"] = [[String: Any]]()
+                    var aslideParamArr = [[String: Any]]()
+                    groupSlides.enumerated().forEach {index, aSlide in
+
+                        
+                        aproduct["Name"] = aSlide.name
+                        var aSlideParam: [String :Any] = [:]
+                        aSlideParam["Slide"] = aSlide.name
+                        aSlideParam["SlidePath"] = savedPath
+                        aSlideParam["Scribbles"] = ""
+                        aSlideParam["SlideRemarks"] = detailedSlideArr.remarks
+                        aSlideParam["SlideType"] =  aSlide.fileType
+                        aSlideParam["SlideRating"] = detailedSlideArr.remarksValue
+                        aSlideParam["Times"] = [[String: Any]]()
+                        var previewTimeArr:  [[String : Any]] = [[:]]
+                        previewTimeArr.removeAll()
+                        var previewTime : [String: Any] = [:]
+                        previewTime.removeAll()
+                        previewTime["sTm"] = detailedSlideArr.startTime
+                        previewTime["eTm"] = detailedSlideArr.endTime
+                        previewTimeArr.append(previewTime)
+                        aSlideParam["Times"] = previewTimeArr
+                        aslideParamArr.append(aSlideParam)
+                      
+                    }
+                    aproduct["Slides"] = aslideParamArr
+                    addedDetailedProducts.append(aproduct)
+                
+            }
+            dump(addedDetailedProducts)
         
         //Products not Detailed
         var addedProducts = [[String: Any]]()
