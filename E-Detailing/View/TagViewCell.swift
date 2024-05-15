@@ -34,6 +34,9 @@ class TagViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblName.setFont(font: .bold(size: .SUBHEADER))
+        lblAddress.setFont(font: .medium(size: .BODY))
+        lblMeter.setFont(font: .bold(size: .BODY))
     }
     
     

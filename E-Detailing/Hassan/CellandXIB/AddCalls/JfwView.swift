@@ -389,18 +389,7 @@ class JfwView: UIView {
     }
     
     func promptToOpenSettings() {
-//         let alertController = UIAlertController(title: "Camera Permission Required", message: "Please grant camera permission in settings to use this feature.", preferredStyle: .alert)
-//         
-//         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-//         let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
-//             UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-//         }
-//         
-//         alertController.addAction(cancelAction)
-//         alertController.addAction(settingsAction)
-//         
-//        self.rootVC?.present(alertController, animated: true, completion: nil)
-        
+
         toSetupAlert(desc: "Camera Permission Required")
      }
     

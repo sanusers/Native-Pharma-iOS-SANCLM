@@ -44,6 +44,7 @@ class NearMeVC : UIViewController {
     @IBOutlet weak var btnRight: UIButton!
     
     
+    @IBOutlet var titleLbl: UILabel!
     @IBOutlet weak var viewMapView: GMSMapView!
     
     @IBOutlet weak var viewTaggedList: UIView!
@@ -83,6 +84,7 @@ class NearMeVC : UIViewController {
     
     // var taggingArray = ["Doctor" , "Chemist" , "Stockist" , "Unlisted Doctor" , "Cip" , "Hospital"]
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.updateTitle()
@@ -91,7 +93,9 @@ class NearMeVC : UIViewController {
         
         self.viewTableView.isHidden = true
         self.widthTableView.constant = 0
-        
+        //viewTableView.setSpecificCornersForTop(cornerRadius: 15)
+        //viewTableView.setSpecificCornersForLeftCorners(cornerRadius: 15)
+        //visitTableView.setSpecificCornersForLeftCorners(cornerRadius: 15)
         self.viewMapView.isMyLocationEnabled = true
        // self.viewMapView.settings.myLocationButton = true
         
@@ -112,17 +116,17 @@ class NearMeVC : UIViewController {
             button.layer.borderWidth = 2
             button.layer.cornerRadius = 10
         }
-        
+        titleLbl.setFont(font: .bold(size: .SUBHEADER))
         btnLeft.isHidden = true
          
-        LocationManager.shared.getCurrentLocation{ (coordinate) in
-            print("location == \(coordinate)")
-            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
-            self.viewMapView.camera =  camera
-            self.currentLocation = coordinate
-            self.drawCircle()
-            self.showAllTaggedList()
-        }
+//        LocationManager.shared.getCurrentLocation{ (coordinate) in
+//            print("location == \(coordinate)")
+//            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
+//            self.viewMapView.camera =  camera
+//            self.currentLocation = coordinate
+//            self.drawCircle()
+//            self.showAllTaggedList()
+//        }
         
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tagView(_:)))
@@ -203,6 +207,156 @@ class NearMeVC : UIViewController {
         }
     }
     
+    func handleMarkerCreation(type: TaggingType, custCode: String,  location: CLLocationCoordinate2D) {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        var radiusL = CLLocationDistance()
+        if let radius = appsetup.disRad{
+            if let radiusFloat = Float(radius){
+                let radiusmeter = radiusFloat * 10000
+                radiusL = CLLocationDistance(radiusmeter)
+            }
+        }
+        
+        switch type  {
+        case .doctor:
+            let doctors = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let doctor = doctors.filter { $0.code == custCode}.first
+            guard let doctor = doctor else {return}
+                if let latitude = doctor.lat,let longitude = doctor.long,let doubleLat = Double(latitude),let doubleLongitude = Double(longitude) {
+                    let location = CLLocationCoordinate2D(latitude: doubleLat, longitude: doubleLongitude)
+                    
+                   
+                        let current = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                        let place = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                        let distance = current.distance(from: place)
+                        
+                        print("distance : \(distance)")
+                    
+                        if distance <= radiusL {
+                            let marker = GMSMarker()
+                            marker.position = location
+                            marker.icon = UIImage(named: "locationRed")
+                            marker.iconView?.frame.size = CGSize(width: 35, height: 50)
+                            marker.title = doctor.name ?? ""
+                            marker.snippet = doctor.addrs ?? ""
+                            marker.addObserver(self, forKeyPath: "\(doctor.code ?? "")", context: nil)
+                            
+                            marker.map = viewMapView
+                            marker.appearAnimation = .pop
+                           
+                            _ = mapView(viewMapView, didTap: marker)
+                        }
+                    
+                }
+            
+            
+        case .chemist:
+            let chemists = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            
+            let chemist = chemists.filter { $0.code == custCode}.first
+            guard let chemist = chemist else {return}
+                if let latitude = chemist.lat , let longitude = chemist.long, let douableLat = Double(latitude), let doubleLong = Double(longitude) {
+                    
+                    let location = CLLocationCoordinate2D(latitude: douableLat, longitude: doubleLong)
+                    
+                    if let currentLocation = self.currentLocation{
+                        let current = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
+                        let place = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                        let distance = current.distance(from: place)
+                        
+                        print("distance : \(distance)")
+                        
+                        if distance <= radiusL {
+                            let marker = GMSMarker()
+                            marker.position = location
+                            marker.icon = UIImage(named: "locationRed")
+                            marker.title = chemist.name ?? ""
+                            marker.snippet = chemist.addr ?? ""
+                            marker.appearAnimation = .pop
+                            marker.map = viewMapView
+                          
+                           
+                        }
+                    }
+                }
+            
+            
+        case .stockist:
+            let stockists = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            
+            let stockist = stockists.filter { $0.code == custCode}.first
+            guard let stockist = stockist else {return}
+                if let latitude = stockist.lat , let longitude = stockist.long, let douableLat = Double(latitude), let doubleLong = Double(longitude) {
+                    
+                    let location = CLLocationCoordinate2D(latitude: douableLat, longitude: doubleLong)
+                    
+                    if let currentLocation = self.currentLocation{
+                        let current = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
+                        let place = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                        let distance = current.distance(from: place)
+                        
+                        print("distance : \(distance)")
+                        
+                        if distance <= radiusL {
+                            let marker = GMSMarker()
+                            marker.position = location
+                            marker.icon = UIImage(named: "locationRed")
+                            marker.title = stockist.name ?? ""
+                            marker.snippet = stockist.addr ?? ""
+                            marker.appearAnimation = .pop
+                            marker.map = viewMapView
+                          
+                           
+                        }
+                    }
+                }
+            
+            
+        case .unlistedDoctor:
+            let unlistedDoctors = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            
+            let unlistedDoctor = unlistedDoctors.filter { $0.code == custCode}.first
+            guard let unlistedDoctor = unlistedDoctor else {return}
+            
+     
+                if let latitude = unlistedDoctor.lat , let longitude = unlistedDoctor.long, let douableLat = Double(latitude), let doubleLong = Double(longitude) {
+                    
+                    let location = CLLocationCoordinate2D(latitude: douableLat, longitude: doubleLong)
+                    
+                    if let currentLocation = self.currentLocation{
+                        let current = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
+                        let place = CLLocation(latitude: location.latitude, longitude: location.longitude)
+                        let distance = current.distance(from: place)
+                        
+                        
+                        print("distance : \(distance)")
+                        
+                        if distance <= radiusL {
+                            let marker = GMSMarker()
+                            marker.position = location
+                            marker.icon = UIImage(named: "locationRed")
+                            marker.title = unlistedDoctor.name ?? ""
+                            marker.snippet = unlistedDoctor.addrs ?? ""
+                            marker.appearAnimation = .pop
+                            marker.map = viewMapView
+                          
+                            
+                            
+                        }
+                    }
+                }
+            
+        }
+    }
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+      if let title = marker.title {
+        if let snippet = marker.snippet {
+          print("marker title: \(title): snippet: \(snippet)")
+        }
+      }
+      return true
+    }
+
     
     private func showAllTaggedList() {
        self.viewMapView.clear()
@@ -239,6 +393,7 @@ class NearMeVC : UIViewController {
                             let marker = GMSMarker()
                             marker.position = location
                             marker.icon = UIImage(named: "locationRed")
+                            marker.iconView?.frame.size = CGSize(width: 35, height: 50)
                             marker.title = doctor.name ?? ""
                             marker.snippet = doctor.addrs ?? ""
                             marker.addObserver(self, forKeyPath: "\(doctor.code ?? "")", context: nil)
@@ -246,14 +401,9 @@ class NearMeVC : UIViewController {
                             marker.map = viewMapView
                             
                             
-                       //     let tap = UITapGestureRecognizer(target: self, action: #selector(productView(_:)))
-                       //     marker.addObserver(<#T##observer: NSObject##NSObject#>, forKeyPath: <#T##String#>, context: <#T##UnsafeMutableRawPointer?#>)(tap)
-                            
-                        //    self.visitTableView.addObserver(<#T##observer: NSObject##NSObject#>, forKeyPath: <#T##String#>, context: <#T##UnsafeMutableRawPointer?#>)
-                            
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distanceRound)")))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: doctor.code ?? "", tagType: self.tagType)))
                         }
                     }
                 }
@@ -284,7 +434,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distanceRound)")))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name:  chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: chemist.code ?? "", tagType: self.tagType)))
                         }
                     }
                 }
@@ -315,7 +465,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distanceRound)")))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: stockist.code ?? "", tagType: self.tagType)))
                         }
                     }
                 }
@@ -347,7 +497,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distanceRound)")))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel( taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: unlistedDoctor.code ?? "", tagType: self.tagType)))
                         }
                     }
                 }
@@ -429,6 +579,7 @@ class NearMeVC : UIViewController {
         }
     }
     
+    
 }
 
 extension NearMeVC : tableViewProtocols {
@@ -438,9 +589,18 @@ extension NearMeVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TagViewCell", for: indexPath) as! TagViewCell
-        cell.visitDetail = self.visitListViewModel.fetchDataAtIndex(indexPath.row)
+        let model = self.visitListViewModel.fetchDataAtIndex(indexPath.row)
+        cell.visitDetail = model
+        
+        
+        cell.addTap {
+            self.handleMarkerCreation(type: self.tagType, custCode: model.custCode, location: model.coordinates)
+        }
+        
         return cell
     }
+    
+    
 }
 
 
@@ -455,7 +615,7 @@ extension NearMeVC : collectionViewProtocols {
         cell.title = self.visitListViewModel.fetchTitleAtIndex(indexPath.row)
         
         if self.tagType.name == self.visitListViewModel.fetchTitleAtIndex(indexPath.row).name {
-            cell.viewTitle.backgroundColor = UIColor.lightGray
+            cell.viewTitle.backgroundColor = UIColor.label.withAlphaComponent(0.5) //UIColor.lightGray
         }else {
             cell.viewTitle.backgroundColor = UIColor.clear
         }
@@ -467,7 +627,8 @@ extension NearMeVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if let cell = collectionView.cellForItem(at: indexPath) as? DcrTagTitleCell {
-            cell.viewTitle.backgroundColor = UIColor.lightGray
+            cell.viewTitle.backgroundColor =  UIColor.label.withAlphaComponent(0.5)
+            //UIColor.lightGray
         }
         
         self.tagType = self.visitListViewModel.fetchTitleAtIndex(indexPath.row).type
@@ -482,13 +643,17 @@ extension NearMeVC : collectionViewProtocols {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let label = UILabel()
-        label.font = UIFont(name: "Satoshi-Bold", size: 20)!
-        label.text = self.visitListViewModel.fetchTitleAtIndex(indexPath.row).name
-        let sizeLabelFit = label.sizeThatFits(CGSize(width: self.headerCollectionView.frame.width-30, height: 50))
+      //  let label = UILabel()
+      //  label.font = UIFont(name: "Satoshi-Bold", size: 20)!
+       // label.text = self.visitListViewModel.fetchTitleAtIndex(indexPath.row).name
+       // let sizeLabelFit = label.sizeThatFits(CGSize(width: self.headerCollectionView.frame.width-30, height: 50))
 
-        let size = CGSize(width: sizeLabelFit.width + 40, height: 50)
-        return size
+       // let size = CGSize(width: sizeLabelFit.width + 40, height: 50)
+        
+        return CGSize(width:self.visitListViewModel.fetchTitleAtIndex(indexPath.row).name.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 25, height: collectionView.height)
+        
+        
+       // return size
     }
 }
 
@@ -497,65 +662,3 @@ private enum Constants {
     static let spacing: CGFloat = 1
 }
 
-
-//let maximamSize = CGSize(width: self.view.frame.width-30, height: 2000)
-//let sizeLabelfit = lblCap.sizeThatFits(maximamSize)
-//
-//var newFrame : CGRect = lblCap.frame
-//newFrame.origin.x = 5
-//newFrame.origin.y = 5
-//newFrame.size.height = sizeLabelfit.height
-//newFrame.size.width = self.view.frame.width - 10
-//
-//lblCap.frame = newFrame
-
-
-
-
-
-//    private func updateSegment() {
-//
-//        let appsetup = AppDefaults.shared.getAppSetUp()
-//
-//        var dcrList = [String]()
-//
-//            dcrList.append("Doctor")
-//
-//            if appsetup.docNeed == 0 {
-//                dcrList.append("Doctor")
-//            }
-//            if appsetup.chmNeed == 0 {
-//                dcrList.append("Chemist")
-//            }
-//            if appsetup.stkNeed == 0 {
-//                dcrList.append("Stockist")
-//            }
-//            if appsetup.unlNeed == 0 {
-//                dcrList.append("Unlisted Doctor")
-//            }
-//
-////        dcrList.append("Stockist")
-////        dcrList.append("Stockist")
-//
-//        self.dcrSegmentControl = UISegmentedControl(items: dcrList)
-//
-//        self.dcrSegmentControl.translatesAutoresizingMaskIntoConstraints = false
-//        self.dcrSegmentControl.selectedSegmentIndex = 0
-//        self.dcrSegmentControl.addTarget(self, action: #selector(segmentControlAction(_:)), for: .valueChanged)
-//
-//        self.viewSegmentControl.addSubview(self.dcrSegmentControl)
-//
-//        let font = UIFont(name: "Satoshi-Bold", size: 18)!
-//        self.dcrSegmentControl.setTitleTextAttributes([NSAttributedString.Key.font : font], for: .normal)
-//        self.dcrSegmentControl.shadeColorForSelectedSegment1()
-//
-//        self.dcrSegmentControl.topAnchor.constraint(equalTo: self.viewSegmentControl.topAnchor,constant: 10).isActive = true
-//        self.dcrSegmentControl.leadingAnchor.constraint(equalTo: self.viewSegmentControl.leadingAnchor, constant: 10).isActive = true
-//        self.dcrSegmentControl.heightAnchor.constraint(equalTo: self.viewSegmentControl.heightAnchor, multiplier: 0.7).isActive = true
-//
-//    }
-//
-//
-//    @objc func segmentControlAction (_ sender : UISegmentedControl){
-//
-//    }

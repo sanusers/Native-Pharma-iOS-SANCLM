@@ -233,7 +233,7 @@ final class ConnectionHandler : NSObject {
     }
     
     
-    func imageUploadService(urlString:String, parameters:Data, image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), custCode: String, complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
+    func imageUploadService(urlString:String, parameters:JSON, image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), custCode: String, complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
  
         AF.upload(multipartFormData: { (multipartFormData) in
            
@@ -273,16 +273,17 @@ final class ConnectionHandler : NSObject {
             
 
             
-          //  for (key, value) in parameters {
-            //    multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
+            for (key, value) in parameters {
+                multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
                 
-           // } //Optional for extra parameters
+            } 
+            //Optional for extra parameters
             
-            //for (key, value) in parameters {
-                let multipartData = parameters 
-                multipartFormData.append(multipartData, withName: "data" as String)
-                _ = String(data: multipartData, encoding: .utf8)
-           // }
+       
+//                let multipartData = parameters 
+//                multipartFormData.append(multipartData, withName: "data" as String)
+//                _ = String(data: multipartData, encoding: .utf8)
+      
         }, to: "\("")\(urlString)")
         .responseJSON(completionHandler: { response in
            // Shared.instance.removeLoaderInWindow()

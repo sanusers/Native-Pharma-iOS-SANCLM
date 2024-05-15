@@ -596,7 +596,7 @@ class AddCallinfoVC: BaseViewController {
   
    
         
-        userStatisticsVM?.toUploadCapturedImage(params: paramData, api: .imageUpload, image: [evencaptures.image], imageName: [evencaptures.eventCapture.imageUrl], paramData: param, custCode: dcrCall.code) { result in
+        userStatisticsVM?.toUploadCapturedImage(params: param, api: .imageUpload, image: [evencaptures.image], imageName: [evencaptures.eventCapture.imageUrl], paramData: param, custCode: dcrCall.code) { result in
                 
                 switch result {
                     

@@ -16,8 +16,9 @@ class TaggingListVC : UIViewController {
     
     @IBOutlet weak var txtSearch: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet var resoureHQlbl: UILabel!
     
-    
+    @IBOutlet var textFieldHolderView: UIView!
     
     var type : TaggingType!
     
@@ -30,8 +31,8 @@ class TaggingListVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.lblCollection.text = self.type.name 
+        self.view.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        self.lblCollection.text = self.type.name
         
         self.collectionView.register(UINib(nibName: "DCRTaggingCell", bundle: nil), forCellWithReuseIdentifier: "DCRTaggingCell")
         
@@ -39,10 +40,11 @@ class TaggingListVC : UIViewController {
         self.collectionView.collectionViewLayout = layout
      
         
-        self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
+       // self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
         self.txtSearch.addTarget(self, action: #selector(updateCustomerData(_:)), for: .editingChanged)
         
         self.doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+        setHQlbl()
     }
     
     
@@ -51,6 +53,48 @@ class TaggingListVC : UIViewController {
     }
     
     
+    @IBAction func didTapBackBtn(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func setHQlbl() {
+        textFieldHolderView.layer.cornerRadius = 5
+        textFieldHolderView.layer.borderWidth = 1
+        textFieldHolderView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        // let appsetup = AppDefaults.shared.getAppSetUp()
+            CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
+                let savedEntity = hqModelArr.first
+                guard let savedEntity = savedEntity else{
+                    
+                    self.resoureHQlbl.text = "Select HQ"
+                    
+                    return
+                    
+                }
+                
+                self.resoureHQlbl.text = savedEntity.name == "" ? "Select HQ" : savedEntity.name
+                
+                let subordinates = DBManager.shared.getSubordinate()
+                
+                let asubordinate = subordinates.filter{$0.id == savedEntity.code}
+                
+                if !asubordinate.isEmpty {
+                 //  self.fetchedHQObject = asubordinate.first
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                  //  self.toloadCallsCollection()
+                }
+            
+              
+  
+ 
+                
+            }
+            // Retrieve Data from local storage
+               return
+        
+
+       
+    }
     
     @objc func updateCustomerData(_ sender : UITextField) {
         
@@ -102,8 +146,13 @@ extension TaggingListVC : collectionViewProtocols {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
+//        let width = self.collectionView.frame.width / 4
+//        let size = CGSize(width: width - 10, height: 240)
+//        return size
+        
         let width = self.collectionView.frame.width / 4
-        let size = CGSize(width: width - 10, height: 240)
+    
+        let size = CGSize(width: width - 10, height: collectionView.height / 3.5)
         return size
     }
     

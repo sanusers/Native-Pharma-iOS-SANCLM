@@ -44,6 +44,7 @@ class DcrTagTitleCell : UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblName.setFont(font: .bold(size: .BODY))
     }
 }
  

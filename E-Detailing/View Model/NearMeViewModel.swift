@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import CoreLocation
 
 class VisitListViewModel {
     
@@ -64,6 +64,15 @@ class VisitViewModel {
     var meter : String {
         return taggedDetail.meter
     }
+    
+    var coordinates : CLLocationCoordinate2D {
+        return taggedDetail.coordinates
+    }
+    
+    var custCode : String {
+        return taggedDetail.custCode
+    }
+    
 }
 
 class TagTitleViewModel {
@@ -92,6 +101,9 @@ struct TaggedDetails {
     var name : String
     var address : String
     var meter : String
+    var coordinates: CLLocationCoordinate2D
+    var custCode: String
+    var tagType: TaggingType
 }
 
 

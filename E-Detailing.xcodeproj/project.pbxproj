@@ -68,6 +68,8 @@
 		385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424F2AFBABC300C0A58A /* BaseViewController.swift */; };
 		385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42512AFBAC2D00C0A58A /* BaseView.swift */; };
 		385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42532AFBB75300C0A58A /* AppSetupModel.swift */; };
+		3860C8562BF359FB0065862D /* AddNewTagInfoVIew.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */; };
+		3860C8582BF35C500065862D /* AddNewTagInfoVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */; };
 		3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */; };
 		3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8CE2AFCCE74009AB984 /* TourPlanVC.swift */; };
 		3865F8D12AFCCF62009AB984 /* StoryBoardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */; };
@@ -450,6 +452,8 @@
 		385A424F2AFBABC300C0A58A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		385A42512AFBAC2D00C0A58A /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		385A42532AFBB75300C0A58A /* AppSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetupModel.swift; sourceTree = "<group>"; };
+		3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddNewTagInfoVIew.xib; sourceTree = "<group>"; };
+		3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewTagInfoVIew.swift; sourceTree = "<group>"; };
 		3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanView.swift; sourceTree = "<group>"; };
 		3865F8CE2AFCCE74009AB984 /* TourPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanVC.swift; sourceTree = "<group>"; };
 		3865F8D02AFCCF62009AB984 /* StoryBoardExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBoardExtensions.swift; sourceTree = "<group>"; };
@@ -907,6 +911,15 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
+		3860C8542BF359BE0065862D /* AddTagInfo */ = {
+			isa = PBXGroup;
+			children = (
+				3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */,
+				3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */,
+			);
+			path = AddTagInfo;
+			sourceTree = "<group>";
+		};
 		3865F8CA2AFCCE3D009AB984 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -956,6 +969,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				3860C8542BF359BE0065862D /* AddTagInfo */,
 				38FD4EFE2BBD6F7A00EF9D3D /* CustomerCheckin */,
 				38FA7EE42BAD463A00BB2593 /* AddCalls */,
 				384555682BA9C5F900F6CE1A /* Headers */,
@@ -1839,6 +1853,7 @@
 				38CA1FF42B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib in Resources */,
 				38D569062B3570E3007CB86D /* ListedWorkTypesTVC.xib in Resources */,
 				388546402B5FC765005FC9FC /* HomeWorktypeTVC.xib in Resources */,
+				3860C8562BF359FB0065862D /* AddNewTagInfoVIew.xib in Resources */,
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
 				38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */,
 				3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */,
@@ -2174,6 +2189,7 @@
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,
 				38D70F0E2B909F590033ED9C /* DCRdatesModel.swift in Sources */,
+				3860C8582BF35C500065862D /* AddNewTagInfoVIew.swift in Sources */,
 				38FAA1732B7F263500714AA2 /* MyDayPlanTVC.swift in Sources */,
 				38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */,
 				38E3DF712B8F2DBA0093DF4B /* Viewcontroller + Ex.swift in Sources */,

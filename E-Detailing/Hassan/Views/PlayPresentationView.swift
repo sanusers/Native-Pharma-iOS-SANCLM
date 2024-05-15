@@ -348,7 +348,7 @@ class  PlayPresentationView: BaseView {
     func toShareMedia(sender: UIView) {
         // Create an array of items to share
         guard let url = selectedSlideURL else {return}
-        let items: [Any] = ["Check out this link!", URL(string: url)!]
+        let items: [Any] = [URL(string: url)!]
         
         // Create an activity view controller
         let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)

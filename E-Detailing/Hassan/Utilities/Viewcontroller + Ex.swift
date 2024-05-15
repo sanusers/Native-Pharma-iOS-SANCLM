@@ -21,7 +21,7 @@ enum XIBs: String {
     case detailedSlideInfoView = "DetailedSlideInfoView"
     
     case productSectionReusableView = "ProductSectionReusableView"
-    
+    case addNewTagInfoVIew =  "AddNewTagInfoVIew"
     var nib: UINib {
         return UINib(nibName: self.rawValue, bundle: nil)
     }

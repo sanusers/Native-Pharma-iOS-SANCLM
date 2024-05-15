@@ -208,15 +208,14 @@ class SplashView: BaseView{
         btnLogout.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         btnLogout.isHidden = true
         lblMenuTitle.text = ""
-        //OOPS! you have accidentally changes time zone. Set the time zone to update automatically.
         SplashImageHolderView.elevate(2, shadowColor: .lightGray, opacity: 0.5)
         imgAppIcon.clipsToBounds = true
         SplashImageHolderView.layer.cornerRadius = 12
         imgAppIcon.layer.cornerRadius  = 12
         
-        if splashVC.isTimeZoneChanged {
-            self.setUIfortimeZoneChanges()
-        }
+//        if splashVC.isTimeZoneChanged {
+//            self.setUIfortimeZoneChanges()
+//        }
     }
 
     @IBAction func didTapLogout(_ sender: Any) {

@@ -26,31 +26,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         GMSServices.provideAPIKey(GooglePlacesApiKey)
-        addObserverForTimeZoneChange()
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
-            makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
-        } else {
-            makeSplashView(isFirstTime: true)
-        }
         IQKeyboardManager.shared.enable = true
+       // addObserverForTimeZoneChange()
+      //  if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+         //   makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
+       // } else {
+            makeSplashView(isFirstTime: true)
+       // }
+       
         return true
     }
     
-    func addObserverForTimeZoneChange() {
-        NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
-    }
+//    func addObserverForTimeZoneChange() {
+//        NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
+//    }
     
-    func applicationWillEnterForeground(_ application: UIApplication) {
-     
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
-            self.makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
-        } 
+//    func applicationWillEnterForeground(_ application: UIApplication) {
+//     
+//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
+//            self.makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
+//        } 
+//    
+//    }
     
-    }
-    
-    @objc func timeZoneChanged() {
-        makeSplashView(isFirstTime: true)
-    }
+//    @objc func timeZoneChanged() {
+//        makeSplashView(isFirstTime: true)
+//    }
     
     func makeSplashView(isFirstTime:Bool, isTimeZoneChanged: Bool? = false)
     {

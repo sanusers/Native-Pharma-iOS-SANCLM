@@ -17,7 +17,7 @@ class DCRTaggingCell : UICollectionViewCell {
     
     @IBOutlet weak var lblCategory: UILabel!
     @IBOutlet weak var lblSpeciality: UILabel!
-    @IBOutlet weak var lblCluster: UILabel!
+   // @IBOutlet weak var lblCluster: UILabel!
     
     
     
@@ -33,7 +33,7 @@ class DCRTaggingCell : UICollectionViewCell {
             self.lblName.text = customer.name
             self.lblCategory.text = customer.category
             self.lblSpeciality.text = customer.speciality
-            self.lblCluster.text = customer.townName
+           // self.lblCluster.text = customer.townName
             self.lblTagCount.text = (customer.geoCount) + "/" + (customer.maxCount)
             
             

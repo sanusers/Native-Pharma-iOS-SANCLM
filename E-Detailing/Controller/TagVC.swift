@@ -10,38 +10,41 @@ import UIKit
 import GoogleMaps
 import Alamofire
 import MobileCoreServices
-
+import CoreData
+import AVFoundation
 class TagVC : UIViewController {
     
     
     @IBOutlet weak var lblAddress: UILabel!
     
     
-    @IBOutlet weak var lblName: UILabel!
-    @IBOutlet weak var lblLatitude: UILabel!
-    @IBOutlet weak var lblLongitude: UILabel!
-    @IBOutlet weak var lblLocation: UILabel!
+    @IBOutlet var btnTag: ShadowButton!
     
-    
+    @IBOutlet weak var backgroundView: UIView!
+    @IBOutlet weak var backGroundVXview: UIVisualEffectView!
     @IBOutlet weak var viewMapView: GMSMapView!
-    @IBOutlet weak var viewTagStatus: UIView!
-    
+    var viewTagStatus: AddNewTagInfoVIew?
+    var userStatisticsVM : UserStatisticsVM?
     
     var customer : CustomerViewModel!
     
-    var doctor : DoctorFencing!
+    //var doctor : DoctorFencing!
     
     var selectedCoordinate : CLLocationCoordinate2D!
-    
+    var selectedDCRcall: CallViewModel?
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.backgroundView.isHidden = true
+        self.backGroundVXview.isHidden = true
         self.viewMapView.isMyLocationEnabled = true
         self.viewMapView.settings.myLocationButton = true
         self.viewMapView.settings.scrollGestures = false
         self.viewMapView.delegate = self
+      
         
-        LocationManager.shared.getCurrentLocation{ (coordinate) in
+        btnTag.addTarget(self, action: #selector(checkCameraAuthorization), for: .touchUpInside)
+        
+        LocationManager.shared.getCurrentLocation { (coordinate) in
             
             let camera  = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 17)
             
@@ -51,7 +54,9 @@ class TagVC : UIViewController {
             
             let marker = GMSMarker()
             marker.position = coordinate
-            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon")!)
+            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
+            marker.iconView?.tintColor = .appLightPink
+            marker.iconView?.frame.size = CGSize(width: 35, height: 50)
             marker.title = self.customer.name
             marker.map = self.viewMapView
         }
@@ -60,7 +65,177 @@ class TagVC : UIViewController {
     deinit {
         print("TagVC deallocated")
     }
+    func setupCamera() {
+        let pickerVC = UIImagePickerController()
+        pickerVC.sourceType = .camera
+        pickerVC.delegate = self
+        
+        self.navigationController?.present(pickerVC, animated: true)
+    }
     
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+            if granted {
+                DispatchQueue.main.async {
+                    self?.setupCamera()
+                }
+            }
+        }
+    }
+    
+    
+    func promptToOpenSettings() {
+
+        toSetupAlert(desc: "Camera Permission Required")
+     }
+    
+    
+    func toSetupAlert(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("yes action")
+         
+
+        }
+        
+        commonAlert.addAdditionalCancelAction {
+            print("no action")
+            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        }
+    }
+    
+    @objc func checkCameraAuthorization() {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+         case .authorized:
+             setupCamera()
+         case .notDetermined:
+             requestCameraPermission()
+         case .denied, .restricted:
+             promptToOpenSettings()
+         @unknown default:
+             fatalError("Unknown case for camera authorization status.")
+         }
+     }
+    
+    @IBAction func didTapBackBtn(_ sender: Any) {
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let checkinVIewwidth = view.bounds.width / 3
+        let checkinVIewheight = view.bounds.height / 2
+        
+        let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = view.bounds.midY - (checkinVIewheight / 2)
+        
+        
+        viewTagStatus?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
+        
+    }
+    
+    func fetchLatLongAndAddress(dcrCall : CallViewModel) {
+     
+        
+        Shared.instance.showLoaderInWindow()
+   
+            
+        Pipelines.shared.getAddressString(latitude: selectedCoordinate.latitude, longitude:  selectedCoordinate.longitude) {  address in
+                Shared.instance.removeLoaderInWindow()
+             
+
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                
+                let currentDate = Date()
+                let dateString = dateFormatter.string(from: currentDate)
+                
+                let datestr = dateString
+                
+                ///time
+                dateFormatter.dateFormat = "HH:mm:ss"
+                
+                let timeString = dateFormatter.string(from: currentDate)
+                
+                _ = (timeString)
+                dcrCall.customerCheckinAddress = address ?? ""
+                dcrCall.checkinlatitude = self.selectedCoordinate.latitude
+                dcrCall.checkinlongitude = self.selectedCoordinate.longitude
+                dcrCall.dcrCheckinTime = datestr
+                self.checkinDetailsAction(dcrCall : dcrCall)
+            }
+
+        
+    }
+    
+    
+    func checkinDetailsAction(dcrCall : CallViewModel) {
+        self.selectedDCRcall = dcrCall
+      
+        backgroundView.isHidden = false
+        backGroundVXview.alpha = 0.3
+        
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case viewTagStatus:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            case backgroundView:
+        
+                aAddedView.isUserInteractionEnabled = true
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                
+                
+            }
+            
+        }
+        
+        viewTagStatus = self.loadCustomView(nibname: XIBs.addNewTagInfoVIew) as? AddNewTagInfoVIew
+        guard let viewTagStatus = viewTagStatus else{
+            
+            print("unable to root view")
+            
+            return}
+        
+        viewTagStatus.delegate = self
+
+        viewMapView.addSubview(viewTagStatus)
+
+    }
+    
+    
+    func showAlert() {
+        print("Yet to implement")
+        showAlertToEnableLocation()
+    }
+    
+    func showAlertToEnableLocation() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+        commonAlert.addAdditionalCancelAction {
+            print("yes action")
+            self.redirectToSettings()
+            
+        }
+    }
+    
+    func redirectToSettings() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL)
+        }
+    }
     
     func tagging() {
         
@@ -70,9 +245,9 @@ class TagVC : UIViewController {
         
  //   http://crm.saneforce.in/iOSServer/db_module.php?axn=get/geodetails
         
-        let divisionCode = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
+        _ = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
         
-        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        _ = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         let params =  [String: Any]()
 //        ["tableName" : "save_geo",
 //                      "lat" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.latitude)" : "0.0000",
@@ -112,15 +287,13 @@ class TagVC : UIViewController {
                         print(date1)
         
                         print("ssususnbjbo")
-                        print(apiResponse)
+                      //  print(apiResponse)
                         print("ssusus")
                         self.updateTagList()
                         self.popToBack(UIStoryboard.nearMeVC)
                         
                       //  self.navigationController?.popViewController(animated: true)
                         
-                    }catch {
-                        print(error)
                     }
                 case .failure(let error):
                 
@@ -214,32 +387,11 @@ class TagVC : UIViewController {
         }
     }
     
-    
-    @IBAction func tagAction(_ sender: UIButton) {
-        
-        let picker = UIImagePickerController()
-        picker.sourceType = .camera
-        picker.allowsEditing = false
-        picker.delegate = self as UINavigationControllerDelegate & UIImagePickerControllerDelegate
-        
-        present(picker, animated:true)
-        
-        
-//        self.lblName.text = self.customer.name
-//        self.lblLatitude.text = "Latitude : " + "\(self.selectedCoordinate.latitude)"
-//        self.lblLongitude.text = "Longitude : " + "\( self.selectedCoordinate.longitude)"
-//        self.lblLocation.text = self.lblAddress.text ?? ""
-//
-//        UIView.animate(withDuration: 1.5) {
-//            self.viewTagStatus.isHidden = false
-//        }
-        
-    }
-    
+
     
     @IBAction func cancelAction(_ sender: UIButton) {
         UIView.animate(withDuration: 1.5) {
-            self.viewTagStatus.isHidden = true
+            self.didClose()
         }
     }
     
@@ -270,8 +422,25 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else{
             return
         }
+        var aCallVM: CallViewModel?
         
-        self.uploadImagess(image: image)
+        switch customer.type {
+            
+        case .doctor:
+             aCallVM = CallViewModel(call: customer.tag, type: .doctor)
+        case .chemist:
+             aCallVM = CallViewModel(call: customer.tag, type: .chemist)
+        case .stockist:
+             aCallVM = CallViewModel(call: customer.tag, type: .stockist)
+        case .unlistedDoctor:
+             aCallVM = CallViewModel(call: customer.tag, type: .unlistedDoctor)
+        }
+      
+        guard let aCallVM = aCallVM else {return}
+        self.selectedDCRcall = aCallVM
+        self.fetchLatLongAndAddress(dcrCall: aCallVM)
+        
+      
     }
     
     func uploadImagess(image: UIImage) {
@@ -285,28 +454,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         
         print(surl)
         
-        
-  //  http://crm.saneforce.in/iOSServer/db_api.php/?axn=save/image
-        
-        let url = URL(string: surl)!
-        
-        let boundary = "Boundary-\(UUID().uuidString)" //UUID().uuidString
-        
-        let date = Date().toString(format: "yyyyMMddHHmmss")
-        
-     //   let dat = Date().toString(format: "HHmmss") // self.events[i].timeStamp ?? ""
-        
-        let fileName = "\(appsetup.sfCode!)"+"_"+"\(date)" + ".jpeg"
-        
-        
-        let mimetype = mimeType(for: fileName)
-        let paramName = "imgfile"
-        
-        
-        var data = Data()
-        
-        let img = image.jpegData(compressionQuality: 0.5)
-        
         let params = ["tableName" : "imgupload",
                       "sfcode" : appsetup.sfCode ?? "",
                       "division_code" : (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: ""),
@@ -317,65 +464,27 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
                       "subdivision_code" : appsetup.subDivisionCode ?? "",
         ] as [String : Any]
         
+  //  http://crm.saneforce.in/iOSServer/db_api.php/?axn=save/image
         
-        let jsonData = try? JSONSerialization.data(withJSONObject: params)
-        
-        data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
-        
-        data.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
-        data.append(img!)
-        data.append(jsonData!)
-        data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(String(data.count), forHTTPHeaderField: "Content-Length")
-        request.httpBody = data
-        
-        
-        URLSession.shared.uploadTask(with: request, from: data){ (data, response, error) in
-            do {
-
-                if let error = error {
-                            print ("error: \(error)")
-                            return
-                    }
-
-                guard let responseData = data else {
-                        print("no response data")
-                        return
-                    }
-                print(responseData)
-                print(response!)
-                print((response as? HTTPURLResponse)?.statusCode ?? "")
-                        guard let response = response as? HTTPURLResponse,
-                            (200...299).contains(response.statusCode) else {
-
-                            print ("server error")
-
-                            return
-                        }
+        let url = URL(string: surl)!
+        let code = appsetup.sfCode ?? ""
+        let uuid = "\(UUID())"
+        let uuidStr = uuid.replacingOccurrences(of: "-", with: "")
+        let custCode = customer.code
+        let taggedImageName = code + "_" + custCode + uuidStr + ".jpeg"
+     
+        userStatisticsVM?.toUploadCapturedImage(params: params, api: .imageUpload, image: [image], imageName: [taggedImageName], paramData: params, custCode: custCode) { result in
+            switch result {
+            case .success(let response):
+                dump(response)
                 
                 
-                let apiResponse = try? JSONSerialization.jsonObject(with: responseData,options: JSONSerialization.ReadingOptions.allowFragments)
-                        
-                print(apiResponse as Any)
-                
-                DispatchQueue.main.async {
-                    self.lblName.text = self.customer.name
-                    self.lblLatitude.text = "Latitude : " + "\(self.selectedCoordinate.latitude)"
-                    self.lblLongitude.text = "Longitude : " + "\( self.selectedCoordinate.longitude)"
-                    self.lblLocation.text = self.lblAddress.text ?? ""
-            
-                    UIView.animate(withDuration: 1.5) {
-                        self.viewTagStatus.isHidden = false
-                    }
-                }
+            case .failure(let error):
+                dump(error.localizedDescription)
             }
-        }.resume()
+            
+            
+        }
     }
     
     
@@ -437,4 +546,80 @@ extension TagVC: GMSMapViewDelegate{
             }
         }
     }
+}
+
+
+extension TagVC : addedSubViewsDelegate {
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        print("Yet to implement")
+    }
+    
+    
+
+    
+    
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        print("Yet to implement")
+    }
+    
+   
+    
+    
+    
+    
+
+
+    func didClose() {
+       backgroundView.isHidden = true
+        self.view.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+
+
+                
+            case viewTagStatus:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+
+    
+    func didUpdate() {
+        backgroundView.isHidden = true
+        self.view.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+
+            case viewTagStatus:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+                guard let callViewModel = self.selectedDCRcall else {return}
+                
+               // self.navigateToPrecallVC(dcrCall: callViewModel, index: self.selectedDCRIndex ?? 0)
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+    
 }
