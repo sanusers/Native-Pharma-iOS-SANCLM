@@ -134,9 +134,9 @@ class UserStatisticsVM {
     
     
     
-    func toUploadCapturedImage(params: JSON, api : APIEnums, image: [UIImage], imageName:  [String], paramData: JSON,  custCode: String, _ result : @escaping (Result<JSON,UserStatisticsError>) -> Void) {
+    func toUploadCapturedImage(params: JSON, uploadType: ConnectionHandler.UploadType,  api : APIEnums, image: [UIImage], imageName:  [String], paramData: Data,  custCode: String, _ result : @escaping (Result<JSON,UserStatisticsError>) -> Void) {
         let urlString = APIUrl + api.rawValue
-        ConnectionHandler.shared.imageUploadService(urlString: urlString, parameters: params, image: image, imageName:  imageName, custCode: custCode) { response in
+        ConnectionHandler.shared.imageUploadService( urlString: urlString, uploadType: uploadType, parameters: params, image: image, imageName:  imageName, custCode: custCode, paramData: paramData) { response in
             dump(response)
             result(.success(response))
         } onError: { err in
@@ -145,6 +145,18 @@ class UserStatisticsVM {
         }
 
         
+    }
+    
+    
+    func toUploadTaggedInfo(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: GeneralResponseModal.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
     }
     
 }

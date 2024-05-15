@@ -30,46 +30,56 @@ class AddNewTagInfoVIew: UIView{
     
     weak var delegate: addedSubViewsDelegate?
     
-//    func setupUI(vm: CallViewModel) {
-//        viewCancel.layer.cornerRadius = 5
-//        viewConfirm.layer.cornerRadius = 5
-//        viewCancel.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-//        viewCancel.layer.borderWidth = 1
-//        viewCancel.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
-//        
-//        viewConfirm.backgroundColor = .appTextColor
-//        
-//        lblCance.setFont(font: .bold(size: .BODY))
-//        
-//        lblConfirm.setFont(font: .bold(size: .BODY))
-//        
-//        
-//        lblCance.textColor = .appTextColor
-//        
-//        lblConfirm.textColor = .appWhiteColor
-//        
-//        
-//        
-//        lblTaginfo.setFont(font: .bold(size: .BODY))
-//        
-//        lblTaginfo.textColor = .appLightPink
-//        
-//        lblLatitude.setFont(font: .bold(size: .BODY))
-//        
-//        
-//        lblLongitude.setFont(font: .bold(size: .BODY))
-//        
-//        lblAddress.setFont(font: .medium(size: .BODY))
-//        
-//        self.callVM = vm
-//        viewCancel.addTap {
-//            self.delegate?.didClose()
-//        }
-//        
-//        
-//        viewConfirm.addTap {
-//            guard let vm = self.callVM else {return}
-//            self.delegate?.didUpdateCustomerCheckin(dcrCall: vm)
-//        }
-//    }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+         super.init(coder: aDecoder)
+       
+     }
+    
+    func setupUI(vm: CallViewModel) {
+        viewCancel.layer.cornerRadius = 5
+        viewConfirm.layer.cornerRadius = 5
+        viewCancel.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        viewCancel.layer.borderWidth = 1
+        viewCancel.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        
+        viewConfirm.backgroundColor = .appTextColor
+        
+        lblCance.setFont(font: .bold(size: .BODY))
+        
+        lblConfirm.setFont(font: .bold(size: .BODY))
+        
+        
+        lblCance.textColor = .appTextColor
+        
+        lblConfirm.textColor = .appWhiteColor
+        
+        
+        
+        lblTaginfo.setFont(font: .bold(size: .BODY))
+        
+        lblTaginfo.textColor = .appLightPink
+        
+        lblLatitude.setFont(font: .bold(size: .BODY))
+        
+        
+        lblLongitude.setFont(font: .bold(size: .BODY))
+        
+        lblAddress.setFont(font: .medium(size: .BODY))
+        
+        self.callVM = vm
+        viewCancel.addTap {
+            self.delegate?.didClose()
+        }
+        
+        
+        viewConfirm.addTap {
+            guard let vm = self.callVM else {return}
+            self.delegate?.didUpdateCustomerCheckin(dcrCall: vm)
+        }
+    }
 }

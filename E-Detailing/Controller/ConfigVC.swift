@@ -141,8 +141,8 @@ class ConfigVC : UIViewController {
             lblPoweredBy.textColor = .appLightTextColor
             statusBarView.backgroundColor = .appTextColor
     
-            txtWebUrl.text = "sanffa.info"
-            txtLicenceKey.text = "sandemo"
+          //  txtWebUrl.text = "sanffa.info"
+          //  txtLicenceKey.text = "sandemo"
         }
 
 

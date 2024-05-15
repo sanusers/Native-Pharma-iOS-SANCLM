@@ -31,10 +31,10 @@ class DCRTaggingCell : UICollectionViewCell {
     var customer : CustomerViewModel! {
         didSet {
             self.lblName.text = customer.name
-            self.lblCategory.text = customer.category
-            self.lblSpeciality.text = customer.speciality
+            self.lblCategory.text = customer.category == "" ? "Category" : customer.category
+            self.lblSpeciality.text = customer.speciality == "" ? "Speciality" : customer.speciality
            // self.lblCluster.text = customer.townName
-            self.lblTagCount.text = (customer.geoCount) + "/" + (customer.maxCount)
+            self.lblTagCount.text = (customer.geoCount == "" ? "0" : customer.geoCount) + "/" + (customer.maxCount == "" ? "0" : customer.maxCount)
             
             
             self.btnCluster.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)

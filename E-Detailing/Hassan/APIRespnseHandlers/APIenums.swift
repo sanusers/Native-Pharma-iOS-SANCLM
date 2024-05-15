@@ -31,6 +31,7 @@ enum APIEnums : String{
     case deleteCall = "delete/dcr"
     case editCall = "edit/dcr"
     case imageUpload = "save/image"
+    case saveTag = "geodetails"
 }
 
 

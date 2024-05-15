@@ -12,22 +12,34 @@ import Alamofire
 import MobileCoreServices
 import CoreData
 import AVFoundation
+
+protocol TagVCDelegate: AnyObject {
+    
+    func didUsertagged()
+    
+}
+
 class TagVC : UIViewController {
     
     
     @IBOutlet weak var lblAddress: UILabel!
     
+    @IBOutlet var custName: UILabel!
     
     @IBOutlet var btnTag: ShadowButton!
     
-    @IBOutlet weak var backgroundView: UIView!
-    @IBOutlet weak var backGroundVXview: UIVisualEffectView!
+    @IBOutlet var backgroundView: UIView!
+    @IBOutlet var backGroundVXview: UIVisualEffectView!
+    
+    
     @IBOutlet weak var viewMapView: GMSMapView!
     var viewTagStatus: AddNewTagInfoVIew?
-    var userStatisticsVM : UserStatisticsVM?
-    
+    var checkinVIew: CustomerCheckinView?
+    var userStatisticsVM = UserStatisticsVM()
+    var delegate : TagVCDelegate?
     var customer : CustomerViewModel!
-    
+    var pickedImage: UIImage?
+    var pickedImageName : String?
     //var doctor : DoctorFencing!
     
     var selectedCoordinate : CLLocationCoordinate2D!
@@ -40,9 +52,36 @@ class TagVC : UIViewController {
         self.viewMapView.settings.myLocationButton = true
         self.viewMapView.settings.scrollGestures = false
         self.viewMapView.delegate = self
-      
-        
+        custName.setFont(font: .bold(size: .SUBHEADER))
+        custName.textColor = .appLightPink
+        custName.text = customer.name
         btnTag.addTarget(self, action: #selector(checkCameraAuthorization), for: .touchUpInside)
+        btnTag.backgroundColor = .appLightPink
+        
+        
+//        Pipelines.shared.requestAuth { (coordinate) in
+//            guard let coordinate = coordinate, let latitude = coordinate.latitude, let longitude =  coordinate.longitude else {return}
+//            
+//            let camera  = GMSCameraPosition(latitude: latitude, longitude: longitude, zoom: 17)
+//            
+//            self.viewMapView.camera = camera
+//            self.selectedCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//            let marker = GMSMarker()
+//            marker.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
+//            marker.iconView?.tintColor = .appLightPink
+//            marker.iconView?.frame.size = CGSize(width: 35, height: 45)
+//            marker.title = self.customer.name
+//            marker.map = self.viewMapView
+//
+//            Pipelines.shared.getAddressString(latitude: coordinate.latitude ?? Double(), longitude: coordinate.longitude ?? Double()) { address in
+//                guard let address = address else {
+//                    self.lblAddress.text = "No address found"
+//                    return}
+//                self.lblAddress.text = address
+//            }
+//            
+//        }
         
         LocationManager.shared.getCurrentLocation { (coordinate) in
             
@@ -56,9 +95,13 @@ class TagVC : UIViewController {
             marker.position = coordinate
             marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
             marker.iconView?.tintColor = .appLightPink
-            marker.iconView?.frame.size = CGSize(width: 35, height: 50)
+            marker.iconView?.frame.size = CGSize(width: 35, height: 45)
             marker.title = self.customer.name
             marker.map = self.viewMapView
+        }
+        
+        backgroundView.addTap {
+            self.didClose()
         }
     }
     
@@ -86,11 +129,11 @@ class TagVC : UIViewController {
     
     func promptToOpenSettings() {
 
-        toSetupAlert(desc: "Camera Permission Required")
+        toSetupAlert(desc: "Camera Permission Required", istoToreTry: false)
      }
     
     
-    func toSetupAlert(desc: String) {
+    func toSetupAlert(desc: String, istoToreTry: Bool) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
@@ -101,7 +144,22 @@ class TagVC : UIViewController {
         
         commonAlert.addAdditionalCancelAction {
             print("no action")
-            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+          if  istoToreTry {
+              guard let pickedImage =  self.pickedImage else {return}
+              self.uploadImagess(image: pickedImage) { isCompleted in
+                  
+                  if isCompleted {
+                      
+                  } else {
+                      
+                      self.toSetupAlert(desc: "Image upload Failed Try again", istoToreTry: true)
+                      
+                  }
+              }
+            } else {
+                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+            }
+         
         }
     }
     
@@ -135,81 +193,97 @@ class TagVC : UIViewController {
         
         viewTagStatus?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
         
-    }
-    
-    func fetchLatLongAndAddress(dcrCall : CallViewModel) {
-     
         
-        Shared.instance.showLoaderInWindow()
-   
-            
-        Pipelines.shared.getAddressString(latitude: selectedCoordinate.latitude, longitude:  selectedCoordinate.longitude) {  address in
-                Shared.instance.removeLoaderInWindow()
-             
-
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                
-                let currentDate = Date()
-                let dateString = dateFormatter.string(from: currentDate)
-                
-                let datestr = dateString
-                
-                ///time
-                dateFormatter.dateFormat = "HH:mm:ss"
-                
-                let timeString = dateFormatter.string(from: currentDate)
-                
-                _ = (timeString)
-                dcrCall.customerCheckinAddress = address ?? ""
-                dcrCall.checkinlatitude = self.selectedCoordinate.latitude
-                dcrCall.checkinlongitude = self.selectedCoordinate.longitude
-                dcrCall.dcrCheckinTime = datestr
-                self.checkinDetailsAction(dcrCall : dcrCall)
-            }
-
+        checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
         
     }
-    
     
     func checkinDetailsAction(dcrCall : CallViewModel) {
-        self.selectedDCRcall = dcrCall
-      
-        backgroundView.isHidden = false
-        backGroundVXview.alpha = 0.3
         
+        self.selectedDCRcall = dcrCall
+        backgroundView.isHidden = false
+        //  backgroundView.toAddBlurtoVIew()
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
-            case viewTagStatus:
+            case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1
+
             case backgroundView:
-        
                 aAddedView.isUserInteractionEnabled = true
+              
             default:
-                
                 print("Yet to implement")
-                aAddedView.isUserInteractionEnabled = false
+          
                 
+                aAddedView.isUserInteractionEnabled = false
+              
                 
             }
             
         }
         
-        viewTagStatus = self.loadCustomView(nibname: XIBs.addNewTagInfoVIew) as? AddNewTagInfoVIew
-        guard let viewTagStatus = viewTagStatus else{
-            
-            print("unable to root view")
-            
-            return}
+        checkinVIew = self.loadCustomView(nibname: XIBs.customerCheckinVIew) as? CustomerCheckinView
+        checkinVIew?.delegate = self
+       // checkinVIew?.dcrCall = dcrCall
+        checkinVIew?.setupUItoAddTag(vm: dcrCall)
+        //checkinVIew?.userstrtisticsVM = self.userststisticsVM
+        //checkinVIew?.appsetup = self.appSetups
+
         
-        viewTagStatus.delegate = self
-
-        viewMapView.addSubview(viewTagStatus)
-
+        
+        self.view.addSubview(checkinVIew ?? CustomerCheckinView())
+        
     }
     
+    func fetchLatLongAndAddress(dcrCall : CallViewModel) {
+     
+     
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDate = Date()
+        let dateString = dateFormatter.string(from: currentDate)
+        let datestr = dateString
+   
+        dcrCall.checkinlatitude = self.selectedCoordinate.latitude
+        dcrCall.checkinlongitude = self.selectedCoordinate.longitude
+        dcrCall.dcrCheckinTime = datestr
+        
+        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            Shared.instance.showLoaderInWindow()
+            let geocoder = GMSGeocoder()
+            self.selectedCoordinate = viewMapView.camera.target
+            let latitute = viewMapView.camera.target.latitude
+            let longitude = viewMapView.camera.target.longitude
+            let position = CLLocationCoordinate2DMake(latitute, longitude)
+            geocoder.reverseGeocodeCoordinate(position) { response , error in
+                Shared.instance.removeLoaderInWindow()
+                if error != nil {
+                    print("GMSReverseGeocode Error: \(String(describing: error?.localizedDescription))")
+                 
+                }else {
+                    let result = response?.results()?.first
+                    let address = result?.lines?.reduce("") { $0 == "" ? $1 : $0 + ", " + $1 }
+                    print(address ?? "")
+                    
+ 
+                    self.lblAddress.text = address ?? "No address found."
+                    dcrCall.customerCheckinAddress = address ?? "No address found."
+                    self.checkinDetailsAction(dcrCall : dcrCall)
+                }
+            }
+        } else {
+            self.lblAddress.text = "No address found."
+            dcrCall.customerCheckinAddress =  "No address found."
+            self.checkinDetailsAction(dcrCall : dcrCall)
+            
+            
+        }
+
+    }
+
     
     func showAlert() {
         print("Yet to implement")
@@ -237,74 +311,67 @@ class TagVC : UIViewController {
         }
     }
     
-    func tagging() {
+    func toTaginfo(){
         
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let urlStr = APIUrl + "geodetails"
+     //   let urlStr = APIUrl + "geodetails"
         
  //   http://crm.saneforce.in/iOSServer/db_module.php?axn=get/geodetails
         
-        _ = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
+        let divisionCode = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
         
-        _ = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        let params =  [String: Any]()
-//        ["tableName" : "save_geo",
-//                      "lat" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.latitude)" : "0.0000",
-//                      "long" : self.selectedCoordinate != nil ? "\(self.selectedCoordinate.longitude)" : "0.0000",
-//                      "cuscode" : self.customer.code,
-//                      "divcode" : divisionCode,
-//                      "cust" : self.customer.tagType,
-//                      "tagged_time" : date,
-//                      "image_name" : "",
-//                      "sfname" : appsetup.sfName ?? "",
-//                      "sfcode" : appsetup.sfCode ?? "",
-//                      "addr" : self.lblAddress.text ?? "",
-//                      "tagged_cust_HQ" : appsetup.sfCode ?? "",
-//                      "cust_name" : self.customer.name,
-//                      "mode" : "iOS-Edet-New",
-//                      "version" : "iEdet.1.1",
-//        ]
+        let date = Date().toString(format: "yyyy-MM-dd")
+        //{"tableName":"save_geo","lat":"13.02998466","long":"80.24142807","cuscode":"1679524","divcode":"63","cust":"D","tagged_time":"2024-05-15 17:07:20","image_name":"MGR0941_1679524_15052024170711.jpeg","sfname":"Sundara Kumar","sfcode":"MGR0941","addr":"No 4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035, India","tagged_cust_HQ":"MR5990","cust_name":"ASHISH.S.PURANDARE","mode":"Android-Edet","version":"Test.H.2","towncode":"104189","townname":"Nerangala","status":"1"}
+        var params =  [String: Any]()
+        params["tableName"] = "save_geo"
+        params["lat"] = self.selectedCoordinate.latitude
+        params["long"] = self.selectedCoordinate.longitude
+        params["cuscode"] =  self.customer.code
+        params["divcode"] =  divisionCode
+        params["cust"] = self.customer.tagType
+        params["tagged_time"] = date
+        params["image_name"] = pickedImageName ?? ""
+        params["sfname"] = appsetup.sfName ?? ""
+        params["sfcode"] = appsetup.sfCode ?? ""
+        params["addr"] = self.lblAddress.text ?? ""
+        params["status"] = "1"
+        params["tagged_cust_HQ"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        params["cust_name"] = self.customer.name
+        params["mode"] = "iOS-Edet"
+        params["version"] = "iEdet.1.1"
         
-        let param = ["data" : params.toString()]
         
-        print(urlStr)
-        print(param)
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
+        var toSendParam = [String: Any]()
         
-        AF.request(urlStr,method: .post,parameters: param).responseData(){ (response) in
-            
-            switch response.result {
+        toSendParam["data"] = jsonDatum
+        Shared.instance.showLoaderInWindow()
+        userStatisticsVM.toUploadTaggedInfo(params: toSendParam, api: .saveTag, paramData: toSendParam) { result in
+            Shared.instance.removeLoaderInWindow()
+            switch result {
                 
-                case .success(_):
-                    do {
-                        
-                        print(response)
-                        
-                        let apiResponse = try? JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                        
-                        let date1 = Date()
-                        
-                        print(date1)
-        
-                        print("ssususnbjbo")
-                      //  print(apiResponse)
-                        print("ssusus")
-                        self.updateTagList()
-                        self.popToBack(UIStoryboard.nearMeVC)
-                        
-                      //  self.navigationController?.popViewController(animated: true)
-                        
+            case .success(let model):
+                if model.isSuccess ?? false {
+                    guard let pickedImage = self.pickedImage else {return}
+                    self.uploadImagess(image: pickedImage) { isSuccess in
+                        if isSuccess {
+                            
+                            self.delegate?.didUsertagged()
+                            self.navigationController?.popViewController(animated: true)
+                        } else {
+                            self.toSetupAlert(desc: "Image upload Failed Try again", istoToreTry: true)
+                        }
                     }
-                case .failure(let error):
+                } else {
+                    self.toCreateToast(model.msg ?? "Couldn't tag info for now try again later.")
+                }
+    
+            case .failure(_):
+                self.toCreateToast("Couldn't tag info for now try again later.")
                 
-                  //  ConfigVC().showToast(controller: self, message: "\(error)", seconds: 2)
-                    print(error)
-                    return
             }
             
-            print("2")
-            print(response)
-            print("2")
         }
     }
     
@@ -389,18 +456,6 @@ class TagVC : UIViewController {
     
 
     
-    @IBAction func cancelAction(_ sender: UIButton) {
-        UIView.animate(withDuration: 1.5) {
-            self.didClose()
-        }
-    }
-    
-    
-    @IBAction func confirmAction(_ sender: UIButton) {
-        self.tagging()
-    }
-    
-    
     @IBAction func backAction(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
@@ -422,37 +477,39 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else{
             return
         }
-        var aCallVM: CallViewModel?
+        self.pickedImage = image
+        
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        let code = appsetup.sfCode ?? ""
+        let uuid = "\(UUID())"
+        let uuidStr = uuid.replacingOccurrences(of: "-", with: "")
+        let custCode = customer.code
+        let taggedImageName = code + "_" + custCode + uuidStr + ".jpeg"
+        self.pickedImageName = taggedImageName
         
         switch customer.type {
             
         case .doctor:
-             aCallVM = CallViewModel(call: customer.tag, type: .doctor)
+            self.selectedDCRcall = CallViewModel(call: customer.tag, type: .doctor)
         case .chemist:
-             aCallVM = CallViewModel(call: customer.tag, type: .chemist)
+            self.selectedDCRcall = CallViewModel(call: customer.tag, type: .chemist)
         case .stockist:
-             aCallVM = CallViewModel(call: customer.tag, type: .stockist)
+            self.selectedDCRcall = CallViewModel(call: customer.tag, type: .stockist)
         case .unlistedDoctor:
-             aCallVM = CallViewModel(call: customer.tag, type: .unlistedDoctor)
+            self.selectedDCRcall = CallViewModel(call: customer.tag, type: .unlistedDoctor)
         }
+        guard let aCallVM =  self.selectedDCRcall else {return}
+        self.selectedDCRcall =    aCallVM.toRetriveDCRdata(dcrcall: aCallVM.call)
       
-        guard let aCallVM = aCallVM else {return}
-        self.selectedDCRcall = aCallVM
-        self.fetchLatLongAndAddress(dcrCall: aCallVM)
+       
+        self.fetchLatLongAndAddress(dcrCall:  self.selectedDCRcall!)
         
       
     }
     
-    func uploadImagess(image: UIImage) {
+    func uploadImagess(image: UIImage, completion: @escaping (Bool) -> ()) {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let webUrlString = AppDefaults.shared.webUrl
-        
-        let urlString = webUrlString.contains("http://") ? webUrlString : "http://" + webUrlString
-        
-        let surl = urlString  + "/" + AppDefaults.shared.iosUrl + "save/image"
-        
-        print(surl)
+
         
         let params = ["tableName" : "imgupload",
                       "sfcode" : appsetup.sfCode ?? "",
@@ -463,24 +520,44 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
                       "state_code" : appsetup.stateCode ?? "",
                       "subdivision_code" : appsetup.subDivisionCode ?? "",
         ] as [String : Any]
-        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
+        var toSendParam = [String: Any]()
+        toSendParam["data"]  = jsonDatum
   //  http://crm.saneforce.in/iOSServer/db_api.php/?axn=save/image
-        
-        let url = URL(string: surl)!
-        let code = appsetup.sfCode ?? ""
-        let uuid = "\(UUID())"
-        let uuidStr = uuid.replacingOccurrences(of: "-", with: "")
+
+
         let custCode = customer.code
-        let taggedImageName = code + "_" + custCode + uuidStr + ".jpeg"
+ 
+        Shared.instance.showLoaderInWindow()
      
-        userStatisticsVM?.toUploadCapturedImage(params: params, api: .imageUpload, image: [image], imageName: [taggedImageName], paramData: params, custCode: custCode) { result in
+        userStatisticsVM.toUploadCapturedImage(params: params, uploadType: .tagging, api: .imageUpload, image: [image], imageName: [pickedImageName ?? ""], paramData: jsonDatum, custCode: custCode) { result in
+            Shared.instance.removeLoaderInWindow()
             switch result {
             case .success(let response):
                 dump(response)
-                
+           
+                do {
+                    let jsonData = try JSONSerialization.data(withJSONObject: response, options: [])
+           
+                  let generalResponse = try JSONDecoder().decode(GeneralResponseModal.self, from: jsonData)
+                 print(generalResponse)
+                    if generalResponse.isSuccess ?? false {
+                        self.toCreateToast("Image upload completed")
+                        completion(true)
+                    } else {
+                       
+                        completion(false)
+                    }
+                 
+                } catch {
+                    print("Error converting parameter to JSON: \(error)")
+                    completion(false)
+                }
+
                 
             case .failure(let error):
                 dump(error.localizedDescription)
+                completion(false)
             }
             
             
@@ -535,16 +612,21 @@ extension TagVC: GMSMapViewDelegate{
         let latitute = mapView.camera.target.latitude
         let longitude = mapView.camera.target.longitude
         let position = CLLocationCoordinate2DMake(latitute, longitude)
-        geocoder.reverseGeocodeCoordinate(position) { response , error in
-            if error != nil {
-                print("GMSReverseGeocode Error: \(String(describing: error?.localizedDescription))")
-            }else {
-                let result = response?.results()?.first
-                let address = result?.lines?.reduce("") { $0 == "" ? $1 : $0 + ", " + $1 }
-                print(address ?? "")
-                self.lblAddress.text = address
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            geocoder.reverseGeocodeCoordinate(position) { response , error in
+                if error != nil {
+                    print("GMSReverseGeocode Error: \(String(describing: error?.localizedDescription))")
+                }else {
+                    let result = response?.results()?.first
+                    let address = result?.lines?.reduce("") { $0 == "" ? $1 : $0 + ", " + $1 }
+                    print(address ?? "")
+                    self.lblAddress.text = address
+                }
             }
+        } else {
+            self.lblAddress.text = "No address found"
         }
+
     }
 }
 
@@ -575,9 +657,7 @@ extension TagVC : addedSubViewsDelegate {
             
             switch aAddedView {
 
-
-                
-            case viewTagStatus:
+            case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 
@@ -601,12 +681,11 @@ extension TagVC : addedSubViewsDelegate {
             
             switch aAddedView {
 
-            case viewTagStatus:
+            case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 
-                guard let callViewModel = self.selectedDCRcall else {return}
-                
+            
                // self.navigateToPrecallVC(dcrCall: callViewModel, index: self.selectedDCRIndex ?? 0)
                 
             default:
@@ -619,6 +698,12 @@ extension TagVC : addedSubViewsDelegate {
             }
             
         }
+        
+    
+        
+        
+        self.toTaginfo()
+        
     }
     
     

@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-
+import CoreData
 
 class TaggingListVC : UIViewController {
     
@@ -18,8 +18,11 @@ class TaggingListVC : UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet var resoureHQlbl: UILabel!
     
+    @IBOutlet var selectHQholder: UIView!
     @IBOutlet var textFieldHolderView: UIView!
-    
+    var fetchedHQObject: Subordinate?
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var masterVM = MasterSyncVM()
     var type : TaggingType!
     
     var searchText : String = ""
@@ -39,12 +42,46 @@ class TaggingListVC : UIViewController {
         let layout = UICollectionViewFlowLayout()
         self.collectionView.collectionViewLayout = layout
      
-        
+        selectHQholder.layer.cornerRadius = 5
+        selectHQholder.layer.borderWidth = 1
+        selectHQholder.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
        // self.txtSearch.setIcon(UIImage(imageLiteralResourceName: "searchIcon"))
         self.txtSearch.addTarget(self, action: #selector(updateCustomerData(_:)), for: .editingChanged)
         
         self.doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
         setHQlbl()
+        
+        
+        selectHQholder.addTap {
+            if   Shared.instance.isFetchingHQ {
+                self.toCreateToast("Syncing please wait")
+                return
+            }
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR)  {
+                return
+            }
+            
+            
+            let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
+            
+            vc.menuDelegate = self
+            CoreDataManager.shared.fetchSavedHQ{ [weak self] hqArr in
+                guard let welf = self else {return}
+                let savedEntity = hqArr.first
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: welf.context)
+         
+                else {
+                    fatalError("Entity not found")
+                }
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                
+                welf.fetchedHQObject = CoreDataManager.shared.convertHeadQuartersToSubordinate(savedEntity ?? temporaryselectedHqobj, context: welf.context)
+            }
+            vc.selectedObject = self.fetchedHQObject
+            
+            self.modalPresentationStyle = .custom
+            self.navigationController?.present(vc, animated: false)
+        }
     }
     
     
@@ -57,7 +94,7 @@ class TaggingListVC : UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func setHQlbl() {
+    func setHQlbl(istoCallapi: Bool? = false) {
         textFieldHolderView.layer.cornerRadius = 5
         textFieldHolderView.layer.borderWidth = 1
         textFieldHolderView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
@@ -85,12 +122,12 @@ class TaggingListVC : UIViewController {
                 }
             
               
-  
+      
  
                 
             }
             // Retrieve Data from local storage
-               return
+            //   return
         
 
        
@@ -159,7 +196,118 @@ extension TaggingListVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tagVC  = UIStoryboard.tagVC
         tagVC.customer = self.customerListViewModel.fetchDataAtIndex(indexPath.row, type: self.type, searchText: self.searchText)
+        tagVC.delegate = self
         self.navigationController?.pushViewController(tagVC, animated: true)
+    }
+    
+}
+extension TaggingListVC: TagVCDelegate {
+    func didUsertagged() {
+        Shared.instance.showLoaderInWindow()
+        masterVM.fetchMasterData(type: .clusters, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: true, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
+            self.collectionView.reloadData()
+            Shared.instance.removeLoaderInWindow()
+        }
+        
+
+    }
+    
+    
+}
+
+extension TaggingListVC: MenuResponseProtocol {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
+        print("Yet to implement")
+    }
+    
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
+        switch type {
+
+        case .headQuater:
+            Shared.instance.isFetchingHQ = true
+            guard let selectedObject = selectedObject as? Subordinate else {
+                Shared.instance.isFetchingHQ = false
+                return
+            }
+
+           // self.fetchedHQObject = selectedObject
+            let aHQobj = HQModel()
+            aHQobj.code = selectedObject.id ?? ""
+            aHQobj.mapId = selectedObject.mapId ?? ""
+            aHQobj.name = selectedObject.name ?? ""
+            aHQobj.reportingToSF = selectedObject.reportingToSF ?? ""
+            aHQobj.steps = selectedObject.steps ?? ""
+            aHQobj.sfHQ = selectedObject.sfHq ?? ""
+
+            
+            
+            let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
+            if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) || territories.isEmpty  {
+                self.resoureHQlbl.text = "Syncing..."
+                //&& LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
+                let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
+                // Set loading status based on MasterInfo for each element in the array
+                tosyncMasterData.forEach { masterInfo in
+                    MasterInfoState.loadingStatusDict[masterInfo] = .isLoading
+                }
+                self.collectionView.reloadData()
+                self.masterVM = MasterSyncVM()
+                Shared.instance.showLoaderInWindow()
+                masterVM.fetchMasterData(type: .clusters, sfCode: selectedObject.id ?? "", istoUpdateDCRlist: true, mapID: selectedObject.id ?? "") { response in
+                    Shared.instance.removeLoaderInWindow()
+                    switch response.result {
+                    case .success(_):
+                        tosyncMasterData.forEach { masterType in
+                            MasterInfoState.loadingStatusDict[masterType] = .loaded
+                        }
+                        self.fetchedHQObject = selectedObject
+                        CoreDataManager.shared.removeHQ()
+                        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
+                            self.setHQlbl()
+                            self.collectionView.reloadData()
+                            Shared.instance.isFetchingHQ = false
+                          //  self.isDayPlanSynced = true
+                        }
+                  
+                    case .failure(_):
+                        tosyncMasterData.forEach { masterType in
+                            MasterInfoState.loadingStatusDict[masterType] = .error
+                        }
+                        self.collectionView.reloadData()
+                        Shared.instance.isFetchingHQ = false
+                    }
+                }
+            } else {
+                self.fetchedHQObject = selectedObject
+                CoreDataManager.shared.removeHQ()
+                CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
+                    self.setHQlbl()
+                    self.collectionView.reloadData()
+                    Shared.instance.isFetchingHQ = false
+                }
+            }
+
+           
+            
+        default:
+            print("Yet to implement.")
+        }
+        
+    }
+    
+    func selectedType(_ type: MenuView.CellType, index: Int) {
+        print("Yet to implement")
+    }
+    
+    func callPlanAPI() {
+        print("")
+    }
+    func routeToView(_ view : UIViewController) {
+        self.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(view, animated: true)
     }
     
 }

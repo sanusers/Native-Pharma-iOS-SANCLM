@@ -352,11 +352,22 @@ class NearMeVC : UIViewController {
       if let title = marker.title {
         if let snippet = marker.snippet {
           print("marker title: \(title): snippet: \(snippet)")
+         //   showYetTotagDCRinfo(marker)
         }
       }
       return true
     }
 
+//    func showYetTotagDCRinfo(_ marker: GMSMarker) {
+//        print("Tapped -->")
+//        
+//        let position = marker.position
+//        
+//        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: viewMapView.frame.size.width / 3, height: 90), on: viewMapView, onframe:  CGRect(origin: marker.position, size: CGSize.zero), pagetype: .calls)
+//         vc.delegate = self
+//         //vc.selectedIndex = indexPath.row
+//        self.navigationController?.present(vc, animated: true)
+//    }
     
     private func showAllTaggedList() {
        self.viewMapView.clear()

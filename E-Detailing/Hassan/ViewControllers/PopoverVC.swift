@@ -20,6 +20,7 @@ class PopOverVC: UIViewController {
         case calls
         case presentation
         case profile
+        case customMarker
     }
     
     
@@ -55,6 +56,8 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = true
             graphInfoView.isHidden = true
             setProfileInfo()
+        case .customMarker:
+            print("Yet to implement")
         }
     }
     
@@ -190,7 +193,11 @@ class PopOverVC: UIViewController {
         if pagetype == .HomeGraph {
             //popover.sourceRect = hostframe
             popover.sourceView = host
-        } else {
+        } else if pagetype == .customMarker {
+            popover.sourceRect = hostframe
+        }
+        
+        else {
             popover.sourceView = host
         }
     
@@ -261,6 +268,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
         case .presentation:
             return 40
         case .profile:
+            return 0
+        case .customMarker:
             return 0
         }
         

@@ -589,21 +589,37 @@ class AddCallinfoVC: BaseViewController {
             }
         }
     }
-    
-    
-    func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, _ completion : @escaping (Result<JSON, UserStatisticsError>) -> Void) {
-        
   
-   
+    
+    func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, _ completion : @escaping (Result<GeneralResponseModal, UserStatisticsError>) -> Void) {
         
-        userStatisticsVM?.toUploadCapturedImage(params: param, api: .imageUpload, image: [evencaptures.image], imageName: [evencaptures.eventCapture.imageUrl], paramData: param, custCode: dcrCall.code) { result in
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        userStatisticsVM?.toUploadCapturedImage(params: param, uploadType: .eventCapture, api: .imageUpload, image: [evencaptures.image], imageName: [evencaptures.eventCapture.imageUrl], paramData: jsonDatum, custCode: dcrCall.code) { result in
                 
                 switch result {
                     
                 case .success(let json):
                     dump(json)
-                    completion(.success(json))
-                 
+                    do {
+                        let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
+                        let generalResponse = try JSONDecoder().decode(GeneralResponseModal.self, from: jsonData)
+                       print(generalResponse)
+                          if generalResponse.isSuccess ?? false {
+                              self.toCreateToast("Image upload completed")
+                              completion(.success(generalResponse))
+                          } else {
+//                              self.showAlertToEnableLocation(desc: "Image upload failed try again", istoToreTry: true) { isCompleted in
+//                                  completion(.failure(UserStatisticsError.failedTouploadImage))
+//                              }
+                              self.toCreateToast("Image upload failed try again")
+                              completion(.failure(UserStatisticsError.failedTouploadImage))
+                          }
+                    } catch {
+                        
+                        print("Unable to decode")
+                    }
+
                 case .failure(let error):
                     dump(error)
                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
@@ -748,9 +764,9 @@ class AddCallinfoVC: BaseViewController {
     
 
     
-    func showAlertToEnableLocation() {
+    func showAlertToEnableLocation(desc: String, istoToreTry: Bool, completion: @escaping (Bool) -> ()) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()
@@ -758,7 +774,68 @@ class AddCallinfoVC: BaseViewController {
         }
         commonAlert.addAdditionalCancelAction {
             print("yes action")
-            self.redirectToSettings()
+            if istoToreTry {
+                Shared.instance.showLoaderInWindow()
+                var param = [String: Any]()
+                param["tableName"] = "uploadphoto"
+                param["sfcode"] = self.appsetup.sfCode
+                param["division_code"] =  self.appsetup.divisionCode
+                param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                param["sf_type"] =  self.appsetup.sfType
+                param["Designation"] =  self.appsetup.desig
+                param["state_code"] =  self.appsetup.stateCode
+                param["subdivision_code"] =  self.appsetup.subDivisionCode
+
+                let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+                var taskCompletion: Bool = false
+                let dispatchGroup = DispatchGroup()
+
+                var showAlert = true // Flag to show alert only once
+
+                self.addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.forEach { aEventCaptureViewModel in
+                    dispatchGroup.enter()
+                    self.callSaveimageAPI(param: param, paramData: jsonDatum, evencaptures: aEventCaptureViewModel) { result in
+                       
+                        switch result {
+                        
+                        case .success(let json):
+                            dump(json)
+                            do {
+                                let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
+                                let generalResponse = try JSONDecoder().decode(GeneralResponseModal.self, from: jsonData)
+                                print(generalResponse)
+                                if generalResponse.isSuccess ?? false {
+                                    self.toCreateToast("Image upload completed")
+                                    taskCompletion = true
+                                } else {
+                                    taskCompletion = false
+                                }
+                            } catch {
+                                taskCompletion = false
+                                print("Unable to decode")
+                            }
+                            dispatchGroup.leave()
+                        case .failure(let error):
+                            dump(error)
+                            taskCompletion = false
+                            dispatchGroup.leave()
+                        }
+                        
+                        if showAlert && !taskCompletion { // Only show alert if showAlert is true and taskCompletion is false
+                            showAlert = false
+                            self.showAlertToEnableLocation(desc: "Image upload failed try again", istoToreTry: true, completion: completion)
+                        }
+                    }
+                }
+
+                dispatchGroup.notify(queue: .main) {
+                    completion(taskCompletion)
+                }
+            } else {
+                self.redirectToSettings()
+            }
+           
             
         }
     }
@@ -771,7 +848,7 @@ class AddCallinfoVC: BaseViewController {
     
     
     func showAlert() {
-        showAlertToEnableLocation()
+        showAlertToEnableLocation(desc: "Please enable location services in Settings.", istoToreTry: false) {_ in }
     }
     
     

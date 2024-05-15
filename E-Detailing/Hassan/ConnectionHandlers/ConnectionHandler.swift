@@ -232,9 +232,14 @@ final class ConnectionHandler : NSObject {
         return responseHandler
     }
     
+    enum UploadType {
+        case eventCapture
+        case tagging
+    }
     
-    func imageUploadService(urlString:String, parameters:JSON, image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), custCode: String, complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
- 
+    
+    func imageUploadService(urlString:String, uploadType: UploadType,  parameters:JSON, image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), custCode: String, paramData: Data, complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
+        UIApplication.shared.beginIgnoringInteractionEvents()
         AF.upload(multipartFormData: { (multipartFormData) in
            
             if let doc = docurl, doc != URL(string: "") {
@@ -259,11 +264,10 @@ final class ConnectionHandler : NSObject {
                         let uuid = imageName[index].replacingOccurrences(of: "-", with: "")
                         let appsetup = AppDefaults.shared.getAppSetUp()
                         let code = appsetup.sfCode ?? ""
-                        let fileName =   code + "_" + custCode + uuid + ".jpeg"
- 
+                        let fileName =  uploadType == .eventCapture ?  code + "_" + custCode + uuid + ".jpeg" : imageName[index]
                         let imgData: Data? = orgimage.jpegData(compressionQuality: 0.4)
                         if imgData != nil {
-                            multipartFormData.append(imgData!, withName: "EventImg",fileName: fileName, mimeType: "\(imageType)")
+                            multipartFormData.append(imgData!, withName: uploadType == .eventCapture ? "EventImg" : "UploadImg" ,fileName: fileName, mimeType: "\(imageType)")
                         }
                     }
 
@@ -273,21 +277,21 @@ final class ConnectionHandler : NSObject {
             
 
             
-            for (key, value) in parameters {
-                multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
-                
-            } 
+//            for (key, value) in parameters {
+//                multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
+//                
+//            } 
             //Optional for extra parameters
             
        
-//                let multipartData = parameters 
-//                multipartFormData.append(multipartData, withName: "data" as String)
-//                _ = String(data: multipartData, encoding: .utf8)
+                let multipartData = paramData
+                multipartFormData.append(multipartData, withName: "data" as String)
+                _ = String(data: multipartData, encoding: .utf8)
       
         }, to: "\("")\(urlString)")
         .responseJSON(completionHandler: { response in
-           // Shared.instance.removeLoaderInWindow()
-               // UIApplication.shared.endIgnoringInteractionEvents()
+         
+          UIApplication.shared.endIgnoringInteractionEvents()
            
            switch response.result {
            case .success(let value):
@@ -558,7 +562,7 @@ final class ConnectionHandler : NSObject {
                     if let data = anyData,
                        let json = JSON(data){
                         
-                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall {
+                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag {
                            
                             if json.isEmpty {
                                 responseHandler.handleFailure(value: json.status_message)

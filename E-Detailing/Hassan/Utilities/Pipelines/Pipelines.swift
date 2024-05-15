@@ -118,6 +118,7 @@ class Pipelines  {
     
     
     func getAddressString(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
+        
         let geocoder = CLGeocoder()
 
         let location = CLLocation(latitude: latitude, longitude: longitude)
@@ -214,7 +215,7 @@ class Pipelines  {
           var sublocality = ""
           var throughfare = ""
 
-          var name = ""
+         
 
           if let containsPlacemark = placemark {
               //stop updating location to save battery life

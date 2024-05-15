@@ -10,26 +10,79 @@ import UIKit
 import CoreLocation
 class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     
+
+    func setupUItoAddTag(vm: CallViewModel) {
+        checkinStack.isHidden = true
+        
+        viewCancel.layer.cornerRadius = 5
+        viewConfirm.layer.cornerRadius = 5
+        viewCancel.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        viewCancel.layer.borderWidth = 1
+        viewCancel.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        
+        viewConfirm.backgroundColor = .appTextColor
+        
+        lblCance.setFont(font: .bold(size: .BODY))
+        
+        lblConfirm.setFont(font: .bold(size: .BODY))
+        
+        
+        lblCance.textColor = .appTextColor
+        
+        lblConfirm.textColor = .appWhiteColor
+        
+        
+        
+        lblTaginfo.setFont(font: .bold(size: .BODY))
+        
+        lblTaginfo.textColor = .appLightPink
+        
+        lblTaginfo.text = vm.name
+        
+        lblLatitude.setFont(font: .bold(size: .BODY))
+        
+        
+        lblLongitude.setFont(font: .bold(size: .BODY))
+        lblLatitude.text = "Latitude: \(vm.checkinlatitude)"
+        
+        lblLongitude.text = "Longitude: \(vm.checkinlongitude)"
+        
+        
+        
+        lblAddress.setFont(font: .medium(size: .BODY))
+        lblAddress.text = vm.customerCheckinAddress
+        viewCancel.layer.cornerRadius = 5
+        viewConfirm.layer.cornerRadius = 5
+        viewCancel.addTap {
+            self.delegate?.didClose()
+        }
+        
+        
+        viewConfirm.addTap {
+          
+            self.delegate?.didUpdate()
+        }
+    }
     
     func setupUI() {
-        
+        taggingStack.isHidden = true
         self.layer.cornerRadius = 5
         
         confirmLbl.setFont(font: .medium(size: .BODY))
         confirmLbl.textColor = .appLightTextColor
         
         
-        checkinDetailsLbl.setFont(font: .bold(size: .SUBHEADER))
+        checkinDetailsLbl.setFont(font: .bold(size: .BODY))
         checkinDetailsLbl.textColor = .appTextColor
         
         heyLbl.setFont(font: .medium(size: .BODY))
         heyLbl.textColor = .appLightTextColor
         
         
-        dcrNameLbl.setFont(font: .bold(size: .SUBHEADER))
+        dcrNameLbl.setFont(font: .bold(size: .BODY))
         dcrNameLbl.textColor = .appTextColor
         
-        titleLbl.setFont(font: .bold(size: .SUBHEADER))
+        titleLbl.setFont(font: .bold(size: .BODY))
         titleLbl.textColor = .appTextColor
         
         self.dcrNameLbl.text = dcrCall.name
@@ -65,6 +118,28 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     
     @IBOutlet var btnCheckin: ShadowButton!
     
+    
+    //Tagging
+    
+    @IBOutlet var lblTaginfo: UILabel!
+    
+    @IBOutlet var lblLatitude: UILabel!
+    
+    @IBOutlet var lblLongitude: UILabel!
+    
+    @IBOutlet var lblAddress: UILabel!
+    
+    @IBOutlet var viewCancel: UIView!
+    
+    @IBOutlet var viewConfirm: UIView!
+    
+    @IBOutlet var lblCance: UILabel!
+    
+    @IBOutlet var lblConfirm: UILabel!
+    
+    @IBOutlet var checkinStack: UIStackView!
+    
+    @IBOutlet var taggingStack: UIStackView!
     var appsetup : AppSetUp?
     var delegate:  addedSubViewsDelegate?
     var userstrtisticsVM: UserStatisticsVM?
@@ -86,80 +161,80 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
      }
     
     
-    func  callAPI() {
-        guard let appsetup = self.appsetup else {return}
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
-        let currentDate = Date()
-        let dateString = dateFormatter.string(from: currentDate)
-
-        let datestr = dateString
-        
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        let upDatedDateString = dateFormatter.string(from: currentDate)
-        
-        
-        ///time
-        dateFormatter.dateFormat = "HH:mm:ss"
-
-        let timeString = dateFormatter.string(from: currentDate)
-
-        let timestr = (timeString)
-        
-        //chckinInfo = CheckinInfo(address: address, checkinDateTime: self.getCurrentFormattedDateString(), checkOutDateTime: "", latitude: latitude ?? Double(), longitude: longitude ?? Double(), dateStr: datestr, checkinTime: timestr, checkOutTime: "")
-        
-        //guard let ainfo = chckinInfo else {return}
-        
-        guard let userstrtisticsVM = userstrtisticsVM else {return}
-//        Pipelines.shared.callCheckinCheckoutAPI(userstrtisticsVM: userstrtisticsVM, model: ainfo, appsetup: appsetup) { result in
-//            
-//            switch result {
+//    func  callAPI() {
+//        guard let appsetup = self.appsetup else {return}
+//        
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 //
-//            case .success(let responseArr):
-//                
-//                let aResponse = responseArr[0]
-//                
-//                if aResponse.isSuccess ?? false {
-//                    self.toCreateToast("Checkin registered successfully")
-//                } else {
-//                    self.toCreateToast("OOPS can't able to check in right now!")
-//                }
-//                
-//               
-//                LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: true)
-//                
-//                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+//        let currentDate = Date()
+//        let dateString = dateFormatter.string(from: currentDate)
 //
-//                LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
-//                
-//                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+//        let datestr = dateString
+//        
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        
+//        let upDatedDateString = dateFormatter.string(from: currentDate)
+//        
+//        
+//        ///time
+//        dateFormatter.dateFormat = "HH:mm:ss"
 //
-//                self.saveLogininfoToCoreData() {_ in
-//                    
-//                    self.delegate?.didUpdate()
-//                    
-//                }
-//                
-//               
-//                
-//            case .failure(let error):
-//                
-//                self.toCreateToast(error.rawValue)
-//                              
-//                self.saveLogininfoToCoreData() {_ in
-//                    
-//                    self.delegate?.didUpdate()
-//                    
-//                }
-//                
-//          
-//            }
+//        let timeString = dateFormatter.string(from: currentDate)
 //
-//        }
-    }
+//        let timestr = (timeString)
+//        
+//        //chckinInfo = CheckinInfo(address: address, checkinDateTime: self.getCurrentFormattedDateString(), checkOutDateTime: "", latitude: latitude ?? Double(), longitude: longitude ?? Double(), dateStr: datestr, checkinTime: timestr, checkOutTime: "")
+//        
+//        //guard let ainfo = chckinInfo else {return}
+//        
+//        guard let userstrtisticsVM = userstrtisticsVM else {return}
+////        Pipelines.shared.callCheckinCheckoutAPI(userstrtisticsVM: userstrtisticsVM, model: ainfo, appsetup: appsetup) { result in
+////            
+////            switch result {
+////
+////            case .success(let responseArr):
+////                
+////                let aResponse = responseArr[0]
+////                
+////                if aResponse.isSuccess ?? false {
+////                    self.toCreateToast("Checkin registered successfully")
+////                } else {
+////                    self.toCreateToast("OOPS can't able to check in right now!")
+////                }
+////                
+////               
+////                LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: true)
+////                
+////                LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+////
+////                LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+////                
+////                LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+////
+////                self.saveLogininfoToCoreData() {_ in
+////                    
+////                    self.delegate?.didUpdate()
+////                    
+////                }
+////                
+////               
+////                
+////            case .failure(let error):
+////                
+////                self.toCreateToast(error.rawValue)
+////                              
+////                self.saveLogininfoToCoreData() {_ in
+////                    
+////                    self.delegate?.didUpdate()
+////                    
+////                }
+////                
+////          
+////            }
+////
+////        }
+//    }
     
     
     func getCurrentFormattedDateString() -> String {
