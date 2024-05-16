@@ -69,6 +69,21 @@ class CustomerViewModel {
         self.type = type
     }
     
+    var sfCode: String {
+        if type == TaggingType.doctor {
+            return tag.sfcode ?? ""
+        } else if type == TaggingType.chemist {
+            if let tag = tag as? Chemist {
+                return tag.sfCode ?? ""
+            }
+        } else if type == TaggingType.stockist {
+            if let tag = tag as? Stockist {
+                return tag.sfCode ?? ""
+            }
+        }
+ 
+        return  ""
+    }
     var name : String {
         return tag.name ?? ""
     }
@@ -88,6 +103,10 @@ class CustomerViewModel {
         return tag.townName ?? ""
     }
     
+    var townCode : String {
+        return tag.townCode ?? ""
+    }
+    
     var speciality : String {
         if type == TaggingType.doctor {
             return tag.speciality ?? ""
@@ -98,13 +117,34 @@ class CustomerViewModel {
     var geoCount : String {
         if type == TaggingType.doctor {
             return tag.geoTagCnt ?? ""
+        } else if type == TaggingType.chemist {
+            if let tag = tag as? Chemist {
+                return tag.geoTagCnt ?? ""
+            }
+        } else if type == TaggingType.stockist {
+            if let tag = tag as? Stockist {
+                return tag.geoTagCnt ?? ""
+            }
         }
+//        else if type == TaggingType.unlistedDoctor {
+//            if let tag = tag as? UnListedDoctor {
+//                return tag.sfCode ?? ""
+//            }
+//        }
         return ""
     }
     
     var maxCount : String {
         if type == TaggingType.doctor {
             return tag.maxGeoMap ?? ""
+        } else if type == TaggingType.chemist {
+            if let tag = tag as? Chemist {
+                return tag.maxGeoMap ?? ""
+            }
+        } else if type == TaggingType.stockist {
+            if let tag = tag as? Stockist {
+                return tag.maxGeoMap ?? ""
+            }
         }
         return ""
     }

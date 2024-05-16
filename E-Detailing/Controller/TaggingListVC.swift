@@ -162,6 +162,7 @@ extension TaggingListVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRTaggingCell", for: indexPath) as! DCRTaggingCell
         cell.customer = self.customerListViewModel.fetchDataAtIndex(indexPath.row, type: self.type, searchText: self.searchText)
+        
         cell.btnView.addTarget(self, action: #selector(viewAction(_:)), for: .touchUpInside)
         return cell
         
@@ -195,7 +196,12 @@ extension TaggingListVC : collectionViewProtocols {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tagVC  = UIStoryboard.tagVC
-        tagVC.customer = self.customerListViewModel.fetchDataAtIndex(indexPath.row, type: self.type, searchText: self.searchText)
+        let model =  self.customerListViewModel.fetchDataAtIndex(indexPath.row, type: self.type, searchText: self.searchText)
+        tagVC.customer = model
+        if model.maxCount ==  model.geoCount {
+            self.toCreateToast("Maximum tags added")
+            return
+        }
         tagVC.delegate = self
         self.navigationController?.pushViewController(tagVC, animated: true)
     }

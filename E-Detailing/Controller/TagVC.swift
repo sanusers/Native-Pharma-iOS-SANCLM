@@ -335,8 +335,8 @@ class TagVC : UIViewController {
         params["sfname"] = appsetup.sfName ?? ""
         params["sfcode"] = appsetup.sfCode ?? ""
         params["addr"] = self.lblAddress.text ?? ""
-        params["status"] = "1"
-        params["tagged_cust_HQ"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        params["tagged_cust_HQ"] = customer.sfCode
+        //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         params["cust_name"] = self.customer.name
         params["mode"] = "iOS-Edet"
         params["version"] = "iEdet.1.1"
@@ -346,33 +346,42 @@ class TagVC : UIViewController {
         var toSendParam = [String: Any]()
         
         toSendParam["data"] = jsonDatum
+       
+        guard let pickedImage = self.pickedImage else {return}
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            self.toCreateToast("oops you are not connected to network.")
+            return
+        }
         Shared.instance.showLoaderInWindow()
-        userStatisticsVM.toUploadTaggedInfo(params: toSendParam, api: .saveTag, paramData: toSendParam) { result in
+        self.uploadImagess(image: pickedImage) { isSuccess in
             Shared.instance.removeLoaderInWindow()
-            switch result {
-                
-            case .success(let model):
-                if model.isSuccess ?? false {
-                    guard let pickedImage = self.pickedImage else {return}
-                    self.uploadImagess(image: pickedImage) { isSuccess in
-                        if isSuccess {
-                            
+            if isSuccess {
+                Shared.instance.showLoaderInWindow()
+                self.userStatisticsVM.toUploadTaggedInfo(params: toSendParam, api: .saveTag, paramData: params) { result in
+                    Shared.instance.removeLoaderInWindow()
+                    switch result {
+                        
+                    case .success(let model):
+                        if model.isSuccess ?? false {
                             self.delegate?.didUsertagged()
                             self.navigationController?.popViewController(animated: true)
                         } else {
-                            self.toSetupAlert(desc: "Image upload Failed Try again", istoToreTry: true)
+                            self.toCreateToast(model.msg ?? "Couldn't tag info for now try again later.")
                         }
-                    }
-                } else {
-                    self.toCreateToast(model.msg ?? "Couldn't tag info for now try again later.")
-                }
-    
-            case .failure(_):
-                self.toCreateToast("Couldn't tag info for now try again later.")
-                
-            }
             
+                    case .failure(_):
+                        self.toCreateToast("Couldn't tag info for now try again later.")
+                        
+                    }
+                    
+                }
+            } else {
+                self.toSetupAlert(desc: "Image upload Failed Try again", istoToreTry: true)
+            }
         }
+        
+        
+
     }
     
     private func popToBack<T>(_ VC : T) {
@@ -380,77 +389,6 @@ class TagVC : UIViewController {
         
         if let vc = mainVC {
             self.navigationController?.popToViewController(vc, animated: true)
-        }
-    }
-    
-    
-    func updateTagList()  {
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        // http://crm.saneforce.in/iOSServer/db_api.php?axn=table/dcrmasterdata
-        
-        let url = APIUrl + "table/dcrmasterdata"
-        
-        var paramsDict = ""
-        var params : [String : Any] = [:]
-
-        switch self.customer.type {
-        case .doctor:
-            paramsDict = "{\"tableName\":\"getdoctors\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-
-            params  = ["data" : paramsDict]
-            
-        case .chemist:
-            paramsDict = "{\"tableName\":\"getchemist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
-            
-            params = ["data": paramsDict]
-        
-        case .stockist:
-            paramsDict = "{\"tableName\":\"getstockist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
-            
-            params = ["data": paramsDict]
-            
-        case .unlistedDoctor:
-            paramsDict = "{\"tableName\":\"getunlisteddr\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
-            
-            params = ["data": paramsDict]
-            
-        }
-        
-        
-        AF.request(url, method: .post ,parameters: params).responseData { responseFeed in
-            
-            switch responseFeed.result {
-                
-            case .success(_):
-                do {
-                    let apiResponse = try JSONSerialization.jsonObject(with: responseFeed.data!,options: JSONSerialization.ReadingOptions.allowFragments)
-                    
-                    print(apiResponse)
-                    
-                    guard let responseArray = apiResponse as? [[String : Any]] else {
-                        return
-                    }
-                    
-                    
-                    switch self.customer.type {
-                        
-                    case .doctor:
-                        DBManager.shared.saveMasterData(type: .doctorFencing, Values: responseArray, id: appsetup.sfCode ?? "")
-                    case .chemist:
-                        DBManager.shared.saveMasterData(type: .chemists, Values: responseArray, id: appsetup.sfCode ?? "")
-                    case .stockist:
-                        DBManager.shared.saveMasterData(type: .stockists, Values: responseArray, id: appsetup.sfCode ?? "")
-                    case .unlistedDoctor:
-                        DBManager.shared.saveMasterData(type: .unlistedDoctors, Values: responseArray, id: appsetup.sfCode ?? "")
-                    }
-                    
-                }catch {
-                    print(error)
-                }
-            case .failure(let Error):
-                print(Error)
-            }
         }
     }
     
@@ -519,6 +457,7 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
                       "Designation" : appsetup.dsName ?? "",
                       "state_code" : appsetup.stateCode ?? "",
                       "subdivision_code" : appsetup.subDivisionCode ?? "",
+                      
         ] as [String : Any]
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
         var toSendParam = [String: Any]()
