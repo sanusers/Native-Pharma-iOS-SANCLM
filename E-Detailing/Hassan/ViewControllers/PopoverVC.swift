@@ -30,35 +30,41 @@ class PopOverVC: UIViewController {
         switch pageType {
             
         case .TP:
+            customMarkerView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             userProfileInfoView.isHidden = true
             toLOadData()
         case .HomeGraph:
+            customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = true
             graphInfoView.isHidden = false
             setupUI()
             
         case .calls:
+            customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             toLOadData()
         case .presentation:
+            customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             toLOadData()
         case .profile:
+            customMarkerView.isHidden = true
             userProfileInfoView.isHidden = false
-          
             self.contentTable.isHidden = true
             graphInfoView.isHidden = true
             setProfileInfo()
         case .customMarker:
+            customMarkerView.isHidden = false
             print("Yet to implement")
-            setupUI()
+            setCustomerInfo()
+            
         }
     }
     
@@ -89,6 +95,17 @@ class PopOverVC: UIViewController {
     @IBOutlet var avgCllLbl: UILabel!
     
     @IBOutlet var avgCallCount: UILabel!
+    
+    //Custom Marker
+    
+    @IBOutlet var customMarkerView: UIView!
+    @IBOutlet var customerIcon: UIImageView!
+    
+    @IBOutlet var customerInfoLbl: UILabel!
+    
+    @IBOutlet var customerAddress: UILabel!
+    
+    
     var delegate: PopOverVCDelegate?
     var strArr = [String]()
     var isExist = Bool()
@@ -99,12 +116,31 @@ class PopOverVC: UIViewController {
     var totalCalls: Int = 0
     var avgCalls: Int = 0
     var color : UIColor? = .appWhiteColor
+    var visitViewModel : VisitViewModel?
     override func viewDidLoad() {
         super.viewDidLoad()
        
         toSetPageType(self.pageType)
     }
 
+    func setCustomerInfo() {
+        guard let visitViewModel = visitViewModel else {return}
+        customerInfoLbl.text = visitViewModel.name
+        customerAddress.text = visitViewModel.address
+        switch visitViewModel.taggedDetail.tagType {
+            
+     
+        case .doctor:
+            customerIcon.image = UIImage(named: "ListedDoctor")
+        case .chemist:
+            customerIcon.image = UIImage(named: "Chemist")
+        case .stockist:
+            customerIcon.image = UIImage(named: "Stockist")
+        case .unlistedDoctor:
+            customerIcon.image = UIImage(named: "Doctor")
+        }
+       //
+    }
     
     
     func setProfileInfo() {

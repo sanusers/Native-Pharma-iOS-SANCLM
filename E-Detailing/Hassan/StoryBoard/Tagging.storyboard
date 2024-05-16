@@ -329,6 +329,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="btnAddtag" destination="NHO-8N-L9c" id="0dB-vl-OCc"/>
                         <outlet property="btnLeft" destination="OFu-8l-YLz" id="z8C-36-8rM"/>
                         <outlet property="btnRight" destination="oa2-OI-61W" id="yTp-sl-51p"/>
                         <outlet property="headerCollectionView" destination="qEb-rH-3YT" id="YHX-VC-JMs"/>

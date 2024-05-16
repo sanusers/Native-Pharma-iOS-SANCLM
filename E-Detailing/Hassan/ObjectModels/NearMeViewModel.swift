@@ -19,6 +19,11 @@ class VisitListViewModel {
         return visitListViewModel[index]
     }
     
+    
+    func fetchDataWithCode(_ code : String) -> VisitViewModel? {
+       return visitListViewModel.filter { $0.custCode == code }.first
+    }
+    
     func numbersOfRows() -> Int {
         return visitListViewModel.count
     }

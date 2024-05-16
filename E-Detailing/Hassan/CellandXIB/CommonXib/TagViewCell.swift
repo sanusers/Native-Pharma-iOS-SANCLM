@@ -39,6 +39,11 @@ class TagViewCell: UITableViewCell {
         lblName.setFont(font: .bold(size: .SUBHEADER))
         lblAddress.setFont(font: .medium(size: .BODY))
         lblMeter.setFont(font: .bold(size: .BODY))
+        
+        
+        lblMeter.textColor = .appLightPink
+        lblName.textColor = .appTextColor
+        lblAddress.textColor = .appTextColor
     }
     
     

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -46,11 +46,12 @@
                                     <constraint firstAttribute="width" constant="20" id="8pV-A1-wki"/>
                                     <constraint firstAttribute="height" constant="20" id="fma-bU-mIo"/>
                                 </constraints>
+                                <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="infoPrimary"/>
+                                <state key="normal" image="info.circle.fill" catalog="system"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cb-Af-oBf">
-                                <rect key="frame" x="15" y="95" width="373" height="24"/>
+                                <rect key="frame" x="10" y="95" width="378" height="24"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="24" id="6kG-xx-Ao0"/>
                                 </constraints>
@@ -70,7 +71,7 @@
                             <constraint firstItem="6cb-Af-oBf" firstAttribute="top" secondItem="jVe-xu-vty" secondAttribute="bottom" constant="20" id="QI9-4V-r1L"/>
                             <constraint firstItem="8XT-2q-VEC" firstAttribute="leading" secondItem="FRf-Sq-BwW" secondAttribute="trailing" constant="15" id="Sda-Y1-uq8"/>
                             <constraint firstAttribute="bottom" secondItem="6cb-Af-oBf" secondAttribute="bottom" constant="15" id="SnQ-3a-r5P"/>
-                            <constraint firstItem="6cb-Af-oBf" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="15" id="St8-Sn-JPE"/>
+                            <constraint firstItem="6cb-Af-oBf" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="10" id="St8-Sn-JPE"/>
                             <constraint firstAttribute="bottom" secondItem="6cb-Af-oBf" secondAttribute="bottom" constant="15" id="cej-Mv-npQ"/>
                             <constraint firstItem="FRf-Sq-BwW" firstAttribute="leading" secondItem="dqd-ZE-RAq" secondAttribute="leading" constant="10" id="gjg-mx-UDl"/>
                             <constraint firstItem="jVe-xu-vty" firstAttribute="top" secondItem="FRf-Sq-BwW" secondAttribute="bottom" constant="15" id="iZQ-1Y-x1M"/>
@@ -94,7 +95,7 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="infoPrimary" width="16" height="16"/>
+        <image name="info.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
