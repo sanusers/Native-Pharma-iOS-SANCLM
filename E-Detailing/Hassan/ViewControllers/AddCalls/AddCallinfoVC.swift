@@ -1459,3 +1459,10 @@ extension CoreDataManager {
     }
     
 }
+
+struct SelectionList{
+
+    var name : String
+    var code : String
+
+}

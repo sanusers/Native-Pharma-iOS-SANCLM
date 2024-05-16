@@ -27,19 +27,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate{
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
         locationManager?.requestWhenInUseAuthorization()
         
-//        if (CLLocationManager.locationServicesEnabled())
-//        {
-//
-//        }
-//        else{
-////            showAlert(title: "", message: "Location Service os turned off, please enable location services", style: .alert, buttons: ["Settings","Cancel"]) { (action) in
-////                if action.title == "Settings"{
-////
-////                }
-////            }
-//        }
-        
-      //  if locationManagerDidChangeAuthorization?(cl)
         
     }
     
@@ -68,25 +55,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate{
         @unknown default:
             break
         }
-        
-//        if CLLocationManager.locationServicesEnabled() {
-//            switch CLLocationManager.authorizationStatus() {
-//            case .notDetermined, .restricted, .denied:
-//                self.currentLocation = nil
-//                topMostViewController().showToast(with: "Please enable location")
-//            case .authorizedAlways, .authorizedWhenInUse:
-//                print("Access")
-//
-//            }
-//        }else {
-//            topMostViewController().showToast(with: "Location services are not enabled")
-//        }
+
     }
-    
-//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-//        <#code#>
-//    }
-    
+
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationManager?.stopUpdatingLocation()

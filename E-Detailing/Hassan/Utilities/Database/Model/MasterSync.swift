@@ -754,4 +754,3 @@ struct MasterSyncParams {
 }
 
 
-//{"tableName":"gettodaytpnew","ReqDt":"2023-06-24 00:00:00","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
