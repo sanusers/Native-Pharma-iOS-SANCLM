@@ -924,35 +924,10 @@ extension UISegmentedControl {
     }
 }
 
-//
-
-//extension UIView {
-//    
-//    
-//    func toAddBlurtoVIew() {
-//        
-//        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterialDark)
-//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-//        blurEffectView.frame = self.bounds
-//        blurEffectView.alpha = 0.5
-//        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        self.addSubview(blurEffectView)
-//        
-//    }
-//    
-//    func toremoveBlurFromView() {
-//        for subview in self.subviews {
-//            if subview is UIVisualEffect {
-//                subview.removeFromSuperview()
-//            }
-//        }
-//    }
-//    
-//}
 extension URL {
     
     func getMimeType() -> String {
-        let pethExtension = self.pathExtension
+        _ = self.pathExtension
         if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as NSString, nil)?.takeRetainedValue() {
             if let type = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
                 return type as String
@@ -1068,5 +1043,175 @@ extension UITextField {
        iconContainerView.addSubview(iconView)
        leftView = iconContainerView
        leftViewMode = .always
+    }
+}
+
+extension String {
+    
+    func toDate(format: String = "yyyy-MM-dd HH:mm:ss", timeZone: TimeZone? = nil) -> Date{
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = format
+        dateformatter.timeZone = timeZone == nil ?  TimeZone.current : timeZone
+        //TimeZone(abbreviation: "UTC") : timeZone
+        return dateformatter.date(from: self) ?? Date()
+    }
+}
+
+extension Date{
+    
+
+    func toString(format: String = "hh:mm a",  timeZone: TimeZone? = nil) -> String{
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.timeZone = timeZone == nil  ? TimeZone.current : timeZone
+        //TimeZone(abbreviation: "UTC") : timeZone
+        return formatter.string(from: self)
+    }
+}
+
+
+
+class ShadowView: UIView {
+    /// The corner radius of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var cornerRadius: CGFloat = 5.0 {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow color of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowColor: UIColor = UIColor.lightGray {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow offset of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowOffset: CGSize = CGSize(width: 0.0, height: 1) {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow radius of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowRadius: CGFloat = 0.5 {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow opacity of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowOpacity: Float = 0.3 {
+        didSet {
+            self.updateProperties()
+        }
+    }
+
+    /**
+    Masks the layer to it's bounds and updates the layer properties and shadow path.
+    */
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        self.layer.masksToBounds = false
+
+        self.updateProperties()
+        self.updateShadowPath()
+    }
+
+    /**
+    Updates all layer properties according to the public properties of the `ShadowView`.
+    */
+    fileprivate func updateProperties() {
+        self.layer.cornerRadius = self.cornerRadius
+        self.layer.shadowColor = self.shadowColor.cgColor
+        self.layer.shadowOffset = self.shadowOffset
+        self.layer.shadowRadius = self.shadowRadius
+        self.layer.shadowOpacity = self.shadowOpacity
+    }
+
+    /**
+    Updates the bezier path of the shadow to be the same as the layer's bounds, taking the layer's corner radius into account.
+    */
+    fileprivate func updateShadowPath() {
+        self.layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
+    }
+
+    /**
+    Updates the shadow path everytime the views frame changes.
+    */
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        self.updateShadowPath()
+    }
+}
+
+
+class ShadowButton: UIButton {
+    /// The corner radius of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var cornerRadius: CGFloat = 5.0 {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow color of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowColor: UIColor = UIColor.white {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow offset of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowOffset: CGSize = CGSize(width: 0.0, height: 2) {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow radius of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowRadius: CGFloat = 4.0 {
+        didSet {
+            self.updateProperties()
+        }
+    }
+    /// The shadow opacity of the `ShadowView`, inspectable in Interface Builder
+    @IBInspectable var shadowOpacity: Float = 0.5 {
+        didSet {
+            self.updateProperties()
+        }
+    }
+
+    /**
+    Masks the layer to it's bounds and updates the layer properties and shadow path.
+    */
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        self.layer.masksToBounds = false
+
+        self.updateProperties()
+        self.updateShadowPath()
+    }
+
+    /**
+    Updates all layer properties according to the public properties of the `ShadowView`.
+    */
+    fileprivate func updateProperties() {
+        self.layer.cornerRadius = self.cornerRadius
+        self.layer.shadowColor = self.shadowColor.cgColor
+        self.layer.shadowOffset = self.shadowOffset
+        self.layer.shadowRadius = self.shadowRadius
+        self.layer.shadowOpacity = self.shadowOpacity
+    }
+
+    /**
+    Updates the bezier path of the shadow to be the same as the layer's bounds, taking the layer's corner radius into account.
+    */
+    fileprivate func updateShadowPath() {
+        self.layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
+    }
+
+    /**
+    Updates the shadow path everytime the views frame changes.
+    */
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        self.updateShadowPath()
     }
 }

@@ -456,12 +456,17 @@ class MainVC : UIViewController {
     
     func toSetupSubmitAlert() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Do you want to add remarks for your day paln?", okAction: "Just check out" , cancelAction: "Add remark")
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Do you want to add remarks for your day paln?", okAction:    appSetups.srtNeed == 1 ? "Just check out" : "Final submit" , cancelAction: "Add remark")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
            
-            
-            self.checkoutAction()
+            if  self.appSetups.srtNeed == 1 {
+              self.checkoutAction()
+          } else {
+              
+              print("Yet to implement final submit")
+          }
+          
         }
         
         commonAlert.addAdditionalCancelAction {
@@ -1394,15 +1399,7 @@ class MainVC : UIViewController {
         //dateFormatter.date(from: storedDateString) ?? Date()
         
         let currentDate = Date()
-        
-        // Check if the stored date is different from the current date
 
-        
-        
-        
-        
-        
-        
         if appSetups.srtNeed == 1 {
             
             if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
@@ -2235,14 +2232,23 @@ extension MainVC {
 
     @IBAction func didTapFinalSubmit(_ sender: Any) {
         if isDayPlanRemarksadded {
-            checkoutAction()
-        } else {
-            
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
-                self.toSetupSubmitAlert()
+            if appSetups.srtNeed == 1 {
+                checkoutAction()
             } else {
-                self.checkinAction()
+                print("Yet to implement final submit")
             }
+          
+        } else {
+            if appSetups.srtNeed == 1 {
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
+                    self.toSetupSubmitAlert()
+                } else {
+                    self.checkinAction()
+                }
+            } else {
+                self.toSetupSubmitAlert()
+            }
+
             
          
         }

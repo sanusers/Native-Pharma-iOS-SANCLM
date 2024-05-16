@@ -2,7 +2,9 @@
 //  ProductSectionReusableView2.swift
 //  E-Detailing
 //
-//  Created by San eforce on 23/04/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 23/04/24.
 //
 
 import UIKit
