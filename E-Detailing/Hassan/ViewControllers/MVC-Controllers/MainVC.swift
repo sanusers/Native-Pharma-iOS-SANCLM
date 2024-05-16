@@ -2325,7 +2325,7 @@ extension MainVC {
 
     @IBAction func profileAction(_ sender: UIButton) {
         print("Tapped -->")
-        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.view.width / 4, height: self.view.height / 2.3), on: btnProfile, onframe: CGRect(), pagetype: .profile)
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.view.width / 4, height: self.view.height / 2.3), on: btnProfile, pagetype: .profile)
         vc.delegate = self
         self.navigationController?.present(vc, animated: true)
             //.present(vc, animated: true)
@@ -3210,7 +3210,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             cell.topopulateCell(model)
             cell.optionsBtn.addTap {
                 print("Tapped -->")
-                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsBtn, onframe: CGRect(), pagetype: .calls)
+                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsBtn,  pagetype: .calls)
                  vc.delegate = self
                  vc.selectedIndex = indexPath.row
                 self.navigationController?.present(vc, animated: true)

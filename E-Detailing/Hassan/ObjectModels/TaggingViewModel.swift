@@ -97,6 +97,19 @@ class CustomerViewModel {
     var category : String {
         if type == TaggingType.doctor {
             return tag.category ?? ""
+        } else if type == TaggingType.chemist {
+           // if let tag = tag as? Chemist {
+                return ""
+         //   }
+        } else if type == TaggingType.stockist {
+          //  if let tag = tag as? Stockist {
+                return ""
+          //  }
+        }
+        else if type == TaggingType.unlistedDoctor {
+            if let tag = tag as? UnListedDoctor {
+                return tag.category ?? ""
+            }
         }
         return ""
     }
@@ -112,6 +125,19 @@ class CustomerViewModel {
     var speciality : String {
         if type == TaggingType.doctor {
             return tag.speciality ?? ""
+        } else if type == TaggingType.chemist {
+           // if let tag = tag as? Chemist {
+                return ""
+          //  }
+        } else if type == TaggingType.stockist {
+          //  if let tag = tag as? Stockist {
+                return ""
+          //  }
+        }
+        else if type == TaggingType.unlistedDoctor {
+            if let tag = tag as? UnListedDoctor {
+                return tag.specialtyName ?? ""
+            }
         }
         return ""
     }
@@ -128,11 +154,11 @@ class CustomerViewModel {
                 return tag.geoTagCnt ?? ""
             }
         }
-//        else if type == TaggingType.unlistedDoctor {
-//            if let tag = tag as? UnListedDoctor {
-//                return tag.sfCode ?? ""
-//            }
-//        }
+        else if type == TaggingType.unlistedDoctor {
+            if let tag = tag as? UnListedDoctor {
+                return tag.geoTagCnt ?? ""
+            }
+        }
         return ""
     }
     
@@ -145,6 +171,11 @@ class CustomerViewModel {
             }
         } else if type == TaggingType.stockist {
             if let tag = tag as? Stockist {
+                return tag.maxGeoMap ?? ""
+            }
+        }
+        else if type == TaggingType.unlistedDoctor {
+            if let tag = tag as? UnListedDoctor {
                 return tag.maxGeoMap ?? ""
             }
         }

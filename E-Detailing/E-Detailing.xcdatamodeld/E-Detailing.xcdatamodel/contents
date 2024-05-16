@@ -626,10 +626,12 @@
         <attribute name="docHospCode" optional="YES" attributeType="String"/>
         <attribute name="docHospName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="String"/>
         <attribute name="long" optional="YES" attributeType="String"/>
         <attribute name="mapId" optional="YES" attributeType="String"/>
+        <attribute name="maxGeoMap" optional="YES" attributeType="String"/>
         <attribute name="mobile" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>

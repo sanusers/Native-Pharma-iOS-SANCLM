@@ -58,6 +58,7 @@ class PopOverVC: UIViewController {
             setProfileInfo()
         case .customMarker:
             print("Yet to implement")
+            setupUI()
         }
     }
     
@@ -183,28 +184,20 @@ class PopOverVC: UIViewController {
     }
     
     //MARK:- initWithStory
-    class func initWithStory(preferredFrame size : CGSize,on host : UIView, onframe hostframe: CGRect, pagetype: PageType) -> PopOverVC{
+    class func initWithStory(preferredFrame size : CGSize,on host : UIView , pagetype: PageType) -> PopOverVC{
         let infoWindow: PopOverVC  = UIStoryboard(name: "Hassan", bundle: nil).instantiateViewController(withIdentifier: "PopOverVC") as! PopOverVC
         infoWindow.pageType = pagetype
         infoWindow.preferredContentSize = size
         infoWindow.modalPresentationStyle = .popover
         let popover: UIPopoverPresentationController = infoWindow.popoverPresentationController!
         popover.delegate = infoWindow
-        if pagetype == .HomeGraph {
-            //popover.sourceRect = hostframe
-            popover.sourceView = host
-        } else if pagetype == .customMarker {
-            popover.sourceRect = hostframe
-        }
-        
-        else {
-            popover.sourceView = host
-        }
+
+        popover.sourceView = host
     
      
         popover.backgroundColor = .appWhiteColor
        // popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
-        popover.permittedArrowDirections = pagetype == .HomeGraph ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
+        popover.permittedArrowDirections = pagetype == .HomeGraph || pagetype == .customMarker ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
         
         return infoWindow
     }

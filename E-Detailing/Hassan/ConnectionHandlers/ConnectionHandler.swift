@@ -276,7 +276,7 @@ final class ConnectionHandler : NSObject {
             
             
 
-            
+//            
 //            for (key, value) in parameters {
 //                multipartFormData.append(String(describing: value).data(using: String.Encoding.utf8, allowLossyConversion: true)!, withName: key)
 //                
@@ -285,8 +285,10 @@ final class ConnectionHandler : NSObject {
             
        
                 let multipartData = paramData
-                multipartFormData.append(multipartData, withName: "data" as String)
-                _ = String(data: multipartData, encoding: .utf8)
+                multipartFormData.append(multipartData, withName: "data")
+               // _ = String(data: multipartData, encoding: .utf8)
+            
+            
       
         }, to: "\("")\(urlString)")
         .responseJSON(completionHandler: { response in

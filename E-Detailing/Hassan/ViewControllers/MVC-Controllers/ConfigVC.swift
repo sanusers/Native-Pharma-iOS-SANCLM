@@ -126,13 +126,11 @@ class ConfigVC : UIViewController {
                 textfield?.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
                 textfield?.layer.borderWidth = 1
                 textfield?.layer.cornerRadius = 5
-                textfield?.font = UIFont(name: "Satoshi-Bold", size: 14)
+                textfield?.font = UIFont(name: "Satoshi-Medium", size: 14)
                 let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield?.frame.height ?? 50))
-    
                 textfield?.leftView = paddingView
                 textfield?.rightView = paddingView
                 textfield?.leftViewMode = .always
-    
                 textfield?.rightViewMode = .always
             }
             txtDeviceId.backgroundColor = .appSelectionColor

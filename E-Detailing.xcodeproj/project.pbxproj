@@ -174,7 +174,6 @@
 		38CA1FE12B60EDF400AFCFD2 /* SelectedSlidesTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */; };
 		38CA1FE42B6102AB00AFCFD2 /* SelectPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FE22B6102AB00AFCFD2 /* SelectPresentationCVC.swift */; };
 		38CA1FE52B6102AB00AFCFD2 /* SelectPresentationCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38CA1FE32B6102AB00AFCFD2 /* SelectPresentationCVC.xib */; };
-		38CA1FE82B61080A00AFCFD2 /* SelectedSlidesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FE72B61080A00AFCFD2 /* SelectedSlidesModel.swift */; };
 		38CA1FEA2B61163C00AFCFD2 /* PlayPresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FE92B61163C00AFCFD2 /* PlayPresentationView.swift */; };
 		38CA1FEC2B61169300AFCFD2 /* PlayPresentationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FEB2B61169300AFCFD2 /* PlayPresentationVC.swift */; };
 		38CA1FEF2B611CBF00AFCFD2 /* PlayPresentationCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FED2B611CBF00AFCFD2 /* PlayPresentationCVC.swift */; };
@@ -548,7 +547,6 @@
 		38CA1FDF2B60EDF400AFCFD2 /* SelectedSlidesTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedSlidesTVC.xib; sourceTree = "<group>"; };
 		38CA1FE22B6102AB00AFCFD2 /* SelectPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPresentationCVC.swift; sourceTree = "<group>"; };
 		38CA1FE32B6102AB00AFCFD2 /* SelectPresentationCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectPresentationCVC.xib; sourceTree = "<group>"; };
-		38CA1FE72B61080A00AFCFD2 /* SelectedSlidesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSlidesModel.swift; sourceTree = "<group>"; };
 		38CA1FE92B61163C00AFCFD2 /* PlayPresentationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPresentationView.swift; sourceTree = "<group>"; };
 		38CA1FEB2B61169300AFCFD2 /* PlayPresentationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPresentationVC.swift; sourceTree = "<group>"; };
 		38CA1FED2B611CBF00AFCFD2 /* PlayPresentationCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPresentationCVC.swift; sourceTree = "<group>"; };
@@ -1300,7 +1298,6 @@
 		38CA1FE62B6107E700AFCFD2 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				38CA1FE72B61080A00AFCFD2 /* SelectedSlidesModel.swift */,
 				38CA1FF52B613C2A00AFCFD2 /* SlidesModel.swift */,
 			);
 			path = Presentation;
@@ -1915,7 +1912,6 @@
 				38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */,
 				38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */,
 				38CD60D92A86139D006FFB39 /* CallViewModel.swift in Sources */,
-				38CA1FE82B61080A00AFCFD2 /* SelectedSlidesModel.swift in Sources */,
 				38CA1FF32B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift in Sources */,
 				38C661452B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift in Sources */,
 				38CA1FEC2B61169300AFCFD2 /* PlayPresentationVC.swift in Sources */,

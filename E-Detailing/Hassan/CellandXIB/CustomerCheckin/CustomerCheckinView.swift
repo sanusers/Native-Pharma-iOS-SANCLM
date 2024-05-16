@@ -15,7 +15,7 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
 
     func setupUItoAddTag(vm: CallViewModel) {
         checkinStack.isHidden = true
-        
+        self.layer.cornerRadius = 5
         viewCancel.layer.cornerRadius = 5
         viewConfirm.layer.cornerRadius = 5
         viewCancel.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)

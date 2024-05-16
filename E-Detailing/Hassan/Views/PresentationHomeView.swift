@@ -82,7 +82,7 @@ extension PresentationHomeView: UICollectionViewDelegate, UICollectionViewDataSo
         cell.addTap { [weak self] in
             guard let welf = self else {return}
             welf.createdPresentationSelectedIndex = indexPath.row
-            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 120), on: cell.optionsIV, onframe: CGRect(), pagetype: .presentation)
+            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 2, height: 120), on: cell.optionsIV,  pagetype: .presentation)
             vc.delegate = self
             welf.presentationHomeVC.navigationController?.present(vc, animated: true)
             

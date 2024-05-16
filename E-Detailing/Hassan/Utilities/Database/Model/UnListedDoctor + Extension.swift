@@ -17,10 +17,10 @@ extension UnListedDoctor {
         if let addrsValue = dictionary["Addrs"] as? String{
             addrs = addrsValue
         }
-        if let categoryValue = dictionary["Category"] as? String{
+        if let categoryValue = dictionary["CategoryName"] as? String{
             category = categoryValue
         }
-        if let categoryCodeValue = dictionary["CategoryCode"] as? String{
+        if let categoryCodeValue = dictionary["Category"] as? String{
             categoryCode = categoryCodeValue
         }
         if let codeValue = dictionary["Code"] as? String{
@@ -84,6 +84,17 @@ extension UnListedDoctor {
         if let longValue = dictionary["long"] as? String{
             long = longValue
         }
+        
+        if let taggedCountValue = dictionary["GEOTagCnt"] as? String{
+            geoTagCnt = taggedCountValue
+        }
+        
+        
+        
+        if let maxTagCount = dictionary["MaxGeoMap"] as? String{
+            maxGeoMap = maxTagCount
+        }
+        
         mapId = id
     }
 }

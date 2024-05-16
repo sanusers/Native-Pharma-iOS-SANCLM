@@ -60,30 +60,7 @@ class TagVC : UIViewController {
         btnTag.addTarget(self, action: #selector(checkCameraAuthorization), for: .touchUpInside)
         btnTag.backgroundColor = .appLightPink
         
-        
-//        Pipelines.shared.requestAuth { (coordinate) in
-//            guard let coordinate = coordinate, let latitude = coordinate.latitude, let longitude =  coordinate.longitude else {return}
-//            
-//            let camera  = GMSCameraPosition(latitude: latitude, longitude: longitude, zoom: 17)
-//            
-//            self.viewMapView.camera = camera
-//            self.selectedCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//            let marker = GMSMarker()
-//            marker.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
-//            marker.iconView?.tintColor = .appLightPink
-//            marker.iconView?.frame.size = CGSize(width: 35, height: 45)
-//            marker.title = self.customer.name
-//            marker.map = self.viewMapView
-//
-//            Pipelines.shared.getAddressString(latitude: coordinate.latitude ?? Double(), longitude: coordinate.longitude ?? Double()) { address in
-//                guard let address = address else {
-//                    self.lblAddress.text = "No address found"
-//                    return}
-//                self.lblAddress.text = address
-//            }
-//            
-//        }
+
         
         LocationManager.shared.getCurrentLocation { (coordinate) in
             
@@ -110,6 +87,35 @@ class TagVC : UIViewController {
     deinit {
         print("TagVC deallocated")
     }
+    
+    
+    @IBAction func locationSettingAction(_ sender: UIButton) {
+        
+        LocationManager.shared.getCurrentLocation{ (coordinate) in
+            print("location == \(coordinate)")
+            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
+            self.viewMapView.camera =  camera
+            //self.currentLocation = coordinate
+            //self.drawCircle()
+           // self.showAllTaggedList()
+        }
+        
+    }
+    
+    
+    @IBAction func refreshAction(_ sender: UIButton) {
+        
+        LocationManager.shared.getCurrentLocation{ (coordinate) in
+            print("location == \(coordinate)")
+            let camera : GMSCameraPosition = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 16)
+            self.viewMapView.camera =  camera
+           // self.currentLocation = coordinate
+           // self.drawCircle()
+           // self.showAllTaggedList()
+        }
+    }
+    
+    
     func setupCamera() {
         let pickerVC = UIImagePickerController()
         pickerVC.sourceType = .camera
@@ -186,7 +192,7 @@ class TagVC : UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let checkinVIewwidth = view.bounds.width / 3
+        let checkinVIewwidth = view.bounds.width / 3.5
         let checkinVIewheight = view.bounds.height / 2
         
         let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
@@ -204,6 +210,7 @@ class TagVC : UIViewController {
         
         self.selectedDCRcall = dcrCall
         backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
         //  backgroundView.toAddBlurtoVIew()
         self.view.subviews.forEach { aAddedView in
             switch aAddedView {
@@ -323,13 +330,14 @@ class TagVC : UIViewController {
         
         let divisionCode = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
         
-        let date = Date().toString(format: "yyyy-MM-dd")
-        //{"tableName":"save_geo","lat":"13.02998466","long":"80.24142807","cuscode":"1679524","divcode":"63","cust":"D","tagged_time":"2024-05-15 17:07:20","image_name":"MGR0941_1679524_15052024170711.jpeg","sfname":"Sundara Kumar","sfcode":"MGR0941","addr":"No 4, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035, India","tagged_cust_HQ":"MR5990","cust_name":"ASHISH.S.PURANDARE","mode":"Android-Edet","version":"Test.H.2","towncode":"104189","townname":"Nerangala","status":"1"}
+        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+      //  {"tableName":"save_geo","lat":"13.030235516094693","long":"80.2416867390275","cuscode":"259433","divcode":"62","cust":"C","tagged_time":"2023-07-14 18:35:54","image_name":"MGR0523_14072023183554.jpeg","sfname":"TEST MGR","sfcode":"MGR0523","addr":"37, Pasumpon Muthuramalinga Thevar Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600018, India Chennai Tamil Nadu","tagged_cust_HQ":"MR2567","cust_name":"hrishna","mode":"Android_edet","version":"N-v1"}
+        
         var params =  [String: Any]()
         params["tableName"] = "save_geo"
-        params["lat"] = self.selectedCoordinate.latitude
-        params["long"] = self.selectedCoordinate.longitude
-        params["cuscode"] =  self.customer.code
+        params["lat"] = "\(self.selectedCoordinate.latitude)"
+        params["long"] = "\(self.selectedCoordinate.longitude)"
+        params["cuscode"] = self.customer.code
         params["divcode"] =  divisionCode
         params["cust"] = self.customer.tagType
         params["tagged_time"] = date
@@ -337,7 +345,10 @@ class TagVC : UIViewController {
         params["sfname"] = appsetup.sfName ?? ""
         params["sfcode"] = appsetup.sfCode ?? ""
         params["addr"] = self.lblAddress.text ?? ""
-        params["tagged_cust_HQ"] = customer.sfCode
+        params["tagged_cust_HQ"] = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) ? appsetup.sfCode : LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        params["towncode"] = customer.townCode
+        params["townname"] = customer.townName
+        params["status"] = "1"
         //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         params["cust_name"] = self.customer.name
         params["mode"] = "iOS-Edet"
@@ -450,17 +461,19 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
     func uploadImagess(image: UIImage, completion: @escaping (Bool) -> ()) {
         let appsetup = AppDefaults.shared.getAppSetUp()
 
+        let divisionCode = (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: "")
         
-        let params = ["tableName" : "imgupload",
-                      "sfcode" : appsetup.sfCode ?? "",
-                      "division_code" : (appsetup.divisionCode ?? "").replacingOccurrences(of: ",", with: ""),
-                      "Rsf" : appsetup.sfCode ?? "",
-                      "sf_type" : appsetup.sfType ?? "",
-                      "Designation" : appsetup.dsName ?? "",
-                      "state_code" : appsetup.stateCode ?? "",
-                      "subdivision_code" : appsetup.subDivisionCode ?? "",
-                      
-        ] as [String : Any]
+        var params = [String: Any]()
+        params["tableName"] = "imgupload"
+        params["sfcode"]  = appsetup.sfCode ?? ""
+        params["division_code"] =  appsetup.divisionCode
+        //divisionCode
+        params["Rsf"] = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) ? appsetup.sfCode : LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        params["sf_type"] = "\(appsetup.sfType ?? 0)"
+        params["Designation"] = appsetup.dsName
+        params["state_code"] = "\(appsetup.stateCode ?? 0)"
+        params["subdivision_code"] = "\(appsetup.subDivisionCode ?? "")"
+
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
         var toSendParam = [String: Any]()
         toSendParam["data"]  = jsonDatum
@@ -594,6 +607,7 @@ extension TagVC : addedSubViewsDelegate {
 
     func didClose() {
        backgroundView.isHidden = true
+        backgroundView.alpha = 0.3
         self.view.subviews.forEach { aAddedView in
             
             switch aAddedView {
@@ -618,6 +632,7 @@ extension TagVC : addedSubViewsDelegate {
     
     func didUpdate() {
         backgroundView.isHidden = true
+        backgroundView.alpha = 0.3
         self.view.subviews.forEach { aAddedView in
             
             switch aAddedView {

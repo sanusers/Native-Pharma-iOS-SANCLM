@@ -52,11 +52,16 @@ class LoginVC : UIViewController {
         lblVersion.setFont(font: .medium(size: .SMALL))
         lblVersion.textColor = .appLightTextColor
         
-        txtUserName.font = UIFont(name: "Satoshi-Bold", size: 14)
-        txtPassWord.font = UIFont(name: "Satoshi-Bold", size: 14)
+        txtUserName.font = UIFont(name: "Satoshi-Medium", size: 14)
+        txtPassWord.font = UIFont(name: "Satoshi-Medium", size: 14)
         lblPoweredBy.setFont(font: .medium(size: .BODY))
         lblPoweredBy.textColor = .appLightTextColor
-        
+        txtPassWord.isSecureTextEntry = true
+        setEyeimage()
+        PasswordIVHolderView.addTap {
+            self.txtPassWord.isSecureTextEntry =  self.txtPassWord.isSecureTextEntry == true ? false : true
+            self.setEyeimage()
+        }
        // txtUserName.text = "mgr123"
        // txtPassWord.text = "123"
     }
@@ -73,6 +78,10 @@ class LoginVC : UIViewController {
     @IBOutlet weak var lblVersion: UILabel!
 
     @IBOutlet weak var imgLogo: UIImageView!
+    
+    @IBOutlet var viewPasswordIV: UIImageView!
+    @IBOutlet var PasswordIVHolderView: UIView!
+    
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var homeVM: HomeViewModal?
@@ -84,6 +93,14 @@ class LoginVC : UIViewController {
 
     }
     
+    func setEyeimage() {
+        
+        viewPasswordIV.image = txtPassWord.isSecureTextEntry == true ? UIImage(systemName: "eye") :  UIImage(systemName: "eye.slash")
+        
+        viewPasswordIV.alpha =  viewPasswordIV.image == UIImage(systemName: "eye") ? 0.3 : 1
+        
+ 
+    }
     
     func toSetupAlert(text: String, istoValidate : Bool? = false) {
         let commonAlert = CommonAlert()

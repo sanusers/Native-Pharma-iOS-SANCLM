@@ -58,7 +58,7 @@ extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSourc
         
         cell.optionsHolderView.addTap {
             print("Tapped -->")
-            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsIV, onframe: CGRect(), pagetype: .calls)
+            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsIV, pagetype: .calls)
              vc.delegate = self
              vc.selectedIndex = indexPath.row
             self.viewController?.navigationController?.present(vc, animated: true)
