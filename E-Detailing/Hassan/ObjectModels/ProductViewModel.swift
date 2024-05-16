@@ -2,7 +2,9 @@
 //  ProductViewModel.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 16/08/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 16/04/24.
 //
 
 import Foundation

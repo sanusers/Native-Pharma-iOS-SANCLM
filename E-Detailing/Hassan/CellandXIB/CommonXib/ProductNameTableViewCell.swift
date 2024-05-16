@@ -2,7 +2,9 @@
 //  ProductNameCell.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 10/08/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 10/04/24.
 //
 
 import Foundation

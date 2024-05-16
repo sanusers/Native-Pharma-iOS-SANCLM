@@ -2,7 +2,9 @@
 //  EventCell.swift
 //  E-Detailing
 //
-//  Created by PARTH on 27/04/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 27/04/23.
 //
 
 import UIKit

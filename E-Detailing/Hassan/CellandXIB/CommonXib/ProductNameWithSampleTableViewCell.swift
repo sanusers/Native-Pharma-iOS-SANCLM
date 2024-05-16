@@ -2,7 +2,9 @@
 //  ProductNameWithSampleTableViewCell.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 28/10/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 28/05/24.
 //
 
 import Foundation

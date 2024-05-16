@@ -2,7 +2,9 @@
 //  EventCaptureCell.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 26/09/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 26/04/24.
 //
 
 import Foundation

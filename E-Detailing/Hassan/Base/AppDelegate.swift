@@ -2,7 +2,9 @@
 //  AppDelegate.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 21/04/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 05/05/24.
 //
 
 import UIKit

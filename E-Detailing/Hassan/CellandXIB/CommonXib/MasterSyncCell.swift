@@ -2,7 +2,9 @@
 //  MasterSyncCell.swift
 //  E-Detailing
 //
-//  Created by NAGAPRASATH on 03/06/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved.03/12/23.
 //
 
 import UIKit

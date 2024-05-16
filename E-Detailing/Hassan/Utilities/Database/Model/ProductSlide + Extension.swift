@@ -2,7 +2,9 @@
 //  ProductSlide + Extension.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 20/06/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 20/12/23.
 //
 
 import Foundation

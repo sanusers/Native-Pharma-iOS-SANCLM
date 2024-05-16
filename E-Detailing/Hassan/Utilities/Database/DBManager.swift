@@ -2,7 +2,9 @@
 //  DBManager.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 19/06/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 19/12/23.
 //
 
 import Foundation

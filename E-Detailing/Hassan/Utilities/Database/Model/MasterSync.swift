@@ -2,7 +2,9 @@
 //  MasterSync.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 28/06/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 28/12/23.
 //
 
 import Foundation

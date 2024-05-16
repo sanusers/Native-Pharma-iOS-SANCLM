@@ -2,7 +2,9 @@
 //  Subordinate + Extension.swift
 //  E-Detailing
 //
-//  Created by SANEFORCE on 07/07/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 07/07/23.
 //
 
 import Foundation
