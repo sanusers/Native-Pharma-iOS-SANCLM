@@ -2,8 +2,8 @@
 // MARK:  ---------- Keys and Identifiers ----------------
 USER_APP_NAME        = Enter your key APP_NAME  
 USER_BUNDLE_ID       = Enter your BUNDLE_ID
-GMSMapServicesAPIKey       = AIzaSyCOGVqC9Up95kQNvd_WWtBXI-YY1d7Y2Ng
-GMSServicesAPIKey   = AIzaSyCWeKbT2OcoH82bQJQJKqrHZ_MyLGijWM4
+GMSMapServicesAPIKey = AIzaSyCOGVqC9Up95kQNvd_WWtBXI-YY1d7Y2Ng
+GMSServicesAPIKey    = AIzaSyCWeKbT2OcoH82bQJQJKqrHZ_MyLGijWM4
 
 // MARK:  ---------- Application Version and App URL ----------------
 USER_VERSION         = 1.0

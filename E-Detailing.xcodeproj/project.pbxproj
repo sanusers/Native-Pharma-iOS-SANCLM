@@ -370,7 +370,6 @@
 		B27ED24F29F6630000B90B61 /* OutboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED24E29F6630000B90B61 /* OutboxCell.swift */; };
 		B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27ED25029F6A24600B90B61 /* MenuCell.swift */; };
 		B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B287E62229F29C1B0097974D /* AppDelegate.swift */; };
-		B287E62A29F29C1B0097974D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B287E62829F29C1B0097974D /* Main.storyboard */; };
 		B287E62C29F29C220097974D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B287E62B29F29C220097974D /* Assets.xcassets */; };
 		B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B287E62D29F29C220097974D /* LaunchScreen.storyboard */; };
 		B287E67D29F2A20F0097974D /* Satoshi-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = B287E63B29F2A20F0097974D /* Satoshi-Black.otf */; };
@@ -757,7 +756,6 @@
 		B27ED25029F6A24600B90B61 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		B287E61F29F29C1B0097974D /* E-Detailing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "E-Detailing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B287E62229F29C1B0097974D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B287E62929F29C1B0097974D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B287E62B29F29C220097974D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B287E62E29F29C220097974D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B287E63029F29C220097974D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1079,6 +1077,9 @@
 			isa = PBXGroup;
 			children = (
 				38BFB7852AFB68F9005E141E /* Hassan.storyboard */,
+				38D528A72A9A033E00AD3F78 /* Tagging.storyboard */,
+				38C673212A3C2B5800528E36 /* Activity.storyboard */,
+				B287E62D29F29C220097974D /* LaunchScreen.storyboard */,
 			);
 			path = StoryBoard;
 			sourceTree = "<group>";
@@ -1564,7 +1565,7 @@
 				38C44CC22A404D4E009D7B68 /* Storage */,
 				38C4245C2A2B4D1F004A89EF /* View */,
 				B287E63629F29F6C0097974D /* Controller */,
-				B29AAB0C29FF774100B7B902 /* Story Board */,
+				B29AAB0C29FF774100B7B902 /* StoryBoard */,
 				B287E62B29F29C220097974D /* Assets.xcassets */,
 				38C485B02A2F45E9005D1533 /* E-Detailing.xcdatamodeld */,
 				B287E63029F29C220097974D /* Info.plist */,
@@ -1667,16 +1668,12 @@
 			path = Others;
 			sourceTree = "<group>";
 		};
-		B29AAB0C29FF774100B7B902 /* Story Board */ = {
+		B29AAB0C29FF774100B7B902 /* StoryBoard */ = {
 			isa = PBXGroup;
 			children = (
-				B287E62829F29C1B0097974D /* Main.storyboard */,
-				38C673212A3C2B5800528E36 /* Activity.storyboard */,
 				38F8431D2A5E8493009018AB /* SideMenu.storyboard */,
-				38D528A72A9A033E00AD3F78 /* Tagging.storyboard */,
-				B287E62D29F29C220097974D /* LaunchScreen.storyboard */,
 			);
-			path = "Story Board";
+			path = StoryBoard;
 			sourceTree = "<group>";
 		};
 		EA630B17D267B8F950912F46 /* Frameworks */ = {
@@ -1841,7 +1838,6 @@
 				38D6E88B2B34081B003CC4D8 /* BasicReportsInfoTVC.xib in Resources */,
 				38CBA4D42A9F80C0001992C4 /* TagViewCell.xib in Resources */,
 				38CD60E12A866CFC006FFB39 /* ProductSampleTableViewCell.xib in Resources */,
-				B287E62A29F29C1B0097974D /* Main.storyboard in Resources */,
 				38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */,
 				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
 				38C4649B2BDA8C6600B7F377 /* DetailedInfoHeader.xib in Resources */,
@@ -2203,14 +2199,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B287E62829F29C1B0097974D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B287E62929F29C1B0097974D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B287E62D29F29C220097974D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2360,7 +2348,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = Hassan;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -2399,7 +2387,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = Hassan;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
