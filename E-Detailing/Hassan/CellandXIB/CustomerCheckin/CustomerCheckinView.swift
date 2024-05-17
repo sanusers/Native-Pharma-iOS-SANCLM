@@ -99,10 +99,20 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     }
     
     
+    func setupTaggeImage(fetchedImageData: Data) {
+        self.layer.cornerRadius = 5
+        checkinStack.isHidden = true
+        taggingStack.isHidden = true
+        taggedIMageHolder.isHidden = false
+        taggedImage.image = UIImage(data: fetchedImageData)
+    }
+    
     @objc func didUserCheckin() {
         self.delegate?.didUpdate()
     }
+    @IBOutlet var taggedIMageHolder: UIView!
     
+    @IBOutlet var taggedImage: UIImageView!
     @IBOutlet var closeIV: UIImageView!
     
     @IBOutlet var titleLbl: UILabel!

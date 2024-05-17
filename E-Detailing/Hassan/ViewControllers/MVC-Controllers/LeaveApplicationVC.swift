@@ -64,9 +64,14 @@ class LeaveApplicationVC: UIViewController {
     @IBOutlet weak var viewLeaveAvailablity: UIView!
     
     
+    @IBOutlet var btnSubmit: ShadowButton!
     @IBOutlet weak var viewAttachment: UIView!
     
+    @IBOutlet weak var backgroundView: UIView!
+    
     @IBOutlet weak var lblLeaveHide: UILabel!
+    
+    var customCalenderView: CustomCalenderView?
     
     var isFromToDate : Bool = false
     var fromDate : Date?
@@ -88,6 +93,54 @@ class LeaveApplicationVC: UIViewController {
         }
     }
     
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let checkinVIewwidth = view.bounds.width / 3.5
+        let checkinVIewheight = view.bounds.height / 2
+        
+        let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = view.bounds.midY - (checkinVIewheight / 2)
+
+        customCalenderView?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
+        
+    }
+    
+    func viewImageAction() {
+        
+    
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+        //  backgroundView.toAddBlurtoVIew()
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case customCalenderView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+          
+                
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        customCalenderView = self.loadCustomView(nibname: XIBs.customCalenderView) as? CustomCalenderView
+        //customCalenderView?.delegate = self
+        //customCalenderView?.setupTaggeImage(fetchedImageData: imageData)
+        self.view.addSubview(customCalenderView ?? CustomCalenderView())
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -95,7 +148,7 @@ class LeaveApplicationVC: UIViewController {
         self.collectionView.register(UINib(nibName: "LeaveAvailablityCell", bundle: nil), forCellWithReuseIdentifier: "LeaveAvailablityCell")
         
      //   self.progressView()
-        
+        self.btnSubmit.layer.cornerRadius = 5
         
         self.viewAttachment.isHidden = true
         self.lblAttachment.isHidden = true
@@ -121,79 +174,51 @@ class LeaveApplicationVC: UIViewController {
     }
     
     
-    @IBAction func fromDateAction(_ sender: UIButton) {
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let calenterVC = UIStoryboard.calenderVC
-        if appsetup.pastLeavePost == 1 {
-            calenterVC.minDate = Date()
-        }
-        calenterVC.didSelectCompletion { selectedDat in
-            let dateString = selectedDat.toString(format: "MMM dd, yyyy")
-            self.fromDate = selectedDat
-            self.txtFromDate.text = dateString
-            
-            self.txtToDate.text = ""
-            self.toDate = nil
-            self.selectedLeaveType = nil
-            self.lblLeaveTypeValue.text = "Select Leave Type"
-        }
-        self.present(calenterVC, animated: true)
-        
-    }
+//    @IBAction func fromDateAction(_ sender: UIButton) {
+//        let appsetup = AppDefaults.shared.getAppSetUp()
+//        
+//        let calenterVC = UIStoryboard.calenderVC
+//        if appsetup.pastLeavePost == 1 {
+//            calenterVC.minDate = Date()
+//        }
+//        calenterVC.didSelectCompletion { selectedDat in
+//            let dateString = selectedDat.toString(format: "MMM dd, yyyy")
+//            self.fromDate = selectedDat
+//            self.txtFromDate.text = dateString
+//            
+//            self.txtToDate.text = ""
+//            self.toDate = nil
+//            self.selectedLeaveType = nil
+//            self.lblLeaveTypeValue.text = "Select Leave Type"
+//        }
+//        self.present(calenterVC, animated: true)
+//        
+//    }
     
-    @IBAction func toDateAction(_ sender: UIButton) {
-        if self.fromDate == nil {
-            return
-        }
-        let calenterVC = UIStoryboard.calenderVC
-        calenterVC.minDate = self.fromDate
-        calenterVC.didSelectCompletion { selectedDat in
-            let dateString = selectedDat.toString(format: "MMM dd, yyyy")
-            self.toDate = selectedDat
-            self.txtToDate.text = dateString
-            
-            self.selectedLeaveType = nil
-            self.lblLeaveTypeValue.text = "Select Leave Type"
-        }
-        self.present(calenterVC, animated: true)
-        
-    }
+//    @IBAction func toDateAction(_ sender: UIButton) {
+//        if self.fromDate == nil {
+//            return
+//        }
+//        let calenterVC = UIStoryboard.calenderVC
+//        calenterVC.minDate = self.fromDate
+//        calenterVC.didSelectCompletion { selectedDat in
+//            let dateString = selectedDat.toString(format: "MMM dd, yyyy")
+//            self.toDate = selectedDat
+//            self.txtToDate.text = dateString
+//            
+//            self.selectedLeaveType = nil
+//            self.lblLeaveTypeValue.text = "Select Leave Type"
+//        }
+//        self.present(calenterVC, animated: true)
+//        
+//    }
     
     @IBAction func leaveTypeAction(_ sender: UIButton) {
+ 
         
+     //   let leaveType = DBManager.shared.getLeaveType()
         
-        let vc = UIStoryboard.singleSelectionRightVC
-        vc.modalPresentationStyle = .overCurrentContext
-    //    vc.modalTransitionStyle = .crossDissolve
-        vc.view.backgroundColor = .clear
-        vc.view.alpha = 0
-        self.navigationController?.pushViewController(vc, animated: true)
-        
-        
-        if self.fromDate == nil || self.toDate == nil {
-            return
-        }
-        
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let leaveType = DBManager.shared.getLeaveType()
-        
-//        var searchData = [SelectionData]()
-//        searchData = leaveType.map{SelectionData(name: $0.leaveName, id: $0.leaveCode)}
-        
-        let singleSelectionVC = UIStoryboard.singleSelectionVC
-        singleSelectionVC.titleString = "Select Leave Type"
-        singleSelectionVC.selectionData = leaveType
-        singleSelectionVC.didSelectCompletion { selectedIndex in
-            self.selectedLeaveType = leaveType[selectedIndex]
-            
-            if appsetup.leaveEntitlementNeed == 0 {
-                self.leaveValidationApi()
-            }
-            self.leaveValidationApi()
-        }
-        self.present(singleSelectionVC, animated: true)
+
     }
     
     
@@ -284,8 +309,8 @@ class LeaveApplicationVC: UIViewController {
         
         let text = NSMutableAttributedString(
           string: "Choose file to upload",
-          attributes: [.font: UIFont(name: "Satoshi-Bold", size: 17) as Any])
-        text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 17) as Any], range: NSMakeRange(12,9))
+          attributes: [.font: UIFont(name: "Satoshi-Bold", size: 14) as Any])
+        text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 14) as Any], range: NSMakeRange(12,9))
         self.lblChooseFile.attributedText = text
     }
     

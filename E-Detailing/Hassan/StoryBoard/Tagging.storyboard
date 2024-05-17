@@ -317,17 +317,43 @@
                                     <constraint firstAttribute="trailing" secondItem="nJg-fc-TH6" secondAttribute="trailing" id="nVY-0V-pLe"/>
                                 </constraints>
                             </view>
+                            <view alpha="0.30000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wwv-7y-651">
+                                <rect key="frame" x="0.0" y="2" width="1180" height="820"/>
+                                <subviews>
+                                    <visualEffectView opaque="NO" alpha="0.30000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2fb-2v-nwQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="bSu-5A-DAb">
+                                            <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </view>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <blurEffect style="regular"/>
+                                    </visualEffectView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="2fb-2v-nwQ" firstAttribute="centerY" secondItem="Wwv-7y-651" secondAttribute="centerY" id="62y-mw-sIL"/>
+                                    <constraint firstItem="2fb-2v-nwQ" firstAttribute="height" secondItem="Wwv-7y-651" secondAttribute="height" id="80N-NM-OZW"/>
+                                    <constraint firstItem="2fb-2v-nwQ" firstAttribute="width" secondItem="Wwv-7y-651" secondAttribute="width" id="aQx-3L-yqM"/>
+                                    <constraint firstItem="2fb-2v-nwQ" firstAttribute="centerX" secondItem="Wwv-7y-651" secondAttribute="centerX" id="cMq-zk-H3j"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Wwv-7y-651" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" id="17L-CI-3Tk"/>
+                            <constraint firstItem="Wwv-7y-651" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" id="5vL-qo-4hO"/>
                             <constraint firstAttribute="bottom" secondItem="Sdn-Pr-1Ef" secondAttribute="bottom" id="OIK-Rj-bkg"/>
                             <constraint firstItem="Sdn-Pr-1Ef" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="cqH-u7-0vJ"/>
+                            <constraint firstItem="Wwv-7y-651" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="cr3-yx-ZCH"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Sdn-Pr-1Ef" secondAttribute="trailing" id="e8d-GF-HZk"/>
                             <constraint firstItem="Sdn-Pr-1Ef" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="rIf-8v-njM"/>
+                            <constraint firstItem="Wwv-7y-651" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" id="xVs-u5-Bcy"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="backgroundView" destination="Wwv-7y-651" id="aGe-z9-ESR"/>
                         <outlet property="btnAddtag" destination="NHO-8N-L9c" id="0dB-vl-OCc"/>
                         <outlet property="btnLeft" destination="OFu-8l-YLz" id="z8C-36-8rM"/>
                         <outlet property="btnRight" destination="oa2-OI-61W" id="yTp-sl-51p"/>

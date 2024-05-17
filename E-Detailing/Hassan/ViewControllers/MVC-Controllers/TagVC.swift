@@ -35,7 +35,6 @@ class TagVC : UIViewController {
     
     
     @IBOutlet weak var viewMapView: GMSMapView!
-    var viewTagStatus: AddNewTagInfoVIew?
     var checkinVIew: CustomerCheckinView?
     var userStatisticsVM = UserStatisticsVM()
     var delegate : TagVCDelegate?
@@ -197,11 +196,7 @@ class TagVC : UIViewController {
         
         let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
         let checkinVIewcenterY = view.bounds.midY - (checkinVIewheight / 2)
-        
-        
-        viewTagStatus?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
-        
-        
+
         checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
         
     }

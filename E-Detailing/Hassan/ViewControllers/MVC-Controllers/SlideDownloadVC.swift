@@ -324,9 +324,12 @@ class SlideDownloadVC : UIViewController {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
             } else {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
-            }
+            }e
             
-            
+            Pipelines.shared.toStopDownload()
+            Shared.instance.isSlideDownloading = false
+            Shared.instance.iscelliterating = false
+            self.delegate?.didEncounterError()
             self.dismiss(animated: false)
 
 
@@ -343,6 +346,10 @@ class SlideDownloadVC : UIViewController {
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
             if istoPoP ?? false {
+                self.delegate?.didEncounterError()
+                Pipelines.shared.toStopDownload()
+                Shared.instance.isSlideDownloading = false
+                Shared.instance.iscelliterating = false
                 self.delegate?.didEncounterError()
                 self.dismiss(animated: false)
                
@@ -390,9 +397,11 @@ class SlideDownloadVC : UIViewController {
     }
     
 
-    
-    
     @IBAction func CloseAction(_ sender: UIButton) {
+        self.delegate?.didEncounterError()
+        Shared.instance.iscelliterating = false
+        Shared.instance.isSlideDownloading = false
+        Pipelines.shared.toStopDownload()
         self.dismiss(animated: true)
     }
 

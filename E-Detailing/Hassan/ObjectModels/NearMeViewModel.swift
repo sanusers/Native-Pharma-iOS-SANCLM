@@ -80,6 +80,10 @@ class VisitViewModel {
         return taggedDetail.custCode
     }
     
+    var imageURL  : String {
+        return taggedDetail.imageURL
+    }
+    
 }
 
 class TagTitleViewModel {
@@ -110,6 +114,7 @@ struct TaggedDetails {
     var meter : String
     var coordinates: CLLocationCoordinate2D
     var custCode: String
+    var imageURL: String
     var tagType: TaggingType
 }
 

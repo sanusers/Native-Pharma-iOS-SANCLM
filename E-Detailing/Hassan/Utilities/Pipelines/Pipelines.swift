@@ -37,9 +37,9 @@ class Pipelines  {
     
     let appDelegate =  UIApplication.shared.delegate as! AppDelegate
     let geocoder = GMSGeocoder()
-   
+    var downloader = MediaDownloader()
     var window: UIWindow?
-    
+    var isDownloading: Bool?
     func doLogout() {
         window = appDelegate.window
         //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserLoggedIn)
@@ -47,6 +47,9 @@ class Pipelines  {
         self.window?.rootViewController = UINavigationController.init(rootViewController: LoginVC.initWithStory())
     }
     
+    func toStopDownload() {
+        downloader.toStopDownload()
+    }
     
     func downloadData(mediaURL: String, delegate: MediaDownloaderDelegate) {
         //, completion: @escaping (Data?, Error?) -> Void
@@ -54,8 +57,8 @@ class Pipelines  {
            // completion(nil, NSError(domain: "E-Detailing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
         }
-
-        let downloader = MediaDownloader()
+  
+        isDownloading = true
         downloader.delegate = delegate
         downloader.downloadMedia(from: url)
     }

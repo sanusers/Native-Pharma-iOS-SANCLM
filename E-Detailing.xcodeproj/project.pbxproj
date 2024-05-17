@@ -164,7 +164,7 @@
 		38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C90ADF2A77E6D0003CC0C8 /* DayPlanEventCell.swift */; };
 		38C94CAE2A60269F007F1871 /* LeaveStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C94CAD2A60269F007F1871 /* LeaveStatusCell.swift */; };
 		38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C94CAF2A6026CE007F1871 /* LeaveStatusCell.xib */; };
-		38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */; };
+		38C9991D2A66A96E005FB922 /* CustomCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9991C2A66A96E005FB922 /* CustomCalenderView.swift */; };
 		38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */; };
 		38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */; };
 		38CA1FD92B60DBBA00AFCFD2 /* CreatePresentationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD82B60DBBA00AFCFD2 /* CreatePresentationVC.swift */; };
@@ -247,6 +247,7 @@
 		38DAADEE2B59505C00966B33 /* CalldetailsCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */; };
 		38DB6CB42AC3F94400F3F930 /* EventCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DB6CB32AC3F94400F3F930 /* EventCaptureViewModel.swift */; };
 		38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */; };
+		38DB8B202BF770F50041B25C /* CustomCalenderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DB8B1F2BF770F50041B25C /* CustomCalenderView.xib */; };
 		38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC5EE02BAC3C7D0088386B /* ProductInputsHeader.swift */; };
 		38DC5EE32BAC3C7D0088386B /* ProductInputsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DC5EE12BAC3C7D0088386B /* ProductInputsHeader.xib */; };
 		38DD14B12B4FBAA70036384F /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD14B02B4FBAA70036384F /* Shared.swift */; };
@@ -328,7 +329,6 @@
 		38F5558F2B57B7BE000D9294 /* TodayCallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F5558E2B57B7BE000D9294 /* TodayCallsModel.swift */; };
 		38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E4F2A557D8F0051BFEA /* Product + Extension.swift */; };
 		38F72E522A55A4650051BFEA /* Speciality + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F72E512A55A4650051BFEA /* Speciality + Extension.swift */; };
-		38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38F8431D2A5E8493009018AB /* SideMenu.storyboard */; };
 		38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */; };
 		38F9331F2BE4D5F800D5A195 /* SplashVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */; };
 		38F933212BE4D61200D5A195 /* SplashVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F933202BE4D61200D5A195 /* SplashVC.swift */; };
@@ -536,7 +536,7 @@
 		38C90ADF2A77E6D0003CC0C8 /* DayPlanEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPlanEventCell.swift; sourceTree = "<group>"; };
 		38C94CAD2A60269F007F1871 /* LeaveStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveStatusCell.swift; sourceTree = "<group>"; };
 		38C94CAF2A6026CE007F1871 /* LeaveStatusCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeaveStatusCell.xib; sourceTree = "<group>"; };
-		38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarVC.swift; sourceTree = "<group>"; };
+		38C9991C2A66A96E005FB922 /* CustomCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalenderView.swift; sourceTree = "<group>"; };
 		38C9AD522AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaSelectedCompetitorView.swift; sourceTree = "<group>"; };
 		38C9AD542AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaSelectedCompetitorView.xib; sourceTree = "<group>"; };
 		38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePresentationView.swift; sourceTree = "<group>"; };
@@ -620,6 +620,7 @@
 		38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalldetailsCVC.xib; sourceTree = "<group>"; };
 		38DB6CB32AC3F94400F3F930 /* EventCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureViewModel.swift; sourceTree = "<group>"; };
 		38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionRightVC.swift; sourceTree = "<group>"; };
+		38DB8B1F2BF770F50041B25C /* CustomCalenderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCalenderView.xib; sourceTree = "<group>"; };
 		38DC5EE02BAC3C7D0088386B /* ProductInputsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputsHeader.swift; sourceTree = "<group>"; };
 		38DC5EE12BAC3C7D0088386B /* ProductInputsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInputsHeader.xib; sourceTree = "<group>"; };
 		38DD14B02B4FBAA70036384F /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
@@ -701,7 +702,6 @@
 		38F5558E2B57B7BE000D9294 /* TodayCallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayCallsModel.swift; sourceTree = "<group>"; };
 		38F72E4F2A557D8F0051BFEA /* Product + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product + Extension.swift"; sourceTree = "<group>"; };
 		38F72E512A55A4650051BFEA /* Speciality + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Speciality + Extension.swift"; sourceTree = "<group>"; };
-		38F8431D2A5E8493009018AB /* SideMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SideMenu.storyboard; sourceTree = "<group>"; };
 		38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApplicationVC.swift; sourceTree = "<group>"; };
 		38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashVIew.swift; sourceTree = "<group>"; };
 		38F933202BE4D61200D5A195 /* SplashVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashVC.swift; sourceTree = "<group>"; };
@@ -1006,6 +1006,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38DB8B1E2BF7708A0041B25C /* CalenderVIew */,
 				B287E6C029F2BC6A0097974D /* CellClass */,
 				38C4245C2A2B4D1F004A89EF /* CommonXib */,
 				3860C8542BF359BE0065862D /* AddTagInfo */,
@@ -1120,7 +1121,6 @@
 				38BFB7852AFB68F9005E141E /* Hassan.storyboard */,
 				38D528A72A9A033E00AD3F78 /* Tagging.storyboard */,
 				38C673212A3C2B5800528E36 /* Activity.storyboard */,
-				38F8431D2A5E8493009018AB /* SideMenu.storyboard */,
 				B287E62D29F29C220097974D /* LaunchScreen.storyboard */,
 			);
 			path = StoryBoard;
@@ -1332,6 +1332,15 @@
 				38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */,
 			);
 			path = outboxCallsCells;
+			sourceTree = "<group>";
+		};
+		38DB8B1E2BF7708A0041B25C /* CalenderVIew */ = {
+			isa = PBXGroup;
+			children = (
+				38C9991C2A66A96E005FB922 /* CustomCalenderView.swift */,
+				38DB8B1F2BF770F50041B25C /* CustomCalenderView.xib */,
+			);
+			path = CalenderVIew;
 			sourceTree = "<group>";
 		};
 		38DD14B42B4FEED70036384F /* HomeSIdeMenu */ = {
@@ -1565,7 +1574,6 @@
 				38C0890D2A42FE44001F628C /* SlideDownloadVC.swift */,
 				38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */,
 				38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */,
-				38C9991C2A66A96E005FB922 /* FSCalendarVC.swift */,
 				38E3E5352A80BE7200AE5AF6 /* CallVC.swift */,
 				38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */,
 				38D528A92A9A0AE600AD3F78 /* NearMeVC.swift */,
@@ -1727,6 +1735,7 @@
 				38B18B732BD93AD7001FC958 /* ProductSectionTitleCVC.xib in Resources */,
 				3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */,
 				38EF4C672B749DAE00F78F2E /* BrandsPreviewCVC.xib in Resources */,
+				38DB8B202BF770F50041B25C /* CustomCalenderView.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				38111E1D2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib in Resources */,
 				38107C5A2B36F86C00ACEDF3 /* rcpaCVC.xib in Resources */,
@@ -1760,7 +1769,6 @@
 				38C4B7B02A6EA54D001C2FD5 /* AnalysisCell.xib in Resources */,
 				388546492B5FE65F005FC9FC /* CreatedPresentationCVC.xib in Resources */,
 				38C673222A3C2B5800528E36 /* Activity.storyboard in Resources */,
-				38F8431E2A5E8493009018AB /* SideMenu.storyboard in Resources */,
 				38FD4F062BBD868500EF9D3D /* CustomerCheckoutView.xib in Resources */,
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
 				381BC2602BAC617800804B85 /* AdditionalCallsHeader.xib in Resources */,
@@ -2025,7 +2033,7 @@
 				38E189262BB16DF60093C446 /* JfwView.swift in Sources */,
 				381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */,
 				38B18B722BD93AD7001FC958 /* ProductSectionTitleCVC.swift in Sources */,
-				38C9991D2A66A96E005FB922 /* FSCalendarVC.swift in Sources */,
+				38C9991D2A66A96E005FB922 /* CustomCalenderView.swift in Sources */,
 				38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */,
 				38FA7EEB2BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,

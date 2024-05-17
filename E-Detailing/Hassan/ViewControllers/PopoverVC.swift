@@ -105,6 +105,7 @@ class PopOverVC: UIViewController {
     
     @IBOutlet var customerAddress: UILabel!
     
+    @IBOutlet var viewTaggedImgHolder: UIStackView!
     
     var delegate: PopOverVCDelegate?
     var strArr = [String]()
@@ -138,6 +139,10 @@ class PopOverVC: UIViewController {
             customerIcon.image = UIImage(named: "Stockist")
         case .unlistedDoctor:
             customerIcon.image = UIImage(named: "Doctor")
+        }
+        viewTaggedImgHolder.addTap {
+            self.dismissPopover()
+          //  self.delegate?.changePasswordAction()
         }
        //
     }

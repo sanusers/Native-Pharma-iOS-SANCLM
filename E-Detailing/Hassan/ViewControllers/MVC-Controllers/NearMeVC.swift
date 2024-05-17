@@ -10,7 +10,110 @@
 import Foundation
 import UIKit
 import GoogleMaps
+import CoreData
 
+extension NearMeVC: MediaDownloaderDelegate {
+    func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
+        
+        print("Downloading")
+    }
+    
+    func mediaDownloader(_ downloader: MediaDownloader, didFinishDownloadingData data: Data?) {
+        Shared.instance.removeLoaderInWindow()
+        print("Downloaded")
+        Pipelines.shared.isDownloading = false
+       
+        guard let data = data else {
+            self.toCreateToast("No tagged image found")
+            return}
+        
+        viewImageAction(imageData: data)
+    }
+    
+    func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: any Error) {
+        Shared.instance.removeLoaderInWindow()
+    
+        print("Error")
+    }
+    
+    
+}
+
+extension NearMeVC: addedSubViewsDelegate {
+    func didClose() {
+       backgroundView.isHidden = true
+        backgroundView.alpha = 0.3
+        self.view.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+    func didUpdate() {
+        print("Yet to implement")
+    }
+    
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        print("Yet to implement")
+    }
+    
+    func showAlert() {
+        print("Yet to implement")
+    }
+    
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        print("Yet to implement")
+    }
+    
+    
+}
+
+extension NearMeVC : PopOverVCDelegate {
+    func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
+        print("Yet to implement")
+    }
+    
+    func logoutAction() {
+        print("Yet to implement")
+    }
+    
+    func changePasswordAction() {
+        print("Show tagged Image")
+       let prefixURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
+        guard let selectedVisitViewModel = self.selectedVisitViewModel else {return}
+        if selectedVisitViewModel.imageURL.isEmpty {
+            
+            self.toCreateToast("No tagged image found")
+            return
+        }
+        
+        let remoteURL = prefixURL + selectedVisitViewModel.imageURL
+        Shared.instance.showLoaderInWindow()
+        Pipelines.shared.downloadData(mediaURL: remoteURL, delegate: self)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            Shared.instance.removeLoaderInWindow()
+            if Pipelines.shared.isDownloading ?? false {
+                self.toCreateToast("Please try again later")
+                Pipelines.shared.toStopDownload()
+            }
+        }
+    }
+}
 
 extension NearMeVC: GMSMapViewDelegate {
 
@@ -42,6 +145,7 @@ extension NearMeVC: GMSMapViewDelegate {
         let popoverWidth: CGFloat = self.view.width / 3.5
         let popoverHeight: CGFloat = self.view.height / 4
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: popoverWidth, height: popoverHeight), on: sender, pagetype: .customMarker)
+        vc.delegate = self
         vc.visitViewModel = selectedVisitViewModel
         self.present(vc, animated: true)
     }
@@ -77,6 +181,7 @@ enum TaggingType : String {
 class NearMeVC : UIViewController {
     
     
+    @IBOutlet var backgroundView: UIView!
     
     @IBOutlet weak var btnLeft: UIButton!
     @IBOutlet weak var btnRight: UIButton!
@@ -110,6 +215,8 @@ class NearMeVC : UIViewController {
     
     var markers: [GMSMarker] = []
     
+    var checkinVIew: CustomerCheckinView?
+    
     var tagType : TaggingType = .doctor {
         didSet {
             
@@ -132,6 +239,7 @@ class NearMeVC : UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.backgroundView.isHidden = true
         self.updateTitle()
         self.tagType = .doctor
         
@@ -162,9 +270,59 @@ class NearMeVC : UIViewController {
          
         viewMapView.delegate = self
         btnAddtag.tintColor = .appLightPink
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(tagView(_:)))
-//        viewMapView.addGestureRecognizer(tap)
         
+        backgroundView.addTap {
+            self.didClose()
+        }
+        
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let checkinVIewwidth = view.bounds.width / 3.5
+        let checkinVIewheight = view.bounds.height / 2
+        
+        let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = view.bounds.midY - (checkinVIewheight / 2)
+
+        checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
+        
+    }
+    
+    
+    func viewImageAction(imageData: Data) {
+        
+    
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+        //  backgroundView.toAddBlurtoVIew()
+        self.view.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+          
+                
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        checkinVIew = self.loadCustomView(nibname: XIBs.customerCheckinVIew) as? CustomerCheckinView
+        checkinVIew?.delegate = self
+        checkinVIew?.setupTaggeImage(fetchedImageData: imageData)
+        self.view.addSubview(checkinVIew ?? CustomerCheckinView())
         
     }
     
@@ -285,7 +443,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: doctor.code ?? "", tagType: self.tagType)))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: doctor.code ?? "", imageURL: doctor.imageName ?? "", tagType: self.tagType)))
                             markers.append(marker)
                         }
                     }
@@ -317,7 +475,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name:  chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: chemist.code ?? "", tagType: self.tagType)))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name:  chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: chemist.code ?? "", imageURL: chemist.imgName ?? "", tagType: self.tagType)))
                             markers.append(marker)
                         }
                     }
@@ -349,7 +507,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: stockist.code ?? "", tagType: self.tagType)))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: stockist.code ?? "", imageURL: stockist.imgName ?? "", tagType: self.tagType)))
                             markers.append(marker)
                         }
                     }
@@ -382,7 +540,7 @@ class NearMeVC : UIViewController {
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
                             
-                            self.visitListViewModel.addVisitViewModel(VisitViewModel( taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: unlistedDoctor.code ?? "", tagType: self.tagType)))
+                            self.visitListViewModel.addVisitViewModel(VisitViewModel( taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: unlistedDoctor.code ?? "", imageURL: unlistedDoctor.imgName ?? "", tagType: self.tagType)))
                             markers.append(marker)
                         }
                     }

@@ -95,6 +95,10 @@ extension UnListedDoctor {
             maxGeoMap = maxTagCount
         }
         
+        if let taggedImage = dictionary["img_name"] as? String{
+            imgName = taggedImage
+        }
+        
         mapId = id
     }
 }

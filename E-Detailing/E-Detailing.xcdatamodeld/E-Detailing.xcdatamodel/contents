@@ -55,6 +55,7 @@
         <attribute name="chemistPhone" optional="YES" attributeType="String"/>
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
+        <attribute name="imgName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="String"/>
         <attribute name="long" optional="YES" attributeType="String"/>
@@ -132,6 +133,7 @@
         <attribute name="drSex" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
         <attribute name="hosAddr" optional="YES" attributeType="String"/>
+        <attribute name="imageName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="String"/>
         <attribute name="long" optional="YES" attributeType="String"/>
@@ -560,6 +562,7 @@
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="divisionCode" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
+        <attribute name="imgName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="String"/>
         <attribute name="long" optional="YES" attributeType="String"/>
@@ -627,6 +630,7 @@
         <attribute name="docHospName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
+        <attribute name="imgName" optional="YES" attributeType="String"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="String"/>
         <attribute name="long" optional="YES" attributeType="String"/>

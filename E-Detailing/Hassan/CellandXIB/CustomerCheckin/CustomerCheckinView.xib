@@ -29,6 +29,21 @@
             <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xAL-NF-1ru">
+                    <rect key="frame" x="34" y="27.5" width="1298" height="973"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fTb-o6-aLF">
+                            <rect key="frame" x="0.0" y="0.0" width="1298" height="973"/>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstItem="fTb-o6-aLF" firstAttribute="width" secondItem="xAL-NF-1ru" secondAttribute="width" id="NXB-D5-SLk"/>
+                        <constraint firstItem="fTb-o6-aLF" firstAttribute="centerX" secondItem="xAL-NF-1ru" secondAttribute="centerX" id="VC2-WL-or7"/>
+                        <constraint firstItem="fTb-o6-aLF" firstAttribute="centerY" secondItem="xAL-NF-1ru" secondAttribute="centerY" id="hiT-ZZ-SeE"/>
+                        <constraint firstItem="fTb-o6-aLF" firstAttribute="height" secondItem="xAL-NF-1ru" secondAttribute="height" id="rEy-9Q-JLf"/>
+                    </constraints>
+                </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="KNF-7H-vwY">
                     <rect key="frame" x="68.5" y="4" width="1229.5" height="1020"/>
                     <subviews>
@@ -272,13 +287,17 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="XaY-LG-Ayt" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="0BP-n9-WKz"/>
+                <constraint firstItem="xAL-NF-1ru" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.95" id="2uP-e5-VJi"/>
                 <constraint firstItem="KNF-7H-vwY" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.996094" id="4Kj-jk-z7C"/>
                 <constraint firstItem="KNF-7H-vwY" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.900073" id="FSu-dP-zhA"/>
                 <constraint firstItem="XaY-LG-Ayt" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.899707" id="L2g-2y-Ogb"/>
+                <constraint firstItem="xAL-NF-1ru" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="MUA-2R-y0b"/>
                 <constraint firstItem="XaY-LG-Ayt" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.95" id="MX4-Ms-ZZW"/>
                 <constraint firstItem="KNF-7H-vwY" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="PIx-PQ-yb1"/>
+                <constraint firstItem="xAL-NF-1ru" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="aA2-WP-yoK"/>
                 <constraint firstItem="XaY-LG-Ayt" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="iCt-AD-u4J"/>
                 <constraint firstItem="KNF-7H-vwY" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="pbx-Xg-ugP"/>
+                <constraint firstItem="xAL-NF-1ru" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.95" id="vei-7d-K7a"/>
             </constraints>
             <connections>
                 <outlet property="btnCheckin" destination="O7b-tg-GcK" id="hww-fZ-FbS"/>
@@ -295,6 +314,8 @@
                 <outlet property="lblLatitude" destination="Bce-7V-Rlp" id="ARN-Co-dBO"/>
                 <outlet property="lblLongitude" destination="X5e-5p-DIY" id="p9B-k9-hv8"/>
                 <outlet property="lblTaginfo" destination="BWG-Ck-C8P" id="2TL-ou-3Fb"/>
+                <outlet property="taggedIMageHolder" destination="xAL-NF-1ru" id="uR9-4l-Kcy"/>
+                <outlet property="taggedImage" destination="fTb-o6-aLF" id="K0Y-nK-9c9"/>
                 <outlet property="taggingStack" destination="XaY-LG-Ayt" id="XNw-kg-fwE"/>
                 <outlet property="titleLbl" destination="zMA-HH-EOz" id="zyy-i4-EQa"/>
                 <outlet property="viewCancel" destination="YZM-jN-eb7" id="1To-fS-2MJ"/>
@@ -304,7 +325,7 @@
         </view>
     </objects>
     <resources>
-        <image name="Checkin" width="24" height="24"/>
+        <image name="Checkin" width="40" height="40"/>
         <image name="img_cus_checkin" width="51" height="51"/>
         <image name="locationRedIcon" width="68" height="85"/>
         <image name="xmark" catalog="system" width="128" height="113"/>

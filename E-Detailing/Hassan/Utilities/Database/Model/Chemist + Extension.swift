@@ -59,6 +59,10 @@ extension Chemist {
         if let longValue = dictionary["long"] as? String{
             long = longValue
         }
+        
+        if let taggedImage = dictionary["img_name"] as? String{
+            imgName = taggedImage
+        }
         mapId = id
     }
 }

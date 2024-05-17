@@ -102,6 +102,9 @@ extension DoctorFencing {
             drSex = genderValue
         }
         
+        if let taggedImage = dictionary["img_name"] as? String{
+            imageName = taggedImage
+        }
         
         
         mapId = id

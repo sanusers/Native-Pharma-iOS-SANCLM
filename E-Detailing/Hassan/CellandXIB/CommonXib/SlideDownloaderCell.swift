@@ -240,10 +240,14 @@ extension MediaDownloader: URLSessionDownloadDelegate {
 class MediaDownloader: NSObject {
 
     weak var delegate: MediaDownloaderDelegate?
-
+    var session: URLSession?
     func downloadMedia(from url: URL) {
-        let session = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue.main)
-        let downloadTask = session.downloadTask(with: url)
-        downloadTask.resume()
+        session = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue.main)
+        let downloadTask = session?.downloadTask(with: url)
+        downloadTask?.resume()
     }
+    func toStopDownload() {
+        session?.invalidateAndCancel()
+    }
+    
 }
