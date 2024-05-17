@@ -135,7 +135,7 @@ class UserStatisticsVM {
     
     
     func toUploadCapturedImage(params: JSON, uploadType: ConnectionHandler.UploadType,  api : APIEnums, image: [UIImage], imageName:  [String], paramData: Data,  custCode: String, _ result : @escaping (Result<JSON,UserStatisticsError>) -> Void) {
-        let urlString = APIUrl + api.rawValue
+        let urlString = imageUploadURL + api.rawValue
         ConnectionHandler.shared.imageUploadService( urlString: urlString, uploadType: uploadType, parameters: params, image: image, imageName:  imageName, custCode: custCode, paramData: paramData) { response in
             dump(response)
             result(.success(response))

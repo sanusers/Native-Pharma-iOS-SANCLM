@@ -345,7 +345,6 @@ class NearMeVC : UIViewController {
                             marker.icon = UIImage(named: "locationRed")
                             marker.title = stockist.name ?? ""
                             marker.snippet = stockist.code ?? ""
-                         
                             marker.map = viewMapView
                             
                             let distanceRound = Double(round(1000 * distance) / 1000)
@@ -528,7 +527,7 @@ extension NearMeVC : collectionViewProtocols {
         cell.title = self.visitListViewModel.fetchTitleAtIndex(indexPath.row)
         
         if self.tagType.name == self.visitListViewModel.fetchTitleAtIndex(indexPath.row).name {
-            cell.viewTitle.backgroundColor = UIColor.label.withAlphaComponent(0.5) //UIColor.lightGray
+            cell.viewTitle.backgroundColor = UIColor.appLightTextColor.withAlphaComponent(0.5) //UIColor.lightGray
         }else {
             cell.viewTitle.backgroundColor = UIColor.clear
         }
@@ -549,6 +548,8 @@ extension NearMeVC : collectionViewProtocols {
         self.selectedIndex = nil
         
         self.headerCollectionView.reloadData()
+        
+        self.visitTableView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

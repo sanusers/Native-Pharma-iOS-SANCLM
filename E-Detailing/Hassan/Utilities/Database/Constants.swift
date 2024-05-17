@@ -62,11 +62,17 @@ var LicenceKey : String  {
 var APIUrl : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
 
 var slideURL : String =   LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)
+
+var appConfigURL : String =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppconfigURL)
+
+var imageUploadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageUploadURL)
+
 var AppConfigURL: String = "" {
     didSet {
         
     AppConfigURL = "http://\(AppConfigURL)/apps/ConfigiOS.json"
      
+    LocalStorage.shared.setSting(LocalStorage.LocalValue.AppconfigURL, text: AppConfigURL)
     }
 }
 var licenseKey : String = ""
@@ -85,6 +91,16 @@ var AppMainAPIURL : String  {
     set(newURL){
         LocalStorage.shared.setSting(LocalStorage.LocalValue.AppMainURL, text: webEndPoint + iosEndPoint)
     }
+}
+
+var ImageUploadURL : String {
+    get {
+        attachmentsUrl
+    }
+    set {
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageUploadURL, text: attachmentsUrl + "/" + iosEndPoint)
+    }
+    
 }
 
 

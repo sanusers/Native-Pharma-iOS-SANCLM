@@ -477,8 +477,6 @@ extension TagVC : UIImagePickerControllerDelegate , UINavigationControllerDelega
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
         var toSendParam = [String: Any]()
         toSendParam["data"]  = jsonDatum
-  //  http://crm.saneforce.in/iOSServer/db_api.php/?axn=save/image
-
 
         let custCode = customer.code
  

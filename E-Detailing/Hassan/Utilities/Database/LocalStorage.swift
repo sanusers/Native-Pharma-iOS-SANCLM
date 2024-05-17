@@ -23,7 +23,9 @@ class LocalStorage {
     
     enum LocalValue:String {
         case AppMainURL
+        case AppconfigURL
         case SlideURL
+        case ImageUploadURL
         case istoEnableApproveBtn
         case TPalldatesAppended
         case TPisForFinalDate

@@ -180,8 +180,13 @@ class ConfigVC : UIViewController {
     func toValidateURL() {
 
     
-        AppConfigURL = self.txtWebUrl.text ?? ""
+       AppConfigURL = self.txtWebUrl.text ?? ""
 
+       //AppConfigURL = "http://\(configPath)/apps/ConfigiOS.json"
+         
+        //LocalStorage.shared.setSting(LocalStorage.LocalValue.AppconfigURL, text: AppConfigURL)
+        
+      
         let licenseKey = self.txtLicenceKey.text ?? ""
         LicenceKey = licenseKey
         let param = [String: Any]()
@@ -237,10 +242,11 @@ class ConfigVC : UIViewController {
         iosEndPoint = appConfig.config.iosUrl
         webEndPoint = appConfig.config.webUrl
         slideEndPoint = appConfig.config.slideUrl
+     
         
         AppMainAPIURL = iosEndPoint
         AppMainSlideURL = slideEndPoint
-        
+        ImageUploadURL = attachmentsUrl
 
         dump(APIUrl)
         dump(AppConfigURL)
