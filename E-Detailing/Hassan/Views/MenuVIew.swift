@@ -742,7 +742,7 @@ class MenuView : BaseView{
      
         self.jointWorkArr = DBManager.shared.getJointWork()
       
-        self.listedDocArr = DBManager.shared.getDoctor()
+        self.listedDocArr = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        
         self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
          

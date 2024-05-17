@@ -476,6 +476,7 @@ extension NearMeVC : tableViewProtocols {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TagViewCell", for: indexPath) as! TagViewCell
         cell.selectionStyle = .none
+        cell.btnInfo.tintColor = .appTextColor
         let model = self.visitListViewModel.fetchDataAtIndex(indexPath.row)
         cell.visitDetail = model
         if let selectedIndex = self.selectedIndex {

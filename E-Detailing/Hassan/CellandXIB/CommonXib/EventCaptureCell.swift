@@ -11,6 +11,29 @@ import Foundation
 import UIKit
 
 
+extension EventCaptureCell : MediaDownloaderDelegate {
+    func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
+        print("Yet to")
+        //self.imgView.image = UIImage(named: "masterSync")
+    }
+    
+    func mediaDownloader(_ downloader: MediaDownloader, didFinishDownloadingData data: Data?) {
+        print("Yet to")
+        Shared.instance.removeLoader(in: self.imgView)
+        guard let data = data else {return}
+        DispatchQueue.main.async {
+            self.imgView.image = UIImage(data: data)
+        }
+    
+    }
+    
+    func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: any Error) {
+        print("Yet to")
+       // self.imgView.image = UIImage(named: "masterSync")
+    }
+
+}
+
 protocol EventCaptureCellDelegate: AnyObject {
     func didUpdate(title: String, description: String, index: Int)
 }
@@ -36,7 +59,14 @@ class EventCaptureCell: UITableViewCell, UITextFieldDelegate {
     var indexpath: Int? = nil
     var eventCapture : EventCaptureViewModel! {
         didSet {
-            self.imgView.image = eventCapture.image
+            if eventCapture.image == nil {
+                Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
+                Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)
+            } else {
+                self.imgView.image = eventCapture.image
+            }
+            
+          
             self.txtName.text = eventCapture.title
             self.txtDescription.text = eventCapture.description
             

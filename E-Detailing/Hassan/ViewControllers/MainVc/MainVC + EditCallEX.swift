@@ -229,12 +229,14 @@ extension MainVC {
         let fetchedEventCaptureListViewModel = EventCaptureListViewModel()
         fetchedCaptures.forEach { aEventCaptureResponse in
             var aEventCapture = EventCapture()
-            
-            
-            aEventCapture.image = UIImage(named: "masterSync")
+            //https://sanffa.info/photos/MR5940_16793999AEB87DE4A764ECC915623D2040B2B71.jpeg
+            let prefixURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
+            let imageURLstr = String(prefixURL + aEventCaptureResponse.imageUrl)
+            aEventCapture.image = nil
+            //UIImage(systemName: "arrow.down.circle.dotted")
             aEventCapture.title = aEventCaptureResponse.title
             aEventCapture.description = aEventCaptureResponse.remarks
-            aEventCapture.imageUrl = aEventCaptureResponse.imageUrl
+            aEventCapture.imageUrl = imageURLstr
            // aEventCapture.time =
           //  aEventCapture.timeStamp =
             

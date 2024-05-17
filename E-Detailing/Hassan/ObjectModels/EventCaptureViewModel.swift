@@ -54,7 +54,11 @@ class EventCaptureViewModel {
         self.eventCapture = eventCapture
     }
     
-    var image : UIImage {
+    var imageURL : String {
+        return eventCapture.imageUrl
+    }
+    
+    var image : UIImage? {
         return eventCapture.image
     }
     
@@ -70,7 +74,7 @@ class EventCaptureViewModel {
 
 struct EventCapture {
     
-    var image : UIImage!
+    var image : UIImage?
     var title : String = ""
     var description : String = ""
     var imageUrl : String!

@@ -29,7 +29,7 @@ extension Shared{
     
     enum Loaders : String{
         case common = "loader"
-        case mastersync = "masterSyncLoader"
+        case mastersync = "loading"
         
     }
     

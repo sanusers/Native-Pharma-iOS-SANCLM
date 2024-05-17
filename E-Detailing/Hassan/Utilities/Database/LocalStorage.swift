@@ -26,6 +26,7 @@ class LocalStorage {
         case AppconfigURL
         case SlideURL
         case ImageUploadURL
+        case ImageDownloadURL
         case istoEnableApproveBtn
         case TPalldatesAppended
         case TPisForFinalDate

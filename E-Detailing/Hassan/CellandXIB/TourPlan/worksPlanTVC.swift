@@ -151,20 +151,20 @@ class worksPlanTVC: UITableViewCell {
             }
         }
         if isForfieldWork {
-            if headQuartersstr.count > 0 {
-                var count = 0
-                headQuartersstr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
-                    count += countstr.count
-                }
-                let sessionImage =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: count)
-                sessionImages?.append(sessionImage)
-            }
+//            if headQuartersstr.count > 0 {
+//                var count = 0
+//                headQuartersstr.forEach { str in
+//                   let countstr = str.components(separatedBy: ",")
+//                    count += countstr.count
+//                }
+//                let sessionImage =  SessionImages(Image: UIImage(named: "HeadQuarter") ?? UIImage(), count: count)
+//                sessionImages?.append(sessionImage)
+//            }
             
             if clusterstr.count > 0 {
                 var count = 0
                 clusterstr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
+                    let countstr = str.components(separatedBy: ",").filter { !$0.isEmpty }
                     count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Cluster") ?? UIImage(), count: count)
@@ -174,7 +174,7 @@ class worksPlanTVC: UITableViewCell {
             if jointcallstr.count > 0 {
                 var count = 0
                 jointcallstr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
+                    let countstr = str.components(separatedBy: ",").filter { !$0.isEmpty }
                     count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "JointWork") ?? UIImage(), count: count)
@@ -184,7 +184,7 @@ class worksPlanTVC: UITableViewCell {
             if doctorsstr.count > 0 {
                 var count = 0
                 doctorsstr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
+                    let countstr = str.components(separatedBy: ",").filter { !$0.isEmpty }
                     count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: count)
@@ -194,7 +194,7 @@ class worksPlanTVC: UITableViewCell {
             if chemiststr.count > 0 {
                 var count = 0
                 chemiststr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
+                    let countstr = str.components(separatedBy: ",").filter { !$0.isEmpty }
                     count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: count)
@@ -206,7 +206,7 @@ class worksPlanTVC: UITableViewCell {
             if stockiststr.count > 0 {
                 var count = 0
                 stockiststr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
+                    let countstr = str.components(separatedBy: ",").filter { !$0.isEmpty }
                     count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: count)
@@ -216,7 +216,7 @@ class worksPlanTVC: UITableViewCell {
             if unlistedDocstr.count > 0 {
                 var count = 0
                 unlistedDocstr.forEach { str in
-                   let countstr = str.components(separatedBy: ",")
+                    let countstr = str.components(separatedBy: ",").filter { !$0.isEmpty }
                     count += countstr.count
                 }
                 let sessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: count)

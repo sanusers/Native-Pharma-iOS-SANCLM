@@ -597,7 +597,7 @@ class AddCallinfoVC: BaseViewController {
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
 
-        userStatisticsVM?.toUploadCapturedImage(params: param, uploadType: .eventCapture, api: .imageUpload, image: [evencaptures.image], imageName: [evencaptures.eventCapture.imageUrl], paramData: jsonDatum, custCode: dcrCall.code) { result in
+        userStatisticsVM?.toUploadCapturedImage(params: param, uploadType: .eventCapture, api: .imageUpload, image: [evencaptures.image!], imageName: [evencaptures.eventCapture.imageUrl], paramData: jsonDatum, custCode: dcrCall.code) { result in
                 
                 switch result {
                     

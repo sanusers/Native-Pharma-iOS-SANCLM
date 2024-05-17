@@ -67,6 +67,8 @@ var appConfigURL : String =  LocalStorage.shared.getString(key: LocalStorage.Loc
 
 var imageUploadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageUploadURL)
 
+var imageDownloadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
+
 var AppConfigURL: String = "" {
     didSet {
         
@@ -99,6 +101,9 @@ var ImageUploadURL : String {
     }
     set {
         LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageUploadURL, text: attachmentsUrl + "/" + iosEndPoint)
+        
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageDownloadURL, text: attachmentsUrl + "/photos/")
+        
     }
     
 }

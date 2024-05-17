@@ -408,8 +408,9 @@ class CallVC : UIViewController {
     
     
     func checkinAction(dcrCall : CallViewModel) {
-        Shared.instance.showLoaderInWindow()
+        
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
+          
             guard let welf = self else {return}
             guard let coordinates = coordinates else {
                 
@@ -417,7 +418,7 @@ class CallVC : UIViewController {
                 
                 return
             }
-            
+            Shared.instance.showLoaderInWindow()
             Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
                 Shared.instance.removeLoaderInWindow()
                 guard let welf = self else {return}

@@ -1882,9 +1882,9 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
         }
         
         if isForfieldWork {
-            if headQuartersstr.count > 0 {
-                detailsArr.append(headQuartersstr)
-            }
+//            if headQuartersstr.count > 0 {
+//                detailsArr.append(headQuartersstr)
+//            }
             if clusterstr.count > 0 {
                 detailsArr.append(clusterstr)
             }
