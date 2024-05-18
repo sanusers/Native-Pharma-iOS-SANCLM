@@ -12,24 +12,110 @@ import UIKit
 import FSCalendar
 
 protocol CustomCalenderViewDelegate: AnyObject {
-    func didSelectDate(selectedDate : Date)
+    func didSelectDate(selectedDate : Date, isforFrom: Bool)
 }
 //typealias SelectedDateCallBack = (_ selectedDat : Date) -> Void
 
 class CustomCalenderView : UIView {
     
     @IBOutlet var viewCalendar: FSCalendar!
+    @IBOutlet var btnNext: UIButton!
+    @IBOutlet var prevBtn: UIButton!
+    @IBOutlet var dateInfoLbl: UILabel!
+    @IBAction func didTapPrevBtn(_ sender: Any) {
+        self.moveCurrentPage(moveUp: false)
+    }
     
-    
-    
+    @IBAction func didTapCalNextBtn(_ sender: Any) {
+        self.moveCurrentPage(moveUp: true)
+    }
     var completion : CustomCalenderViewDelegate?
+  
+    var selectedFromDate: Date?
+    var selectedToDate: Date?
+    var isForFrom: Bool = false
+   
+    private lazy var today: Date = {
+        return Date()
+    }()
+    private var currentPage: Date?
+    private func moveCurrentPage(moveUp: Bool) {
+        
+        let calendar = Calendar.current
+        var dateComponents = DateComponents()
+        dateComponents.month = moveUp ? 1 : -1
+
+
+        if moveUp {
+            
+            if let nextMonth = calendar.date(byAdding: .month, value: 1 , to: self.currentPage ?? today) {
+                print("Next Month:", nextMonth)
+                self.currentPage = nextMonth
+                if today == self.currentPage {
+                    toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+                } else {
+                    toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                }
+              
+                
+            }
+ 
+
+        } else if !moveUp{
+
+            
+            if let previousMonth = calendar.date(byAdding: .month, value: -1 , to:  self.currentPage ?? self.today) {
+                print("Previous Month:", previousMonth)
+                self.currentPage = previousMonth
+               
+                if today == self.currentPage {
+                    toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+                } else {
+                    toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                }
+            }
+            
+
+
+
+        }
+        
+        self.viewCalendar.setCurrentPage(self.currentPage!, animated: true)
+        //  monthWiseSeperationofSessions(self.currentPage ?? Date())
+    }
     
-    var minDate : Date?
+    func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
+        
+        if enableprevBtn && enablenextBtn {
+            prevBtn.alpha = 1
+            prevBtn.isUserInteractionEnabled = true
+            
+            btnNext.alpha = 1
+            btnNext.isUserInteractionEnabled = true
+        } else  if enableprevBtn {
+            prevBtn.alpha = 1
+            prevBtn.isUserInteractionEnabled = true
+            
+            btnNext.alpha = 0.3
+            btnNext.isUserInteractionEnabled = false
+            
+        } else if enablenextBtn {
+            prevBtn.alpha = 0.3
+            prevBtn.isUserInteractionEnabled = false
+            
+            btnNext.alpha = 1
+            btnNext.isUserInteractionEnabled = true
+        }
+        
+        
+    }
     
     func setupUI() {
         
         self.layer.cornerRadius = 5
-    
+        dateInfoLbl.text = toTrimDate(date: today , isForMainLabel: true)
+        toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+        //toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
         self.viewCalendar.register(MyDayPlanCalenderCell.self, forCellReuseIdentifier: "MyDayPlanCalenderCell")
             
         viewCalendar.scrollEnabled = false
@@ -55,34 +141,7 @@ class CustomCalenderView : UIView {
         viewCalendar.reloadData()
     }
     
-//     func setupUI() {
-//         self.layer.cornerRadius = 5
-//        
-//        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.4))
-//        
-//        let headerColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(1.0))
-//        
-//        let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
-//        
-//        self.viewCalendar.appearance.caseOptions = [.headerUsesUpperCase,.weekdayUsesUpperCase]
-//        self.viewCalendar.appearance.todayColor = UIColor.clear
-//        self.viewCalendar.appearance.weekdayTextColor = headerColor
-//        self.viewCalendar.appearance.headerTitleColor = headerColor
-//        
-//        self.viewCalendar.appearance.headerTitleFont = UIFont(name: "Satoshi-Medium", size: 20)
-//        self.viewCalendar.appearance.weekdayFont = UIFont(name: "Satoshi-Medium", size: 18)
-//        self.viewCalendar.appearance.subtitleFont = UIFont(name: "Satoshi-Medium", size: 18)
-//        
-//        self.viewCalendar.appearance.borderDefaultColor = borderColor
-//        self.viewCalendar.appearance.borderRadius = 0
-//        
-//    //    self.viewCalendar.register(fsCalendarCell.self, forCellReuseIdentifier: "fsCell")
-//        
-//    //    self.viewCalendar.appearance.accessibilityFrame.size = CGSize(width: 100, height: 100)
-//        
-//        self.viewCalendar.appearance.calendar.visibleCells()
-//       
-//    }
+
 
 }
 
@@ -107,9 +166,46 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
         //  let toCompareDate = dateFormatter.string(from: date)
         cell.addedIV.isHidden = false
         cell.customLabel.text = toTrimDate(date: date)
-        cell.customLabel.textColor = .appTextColor
+        
+        
+        
+//        if let selectedToDate = self.selectedToDate {
+//            if Calendar.current.isDate(selectedToDate, inSameDayAs: date) {
+//                 cell.contentHolderView.backgroundColor = .appLightPink
+//             }
+//        }
+//        
+//        if let selectedFromDate = self.selectedFromDate {
+//            if Calendar.current.isDate(selectedFromDate, inSameDayAs: date) {
+//                 cell.contentHolderView.backgroundColor = .appLightPink
+//             }
+//        }
+        
+        if let selectedFromDate = self.selectedFromDate, let selectedToDate = self.selectedToDate {
+              if date >= selectedFromDate && date <= selectedToDate {
+                  cell.contentHolderView.backgroundColor = .appLightPink
+              }
+          } else {
+              if let selectedFromDate = self.selectedFromDate {
+                  if Calendar.current.isDate(selectedFromDate, inSameDayAs: date) {
+                      cell.contentHolderView.backgroundColor = .appLightPink
+                  }
+              }
+              
+              if let selectedToDate = self.selectedToDate {
+                  if Calendar.current.isDate(selectedToDate, inSameDayAs: date) {
+                      cell.contentHolderView.backgroundColor = .appLightPink
+                  }
+              }
+          }
+        
+        if date <= today {
+            cell.customLabel.textColor = .appLightTextColor
+        } else {
+            cell.customLabel.textColor = .appTextColor
+        }
+      
         cell.customLabel.setFont(font: .medium(size: .BODY))
-        cell.customLabel.textColor = .appTextColor
         // cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         cell.titleLabel.isHidden = true
         cell.shapeLayer.isHidden = true
@@ -119,26 +215,51 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
 
         
         cell.addTap {
-            let dateString = date.toString(format: "yyyy-MM-dd")
-            print(dateString)
-            self.completion?.didSelectDate(selectedDate: date)
+       
+            if date <= self.today {
+                self.toCreateToast("Leave can be applied only for future dates!")
+                return
+            } else {
+                
+                if self.isForFrom {
+                    self.selectedFromDate = date
+                } else {
+                    self.selectedToDate = date
+                }
+                
+
+                self.completion?.didSelectDate(selectedDate: date, isforFrom: self.isForFrom)
+
+            
+            }
+         
         }
         
         return cell
     }
-
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        
+        print(calendar.currentPage)
+        dateInfoLbl.text = toTrimDate(date: calendar.currentPage , isForMainLabel: true)
+    
+    }
     
 //    func minimumDate(for calendar: FSCalendar) -> Date {
 //        return self.minDate ?? Date()
 //    }
     
 
-//    
-//    func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
-//        
-//        self.viewCalendar.frame.size.height = bounds.height
-//        self.viewCalendar.frame.size.width = bounds.width
-//    }
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillDefaultColorFor date: Date) -> UIColor? {
+        guard let selectedFromDate = selectedFromDate, let selectedToDate = selectedToDate else {
+            return nil
+        }
+
+        if date >= selectedFromDate && date <= selectedToDate {
+            return .appLightPink
+        }
+
+        return nil
+    }
     
     
 }

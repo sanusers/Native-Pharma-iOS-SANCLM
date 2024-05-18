@@ -18,6 +18,9 @@ extension LeaveApplicationVC: CustomCalenderViewDelegate {
     
     func didClose() {
         backgroundView.isHidden = true
+        stopBackgroundColorAnimation(view: toDateCurveVIew)
+        stopBackgroundColorAnimation(view: fromDateCurveView)
+    
          backgroundView.alpha = 0.3
          self.view.subviews.forEach { aAddedView in
              
@@ -39,7 +42,26 @@ extension LeaveApplicationVC: CustomCalenderViewDelegate {
          }
     }
     
-    func didSelectDate(selectedDate: Date) {
+    func didSelectDate(selectedDate: Date, isforFrom: Bool) {
+
+       if isforFrom {
+           self.fromDate = selectedDate
+           txtFromDate.text = selectedDate.toString(format: "MMM dd, yyyy")
+       } else {
+           self.toDate = selectedDate
+          
+       }
+        
+        if let fromDate = self.fromDate, let toDate = self.toDate {
+            if Calendar.current.compare(fromDate, to: toDate, toGranularity: .day) == .orderedDescending {
+                self.toCreateToast("Select dates after leave from date")
+                return
+            } else {
+                txtToDate.text = selectedDate.toString(format: "MMM dd, yyyy")
+            }
+        }
+        stopBackgroundColorAnimation(view: toDateCurveVIew)
+        stopBackgroundColorAnimation(view: fromDateCurveView)
         backgroundView.isHidden = true
          backgroundView.alpha = 0.3
          self.view.subviews.forEach { aAddedView in
@@ -100,7 +122,19 @@ class LeaveApplicationVC: UIViewController {
         }
         
         fromDateCurveView.addTap {
-            self.calenderAction()
+            
+            self.animateBackgroundColorChange(view: self.fromDateCurveView)
+            self.calenderAction(isForFrom: true)
+        }
+        
+        toDateCurveVIew.addTap {
+            guard (self.fromDate != nil) else {
+                self.toCreateToast("Select leave date from")
+                return}
+            
+            self.animateBackgroundColorChange(view: self.toDateCurveVIew)
+            
+            self.calenderAction(isForFrom: false)
         }
         
         backgroundView.addTap {
@@ -169,7 +203,7 @@ class LeaveApplicationVC: UIViewController {
     var toDate : Date?
     
     var totalDays = [Date]()
-    
+    var isAnimatingBackgroundColor = false
 //    var selectedLeaveType : LeaveType?
     
     var leaveStatus = [LeaveStatus]()
@@ -185,10 +219,21 @@ class LeaveApplicationVC: UIViewController {
     }
     
     
+
+    func animateBackgroundColorChange(view: UIView) {
+
+        view.backgroundColor = .appLightPink
+
+    }
+    
+    func stopBackgroundColorAnimation(view: UIView) {
+        view.backgroundColor = .appWhiteColor
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let checkinVIewwidth = view.bounds.width / 3.5
+        let checkinVIewwidth = view.bounds.width / 3
         let checkinVIewheight = view.bounds.height / 2
         
         let checkinVIewcenterX = view.bounds.midX - (checkinVIewwidth / 2)
@@ -198,7 +243,7 @@ class LeaveApplicationVC: UIViewController {
         
     }
     
-    func calenderAction() {
+    func calenderAction(isForFrom: Bool) {
         
     
         backgroundView.isHidden = false
@@ -228,6 +273,9 @@ class LeaveApplicationVC: UIViewController {
         customCalenderView = self.loadCustomView(nibname: XIBs.customCalenderView) as? CustomCalenderView
         customCalenderView?.setupUI()
         customCalenderView?.completion = self
+        customCalenderView?.selectedFromDate = fromDate
+        customCalenderView?.selectedToDate = toDate
+        customCalenderView?.isForFrom = isForFrom
         //customCalenderView?.delegate = self
         //customCalenderView?.setupTaggeImage(fetchedImageData: imageData)
         self.view.addSubview(customCalenderView ?? CustomCalenderView())

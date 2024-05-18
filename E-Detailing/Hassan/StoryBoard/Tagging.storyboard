@@ -320,17 +320,17 @@
                             <view alpha="0.30000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wwv-7y-651">
                                 <rect key="frame" x="0.0" y="2" width="1180" height="820"/>
                                 <subviews>
-                                    <visualEffectView opaque="NO" alpha="0.30000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2fb-2v-nwQ">
+                                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2fb-2v-nwQ">
                                         <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="bSu-5A-DAb">
                                             <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <blurEffect style="regular"/>
                                     </visualEffectView>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="2fb-2v-nwQ" firstAttribute="centerY" secondItem="Wwv-7y-651" secondAttribute="centerY" id="62y-mw-sIL"/>
                                     <constraint firstItem="2fb-2v-nwQ" firstAttribute="height" secondItem="Wwv-7y-651" secondAttribute="height" id="80N-NM-OZW"/>
