@@ -171,8 +171,30 @@ extension MenuView {
         
         var wholeDatesSessionDetailsArr = [SessionDetailsArr]()
         
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        
+       // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
         if  AppDefaults.shared.eachDatePlan.tourPlanArr.isEmpty {
             
         } else {
@@ -251,20 +273,20 @@ extension MenuView {
     
     
     
-    func toSaveObject(object: EachDatePlan) ->  EachDatePlan {
-        var savedobject: EachDatePlan?
-        do {
-            let archived = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: false)
-            
-            let record = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: archived)
-            print(record ?? EachDatePlan())
-           savedobject = record
-        } catch {
-            print(error)
-            
-        }
-        return savedobject ?? EachDatePlan()
-    }
+//    func toSaveObject(object: EachDatePlan) ->  EachDatePlan {
+//        var savedobject: EachDatePlan?
+//        do {
+//            let archived = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: false)
+//            
+//            let record = try NSKeyedUnarchiver.unarchivedObject(ofClass: EachDatePlan.self, from: archived)
+//            print(record ?? EachDatePlan())
+//           savedobject = record
+//        } catch {
+//            print(error)
+//            
+//        }
+//        return savedobject ?? EachDatePlan()
+//    }
     
     func saveObjecttoDevice() {
         let  arrOfPlan = AppDefaults.shared.tpArry.arrOfPlan ?? [SessionDetailsArr]()
@@ -276,14 +298,18 @@ extension MenuView {
 
         AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
         
-        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-        if !savefinish {
-            print("Error")
+//        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//        if !savefinish {
+//            print("Error")
+//        }
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+            print("Save successful")
+        } catch {
+            print("Unable to save: \(error)")
         }
-        
-       // _ = toSaveObject(object: AppDefaults.shared.eachDatePlan)
-        
-       // self.toCreateToast("Plan saved successfully")
+
         self.menuVC.menuDelegate?.callPlanAPI()
         self.hideMenuAndDismiss()
     }

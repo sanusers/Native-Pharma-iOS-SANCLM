@@ -6,7 +6,7 @@ target 'E-Detailing' do
   use_frameworks!
 
   # Pods for E-Detailing
-pod 'Charts'
+pod 'Charts', '~> 4.1.0'
 pod 'FSCalendar'
 pod 'UICircularProgressRing'
 pod 'Alamofire'

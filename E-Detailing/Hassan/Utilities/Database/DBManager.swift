@@ -292,10 +292,33 @@ class DBManager {
  
         }
         toutplans.arrOfPlan = allDayPlans
-       // let eachDatePlan = EachDatePlan()
-       // eachDatePlan.tourPlanArr.append(toutplans)
-       // AppDefaults.shared.eachDatePlan = eachDatePlan
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+
+      //  AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        
+        
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
         
         AppDefaults.shared.tpArry.arrOfPlan = allDayPlans
  
@@ -506,18 +529,39 @@ class DBManager {
             completion(true)
         } else {
             
-            
-            let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-            if !initialsavefinish {
-                print("Error")
-                
-                
-                
-            } else {
-                AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-                
+
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+                try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+                print("Save successful")
+            } catch {
+                do {
+                    // Read the data from the file URL
+                    let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+                    
+                    // Attempt to unarchive EachDatePlan directly
+                    if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                        
+                        if let aPlan = eachDatePlan as? EachDatePlan {
+                            AppDefaults.shared.eachDatePlan = aPlan
+                        } else {
+                            print("unable to convert to EachDatePlan")
+                        }
+                    } else {
+                        // Fallback to default initialization if unarchiving fails
+                        print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                        AppDefaults.shared.eachDatePlan = EachDatePlan()
+                    }
+                } catch {
+                    // Handle any errors that occur during reading or unarchiving
+                    print("Unable to unarchive: \(error)")
+                    AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+                }
                 dump(AppDefaults.shared.eachDatePlan)
+                print("Unable to save: \(error)")
             }
+            
+            
             
             completion(true)
         }
@@ -592,7 +636,7 @@ class DBManager {
           //  let dateArray = [/* Your Date array */]
           //  let dateBoolDictionary = [Date: Bool](/* Your [Date: Bool] dictionary */)
             let aSessionDetArr = SessionDetailsArr()
-            var isTrue = Bool()
+            //var isTrue = Bool()
             let dateStr = toModifyDate(date: adate)
             
             let aSession = SessionDetail()
@@ -601,7 +645,7 @@ class DBManager {
             
             isHolidayDict.forEach { (key, value) in
                 if key == dateStr && value == true {
-                    isTrue = true
+                    //isTrue = true
                     
                     self.holidays?.forEach({ aholiday in
                         var toCompareStr = ""
@@ -640,54 +684,7 @@ class DBManager {
                 
                 
             }
-        
 
-          
-            
-          // let isTrue = isHolidayDict[dateStr]
-
-
-      
-
-//            
-//            if isTrue {
-//                
-//                self.holidays?.forEach({ aholiday in
-//                    var toCompareStr = ""
-//                    let dateString = aholiday.holiday_Date
-//
-//                    let dateFormatter = DateFormatter()
-//                    dateFormatter.dateFormat = "yyyy-MM-dd"
-//
-//                    if let date = dateFormatter.date(from: dateString ?? "") {
-//                        let outputFormatter = DateFormatter()
-//                        outputFormatter.dateFormat = "d MMMM yyyy"
-//                        
-//                        let formattedString = outputFormatter.string(from: date)
-//                        print(formattedString) // Output: "1 January 2023"
-//                        toCompareStr = formattedString
-//                    } else {
-//                        print("Failed to convert string to Date.")
-//                    }
-//                    
-//                    if toCompareStr == dateStr {
-//                        aSession.WTCode = aholiday.wtcode
-//                        //self.weeklyOff?.wtcode ?? ""
-//                        aSession.WTName =  aholiday.wtname
-//                    }
-//                })
-//                
-//
-//                aSessionDetArr.isForWeekoff = false
-//                aSessionDetArr.isForHoliday = true
-//            } else {
-//                aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-//                aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
-//                aSessionDetArr.isForWeekoff = true
-//                aSessionDetArr.isForHoliday = false
-//            }
-            
-    
             aSessionDetArr.date = toModifyDate(date: adate)
             aSessionDetArr.rawDate = adate
             
@@ -713,15 +710,46 @@ class DBManager {
         AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
         
         
-        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-        if !initialsavefinish {
-            print("Error")
-            
-
-            
-        } else {
-            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-            
+//        let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//        if !initialsavefinish {
+//            print("Error")
+//
+//        } else {
+//            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+//            
+//            dump(AppDefaults.shared.eachDatePlan)
+//        }
+        
+        
+        
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+            try data.write(to: EachDatePlan.ArchiveURL, options: .noFileProtection)
+            print("data write Save successful")
+        } catch {
+            print("Unable to save: \(error)")
+            do {
+                // Read the data from the file URL
+                let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+                
+                // Attempt to unarchive EachDatePlan directly
+                if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                    
+                    if let aPlan = eachDatePlan as? EachDatePlan {
+                        AppDefaults.shared.eachDatePlan = aPlan
+                    } else {
+                        print("unable to convert to EachDatePlan")
+                    }
+                } else {
+                    // Fallback to default initialization if unarchiving fails
+                    print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                    AppDefaults.shared.eachDatePlan = EachDatePlan()
+                }
+            } catch {
+                // Handle any errors that occur during reading or unarchiving
+                print("Unable to unarchive: \(error)")
+                AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+            }
             dump(AppDefaults.shared.eachDatePlan)
         }
         
@@ -807,7 +835,32 @@ class DBManager {
     func toCinfigureApprovalState(_ sessionDetail: SessionDetails) {
                 // Handle Approval flow
         
-        LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+       // LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+        
+        
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf:  SentToApprovalModelArr.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let approvalModel = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let approvalModel = approvalModel as? SentToApprovalModelArr {
+                    LocalStorage.shared.sentToApprovalModelArr = approvalModel.sentToApprovalModelArr
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+           
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+           
+        }
+        
         
         let sentToApprovalModel =  SentToApprovalModel()
         
@@ -847,10 +900,20 @@ class DBManager {
                 }
         
         
-                let initialsavefinish = NSKeyedArchiver.archiveRootObject(LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
-                if !initialsavefinish {
-                    print("Error")
-                }
+//                let initialsavefinish = NSKeyedArchiver.archiveRootObject(LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
+//                if !initialsavefinish {
+//                    print("Error")
+//                }
+        
+        
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: LocalStorage.shared.sentToApprovalModelArr, requiringSecureCoding: false)
+            try data.write(to: SentToApprovalModelArr.ArchiveURL, options: .atomic)
+            print("Save successful")
+        } catch {
+            print("Unable to save: \(error)")
+        }
+        
      
     }
     
@@ -867,9 +930,31 @@ class DBManager {
         return dateFormatter.string(from: date )
     }
 
-    func getTP() -> EachDatePlan {
-        return NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        
+    func getTP() -> EachDatePlan? {
+       // return NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                     return aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                return EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            return EachDatePlan() // Fallback to default initialization
+        }
+      return EachDatePlan()
     }
     
     
@@ -1465,7 +1550,7 @@ class DBManager {
         let masterData = self.getMasterData()
         var productArray = [Product]()
         
-        for (index,product) in values.enumerated(){
+        for (_,product) in values.enumerated(){
             let contextNew = self.managedContext()
             let productEntity = NSEntityDescription.entity(forEntityName: "Product", in: contextNew)
             let productItem = Product(entity: productEntity!, insertInto: contextNew)
@@ -1492,7 +1577,7 @@ class DBManager {
         }
         
         // Sort array based on indices
-        let sortedArray = productArray.sorted { $0.index < $1.index }
+        _ = productArray.sorted { $0.index < $1.index }
         
         productArray.forEach { (product) in
             masterData.addToProduct(product)

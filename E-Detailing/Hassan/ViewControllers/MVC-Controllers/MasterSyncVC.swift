@@ -355,14 +355,7 @@ class MasterSyncVC : UIViewController {
     }
     
     
-//    func setTitleFromData() {
-//     let subordinateData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.selectedHQObj)
-//        // Convert Data back to Subordinate
-//        if let fetchedHQObject = try? NSKeyedUnarchiver.unarchivedObject(ofClass: Subordinate.self, from: subordinateData) {
-//            // Use fetchedHQObject as your Subordinate object
-//            print(fetchedHQObject)
-//        }
-//    }
+
     
     func setHQlbl() {
         // let appsetup = AppDefaults.shared.getAppSetUp()

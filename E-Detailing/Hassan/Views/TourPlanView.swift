@@ -106,20 +106,10 @@ extension TourPlanView {
     
     func toSetParams(_ arrOfPlan: [SessionDetailsArr], completion: @escaping (Result<SaveTPresponseModel, Error>) -> ())  {
         let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-        let dateFormatter = DateFormatter()
-      //  dateFormatter.dateFormat = "d MMMM yyyy"
-       // let date =  dateFormatter.string(from:  Date())
-       // dateFormatter.dateFormat = "EEEE"
-      // let day = dateFormatter.string(from: Date())
-      //  let dateArr = date.components(separatedBy: " ") //"1 Nov 2023"
         var param = [String: Any]()
         param["SFCode"] = appdefaultSetup.sfCode
         param["SFName"] = appdefaultSetup.sfName
         param["Div"] = appdefaultSetup.divisionCode
-
-
-        // tourPlanArr.arrOfPlan?.enumerated().forEach { index, allDayPlans in
-        
         var sessions = [JSON]()
         
         arrOfPlan.enumerated().forEach { index, allDayPlans in
@@ -355,8 +345,30 @@ class TourPlanView: BaseView {
     
     func toPostDataToserver(_ isfromSync : Bool) {
 
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-
+      //  AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
         var  arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
 
@@ -484,53 +496,93 @@ class TourPlanView: BaseView {
     
     
     func toCinfigureApprovalState(_ sessionDetail: SessionDetails) {
-                // Handle Approval flow
+        // Handle Approval flow
         
-        LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+        //  LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf:  SentToApprovalModelArr.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let approvalModel = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let approvalModel = approvalModel as? SentToApprovalModelArr {
+                    LocalStorage.shared.sentToApprovalModelArr = approvalModel.sentToApprovalModelArr
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+           
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+           
+        }
+        
+        
+        
+
+        
+        
+        
+        
         
         let sentToApprovalModel =  SentToApprovalModel()
         
         var sessionDate = Date()
         let dateString = sessionDetail.tpDt.date
-
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
+        
         if let date = dateFormatter.date(from: dateString) {
             print(date)
-             sessionDate = date
+            sessionDate = date
         } else {
             print("Unable to convert the string to a Date.")
         }
         
-       
-          sentToApprovalModel.rawDate = sessionDate
-          sentToApprovalModel.date = self.toModifyDateAsMonth(date: sessionDate)
-          sentToApprovalModel.approvalStatus = sessionDetail.changeStatus
         
-               
-        
-                if LocalStorage.shared.sentToApprovalModelArr.count == 0 {
-                    LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
-                } else {
-                    LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalinfo in
-                        existingDates.append(sentToApprovalinfo.date)
-                    })
-                }
+        sentToApprovalModel.rawDate = sessionDate
+        sentToApprovalModel.date = self.toModifyDateAsMonth(date: sessionDate)
+        sentToApprovalModel.approvalStatus = sessionDetail.changeStatus
         
         
-                if !existingDates.contains(self.toModifyDate(date: sessionDate)) {
-                    LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
-                } else {
-                  
-                }
+        
+        if LocalStorage.shared.sentToApprovalModelArr.count == 0 {
+            LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
+        } else {
+            LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalinfo in
+                existingDates.append(sentToApprovalinfo.date)
+            })
+        }
         
         
-                let initialsavefinish = NSKeyedArchiver.archiveRootObject(LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
-                if !initialsavefinish {
-                    print("Error")
-                }
-     
+        if !existingDates.contains(self.toModifyDate(date: sessionDate)) {
+            LocalStorage.shared.sentToApprovalModelArr.append(sentToApprovalModel)
+        } else {
+            
+        }
+        
+        
+        //                let initialsavefinish = NSKeyedArchiver.archiveRootObject(LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
+        //                if !initialsavefinish {
+        //                    print("Error")
+        //                }
+        
+        
+        
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: LocalStorage.shared.sentToApprovalModelArr, requiringSecureCoding: false)
+            try data.write(to: SentToApprovalModelArr.ArchiveURL, options: .atomic)
+            print("Save successful")
+        } catch {
+            print("Unable to save: \(error)")
+        }
+        
     }
     
     func setupBtnAfterSubmission() {
@@ -715,9 +767,30 @@ class TourPlanView: BaseView {
         }
        
       
-        LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
+       // LocalStorage.shared.sentToApprovalModelArr = NSKeyedUnarchiver.unarchiveObject(withFile: SentToApprovalModelArr.ArchiveURL.path) as? [SentToApprovalModel] ?? [SentToApprovalModel]()
         
-        
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf:  SentToApprovalModelArr.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let approvalModel = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let approvalModel = approvalModel as? SentToApprovalModelArr {
+                    LocalStorage.shared.sentToApprovalModelArr = approvalModel.sentToApprovalModelArr
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+           
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+           
+        }
         LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalmodal in
             if sentToApprovalmodal.date ==  toModifyDate(date: self.currentPage ?? Date()) {
                 
@@ -734,9 +807,16 @@ class TourPlanView: BaseView {
             }
         })
         
-        let initialsavefinish = NSKeyedArchiver.archiveRootObject( LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
-        if !initialsavefinish {
-            print("Error")
+//        let initialsavefinish = NSKeyedArchiver.archiveRootObject( LocalStorage.shared.sentToApprovalModelArr, toFile: SentToApprovalModelArr.ArchiveURL.path)
+//        if !initialsavefinish {
+//            print("Error")
+//        }
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: LocalStorage.shared.sentToApprovalModelArr, requiringSecureCoding: false)
+            try data.write(to: SentToApprovalModelArr.ArchiveURL, options: .atomic)
+            print("Save successful")
+        } catch {
+            print("Unable to save: \(error)")
         }
         
         toEnableApprovalBtn(totaldate: date, filleddate: thisMonthPaln.count, isRejected : isRejected)
@@ -858,12 +938,43 @@ class TourPlanView: BaseView {
         
         AppDefaults.shared.eachDatePlan.weekoffsDates = rawDate
         
-            let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-            if !initialsavefinish {
-                print("Error")
+//            let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//            if !initialsavefinish {
+//                print("Error")
+//            }
+        
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+            print("Save successful")
+        } catch {
+            print("Unable to save: \(error)")
+        }
+       // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
             }
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-    
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
+        
         var includedSessionArr = [SessionDetailsArr]()
         
         if AppDefaults.shared.eachDatePlan.tourPlanArr.count > 0 {
@@ -880,10 +991,7 @@ class TourPlanView: BaseView {
             dates.append(SessionDetailsArr.date)
         }
         
-            var sessionDetail = SessionDetail()
-          
 
-           
                 AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
                     
                     
@@ -975,16 +1083,28 @@ class TourPlanView: BaseView {
             AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.append(contentsOf: includedSessionArr)
         }
    
-        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-        if !savefinish {
-            print("Error")
-         
-        } else {
+        
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+            print("Save successful")
             DispatchQueue.main.async {
                 self.toLoadData()
             }
-          
+        } catch {
+            print("Unable to save: \(error)")
         }
+        
+//        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//        if !savefinish {
+//            print("Error")
+//         
+//        } else {
+//            DispatchQueue.main.async {
+//                self.toLoadData()
+//            }
+//          
+//        }
     }
     
     
@@ -997,27 +1117,35 @@ class TourPlanView: BaseView {
     }
     
     func toRemoveElement(isToremove: Bool?, toRemoveSessionDetArr:  SessionDetailsArr?) {
-
-            var  temptpArray =  [TourPlanArr]()
-            self.arrOfPlan?.enumerated().forEach({ sessionDetArrIndex ,sessionDetArr in
-                if sessionDetArr.date == toRemoveSessionDetArr?.date {
-                    self.arrOfPlan?.remove(at: sessionDetArrIndex)
-                }
-            })
-            AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
-                temptpArray.append(eachDayPlan)
+        
+        var  temptpArray =  [TourPlanArr]()
+        self.arrOfPlan?.enumerated().forEach({ sessionDetArrIndex ,sessionDetArr in
+            if sessionDetArr.date == toRemoveSessionDetArr?.date {
+                self.arrOfPlan?.remove(at: sessionDetArrIndex)
             }
-            
-            temptpArray.forEach({ tpArr in
-                tpArr.arrOfPlan =  self.arrOfPlan
-            })
+        })
+        AppDefaults.shared.eachDatePlan.tourPlanArr?.forEach {  eachDayPlan in
+            temptpArray.append(eachDayPlan)
+        }
         
-            AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+        temptpArray.forEach({ tpArr in
+            tpArr.arrOfPlan =  self.arrOfPlan
+        })
         
-                        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-                             if !savefinish {
-                                 print("Error")
-                             }
+        AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
+        
+//        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//        if !savefinish {
+//            print("Error")
+//        }
+        
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+            print("Save successful")
+        } catch {
+            print("Unable to save: \(error)")
+        }
         toLoadData()
         
     }
@@ -1025,8 +1153,30 @@ class TourPlanView: BaseView {
 
     
     func toLoadData()  {
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-
+      //  AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
         self.arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
 
@@ -1074,9 +1224,9 @@ class TourPlanView: BaseView {
                 case .success(let responseJSON):
                     dump(responseJSON)
                     
-//                    unsentIndices.forEach { index in
-//                        unSavedPlans[index].isDataSentToApi = true
-//                    }
+                    //                    unsentIndices.forEach { index in
+                    //                        unSavedPlans[index].isDataSentToApi = true
+                    //                    }
                     
                     var temptpArray = [TourPlanArr]()
                     
@@ -1093,55 +1243,86 @@ class TourPlanView: BaseView {
                     
                     var apiSentPlans = temparrOfplan.filter { ASessionDetailsArr in
                         ASessionDetailsArr.isDataSentToApi == true
-                     }
-                     
-                     apiSentPlans.append(contentsOf: unSavedPlans)
-                     
-                     temparrOfplan = apiSentPlans
-                     
-                     temparrOfplan.forEach { plans in
-                         plans.isDataSentToApi = true
-                     }
-                     
-                     temptpArray.forEach({ tpArr in
-                         tpArr.arrOfPlan = temparrOfplan
-                         //unSavedPlans//self.arrOfPlan
-                     })
+                    }
+                    
+                    apiSentPlans.append(contentsOf: unSavedPlans)
+                    
+                    temparrOfplan = apiSentPlans
+                    
+                    temparrOfplan.forEach { plans in
+                        plans.isDataSentToApi = true
+                    }
+                    
+                    temptpArray.forEach({ tpArr in
+                        tpArr.arrOfPlan = temparrOfplan
+                        //unSavedPlans//self.arrOfPlan
+                    })
                     
                     
-                
+                    
                     AppDefaults.shared.eachDatePlan.tourPlanArr = temptpArray
-                                let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-                                     if !savefinish {
-                                         print("Error")
-                                     }
-                   // self.toLoadData()
-                   if isFromFirstLoad {
-                       self.fetchDataFromServer(isFromSync)
-                       completion(true)
-                   } else {
-                       
-                   }
+//                    let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+//                    if !savefinish {
+//                        print("Error")
+//                    }
+                    
+                    do {
+                        let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+                        try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+                        print("Save successful")
+                    } catch {
+                        print("Unable to save: \(error)")
+                    }
+                    
+                    // self.toLoadData()
+                    if isFromFirstLoad {
+                        self.fetchDataFromServer(isFromSync)
+                        completion(true)
+                    } else {
+                        
+                    }
                 case .failure(_):
                     self.toCreateToast("The operation couldn’t be completed. Try again later")
-                   if isFromFirstLoad {
-                       self.initialSetups()
-                       self.isHidden = false
+                    if isFromFirstLoad {
+                        self.initialSetups()
+                        self.isHidden = false
                     }
                     completion(false)
                 }
             }
         } else {
-          //  self.initialSetups()
+            //  self.initialSetups()
             self.toCreateToast("Already this month plans are submited for approval.")
         }
-
+        
     }
     
     
     func toCheckWeatherWeeklyoffPosted(completion: @escaping (Bool) -> Void) {
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        
+      //  AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
         var  arrOfPlan = [SessionDetailsArr]()
         var tpArray =  [TourPlanArr]()
         
@@ -1418,8 +1599,30 @@ class TourPlanView: BaseView {
     
     func toCheckMonthVariations() -> Bool {
         
-        AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        
+      // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
         //MARK: - Added months
         
         var addedMonths = [String]()
@@ -1752,26 +1955,35 @@ class TourPlanView: BaseView {
         dateFormatter.dateFormat = "d MMMM yyyy"
         let toCompareDate = dateFormatter.string(from: date )
           self.selectedDate =  self.toTrimDate(date: date)
-       //   self.tourPlanCalander.reloadData()
+
           
         let menuvc = MenuVC.initWithStory(self, date, isForWeekOff: isForWeekOff, isForHoliday: isforHoliday)
                   self.tourplanVC.modalPresentationStyle = .custom
-                //  menuvc.menuDelegate = self
-//        if isForWeekOff ?? false {
-//            let aSession = SessionDetail()
-//            aSession.isForFieldWork = false
-//            aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-//            aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
-//
-//            let aSessionDetArr = SessionDetailsArr()
-//            aSessionDetArr.sessionDetails.append(aSession)
-//            aSessionDetArr.date = toCompareDate
-//            aSessionDetArr.rawDate = date
-//            menuvc.sessionDetailsArr = aSessionDetArr
-//            //menuvc.selectedDate = date
-//           // menuvc.isWeekoffEditable =
-//        } else {
-            AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+
+        // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+        do {
+            // Read the data from the file URL
+            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+            
+            // Attempt to unarchive EachDatePlan directly
+            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+                
+                if let aPlan = eachDatePlan as? EachDatePlan {
+                    AppDefaults.shared.eachDatePlan = aPlan
+                } else {
+                    print("unable to convert to EachDatePlan")
+                }
+            } else {
+                // Fallback to default initialization if unarchiving fails
+                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                AppDefaults.shared.eachDatePlan = EachDatePlan()
+            }
+        } catch {
+            // Handle any errors that occur during reading or unarchiving
+            print("Unable to unarchive: \(error)")
+            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+        }
+        dump(AppDefaults.shared.eachDatePlan)
               AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
                   eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
                       if sessions.date == toCompareDate {
@@ -1779,7 +1991,7 @@ class TourPlanView: BaseView {
                       }
                   }
               }
-       // }
+
         LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalmodal in
             if sentToApprovalmodal.date ==  toModifyDateAsMonth(date: self.currentPage ?? Date()) {
                 

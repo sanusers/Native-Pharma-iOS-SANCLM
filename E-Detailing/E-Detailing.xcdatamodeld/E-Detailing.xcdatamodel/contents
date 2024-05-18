@@ -154,6 +154,9 @@
         <attribute name="townName" optional="YES" attributeType="String"/>
         <attribute name="uRwId" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="EachDateTourPlan" representedClassName="EachDateTourPlan" syncable="YES" codeGenerationType="class">
+        <attribute name="plansData" optional="YES" attributeType="Binary"/>
+    </entity>
     <entity name="EachDayPlan" representedClassName="EachDayPlan" syncable="YES" codeGenerationType="class">
         <attribute name="isRejected" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="planDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

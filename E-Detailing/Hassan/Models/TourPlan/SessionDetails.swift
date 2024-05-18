@@ -542,9 +542,9 @@ class EachDatePlan : NSObject, NSCoding, NSSecureCoding{
     }
     
     public required convenience init?(coder decoder: NSCoder) {
-        let mtourPlanArr =   decoder.decodeObject(forKey: Key.tourPlanArr.rawValue) as! [TourPlanArr]
-        let mWeekoffDates =   decoder.decodeObject(forKey: Key.weekoffsDates.rawValue) as! [Date]
-        self.init(tourPlanArr: mtourPlanArr,weekoffsDates: mWeekoffDates)
+        let mtourPlanArr =   decoder.decodeObject(forKey: Key.tourPlanArr.rawValue) as? [TourPlanArr]
+        let mWeekoffDates =   decoder.decodeObject(forKey: Key.weekoffsDates.rawValue) as? [Date]
+        self.init(tourPlanArr: mtourPlanArr ?? [TourPlanArr](),weekoffsDates: mWeekoffDates ?? [Date]())
     }
     
     init(tourPlanArr:  [TourPlanArr], weekoffsDates: [Date]) {
