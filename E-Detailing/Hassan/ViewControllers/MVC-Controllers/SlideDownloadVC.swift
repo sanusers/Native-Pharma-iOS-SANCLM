@@ -324,7 +324,7 @@ class SlideDownloadVC : UIViewController {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
             } else {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
-            }e
+            }
             
             Pipelines.shared.toStopDownload()
             Shared.instance.isSlideDownloading = false

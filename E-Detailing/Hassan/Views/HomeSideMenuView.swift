@@ -142,7 +142,7 @@ class HomeSideMenuView : BaseView{
         let myResource : MenuItems = MenuItems(menuName: "My Resource", menuIcon: UIImage(named: "SideMenuMyResource") ?? UIImage(), VC: resourceVC)
         menuItemArr.append(myResource)
         
-        let leaveVC = UIStoryboard.leaveVC
+        let leaveVC = LeaveApplicationVC.initWithStory()
         let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "application") ?? UIImage(), VC: leaveVC)
         menuItemArr.append(leaveApplication)
         

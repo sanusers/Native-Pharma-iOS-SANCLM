@@ -13,8 +13,113 @@ import Charts
 import UICircularProgressRing
 import Alamofire
 
+extension LeaveApplicationVC: CustomCalenderViewDelegate {
+    
+    
+    func didClose() {
+        backgroundView.isHidden = true
+         backgroundView.alpha = 0.3
+         self.view.subviews.forEach { aAddedView in
+             
+             switch aAddedView {
+
+             case customCalenderView:
+                 aAddedView.removeFromSuperview()
+                 aAddedView.alpha = 0
+                 
+             default:
+                 aAddedView.isUserInteractionEnabled = true
+                 aAddedView.alpha = 1
+                 print("Yet to implement")
+                 
+                 // aAddedView.alpha = 1
+                 
+             }
+             
+         }
+    }
+    
+    func didSelectDate(selectedDate: Date) {
+        backgroundView.isHidden = true
+         backgroundView.alpha = 0.3
+         self.view.subviews.forEach { aAddedView in
+             
+             switch aAddedView {
+
+             case customCalenderView:
+                 aAddedView.removeFromSuperview()
+                 aAddedView.alpha = 0
+                 
+             default:
+                 aAddedView.isUserInteractionEnabled = true
+                 aAddedView.alpha = 1
+                 print("Yet to implement")
+                 
+                 // aAddedView.alpha = 1
+                 
+             }
+             
+         }
+    }
+    
+    
+}
+
 class LeaveApplicationVC: UIViewController {
     
+    
+    
+    class func initWithStory() -> LeaveApplicationVC {
+        let tourPlanVC : LeaveApplicationVC = UIStoryboard.Hassan.instantiateViewController()
+        //tourPlanVC.tourplanVM = TourPlanVM()
+        return tourPlanVC
+    }
+    
+    func setupUI() {
+        backgroundView.isHidden = true
+     //   self.view.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+        //contentsHolder.backgroundColor = .appLightGrey
+        let holerCurvedViews: [UIView] = [viewLeaveAvailablity, ViewLeaveinfo]
+        holerCurvedViews.forEach { aView in
+            aView.layer.cornerRadius = 5
+        }
+        
+        leaveEntryHolderVIew.layer.borderWidth = 1
+        leaveEntryHolderVIew.layer.borderColor = UIColor.appBlue.cgColor
+        leaveEntryHolderVIew.layer.cornerRadius = 5
+        tableHolderVXview.backgroundColor = .appBlue.withAlphaComponent(0.1)
+        let selectionViews: [UIView] = [leaveTypeCurveView, addressEnterCurveView, reasonEnterCurveView,  attachmentCurveView, toDateCurveVIew, fromDateCurveView]
+        selectionViews.forEach { aView in
+            aView.layer.borderWidth = 1
+            aView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+            aView.layer.cornerRadius = 5
+        }
+        
+        backHolderView.addTap {
+            self.navigationController?.popViewController(animated: true)
+        }
+        
+        fromDateCurveView.addTap {
+            self.calenderAction()
+        }
+        
+        backgroundView.addTap {
+            self.didClose()
+        }
+    }
+    @IBOutlet var backHolderView: UIView!
+    
+    @IBOutlet var tableHolderVXview: UIVisualEffectView!
+    
+    @IBOutlet var contentsHolder: UIView!
+    @IBOutlet var leaveTypeCurveView: UIView!
+    
+    @IBOutlet var leaveEntryHolderVIew: UIView!
+    @IBOutlet var addressEnterCurveView: UIView!
+    @IBOutlet var reasonEnterCurveView: UIView!
+    @IBOutlet var attachmentCurveView: UIView!
+    @IBOutlet var toDateCurveVIew: UIView!
+    @IBOutlet var fromDateCurveView: UIView!
     
     @IBOutlet weak var lblLeaveDateFrom: UILabel!
     @IBOutlet weak var lblLeaveToDate: UILabel!
@@ -32,9 +137,9 @@ class LeaveApplicationVC: UIViewController {
     
     @IBOutlet weak var lblSize: UILabel!
     
-    @IBOutlet weak var txtFromDate: UITextField!
+    @IBOutlet weak var txtFromDate: UILabel!
     
-    @IBOutlet weak var txtToDate: UITextField!
+    @IBOutlet weak var txtToDate: UILabel!
     
     
     @IBOutlet weak var txtViewLeaveReason: UITextView!
@@ -44,27 +149,13 @@ class LeaveApplicationVC: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+
     
-    @IBOutlet weak var heightViewFromConstraint: NSLayoutConstraint!
-    @IBOutlet weak var heightViewAvailablityConstraint: NSLayoutConstraint!
-    @IBOutlet weak var heightViewAvailConstraint: NSLayoutConstraint!
+    @IBOutlet weak var viewLeaveAvailablity: UIStackView!
     
-    @IBOutlet weak var heightLeaveTotalDaysConstraint: NSLayoutConstraint!
+    @IBOutlet var ViewLeaveinfo: UIView!
     
-    
-    @IBOutlet weak var heightRemainingConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var topHeightLeaveTypeConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var topHeightDayRemainingConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var bottomHeightDayRemainingConstraint: NSLayoutConstraint!
-    
-    
-    @IBOutlet weak var viewLeaveAvailablity: UIView!
-    
-    
-    @IBOutlet var btnSubmit: ShadowButton!
+    @IBOutlet var btnSubmit: UIButton!
     @IBOutlet weak var viewAttachment: UIView!
     
     @IBOutlet weak var backgroundView: UIView!
@@ -107,7 +198,7 @@ class LeaveApplicationVC: UIViewController {
         
     }
     
-    func viewImageAction() {
+    func calenderAction() {
         
     
         backgroundView.isHidden = false
@@ -135,6 +226,8 @@ class LeaveApplicationVC: UIViewController {
         }
         
         customCalenderView = self.loadCustomView(nibname: XIBs.customCalenderView) as? CustomCalenderView
+        customCalenderView?.setupUI()
+        customCalenderView?.completion = self
         //customCalenderView?.delegate = self
         //customCalenderView?.setupTaggeImage(fetchedImageData: imageData)
         self.view.addSubview(customCalenderView ?? CustomCalenderView())
@@ -143,29 +236,17 @@ class LeaveApplicationVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupUI()
         self.tableView.register(UINib(nibName: "LeaveStatusCell", bundle: nil), forCellReuseIdentifier: "LeaveStatusCell")
         self.collectionView.register(UINib(nibName: "LeaveAvailablityCell", bundle: nil), forCellWithReuseIdentifier: "LeaveAvailablityCell")
         
-     //   self.progressView()
         self.btnSubmit.layer.cornerRadius = 5
-        
-        self.viewAttachment.isHidden = true
-        self.lblAttachment.isHidden = true
-        self.lblSize.isHidden = true
-        
-        self.txtViewLeaveReason.text = "Enter leave Reason"
-        self.txtViewLeaveReason.textColor = UIColor.lightGray
-        self.txtViewLeaveAddress.text = "Enter the remarks"
-        self.txtViewLeaveAddress.textColor = UIColor.lightGray
+
         
         self.fetchLeave()
         
         self.updateLabel()
-        
-        
-//        let vc = UIStoryboard.slideDownloadVC
-//        self.present(vc, animated: true)
+
     }
     
     
@@ -272,27 +353,11 @@ class LeaveApplicationVC: UIViewController {
         }
     }
     
+
     
     private func updateLabel() {
         
-        let appsetup = AppDefaults.shared.getAppSetUp()
 
-        if appsetup.leaveEntitlementNeed == 0 {
-            self.lblLeaveHide.isHidden = false
-            
-            self.lblRemaining.isHidden = true
-            self.lblLeaveTotalDaysWithType.isHidden = true
-            
-            self.topHeightLeaveTypeConstraint.constant = 0
-            self.topHeightDayRemainingConstraint.constant = 0
-            self.bottomHeightDayRemainingConstraint.constant = 0
-            self.heightRemainingConstraint.constant = 0
-            self.heightLeaveTotalDaysConstraint.constant = 0
-            
-        }else {
-            self.lblLeaveHide.isHidden = true
-        }
-        
         let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.65))
         
         let fromDate = NSMutableAttributedString(string: "Leave Date From*",attributes: [NSAttributedString.Key.foregroundColor : color])
@@ -307,11 +372,11 @@ class LeaveApplicationVC: UIViewController {
         leaveType.addAttributes([NSAttributedString.Key.foregroundColor : UIColor.red], range: NSMakeRange(10, 1))
         self.lblLeaveType.attributedText = leaveType
         
-        let text = NSMutableAttributedString(
-          string: "Choose file to upload",
-          attributes: [.font: UIFont(name: "Satoshi-Bold", size: 14) as Any])
-        text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 14) as Any], range: NSMakeRange(12,9))
-        self.lblChooseFile.attributedText = text
+//        let text = NSMutableAttributedString(
+//          string: "Choose file to upload",
+//          attributes: [.font: UIFont(name: "Satoshi-Bold", size: 14) as Any])
+//        text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 14) as Any], range: NSMakeRange(12,9))
+//        self.lblChooseFile.attributedText = text
     }
     
     
@@ -358,15 +423,13 @@ class LeaveApplicationVC: UIViewController {
         let paramString = "{\"tableName\":\"getleavestatus\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
         let data = ["data" : paramString]
-        
+        Shared.instance.showLoaderInWindow()
         AF.request(url,method: .post,parameters: data).responseData{ (response) in
-            
+            Shared.instance.removeLoaderInWindow()
             switch response.result {
                 
             case .success(_):
                 do{
-//                    let apiResponse = try JSONSerialization.jsonObject(with: response.description,options: JSONSerialization.ReadingOptions.fragmentsAllowed)
-                    
                     let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
                     print(apiResponse)
                     

@@ -78,12 +78,12 @@ extension UIStoryboard {
         return singleSelectionVC
     }
     
-    static var calenderVC : FSCalendarVC {
-        guard let  calenderVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "FSCalenderVC") as? FSCalendarVC else{
-            fatalError("FSCalenderVC couldn't be found in Storyboard file")
-        }
-        return calenderVC
-    }
+//    static var calenderVC : FSCalendarVC {
+//        guard let  calenderVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "FSCalenderVC") as? FSCalendarVC else{
+//            fatalError("FSCalenderVC couldn't be found in Storyboard file")
+//        }
+//        return calenderVC
+//    }
     
     static var callVC : CallVC {
         guard let  callVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "CallVC") as? CallVC else{
