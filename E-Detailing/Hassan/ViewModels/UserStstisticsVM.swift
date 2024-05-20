@@ -159,6 +159,41 @@ class UserStatisticsVM {
         })
     }
     
+    func toGetLeaveStatus(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[LeaveStatus],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [LeaveStatus].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
+    func toCheckLeaveAvailability(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[LeaveAvailability],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [LeaveAvailability].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
+    
+    func toSubmitLeave(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<LeaveResponse,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: LeaveResponse.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+
+    
 }
 
 

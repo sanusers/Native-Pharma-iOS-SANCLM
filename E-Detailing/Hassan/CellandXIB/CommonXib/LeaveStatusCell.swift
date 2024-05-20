@@ -18,11 +18,13 @@ class LeaveStatusCell: UITableViewCell {
     
     @IBOutlet weak var lblDate: UILabel!
     
+    @IBOutlet var seperatorLbl: UILabel!
     
-    @IBOutlet weak var lblDay: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblDate.setFont(font: .medium(size: .BODY))
+        seperatorLbl.backgroundColor = .appBlue
     }
     
     

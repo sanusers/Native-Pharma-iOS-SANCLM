@@ -2999,10 +2999,9 @@ extension MainVC : collectionViewProtocols {
                 case "Reports":
                     let vc = ReportsVC.initWithStory(pageType: .reports)
                     self.navigationController?.pushViewController(vc, animated: true)
-                case .none:
-                    print("none")
-                case .some(_):
-                    print("some")
+
+                default:
+                    print("Yet to")
                 }
             }
             

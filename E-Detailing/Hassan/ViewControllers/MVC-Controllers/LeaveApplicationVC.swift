@@ -12,6 +12,214 @@ import UIKit
 import Charts
 import UICircularProgressRing
 import Alamofire
+import CoreData
+
+
+extension LeaveApplicationVC: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+        
+
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        switch textView {
+        case txtViewLeaveReason:
+            if textView.text.isEmpty {
+                textView.text = "Type here.."
+                textView.textColor = UIColor.lightGray
+            }
+            self.leaveReadseon = textView.text == "Type here.." ? "" : textView.text
+        case txtViewLeaveAddress:
+            if textView.text.isEmpty {
+                textView.text = "Type here.."
+                textView.textColor = UIColor.lightGray
+            }
+            self.leaveAddress = textView.text == "Type here.." ? "" : textView.text
+        default:
+            print("yet to")
+        }
+
+       
+   
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        switch textView {
+        case txtViewLeaveReason:
+            // Combine the textView text and the replacement text to
+            // create the updated text string
+            let currentText:String = textView.text
+            let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+
+            // If updated text view will be empty, add the placeholder
+            // and set the cursor to the beginning of the text view
+            if updatedText.isEmpty {
+
+                textView.text = "Type here.."
+                textView.textColor = UIColor.lightGray
+
+                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+                self.leaveReadseon = updatedText
+            }
+
+            // Else if the text view's placeholder is showing and the
+            // length of the replacement string is greater than 0, set
+            // the text color to black then set its text to the
+            // replacement string
+             else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+                textView.textColor = UIColor.black
+                textView.text = text
+            }
+
+            // For every other case, the text should change with the usual
+            // behavior...
+            else {
+                self.leaveReadseon = updatedText
+                return true
+            }
+
+            // ...otherwise return false since the updates have already
+            // been made
+          
+            return false
+        case txtViewLeaveAddress:
+            // Combine the textView text and the replacement text to
+            // create the updated text string
+            let currentText:String = textView.text
+            let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+
+            // If updated text view will be empty, add the placeholder
+            // and set the cursor to the beginning of the text view
+            if updatedText.isEmpty {
+
+                textView.text = "Type here.."
+                textView.textColor = UIColor.lightGray
+
+                textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+                self.leaveAddress = updatedText
+            }
+
+            // Else if the text view's placeholder is showing and the
+            // length of the replacement string is greater than 0, set
+            // the text color to black then set its text to the
+            // replacement string
+             else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+                textView.textColor = UIColor.black
+                textView.text = text
+            }
+
+            // For every other case, the text should change with the usual
+            // behavior...
+            else {
+                self.leaveAddress = updatedText
+                return true
+            }
+
+            // ...otherwise return false since the updates have already
+            // been made
+          
+            return false
+        default:
+            print("yet to")
+        }
+return false
+    }
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        switch textView {
+        case txtViewLeaveReason:
+            if self.view.window != nil {
+                if textView.textColor == UIColor.lightGray {
+                    textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+                }
+            }
+        case txtViewLeaveAddress:
+            if self.view.window != nil {
+                if textView.textColor == UIColor.lightGray {
+                    textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+                }
+            }
+        default:
+            print("yet to")
+        }
+
+    }
+}
+
+
+extension LeaveApplicationVC: MenuResponseProtocol {
+    func callPlanAPI() {
+        print("Yet to")
+    }
+    
+    func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject]) {
+        print("Yet to")
+       
+        if let selectedObject = selectedObject as? LeaveType {
+            selectedLeveType = selectedObject
+            self.selectedLeaveTypeLbl.text = selectedObject.leaveName
+            updateLeave(leavetype: selectedObject)
+        }
+       
+    }
+    
+    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
+        print("Yet to")
+    }
+    
+    
+    func updateLeave(leavetype: LeaveType) {
+       
+        enableSubmitBtn()
+        let totalNumberofLeaves = updateLeaveRequest()
+        if appsetup.leaveEntitlementNeed == 0 {
+            leaveNotifyView.isHidden = false
+            
+        } else {
+            leaveNotifyView.isHidden = true
+            
+        }
+     
+       let cacheLeave = DBManager.shared.getLeaveType()
+        let fetchedLeave = cacheLeave.filter { $0.leaveCode ==  leavetype.leaveCode }.first
+        if let fetchedLeave = fetchedLeave {
+            let aleaveStatus = self.leaveStatus.filter { $0.leaveCode == fetchedLeave.leaveCode }.first
+            guard let aleaveStatus = aleaveStatus else {return}
+            switch aleaveStatus.leaveCode {
+            case "247":
+                //cl
+                lblAvailableDays.text = "\(totalNumberofLeaves)" + " days of Casual Leave"
+                lblRemainingDays.text = "\(aleaveStatus.available ?? "0")" + " days remaining"
+            case "248":
+                //pl
+                lblAvailableDays.text = "\(totalNumberofLeaves)" + " days of Paid Leave"
+                lblRemainingDays.text = "\(aleaveStatus.available ?? "0")" + " days remaining"
+            case "249":
+                //sl
+                lblAvailableDays.text = "\(totalNumberofLeaves)" + " days of Sick Leave"
+                lblRemainingDays.text = "\(aleaveStatus.available ?? "0")" + " days remaining"
+            case "250":
+                //LOP
+                lblAvailableDays.text = "\(totalNumberofLeaves)" + " days of LOP"
+                lblRemainingDays.text = "\(aleaveStatus.available ?? "0")" + " days remaining"
+
+            case .none:
+                print("Yet to")
+            case .some(_):
+                print("Yet to")
+            }
+ 
+            
+            
+            
+        }
+        
+    }
+    
+}
 
 extension LeaveApplicationVC: CustomCalenderViewDelegate {
     
@@ -54,12 +262,26 @@ extension LeaveApplicationVC: CustomCalenderViewDelegate {
         
         if let fromDate = self.fromDate, let toDate = self.toDate {
             if Calendar.current.compare(fromDate, to: toDate, toGranularity: .day) == .orderedDescending {
-                self.toCreateToast("Select dates after leave from date")
+                if isforFrom {
+                    self.toCreateToast("Select dates before leave to date")
+                } else {
+                    self.toCreateToast("Select dates after leave from date")
+                }
+               
                 return
             } else {
-                txtToDate.text = selectedDate.toString(format: "MMM dd, yyyy")
+                
+                if isforFrom {
+                    txtFromDate.text = selectedDate.toString(format: "MMM dd, yyyy")
+                } else {
+                    txtToDate.text = selectedDate.toString(format: "MMM dd, yyyy")
+                }
+                
+            
             }
         }
+        _ = updateLeaveRequest()
+        enableSubmitBtn()
         stopBackgroundColorAnimation(view: toDateCurveVIew)
         stopBackgroundColorAnimation(view: fromDateCurveView)
         backgroundView.isHidden = true
@@ -99,13 +321,21 @@ class LeaveApplicationVC: UIViewController {
     
     func setupUI() {
         backgroundView.isHidden = true
-     //   self.view.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-        //contentsHolder.backgroundColor = .appLightGrey
+        
+        enableSubmitBtn()
+        lblLeaveRequest.setFont(font: .bold(size: .BODY))
+        lblAvailableDays.setFont(font: .bold(size: .BODY))
+        lblRemainingDays.setFont(font: .medium(size: .BODY))
+         leaveNotifyView.isHidden = true
+
+        lblRemainingDays.textColor = .appLightTextColor
+        lblAvailableDays.textColor = .appTextColor
+        lblLeaveRequest.textColor = .appTextColor
         let holerCurvedViews: [UIView] = [viewLeaveAvailablity, ViewLeaveinfo]
         holerCurvedViews.forEach { aView in
             aView.layer.cornerRadius = 5
         }
-        
+        self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
         leaveEntryHolderVIew.layer.borderWidth = 1
         leaveEntryHolderVIew.layer.borderColor = UIColor.appBlue.cgColor
         leaveEntryHolderVIew.layer.cornerRadius = 5
@@ -116,18 +346,39 @@ class LeaveApplicationVC: UIViewController {
             aView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
             aView.layer.cornerRadius = 5
         }
+        configureTextField(textView: self.txtViewLeaveReason)
+        configureTextField(textView: self.txtViewLeaveAddress)
+        
+                if let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                    layout.scrollDirection = .horizontal
+                    layout.collectionView?.isScrollEnabled = false
+        
+                }
+        tableView.separatorStyle = .none
+        
+       
+        if appsetup.leaveEntitlementNeed == 0 {
+            self.viewLeaveAvailablity.isHidden = false
+            
+        } else {
+            self.viewLeaveAvailablity.isHidden = true
+            
+        }
+        
+        
         
         backHolderView.addTap {
             self.navigationController?.popViewController(animated: true)
         }
         
         fromDateCurveView.addTap {
-            
+            self.cacheToAndleaveType()
             self.animateBackgroundColorChange(view: self.fromDateCurveView)
             self.calenderAction(isForFrom: true)
         }
         
         toDateCurveVIew.addTap {
+            self.cacheleaveType()
             guard (self.fromDate != nil) else {
                 self.toCreateToast("Select leave date from")
                 return}
@@ -140,9 +391,81 @@ class LeaveApplicationVC: UIViewController {
         backgroundView.addTap {
             self.didClose()
         }
+        
+        leaveTypeCurveView.addTap {
+            guard (self.fromDate != nil  || self.toDate != nil) else {
+                self.toCreateToast("Select from and to dates")
+                return}
+            
+            let vc = SpecifiedMenuVC.initWithStory(self, celltype: .leave)
+            self.modalPresentationStyle = .custom
+            self.navigationController?.present(vc, animated: false)
+        }
     }
+    
+    
+    func cacheleaveType() {
+      
+        self.selectedLeveType = nil
+        self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
+      
+    }
+    
+    func cacheToAndleaveType() {
+        self.toDate = nil
+        self.selectedLeveType = nil
+        self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
+        txtToDate.text = toDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
+    }
+    
+    func removeAllCache() {
+        self.fromDate = nil
+        self.toDate = nil
+        self.selectedLeveType = nil
+        self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
+        
+        txtFromDate.text = fromDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
+
+        txtToDate.text = toDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
+    
+        
+    }
+    
+    func configureTextField(textView: UITextView) {
+        switch textView {
+        case txtViewLeaveReason:
+            txtViewLeaveReason.text =  self.leaveReadseon == nil ? "Type here.." : self.leaveReadseon
+            //txtViewLeaveReason.backgroundColor = .appSelectionColor
+            //txtViewLeaveReason.layer.cornerRadius = 5
+            txtViewLeaveReason.textColor = .appTextColor
+           // remarksTV.font = UIFont(name: "Satoshi-Medium", size: 14)
+            txtViewLeaveReason.delegate = self
+            //remarksTV.text == "" ? "Type here.." : remarksTV.text
+            txtViewLeaveReason.textColor =  txtViewLeaveReason.text == "Type here.." ? UIColor.lightGray : UIColor.black
+        case txtViewLeaveAddress:
+            txtViewLeaveAddress.text =  self.leaveAddress == nil ? "Type here.." : self.leaveAddress
+            //txtViewLeaveAddress.backgroundColor = .appSelectionColor
+            //txtViewLeaveAddress.layer.cornerRadius = 5
+            txtViewLeaveAddress.textColor = .appTextColor
+           // remarksTV.font = UIFont(name: "Satoshi-Medium", size: 14)
+            txtViewLeaveAddress.delegate = self
+            //remarksTV.text == "" ? "Type here.." : remarksTV.text
+            txtViewLeaveAddress.textColor =  txtViewLeaveAddress.text == "Type here.." ? UIColor.lightGray : UIColor.black
+        default:
+            print("yet to")
+        }
+
+    }
+   // lblLeaveRequest.setFont(font: .bold(size: .bo))
+    //leaveNotifyView.isHidden = true
+    //lblAvailableDays
+    //lblRemainingDays
+    @IBOutlet var lblLeaveRequest: UILabel!
     @IBOutlet var backHolderView: UIView!
     
+    @IBOutlet var lblRemainingDays: UILabel!
+    @IBOutlet var lblAvailableDays: UILabel!
+    @IBOutlet var leaveNotifyView: UIView!
     @IBOutlet var tableHolderVXview: UIVisualEffectView!
     
     @IBOutlet var contentsHolder: UIView!
@@ -158,6 +481,8 @@ class LeaveApplicationVC: UIViewController {
     @IBOutlet weak var lblLeaveDateFrom: UILabel!
     @IBOutlet weak var lblLeaveToDate: UILabel!
     @IBOutlet weak var lblLeaveType : UILabel!
+    
+    @IBOutlet var selectedLeaveTypeLbl: UILabel!
     @IBOutlet weak var lblChooseFile: UILabel!
     
     @IBOutlet weak var lblLeaveTotalDaysWithType: UILabel!
@@ -195,9 +520,10 @@ class LeaveApplicationVC: UIViewController {
     @IBOutlet weak var backgroundView: UIView!
     
     @IBOutlet weak var lblLeaveHide: UILabel!
-    
+    let appsetup = AppDefaults.shared.getAppSetUp()
+    var userStatisticsVM = UserStatisticsVM()
     var customCalenderView: CustomCalenderView?
-    
+    var selectedLeveType: LeaveType?
     var isFromToDate : Bool = false
     var fromDate : Date?
     var toDate : Date?
@@ -207,22 +533,12 @@ class LeaveApplicationVC: UIViewController {
 //    var selectedLeaveType : LeaveType?
     
     var leaveStatus = [LeaveStatus]()
-    
-    var selectedLeaveType : LeaveType! {
-        didSet {
-            guard let selectedLeaveType = self.selectedLeaveType else{
-                return
-            }
-            
-            self.lblLeaveTypeValue.text = selectedLeaveType.leaveName
-        }
-    }
-    
-    
+    var leaveAddress: String? = nil
+    var leaveReadseon: String? = nil
 
     func animateBackgroundColorChange(view: UIView) {
 
-        view.backgroundColor = .appLightPink
+        view.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
 
     }
     
@@ -293,54 +609,31 @@ class LeaveApplicationVC: UIViewController {
         
         self.fetchLeave()
         
-        self.updateLabel()
+       // self.updateLabel()
 
     }
     
+    
+    func toLoadTable() {
+        self.tableView.isHidden = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.reloadData()
+
+        
+    }
+    
+    func toLoadCollection() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.reloadData()
+    }
     
     @IBAction func backAction(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
     
     
-//    @IBAction func fromDateAction(_ sender: UIButton) {
-//        let appsetup = AppDefaults.shared.getAppSetUp()
-//        
-//        let calenterVC = UIStoryboard.calenderVC
-//        if appsetup.pastLeavePost == 1 {
-//            calenterVC.minDate = Date()
-//        }
-//        calenterVC.didSelectCompletion { selectedDat in
-//            let dateString = selectedDat.toString(format: "MMM dd, yyyy")
-//            self.fromDate = selectedDat
-//            self.txtFromDate.text = dateString
-//            
-//            self.txtToDate.text = ""
-//            self.toDate = nil
-//            self.selectedLeaveType = nil
-//            self.lblLeaveTypeValue.text = "Select Leave Type"
-//        }
-//        self.present(calenterVC, animated: true)
-//        
-//    }
-    
-//    @IBAction func toDateAction(_ sender: UIButton) {
-//        if self.fromDate == nil {
-//            return
-//        }
-//        let calenterVC = UIStoryboard.calenderVC
-//        calenterVC.minDate = self.fromDate
-//        calenterVC.didSelectCompletion { selectedDat in
-//            let dateString = selectedDat.toString(format: "MMM dd, yyyy")
-//            self.toDate = selectedDat
-//            self.txtToDate.text = dateString
-//            
-//            self.selectedLeaveType = nil
-//            self.lblLeaveTypeValue.text = "Select Leave Type"
-//        }
-//        self.present(calenterVC, animated: true)
-//        
-//    }
     
     @IBAction func leaveTypeAction(_ sender: UIButton) {
  
@@ -359,44 +652,75 @@ class LeaveApplicationVC: UIViewController {
         
     }
     
+    func enableSubmitBtn() {
+        if self.fromDate == nil || self.toDate == nil {
+            btnSubmit.alpha = 0.5
+            btnSubmit.isUserInteractionEnabled = false
+        } else if self.selectedLeveType == nil{
+            btnSubmit.alpha = 0.5
+            btnSubmit.isUserInteractionEnabled = false
+        } else {
+            self.leaveValidationApi()
+ 
+        }
+    }
+    
     @IBAction func submitAction(_ sender: UIButton) {
         if self.fromDate == nil || self.toDate == nil {
             return
-        }else if self.selectedLeaveType == nil{
+        } else if self.selectedLeveType == nil{
             return
         }
-        
-        let appsetup = AppDefaults.shared.getAppSetUp()
     
-        let fromDate = self.fromDate!.toString(format: "yyyy-MM-dd")
-        let toDate = self.toDate!.toString(format: "yyyy-MM-dd")
+      
+        let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
+        let fromDate = self.fromDate!.toString(format: "yyyy-MM-dd HH:mm:ss")
+        let toDate = self.toDate!.toString(format: "yyyy-MM-dd HH:mm:ss")
         
-        let leaveRemarks = self.txtViewLeaveReason.text!
-        let leaveAddress = self.txtViewLeaveAddress.text!
+        var numberofDays = "\(self.totalDays.count)"
         
-        let selectedLeaveType = self.selectedLeaveType
+        let leaveRemarks = self.txtViewLeaveReason.text ?? ""
+        let leaveAddress = self.txtViewLeaveAddress.text ?? ""
+        
+        let selectedLeaveType = self.selectedLeveType
         
         let url = APIUrl + "save/leavemodule"
         
-        let paramString = "{\"tableName\":\"saveleave\",\"sfcode\":\"\(appsetup.sfCode!)\",\"FDate\":\"\(fromDate)\",\"TDate\":\"\(toDate)\",\"LeaveType\":\"\(selectedLeaveType?.leaveSName ?? "")\",\"NOD\":\"2\",\"LvOnAdd\":\"\(leaveAddress)\",\"LvRem\":\"\(leaveRemarks)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"sf_emp_id\":\"\(appsetup.sfEmpId!)\",\"leave_typ_code\":\"\(selectedLeaveType?.leaveCode ?? "")\"}"
-
-        let data = ["data" : paramString]
+       // {"tableName":"saveleave","sfcode":"MR0026","FDate":"2023-7-6","TDate":"2023-7-6","LeaveType":"CL","NOD":"1","LvOnAdd":"","LvRem":"test","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","sf_emp_id":"give emp id here","leave_typ_code":"give leavetype code here"}
         
+        var param = [String: Any]()
+        param["tableName"] = "saveleave"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["FDate"] = fromDate
+        param["TDate"] = toDate
+        param["LeaveType"] = selectedLeaveType?.leaveSName ?? ""
+        param["NOD"] = numberofDays
+        param["LvOnAdd"] = leaveAddress
+        param["LvRem"] = leaveRemarks
+        param["division_code"] = divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+        param["sf_emp_id"] = appsetup.sfEmpId ?? ""
+        param["leave_typ_code"] = selectedLeaveType?.leaveCode ?? ""
+
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        var tosendData = [String: Any]()
+        tosendData["data"] = paramData
+
         print(url)
-        print(data)
-        
-        AF.request(url,method: .post,parameters: data).responseData { (response) in
 
-            switch response.result {
-            case .success(_):
-                do{
-                    let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                    print(apiResponse)
-                }catch{
-                    print(response.error as Any)
+        userStatisticsVM.toSubmitLeave(params: tosendData, api: .toSubmitLeave, paramData: param) { result in
+            switch result {
+                
+            case .success(let response):
+                if response.success ?? false {
+                    self.toShowAlert(desc: "Leave submitted successfully", istoNavigate: true)
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+                self.toCreateToast(error.localizedDescription)
             }
         }
     }
@@ -406,7 +730,7 @@ class LeaveApplicationVC: UIViewController {
     private func updateLabel() {
         
 
-        let color = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.65))
+        let color: UIColor = .appLightPink
         
         let fromDate = NSMutableAttributedString(string: "Leave Date From*",attributes: [NSAttributedString.Key.foregroundColor : color])
         fromDate.addAttributes([NSAttributedString.Key.foregroundColor : UIColor.red], range: NSMakeRange(15, 1))
@@ -420,80 +744,125 @@ class LeaveApplicationVC: UIViewController {
         leaveType.addAttributes([NSAttributedString.Key.foregroundColor : UIColor.red], range: NSMakeRange(10, 1))
         self.lblLeaveType.attributedText = leaveType
         
-//        let text = NSMutableAttributedString(
-//          string: "Choose file to upload",
-//          attributes: [.font: UIFont(name: "Satoshi-Bold", size: 14) as Any])
-//        text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 14) as Any], range: NSMakeRange(12,9))
-//        self.lblChooseFile.attributedText = text
+        let text = NSMutableAttributedString(
+          string: "Choose file to upload",
+          attributes: [.font: UIFont(name: "Satoshi-Bold", size: 14) as Any])
+        text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 14) as Any], range: NSMakeRange(12,9))
+        self.lblChooseFile.attributedText = text
     }
     
     
     private func leaveValidationApi() {
         
-        let appsetup = AppDefaults.shared.getAppSetUp()
+     
         
         let fromDate = self.fromDate!.toString(format: "yyyy-MM-dd")
         let toDate = self.toDate!.toString(format: "yyyy-MM-dd")
+        let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
+        let url = APIUrl + "get/leave"
+       // {"tableName":"getlvlvalid","sfcode":"MR0026","Fdt":"2023-7-6","Tdt":"2023-7-6","LTy":"CL","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
+        var param = [String: Any]()
+        param["tableName"] = "getlvlvalid"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["Fdt"] = fromDate
+        param["Tdt"] = toDate
+        param["LTy"] = self.selectedLeveType?.leaveSName ?? ""
+        param["division_code"] = divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        var tosendData = [String: Any]()
+        tosendData["data"] = paramData
         
-        let url = APIUrl + "table/leave"
+        Shared.instance.showLoaderInWindow()
         
-        let paramString = "{\"tableName\":\"getlvlvalid\",\"sfcode\":\"\(appsetup.sfCode!)\",\"Fdt\":\"\(fromDate)\",\"Tdt\":\"\(toDate)\",\"LTy\":\"\(self.selectedLeaveType?.leaveSName ?? "")\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        let data = ["data" : paramString]
-        
-        print(url)
-        print(paramString)
-        
-        AF.request(url,method: .post,parameters: data).responseData{ (response) in
-            
-            switch response.result {
+        userStatisticsVM.toCheckLeaveAvailability(params: tosendData, api: .leaveinfo, paramData: param) { result in
+            Shared.instance.removeLoaderInWindow()
+            switch result {
                 
-            case .success(_):
-                do{
-                    let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                    print(apiResponse)
-                    self.updateLeaveRequest()
-                }catch{
-                    print(response.error as Any)
+           
+            case .success(let response):
+                
+                dump(response)
+                let object = response[0]
+                guard let responseMessage = object.message else {return}
+                if !responseMessage.isEmpty {
+                    self.toShowAlert(desc: object.message ?? "Unable to process leave application. Try again later.", istoNavigate: false)
+                    self.removeAllCache()
+                    self.btnSubmit.alpha  = 0.5
+                    self.btnSubmit.isUserInteractionEnabled = false
+                    self.tableView.isHidden = true
+                } else {
+                    self.toLoadTable()
+                    self.btnSubmit.alpha  = 1
+                    self.btnSubmit.isUserInteractionEnabled = true
                 }
-                
+           
             case .failure(let error):
-                print(error)
+                self.toCreateToast(error.localizedDescription)
             }
         }
+
+    }
+    
+    
+    func toShowAlert(desc: String, istoNavigate: Bool) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            if istoNavigate {
+                self.navigationController?.popViewController(animated: true)
+            } else {
+                print("no action")
+            }
+        
+           
+        }
+
     }
     
     private func fetchLeave() {
         
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        let url = APIUrl + "table/leave"
+      
+        let url = APIUrl + "get/leave"
+
+        let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
+        var param = [String: Any]()
+        param["tableName"] = "getleavestatus"
+       
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
         
-        let paramString = "{\"tableName\":\"getleavestatus\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        var tosendData = [String: Any]()
+        tosendData["data"] = paramData
+//        "{\"tableName\":\"getleavestatus\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
         
-        let data = ["data" : paramString]
+       
         Shared.instance.showLoaderInWindow()
-        AF.request(url,method: .post,parameters: data).responseData{ (response) in
+        
+        userStatisticsVM.toGetLeaveStatus(params: tosendData, api: .leaveinfo, paramData: param) { result in
             Shared.instance.removeLoaderInWindow()
-            switch response.result {
+            switch result {
                 
-            case .success(_):
-                do{
-                    let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                    print(apiResponse)
-                    
-                    guard let responseArray = apiResponse as? [[String : Any]] else{
-                        return
-                    }
-                    
-                    self.leaveStatus  = responseArray.map{LeaveStatus(fromDictionary: $0)}
-                    self.collectionView.reloadData()
-                    
-                }catch{
-                    print(response.error as Any)
+            case .success(let response):
+                dump(response)
+                self.leaveStatus = response
+                DispatchQueue.main.async {
+                    self.toLoadCollection()
                 }
-                
-            case .failure(let error):
-                print(error)
+          
+            case .failure(let failure):
+                self.toCreateToast(failure.localizedDescription)
             }
         }
     }
@@ -501,10 +870,10 @@ class LeaveApplicationVC: UIViewController {
     
     
     
-    private func updateLeaveRequest() {
+    private func updateLeaveRequest() -> Int {
         
         guard let fromDate = self.fromDate, let toDate = self.toDate else{
-            return
+            return 0
         }
         
         print(fromDate)
@@ -517,7 +886,8 @@ class LeaveApplicationVC: UIViewController {
         let datesBetweenArray = Date.dates(from: date1, to: date2)
         
         self.totalDays = datesBetweenArray
-        self.tableView.reloadData()
+        self.toLoadTable()
+        return datesBetweenArray.count
     }
     
 }
@@ -530,13 +900,14 @@ extension LeaveApplicationVC : tableViewProtocols {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LeaveStatusCell", for: indexPath) as! LeaveStatusCell
+        cell.selectionStyle = .none
         cell.lblDate.text = self.totalDays[indexPath.row].toString(format: "MMM dd, yyyy")
         return cell
     }
 }
 
 
-extension LeaveApplicationVC : UICollectionViewDelegate , UICollectionViewDataSource {
+extension LeaveApplicationVC : UICollectionViewDelegate , UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.leaveStatus.count
     }
@@ -544,48 +915,18 @@ extension LeaveApplicationVC : UICollectionViewDelegate , UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LeaveAvailablityCell", for: indexPath) as! LeaveAvailablityCell
         cell.leaveStatus = self.leaveStatus[indexPath.row]
-        cell.viewLop.isHidden = self.leaveStatus[indexPath.row].leaveTypeCode == "LOP" ? false : true
+       // cell.viewLop.isHidden = self.leaveStatus[indexPath.row].leaveTypeCode == "LOP" ? false : true
         return cell
     }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.width / 4, height: collectionView.height)
+    }
+
 }
 
 
 
-extension LeaveApplicationVC: UITextViewDelegate {
-    
-//    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-//        if self.selectedLeaveType != nil{
-//            return true
-//        }else{
-//
-//            return false
-//        }
-//    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
-            textView.text = nil
-            textView.textColor = UIColor.black
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        switch textView {
-        case txtViewLeaveReason:
-            if textView.text.isEmpty {
-                textView.text = "Enter leave Reason"
-                textView.textColor = UIColor.lightGray
-            }
-            break
-        default:
-            if textView.text.isEmpty {
-                textView.text = "Enter the remarks"
-                textView.textColor = UIColor.lightGray
-            }
-            break
-        }
-    }
-}
+
 
 
 extension Date{
@@ -604,25 +945,7 @@ extension Date{
 
 
 
-struct LeaveStatus{
-    
-    var available : String!
-    var eligibility : String!
-    var leaveTypeCode : String!
-    var leaveCode : String!
-    var taken : String!
-    
-    
-    init(fromDictionary dictionary: [String:Any]){
 
-        available = dictionary["Avail"] as? String ?? ""
-        eligibility = dictionary["Elig"] as? String ?? ""
-        leaveTypeCode = dictionary["Leave_Type_Code"] as? String ?? ""
-        leaveCode = dictionary["Leave_code"] as? String ?? ""
-        taken = dictionary["Taken"] as? String ?? ""
-        
-    }
-}
 
 
 

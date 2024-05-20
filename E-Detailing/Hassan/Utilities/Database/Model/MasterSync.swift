@@ -240,7 +240,7 @@ enum `MasterInfo` : String, CaseIterable {
         case .institutions:
             return String(format: "%@GET/Hospitals", mainUrl)
         case .leaveType:
-            return String(format: "%@table/leave", mainUrl)
+            return String(format: "%@get/leave", mainUrl)
             
         case .tourPlanStatus,.visitControl,.stockBalance,.mappedCompetitors:
             return String(format: "%@table/additionaldcrmasterdata", mainUrl)

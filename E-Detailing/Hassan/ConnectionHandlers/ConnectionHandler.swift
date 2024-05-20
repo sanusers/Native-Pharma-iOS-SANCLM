@@ -23,6 +23,8 @@ final class ConnectionHandler : NSObject {
         case getdcrdate = "getdcrdate"
         case gettodaydcr = "gettodaydcr"
         case getpreCalls = "getcuslvst"
+        case getLeaveStatus = "getleavestatus"
+        case checkLeaveAvailability = "getlvlvalid"
     }
     
     static let shared = ConnectionHandler()
@@ -360,7 +362,7 @@ final class ConnectionHandler : NSObject {
                 }
             
                 
-                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
                     var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
@@ -368,6 +370,8 @@ final class ConnectionHandler : NSObject {
                     var encodedAdayCalls: [TodayCallsModel]?
                     var encodedDcrDates: [DCRdatesModel]?
                     var encodedPrecalls : [PrecallsModel]?
+                    var encodedleaveInfo : [LeaveStatus]?
+                    var encodedLeaveAvailability : [LeaveAvailability]?
                     if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { result in
                            // decodecObj
@@ -556,7 +560,63 @@ final class ConnectionHandler : NSObject {
                             
                             
                             
-                        }
+                         }
+                    }  else if data["tableName"] as! String == TableName.getLeaveStatus.rawValue {
+                        
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [LeaveStatus].self) { result in
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedleaveInfo = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedleaveInfo)
+                                    
+                                    // Convert Swift object to JSON string
+                                    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedleaveInfo) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                                
+                            }
+                            
+                            
+                            
+                         }
+                    }   else if data["tableName"] as! String == TableName.checkLeaveAvailability.rawValue {
+                        
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [LeaveAvailability].self) { result in
+                            switch result {
+                            case .success(let decodecObj):
+                                encodedLeaveAvailability = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedLeaveAvailability)
+                                    
+                                    // Convert Swift object to JSON string
+                                    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedLeaveAvailability) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                                
+                            }
+                            
+                            
+                            
+                         }
                     }
 
  

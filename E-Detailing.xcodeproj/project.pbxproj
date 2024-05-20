@@ -17,6 +17,7 @@
 		380566262B983AFD00BB9117 /* DCRdetailViewEditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */; };
 		380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */; };
 		380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */; };
+		380DCDB42BFB4BE600F455C9 /* LeaveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
 		38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */; };
 		38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */; };
@@ -390,6 +391,7 @@
 		380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditVC.swift; sourceTree = "<group>"; };
 		380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditView.swift; sourceTree = "<group>"; };
 		380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
+		380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveModels.swift; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
 		38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAllInfoTVC.xib; sourceTree = "<group>"; };
 		38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoCVC.swift; sourceTree = "<group>"; };
@@ -768,6 +770,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		380DCDB22BFB4BCF00F455C9 /* LeaveApplication */ = {
+			isa = PBXGroup;
+			children = (
+				380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */,
+			);
+			path = LeaveApplication;
+			sourceTree = "<group>";
+		};
 		38107C4A2B36F18900ACEDF3 /* ReportsViewMore */ = {
 			isa = PBXGroup;
 			children = (
@@ -1187,6 +1197,7 @@
 		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				380DCDB22BFB4BCF00F455C9 /* LeaveApplication */,
 				38111E1F2BB44F5100C46358 /* RCPAmodels */,
 				38FAA1752B7F5C8100714AA2 /* MyDayPlan */,
 				38FAA16C2B7F255600714AA2 /* CommonStructs.swift */,
@@ -1969,6 +1980,7 @@
 				38D528AC2A9A251300AD3F78 /* TaggingListVC.swift in Sources */,
 				38E659862B33086C00E7BF42 /* ReportsVC.swift in Sources */,
 				38107C622B36FA0400ACEDF3 /* ViewmoreCVC.swift in Sources */,
+				380DCDB42BFB4BE600F455C9 /* LeaveModels.swift in Sources */,
 				38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */,
 				38FDD4152B99881500566A04 /* CommonResouceInfoTVC.swift in Sources */,
 				387BDB032BAB1E20002B5E7D /* AddCallinfoVC.swift in Sources */,

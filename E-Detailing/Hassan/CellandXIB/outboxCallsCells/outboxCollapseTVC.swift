@@ -41,7 +41,7 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
         dateLbl.textColor = .appTextColor
         vxView.backgroundColor = .appLightPink
 //        if #available(iOS 13.0, *) {
-//            collapseIV.image = UIImage(systemName: "chevron.down")
+//            collapseIV.image = UIImage(systemName: "Vector")
 //            syncIV.image = UIImage(named: "arrow.triangle.2.circlepath")
 //            syncIV.tintColor = .appLightPink
 //        } else {

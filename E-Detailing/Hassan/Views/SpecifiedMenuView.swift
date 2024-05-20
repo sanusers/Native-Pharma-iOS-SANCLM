@@ -595,7 +595,42 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
-         
+            case .leave:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                    toLOadData()
+                }
+                var filteredLeaveType = [LeaveType]()
+                filteredLeaveType.removeAll()
+                var isMatched = false
+              leaveArr?.forEach({ workType in
+                    if workType.leaveName!.lowercased().contains(newText) {
+                        filteredLeaveType.append(workType)
+                        isMatched = true
+                        
+                    }
+                })
+                
+                if newText.isEmpty {
+                  //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+                    self.noresultsView.isHidden = true
+                    //self.selectAllView.isHidden = true
+                   // self.selectAllHeightConst.constant = 0
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    self.leaveArr = filteredLeaveType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
                 
             default:
                 print("Yet to implement")
@@ -659,10 +694,13 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             return self.speciality?.count ?? 0
         case.category:
             return self.category?.count ?? 0
+            
+        case .leave:
+            return self.leaveArr?.count ?? 0
         default:
             print("Yet to implement")
         }
-        return 10
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -1350,6 +1388,27 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return cell
             
+            
+        case .leave:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+           
+            cell.selectionStyle = .none
+           
+            var yetTosendModel: NSManagedObject?
+            if let modelArr = self.leaveArr, !modelArr.isEmpty {
+                 let model: LeaveType = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+                // cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.category, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
+            
         default:
             print("Yet to implement")
         }
@@ -1432,6 +1491,7 @@ class SpecifiedMenuView: BaseView {
     var unlisteedDocArr : [UnListedDoctor]?
     var filteredTerritories: [Territory]?
     var filteredCompetitors: [Competitor]?
+    var filteredLeave : [LeaveType]?
     var filteredJfw: [JointWork]?
     var inputsArr: [Input]?
     var productArr: [Product]?
@@ -1441,6 +1501,7 @@ class SpecifiedMenuView: BaseView {
     var qualifications: [Qualifications]?
     var feedback : [Feedback]?
     var competitorsArr : [Competitor]?
+    var leaveArr: [LeaveType]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
@@ -1448,6 +1509,7 @@ class SpecifiedMenuView: BaseView {
     var selectedCode: Int?
     var previewType: String?
     var selectedClusterID = [String: Bool]()
+    var selectedLeaveID = [String: Bool]()
     var selectedJwID = [String: Bool]()
     var selectedCompetitorID = [String: Bool]()
     var isRejected = Bool()
@@ -1552,6 +1614,12 @@ class SpecifiedMenuView: BaseView {
             }
             
             
+            welf.filteredLeave = welf.leaveArr?.filter { leave in
+                guard let code = leave.leaveCode else {
+                    return false
+                }
+                return welf.selectedLeaveID[code] == true
+            }
             
             welf.filteredJfw = welf.jointWorkArr?.filter { territory in
                       guard let code = territory.code else {
@@ -1818,6 +1886,11 @@ class SpecifiedMenuView: BaseView {
            bottomHolderHeight.constant = 0
            self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            
+       case .leave:
+           titleLbl.text = "Select leave type"
+           bottomHolderHeight.constant = 0
+           self.leaveArr = DBManager.shared.getLeaveType()
+           
        case .competitors:
            bottomHolderHeight.constant = 80
            var tempCompetitor: [MapCompDet] = []
@@ -2033,6 +2106,11 @@ class SpecifiedMenuTCell: UITableViewCell
         brandMatrisIndicator.backgroundColor = .appGreen
         brandMatrisIndicator.isHidden = true
         specialityLbl.isHidden = true
+    }
+    
+    func populateCell(model: LeaveType) {
+        lblName.text = model.leaveName
+      //  itemTypeLbl.text = model.productMode
     }
     
     

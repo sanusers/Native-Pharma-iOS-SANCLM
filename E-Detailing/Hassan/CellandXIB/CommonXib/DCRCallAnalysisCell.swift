@@ -80,16 +80,13 @@ class DCRCallAnalysisCell : UICollectionViewCell {
         self.viewChart.isClockwise = true
         self.viewChart.font = UIFont(name: "Satoshi-Medium", size: 14)!
         self.viewChart.fontColor = .appWhiteColor
-        if #available(iOS 13.0, *) {
-            self.viewChart.outerRingColor = UIColor.systemGray4
-        } else {
-            self.viewChart.outerRingColor = UIColor.lightGray
-            // Fallback on earlier versions
-        }
+    
+            self.viewChart.outerRingColor = .appLightTextColor.withAlphaComponent(0.2)
+  
         
         self.viewChart.innerRingColor = .appWhiteColor
         self.viewChart.innerRingWidth = 2.0
-        self.viewChart.style = .bordered(width: 0.0, color: .black)
+        self.viewChart.style = .bordered(width: 0.0, color: .appLightTextColor.withAlphaComponent(0.2))
         self.viewChart.outerRingWidth = 1.0
         
         let part = dcrCount.callsCount

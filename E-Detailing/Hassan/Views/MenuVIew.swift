@@ -494,6 +494,7 @@ class MenuView : BaseView{
         case speciality
         case feedback
         case competitors
+        case leave
       //  case FieldWork
        // case others
     }

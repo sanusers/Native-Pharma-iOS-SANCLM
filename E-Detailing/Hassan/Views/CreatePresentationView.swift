@@ -573,7 +573,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             cell.contentsHolderView.layer.borderWidth = 0
             cell.contentsHolderView.layer.borderColor = UIColor.clear.cgColor
             cell.contentsHolderView.elevate(0)
-            cell.accessoryIV.image = UIImage(systemName: "chevron.down")
+            cell.accessoryIV.image = UIImage(systemName: "Vector")
         
             if selectedBrandsIndex == indexPath.row {
                 cell.contentsHolderView.layer.borderWidth = 0.5

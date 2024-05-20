@@ -12,9 +12,9 @@ import UIKit
 
 struct QuicKLink {
     
-    var color : UIColor!
-    var name : String!
-    var image : UIImage!
+    var color : UIColor
+    var name : String
+    var image : UIImage
 }
 
 

@@ -169,17 +169,7 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
         
         
         
-//        if let selectedToDate = self.selectedToDate {
-//            if Calendar.current.isDate(selectedToDate, inSameDayAs: date) {
-//                 cell.contentHolderView.backgroundColor = .appLightPink
-//             }
-//        }
-//        
-//        if let selectedFromDate = self.selectedFromDate {
-//            if Calendar.current.isDate(selectedFromDate, inSameDayAs: date) {
-//                 cell.contentHolderView.backgroundColor = .appLightPink
-//             }
-//        }
+        cell.contentHolderView.backgroundColor = .appWhiteColor
         
         if let selectedFromDate = self.selectedFromDate, let selectedToDate = self.selectedToDate {
               if date >= selectedFromDate && date <= selectedToDate {

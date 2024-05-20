@@ -16,59 +16,157 @@ class LeaveAvailablityCell : UICollectionViewCell{
     
     @IBOutlet weak var lblLeaveTypeName: UILabel!
     
-    @IBOutlet weak var circularView: UICircularProgressRing!
+    @IBOutlet weak var viewChart: UICircularProgressRing!
     
-    @IBOutlet weak var lblValue: UILabel!
+    @IBOutlet var viewLeavetype: UIView!
     
     
     @IBOutlet weak var viewLop: UIView!
     
     @IBOutlet weak var lblLop: UILabel!
     
+    @IBOutlet var wholeLbl: UILabel!
+    @IBOutlet var partLbl: UILabel!
+    @IBOutlet var slashLbl: UILabel!
+    
     var leaveStatus : LeaveStatus! {
         didSet {
-            self.lblLeaveTypeName.text = leaveStatus.leaveTypeCode
+
+                switch leaveStatus.leaveCode {
+                case "247":
+                    //cl
+                    viewLeavetype.isHidden = false
+                    viewLop.isHidden = true
+                    self.lblLeaveTypeName.text = "Casual Leave"
+                    self.viewChart.startAngle = -90.0
+                    self.viewChart.isClockwise = true
+                    self.viewChart.font = UIFont(name: "Satoshi-Medium", size: 14)!
+                    self.viewChart.fontColor = .appWhiteColor
+                    self.viewChart.outerRingColor = .appLightTextColor.withAlphaComponent(0.2)
+                    
+                    self.viewChart.innerRingColor = .appGreen
+                    self.viewChart.innerRingWidth = 3.0
+                    self.viewChart.style = .bordered(width: 0.0, color: .appLightTextColor.withAlphaComponent(0.2))
+                    self.viewChart.outerRingWidth = 3.0
+                    
+                
+                     
+                    if let wholeString = leaveStatus.eligibility, let whole = NumberFormatter().number(from: wholeString) ,
+                       let partString = leaveStatus.taken, let part = NumberFormatter().number(from: partString) {
+                        
+                        let percentage = (Double(truncating: part) / (Double(truncating: whole))) * 100
+                        print(percentage) // This will give you the percentage
+                        self.viewChart.startProgress(to: CGFloat(truncating: percentage as NSNumber), duration: 0)
+                        partLbl.text = partString
+                        slashLbl.text = "/"
+                        wholeLbl.text = wholeString
+                    } else {
+                        print("Invalid input")
+                    }
+                    
+                    self.viewChart.maxValue = CGFloat(truncating: 100)
+           
+                   
+                case "248":
+                    //pl
+                    viewLeavetype.isHidden = false
+                    viewLop.isHidden = true
+                    self.lblLeaveTypeName.text = "Paid Leave"
+                    self.viewChart.startAngle = -90.0
+                    self.viewChart.isClockwise = true
+                    self.viewChart.font = UIFont(name: "Satoshi-Medium", size: 14)!
+                    self.viewChart.fontColor = .appWhiteColor
+                    self.viewChart.outerRingColor = .appLightTextColor.withAlphaComponent(0.2)
+                    
+                    self.viewChart.innerRingColor = .appBlue
+                    self.viewChart.innerRingWidth = 3.0
+                    self.viewChart.style = .bordered(width: 0.0, color: .appLightTextColor.withAlphaComponent(0.2))
+                    self.viewChart.outerRingWidth =  3.0
+                    
+             
+                     
+                    if let wholeString = leaveStatus.eligibility, let whole = NumberFormatter().number(from: wholeString) ,
+                       let partString = leaveStatus.taken, let part = NumberFormatter().number(from: partString) {
+                        
+                        let percentage = (Double(truncating: part) / (Double(truncating: whole))) * 100
+                        print(percentage) // This will give you the percentage
+                        self.viewChart.startProgress(to: CGFloat(truncating: percentage as NSNumber), duration: 0)
+                        partLbl.text = partString
+                        slashLbl.text = "/"
+                        wholeLbl.text = wholeString
+                    } else {
+                        print("Invalid input")
+                    }
+                    
+                    self.viewChart.maxValue = CGFloat(truncating: 100)
+        
+                case "249":
+                    //sl
+                    viewLeavetype.isHidden = false
+                    viewLop.isHidden = true
+                    self.lblLeaveTypeName.text = "Sick Leave"
+             
+                    self.viewChart.startAngle = -90.0
+                    self.viewChart.isClockwise = true
+                    self.viewChart.font = UIFont(name: "Satoshi-Medium", size: 14)!
+                    self.viewChart.fontColor = .appWhiteColor
+                    self.viewChart.outerRingColor = .appLightTextColor.withAlphaComponent(0.2)
+                    
+                    self.viewChart.innerRingColor = .appLightPink
+                    self.viewChart.innerRingWidth = 3.0
+                    self.viewChart.style = .bordered(width: 0.0, color: .appLightTextColor.withAlphaComponent(0.2))
+                    self.viewChart.outerRingWidth =  3.0
+                    
+                  
+                     
+                    if let wholeString = leaveStatus.eligibility, let whole = NumberFormatter().number(from: wholeString) ,
+                       let partString = leaveStatus.taken, let part = NumberFormatter().number(from: partString) {
+                        
+                        let percentage = (Double(truncating: part) / (Double(truncating: whole))) * 100
+                        print(percentage) // This will give you the percentage
+                        self.viewChart.startProgress(to: CGFloat(truncating: percentage as NSNumber), duration: 0)
+                        partLbl.text = partString
+                        slashLbl.text = "/"
+                        wholeLbl.text = wholeString
+                    } else {
+                        print("Invalid input")
+                    }
+                    
+                    self.viewChart.maxValue = CGFloat(truncating: 100)
             
-            self.circularView.startAngle = -90.0
-            self.circularView.isClockwise = true
-            self.circularView.font = UIFont(name: "Satoshi-Bold", size: 24)!
-            self.circularView.fontColor = .white
-            self.circularView.outerRingColor = UIColor.lightGray
+                case "250":
+                    //LOP
+                    viewLeavetype.isHidden = true
+                    viewLop.isHidden = false
+                    lblLop.text = leaveStatus.taken
+                    self.lblLeaveTypeName.text = "LOP days"
+                default:
+                 print("Yet to implement")
+                }
             
             
-            let color = [UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(61.0/255.0), green: CGFloat(165.0/255.0), blue: CGFloat(244.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(0.0/255.0), green: CGFloat(198.0/255.0), blue: CGFloat(137.0/255.0), alpha: CGFloat(0.8)),UIColor(red: CGFloat(128.0/255.0), green: CGFloat(0.0/255.0), blue: CGFloat(128.0/255.0), alpha: CGFloat(0.7))].randomElement()
             
-            
-            self.circularView.innerRingColor = color ?? UIColor.systemPink
-            self.circularView.style = .bordered(width: 0.0, color: .black)
-            self.circularView.outerRingWidth = 5.0
-            
-            if let n = NumberFormatter().number(from: leaveStatus.eligibility) {
-                self.circularView.maxValue = CGFloat(truncating: n)
-            }
-            
-            if let avail = NumberFormatter().number(from: leaveStatus.available) {
-                self.circularView.startProgress(to: CGFloat(truncating: avail), duration: 2)
-            }
-            
-            let textValue = leaveStatus.available + "/" + leaveStatus.eligibility
-            self.lblLop.text = leaveStatus.taken
-            
-            let availLength = leaveStatus.available.count
-            
-            let eligiLength = leaveStatus.eligibility.count + 1
-            
-            let text = NSMutableAttributedString(
-              string: textValue,
-              attributes: [.font: UIFont(name: "Satoshi-Bold", size: 28) as Any])
-            text.addAttributes([.font: UIFont(name: "Satoshi-Regular", size: 20) as Any], range: NSMakeRange(availLength,eligiLength))
-            self.lblValue.attributedText = text
+
         }
     }
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblLeaveTypeName.setFont(font: .medium(size: .BODY))
+        lblLeaveTypeName.textColor = .appLightTextColor
+        lblLop.setFont(font: .bold(size: .HEADER))
+        lblLop.textColor = .appTextColor
+        
+        
+        partLbl.setFont(font: .bold(size: .HEADER))
+        partLbl.textColor = .appTextColor
+        
+        wholeLbl.setFont(font: .medium(size: .BODY))
+        wholeLbl.textColor = .appLightTextColor
+        
+        slashLbl.setFont(font: .medium(size: .BODY))
+        slashLbl.textColor = .appLightTextColor
     }
     
 }
