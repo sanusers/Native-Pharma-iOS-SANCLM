@@ -11,6 +11,8 @@ import UIKit
 
 protocol OutboxDetailsTVCDelegate: AnyObject {
     func didTapoutboxEdit(dcrCall: TodayCallsModel)
+    func didTapOutboxDelete(dcrCall: TodayCallsModel)
+    func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel)
 }
 
 
@@ -27,19 +29,19 @@ extension OutboxDetailsTVC: PopOverVCDelegate {
     
     func didTapRow(_ index: Int, _ SelectedArrIndex: Int) {
         if index == 0 {
-         //   let modal = self.tempArrofPlan?[SelectedArrIndex]
-          //  self.moveToMenuVC(modal?.rawDate ?? Date(), isForWeekOff: modal?.isForWeekoff, isforHoliday: false)
-            let model = self.todayCallsModel[SelectedArrIndex]
-            self.delegate?.didTapoutboxEdit(dcrCall: model)
-            
-            
+            if isForCallEdit {
+                let model = self.todayCallsModel[SelectedArrIndex]
+                self.delegate?.didTapoutboxEdit(dcrCall: model)
+            } else {
+                let model = self.eventCaptureModel[SelectedArrIndex]
+                self.delegate?.didTapEventcaptureDelete(event: model)
+            }
+     
         }
         
         else if index == 1 {
-         //   let modal = self.tempArrofPlan?[SelectedArrIndex]
-         //   self.toRemoveSession(modal ?? SessionDetailsArr())
-           // LocalStorage.shared.setBool(LocalStorage.LocalValue.istoEnableApproveBtn, value: false)
-           // self.toToggleApprovalState(false)
+            let model = self.todayCallsModel[SelectedArrIndex]
+            self.delegate?.didTapOutboxDelete(dcrCall: model)
         }
     }
     
@@ -48,24 +50,73 @@ extension OutboxDetailsTVC: PopOverVCDelegate {
 
 extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.todayCallsModel.count
+        
+        switch collectionView {
+        case dcrCallDetailsCollection:
+            return self.todayCallsModel.count
+        case dcrEventsDetailCollection:
+            return self.eventCaptureModel.count
+        default:
+            return 0
+        }
+       
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: CalldetailsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CalldetailsCVC", for: indexPath) as! CalldetailsCVC
-        let model = self.todayCallsModel[indexPath.row]
-        cell.topopulateCell(model)
         
-        cell.optionsHolderView.addTap {
-            print("Tapped -->")
-            let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsIV, pagetype: .calls)
-             vc.delegate = self
-             vc.selectedIndex = indexPath.row
-            self.viewController?.navigationController?.present(vc, animated: true)
+        let cell: CalldetailsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "CalldetailsCVC", for: indexPath) as! CalldetailsCVC
+       
+
+        switch collectionView {
+        case dcrCallDetailsCollection:
+            let callsmodel = self.todayCallsModel[indexPath.row]
+            cell.topopulateCell(callsmodel)
+            cell.optionsIV.addTap {
+                print("Tapped -->")
+                self.isForCallEdit = true
+                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsIV, pagetype: .calls)
+                 vc.delegate = self
+                 vc.selectedIndex = indexPath.row
+                self.viewController?.navigationController?.present(vc, animated: true)
+            }
+            
+        case dcrEventsDetailCollection:
+            var filteredcallsModelArr = [TodayCallsModel]()
+            let eventsModelArr =  self.eventCaptureModel
+            let callsmodelArr = self.todayCallsModel
+            eventsModelArr.forEach { aEventCaptureModel in
+               let filteredCalls = self.todayCallsModel.filter {$0.custCode == aEventCaptureModel.custCode}
+                filteredcallsModelArr.append(contentsOf: filteredCalls)
+            }
+            let eventsmodel = eventsModelArr[indexPath.row]
+            if callsmodelArr.isEmpty {
+              
+                cell.topopulateCell(eventsmodel, nil)
+            } else {
+                let callsmodel = callsmodelArr[indexPath.row]
+                cell.topopulateCell(eventsmodel, callsmodel)
+            }
+        
+            
+            cell.eventOptionIV.addTap {
+                print("Tapped -->")
+                self.isForCallEdit = false
+                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 50), on: cell.optionsIV, pagetype: .events)
+                 vc.delegate = self
+                 vc.selectedIndex = indexPath.row
+                self.viewController?.navigationController?.present(vc, animated: true)
+            }
+        default:
+            return UICollectionViewCell()
         }
+        
+        
+
+
         
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.width, height: 90)
     }
@@ -78,19 +129,29 @@ class OutboxDetailsTVC: UITableViewCell {
         dcrCallDetailsCollection.delegate = self
         dcrCallDetailsCollection.dataSource = self
         dcrCallDetailsCollection.reloadData()
+        
+        dcrEventsDetailCollection.delegate = self
+        dcrEventsDetailCollection.dataSource = self
+        dcrEventsDetailCollection.reloadData()
+        
     }
     
     enum cellState {
         case callsExpanded
         case callsNotExpanded
+
+    }
+    
+    enum EventState {
         case eventExpanded
         case eventNotExpanded
     }
-    
+    var isForCallEdit: Bool = false
     var callsExpandState: cellState = .callsNotExpanded
-    var eventExpandState: cellState = .eventNotExpanded
+    var eventExpandState: EventState = .eventNotExpanded
     var viewController: UIViewController?
     var delegate: OutboxDetailsTVCDelegate?
+    var eventCaptureModel: [UnsyncedEventCaptureModel] = []
     var todayCallsModel: [TodayCallsModel] = []  {
         didSet {
             let intime = self.todayCallsModel.first?.vstTime ?? ""
@@ -151,6 +212,7 @@ class OutboxDetailsTVC: UITableViewCell {
     @IBOutlet var callsCollapseView: UIView!
     
     @IBOutlet var callsCollapseIV: UIImageView!
+
     
     @IBOutlet var callsCountLbl: UILabel!
     @IBOutlet var callsTitLbl: UILabel!
@@ -160,6 +222,14 @@ class OutboxDetailsTVC: UITableViewCell {
     
     //Event Capture
     
+    @IBOutlet var eventsViewSeperator: UIView!
+    @IBOutlet var eventsHolderViewHeightConst: NSLayoutConstraint!
+    @IBOutlet var eventsDetailStackHeightConst: NSLayoutConstraint!
+    @IBOutlet var eventsSubdetailVIew: UIView!
+    
+    @IBOutlet var dcrEventsDetailCollection: UICollectionView!
+    @IBOutlet var eventSubdetailHeightConst: NSLayoutConstraint!
+    @IBOutlet var eventsOverallInfoVIew: UIView!
     @IBOutlet var eventscountVxview: UIVisualEffectView!
     @IBOutlet var eventCaptureVIew: UIView!
     
@@ -194,34 +264,83 @@ class OutboxDetailsTVC: UITableViewCell {
     
     func cellRegistration() {
         dcrCallDetailsCollection.register(UINib(nibName: "CalldetailsCVC", bundle: nil), forCellWithReuseIdentifier: "CalldetailsCVC")
+        
+        dcrEventsDetailCollection.register(UINib(nibName: "CalldetailsCVC", bundle: nil), forCellWithReuseIdentifier: "CalldetailsCVC")
+        dcrEventsDetailCollection.isScrollEnabled = false
+        
+    }
+    
+    func toSetEventsCellheight(callsExpandState: EventState) {
+        let count = self.todayCallsModel.count
+        let eventsCount = self.eventCaptureModel.count
+      
+        switch callsExpandState {
+        case .eventExpanded:
+            self.eventExpandState = callsExpandState
+            cellStackHeightConst.constant = CGFloat(290 + 90 * eventsCount)
+            eventsSubdetailVIew.isHidden = false
+            eventSubdetailHeightConst.constant = CGFloat(90 * eventsCount)
+            eventsDetailStackHeightConst.constant = CGFloat(50 + 90 * eventsCount)
+            eventsHolderViewHeightConst.constant = CGFloat(50 + 90 * eventsCount)
+            eventsViewSeperator.isHidden = false
+            
+        case .eventNotExpanded:
+           
+            if self.callsExpandState == .callsExpanded {
+                cellStackHeightConst.constant = CGFloat(290 + 90 * count)
+            } else if self.callsExpandState == .callsNotExpanded {
+                cellStackHeightConst.constant = 290
+            }
+           
+            eventsSubdetailVIew.isHidden = true
+            eventSubdetailHeightConst.constant = 0
+            eventsHolderViewHeightConst.constant = 50
+            eventsDetailStackHeightConst.constant = 50
+            eventsViewSeperator.isHidden = true
+
+        }
+        
+        eventCollapseIV.image = callsExpandState == .eventNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
     }
     
     
-    func toSetCellHeight(callsExpandState: cellState) {
+    func toSetCallsCellHeight(callsExpandState: cellState) {
         let count = self.todayCallsModel.count
+        let eventsCount = self.eventCaptureModel.count
         switch callsExpandState {
         case .callsExpanded:
             self.callsExpandState = callsExpandState
             cellStackHeightConst.constant = CGFloat(290 + 90 * count)
             callSubDetailVIew.isHidden = false
-            callSubdetailHeightConst.constant = 90 * 2
+            callSubdetailHeightConst.constant = CGFloat(90 * count)
             callDetailStackHeightConst.constant = CGFloat(50 + 90 * count)
             callsHolderViewHeightConst.constant = CGFloat(50 + 90 * count)
             callsViewSeperator.isHidden = false
+            
+            //hide Event
+            //toSetEventsCellheight(callsExpandState: .callsNotExpanded)
+            
         case .callsNotExpanded:
             self.callsExpandState = callsExpandState
-            cellStackHeightConst.constant = 290
+            if self.eventExpandState == .eventExpanded {
+                cellStackHeightConst.constant = CGFloat(290 + 90 * eventsCount)
+                
+            } else if  self.eventExpandState == .eventNotExpanded {
+                cellStackHeightConst.constant = 290
+            }
+            
             callSubDetailVIew.isHidden = true
             callSubdetailHeightConst.constant = 0 //90
             callsHolderViewHeightConst.constant = 50
             callDetailStackHeightConst.constant = 50
             callsViewSeperator.isHidden = true
-        case .eventExpanded:
-            print("Yet to implement")
-        case .eventNotExpanded:
-            print("Yet to implement")
+            
+            //hide event
+
+
         }
         callsCollapseIV.image = callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
+
     }
     
     func setupUI() {
@@ -257,7 +376,8 @@ class OutboxDetailsTVC: UITableViewCell {
         callsCountLbl.textColor = .appTextColor
         eventCOuntLbl.textColor = .appTextColor
         
-//        callDCRinfoLbl.textColor = .appTextColor
+      
+//        callDCRinfoLbl.textColor  = .appTextColor
 //        callDCRinfoLbl.setFont(font: .medium(size: .BODY))
         
         

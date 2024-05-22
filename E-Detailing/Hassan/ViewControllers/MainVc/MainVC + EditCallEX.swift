@@ -447,4 +447,45 @@ extension MainVC {
         // Return the values of the chemistModelsMap
         return rcpaDetailsModelArr
     }
+    
+    
+    func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, custCode: String, _ completion : @escaping (Result<GeneralResponseModal, UserStatisticsError>) -> Void) {
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        userststisticsVM?.toUploadCapturedImage(params: param, uploadType: .eventCapture, api: .imageUpload, image: [evencaptures.image!], imageName: [evencaptures.eventCapture.imageUrl], paramData: paramData, custCode: custCode) { result in
+                
+                switch result {
+                    
+                case .success(let json):
+                    dump(json)
+                    do {
+                        let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
+                        let generalResponse = try JSONDecoder().decode(GeneralResponseModal.self, from: jsonData)
+                       print(generalResponse)
+                          if generalResponse.isSuccess ?? false {
+                              self.toCreateToast("Image upload completed")
+                              CoreDataManager.shared.removeUnsyncedEventCaptures(withCustCode: custCode) { _ in
+                                  completion(.success(generalResponse))
+                              }
+                              
+                            
+                          } else {
+                       
+                              self.toCreateToast("Image upload failed try again")
+                              completion(.failure(UserStatisticsError.failedTouploadImage))
+                          }
+                    } catch {
+                        
+                        print("Unable to decode")
+                    }
+
+                case .failure(let error):
+                    dump(error)
+                }
+            }
+
+        
+        
+    }
 }

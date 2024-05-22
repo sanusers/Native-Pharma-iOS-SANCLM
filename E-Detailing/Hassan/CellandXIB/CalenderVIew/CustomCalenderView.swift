@@ -34,7 +34,7 @@ class CustomCalenderView : UIView {
     var selectedFromDate: Date?
     var selectedToDate: Date?
     var isForFrom: Bool = false
-   
+    var isPastDaysAllowed: Bool = false
     private lazy var today: Date = {
         return Date()
     }()
@@ -110,11 +110,12 @@ class CustomCalenderView : UIView {
         
     }
     
-    func setupUI() {
+    func setupUI(isPastDaysAllowed: Bool) {
         
         self.layer.cornerRadius = 5
         dateInfoLbl.text = toTrimDate(date: today , isForMainLabel: true)
         toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+        self.isPastDaysAllowed = isPastDaysAllowed
         //toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
         self.viewCalendar.register(MyDayPlanCalenderCell.self, forCellReuseIdentifier: "MyDayPlanCalenderCell")
             
@@ -188,12 +189,14 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
                   }
               }
           }
-        
-        if date <= today {
-            cell.customLabel.textColor = .appLightTextColor
-        } else {
-            cell.customLabel.textColor = .appTextColor
+        if !self.isPastDaysAllowed {
+            if date <= today {
+                cell.customLabel.textColor = .appLightTextColor
+            } else {
+                cell.customLabel.textColor = .appTextColor
+            }
         }
+
       
         cell.customLabel.setFont(font: .medium(size: .BODY))
         // cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
@@ -205,24 +208,24 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
 
         
         cell.addTap {
-       
-            if date <= self.today {
-                self.toCreateToast("Leave can be applied only for future dates!")
-                return
-            } else {
-                
-                if self.isForFrom {
-                    self.selectedFromDate = date
-                } else {
-                    self.selectedToDate = date
+            if !self.isPastDaysAllowed  {
+                if date <= self.today {
+                    self.toCreateToast("Leave can be applied only for future dates!")
+                    return
                 }
-                
-
-                self.completion?.didSelectDate(selectedDate: date, isforFrom: self.isForFrom)
-
-            
             }
-         
+            if self.isForFrom {
+                self.selectedFromDate = date
+            } else {
+                self.selectedToDate = date
+            }
+            
+            
+            self.completion?.didSelectDate(selectedDate: date, isforFrom: self.isForFrom)
+            
+            
+            
+            
         }
         
         return cell

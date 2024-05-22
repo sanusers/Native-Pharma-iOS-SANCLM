@@ -393,7 +393,7 @@ class LeaveApplicationVC: UIViewController {
         }
         
         leaveTypeCurveView.addTap {
-            guard (self.fromDate != nil  || self.toDate != nil) else {
+            guard (self.fromDate != nil  && self.toDate != nil) else {
                 self.toCreateToast("Select from and to dates")
                 return}
             
@@ -587,7 +587,7 @@ class LeaveApplicationVC: UIViewController {
         }
         
         customCalenderView = self.loadCustomView(nibname: XIBs.customCalenderView) as? CustomCalenderView
-        customCalenderView?.setupUI()
+        customCalenderView?.setupUI(isPastDaysAllowed:  appsetup.pastLeavePost == 0 ? true : false)
         customCalenderView?.completion = self
         customCalenderView?.selectedFromDate = fromDate
         customCalenderView?.selectedToDate = toDate
@@ -606,6 +606,10 @@ class LeaveApplicationVC: UIViewController {
         
         self.btnSubmit.layer.cornerRadius = 5
 
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            toShowAlert(desc: "Please connect to active network to apply leave.", istoNavigate: false)
+            return
+        }
         
         self.fetchLeave()
         
@@ -671,13 +675,17 @@ class LeaveApplicationVC: UIViewController {
         } else if self.selectedLeveType == nil{
             return
         }
-    
+        
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            toShowAlert(desc: "Please connect to active network to apply leave.", istoNavigate: false)
+            return
+        }
       
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
         let fromDate = self.fromDate!.toString(format: "yyyy-MM-dd HH:mm:ss")
         let toDate = self.toDate!.toString(format: "yyyy-MM-dd HH:mm:ss")
         
-        var numberofDays = "\(self.totalDays.count)"
+        let numberofDays = "\(self.totalDays.count)"
         
         let leaveRemarks = self.txtViewLeaveReason.text ?? ""
         let leaveAddress = self.txtViewLeaveAddress.text ?? ""
@@ -712,11 +720,14 @@ class LeaveApplicationVC: UIViewController {
 
         print(url)
 
+        Shared.instance.showLoaderInWindow()
         userStatisticsVM.toSubmitLeave(params: tosendData, api: .toSubmitLeave, paramData: param) { result in
+            Shared.instance.removeLoaderInWindow()
             switch result {
                 
             case .success(let response):
                 if response.success ?? false {
+                    self.removeAllCache()
                     self.toShowAlert(desc: "Leave submitted successfully", istoNavigate: true)
                 }
             case .failure(let error):
@@ -755,11 +766,14 @@ class LeaveApplicationVC: UIViewController {
     private func leaveValidationApi() {
         
      
-        
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            toShowAlert(desc: "Please connect to active network to apply leave.", istoNavigate: false)
+            return
+        }
         let fromDate = self.fromDate!.toString(format: "yyyy-MM-dd")
         let toDate = self.toDate!.toString(format: "yyyy-MM-dd")
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
-        let url = APIUrl + "get/leave"
+       // let url = APIUrl + "get/leave"
        // {"tableName":"getlvlvalid","sfcode":"MR0026","Fdt":"2023-7-6","Tdt":"2023-7-6","LTy":"CL","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
         var param = [String: Any]()
         param["tableName"] = "getlvlvalid"
@@ -828,7 +842,7 @@ class LeaveApplicationVC: UIViewController {
     private func fetchLeave() {
         
       
-        let url = APIUrl + "get/leave"
+      // let url = APIUrl + "get/leave"
 
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
         var param = [String: Any]()

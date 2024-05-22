@@ -90,3 +90,11 @@ struct EventCapture {
     }
     
 }
+
+
+struct UnsyncedEventCaptureModel {
+    var custCode: String?
+    var eventcaptureDate: Date?
+    var eventCaptureParamData: Data?
+    var capturedEvents: [EventCapture]?
+}

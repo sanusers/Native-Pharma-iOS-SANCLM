@@ -166,9 +166,9 @@ extension CoreDataManager {
         let fetchRequest: NSFetchRequest<UnsyncedHomeData> = NSFetchRequest(entityName: "UnsyncedHomeData")
 
         do {
-            let slideBrands = try context.fetch(fetchRequest)
-            for brand in slideBrands {
-                context.delete(brand)
+            let results = try context.fetch(fetchRequest)
+            for object in results {
+                context.delete(object)
             }
 
             try context.save()

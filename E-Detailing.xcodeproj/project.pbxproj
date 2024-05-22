@@ -35,6 +35,8 @@
 		38111E1D2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38111E1C2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib */; };
 		38111E1E2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38111E1B2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift */; };
 		38111E212BB44F7600C46358 /* RCPAdetailsModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38111E202BB44F7600C46358 /* RCPAdetailsModal.swift */; };
+		381330472BFDEEAB007A2342 /* UnsyncedEventsCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381330462BFDEEAB007A2342 /* UnsyncedEventsCVC.xib */; };
+		381330482BFDEEAB007A2342 /* UnsyncedEventsCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381330452BFDEEAB007A2342 /* UnsyncedEventsCVC.swift */; };
 		38145EC62B3459E100DD7B4E /* WTsheetCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38145EC42B3459E100DD7B4E /* WTsheetCVC.swift */; };
 		38145EC72B3459E100DD7B4E /* WTsheetCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */; };
 		38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */; };
@@ -409,6 +411,8 @@
 		38111E1B2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompetitorsMultiselectionTVC.swift; sourceTree = "<group>"; };
 		38111E1C2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CompetitorsMultiselectionTVC.xib; sourceTree = "<group>"; };
 		38111E202BB44F7600C46358 /* RCPAdetailsModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPAdetailsModal.swift; sourceTree = "<group>"; };
+		381330452BFDEEAB007A2342 /* UnsyncedEventsCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsyncedEventsCVC.swift; sourceTree = "<group>"; };
+		381330462BFDEEAB007A2342 /* UnsyncedEventsCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UnsyncedEventsCVC.xib; sourceTree = "<group>"; };
 		38145EC42B3459E100DD7B4E /* WTsheetCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WTsheetCVC.swift; sourceTree = "<group>"; };
 		38145EC52B3459E100DD7B4E /* WTsheetCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WTsheetCVC.xib; sourceTree = "<group>"; };
 		38145EC82B345C6400DD7B4E /* VisitInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoTVC.swift; sourceTree = "<group>"; };
@@ -1341,6 +1345,8 @@
 				38DAADE82B5916AC00966B33 /* OutboxDetailsTVC.xib */,
 				38DAADEB2B59505C00966B33 /* CalldetailsCVC.swift */,
 				38DAADEC2B59505C00966B33 /* CalldetailsCVC.xib */,
+				381330452BFDEEAB007A2342 /* UnsyncedEventsCVC.swift */,
+				381330462BFDEEAB007A2342 /* UnsyncedEventsCVC.xib */,
 			);
 			path = outboxCallsCells;
 			sourceTree = "<group>";
@@ -1802,6 +1808,7 @@
 				38CBA4D42A9F80C0001992C4 /* TagViewCell.xib in Resources */,
 				38CD60E12A866CFC006FFB39 /* ProductSampleTableViewCell.xib in Resources */,
 				38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */,
+				381330472BFDEEAB007A2342 /* UnsyncedEventsCVC.xib in Resources */,
 				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
 				38C4649B2BDA8C6600B7F377 /* DetailedInfoHeader.xib in Resources */,
 				3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */,
@@ -2007,6 +2014,7 @@
 				38CA1FD92B60DBBA00AFCFD2 /* CreatePresentationVC.swift in Sources */,
 				38D2E0C32B04FC03002DD291 /* SelectAllTypesTVC.swift in Sources */,
 				38C464A02BDA8D8C00B7F377 /* DetailedInfoTVC.swift in Sources */,
+				381330482BFDEEAB007A2342 /* UnsyncedEventsCVC.swift in Sources */,
 				38145EC62B3459E100DD7B4E /* WTsheetCVC.swift in Sources */,
 				38E3C3622AF9FAAB00623C33 /* DecodeHelpers.swift in Sources */,
 				38DAADED2B59505C00966B33 /* CalldetailsCVC.swift in Sources */,

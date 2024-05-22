@@ -193,6 +193,7 @@ class MainVC : UIViewController {
     var tpDeviateReasonView:  TPdeviateReasonView?
     
     let appSetups = AppDefaults.shared.getAppSetUp()
+
     
     @IBOutlet var deviateView: UIView!
     
@@ -1634,10 +1635,11 @@ class MainVC : UIViewController {
     
     
     func toLoadOutboxTable(isSynced: Bool? = true) {
-        toSetupOutBoxDataSource(isSynced: isSynced ?? false)
-        outboxTableView.delegate = self
-        outboxTableView.dataSource = self
-        outboxTableView.reloadData()
+        toSetupOutBoxDataSource(isSynced: isSynced ?? false) {
+            self.outboxTableView.delegate = self
+            self.outboxTableView.dataSource = self
+            self.outboxTableView.reloadData()
+        }
     }
     
     
@@ -1658,7 +1660,7 @@ class MainVC : UIViewController {
         
     }
     
-    func toSetupOutBoxDataSource(isSynced: Bool) {
+    func toSetupOutBoxDataSource(isSynced: Bool, completion: @escaping() -> ()) {
         
        // toSeperateDCR(istoAppend: isSynced)
         
@@ -1695,28 +1697,66 @@ class MainVC : UIViewController {
             //
             self.outBoxDataArr?.append(toDdayCall)
         }
-        toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]())
-        if self.outBoxDataArr?.count ?? 0 == 0 {
-            toConfigureClearCalls(istoEnable: false)
-        } else {
-            toConfigureClearCalls(istoEnable: true)
+
+
+        
+        toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]()) {
+            
+            CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventCaptures in
+                if self.outBoxDataArr?.count ?? 0 == 0 && unsyncedEventCaptures.isEmpty {
+                    self.toConfigureClearCalls(istoEnable: false)
+                } else {
+                    self.toConfigureClearCalls(istoEnable: true)
+                }
+                completion()
+            }
+            
         }
     }
     
     
-    func toSeperateOutboxSections(outboxArr : [TodayCallsModel]) {
+//    func toSeperateOutboxSections(outboxArr : [TodayCallsModel]) {
+//        // Dictionary to store arrays of TodayCallsModel for each day
+//        var callsByDay: [String: [TodayCallsModel]] = [:]
+//        var eventsByday: [String : UnsyncedEventCaptureModel] = [:]
+//        // Create a DateFormatter to parse the vstTime
+//
+//        
+//        
+//        // Iterate through the array and organize elements by day
+//        for call in outboxArr {
+//             let date = call.vstTime.toDate() 
+//                let dayString = date.toString(format: "yyyy-MM-dd")
+//                
+//                // Check if the day key exists in the dictionary
+//                if callsByDay[dayString] == nil {
+//                    callsByDay[dayString] = [call]
+//                } else {
+//                    callsByDay[dayString]?.append(call)
+//                }
+//            
+//        }
+//        obj_sections.removeAll()
+//        // Iterate through callsByDay and create Section objects
+//        for (day, calls) in callsByDay {
+//            let section = Section(items: calls, date: day)
+//            obj_sections.append(section)
+//        }
+//        
+//        
+//    }
+    
+    func toSeperateOutboxSections(outboxArr: [TodayCallsModel], completion: @escaping () -> ()) {
         // Dictionary to store arrays of TodayCallsModel for each day
         var callsByDay: [String: [TodayCallsModel]] = [:]
+        var eventsByDay: [String: [UnsyncedEventCaptureModel]] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        // Create a DateFormatter to parse the vstTime
-    
-        
-        // Iterate through the array and organize elements by day
+        // Organize calls by day
         for call in outboxArr {
-             let date = call.vstTime.toDate() 
-                let dayString = date.toString(format: "yyyy-MM-dd")
-                
-                // Check if the day key exists in the dictionary
+             let date = call.vstTime.toDate()
+                let dayString = dateFormatter.string(from: date)
                 if callsByDay[dayString] == nil {
                     callsByDay[dayString] = [call]
                 } else {
@@ -1724,18 +1764,62 @@ class MainVC : UIViewController {
                 }
             
         }
-        obj_sections.removeAll()
-        // Iterate through callsByDay and create Section objects
-        for (day, calls) in callsByDay {
-            let section = Section(items: calls, date: day)
-            obj_sections.append(section)
+        
+        let dispatchGroup = DispatchGroup()
+        
+        // Fetch UnsyncedEventCaptureModel data and organize by day
+        dispatchGroup.enter()
+        CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventCaptures in
+            for eventCapture in unsyncedEventCaptures {
+                if let eventDate = eventCapture.eventcaptureDate {
+                    let dayString = dateFormatter.string(from: eventDate)
+                    if eventsByDay[dayString] == nil {
+                        eventsByDay[dayString] = [eventCapture]
+                    } else {
+                        eventsByDay[dayString]?.append(eventCapture)
+                    }
+                }
+            }
+            dispatchGroup.leave()
         }
         
-        
+        // Wait for all async tasks to complete
+        dispatchGroup.notify(queue: .main) {
+            // Create sections combining calls and events
+            obj_sections.removeAll()
+            let allDays = Set(callsByDay.keys).union(eventsByDay.keys)
+            for day in allDays {
+                let calls = callsByDay[day] ?? []
+                let events = eventsByDay[day] ?? []
+                let section = Section(items: calls, eventCaptures: events, date: day)
+                obj_sections.append(section)
+            }
+            completion()
+        }
     }
     
 
-
+//    let dispatchGroup = DispatchGroup()
+//        dispatchGroup.enter()
+//        CoreDataManager.shared.toRetriveEventcaptureCDM {
+//              unsyncedEventCaptures in
+//            
+//            
+//            
+//            for aEvent in unsyncedEventCaptures {
+//                
+//                let dayString = aEvent.eventcaptureDate?.toString(format: "yyyy-MM-dd")
+//                if eventsByday[dayString ?? ""] == nil {
+//                    eventsByday[dayString ?? ""] = aEvent
+//                } else {
+//                    eventsByday[dayString ?? ""]?.append(aEvent)
+//                }
+//            }
+//            
+//            dispatchGroup.leave()
+//            
+//            
+//        }
     
     
 
@@ -2265,7 +2349,7 @@ extension MainVC {
         //LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
         CoreDataManager.shared.removeAllOutboxParams()
         CoreDataManager.shared.removeUnsyncedHomeData()
-        
+        CoreDataManager.shared.removeAllUnsyncedEventCaptures()
         toSeperateDCR(istoAppend: false)
         self.updateDcr()
         DispatchQueue.main.async {
@@ -3218,25 +3302,35 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         case self.outboxTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "OutboxDetailsTVC", for: indexPath) as! OutboxDetailsTVC
             let model = obj_sections[indexPath.section].items
+            let eventModel = obj_sections[indexPath.section].eventCaptures
             cell.delegate = self
             cell.viewController = self
             cell.todayCallsModel = model
+            cell.eventCaptureModel = eventModel
             //[indexPath.row]
             //self.outBoxDataArr
             let count = model.count
             //self.outBoxDataArr?.count ?? 0
             cell.callsCountLbl.text = "\(count)"
+            cell.eventCOuntLbl.text = "\(eventModel.count)"
             cell.toLoadData()
             
+            
             if  !obj_sections[indexPath.section].isCallExpanded {
-                cell.toSetCellHeight(callsExpandState:  .callsNotExpanded)
+                cell.toSetCallsCellHeight(callsExpandState:  .callsNotExpanded)
+               
+            }
+            
+            if  !obj_sections[indexPath.section].isEventEcpanded {
+                cell.toSetEventsCellheight(callsExpandState:  .eventNotExpanded)
+                
             }
             
             
             cell.callsCollapseIV.addTap {
-                cell.callsExpandState =  cell.callsExpandState == .callsNotExpanded ? .callsExpanded : .callsNotExpanded
-                // cell.callsCollapseIV.image = cell.callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
-                
+                cell.eventExpandState  = .eventNotExpanded
+                obj_sections[indexPath.section].isEventEcpanded = false
+                cell.callsExpandState =  cell.callsExpandState == .callsNotExpanded ?  .callsExpanded : .callsNotExpanded
                 if cell.callsExpandState == .callsExpanded {
                     obj_sections[indexPath.section].isCallExpanded = true
  
@@ -3244,9 +3338,33 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     obj_sections[indexPath.section].isCallExpanded = false
    
                 }
-                cell.toSetCellHeight(callsExpandState:  cell.callsExpandState)
+                cell.toSetCallsCellHeight(callsExpandState:  cell.callsExpandState)
+                cell.toSetEventsCellheight(callsExpandState: .eventNotExpanded)
                 self.outboxTableView.reloadData()
             }
+            
+            
+            
+            
+            cell.eventCollapseIV.addTap {
+                cell.callsExpandState = .callsNotExpanded
+                obj_sections[indexPath.section].isCallExpanded = false
+                cell.eventExpandState =  cell.eventExpandState != .eventNotExpanded ? .eventNotExpanded  : .eventExpanded
+                
+        
+                if cell.eventExpandState == .eventExpanded {
+                    obj_sections[indexPath.section].isEventEcpanded = true
+                    
+ 
+                } else {
+                    obj_sections[indexPath.section].isEventEcpanded = false
+   
+                }
+                cell.toSetEventsCellheight(callsExpandState:  cell.eventExpandState)
+                cell.toSetCallsCellHeight(callsExpandState:  .callsNotExpanded)
+                self.outboxTableView.reloadData()
+            }
+            
             
             // cell.imgProfile.backgroundColor = UIColor.random()
             cell.selectionStyle = .none
@@ -3490,13 +3608,21 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         // return UITableView.automaticDimension
         
         if tableView == self.outboxTableView {
-            let count = obj_sections[indexPath.section].items.count
+            let callsCount = obj_sections[indexPath.section].items.count
+            let eventsCount = obj_sections[indexPath.section].eventCaptures.count
+            
+
+            
             //self.outBoxDataArr?.count ?? 0
             switch indexPath.section {
             default:
-                if  obj_sections[indexPath.section].isCallExpanded == true {
-                    return CGFloat(290 + 10 + (90 * count))
-                } else {
+                if  obj_sections[indexPath.section].isCallExpanded == true  {
+                    return CGFloat(290 + 10 + (90 * callsCount))
+                }
+                if obj_sections[indexPath.section].isEventEcpanded == true {
+                    return CGFloat(290 + 10 + (90 * eventsCount))
+                }
+                else {
                     return 290 + 10
                 }
             }
@@ -4621,12 +4747,95 @@ extension MainVC : outboxCollapseTVCDelegate {
             self.toretryDCRupload(date: obj_sections[refreshIndex].date) {_ in
             
                 self.toCreateToast("Sync completed")
+                Shared.instance.showLoaderInWindow()
+                self.toUploadUnsyncedImage() {
+                    Shared.instance.removeLoaderInWindow()
+                }
+                
             }
         } else {
             self.toCreateToast("Please connect to internet and try again later.")
         }
 
     }
+    
+    
+    func toUploadUnsyncedImage(completion: @escaping () -> ()) {
+      
+        CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventsArr in
+            
+            // Create a serial dispatch queue to handle uploads synchronously
+            let uploadQueue = DispatchQueue(label: "com.yourapp.uploadQueue")
+            
+            // Create a dispatch group to wait for all uploads to complete
+            let dispatchGroup = DispatchGroup()
+            
+            unsyncedEventsArr.forEach { unsyncedEvent in
+                var eventCaptureVMs = [EventCaptureViewModel]()
+                let yattoPostData = unsyncedEvent.eventCaptureParamData
+                let eventCaptures = unsyncedEvent.capturedEvents
+                let optionalParam = ObjectFormatter.shared.convertDataToJson(data: yattoPostData ?? Data())
+                
+                eventCaptures?.forEach { aEventCapture in
+                    let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
+                    eventCaptureVMs.append(aEventCaptureViewModel)
+                }
+                
+                // Process each eventCaptureViewModel synchronously
+                eventCaptureVMs.forEach { aEventCaptureViewModel in
+                    dispatchGroup.enter()
+                    
+                        self.callSaveimageAPI(param: optionalParam ?? JSON(), paramData: yattoPostData ?? Data(), evencaptures: aEventCaptureViewModel, custCode: "") { result in
+                            dispatchGroup.leave()
+                        }
+
+                    // Wait for the current upload to finish before starting the next
+                    dispatchGroup.wait()
+                }
+            }
+            
+            // Notify the completion handler when all uploads are done
+            dispatchGroup.notify(queue: .main) {
+                completion()
+            }
+        }
+    }
+    
+//    func toUploadUnsyncedImage(completion: @escaping () -> ()) {
+//        CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventsArr in
+//        
+//            unsyncedEventsArr.forEach { unsyncedEvent in
+//                var eventCaptureVMs = [EventCaptureViewModel]()
+//               let yattoPostData = unsyncedEvent.eventCaptureParamData
+//                let eventCaptures = unsyncedEvent.capturedEvents
+//                let yettoPostParam = [String : Any]()
+//                let optionalParam = ObjectFormatter.shared.convertDataToJson(data: yattoPostData ?? Data())
+//                eventCaptures?.forEach({ aEventCapture in
+//                    let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
+//                    eventCaptureVMs.append(aEventCaptureViewModel)
+//                })
+//               
+//                eventCaptureVMs.forEach { aEventCaptureViewModel in
+//                    self.callSaveimageAPI(param: optionalParam ?? JSON(), paramData: yattoPostData ?? Data(), evencaptures: aEventCaptureViewModel, custCode: "") { result in
+//                        
+//                        
+//                    }
+//                }
+//             
+//                
+//     
+//              
+//                
+//             
+//            }
+//            
+//           
+//            
+//        }
+//        
+//
+//
+//    }
     
     
 }
@@ -4679,9 +4888,6 @@ extension MainVC: PopOverVCDelegate {
         } else {
             checkinDetailsView?.setupUI(type: HomeCheckinDetailsView.ViewType.checkout)
         }
-        
-        
-        view.addSubview(checkinDetailsView ?? HomeCheckinDetailsView())
         
     }
     
@@ -5089,6 +5295,29 @@ extension MainVC :  HomeSideMenuViewDelegate {
 
 
 extension MainVC: OutboxDetailsTVCDelegate {
+    func didTapOutboxDelete(dcrCall: TodayCallsModel) {
+      
+        var param: [String: Any] = [:]
+        param["CustCode"] = dcrCall.custCode
+        self.toRemoveOutboxandDefaultParams(param: param) { isRemoved in
+            CoreDataManager.shared.removeUnsyncedEventCaptures(withCustCode: dcrCall.custCode) {_  in
+                
+                self.toLoadOutboxTable()
+            }
+        }
+        
+    }
+    
+    func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel) {
+        guard let custCode = event.custCode else {return}
+
+        CoreDataManager.shared.removeUnsyncedEventCaptures(withCustCode: custCode) {_  in
+            
+            self.toLoadOutboxTable()
+        }
+
+    }
+    
     func didTapoutboxEdit(dcrCall: TodayCallsModel) {
         print("Tapped")
         dump(dcrCall)

@@ -241,7 +241,7 @@ final class ConnectionHandler : NSObject {
     
     
     func imageUploadService(urlString:String, uploadType: UploadType,  parameters:JSON, image:[UIImage]?=nil, imageName:[String] = ["image"], isDocument: Bool? = false, docurl: URL? = URL(string: ""), custCode: String, paramData: Data, complete:@escaping (_ response: [String:Any]) -> Void, onError : @escaping ((Error?)-> Void)) {
-        UIApplication.shared.beginIgnoringInteractionEvents()
+        //UIApplication.shared.beginIgnoringInteractionEvents()
         AF.upload(multipartFormData: { (multipartFormData) in
            
             if let doc = docurl, doc != URL(string: "") {
@@ -295,7 +295,7 @@ final class ConnectionHandler : NSObject {
         }, to: "\("")\(urlString)")
         .responseJSON(completionHandler: { response in
          
-          UIApplication.shared.endIgnoringInteractionEvents()
+          //UIApplication.shared.endIgnoringInteractionEvents()
            
            switch response.result {
            case .success(let value):

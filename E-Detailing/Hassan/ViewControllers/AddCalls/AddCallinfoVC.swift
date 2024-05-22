@@ -524,18 +524,48 @@ class AddCallinfoVC: BaseViewController {
                         self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                     }
             } else {
+                Shared.instance.showLoaderInWindow()
                 addedDCRCallsParam["address"] =  ""
                 toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
                     guard let welf = self else {return}
                     welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
-                        
-                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                        welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+                        welf.toCacheCapturedEvents() { iscached in
+                            Shared.instance.removeLoaderInWindow()
+                            NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+                        }
+                    
                     }
                
                 }
               
             }
+    }
+    
+    
+    func toCacheCapturedEvents(completion: @escaping (Bool)->()) {
+        var param = [String: Any]()
+        param["tableName"] = "uploadphoto"
+        param["sfcode"] = appsetup.sfCode
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType
+        param["Designation"] = appsetup.desig
+        param["state_code"] = appsetup.stateCode
+        param["subdivision_code"] = appsetup.subDivisionCode
+        let dcrCall  = dcrCall.toRetriveDCRdata(dcrcall: dcrCall.call)
+        param["custCode"] = dcrCall.code
+        
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+
+        if !addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.isEmpty {
+           cacheUnsyncedEvents(eventcaputreDate: Date(), eventcaptureparam: jsonDatum) { isSaved in
+                completion(true)
+            }
+        } else {
+            completion(true)
+        }
+
     }
     
     func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true, outboxParam: Data? = nil, completion: @escaping (Bool) -> ()) {
@@ -561,11 +591,7 @@ class AddCallinfoVC: BaseViewController {
                 Shared.instance.removeLoaderInWindow()
                 if !isPosted {
                     welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
-                        if !welf.addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.isEmpty {
-                            welf.cacheUnsyncedEvents(eventcaputreDate: Date(), eventcaptureparam: jsonDatum) { isSaved in
-                                completion(true)
-                            }
-                        } else {
+                        welf.toCacheCapturedEvents() { isCached in
                             completion(true)
                         }
                     }
@@ -637,53 +663,119 @@ class AddCallinfoVC: BaseViewController {
         
     }
     
+    
     func cacheUnsyncedEvents(eventcaputreDate: Date, eventcaptureparam: Data, completion: @escaping (Bool) -> ()) {
-        var eventCaptures = [EventCapture]()
-        let eventCaptureData = self.addCallinfoView.eventCaptureListViewModel.EventCaptureData()
+        let eventCaptures = self.addCallinfoView.eventCaptureListViewModel.EventCaptureData().map { $0.eventCapture }
         
-        eventCaptureData.forEach { aEventCaptureViewModel in
-            eventCaptures.append(aEventCaptureViewModel.eventCapture)
-        }
+        let fetchRequest: NSFetchRequest<UnsyncedEventCaptures> = UnsyncedEventCaptures.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", self.dcrCall.code)
         
-        if let eventCapturesNSEntityDescription = NSEntityDescription.entity(forEntityName: "UnsyncedEventCaptures", in: context) {
+        do {
+            let results = try context.fetch(fetchRequest)
+            let eventCapturesCDM: UnsyncedEventCaptures
+            if let existingEventCapture = results.first {
+                // Update existing entity
             
-            let eventCapturesCDM = UnsyncedEventCaptures(entity: eventCapturesNSEntityDescription, insertInto: context)
+                let dispatchGroup = DispatchGroup()
+                eventCapturesCDM = existingEventCapture
+                existingEventCapture.eventcaptureParamData = eventcaptureparam
+                dispatchGroup.enter()
+                CoreDataManager.shared.toReturnEventcaptureEntity(eventCaptures: eventCaptures) { eventCaptureViewModelCDEntity in
+                    eventCapturesCDM.unsyncedCapturedEvents = eventCaptureViewModelCDEntity
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.notify(queue: .main) {
+                    do {
+                        try self.context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+            } else {
+                // Create new entity
+                guard let eventCapturesNSEntityDescription = NSEntityDescription.entity(forEntityName: "UnsyncedEventCaptures", in: context) else {
+                    completion(false)
+                    return
+                }
+                eventCapturesCDM = UnsyncedEventCaptures(entity: eventCapturesNSEntityDescription, insertInto: context)
+            }
+            
             let dispatchGroup = DispatchGroup()
-           
-            eventCapturesCDM.eventcaptureDate  = eventcaputreDate
             
+            eventCapturesCDM.eventcaptureDate = eventcaputreDate
+            eventCapturesCDM.custCode = self.dcrCall.code
             eventCapturesCDM.eventcaptureParamData = eventcaptureparam
+            
             dispatchGroup.enter()
             CoreDataManager.shared.toReturnEventcaptureEntity(eventCaptures: eventCaptures) { eventCaptureViewModelCDEntity in
                 eventCapturesCDM.unsyncedCapturedEvents = eventCaptureViewModelCDEntity
                 dispatchGroup.leave()
             }
             
-            do {
-                try context.save()
-                completion(true)
-            } catch {
-                print("Failed to save to Core Data: \(error)")
-                completion(false)
-            }
-            
             dispatchGroup.notify(queue: .main) {
-                completion(true)
-                
-                
+                do {
+                    try self.context.save()
+                    completion(true)
+                } catch {
+                    print("Failed to save to Core Data: \(error)")
+                    completion(false)
+                }
             }
-        } else {
+        } catch {
+            print("Failed to fetch or update entity: \(error)")
             completion(false)
         }
-        
-
     }
     
+//    func cacheUnsyncedEvents(eventcaputreDate: Date, eventcaptureparam: Data, completion: @escaping (Bool) -> ()) {
+//        var eventCaptures = [EventCapture]()
+//        let eventCaptureData = self.addCallinfoView.eventCaptureListViewModel.EventCaptureData()
+//        
+//        eventCaptureData.forEach { aEventCaptureViewModel in
+//            eventCaptures.append(aEventCaptureViewModel.eventCapture)
+//        }
+//        
+//        if let eventCapturesNSEntityDescription = NSEntityDescription.entity(forEntityName: "UnsyncedEventCaptures", in: context) {
+//            
+//            let eventCapturesCDM = UnsyncedEventCaptures(entity: eventCapturesNSEntityDescription, insertInto: context)
+//            let dispatchGroup = DispatchGroup()
+//           
+//            eventCapturesCDM.eventcaptureDate  = eventcaputreDate
+//            eventCapturesCDM.custCode = self.dcrCall.code
+//            eventCapturesCDM.eventcaptureParamData = eventcaptureparam
+//            dispatchGroup.enter()
+//            CoreDataManager.shared.toReturnEventcaptureEntity(eventCaptures: eventCaptures) { eventCaptureViewModelCDEntity in
+//                eventCapturesCDM.unsyncedCapturedEvents = eventCaptureViewModelCDEntity
+//                dispatchGroup.leave()
+//            }
+//            
+//     
+//            
+//            dispatchGroup.notify(queue: .main) {
+//                do {
+//                    try self.context.save()
+//                    completion(true)
+//                } catch {
+//                    print("Failed to save to Core Data: \(error)")
+//                    completion(false)
+//                }
+//                
+//                
+//            }
+//        } else {
+//            completion(false)
+//        }
+//        
+//
+//    }
+    
     func toRemoveEditedCallOnline(param: JSON, completion: @escaping (Bool) -> ()) {
-
-
         let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
-
+        
+        CoreDataManager.shared.removeUnsyncedEventCaptures(withCustCode: identifier ?? "") { _ in}
+   
         let context = DBManager.shared.managedContext()
 
         let fetchRequest: NSFetchRequest<UnsyncedHomeData> = UnsyncedHomeData.fetchRequest()
@@ -1404,63 +1496,6 @@ class AddCallinfoVC: BaseViewController {
 }
 
 
-extension CoreDataManager {
-    
-    //Outbox param
-    func toFetchAllOutboxParams(completion: ([OutBoxParam]) -> () )  {
-        //unSyncedParams
-        do {
-           let savedOutBoxParam = try  context.fetch(OutBoxParam.fetchRequest())
-            completion(savedOutBoxParam)
-            
-        } catch {
-            print("unable to fetch movies")
-        }
-       
-    }
-    
-    func removeAllOutboxParams() {
-        let fetchRequest: NSFetchRequest<OutBoxParam> = NSFetchRequest(entityName: "OutBoxParam")
-
-        do {
-            let outBoxParams = try context.fetch(fetchRequest)
-            for param in outBoxParams {
-                context.delete(param)
-            }
-
-            try context.save()
-        } catch {
-            print("Error deleting slide brands: \(error)")
-        }
-    }
-    
-    
-    func saveBrandSlidesToCoreData(updatedParams: Data  , completion: (Bool) -> ()) {
- 
-                let context = self.context
-                
-                if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
-                    let outBoxParamCDM = OutBoxParam(entity: entityDescription, insertInto: context)
-
-                    // Convert properties
-
-                    outBoxParamCDM.unSyncedParams = updatedParams
-
-                    // Save to Core Data
-                    do {
-                        try context.save()
-                        completion(true)
-                    } catch {
-                        print("Failed to save to Core Data: \(error)")
-                        completion(false)
-                    }
-                }
-                
-        
-        
-    }
-    
-}
 
 struct SelectionList{
 

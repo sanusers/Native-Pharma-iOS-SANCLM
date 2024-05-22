@@ -1330,7 +1330,1075 @@ extension CoreDataManager {
     }
 }
 
+//Outbox
+extension CoreDataManager {
+    
+    
+    func convertToCompetitorinfoArr(_ additionalCompetiors: [AdditionalCompetitorsInfo], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+       let additionalCompetitorSet = NSMutableSet()
+
+       // Create a dispatch group to handle asynchronous tasks
+       let dispatchGroup = DispatchGroup()
+
+       // Iterate over each GroupedBrandsSlideModel
+       for additionalCompetior in additionalCompetiors {
+           dispatchGroup.enter()
+
+           if let entityDescription = NSEntityDescription.entity(forEntityName: "AdditionalCompetitorsInfoCDModel", in: context) {
+               let additionalCompetiorsCDModel = AdditionalCompetitorsInfoCDModel(entity: entityDescription, insertInto: context)
+ 
+               additionalCompetiorsCDModel.qty = additionalCompetior.qty
+               additionalCompetiorsCDModel.rate = additionalCompetior.rate
+               additionalCompetiorsCDModel.remarks = additionalCompetior.remarks
+               additionalCompetiorsCDModel.value = additionalCompetior.value
+               
+               if let entityDescription = NSEntityDescription.entity(forEntityName: "Competitor", in: context) {
+                   let aCompetitor = Competitor(entity: entityDescription, insertInto: context)
+                   
+                   
+                   aCompetitor.compName = additionalCompetior.competitor?.compName
+                   aCompetitor.compProductName = additionalCompetior.competitor?.compProductName
+                   aCompetitor.compProductSlNo = additionalCompetior.competitor?.compProductSlNo
+                   aCompetitor.compSlNo = additionalCompetior.competitor?.compSlNo
+                   aCompetitor.index = additionalCompetior.competitor?.index ?? 0
+                   aCompetitor.ourProductCode = additionalCompetior.competitor?.ourProductCode
+                   aCompetitor.ourProductName = additionalCompetior.competitor?.ourProductName
+                   
+                   additionalCompetiorsCDModel.competitor = aCompetitor
+                   
+                   
+               }
+               
+               
+               // Add to set
+               additionalCompetitorSet.add(additionalCompetiorsCDModel)
+               dispatchGroup.leave()
+           }
+       }
+
+       // Notify the completion handler when all tasks in the dispatch group are complete
+       dispatchGroup.notify(queue: .main) {
+           completion(additionalCompetitorSet)
+       }
+   }
+    
+    func removeAllUnsyncedEventCaptures() {
+        let fetchRequest: NSFetchRequest<UnsyncedEventCaptures> = NSFetchRequest(entityName: "UnsyncedEventCaptures")
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            for object in results {
+                context.delete(object)
+            }
+            
+            try context.save()
+            
+        } catch {
+            print("Failed to fetch or delete entities: \(error)")
+            
+        }
+    }
+    
+    
+    func removeUnsyncedEventCaptures(withCustCode custCode: String, completion: @escaping (Bool) -> ()) {
+        let fetchRequest: NSFetchRequest<UnsyncedEventCaptures> = UnsyncedEventCaptures.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "custCode == %@", custCode)
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            for object in results {
+                context.delete(object)
+            }
+            
+            try context.save()
+            completion(true)
+        } catch {
+            print("Failed to fetch or delete entities: \(error)")
+            completion(false)
+        }
+    }
+    
+    func toReturnEventcaptureEntity(eventCaptures: [EventCapture], completion: @escaping (EventCaptureViewModelCDEntity?) -> Void) {
+        
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "EventCaptureViewModelCDEntity", in: context) {
+           // dispatchGroup.enter()
+            let aEventCaptureEntity = EventCaptureViewModelCDEntity(entity: entityDescription, insertInto: context)
+            convertToEventcaptureArr(eventCaptures, context: context) {
+                capturedEentsSet in
+                    
+                aEventCaptureEntity.capturedEvents = capturedEentsSet
+                    completion(aEventCaptureEntity)
+                }
+            }
+
+
+
+}
+    
+    
+    
+    func convertToEventcaptureArr(_ eventCaptures: [EventCapture], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        let capturedEentsSet = NSMutableSet()
+        
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+        
+        // Iterate over each GroupedBrandsSlideModel
+        for eventCapture in eventCaptures {
+            dispatchGroup.enter()
+            
+            guard let entityDescriptioncapturedEvent = NSEntityDescription.entity(forEntityName: "EventCaptureCDM", in: context)
+            else {
+                dispatchGroup.leave()
+                continue
+            }
+            
+            let eventCaptureCDModel = EventCaptureCDM(entity: entityDescriptioncapturedEvent, insertInto: context)
+            
+            if let image = eventCapture.image {
+                // Convert UIImage to Data
+                if let imageData = image.pngData() {
+                    // Use imageData as needed (e.g., save to file, send over network)
+                    eventCaptureCDModel.image = imageData
+                } else {
+                    print("Failed to convert UIImage to Data.")
+                }
+            } else {
+                print("UIImage named 'exampleImage' not found.")
+            }
+            
+           
+            eventCaptureCDModel.imageDescription = eventCapture.description
+            eventCaptureCDModel.imageUrl = eventCapture.imageUrl
+            eventCaptureCDModel.time = eventCapture.title
+            eventCaptureCDModel.timeStamp = eventCapture.timeStamp
+            eventCaptureCDModel.title = eventCapture.title
+
+            
+            capturedEentsSet.add(eventCaptureCDModel)
+                dispatchGroup.leave()
+            
+        }
+        
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(capturedEentsSet)
+        }
+    }
+    
+    
+    
+    func toReturnDetailedSlideEntity(detailedSlides: [DetailedSlide], completion: @escaping (DetailedSlideCDEntity?) -> Void) {
+        
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "DetailedSlideCDEntity", in: context) {
+           // dispatchGroup.enter()
+            let aDetailedSlideEntity = DetailedSlideCDEntity(entity: entityDescription, insertInto: context)
+            convertToDetailedSlidesArr(detailedSlides, context: context) {
+                detailedSlidesSet in
+                    
+                aDetailedSlideEntity.detailedSlides = detailedSlidesSet
+                    completion(aDetailedSlideEntity)
+                }
+            }
+
+
+
+}
+    
+    
+    
+    func convertToDetailedSlidesArr(_ detailedSlides: [DetailedSlide], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        let detailedSlidesSet = NSMutableSet()
+        
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+        
+        // Iterate over each GroupedBrandsSlideModel
+        for detailedSlide in detailedSlides {
+            dispatchGroup.enter()
+            
+            guard let entityDescriptiondetailedslide = NSEntityDescription.entity(forEntityName: "DetailedSlideCDM", in: context)
+            else {
+                dispatchGroup.leave()
+                continue
+            }
+            
+            let detailedslideCDModel = DetailedSlideCDM(entity: entityDescriptiondetailedslide, insertInto: context)
+            
+            detailedslideCDModel.brandCode = "\(detailedSlide.brandCode ?? 0)"
+            detailedslideCDModel.endTime = detailedSlide.endTime
+            detailedslideCDModel.isDisliked = detailedSlide.isDisliked ?? false
+            detailedslideCDModel.isLiked = detailedSlide.isLiked ?? false
+            detailedslideCDModel.isShared = detailedSlide.isShared ?? false
+            detailedslideCDModel.remarks = detailedSlide.remarks
+            detailedslideCDModel.remarksValue = detailedSlide.remarksValue ?? 0
+            detailedslideCDModel.slideID =  "\(detailedSlide.slideID ?? 0)"
+            detailedslideCDModel.startTime = detailedSlide.startTime
+            
+            if let entityDescriptionslide = NSEntityDescription.entity(forEntityName: "SlidesCDModel", in: context) {
+                let slideCDModel = SlidesCDModel(entity: entityDescriptionslide, insertInto: context)
+                if let aCacheSlide = detailedSlide.slidesModel {
+                    
+                    slideCDModel.code = Int16(aCacheSlide.code)
+                    slideCDModel.camp = Int16(aCacheSlide.camp)
+                    slideCDModel.productDetailCode = aCacheSlide.productDetailCode
+                    slideCDModel.filePath = aCacheSlide.filePath
+                    slideCDModel.group = Int16(aCacheSlide.group)
+                    slideCDModel.specialityCode = aCacheSlide.specialityCode
+                    slideCDModel.slideId = Int16(aCacheSlide.slideId)
+                    slideCDModel.fileType = aCacheSlide.fileType
+                    slideCDModel.categoryCode = aCacheSlide.categoryCode
+                    slideCDModel.name = aCacheSlide.name
+                    slideCDModel.noofSamples = Int16(aCacheSlide.noofSamples)
+                    slideCDModel.ordNo = Int16(aCacheSlide.ordNo)
+                    slideCDModel.priority = Int16(aCacheSlide.priority)
+                    slideCDModel.slideData =  Data() //aCacheSlide.slideData ??
+                    slideCDModel.utType = aCacheSlide.utType
+                    slideCDModel.isSelected = aCacheSlide.isSelected
+                    slideCDModel.isFailed = aCacheSlide.isFailed
+                    slideCDModel.isDownloadCompleted = aCacheSlide.isDownloadCompleted
+                    
+                    detailedslideCDModel.slidesModel = slideCDModel
+                }
+            }
+          
+            
+            
+            detailedSlidesSet.add(detailedslideCDModel)
+                dispatchGroup.leave()
+            
+        }
+        
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(detailedSlidesSet)
+        }
+    }
+    
+    
+    
+    func convertToProductWithCompetitorModelArr(_ productWithCompetiors: [ProductWithCompetiors], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        let productWithCompetitorSet = NSMutableSet()
+        
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+        
+        // Iterate over each GroupedBrandsSlideModel
+        for productWithCompetior in productWithCompetiors {
+            dispatchGroup.enter()
+            
+            guard let entityDescriptionProduct = NSEntityDescription.entity(forEntityName: "ProductWithCompetiorsCDModel", in: context),
+                  let entityDescriptionProductCD = NSEntityDescription.entity(forEntityName: "Product", in: context)
+            else {
+                dispatchGroup.leave()
+                continue
+            }
+            
+            let productWithCompetiorsCDModel = ProductWithCompetiorsCDModel(entity: entityDescriptionProduct, insertInto: context)
+            let productCDModel = Product(entity: entityDescriptionProductCD, insertInto: context)
+            
+            productCDModel.name = productWithCompetior.addedProduct?.name
+            productCDModel.actFlg = productWithCompetior.addedProduct?.actFlg
+            productCDModel.cateId = productWithCompetior.addedProduct?.cateId
+            productCDModel.code = productWithCompetior.addedProduct?.code
+            productCDModel.divisionCode = productWithCompetior.addedProduct?.divisionCode
+            productCDModel.dRate = productWithCompetior.addedProduct?.dRate
+            productCDModel.index = productWithCompetior.addedProduct?.index ?? 0
+            productCDModel.mapId = productWithCompetior.addedProduct?.mapId
+            productCDModel.noOfSamples = productWithCompetior.addedProduct?.noOfSamples
+            productCDModel.productMode = productWithCompetior.addedProduct?.productMode
+            productCDModel.pSlNo = productWithCompetior.addedProduct?.pSlNo
+            
+            productWithCompetiorsCDModel.addedProduct = productCDModel
+            
+            
+            // Handle competitors info
+            if let competitorsInfo = productWithCompetior.competitorsInfo  {
+                convertToCompetitorinfoArr(competitorsInfo, context: context) { additionalCompetitorSet in
+                    productWithCompetiorsCDModel.competitorsInfoArr = additionalCompetitorSet
+                    productWithCompetitorSet.add(productWithCompetiorsCDModel)
+                    dispatchGroup.leave()
+                }
+            } else {
+                productWithCompetitorSet.add(productWithCompetiorsCDModel)
+                dispatchGroup.leave()
+            }
+        }
+        
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(productWithCompetitorSet)
+        }
+    }
+    
+    func toReturnaddedProductDetailsCDEntity(addedProductDetails: ProductDetails, completion: @escaping (ProductDetailsCDModel?) -> Void) {
+        
+        
+        
+        
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "ProductDetailsCDModel", in: context) {
+           // dispatchGroup.enter()
+            let aProductDetailsEntity = ProductDetailsCDModel(entity: entityDescription, insertInto: context)
+
+            // Convert properties
+
+            aProductDetailsEntity.addedQuantity =  addedProductDetails.addedQuantity
+            
+            aProductDetailsEntity.addedRate = addedProductDetails.addedRate
+            aProductDetailsEntity.addedTotal = addedProductDetails.addedTotal
+            aProductDetailsEntity.addedValue = addedProductDetails.addedValue
+          //  aProductDetailsEntity.addedProductArr =
+            
+
+            if let productsWithCompetitors = addedProductDetails.addedProduct {
+                convertToProductWithCompetitorModelArr(productsWithCompetitors, context: context) {
+                    productWithCompetitorSet in
+                    
+                    aProductDetailsEntity.addedProductArr = productWithCompetitorSet
+                    completion(aProductDetailsEntity)
+                }
+            }
+       
+
+        } else {
+            
+            completion(nil)
+        }
+
+
+}
+    
+    
+    func toReturnRCPAdetailsCDModel(addedRCPAdetails: RCPAdetailsModal, completion: @escaping (RCPAdetailsCDModel?) -> Void) {
+
+            
+
+
+                let context = self.context
+                // Create a new managed object
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDModel", in: context) {
+                   // dispatchGroup.enter()
+                    let aRCPAdetailsEntity = RCPAdetailsCDModel(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+                    if let entityDescription = NSEntityDescription.entity(forEntityName: "Chemist", in: context) {
+                        let aChemist = Chemist(entity: entityDescription, insertInto: context)
+                        aChemist.addr = addedRCPAdetails.addedChemist?.addr
+                        aChemist.chemistContact = addedRCPAdetails.addedChemist?.chemistContact
+                        aChemist.chemistEmail = addedRCPAdetails.addedChemist?.chemistEmail
+                        aChemist.chemistFax = addedRCPAdetails.addedChemist?.chemistFax
+                        aChemist.chemistMobile = addedRCPAdetails.addedChemist?.chemistMobile
+                        aChemist.chemistPhone = addedRCPAdetails.addedChemist?.chemistPhone
+                        aChemist.code = addedRCPAdetails.addedChemist?.code
+                        aChemist.geoTagCnt = addedRCPAdetails.addedChemist?.geoTagCnt
+                        aChemist.index = addedRCPAdetails.addedChemist?.index ?? 0
+                        aChemist.lat = addedRCPAdetails.addedChemist?.lat
+                        aChemist.long = addedRCPAdetails.addedChemist?.long
+                        aChemist.mapId =  addedRCPAdetails.addedChemist?.mapId
+                        aChemist.maxGeoMap = addedRCPAdetails.addedChemist?.maxGeoMap
+                        aChemist.name = addedRCPAdetails.addedChemist?.name
+                        aChemist.sfCode = addedRCPAdetails.addedChemist?.sfCode
+                        aChemist.townCode = addedRCPAdetails.addedChemist?.townCode
+                        aChemist.townName = addedRCPAdetails.addedChemist?.townName
+                        aRCPAdetailsEntity.addedChemist = aChemist
+                        
+                    }
+                    
+                    if let addedProductDetails = addedRCPAdetails.addedProductDetails {
+                        toReturnaddedProductDetailsCDEntity(addedProductDetails: addedProductDetails) { ProductDetailsCDModel in
+                             aRCPAdetailsEntity.addedProductDetails = ProductDetailsCDModel
+                            completion(aRCPAdetailsEntity)
+                        }
+                    }
+      
+                } else {
+                    
+                    completion(nil)
+                }
+
+    }
+    
+    
+    func toReturnRCPAdetailsCDEntity(rcpadtailsCDModels: [RCPAdetailsModal], completion: @escaping (RCPAdetailsCDEntity?) -> Void) {
+        let context = self.context
+        
+        // Create a new managed object
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: "RCPAdetailsCDEntity", in: context) else {
+            completion(nil)
+            return
+        }
+        
+        let aRCPAdetailsCDArrEntity = RCPAdetailsCDEntity(entity: entityDescription, insertInto: context)
+        
+        // Create a dispatch group
+        let dispatchGroup = DispatchGroup()
+        
+        // Convert and add
+        let rcpaDetailsCDModelSet = NSMutableSet()
+        for rcpadtailsCDModel in rcpadtailsCDModels {
+            dispatchGroup.enter()
+            toReturnRCPAdetailsCDModel(addedRCPAdetails: rcpadtailsCDModel) { rcpaDetailsCDModel in
+                if let nonNilRCPAdetailsCDModel = rcpaDetailsCDModel {
+                    rcpaDetailsCDModelSet.add(nonNilRCPAdetailsCDModel)
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        // Notify when all tasks are complete
+        dispatchGroup.notify(queue: .main) {
+            aRCPAdetailsCDArrEntity.rcpadtailsCDModelArr = rcpaDetailsCDModelSet
+            
+            // Call completion handler
+            completion(aRCPAdetailsCDArrEntity)
+        }
+    }
+}
+
+
+extension CoreDataManager {
+    
+    
+    func tofetchaSavedCalls(callID: String, completion: @escaping ([AddedDCRCall]?) -> () )  {
+        do {
+            let request = AddedDCRCall.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "addedCallID == %@", callID)
+            //LIKE
+            request.predicate = pred
+            let calls = try context.fetch(request)
+            if calls.isEmpty {
+                completion(nil)
+            } else {
+                completion(calls)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(nil)
+        }
+    }
+
+}
+
+extension CoreDataManager {
+    
+    
+    
+    func toReturnAdditionalCallVM(addedAdditionalCalls: AdditionalCallsListViewModel, completion: @escaping (AdditionalCallViewModelCDEntity?) -> Void) {
+        let context = self.context
+        
+        if let additionalCallCDentityDescription = NSEntityDescription.entity(forEntityName: "AdditionalCallViewModelCDEntity", in: context) {
+            
+            let aAdditionalCallEntity = AdditionalCallViewModelCDEntity(entity: additionalCallCDentityDescription, insertInto: context)
+            
+           
+            convertToAdditionalCallCDModel(addedAdditionalCalls: addedAdditionalCalls) { additionalCallCDModelset in
+                
+                
+                aAdditionalCallEntity.additionalCallViewModel = additionalCallCDModelset
+                
+                completion(aAdditionalCallEntity)
+            }
+        } else {
+            completion(nil)
+        }
+    }
+    
+    
+    func convertToAdditionalCallCDModel(addedAdditionalCalls: AdditionalCallsListViewModel, completion: @escaping (NSSet) -> Void) {
+        
+        let context = self.context
+        let additionalCallCDModelset = NSMutableSet()
+
+        let additioncallDatum = addedAdditionalCalls.getAdditionalCallData()
+
+        let dispatchGroup = DispatchGroup()
+        
+        // Iterate over each additional call data
+        for additioncallData in additioncallDatum {
+        
+            // Create a new managed object
+            if let additionalCallCDentityDescription = NSEntityDescription.entity(forEntityName: "AdditionalCallCDModel", in: context) {
+                
+                let aAdditionalCallEntity = AdditionalCallCDModel(entity: additionalCallCDentityDescription, insertInto: context)
+                
+                
+                if let additionalDocCallEntityDescription  = NSEntityDescription.entity(forEntityName: "DoctorFencing", in: context) {
+                    let additionalDocCallCDEntity =  DoctorFencing(entity: additionalDocCallEntityDescription, insertInto: context)
+
+                  
+                    additionalDocCallCDEntity.addrs =  additioncallData.additionalCall?.addrs ?? ""
+                    additionalDocCallCDEntity.category = additioncallData.additionalCall?.category ?? ""
+                    additionalDocCallCDEntity.categoryCode = additioncallData.additionalCall?.categoryCode ?? ""
+                    additionalDocCallCDEntity.code = additioncallData.additionalCall?.code ?? ""
+                    additionalDocCallCDEntity.dob = additioncallData.additionalCall?.dob ?? ""
+                    additionalDocCallCDEntity.docDesig = additioncallData.additionalCall?.docDesig ?? ""
+                    additionalDocCallCDEntity.docEmail = additioncallData.additionalCall?.docEmail ?? ""
+                    additionalDocCallCDEntity.dow = additioncallData.additionalCall?.dow ?? ""
+                    additionalDocCallCDEntity.drSex = additioncallData.additionalCall?.drSex ?? ""
+                    additionalDocCallCDEntity.geoTagCnt = additioncallData.additionalCall?.geoTagCnt ?? ""
+                    additionalDocCallCDEntity.hosAddr = additioncallData.additionalCall?.hosAddr ?? ""
+                    additionalDocCallCDEntity.index = additioncallData.additionalCall?.index ?? 0
+                    additionalDocCallCDEntity.lat = additioncallData.additionalCall?.lat ?? ""
+                    additionalDocCallCDEntity.long = additioncallData.additionalCall?.long ?? ""
+                    additionalDocCallCDEntity.mapId = additioncallData.additionalCall?.mapId ?? ""
+                    additionalDocCallCDEntity.mappProducts = additioncallData.additionalCall?.mappProducts ?? ""
+                    additionalDocCallCDEntity.maxGeoMap = additioncallData.additionalCall?.maxGeoMap ?? ""
+                    additionalDocCallCDEntity.mobile = additioncallData.additionalCall?.mobile ?? ""
+                    additionalDocCallCDEntity.mProd = additioncallData.additionalCall?.mProd ?? ""
+                    additionalDocCallCDEntity.name = additioncallData.additionalCall?.name ?? ""
+                    additionalDocCallCDEntity.phone = additioncallData.additionalCall?.phone ?? ""
+                    additionalDocCallCDEntity.plcyAcptFl = additioncallData.additionalCall?.plcyAcptFl ?? ""
+                    additionalDocCallCDEntity.productCode = additioncallData.additionalCall?.productCode ?? ""
+                    additionalDocCallCDEntity.resAddr = additioncallData.additionalCall?.resAddr ?? ""
+                    additionalDocCallCDEntity.sfCode = additioncallData.additionalCall?.sfCode ?? ""
+                    additionalDocCallCDEntity.speciality = additioncallData.additionalCall?.speciality ?? ""
+                    additionalDocCallCDEntity.specialityCode = additioncallData.additionalCall?.specialityCode ?? ""
+                    additionalDocCallCDEntity.townCode = additioncallData.additionalCall?.townCode ?? ""
+                    additionalDocCallCDEntity.townName = additioncallData.additionalCall?.townName ?? ""
+                    additionalDocCallCDEntity.uRwId = additioncallData.additionalCall?.uRwId ?? ""
+                    
+                    aAdditionalCallEntity.additionalCall = additionalDocCallCDEntity
+                    
+                }
+                
+                
+                dispatchGroup.enter()
+                let inputArr: [Input] = additioncallData.inputSelectedListViewModel.inputViewModel.map { aInputViewModel in
+                    return  aInputViewModel.input.input ?? Input()
+                }
+                convertToInputViewModelArr(additioncallData.inputSelectedListViewModel.inputViewModel, inputs: inputArr, context: context) { inputViewModelSet in
+                    aAdditionalCallEntity.inputs = inputViewModelSet
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.enter()
+                convertToProductViewModelArr(additioncallData.productSelectedListViewModel.productViewModel, context: context) { productModelSet in
+                    aAdditionalCallEntity.products = productModelSet
+                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.enter()
+                toReturnInputViewModelCDModel(addedinputs: additioncallData.inputSelectedListViewModel) { inputsViewModel in
+                    aAdditionalCallEntity.inputSelectedListViewModel = inputsViewModel
+                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.enter()
+                toReturnProductViewModelCDModel(addedProducts: additioncallData.productSelectedListViewModel) { productsViewModel in
+                    aAdditionalCallEntity.productSelectedListViewModel = productsViewModel
+                    dispatchGroup.leave()
+                }
+                
+                additionalCallCDModelset.add(aAdditionalCallEntity)
+            }
+            
+
+            
+          
+        }
+        
+        // Notify completion when all tasks in the dispatch group are completed
+        dispatchGroup.notify(queue: .main) {
+
+            completion(additionalCallCDModelset)
+        }
+    }
 
     
+    
+    func convertToAdditionalCallViewModelArr(_ jointWorkViewModels: [JointWorkViewModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+       let jointWorkViewModelsSet = NSMutableSet()
+
+       // Create a dispatch group to handle asynchronous tasks
+       let dispatchGroup = DispatchGroup()
+
+       // Iterate over each GroupedBrandsSlideModel
+       for jointWorkViewModel in jointWorkViewModels {
+           dispatchGroup.enter()
+
+           if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWorkDataCDModel", in: context) {
+               let jointWorkDataCDModel = JointWorkDataCDModel(entity: entityDescription, insertInto: context)
+ 
+               jointWorkDataCDModel.jointWork = jointWorkViewModel.jointWork
+               // Add to set
+               jointWorkViewModelsSet.add(jointWorkDataCDModel)
+               dispatchGroup.leave()
+           }
+       }
+
+       // Notify the completion handler when all tasks in the dispatch group are complete
+       dispatchGroup.notify(queue: .main) {
+           completion(jointWorkViewModelsSet)
+       }
+   }
+    
+    
+    
+    func toReturnJointWorkViewModelCDModel(addedJonintWorks: JointWorksListViewModel, completion: @escaping (JointWorkViewModelCDEntity?) -> Void) {
+
+            
+
+
+                let context = self.context
+                // Create a new managed object
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWorkViewModelCDEntity", in: context) {
+                   // dispatchGroup.enter()
+                    let ajwEntity = JointWorkViewModelCDEntity(entity: entityDescription, insertInto: context)
+
+              
+                    convertToJointworkViewModelArr(addedJonintWorks.getJointWorkData(), context: context){ jwViewModelSet in
+                        ajwEntity.jointWorkViewModelArr = jwViewModelSet
+
+                        completion(ajwEntity)
+                
+                    }
+                } else {
+                    
+                    completion(nil)
+                }
+ 
+
+    }
+    
+    
+    func convertToJointworkViewModelArr(_ jointWorkViewModels: [JointWorkViewModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+       let jointWorkViewModelsSet = NSMutableSet()
+
+       // Create a dispatch group to handle asynchronous tasks
+       let dispatchGroup = DispatchGroup()
+
+       // Iterate over each GroupedBrandsSlideModel
+       for jointWorkViewModel in jointWorkViewModels {
+           dispatchGroup.enter()
+
+           if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWorkDataCDModel", in: context) {
+               let jointWorkDataCDModel = JointWorkDataCDModel(entity: entityDescription, insertInto: context)
+ 
+              
+               if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWork", in: context) {
+                   let jwCDModel = JointWork(entity: entityDescription, insertInto: context)
+                   jwCDModel.actFlg = jointWorkViewModel.jointWork.actFlg
+                   jwCDModel.code = jointWorkViewModel.jointWork.code
+                   jwCDModel.desig = jointWorkViewModel.jointWork.desig
+                   jwCDModel.divisionCode = jointWorkViewModel.jointWork.divisionCode
+                   jwCDModel.index = jointWorkViewModel.jointWork.index
+                   jwCDModel.mapId = jointWorkViewModel.jointWork.mapId
+                   jwCDModel.name = jointWorkViewModel.jointWork.name
+                   jwCDModel.ownDiv = jointWorkViewModel.jointWork.ownDiv
+                   jwCDModel.reportingToSF = jointWorkViewModel.jointWork.reportingToSF
+                   jwCDModel.sfName = jointWorkViewModel.jointWork.sfName
+                   jwCDModel.sfStatus = jointWorkViewModel.jointWork.sfStatus
+                   jwCDModel.sfType = jointWorkViewModel.jointWork.sfType
+                   jwCDModel.steps = jointWorkViewModel.jointWork.steps
+                   jwCDModel.usrDfdUserName = jointWorkViewModel.jointWork.usrDfdUserName
+                   
+                   
+                   jointWorkDataCDModel.jointWork = jwCDModel
+               }
+               
+               
+               // Add to set
+               jointWorkViewModelsSet.add(jointWorkDataCDModel)
+               dispatchGroup.leave()
+           }
+       }
+
+       // Notify the completion handler when all tasks in the dispatch group are complete
+       dispatchGroup.notify(queue: .main) {
+           completion(jointWorkViewModelsSet)
+       }
+   }
+    
+    
+        func toReturnInputViewModelCDModel(addedinputs: InputSelectedListViewModel, completion: @escaping (InputViewModelCDEntity?) -> Void) {
+    
+                
+     
+          
+                    let context = self.context
+                    // Create a new managed object
+                    if let entityDescription = NSEntityDescription.entity(forEntityName: "InputViewModelCDEntity", in: context) {
+                      
+                        let aInputEntity = InputViewModelCDEntity(entity: entityDescription, insertInto: context)
+    
+                        // Convert properties
+                        aInputEntity.uuid = UUID()
+                        
+                        // Convert and add
+            
+                        convertToInputViewModelArr(addedinputs.inputData(), inputs: addedinputs.fetchAllInput()!, context: context){ inputViewModelSet in
+                            aInputEntity.inputViewModelArr = inputViewModelSet as! NSMutableSet
+    
+                            completion(aInputEntity)
+                        
+                        }
+                    } else {
+                        completion(nil)
+                
+                    }
+     
+    
+        }
+    
+    
+    func convertToInputViewModelArr(_ inputViewModels: [InputViewModel], inputs: [Input], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+           let inputViewModelsSet = NSMutableSet()
+    
+           // Create a dispatch group to handle asynchronous tasks
+           let dispatchGroup = DispatchGroup()
+    
+           // Iterate over each GroupedBrandsSlideModel
+        for (index, inputViewModel) in inputViewModels.enumerated() {
+               dispatchGroup.enter()
+    
+               if let entityDescription = NSEntityDescription.entity(forEntityName: "InputDataCDModel", in: context) {
+                   let inputDataCDModel = InputDataCDModel(entity: entityDescription, insertInto: context)
+     
+                   inputDataCDModel.availableCount = inputViewModel.input.availableCount
+                   inputDataCDModel.inputCount = inputViewModel.input.inputCount
+                   
+                   // Fetch or create the corresponding Input managed object
+                   if let entityDescription = NSEntityDescription.entity(forEntityName: "Input", in: context) {
+                       let inputCDModel = Input(entity: entityDescription, insertInto: context)
+                       inputCDModel.name =  inputs[index].name
+                       inputCDModel.code =  inputs[index].code
+                       inputCDModel.index = inputs[index].index
+                       inputCDModel.mapId = inputs[index].mapId
+       
+                       
+                       let effF = inputs[index].effF
+                       let effT = inputs[index].effT
+                       if let entityDescription = NSEntityDescription.entity(forEntityName: "Efff", in: context) {
+                           let effFCDModel = Efff(entity: entityDescription, insertInto: context)
+                           
+                           effFCDModel.timeZone = effF?.timeZone
+                           effFCDModel.date = effF?.date
+                           effFCDModel.timeZoneType = effF?.timeZoneType ?? 0
+                           
+                           inputCDModel.effF = effFCDModel
+                           
+                           let effTCDModel = Efff(entity: entityDescription, insertInto: context)
+                           effTCDModel.timeZone = effT?.timeZone
+                           effTCDModel.date = effT?.date
+                           effTCDModel.timeZoneType = effT?.timeZoneType ?? 0
+                           
+                           inputCDModel.effT = effTCDModel
+                           
+                           inputDataCDModel.input = inputCDModel
+                   }
+                   }
+                   // Add to set
+                   inputViewModelsSet.add(inputDataCDModel)
+                   dispatchGroup.leave()
+               }
+           }
+    
+           // Notify the completion handler when all tasks in the dispatch group are complete
+           dispatchGroup.notify(queue: .main) {
+               completion(inputViewModelsSet)
+           }
+       }
+}
+
+
+extension CoreDataManager {
+    
+    func fetchProductViewModels(completion: ([ProductViewModelCDEntity]) -> () )  {
+        do {
+            let savedVIewModels = try  context.fetch(ProductViewModelCDEntity.fetchRequest())
+            completion(savedVIewModels )
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+        
+    }
+    
+    
+    func toCheckExistanceOfProductViewModel(_ id: UUID, completion: (Bool) -> ()) {
+        
+        do {
+            let request = ProductViewModelCDEntity.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "uuid == '\(id)'")
+            //LIKE
+            request.predicate = pred
+            let films = try context.fetch(request)
+            if films.isEmpty {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+    }
+    
+    
+    
+    func toRemoveProductViewModel(_ id: UUID, completion: (Bool) -> ()) {
+        
+        
+        do {
+            let request = ProductViewModelCDEntity.fetchRequest() as NSFetchRequest
+            let pred = NSPredicate(format: "uuid == '\(id)'")
+            request.predicate = pred
+            let presentations = try context.fetch(request)
+            if presentations.isEmpty {
+                completion(false)
+            } else {
+                let presentationToRemove = presentations[0]
+                self.context.delete(presentationToRemove)
+                do {
+                    try self.context.save()
+                    completion(true)
+                } catch {
+                    completion(false)
+                }
+                completion(true)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(false)
+        }
+        
+    }
+    
+    
+
+    
+    
+    func toReturnProductViewModelCDModel(addedProducts: ProductSelectedListViewModel, completion: @escaping (Bool) -> Void) {
+    
+            var tempcompletion: Bool = false
+            let dispatchGroup = DispatchGroup()
+                let context = self.context
+                // Create a new managed object
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "ProductViewModelCDEntity", in: context) {
+                    dispatchGroup.enter()
+                    let aProductEntity = ProductViewModelCDEntity(entity: entityDescription, insertInto: context)
+                    
+                    // Convert properties
+                    aProductEntity.uuid = UUID()
+                    // Convert and add
+                    convertToProductViewModelArr(addedProducts.productData(), context: context){ productViewModelSet in
+                        aProductEntity.productViewModelArr = productViewModelSet
+                        
+                        // Save to Core Data
+                        do {
+                            try context.save()
+                            tempcompletion = true
+                            dispatchGroup.leave()
+                        } catch {
+                            print("Failed to save to Core Data: \(error)")
+                            tempcompletion = false
+                            dispatchGroup.leave()
+                        }
+                    }
+                }
+            
+            // Notify the completion handler when all tasks in the dispatch group are complete
+            dispatchGroup.notify(queue: .main) {
+                completion(tempcompletion)
+            }
+        
+    }
+                    
+
+        
+    func toReturnProductViewModelCDModel(addedProducts: ProductSelectedListViewModel, completion: @escaping (ProductViewModelCDEntity?) -> Void) {
+        let productUUID = addedProducts.uuid ?? UUID()
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "ProductViewModelCDEntity", in: context) {
+            
+            let aProductEntity = ProductViewModelCDEntity(entity: entityDescription, insertInto: context)
+            
+            // Convert properties
+            aProductEntity.uuid = productUUID
+            
+            // Convert and add
+            convertToProductViewModelArr(addedProducts.productData(), context: context) { productViewModelSet in
+                aProductEntity.productViewModelArr = productViewModelSet
+                completion(aProductEntity)
+            }
+        } else {
+            completion(nil) // Entity creation failed
+        }
+    }
+        
+    
+    
+
+    
+    
+     func convertToProductViewModelArr(_ productViewModels: [ProductViewModel], context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        let productViewModelsSet = NSMutableSet()
+
+        // Create a dispatch group to handle asynchronous tasks
+        let dispatchGroup = DispatchGroup()
+
+        // Iterate over each GroupedBrandsSlideModel
+        for productViewModel in productViewModels {
+            dispatchGroup.enter()
+
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "ProductDataCDModel", in: context) {
+                let productDataCDModel = ProductDataCDModel(entity: entityDescription, insertInto: context)
+                productDataCDModel.availableCount = productViewModel.availableCount
+                productDataCDModel.isDetailed = productViewModel.isDetailed
+                productDataCDModel.rcpaCount = productViewModel.rcpaCount
+                productDataCDModel.rxCount = productViewModel.rxCount
+                productDataCDModel.sampleCount = productViewModel.sampleCount
+                productDataCDModel.stockistCode = productViewModel.stockistCode
+                productDataCDModel.stockistName = productViewModel.stockistName
+                productDataCDModel.totalCount = productViewModel.totalCount
+
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "Product", in: context) {
+                    
+                    let productCDModel = Product(entity: entityDescription, insertInto: context)
+                    productCDModel.name = productViewModel.product.product?.name
+                    productCDModel.actFlg = productViewModel.product.product?.actFlg
+                    productCDModel.cateId = productViewModel.product.product?.cateId
+                    productCDModel.code = productViewModel.product.product?.code
+                    productCDModel.divisionCode = productViewModel.product.product?.divisionCode
+                    productCDModel.dRate = productViewModel.product.product?.dRate
+                    productCDModel.index = productViewModel.product.product?.index ?? 0
+                    productCDModel.mapId = productViewModel.product.product?.mapId
+                    productCDModel.noOfSamples = productViewModel.product.product?.noOfSamples
+                    productCDModel.productMode = productViewModel.product.product?.productMode
+                    productCDModel.pSlNo = productViewModel.product.product?.pSlNo
+                    
+                    productDataCDModel.product = productCDModel
+                    // Add to set
+                  //  productViewModelsSet.add(productDataCDModel)
+                }
+
+                // Add to set
+                productViewModelsSet.add(productDataCDModel)
+                dispatchGroup.leave()
+            }
+        }
+
+        // Notify the completion handler when all tasks in the dispatch group are complete
+        dispatchGroup.notify(queue: .main) {
+            completion(productViewModelsSet)
+        }
+    }
+}
+
+    
+extension CoreDataManager {
+    //EventCaptures
+    func toFetchCacheEvents(completion: ([UnsyncedEventCaptures]) -> ()) {
+        do {
+           let savedCDEvents = try  context.fetch(UnsyncedEventCaptures.fetchRequest())
+            completion(savedCDEvents)
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+    }
+    
+    func toRetriveEventcaptureCDM(completion: @escaping([UnsyncedEventCaptureModel]) -> ()) {
+        CoreDataManager.shared.toFetchCacheEvents { savedCDEvents in
+            var eventCaptures = [UnsyncedEventCaptureModel]()
+            let dispatchGroup = DispatchGroup()
+            savedCDEvents.forEach { cacheEvent in
+                dispatchGroup.enter()
+                var aEventCapture = UnsyncedEventCaptureModel()
+                aEventCapture.custCode = cacheEvent.custCode
+                aEventCapture.eventCaptureParamData = cacheEvent.eventcaptureParamData
+                aEventCapture.eventcaptureDate = cacheEvent.eventcaptureDate
+                
+                var capturedEvents : [EventCapture] = []
+                
+                cacheEvent.unsyncedCapturedEvents?.capturedEvents?.forEach({ aElemet in
+             
+                        
+                        if let aEventCaptureViewModelElemet = aElemet as? EventCaptureCDM {
+                            let capturedImage = UIImage(data: aEventCaptureViewModelElemet.image ?? Data())
+                            let aEventCapture  =  EventCapture(image: capturedImage, title: aEventCaptureViewModelElemet.title ?? "", description: aEventCaptureViewModelElemet.imageDescription ?? "", imageUrl: aEventCaptureViewModelElemet.imageUrl ?? "", time: aEventCaptureViewModelElemet.time ?? "", timeStamp: aEventCaptureViewModelElemet.timeStamp ?? "")
+                            capturedEvents.append(aEventCapture)
+                        }
+                        
+                    
+                })
+                
+                aEventCapture.capturedEvents = capturedEvents
+                eventCaptures.append(aEventCapture)
+                dispatchGroup.leave()
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                completion(eventCaptures)
+            }
+        }
+        
+    }
+    
+}
+
+extension CoreDataManager {
+    
+    //Outbox param
+    func toFetchAllOutboxParams(completion: ([OutBoxParam]) -> () )  {
+        //unSyncedParams
+        do {
+           let savedOutBoxParam = try  context.fetch(OutBoxParam.fetchRequest())
+            completion(savedOutBoxParam)
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+    
+    func removeAllOutboxParams() {
+        let fetchRequest: NSFetchRequest<OutBoxParam> = NSFetchRequest(entityName: "OutBoxParam")
+
+        do {
+            let outBoxParams = try context.fetch(fetchRequest)
+            for param in outBoxParams {
+                context.delete(param)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    
+    func saveBrandSlidesToCoreData(updatedParams: Data  , completion: (Bool) -> ()) {
+ 
+                let context = self.context
+                
+                if let entityDescription = NSEntityDescription.entity(forEntityName: "OutBoxParam", in: context) {
+                    let outBoxParamCDM = OutBoxParam(entity: entityDescription, insertInto: context)
+
+                    // Convert properties
+
+                    outBoxParamCDM.unSyncedParams = updatedParams
+
+                    // Save to Core Data
+                    do {
+                        try context.save()
+                        completion(true)
+                    } catch {
+                        print("Failed to save to Core Data: \(error)")
+                        completion(false)
+                    }
+                }
+                
+        
+        
+    }
+    
+}
 
 /// - Author:  hassan

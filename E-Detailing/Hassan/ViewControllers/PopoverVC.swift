@@ -18,6 +18,7 @@ class PopOverVC: UIViewController {
         case TP
         case HomeGraph
         case calls
+        case events
         case presentation
         case profile
         case customMarker
@@ -65,6 +66,12 @@ class PopOverVC: UIViewController {
             print("Yet to implement")
             setCustomerInfo()
             
+        case .events:
+            customMarkerView.isHidden = true
+            userProfileInfoView.isHidden = true
+            self.contentTable.isHidden = false
+            graphInfoView.isHidden = true
+            toLOadData()
         }
     }
     
@@ -218,7 +225,7 @@ class PopOverVC: UIViewController {
     }
     
     func toLOadData() {
-        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete"] : ["Play", "Edit", "Delete"]
+        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete"] : pageType == .events ? ["Delete"] : ["Play", "Edit", "Delete"]
         contentTable.delegate = self
         contentTable.dataSource = self
         contentTable.reloadData()
@@ -305,6 +312,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
             return 0
         case .customMarker:
             return 0
+        case .events:
+            return 40
         }
         
    

@@ -59,12 +59,23 @@ class EventCaptureCell: UITableViewCell, UITextFieldDelegate {
     var indexpath: Int? = nil
     var eventCapture : EventCaptureViewModel! {
         didSet {
-            if eventCapture.image == nil {
-                Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
-                Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                if eventCapture.image == nil {
+                    Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
+                    Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)
+                } else {
+                    self.imgView.image = eventCapture.image
+                }
+ 
             } else {
                 self.imgView.image = eventCapture.image
             }
+//            if eventCapture.image == nil {
+//                Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
+//                Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)
+//            } else {
+//                self.imgView.image = eventCapture.image
+//            }
             
           
             self.txtName.text = eventCapture.title

@@ -326,9 +326,10 @@ class LoginVC : UIViewController {
     }
     
     func endBackgroundTask() {
-        // End the background task using its identifier
-        UIApplication.shared.endBackgroundTask(backgroundTask)
-        backgroundTask = .invalid // Reset the identifier
+        if backgroundTask != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
+        }
     }
     
     
@@ -337,10 +338,10 @@ class LoginVC : UIViewController {
         guard let appDelegate = delegate else {
             return
         }
+        
         // Show loader on the main thread
         DispatchQueue.main.async {
-            // Show your loader here
-         Shared.instance.showLoaderInWindow()
+            Shared.instance.showLoaderInWindow()
         }
         
         // Begin a background task and store its identifier
@@ -353,52 +354,181 @@ class LoginVC : UIViewController {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
-            // Your background task code here
-          
-            self.clearAllCoreData(delegate: appDelegate)
-            AppDefaults.shared.reset()
-         
+            let dispatchGroup = DispatchGroup()
             
-            // Call endBackgroundTask when the task completes if it's not already stopped
-            self.endBackgroundTask()
+            dispatchGroup.enter()
+            self.resetCoreDataStack(delegate: appDelegate) { isCompleted in
+                dispatchGroup.leave()
+            }
             
-            // Hide loader on the main thread once the task completes
-            DispatchQueue.main.async {
+            dispatchGroup.enter()
+            do {
+                try self.clearDocumentsAndData()
+                dispatchGroup.leave()
+            } catch {
+                print("Error clearing documents and data: \(error.localizedDescription)")
+                dispatchGroup.leave()
+            }
+            
+            dispatchGroup.enter()
+            self.recreatePersistentStore(delegate: appDelegate) { isCreated in
+                
+            }
+            
+            dispatchGroup.notify(queue: .main) {
                 // Hide your loader here
                 Shared.instance.removeLoaderInWindow()
-                self.appDelegate.setupRootViewControllers()
+                appDelegate.setupRootViewControllers()
+                // Call endBackgroundTask when the task completes if it's not already stopped
+                self.endBackgroundTask()
             }
         }
     }
     
-    func clearAllCoreData(delegate: AppDelegate?) {
-        guard let appDelegate = delegate else {
-            return
-        }
+    
+    func clearDocumentsAndData() throws {
+        let fileManager = FileManager.default
+        let urls = [
+            fileManager.urls(for: .documentDirectory, in: .userDomainMask).first,
+            fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first
+        ].compactMap { $0 }
 
-        let managedContext = appDelegate.persistentContainer.viewContext
-
-        // Fetch all entity names in the data model
-        let entityNames = appDelegate.persistentContainer.managedObjectModel.entities.map { $0.name }
-
-        for entityName in entityNames {
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName ?? "")
-
-            // Create batch delete request
-            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-            do {
-                // Perform batch delete
-                try managedContext.execute(batchDeleteRequest)
-
-                // Save changes
-                try managedContext.save()
-            } catch {
-                print("Error clearing \(entityName ?? ""): \(error)")
+        for url in urls {
+            let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+            for item in contents {
+                try fileManager.removeItem(at: item)
             }
         }
     }
+    
+    func resetCoreDataStack(delegate: AppDelegate?, completion: @escaping (Bool) -> Void) {
+        
+        UserDefaults.resetDefaults()
+        Shared.instance.toReset()
+        guard let appDelegate = delegate else {
+            completion(false)
+            return
+        }
+        
+        // Get a reference to the NSPersistentStoreCoordinator
+        let storeContainer = appDelegate.persistentContainer.persistentStoreCoordinator
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                // Delete each existing persistent store
+                for store in storeContainer.persistentStores {
+                    try storeContainer.destroyPersistentStore(at: store.url!, ofType: store.type, options: nil)
+                }
+                
+                // Create a new container and ensure it loads persistent stores synchronously
+                let newContainer = NSPersistentContainer(name: "E-Detailing")
+                
+                var loadError: Error?
+                let semaphore = DispatchSemaphore(value: 0)
+                
+                newContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
+                    if let error = error as NSError? {
+                        loadError = error
+                    }
+                    semaphore.signal()
+                })
+                
+                semaphore.wait()
+                
+                if let error = loadError {
+                    throw error
+                }
+                
+                DispatchQueue.main.async {
+                    appDelegate.persistentContainer = newContainer
+                    completion(true)
+                }
+            } catch {
+                print("Failed to reset Core Data stack: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+            }
+        }
+    }
+    
+    
+    
+    private func recreatePersistentStore(delegate: AppDelegate, completion: @escaping (Bool) -> Void) {
+        let persistentContainer = delegate.persistentContainer
+        let storeCoordinator = persistentContainer.persistentStoreCoordinator
+        guard let storeURL = storeCoordinator.persistentStores.first?.url else {
+            completion(false)
+            return
+        }
+        
+        persistentContainer.performBackgroundTask { context in
+            do {
+                try storeCoordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
+                try storeCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
+                completion(true)
+            } catch {
+                print("Error recreating persistent store: \(error)")
+                completion(false)
+            }
+        }
+    }
+    
+//    func resetCoreDataStack(delegate: AppDelegate?, completion: @escaping (Bool) -> Void) {
+//        UserDefaults.resetDefaults()
+//        Shared.instance.toReset()
+//        
+//        guard let appDelegate = delegate else {
+//            completion(false)
+//            return
+//        }
+//        
+//        let managedContext = appDelegate.persistentContainer.viewContext
+//        let entityNames = appDelegate.persistentContainer.managedObjectModel.entities.compactMap { $0.name }
+//        
+//        let dispatchGroup = DispatchGroup()
+//        var didEncounterError = false
+//        
+//        for entityName in entityNames {
+//            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+//            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//            
+//            dispatchGroup.enter()
+//            
+//            managedContext.perform {
+//                do {
+//                    try managedContext.execute(batchDeleteRequest)
+//                    try managedContext.save()
+//                } catch {
+//                    print("Error clearing \(entityName): \(error)")
+//                    didEncounterError = true
+//                }
+//                dispatchGroup.leave()
+//            }
+//        }
+//        
+//        dispatchGroup.notify(queue: .main) {
+//            completion(!didEncounterError)
+//        }
+//    }
 
+    func removeData(at url: URL) {
+        let fileManager = FileManager.default
+    
+        // Check if the file exists
+        if fileManager.fileExists(atPath: url.path) {
+            do {
+                // Remove the file
+                try fileManager.removeItem(at: url)
+                print("File successfully removed")
+            } catch {
+                print("Failed to remove file: \(error)")
+            }
+        } else {
+            print("File does not exist")
+        }
+    }
+    
 }
 
 

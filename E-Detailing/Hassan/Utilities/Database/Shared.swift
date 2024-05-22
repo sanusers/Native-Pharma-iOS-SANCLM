@@ -20,6 +20,20 @@ class Shared {
     var isFetchingHQ: Bool = false
     var detailedSlides: [DetailedSlide] = []
     var isDetailed: Bool = false
+    
+    func toReset() {
+        
+    selectedPhoneCode = ""
+    isDayplanSet = false
+    iscelliterating = false
+    isSlideDownloading = false
+    isFetchingHQ = false
+    detailedSlides = []
+    isDetailed = false
+        
+ 
+    }
+    
 }
 //MARK:- UserDefaults property observers
 

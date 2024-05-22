@@ -3,7 +3,7 @@
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,12 +26,8 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEb-x8-LFw">
                         <rect key="frame" x="0.0" y="0.0" width="275" height="134"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrowtriangle.down.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Eqq-KQ-lZH">
-                                <rect key="frame" x="15" y="107" width="25" height="16"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="5Zi-MC-aZA"/>
-                                    <constraint firstAttribute="width" constant="25" id="C5U-SH-HEr"/>
-                                </constraints>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrowtriangle.down.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Eqq-KQ-lZH">
+                                <rect key="frame" x="14" y="108" width="20" height="13.5"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5AC-j3-ifV" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="275" height="110"/>
@@ -120,14 +116,16 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="5AC-j3-ifV" secondAttribute="trailing" id="4dq-hF-o7x"/>
-                            <constraint firstItem="Eqq-KQ-lZH" firstAttribute="top" secondItem="5AC-j3-ifV" secondAttribute="bottom" constant="-5" id="8Sn-SS-d0f"/>
                             <constraint firstItem="UXU-gK-Qub" firstAttribute="centerX" secondItem="5AC-j3-ifV" secondAttribute="centerX" id="NOa-Xx-ZXd"/>
                             <constraint firstItem="5AC-j3-ifV" firstAttribute="top" secondItem="zEb-x8-LFw" secondAttribute="top" id="Pf5-5G-cQ3"/>
+                            <constraint firstItem="Eqq-KQ-lZH" firstAttribute="height" secondItem="zEb-x8-LFw" secondAttribute="height" multiplier="0.13" id="X6z-vt-60A"/>
                             <constraint firstItem="5AC-j3-ifV" firstAttribute="leading" secondItem="zEb-x8-LFw" secondAttribute="leading" id="XUd-5v-KKf"/>
                             <constraint firstItem="UXU-gK-Qub" firstAttribute="height" secondItem="5AC-j3-ifV" secondAttribute="height" id="is5-px-Ero"/>
-                            <constraint firstItem="Eqq-KQ-lZH" firstAttribute="leading" secondItem="zEb-x8-LFw" secondAttribute="leading" constant="15" id="mFe-F2-oAP"/>
                             <constraint firstItem="UXU-gK-Qub" firstAttribute="centerY" secondItem="5AC-j3-ifV" secondAttribute="centerY" id="mMv-bD-Nkt"/>
+                            <constraint firstItem="Eqq-KQ-lZH" firstAttribute="centerX" secondItem="zEb-x8-LFw" secondAttribute="centerX" multiplier="0.175" id="rZs-TZ-rLG"/>
                             <constraint firstItem="UXU-gK-Qub" firstAttribute="width" secondItem="5AC-j3-ifV" secondAttribute="width" id="sZr-04-i8Q"/>
+                            <constraint firstItem="Eqq-KQ-lZH" firstAttribute="top" secondItem="5AC-j3-ifV" secondAttribute="bottom" constant="-4" id="t8e-xU-sGp"/>
+                            <constraint firstItem="Eqq-KQ-lZH" firstAttribute="width" secondItem="zEb-x8-LFw" secondAttribute="height" multiplier="0.15" id="ynv-OD-PRg"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -150,7 +148,7 @@
                 <outlet property="viewDoctor" destination="5AC-j3-ifV" id="dgV-37-7XU"/>
                 <outlet property="viewManager" destination="UXU-gK-Qub" id="vUY-DA-mBc"/>
             </connections>
-            <point key="canvasLocation" x="295.2439024390244" y="75.762711864406782"/>
+            <point key="canvasLocation" x="280" y="71"/>
         </collectionViewCell>
     </objects>
     <resources>

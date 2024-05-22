@@ -31,15 +31,19 @@ struct DcrCount {
 struct Section {
     var date: String
     var items: [TodayCallsModel]
+    var eventCaptures: [UnsyncedEventCaptureModel]
     var isCallExpanded: Bool
+    var isEventEcpanded: Bool
     var collapsed: Bool
     var isLoading = Bool()
     
-    init(items: [TodayCallsModel] , collapsed: Bool = true, isCallExpanded: Bool = false, date: String) {
+    init(items: [TodayCallsModel] , eventCaptures: [UnsyncedEventCaptureModel], collapsed: Bool = true, isCallExpanded: Bool = false, isEventEcpanded: Bool = false, date: String) {
     self.items = items
     self.collapsed = collapsed
     self.isCallExpanded = isCallExpanded
     self.date = date
+    self.eventCaptures = eventCaptures
+    self.isEventEcpanded = isEventEcpanded
   }
 }
     

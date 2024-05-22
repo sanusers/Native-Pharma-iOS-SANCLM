@@ -201,7 +201,7 @@ class ConfigVC : UIViewController {
 
                 case .failure(let error):
                     Shared.instance.removeLoaderInWindow()
-                    print(error.localizedDescription)
+                    self.toCreateToast(error.rawValue)  
                 }
             }
         } else {
