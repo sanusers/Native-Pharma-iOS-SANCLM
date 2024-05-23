@@ -826,7 +826,7 @@ class LeaveApplicationVC: UIViewController {
     
     func toShowAlert(desc: String, istoNavigate: Bool) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             if istoNavigate {
                 self.navigationController?.popViewController(animated: true)

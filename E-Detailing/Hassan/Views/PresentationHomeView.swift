@@ -266,7 +266,7 @@ class PresentationHomeView : BaseView {
     
     func toShowAlert() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Are you sure about removing presentation?", okAction: "Yes",cancelAction: "No")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Are you sure about removing presentation?", okAction: "Yes",cancelAction: "No")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             self.toDeletePresentation()

@@ -33,6 +33,7 @@ enum InfoPlistKeys : String{
     case ThemeColors
     case UserType
     case Google_Places_keys = "GMSServicesAPIKey"
+    case App_Name = "App name"
 }
 extension InfoPlistKeys : PlistKeys{
     var key: String{

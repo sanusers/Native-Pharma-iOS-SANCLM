@@ -377,7 +377,7 @@ class JfwView: UIView {
     
     func toSetupAlert(desc: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("yes action")
          

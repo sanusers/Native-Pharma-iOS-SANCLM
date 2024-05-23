@@ -279,7 +279,7 @@ class SplashView: BaseView{
     
     func toSetupAlert(text: String, istoValidate : Bool? = false) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
             self.openSettings()

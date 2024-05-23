@@ -26,12 +26,17 @@ extension LoginVC: MediaDownloaderDelegate {
     
     func mediaDownloader(_ downloader: MediaDownloader, didFinishDownloadingData data: Data?) {
         print("")
-        self.imgLogo.image = UIImage(data: data ?? Data())
+        guard let data = data else {
+            self.imgLogo.image = UIImage(named: "logo")
+            return}
+        self.imgLogo.image = UIImage(data: data)
+        LocalStorage.shared.setData(LocalStorage.LocalValue.AppIcon, data: data)
         
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: any Error) {
         print("Error no slide found")
+        self.imgLogo.image = UIImage(named: "logo")
     }
 }
 
@@ -62,8 +67,7 @@ class LoginVC : UIViewController {
             self.txtPassWord.isSecureTextEntry =  self.txtPassWord.isSecureTextEntry == true ? false : true
             self.setEyeimage()
         }
-       // txtUserName.text = "mgr123"
-       // txtPassWord.text = "123"
+
     }
     @IBOutlet var contentsHolderview: UIView!
     
@@ -88,7 +92,71 @@ class LoginVC : UIViewController {
 
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    func addObserverForTimeZoneChange() {
+    var isCahcheUser : Bool = {
+          let cacheName = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserName)
+        if !cacheName.isEmpty {
+        return true
+        } else {
+         return false
+        }
+        
+    }()
+
+    
+    class func initWithStory() -> LoginVC {
+        let loginVC : LoginVC = UIStoryboard.Hassan.instantiateViewController()
+
+        return loginVC
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.homeVM = HomeViewModal()
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        
+         
+        let cacheName = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserName)
+          if isCahcheUser {
+              txtUserName.isUserInteractionEnabled = false
+              txtUserName.text = cacheName
+          } else {
+              checkReachability()
+              addObserverConnectionChanged()
+              txtUserName.isUserInteractionEnabled = true
+          }
+        setupui()
+        
+        let data = AppDefaults.shared.getConfig()
+
+
+//        Dispatch.background {
+//            // do stuff
+//            print("Data fetching")
+//            var imageData : Data?
+//            if let data = try? Data(contentsOf: url) {
+//                imageData = data
+//                let imgData : [String : Any] = ["name" : AppDefaults.shared.appConfig!.logoImg , "data" : data]
+//                AppDefaults.shared.save(key: .logoImage, value: imgData)
+//            Dispatch.main {
+//                // update UI
+//                self.imgLogo.image = UIImage(data: imageData ?? Data())
+//            }
+//        }
+//        }
+       // dump(attachmentURL + data.config.logoImg)
+        if !isCahcheUser {
+            Pipelines.shared.downloadData(mediaURL:  attachmentURL + data.config.logoImg, delegate: self)
+        } else {
+         let imageData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.AppIcon)
+            self.imgLogo.image = UIImage(data: imageData)
+        }
+       
+       
+
+    }
+    
+    
+    func addObserverConnectionChanged() {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
 
     }
@@ -104,13 +172,40 @@ class LoginVC : UIViewController {
     
     func toSetupAlert(text: String, istoValidate : Bool? = false) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
            // self.openSettings()
 
    
         }
+    }
+    
+    
+    func toSetupClearCacheAlert(text: String) {
+        
+        guard  let tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData() else{ return }
+        if !tempUnsyncedArr.isEmpty {
+            let commonAlert = CommonAlert()
+            commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok", cancelAction: "Cancel")
+            commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+                print("no action")
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                    self.startBackgroundTaskWithLoader(delegate: appDelegate)
+                }
+
+            }
+            commonAlert.addAdditionalCancelAction {
+                print("Yes action")
+            }
+        
+        } else {
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                self.startBackgroundTaskWithLoader(delegate: appDelegate)
+            }
+        }
+        
+
     }
     
     func checkReachability() {
@@ -147,42 +242,6 @@ class LoginVC : UIViewController {
        
         
     }
-    
-    class func initWithStory() -> LoginVC {
-        let loginVC : LoginVC = UIStoryboard.Hassan.instantiateViewController()
-
-        return loginVC
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.homeVM = HomeViewModal()
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
-        setupui()
-        checkReachability()
-        addObserverForTimeZoneChange()
-        let data = AppDefaults.shared.getConfig()
-
-
-//        Dispatch.background {
-//            // do stuff
-//            print("Data fetching")
-//            var imageData : Data?
-//            if let data = try? Data(contentsOf: url) {
-//                imageData = data
-//                let imgData : [String : Any] = ["name" : AppDefaults.shared.appConfig!.logoImg , "data" : data]
-//                AppDefaults.shared.save(key: .logoImage, value: imgData)
-//            Dispatch.main {
-//                // update UI
-//                self.imgLogo.image = UIImage(data: imageData ?? Data())
-//            }
-//        }
-//        }
-        Pipelines.shared.downloadData(mediaURL: data.config.logoImg, delegate: self)
-
-    }
-    
-    
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -195,10 +254,9 @@ class LoginVC : UIViewController {
 
     @IBAction func resetConfiguration(_ sender: UIButton) {
         
-        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            startBackgroundTaskWithLoader(delegate: appDelegate)
-        }
-                
+        
+        toSetupClearCacheAlert(text: "This action will clear all of unsynced outbox calls and other cached datas. Are you sure you want to proceed?")
+
     }
     
     @objc func networkModified(_ notification: NSNotification) {
@@ -209,7 +267,7 @@ class LoginVC : UIViewController {
                 DispatchQueue.main.async {
                     if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue {
                         
-                        self.toCreateToast("Please check your internet connection.")
+                      //  self.toCreateToast("Please check your internet connection.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
@@ -219,8 +277,23 @@ class LoginVC : UIViewController {
         }
     }
 
+    
+    func doOfflineLogin() {
+        let cachePassword = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserPassword)
+        guard self.txtPassWord.text == cachePassword
+        else {
+            self.toCreateToast("Entered password is incorrect.")
+            return }
+     
+        self.toCreateToast("logged in successfully")
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: true)
+        self.navigate()
+        
+    }
+    
     func doUserLogin(_ param: [String: Any], paramData: JSON) {
         dump(param)
+
         
         Shared.instance.showLoaderInWindow()
         
@@ -267,15 +340,28 @@ class LoginVC : UIViewController {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isMR, value: true)
         }
         
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.UserName, text: self.txtUserName.text ?? "")
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.UserPassword, text: self.txtPassWord.text ?? "")
         appDelegate.setupRootViewControllers()
         
     }
-    
-    
-    
-    
 
     @IBAction func loginAction(_ sender: UIButton) {
+        
+        if txtUserName.text!.isEmpty {
+            self.toCreateToast("Please Enter user ID")
+            return
+        }
+        
+        if txtPassWord.text!.isEmpty {
+            self.toCreateToast("Please enter password")
+            return
+        }
+        
+        if isCahcheUser {
+            doOfflineLogin()
+            return
+        }
         
         if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             self.toSetupAlert(text: "Internet connection is required to login user.")
@@ -361,19 +447,15 @@ class LoginVC : UIViewController {
                 dispatchGroup.leave()
             }
             
-            dispatchGroup.enter()
-            do {
-                try self.clearDocumentsAndData()
-                dispatchGroup.leave()
-            } catch {
-                print("Error clearing documents and data: \(error.localizedDescription)")
-                dispatchGroup.leave()
-            }
+   //         dispatchGroup.enter()
+//            do {
+//                try self.clearDocumentsAndData()
+//                dispatchGroup.leave()
+//            } catch {
+//                print("Error clearing documents and data: \(error.localizedDescription)")
+//                dispatchGroup.leave()
+//            }
             
-            dispatchGroup.enter()
-            self.recreatePersistentStore(delegate: appDelegate) { isCreated in
-                
-            }
             
             dispatchGroup.notify(queue: .main) {
                 // Hide your loader here
@@ -401,116 +483,96 @@ class LoginVC : UIViewController {
         }
     }
     
-    func resetCoreDataStack(delegate: AppDelegate?, completion: @escaping (Bool) -> Void) {
-        
-        UserDefaults.resetDefaults()
-        Shared.instance.toReset()
-        guard let appDelegate = delegate else {
-            completion(false)
-            return
-        }
-        
-        // Get a reference to the NSPersistentStoreCoordinator
-        let storeContainer = appDelegate.persistentContainer.persistentStoreCoordinator
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                // Delete each existing persistent store
-                for store in storeContainer.persistentStores {
-                    try storeContainer.destroyPersistentStore(at: store.url!, ofType: store.type, options: nil)
-                }
-                
-                // Create a new container and ensure it loads persistent stores synchronously
-                let newContainer = NSPersistentContainer(name: "E-Detailing")
-                
-                var loadError: Error?
-                let semaphore = DispatchSemaphore(value: 0)
-                
-                newContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
-                    if let error = error as NSError? {
-                        loadError = error
-                    }
-                    semaphore.signal()
-                })
-                
-                semaphore.wait()
-                
-                if let error = loadError {
-                    throw error
-                }
-                
-                DispatchQueue.main.async {
-                    appDelegate.persistentContainer = newContainer
-                    completion(true)
-                }
-            } catch {
-                print("Failed to reset Core Data stack: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    completion(false)
-                }
-            }
-        }
-    }
-    
-    
-    
-    private func recreatePersistentStore(delegate: AppDelegate, completion: @escaping (Bool) -> Void) {
-        let persistentContainer = delegate.persistentContainer
-        let storeCoordinator = persistentContainer.persistentStoreCoordinator
-        guard let storeURL = storeCoordinator.persistentStores.first?.url else {
-            completion(false)
-            return
-        }
-        
-        persistentContainer.performBackgroundTask { context in
-            do {
-                try storeCoordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
-                try storeCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
-                completion(true)
-            } catch {
-                print("Error recreating persistent store: \(error)")
-                completion(false)
-            }
-        }
-    }
-    
 //    func resetCoreDataStack(delegate: AppDelegate?, completion: @escaping (Bool) -> Void) {
+//        
 //        UserDefaults.resetDefaults()
 //        Shared.instance.toReset()
-//        
 //        guard let appDelegate = delegate else {
 //            completion(false)
 //            return
 //        }
 //        
-//        let managedContext = appDelegate.persistentContainer.viewContext
-//        let entityNames = appDelegate.persistentContainer.managedObjectModel.entities.compactMap { $0.name }
+//        // Get a reference to the NSPersistentStoreCoordinator
+//        let storeContainer = appDelegate.persistentContainer.persistentStoreCoordinator
 //        
-//        let dispatchGroup = DispatchGroup()
-//        var didEncounterError = false
-//        
-//        for entityName in entityNames {
-//            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-//            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-//            
-//            dispatchGroup.enter()
-//            
-//            managedContext.perform {
-//                do {
-//                    try managedContext.execute(batchDeleteRequest)
-//                    try managedContext.save()
-//                } catch {
-//                    print("Error clearing \(entityName): \(error)")
-//                    didEncounterError = true
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            do {
+//                // Delete each existing persistent store
+//                for store in storeContainer.persistentStores {
+//                    try storeContainer.destroyPersistentStore(at: store.url!, ofType: store.type, options: nil)
 //                }
-//                dispatchGroup.leave()
+//                
+//                // Create a new container and ensure it loads persistent stores synchronously
+//                let newContainer = NSPersistentContainer(name: "E-Detailing")
+//                
+//                var loadError: Error?
+//                let semaphore = DispatchSemaphore(value: 0)
+//                
+//                newContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
+//                    if let error = error as NSError? {
+//                        loadError = error
+//                    }
+//                    semaphore.signal()
+//                })
+//                
+//                semaphore.wait()
+//                
+//                if let error = loadError {
+//                    throw error
+//                }
+//                
+//                DispatchQueue.main.async {
+//                    appDelegate.persistentContainer = newContainer
+//                    completion(true)
+//                }
+//            } catch {
+//                print("Failed to reset Core Data stack: \(error.localizedDescription)")
+//                DispatchQueue.main.async {
+//                    completion(false)
+//                }
 //            }
 //        }
-//        
-//        dispatchGroup.notify(queue: .main) {
-//            completion(!didEncounterError)
-//        }
 //    }
+    
+    
+    
+    func resetCoreDataStack(delegate: AppDelegate?, completion: @escaping (Bool) -> Void) {
+        UserDefaults.resetDefaults()
+        Shared.instance.toReset()
+        
+        guard let appDelegate = delegate else {
+            completion(false)
+            return
+        }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let entityNames = appDelegate.persistentContainer.managedObjectModel.entities.compactMap { $0.name }
+        
+        let dispatchGroup = DispatchGroup()
+        var didEncounterError = false
+        
+        for entityName in entityNames {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            
+            dispatchGroup.enter()
+            
+            managedContext.perform {
+                do {
+                    try managedContext.execute(batchDeleteRequest)
+                    try managedContext.save()
+                } catch {
+                    print("Error clearing \(entityName): \(error)")
+                    didEncounterError = true
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion(!didEncounterError)
+        }
+    }
 
     func removeData(at url: URL) {
         let fileManager = FileManager.default

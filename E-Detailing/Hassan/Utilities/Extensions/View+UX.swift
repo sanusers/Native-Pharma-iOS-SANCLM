@@ -709,48 +709,23 @@ extension AppDelegate {
                                              height: keyWindow.frame.size.height / 20))
         } else if isFromWishList! {
             backgroundHolderView=UIView(frame: CGRect(x: keyWindow.width / 1.2 -  keyWindow.width / 1.2 / 1.1, y: keyWindow.bottom - keyWindow.height / 15 , width: keyWindow.width / 1.2, height: keyWindow.height / 20))
-//            UIView(frame: CGRect(x: (keyWindow.width / 1.2) / 2 - (keyWindow.width / 1.2) / 2.5,
-//                                                      y: keyWindow.frame.size.height -  keyWindow.frame.size.height / 15 - (keyWindow.frame.size.height/20),
-//                                                      width: keyWindow.frame.size.width/1.2,
-//                                                   height: keyWindow.frame.size.height / 15))
             lblMessage.clipsToBounds = true
             lblMessage.frame=backgroundHolderView.bounds
-//                UILabel(frame: CGRect(x: backgroundHolderView.left + 5,
-//                                                 y: backgroundHolderView.top + 5,
-//                                                 width: backgroundHolderView.width - 10,
-//                                                 height: backgroundHolderView.height - 10))
+
         }
         lblMessage.tag = 500
         lblMessage.text = strMessage
         lblMessage.textAlignment = NSTextAlignment.center
         lblMessage.numberOfLines = 0
-      //  moveLabelToYposition(lblMessage)
-//        if !isFromSearch! && !isFromWishList! {
-//            lblMessage.textColor = .white
-//            lblMessage.backgroundColor = .cyan
-//            lblMessage.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-//            lblMessage.layer.shadowColor = UIColor.darkGray.cgColor
-//            moveLabelToYposition(lblMessage,
-//                                 win: keyWindow)
-//            keyWindow.addSubview(lblMessage)
-//
-//        } else if isFromSearch!{
-//            lblMessage.textColor = .black
-//            lblMessage.backgroundColor = .white
-//            lblMessage.font = UIFont.systemFont(ofSize: 14, weight: .light)
-//            lblMessage.layer.shadowColor = UIColor.darkGray.cgColor
-//            moveSearchLabelToYposition(lblMessage,
-//                                       win: keyWindow)
-//            keyWindow.addSubview(lblMessage)
-//        } else
+        
         if isFromWishList! {
             lblMessage.textColor = .black
            // lblMessage.backgroundColor = .systemBackground
-            lblMessage.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+            lblMessage.font = UIFont(name: "Satoshi-Medium", size: 14)
             backgroundHolderView.layer.cornerRadius = backgroundHolderView.height / 2
-            backgroundHolderView.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.5).cgColor
+            backgroundHolderView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
             backgroundHolderView.layer.borderWidth = 0.5
-            backgroundHolderView.layer.backgroundColor = UIColor.white.withAlphaComponent(0.8).cgColor
+            backgroundHolderView.layer.backgroundColor = UIColor.appWhiteColor.withAlphaComponent(0.2).cgColor
            // backgroundHolderView.layer.cornerRadius =  backgroundHolderView.height / 6
            // backgroundHolderView.elevate(2, radius:  backgroundHolderView.height / 4)
             keyWindow.addSubview(backgroundHolderView)

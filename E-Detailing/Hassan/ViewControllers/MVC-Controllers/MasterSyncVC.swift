@@ -62,7 +62,7 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     func toSetupAlert(desc: String, istoNavigate: Bool, istoNavigatetoSettings : Bool? = false) {
         downloadAlertSet = true
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
           if istoNavigatetoSettings ?? false {
               self.navigateTosettings()
@@ -583,6 +583,7 @@ class MasterSyncVC : UIViewController {
         self.dcrList.append(MasterCellData(cellType: MasterCellType.syncAll,isSelected: false))
         
         self.masterData.append(MasterInfo.myDayPlan)
+        
         self.masterData.append(MasterInfo.doctorFencing)
         self.masterData.append(MasterInfo.chemists)
         self.masterData.append(MasterInfo.stockists)
@@ -735,51 +736,30 @@ class MasterSyncVC : UIViewController {
                         
                         
                     } else {
-                        
-                        
-                    //    if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR)  {
-                            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-                            
+                        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+  
                             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: appdefaultSetup.sfCode ?? "")
                             
-                            welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) , istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
+                            welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
                                 
                                 let subordinateArr =  DBManager.shared.getSubordinate()
-                                let filteredHQ = subordinateArr.filter {  $0.id == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) }
-                                if !filteredHQ.isEmpty {
-                                    let cacheHQ = filteredHQ.first
-                                    welf.fetchedHQObject = cacheHQ
-                                    welf.setHQlbl()
-                                }
+                                let filteredHQ = subordinateArr.first
+                                //.filter {$0.mapId == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)}
+                                // if !filteredHQ.isEmpty {
+                                let cacheHQ = filteredHQ
+                                welf.fetchedHQObject = cacheHQ
+                                welf.setHQlbl()
+                                // }
                                 completion(true)
-                            }
+                          
                             return
-                      //  }
-                        
-                        
-//                        CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-//                            if !selectedHQArr.isEmpty {
-//                                let aSelectedHQ = selectedHQArr.first
-//                                let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-//                                if let aSelectedHQ = aSelectedHQ {
-//                                    welf.fetchedHQObject =  CoreDataManager.shared.convertHeadQuartersToSubordinate(aSelectedHQ, context: context)
-//                                }
-//                                welf.lblHqName.text = aSelectedHQ?.name
-//                            } else {
-//                                welf.lblHqName.text =  "Select HQ"
-//                            }
-//                            completion(true)
-//                        }
-                        
-                        
+                        }
                     }
-
                     
-                  //  completion(true)
                 case .failure(let error):
                     welf.toCreateToast(error.rawValue)
                     
-
+                    
                     completion(false)
                 }
             }
@@ -899,7 +879,7 @@ extension MasterSyncVC : tableViewProtocols {
     
     func showMasterSyncError(description: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "\(description)", okAction: "Close")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "\(description)", okAction: "Close")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

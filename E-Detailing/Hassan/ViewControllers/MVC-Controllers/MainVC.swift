@@ -457,7 +457,7 @@ class MainVC : UIViewController {
     
     func toSetupSubmitAlert() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Do you want to add remarks for your day paln?", okAction:    appSetups.srtNeed == 1 ? "Just check out" : "Final submit" , cancelAction: "Add remark")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Do you want to add remarks for your day paln?", okAction:    appSetups.srtNeed == 1 ? "Just check out" : "Final submit" , cancelAction: "Add remark")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
            
@@ -3011,7 +3011,7 @@ extension MainVC : collectionViewProtocols {
     
     func toSetupAlert() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please do try syncing All slides!.", okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Please do try syncing All slides!.", okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
         }
@@ -4591,7 +4591,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     
     func showAlertToFilldates(description: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "\(description)", okAction: "Close")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "\(description)", okAction: "Close")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()
@@ -4744,11 +4744,12 @@ extension MainVC : outboxCollapseTVCDelegate {
         let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
         //  obj_sections[section].isLoading = true
         if isConnected {
-            self.toretryDCRupload(date: obj_sections[refreshIndex].date) {_ in
-            
+           
+            self.toretryDCRupload(date: obj_sections[refreshIndex].date) { _ in
                 self.toCreateToast("Sync completed")
                 Shared.instance.showLoaderInWindow()
                 self.toUploadUnsyncedImage() {
+                    self.toLoadOutboxTable()
                     Shared.instance.removeLoaderInWindow()
                 }
                 
@@ -4764,8 +4765,6 @@ extension MainVC : outboxCollapseTVCDelegate {
       
         CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventsArr in
             
-            // Create a serial dispatch queue to handle uploads synchronously
-            let uploadQueue = DispatchQueue(label: "com.yourapp.uploadQueue")
             
             // Create a dispatch group to wait for all uploads to complete
             let dispatchGroup = DispatchGroup()
@@ -4784,59 +4783,25 @@ extension MainVC : outboxCollapseTVCDelegate {
                 // Process each eventCaptureViewModel synchronously
                 eventCaptureVMs.forEach { aEventCaptureViewModel in
                     dispatchGroup.enter()
-                    
-                        self.callSaveimageAPI(param: optionalParam ?? JSON(), paramData: yattoPostData ?? Data(), evencaptures: aEventCaptureViewModel, custCode: "") { result in
+                    var custCode: String = ""
+                    if  let patamcustcode = optionalParam?["custCode"] {
+                        custCode = patamcustcode as! String
+                    }
+                  
+                    self.callSaveimageAPI(param: optionalParam ?? JSON(), paramData: yattoPostData ?? Data(), evencaptures: aEventCaptureViewModel, custCode: custCode) { result in
                             dispatchGroup.leave()
                         }
 
-                    // Wait for the current upload to finish before starting the next
-                    dispatchGroup.wait()
                 }
             }
             
             // Notify the completion handler when all uploads are done
             dispatchGroup.notify(queue: .main) {
+                
                 completion()
             }
         }
     }
-    
-//    func toUploadUnsyncedImage(completion: @escaping () -> ()) {
-//        CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventsArr in
-//        
-//            unsyncedEventsArr.forEach { unsyncedEvent in
-//                var eventCaptureVMs = [EventCaptureViewModel]()
-//               let yattoPostData = unsyncedEvent.eventCaptureParamData
-//                let eventCaptures = unsyncedEvent.capturedEvents
-//                let yettoPostParam = [String : Any]()
-//                let optionalParam = ObjectFormatter.shared.convertDataToJson(data: yattoPostData ?? Data())
-//                eventCaptures?.forEach({ aEventCapture in
-//                    let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
-//                    eventCaptureVMs.append(aEventCaptureViewModel)
-//                })
-//               
-//                eventCaptureVMs.forEach { aEventCaptureViewModel in
-//                    self.callSaveimageAPI(param: optionalParam ?? JSON(), paramData: yattoPostData ?? Data(), evencaptures: aEventCaptureViewModel, custCode: "") { result in
-//                        
-//                        
-//                    }
-//                }
-//             
-//                
-//     
-//              
-//                
-//             
-//            }
-//            
-//           
-//            
-//        }
-//        
-//
-//
-//    }
-    
     
 }
 
@@ -4951,7 +4916,7 @@ extension MainVC: PopOverVCDelegate {
     
     func logoutAction() {
         
-        print("Yet to implement")
+        self.toCreateToast("logged out successfully")
         
         Pipelines.shared.doLogout()
         
@@ -4959,7 +4924,7 @@ extension MainVC: PopOverVCDelegate {
     
     func toSetupDeleteAlert(index: Int) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Are you sure calls ", okAction: "Yes" , cancelAction: "No")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Are you sure calls ", okAction: "Yes" , cancelAction: "No")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             
@@ -5151,7 +5116,7 @@ extension MainVC : addedSubViewsDelegate {
     
     func showAlertToEnableLocation() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

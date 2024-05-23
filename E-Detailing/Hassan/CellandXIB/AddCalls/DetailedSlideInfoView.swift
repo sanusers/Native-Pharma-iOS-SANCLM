@@ -121,6 +121,7 @@ class DetailedSlideInfoView: UIView {
             
             detailedSlide.forEach { cacheSlides in
                 if let slidesModel = cacheSlides.slidesModel {
+                    slidesModel.slideData = Data()
                     groupedSlide.append(slidesModel)
                 }
             }

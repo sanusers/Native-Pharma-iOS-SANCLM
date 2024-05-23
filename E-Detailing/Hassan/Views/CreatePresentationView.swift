@@ -178,7 +178,7 @@ class CreatePresentationView : BaseView {
                 welf.createPresentationVC.navigationController?.pushViewController(vc, animated: true)
             } else {
                 let commonAlert = CommonAlert()
-                commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to preview", okAction: "Ok")
+                commonAlert.setupAlert(alert: AppName, alertDescription: "Add atleast 1 slide to preview", okAction: "Ok")
                 commonAlert.addAdditionalOkAction(isForSingleOption: true) {
                     print("no action")
                 }
@@ -233,14 +233,14 @@ class CreatePresentationView : BaseView {
     func toCheckDataPersistance() -> Bool {
         if self.sledeCountLbl.text == "" {
             let commonAlert = CommonAlert()
-            commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Add atleast 1 slide to save.", okAction: "Ok")
+            commonAlert.setupAlert(alert: AppName, alertDescription: "Add atleast 1 slide to save.", okAction: "Ok")
             commonAlert.addAdditionalOkAction(isForSingleOption: true) {
                 print("no action")
             }
             return false
         } else if addNameTF.text == "" {
             let commonAlert = CommonAlert()
-            commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Lets give presentation a name.", okAction: "Ok")
+            commonAlert.setupAlert(alert: AppName, alertDescription: "Lets give presentation a name.", okAction: "Ok")
             commonAlert.addAdditionalOkAction(isForSingleOption: true) {
                 print("no action")
                 self.alertTF()

@@ -1201,10 +1201,10 @@
 		38BFB7842AFB62DD005E141E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				38FAA16C2B7F255600714AA2 /* CommonStructs.swift */,
 				380DCDB22BFB4BCF00F455C9 /* LeaveApplication */,
 				38111E1F2BB44F5100C46358 /* RCPAmodels */,
 				38FAA1752B7F5C8100714AA2 /* MyDayPlan */,
-				38FAA16C2B7F255600714AA2 /* CommonStructs.swift */,
 				38CA1FE62B6107E700AFCFD2 /* Presentation */,
 				38F5558D2B57B776000D9294 /* Calls */,
 				38BA66862B4685A8008C6D2C /* DCR */,
@@ -2302,12 +2302,10 @@
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "E-Detailing/Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "E-Detailing uses pictures to verify Events";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationUsageDescription = "E-Detailing uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "E-Detailing uses location to show nearby customers.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to show nearby customers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Hassan;
@@ -2341,12 +2339,10 @@
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "E-Detailing/Info.plist";
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "E-Detailing uses pictures to verify Events";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationUsageDescription = "E-Detailing uses location to Show nearby Customers.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to Show nearby Customers.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "E-Detailing uses location to show nearby customers.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Detailing uses location to show nearby customers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Hassan;

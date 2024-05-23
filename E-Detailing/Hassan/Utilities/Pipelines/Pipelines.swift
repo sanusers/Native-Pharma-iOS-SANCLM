@@ -43,6 +43,7 @@ class Pipelines  {
     func doLogout() {
         window = appDelegate.window
         //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserLoggedIn)
+        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
         self.window?.rootViewController = UINavigationController.init(rootViewController: LoginVC.initWithStory())
     }

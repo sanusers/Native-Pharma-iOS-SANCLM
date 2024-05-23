@@ -58,10 +58,12 @@ class ConfigVC : UIViewController {
             if let status = dict["Type"] as? String{
                 DispatchQueue.main.async {
                     if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue {
-                        
                         self.toCreateToast("Please check your internet connection.")
+                       
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
+                        self.toCreateToast("You are now connected.")
+                        
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                     }
                 }
@@ -78,7 +80,7 @@ class ConfigVC : UIViewController {
                 
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                self.toSetupAlert(text: "Internet connection is required to validate configuration.")
+               // self.toSetupAlert(text: "Internet connection is required to validate configuration.")
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                
@@ -94,7 +96,7 @@ class ConfigVC : UIViewController {
                 
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                self.toSetupAlert(text: "Internet connection is required to validate configuration.")
+              //  self.toSetupAlert(text: "Internet connection is required to validate configuration.")
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
              
@@ -114,6 +116,8 @@ class ConfigVC : UIViewController {
     
     
         func setupUI() {
+            
+            appTitle.text = AppName
             txtWebUrl.delegate = self
             txtLicenceKey.delegate = self
             let headerLbl: [UILabel] = [languageLbl, devieIDLbl, languageLbl, licenceKeyLbl, pageTitle, lblURL]
@@ -134,7 +138,7 @@ class ConfigVC : UIViewController {
                 textfield?.rightViewMode = .always
             }
             txtDeviceId.backgroundColor = .appSelectionColor
-            appTitle.setFont(font: .bold(size: .SUBHEADER))
+            appTitle.setFont(font: .bold(size: .HEADER))
             lblPoweredBy.setFont(font: .medium(size: .BODY))
             lblPoweredBy.textColor = .appLightTextColor
             statusBarView.backgroundColor = .appTextColor
@@ -162,14 +166,12 @@ class ConfigVC : UIViewController {
     @IBAction func saveSettingsAction(_ sender: UIButton) {
         print("save")
 
-     
         if self.txtWebUrl.text!.isEmpty {
-            self.toCreateToast("Please Enter Web URL")
+            self.toCreateToast("Please Enter web URL")
             return
         }
-
         if self.txtLicenceKey.text!.isEmpty {
-            self.toCreateToast("Please Enter License Key")
+            self.toCreateToast("Please enter license key")
             return
         }
         toValidateURL()
@@ -213,7 +215,7 @@ class ConfigVC : UIViewController {
     
     func toSetupAlert(text: String, istoValidate : Bool? = false) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
            // self.openSettings()
@@ -228,7 +230,7 @@ class ConfigVC : UIViewController {
         let config  = response.filter { $0.key.caseInsensitiveCompare(licenseKey) == .orderedSame }
         
         guard let appConfig = config.first else {
-            self.toCreateToast("Invalid License Key")
+            self.toCreateToast("Invalid license key")
             return
         }
         
@@ -256,6 +258,7 @@ class ConfigVC : UIViewController {
             try AppDefaults.shared.toSaveEncodedData(object: appConfig, key: .config) { isSuccess in
                 if isSuccess {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.isConfigAdded, value: true)
+                    
                     self.navigateToLogin()
                 }
             }
@@ -266,7 +269,7 @@ class ConfigVC : UIViewController {
     }
 
     func navigateToLogin() {
-
+        self.toCreateToast("\(AppName)" + "configured successfully.")
         let loginVC = LoginVC.initWithStory()
         self.navigationController?.pushViewController(loginVC, animated: true)
         

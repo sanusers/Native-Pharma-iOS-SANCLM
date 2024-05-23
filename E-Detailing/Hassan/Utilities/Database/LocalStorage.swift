@@ -27,6 +27,10 @@ class LocalStorage {
         case SlideURL
         case ImageUploadURL
         case ImageDownloadURL
+        case AttachmentsURL
+        case UserName
+        case UserPassword
+        case AppIcon
         case istoEnableApproveBtn
         case TPalldatesAppended
         case TPisForFinalDate
@@ -54,6 +58,7 @@ class LocalStorage {
         case isConfigAdded
         case isSlidesDownloadPending
         case isTimeZoneChanged
+        
     }
     
     enum Offsets: String {

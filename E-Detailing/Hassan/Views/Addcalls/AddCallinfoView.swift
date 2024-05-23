@@ -2017,7 +2017,7 @@ extension AddCallinfoView : addedSubViewsDelegate {
     
     func showAlertToEnableLocation() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings to submit call.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings to submit call.", okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

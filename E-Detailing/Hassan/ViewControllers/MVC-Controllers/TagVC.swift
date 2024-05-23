@@ -142,7 +142,7 @@ class TagVC : UIViewController {
     
     func toSetupAlert(desc: String, istoToreTry: Bool) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("yes action")
          
@@ -296,7 +296,7 @@ class TagVC : UIViewController {
     
     func showAlertToEnableLocation() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

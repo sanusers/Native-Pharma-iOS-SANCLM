@@ -148,9 +148,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                         Shared.instance.iscelliterating = false
                                         Shared.instance.isSlideDownloading = false
                                         if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
-                                            self.toSetupAlert(text: "Slide downloading completed")
+                                            self.toSetupAlert(text: "Slides downloading completed")
                                         } else {
-                                            self.toSetupAlert(text: "Slides download pending try syncing again", istoPoP: true)
+                                            self.toSetupAlert(text: "Slides download pending please do retry later.", istoPoP: true)
                                            
                                         }
                                       
@@ -159,6 +159,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                     }
                                    // Shared.instance.removeLoader(in: self.tableView)
                                     completion(true)
+                               
                                 }
                         return
                     }
@@ -342,16 +343,16 @@ class SlideDownloadVC : UIViewController {
     
     func toSetupAlert(text: String, istoPoP : Bool? = false) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: text, okAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
             if istoPoP ?? false {
-                self.delegate?.didEncounterError()
-                Pipelines.shared.toStopDownload()
-                Shared.instance.isSlideDownloading = false
-                Shared.instance.iscelliterating = false
-                self.delegate?.didEncounterError()
-                self.dismiss(animated: false)
+                self.dismiss(animated: false) {
+                    self.delegate?.didEncounterError()
+                    Pipelines.shared.toStopDownload()
+                    Shared.instance.isSlideDownloading = false
+                    Shared.instance.iscelliterating = false
+                }
                
             }
    
@@ -611,7 +612,10 @@ class SlideDownloadVC : UIViewController {
       //  Shared.instance.showLoaderInWindow()
         let allSlideObjects = CoreDataManager.shared.retriveSavedSlides()
         let brandSlideObjects = CoreDataManager.shared.retriveSavedBrandSlides()
-
+        if brandSlideObjects.isEmpty {
+            completion(true)
+            return
+        }
         CoreDataManager.shared.removeAllGeneralGroupedSlides()
 
         let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in

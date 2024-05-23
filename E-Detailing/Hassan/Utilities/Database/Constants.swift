@@ -38,6 +38,8 @@ let infoPlist = PlistReader<InfoPlistKeys>()
 
 let GooglePlacesApiKey : String = infoPlist?.value(for: .Google_Places_keys) ?? ""
 
+let AppName : String =  infoPlist?.value(for: .App_Name) ?? ""
+
 var APIBaseUrl : String  {
     get {
         APIUrl
@@ -68,6 +70,8 @@ var appConfigURL : String =  LocalStorage.shared.getString(key: LocalStorage.Loc
 var imageUploadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageUploadURL)
 
 var imageDownloadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
+
+var attachmentURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AttachmentsURL)
 
 var AppConfigURL: String = "" {
     didSet {
@@ -104,6 +108,8 @@ var ImageUploadURL : String {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageDownloadURL, text: attachmentsUrl + "/photos/")
         
+        
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.AttachmentsURL, text: attachmentsUrl + "/")
     }
     
 }

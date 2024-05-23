@@ -860,7 +860,7 @@ class AddCallinfoVC: BaseViewController {
     
     func showAlertToEnableLocation(desc: String, istoToreTry: Bool, completion: @escaping (Bool) -> ()) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: "E - Detailing", alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()
