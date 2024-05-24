@@ -11,8 +11,39 @@ import Foundation
 
 class InputSelectedListViewModel {
     var uuid: UUID?
-     var inputViewModel = [InputViewModel]()
-    
+    var inputViewModel = [InputViewModel]()
+    var filteredInputs: [Input] = {
+        var inputs = DBManager.shared.getInput()
+        let currentDate = Date()
+
+        var filteredInputs = inputs.filter { input in
+            guard let fromDate = input.effF?.date?.toDate(format: "yyyy-MM-dd HH:mm:ss"),
+                  let toDate = input.effT?.date?.toDate(format: "yyyy-MM-dd HH:mm:ss") else {
+                // If either fromDate or toDate is nil, exclude the input
+                return false
+            }
+
+            // Check if today's date is within the range defined by fromDate and toDate
+            return fromDate <= currentDate && toDate >= currentDate
+        }
+        return filteredInputs
+  //      dump(filteredInputs)
+//        let noInput = inputs.filter { aInput in
+//            aInput.code == "-1"
+//        }
+//
+//        let existingIP = filteredInputs.filter { aInput in
+//            aInput.code == "-1"
+//        }
+//
+//        if existingIP.isEmpty {
+//            filteredInputs.insert(contentsOf: noInput, at: 1)
+//        } else {
+//            return inputs
+//        }
+//
+//        return filteredInputs
+    }()
     
     func fetchAllInput() -> [Input]? {
         return inputViewModel.map { $0.input.input ?? Input() }
@@ -26,7 +57,7 @@ class InputSelectedListViewModel {
     
     
     func fetchInputData(_ index : Int, searchText : String) -> Objects {
-        let input = searchText == "" ? DBManager.shared.getInput() : DBManager.shared.getInput().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        let input = searchText == "" ? filteredInputs : filteredInputs.filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
         let value = self.inputData()
         
@@ -35,7 +66,7 @@ class InputSelectedListViewModel {
     }
     
     func numberOfInputs (searchText : String) -> Int{
-        let inputs = searchText == "" ? DBManager.shared.getInput() : DBManager.shared.getInput().filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        let inputs = searchText == "" ? filteredInputs : filteredInputs.filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         return inputs.count
     }
     
@@ -120,4 +151,13 @@ struct Objects {
     var Object : AnyObject
     var isSelected : Bool
     var priority : String
+}
+
+extension Date {
+    func isBetween(_ fromDate: Date?, _ toDate: Date?) -> Bool {
+        if let fromDate = fromDate, let toDate = toDate {
+            return self >= fromDate && self <= toDate
+        }
+        return false
+    }
 }

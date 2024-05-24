@@ -483,7 +483,7 @@ class MainVC : UIViewController {
             guard let welf = self else {return}
             guard let coordinates = coordinates else {
                 
-                welf.showAlert()
+                welf.showAlertToEnableLocation()
                 
                 return
             }
@@ -1307,11 +1307,14 @@ class MainVC : UIViewController {
     }
     
     @objc func dcrcallsAdded() {
-       // if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             toSetParams(isfromSyncCall: true) {
-               // self.toLoadOutboxTable(isSynced: true)
+                // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {}
-           }
+            }
+        } else {
+            self.refreshDashboard() {}
+        }
      
     }
     
@@ -1464,7 +1467,7 @@ class MainVC : UIViewController {
         Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
             guard coordinates != nil else {
-                welf.showAlert()
+                welf.showAlertToEnableLocation()
                 return
             }
             welf.latitude = coordinates?.latitude
@@ -2540,7 +2543,7 @@ extension MainVC {
                     
                   //  welf.configureSaveplanBtn(<#T##isToEnable: Bool##Bool#>)
                     
-                    self?.toCreateToast("You are not connected to internet")
+                    welf.toCreateToast("You are not connected to internet")
                 }
                 
                 
@@ -2683,12 +2686,17 @@ extension MainVC: MenuResponseProtocol {
                     Shared.instance.showLoaderInWindow()
                     masterVM?.fetchMasterData(type: .clusters, sfCode: aHQobj.code, istoUpdateDCRlist: true, mapID: aHQobj.code) { [weak self] _  in
                         guard let welf = self else {return}
-                        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
-                        Shared.instance.removeLoaderInWindow()
-                        welf.toCreateToast("Clusters synced successfully")
+                       
+                        welf.setHQ(aHQobj: aHQobj) {
+                            Shared.instance.removeLoaderInWindow()
+                            welf.toCreateToast("Clusters synced successfully")
+                        }
+                  
                     }
                 } else {
-                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+                    self.setHQ(aHQobj: aHQobj) { }
+                  
+                    
                 }
                 
             case 1:
@@ -2783,49 +2791,15 @@ extension MainVC: MenuResponseProtocol {
         
         
         
-        
-        
-        
-        //            switch self.selectedSessionIndex {
-        //            case 0:
-        //                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-        //                    if (self.fetchedHQObject1 ==  nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
-        //                        configureSaveplanBtn(false)
-        //                    } else {
-        //                        configureSaveplanBtn(true)
-        //                    }
-        //
-        //                } else {
-        //                    if (self.fetchedHQObject1 ==  nil || self.fetchedHQObject1 == temporaryselectedHqobj) || (self.fetchedClusterObject1 == nil || self.fetchedClusterObject1 == [temporaryselectedClusterobj]) || self.fetchedClusterObject1 == [Territory]() || (self.fetchedWorkTypeObject1 == nil ||  self.fetchedWorkTypeObject1 == temporaryselectedWTobj)  {
-        //                        configureSaveplanBtn(false)
-        //                    } else {
-        //                        configureSaveplanBtn(true)
-        //                    }
-        //                }
-        //            case 1:
-        //                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-        //                    if (self.fetchedHQObject2 ==  nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-        //                        configureSaveplanBtn(false)
-        //                    } else {
-        //                        configureSaveplanBtn(true)
-        //                    }
-        //
-        //                } else {
-        //                    if (self.fetchedHQObject2 ==  nil || self.fetchedHQObject2 == temporaryselectedHqobj) || (self.fetchedClusterObject2 == nil || self.fetchedClusterObject2 == [temporaryselectedClusterobj]) || self.fetchedClusterObject2 == [Territory]() || (self.fetchedWorkTypeObject2 == nil ||  self.fetchedWorkTypeObject2 == temporaryselectedWTobj)  {
-        //                        configureSaveplanBtn(false)
-        //                    } else {
-        //                        configureSaveplanBtn(true)
-        //                    }
-        //                }
-        //            default:
-        //                print("Yet to implement")
-        //            }
-        
-        
-        
-        
-        
-        
+    }
+    
+    func setHQ(aHQobj: HQModel, completion: @escaping () -> () ) {
+        CoreDataManager.shared.removeHQ()
+        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+            completion()
+       
+        }
     }
     
     func toCheckExistenceInSession() {
@@ -3006,6 +2980,18 @@ extension MainVC : collectionViewProtocols {
             return eventArr.count
         default:
             return 0
+        }
+    }
+    
+    func toSetupUpdatePasswordAlert(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Log out", cancelAction: "Dismiss")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            
+            commonAlert.addAdditionalCancelAction {
+                Pipelines.shared.doLogout()
+            }
         }
     }
     
@@ -3686,11 +3672,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
             
             
-            let dateString = obj_sections[section].date
-     
+            
+            let object = obj_sections[section].items.first
+            let dateString = object?.vstTime ?? ""
                 let date = dateString.toDate()
-          
-                
                 let formattedDate = date.toString(format: "MMMM dd, yyyy")
                 print(formattedDate)  // Output: January 19, 2024
                 header?.dateLbl.text = formattedDate
@@ -5129,6 +5114,15 @@ extension MainVC : addedSubViewsDelegate {
         }
     }
     
+    func showNetwiorkAlert() {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Please connect to active network to update Password", okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("no action")
+            // self.toDeletePresentation()
+        }
+    }
+    
     func redirectToSettings() {
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(settingsURL)
@@ -5136,7 +5130,7 @@ extension MainVC : addedSubViewsDelegate {
     }
     
     func showAlert() {
-        showAlertToEnableLocation()
+        showNetwiorkAlert()
     }
     
     func didClose() {
@@ -5197,7 +5191,9 @@ extension MainVC : addedSubViewsDelegate {
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 
-                Pipelines.shared.doLogout()
+                self.toSetupUpdatePasswordAlert(desc: "Password updated sucessfully, Do you want to log out?")
+                
+               
                 
             case checkinVIew:
                 aAddedView.removeFromSuperview()

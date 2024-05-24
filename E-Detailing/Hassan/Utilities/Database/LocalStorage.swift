@@ -55,6 +55,7 @@ class LocalStorage {
         case slideDownloadIndex
         case isSlidesGrouped
         case isUserLoggedIn
+        case hasMasterData
         case isConfigAdded
         case isSlidesDownloadPending
         case isTimeZoneChanged

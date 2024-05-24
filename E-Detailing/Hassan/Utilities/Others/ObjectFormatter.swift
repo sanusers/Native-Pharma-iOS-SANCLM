@@ -42,6 +42,26 @@ class ObjectFormatter {
         }
     }
     
+    func convertJson2String(json: JSON) -> String? {
+        
+       
+
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
+         
+           
+            // Convert JSON data to a string
+            if let tempjsonString = String(data: jsonData, encoding: .utf8) {
+                print(tempjsonString)
+                return tempjsonString
+            }
+
+        } catch {
+            print("Error converting parameter to JSON: \(error)")
+        }
+        
+        return nil
+    }
     
     func convertJson2Data(json: JSON) -> Data {
         

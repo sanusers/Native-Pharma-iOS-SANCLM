@@ -16,7 +16,25 @@ extension LoginVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return true
     }
+    
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        switch textField {
+        case txtPassWord:
+            guard let text = textField.text as?  NSString else {return false}
+            let updatedText = text.replacingCharacters(in: range, with: string)
+            print("New text: \(updatedText)")
+            if updatedText.contains(" ") {
+                return false
+            }
+        default:
+            return true
+        }
+        return true
+    }
 }
+
 
 
 extension LoginVC: MediaDownloaderDelegate {

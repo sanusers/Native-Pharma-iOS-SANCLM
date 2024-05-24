@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -56,7 +56,7 @@
                                         <rect key="frame" x="0.0" y="17.666666666666668" width="339" height="42.333333333333329"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sale" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JeB-bp-cyS">
-                                                <rect key="frame" x="23.666666666666686" y="12.33333333333333" width="305.33333333333331" height="17.666666666666671"/>
+                                                <rect key="frame" x="23.666666666666657" y="12.33333333333333" width="305.33333333333337" height="17.666666666666671"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -73,13 +73,34 @@
                                     <constraint firstItem="JeB-bp-cyS" firstAttribute="leading" secondItem="d2E-5k-ipl" secondAttribute="leading" id="Yik-3J-hOf"/>
                                 </constraints>
                             </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gH8-s3-LFf">
+                                <rect key="frame" x="334" y="0.0" width="0.0" height="17.666666666666668"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FrE-gq-W1c">
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="17.666666666666668"/>
+                                        <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="FrE-gq-W1c" firstAttribute="top" secondItem="gH8-s3-LFf" secondAttribute="top" id="8Bm-ni-9GZ"/>
+                                    <constraint firstItem="FrE-gq-W1c" firstAttribute="leading" secondItem="gH8-s3-LFf" secondAttribute="leading" id="cut-vV-mHm"/>
+                                    <constraint firstAttribute="trailing" secondItem="FrE-gq-W1c" secondAttribute="trailing" id="v9J-ie-RfH"/>
+                                    <constraint firstAttribute="bottom" secondItem="FrE-gq-W1c" secondAttribute="bottom" id="vCM-yk-Iho"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="gH8-s3-LFf" firstAttribute="centerY" secondItem="d2E-5k-ipl" secondAttribute="centerY" id="0cG-Um-cIU"/>
                             <constraint firstAttribute="trailing" secondItem="bVP-6F-Ank" secondAttribute="trailing" id="Fji-ol-Oc4"/>
                             <constraint firstItem="bVP-6F-Ank" firstAttribute="top" secondItem="A3y-B9-rbU" secondAttribute="top" id="Ya0-nS-1hl"/>
+                            <constraint firstItem="gH8-s3-LFf" firstAttribute="height" secondItem="WxI-Eb-D5c" secondAttribute="height" id="f9W-P6-xgw"/>
                             <constraint firstItem="bVP-6F-Ank" firstAttribute="leading" secondItem="A3y-B9-rbU" secondAttribute="leading" id="sLZ-yO-qLq"/>
                             <constraint firstAttribute="height" constant="60" id="wHK-m1-UxH"/>
+                            <constraint firstAttribute="trailing" secondItem="gH8-s3-LFf" secondAttribute="trailing" constant="5" id="y0h-nO-Rq3"/>
                             <constraint firstAttribute="bottom" secondItem="bVP-6F-Ank" secondAttribute="bottom" id="ziK-sl-uVh"/>
                         </constraints>
                     </view>

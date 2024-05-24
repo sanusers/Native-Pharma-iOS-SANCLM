@@ -32,11 +32,22 @@ class CommonResouceInfoTVC: UITableViewCell {
     
     func populateCell(model: Input) {
         itemNameLBl.text = model.name
+        guard let effF = model.effF , let effT = model.effT else {
+         return
+        }
+        let fromDate = effF.date?.toDate(format: "yyyy-MM-dd HH:mm:ss")
+        let toDate =  effT.date?.toDate(format: "yyyy-MM-dd HH:mm:ss")
+        let fromDateStr = fromDate?.toString(format:  "MMMM dd, yyyy") ?? ""
+        let toDateStr = toDate?.toString(format: "MMMM dd, yyyy") ?? ""
+        itemTypeLbl.text = "From: \(fromDateStr) To: \(toDateStr)"
+
+        
     }
     
     func populateCell(model: Product) {
         itemNameLBl.text = model.name
         itemTypeLbl.text = model.productMode
+        
     }
     
     func populateCell(model: Territory) {
@@ -57,10 +68,10 @@ class CommonResouceInfoTVC: UITableViewCell {
     func setupHeight(type: MenuView.CellType) {
         
         switch type {
-        case .inputs, .clusterInfo:
+        case  .clusterInfo:
             contentHeight.constant = 30
             itemTypeLbl.isHidden = true
-        case .product, .doctorVisit:
+        case .product, .doctorVisit, .inputs:
             contentHeight.constant = 60
             itemTypeLbl.isHidden = false
         default:

@@ -31,7 +31,7 @@ class UserStatisticsVM {
             case .updatePassword:
                 result(.failure(UserStatisticsError.failedToupdatePassword))
             default:
-                result(.failure(UserStatisticsError.unableConnect))
+                result(.failure(UserStatisticsError.failedToupdatePassword))
             }
           
         })

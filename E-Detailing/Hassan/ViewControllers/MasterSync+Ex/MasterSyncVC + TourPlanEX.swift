@@ -243,7 +243,10 @@ extension MasterSyncVC {
     
     func toPostDataToserver(type : MasterInfo, completion: @escaping (Bool) -> ()) {
 
-
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            completion(false)
+            return
+        }
         
        // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
 
@@ -334,7 +337,7 @@ extension MasterSyncVC {
                   dump(error)
                      completion(false)
                      self.setLoader(pageType: .loaded)
-                    self.toCreateToast("Failed connecting to server!")
+                    //self.toCreateToast("Failed connecting to server!")
                  }
              }
         }

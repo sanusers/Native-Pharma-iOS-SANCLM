@@ -25,16 +25,17 @@ import CoreData
 extension ChangePasswordView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let appsetup = AppDefaults.shared.getAppSetUp()
-        let userPassword = appsetup.sfPassword
-        
-        guard let text = textField.text as NSString? else {
-            return true
+       
+        let userPassword = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserPassword)
+        guard let text = textField.text as?  NSString else {return false}
+      
+        let updatedText = text.replacingCharacters(in: range, with: string)
+            //.trimmingCharacters(in: .whitespaces)
+        print("New text: \(updatedText)")
+        if updatedText.contains(" ") {
+            return false
         }
         
-        let updatedText = text.replacingCharacters(in: range, with: string).replacingOccurrences(of: " ", with: "")
-       
-           
         switch textField {
         case oldPasswordTF:
             if updatedText == userPassword {
@@ -67,7 +68,7 @@ extension ChangePasswordView: UITextFieldDelegate {
                 return true
             }
             
-            if updatedText != appsetup.sfPassword  {
+            if updatedText != userPassword  {
                 //&& updatedText.containsSpecialCharacter
                 newpasswordStr = updatedText
                 passwordValidationLbl.isHidden = true
@@ -223,6 +224,10 @@ class ChangePasswordView: UIView {
     func updatePassword() {
         guard let appsetup = self.appsetup else {return}
          
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            self.delegate?.showAlert()
+            return
+        }
      //  {"tableName":"savechpwd","txOPW":"123","txNPW":"1234","txCPW":"1234","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}
         var param: [String: Any] = [:]
         param["tableName"] = "savechpwd"
@@ -259,6 +264,7 @@ class ChangePasswordView: UIView {
                
                 if response.isSuccess ?? false {
                     self.toCreateToast(response.checkinMasg ?? "Password updated successfully.")
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.UserPassword, text: self.newPasswordTF.text ?? "")
                     self.delegate?.didUpdate()
                 } else {
                     self.toCreateToast(response.checkinMasg ?? "Password updation failed.")

@@ -215,13 +215,13 @@ class AddCallinfoVC: BaseViewController {
     //        }
             
             mappedArray.forEach { detailedSlideArr in
-                var groupSlides: [SlidesModel] = detailedSlideArr.groupedSlides ?? []
+                let groupSlides: [SlidesModel] = detailedSlideArr.groupedSlides ?? []
 //                detailedSlideArr.forEach { aDetailedSlide in
 //                    if let aSlideModel = aDetailedSlide.slidesModel {
 //                        groupSlides.append(aSlideModel)
 //                    }
 //                }
-                let optionalDetailedSlide =  detailedSlideArr.groupedSlides ?? []
+    
                 //detailedSlideArr.first
                
                     var aproduct : [String : Any] = [:]

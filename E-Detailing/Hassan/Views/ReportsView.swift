@@ -302,7 +302,23 @@ class ReportsView : BaseView {
             contentDict.append(hospDict)
         }
         
-        let  hospDict: [String: String] = [MenuView.CellType.inputs.rawValue  : String(DBManager.shared.getInput().count)]
+        let cacheInputs = DBManager.shared.getInput()
+        var inputCount: Int = 0
+              let noInput = cacheInputs.filter { aInput in
+                  aInput.code == "-1"
+              }
+      
+      
+              if noInput.isEmpty {
+                  inputCount = DBManager.shared.getInput().count
+              } else {
+                  inputCount = DBManager.shared.getInput().count - 1
+              }
+      
+           
+        
+        let  hospDict: [String: String] = [MenuView.CellType.inputs.rawValue  : String(inputCount)]
+        //DBManager.shared.getInput().count
         contentDict.append(hospDict)
         let  ProductDict: [String: String] = [MenuView.CellType.product.rawValue  : String(DBManager.shared.getProduct().count)]
         contentDict.append(ProductDict)

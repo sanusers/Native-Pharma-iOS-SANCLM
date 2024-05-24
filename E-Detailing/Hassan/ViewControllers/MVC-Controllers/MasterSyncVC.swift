@@ -233,7 +233,7 @@ class MasterSyncVC : UIViewController {
     
         }else {
             selectedMasterGroupIndex = nil
-
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.hasMasterData, value: false)
            // if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                 syncAllAction(self)
           //  } else {
@@ -455,7 +455,7 @@ class MasterSyncVC : UIViewController {
     
     
     func fetchMasterDataRecursively(index: Int, isfromSyncall: Bool? = false) {
-        
+       
         let tosyncMasterData : [MasterInfo] = cacheMasterData
 
         guard index < tosyncMasterData.count else {
@@ -484,7 +484,7 @@ class MasterSyncVC : UIViewController {
                     }
                 }
                 
-          
+                LocalStorage.shared.setBool(LocalStorage.LocalValue.hasMasterData, value: true)
                 
                 if istoNavigate  {
                     self.setLoader(pageType: .navigate, type: .slides)
@@ -599,7 +599,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.mappedCompetitors)
         self.masterData.append(MasterInfo.stockBalance)
         self.masterData.append(MasterInfo.subordinate)
-        self.masterData.append(MasterInfo.subordinateMGR)
+        //self.masterData.append(MasterInfo.subordinateMGR)
         self.masterData.append(MasterInfo.speciality)
         self.masterData.append(MasterInfo.departments)
         self.masterData.append(MasterInfo.category)
@@ -611,7 +611,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.products)
         self.masterData.append(MasterInfo.inputs)
         self.masterData.append(MasterInfo.brands)
-        self.masterData.append(MasterInfo.competitors)
+       // self.masterData.append(MasterInfo.competitors)
       
         self.masterData.append(MasterInfo.holidays)
         self.masterData.append(MasterInfo.weeklyOff)
@@ -664,7 +664,7 @@ class MasterSyncVC : UIViewController {
                     completion(true)
                 case .failure(let error):
                     completion(false)
-                    print(error.localizedDescription)
+                    print(error.rawValue)
                 }
             }
         case .myDayPlan:
@@ -756,10 +756,8 @@ class MasterSyncVC : UIViewController {
                         }
                     }
                     
-                case .failure(let error):
-                    welf.toCreateToast(error.rawValue)
-                    
-                    
+                case .failure( _):
+                   // welf.toCreateToast(error.rawValue)
                     completion(false)
                 }
             }
@@ -813,7 +811,7 @@ class MasterSyncVC : UIViewController {
                     completion(true)
                 case .failure(let error):
                     
-                    welf.toCreateToast("\(error.localizedDescription)")
+                  //  welf.toCreateToast("\(error)")
                     print(error)
                     completion(false)
                 }
@@ -899,9 +897,10 @@ extension MasterSyncVC : tableViewProtocols {
       
 
         
-        self.masterData = [MasterInfo.subordinate, MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.docFeedback, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors, MasterInfo.clusters,  MasterInfo.inputs ,MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.competitors, MasterInfo.mappedCompetitors, MasterInfo.leaveType, MasterInfo.homeSetup, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,  MasterInfo.subordinateMGR, MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
-//        [MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
-//                           MasterInfo.inputs,MasterInfo.competitors,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup, MasterInfo.tourPlanSetup, MasterInfo.weeklyOff, MasterInfo.holidays, MasterInfo.getTP, MasterInfo.homeSetup, MasterInfo.docFeedback, MasterInfo.getTP, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.leaveType, MasterInfo.brands,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
+        self.masterData = [MasterInfo.subordinate, MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.docFeedback, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors, MasterInfo.clusters,  MasterInfo.inputs ,MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors, MasterInfo.leaveType, MasterInfo.homeSetup, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
+        //MasterInfo.competitors,
+        //MasterInfo.subordinateMGR,
+
         
         cacheMasterData = masterData
         
@@ -916,12 +915,7 @@ extension MasterSyncVC : tableViewProtocols {
               DispatchQueue.main.async {
                   self.collectionView.reloadData()
               }
-    
-    
-        
-  
 
-         
          // Begin a background task
          backgroundTask = UIApplication.shared.beginBackgroundTask {
              // End the background task if the expiration handler is called
@@ -1016,8 +1010,8 @@ extension MasterSyncVC : collectionViewProtocols{
         case .subordinate:
             cell.lblCount.text =  ""
             //String(DBManager.shared.getSubordinate().count)
-        case .subordinateMGR:
-            cell.lblCount.text =  ""
+//        case .subordinateMGR:
+//            cell.lblCount.text =  ""
             //String(DBManager.shared.getSubordinateMGR().count)
         case .myDayPlan:
             cell.lblCount.text =  ""
@@ -1039,8 +1033,8 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text = String(DBManager.shared.getDoctorClass().count)
         case .category:
             cell.lblCount.text = String(DBManager.shared.getCategory().count)
-        case .competitors:
-            cell.lblCount.text = String(DBManager.shared.getCompetitor().count)
+//        case .competitors:
+//            cell.lblCount.text = String(DBManager.shared.getCompetitor().count)
         case .slideBrand:
             cell.lblCount.text = String(DBManager.shared.getSlideBrand().count)
         case .slideSpeciality:

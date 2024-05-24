@@ -1433,11 +1433,11 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return 110 - 33.3
             
-        case .product, .doctorVisit:
+        case .product, .doctorVisit, .inputs:
             
             return 60 + 10
             
-        case .inputs, .clusterInfo, .speciality, .qualification, .category:
+        case  .clusterInfo, .speciality, .qualification, .category:
             
             return 30 + 10
         case .competitors:
@@ -1834,6 +1834,7 @@ class SpecifiedMenuView: BaseView {
        case .inputs:
            bottomHolderHeight.constant = 0
            self.inputsArr = DBManager.shared.getInput()
+           inputsArr = inputsArr?.filter {$0.code != "-1"}
            
        case . product:
            bottomHolderHeight.constant = 0

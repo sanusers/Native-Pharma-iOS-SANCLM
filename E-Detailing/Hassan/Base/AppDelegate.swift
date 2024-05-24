@@ -116,7 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                       
         } else {
 
-            if AppDefaults.shared.isLoggedIn() && DBManager.shared.hasMasterData() {
+            if AppDefaults.shared.isLoggedIn() && AppDefaults.shared.isSyncCompleted() {
              
                 BackgroundTaskManager.shared.stopBackgroundTask()
                 

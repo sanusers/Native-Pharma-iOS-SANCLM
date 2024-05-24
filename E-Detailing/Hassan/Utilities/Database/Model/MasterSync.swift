@@ -87,7 +87,7 @@ enum MasterCellType : Int {
         case .syncAll:
             return [MasterInfo.slides,MasterInfo.worktype]
         case .listedDoctor:
-            return [MasterInfo.doctorFencing,MasterInfo.speciality,MasterInfo.qualifications, MasterInfo.category,MasterInfo.departments,MasterInfo.doctorClass, MasterInfo.docFeedback,MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
+            return [MasterInfo.doctorFencing,MasterInfo.speciality,MasterInfo.qualifications, MasterInfo.category,MasterInfo.departments,MasterInfo.doctorClass, MasterInfo.syncAll]
             //MasterInfo.category,
         case .chemist:
             return [MasterInfo.chemists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
@@ -98,13 +98,16 @@ enum MasterCellType : Int {
         case .cip:
             return [MasterInfo.subordinate,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .hospital:
-            return [MasterInfo.subordinateMGR,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+            //MasterInfo.subordinateMGR,
+            return [MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .subordinate:
-            return [MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.syncAll]
+            //MasterInfo.subordinateMGR,
+            return [MasterInfo.subordinate,MasterInfo.jointWork,MasterInfo.empty,MasterInfo.syncAll]
         case .slides:
             return [MasterInfo.slides,MasterInfo.slideBrand,MasterInfo.slideSpeciality,MasterInfo.syncAll]
         case .Product:
-            return [MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.competitors, MasterInfo.mappedCompetitors, MasterInfo.empty, MasterInfo.syncAll]
+            // MasterInfo.competitors,
+            return [MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.mappedCompetitors, MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .input:
             return [MasterInfo.inputs,   MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .cluster:
@@ -119,7 +122,7 @@ enum MasterCellType : Int {
         case .workType:
             return [MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.syncAll]
         case .other:
-            return [MasterInfo.syncAll]
+            return [MasterInfo.docFeedback, MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
         case .setup:
             return [MasterInfo.setups, MasterInfo.customSetup , MasterInfo.empty, MasterInfo.syncAll]
         }
@@ -138,7 +141,7 @@ enum `MasterInfo` : String, CaseIterable {
     case myDayPlan = "My Day Plan"
     case worktype = "Work Types"
     case headquartes = "Headquarters"
-    case competitors = "Competitor Product"
+    //case competitors = "Competitor Product"
     case mappedCompetitors = "Mapped Competitor Product"
     case inputs = "Inputs"
     case slideBrand = "Slide Brand"
@@ -168,10 +171,10 @@ enum `MasterInfo` : String, CaseIterable {
     case jointWork = "Jointworks"
     
     case subordinate = "Subordinate"
-    case subordinateMGR = "Subordinate MGR"
+   // case subordinateMGR = "Subordinate MGR"
     
     case doctorFencing = "Listed Doctor"
-    case docFeedback = "Doctor Feedback"
+    case docFeedback = "Feedback"
     
     case customSetup = "Custom Setup"
     case leaveType = "Leave Type"
@@ -245,10 +248,12 @@ enum `MasterInfo` : String, CaseIterable {
         case .tourPlanStatus,.visitControl,.stockBalance,.mappedCompetitors:
             return String(format: "%@table/additionaldcrmasterdata", mainUrl)
         
-        case .products,.inputs,.brands,.competitors :
+        case .products,.inputs,.brands :
+            //,.competitors
             return String(format: "%@table/products", mainUrl)
         
-        case .subordinate , .subordinateMGR, .jointWork:
+        case .subordinate , .jointWork:
+            // .subordinateMGR,
             return String(format: "%@table/subordinates", mainUrl)
         case .doctorFencing ,.chemists ,.stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.speciality,.departments,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
             return String(format: "%@table/dcrmasterdata", mainUrl)
@@ -281,8 +286,8 @@ enum `MasterInfo` : String, CaseIterable {
             
         case .worktype:
             return MasterSyncParams.workTypeParams
-        case .competitors:
-            return MasterSyncParams.competitorParams
+//        case .competitors:
+//            return MasterSyncParams.competitorParams
         case .inputs:
             return MasterSyncParams.inputParams
         case .slideBrand:
@@ -335,8 +340,8 @@ enum `MasterInfo` : String, CaseIterable {
             return MasterSyncParams.jointWorkParams
         case .subordinate:
             return MasterSyncParams.subordinateParams
-        case .subordinateMGR:
-            return MasterSyncParams.subordinateMgrParams
+//        case .subordinateMGR:
+//            return MasterSyncParams.subordinateMgrParams
         case .doctorFencing:
             return MasterSyncParams.doctorFencingParams
         case .myDayPlan:
@@ -389,79 +394,166 @@ struct MasterSyncParams {
     
     static var productSlideParams : [String : Any ] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let paramString = "{\"tableName\":\"getprodslides\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
-        
+        var param = [String: Any]()
+        param["tableName"] = "getprodslides"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
    // {"tableName":"getprodslides","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"ASM","state_code":"13","subdivision_code":"86,"}
     }
     
     static var subordinateParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getsubordinate\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getsubordinate"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var subordinateMgrParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getsubordinatemgr\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getsubordinatemgr"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var doctorFencingParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
 //        let sfCode = MasterSyncVC.shared.getSFCode
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        let paramString = "{\"tableName\":\"getdoctors\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode ?? "" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getdoctors"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = rsf
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var chemistParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        let paramString = "{\"tableName\":\"getchemist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
-        
-        return ["data" : paramString]
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode ?? "" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        var param = [String: Any]()
+        param["tableName"] = "getchemist"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = rsf
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var stockistParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
    
         let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        let paramString = "{\"tableName\":\"getstockist\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getstockist"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = rsf
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var unListedDoctorParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        let paramString = "{\"tableName\":\"getunlisteddr\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\"}"
-        
-        return ["data" : paramString]
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode ?? "" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        var param = [String: Any]()
+        param["tableName"] = "getunlisteddr"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = rsf
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var workTypeParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getworktype\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getworktype"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var territoryParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        let paramString = "{\"tableName\":\"getterritory\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode ?? "" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        var param = [String: Any]()
+        param["tableName"] = "getterritory"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = rsf
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     
@@ -504,97 +596,219 @@ struct MasterSyncParams {
     static var jointWorkParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) == String() ? appsetup.sfCode! :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-        let paramString = "{\"tableName\":\"getjointwork\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(rsf)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getjointwork"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = rsf
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var productParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getproducts\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getproducts"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var inputParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getinputs\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getinputs"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var brandParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getbrands\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getbrands"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var competitorParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
+//        
+//        let paramString = "{\"tableName\":\"getcompdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        var param = [String: Any]()
+        param["tableName"] = "getcompdet"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+       
         
-        let paramString = "{\"tableName\":\"getcompdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
         
-        return ["data" : paramString]
-    } // getmap_compdet getcompdet
+        return ["data" : paramString ?? ""]
+    } 
+    
+    // getmap_compdet getcompdet
     
     static var slideSpecialityParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getslidespeciality\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
+        var param = [String: Any]()
+        param["tableName"] = "getslidespeciality"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
         
-        return ["data" : paramString]
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+        
+        return ["data" : paramString ?? ""]
     }
     
     static var slideBrandParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getslidebrand\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getslidebrand"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var specialityParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getspeciality\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getspeciality"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var departsParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getdeparts\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getdeparts"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var categoryParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getcategorys\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getcategorys"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var qualificationParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getquali\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getquali"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var classParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getclass\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getclass"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var typeParams : [String : Any] {
@@ -608,58 +822,124 @@ struct MasterSyncParams {
     static var docFeedBackParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getdrfeedback\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getdrfeedback"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var setupParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getsetups\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getsetups"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var customSetupParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getcustomsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getcustomsetup"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     
     static var leaveTypeParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getleavetype\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getleavetype"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var tpStatusParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"gettpstatus\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "gettpstatus"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var stockBalanceParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        
-        let paramString = "{\"tableName\":\"getstockbalance\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getstockbalance"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var visitControlParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"getvisit_contro\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getvisit_contro"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
 
     
@@ -667,18 +947,37 @@ struct MasterSyncParams {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
        // {"tableName":"getmapcompdet","sfcode":"MR5940","division_code":"63,","Rsf":"","sf_type":"1","ReqDt":"2024-04-28 13:46:13.5770","Designation":"MR","state_code":"2","subdivision_code":"86,"}
-        
-        let paramString = "{\"tableName\":\"getmapcompdet\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getmapcompdet"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     static var tourplanSetupParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
-        let paramString = "{\"tableName\":\"gettpsetup\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "gettpsetup"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
     }
     
     
@@ -686,9 +985,20 @@ struct MasterSyncParams {
         let appsetup = AppDefaults.shared.getAppSetUp()
         let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date()).year
         
-        let paramString = "{\"tableName\":\"getweeklyoff\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"year\":\"\(year!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getweeklyoff"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+        param["year"] = year ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
         
 
     }
@@ -696,13 +1006,22 @@ struct MasterSyncParams {
     
     static var homeDataSetupParams : [String : Any] {
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date()).year
+      
+        var param = [String: Any]()
+        param["tableName"] = "gethome"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
         
-        let paramString = "{\"tableName\":\"gethome\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\"}"
-        
-        return ["data" : paramString]
-        
-        //{"tableName":"gethome","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"ASM","state_code":"13","subdivision_code":"86,"}
+
 
     }
     
@@ -710,9 +1029,20 @@ struct MasterSyncParams {
         let appsetup = AppDefaults.shared.getAppSetUp()
         let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date()).year
         
-        let paramString = "{\"tableName\":\"getholiday\",\"sfcode\":\"\(appsetup.sfCode!)\",\"division_code\":\"\(appsetup.divisionCode!)\",\"Rsf\":\"\(appsetup.sfCode!)\",\"sf_type\":\"\(appsetup.sfType!)\",\"Designation\":\"\(appsetup.dsName!)\",\"state_code\":\"\(appsetup.stateCode!)\",\"subdivision_code\":\"\(appsetup.subDivisionCode!)\",\"year\":\"\(year!)\"}"
-        
-        return ["data" : paramString]
+        var param = [String: Any]()
+        param["tableName"] = "getholiday"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+        param["year"] = year ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
         
       //  {"tableName":"getholiday","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","year":"2023"}
 

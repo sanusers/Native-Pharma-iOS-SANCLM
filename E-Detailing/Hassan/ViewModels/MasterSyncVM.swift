@@ -60,7 +60,7 @@ struct HTMLinfo {
 }
 
 enum MasterSyncErrors: String, Error {
-case unableConnect = "An issue occured data will be saved to device"
+case unableConnect = "An issue occured try again later."
 }
 
 class MasterSyncVM {

@@ -79,8 +79,8 @@ class DBManager {
             self.saveWorkTypeData(values: Values)
         case .headquartes:
             break
-        case .competitors:
-            self.saveCompetitorData(values: Values)
+//        case .competitors:
+//            self.saveCompetitorData(values: Values)
         case .inputs:
             self.saveInputData(values: Values, id: id)
         case .slideBrand:
@@ -131,8 +131,8 @@ class DBManager {
             self.saveJointWorkData(values: Values, id: id)
         case .subordinate:
             self.saveSubordinateData(values: Values, id: id)
-        case .subordinateMGR:
-            self.saveSubordainateMgrData(values: Values, id: id)
+//        case .subordinateMGR:
+//            self.saveSubordainateMgrData(values: Values, id: id)
         case .doctorFencing:
             self.saveDoctorFencingData(values: Values, id: id)
         case .myDayPlan:
@@ -969,18 +969,7 @@ class DBManager {
     
  
     
-    func hasMasterData() -> Bool {
-        var masterArray : [MasterData] = []
-        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "MasterData")
-        
-        do {
-            masterArray = try self.managedContext().fetch(fetch) as! [MasterData]
-        }catch {
-            print("error",error.localizedDescription)
-        }
-            
-        return !masterArray.isEmpty
-    }
+   
     
     func getMasterData() -> MasterData {
         var masterArray:[MasterData] = []

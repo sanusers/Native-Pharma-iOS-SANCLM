@@ -97,6 +97,11 @@ class AppDefaults {
             
         }
     
+    
+    func isSyncCompleted() -> Bool {
+        return  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.hasMasterData)
+    }
+    
     func getLogoImgData() -> [String : Any] {
         guard let data = self.get(key: .logoImage, type: [String : Any]())else{
             return [String : Any]()
