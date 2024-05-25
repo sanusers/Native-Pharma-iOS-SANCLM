@@ -116,8 +116,54 @@ extension MasterSyncVC {
 
 
 extension CoreDataManager {
-    //SelectedHQ
+
     
+    //SelectedDayPlanHQ
+    func fetchSavedDayPlanHQ(completion: ([SelectedDayPlanHQ]) -> () )  {
+        do {
+            let savedHQ = try  context.fetch(SelectedDayPlanHQ.fetchRequest())
+            completion(savedHQ)
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+        
+    }
+    
+    func removeDayPlanHQ() {
+        let fetchRequest: NSFetchRequest<SelectedHQ> = NSFetchRequest(entityName: "SelectedDayPlanHQ")
+
+        do {
+            let slideBrands = try context.fetch(fetchRequest)
+            for brand in slideBrands {
+                context.delete(brand)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    func toRetriveSavedDayPlanHQ(completion: @escaping ([HQModel]) -> ()) {
+        var retrivedHq : [HQModel] = []
+        CoreDataManager.shared.fetchSavedDayPlanHQ(completion: { selectedHQArr in
+            selectedHQArr.forEach { selectedHQ in
+                let aHQ = HQModel()
+                aHQ.code                 = selectedHQ.code ?? ""
+                aHQ.name               = selectedHQ.name ?? ""
+                aHQ.reportingToSF      = selectedHQ.reportingToSF ?? ""
+                aHQ.steps                = selectedHQ.steps ?? ""
+                aHQ.sfHQ                = selectedHQ.sfHq ?? ""
+                aHQ.mapId               = selectedHQ.mapId ?? ""
+                retrivedHq.append(aHQ)
+            }
+            completion(retrivedHq)
+        })
+    }
+    
+    
+    //SelectedHQ
     func fetchSavedHQ(completion: ([SelectedHQ]) -> () )  {
         do {
             let savedHQ = try  context.fetch(SelectedHQ.fetchRequest())

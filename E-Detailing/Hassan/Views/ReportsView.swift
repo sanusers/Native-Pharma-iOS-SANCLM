@@ -339,6 +339,8 @@ class ReportsView : BaseView {
         //\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))
         contentDict.append(HolidayDict)
         
+        let WorkTypeDict : [String: String] = [MenuView.CellType.workType.rawValue   : String(DBManager.shared.getWorkType().count)]
+        contentDict.append(WorkTypeDict)
         return contentDict as!  [[String: String]]
     }
     

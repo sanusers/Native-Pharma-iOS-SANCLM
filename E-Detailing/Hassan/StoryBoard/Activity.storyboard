@@ -395,7 +395,6 @@
                                                             <constraint firstItem="7A6-5k-0Fc" firstAttribute="centerX" secondItem="cJR-vX-Tg5" secondAttribute="centerX" multiplier="1.45" id="HnV-rR-ZHD"/>
                                                             <constraint firstItem="cJR-vX-Tg5" firstAttribute="centerY" secondItem="IJy-Br-Tpf" secondAttribute="centerY" id="IgJ-zp-zPb"/>
                                                             <constraint firstItem="7A6-5k-0Fc" firstAttribute="centerY" secondItem="cJR-vX-Tg5" secondAttribute="centerY" multiplier="0.5" id="aql-1j-y5j"/>
-                                                            <constraint firstAttribute="width" constant="91.5" id="eJ7-QI-5in"/>
                                                             <constraint firstItem="cJR-vX-Tg5" firstAttribute="width" secondItem="IJy-Br-Tpf" secondAttribute="width" multiplier="0.45" id="oe3-hT-aPs"/>
                                                         </constraints>
                                                     </view>
@@ -410,6 +409,7 @@
                                                     <constraint firstItem="r51-x8-Fa7" firstAttribute="centerY" secondItem="eCC-Zh-Owt" secondAttribute="centerY" id="bDK-nx-7bI"/>
                                                     <constraint firstItem="IJy-Br-Tpf" firstAttribute="height" secondItem="r51-x8-Fa7" secondAttribute="height" multiplier="1.98913" id="cdq-ld-GOj"/>
                                                     <constraint firstItem="r51-x8-Fa7" firstAttribute="width" secondItem="eCC-Zh-Owt" secondAttribute="width" multiplier="0.4" id="cpU-nW-fpj"/>
+                                                    <constraint firstItem="IJy-Br-Tpf" firstAttribute="width" secondItem="eCC-Zh-Owt" secondAttribute="width" multiplier="0.0775424" id="fwM-v9-ayN"/>
                                                     <constraint firstItem="IJy-Br-Tpf" firstAttribute="centerY" secondItem="eCC-Zh-Owt" secondAttribute="centerY" id="kBc-n0-3lL"/>
                                                     <constraint firstItem="r51-x8-Fa7" firstAttribute="height" secondItem="eCC-Zh-Owt" secondAttribute="height" multiplier="0.7" id="p6U-6J-Cuw"/>
                                                     <constraint firstAttribute="trailing" secondItem="IJy-Br-Tpf" secondAttribute="trailing" constant="15" id="u1L-D0-fvH"/>
