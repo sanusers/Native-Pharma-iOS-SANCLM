@@ -38,11 +38,20 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
                 
                 if let modal = welf.reportInfoArr?[indexPath.row]  {
 
-                    
-                    
-                    let vc = SpecifiedMenuVC.initWithStory(nil, celltype: welf.toRetriveCellType(name: modal.name) ?? .listedDoctor)
-                    welf.reporsVC.modalPresentationStyle = .custom
-                    welf.reporsVC.navigationController?.present(vc, animated: false)
+                    switch modal.name {
+                    case "Holiday / Weekly off":
+                       
+                            let precallvc = PreCallVC.initWithStory(pageType: .Fundays)
+                          
+                        self?.reporsVC .navigationController?.pushViewController(precallvc, animated: true)
+                        
+                    default:
+                        
+                        let vc = SpecifiedMenuVC.initWithStory(nil, celltype: welf.toRetriveCellType(name: modal.name) ?? .listedDoctor)
+                        welf.reporsVC.modalPresentationStyle = .custom
+                        welf.reporsVC.navigationController?.present(vc, animated: false)
+                    }
+             
             
                 }
                 
@@ -324,9 +333,10 @@ class ReportsView : BaseView {
         contentDict.append(ProductDict)
         let  ClusterDict: [String: String] = [MenuView.CellType.clusterInfo.rawValue : String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
         contentDict.append(ClusterDict)
-        let  DoctorDict: [String: String] = [MenuView.CellType.doctorVisit.rawValue  : String(DBManager.shared.getVisitControl().count)]
-        contentDict.append(DoctorDict)
-        let  HolidayDict: [String: String] = [MenuView.CellType.holiday.rawValue   : "\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))"]
+       // let  DoctorDict: [String: String] = [MenuView.CellType.doctorVisit.rawValue  : String(DBManager.shared.getVisitControl().count)]
+      //  contentDict.append(DoctorDict)
+        let  HolidayDict: [String: String] = [MenuView.CellType.holiday.rawValue   : ""]
+        //\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))
         contentDict.append(HolidayDict)
         
         return contentDict as!  [[String: String]]

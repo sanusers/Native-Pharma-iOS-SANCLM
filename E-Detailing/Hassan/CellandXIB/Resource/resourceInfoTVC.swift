@@ -86,10 +86,10 @@ class resourceInfoTVC: UITableViewCell {
         spec3.text = model.docDesig ?? "-"
         addressLbl.text = model.townName == "" ? "-" :  model.townName
         
-        if let address = model.addrs   {
-         
-            btnViewLocation.isHidden = address == ""
-        }
+//        if let address = model.addrs   {
+//         
+//            btnViewLocation.isHidden = address == ""
+//        }
         
         
     }
@@ -99,10 +99,10 @@ class resourceInfoTVC: UITableViewCell {
         doctorNameLbl.text = model.name
        
         addressLbl.text = model.townName == "" ? "-" :  model.townName
-        if let address = model.addr  {
-            //  addressLbl.text = address == "" ? "Address not yet listed." :  address
-            btnViewLocation.isHidden = address == ""
-        }
+//        if let address = model.addr  {
+//            //  addressLbl.text = address == "" ? "Address not yet listed." :  address
+//            btnViewLocation.isHidden = address == ""
+//        }
  
 
         
@@ -117,10 +117,10 @@ class resourceInfoTVC: UITableViewCell {
         spec2.text =  "-"
         addressLbl.text = model.townName == "" ? "-" :  model.townName
         
-        if let address = model.addrs   {
-        
-            btnViewLocation.isHidden = address == ""
-        }
+//        if let address = model.addrs   {
+//        
+//            btnViewLocation.isHidden = address == ""
+//        }
   
         
     }
@@ -130,10 +130,10 @@ class resourceInfoTVC: UITableViewCell {
         
         doctorNameLbl.text = model.name
         addressLbl.text = model.townName == "" ? "-" :  model.townName
-        if let address = model.addr  {
-          //  addressLbl.text = address == "" ? "Address not yet listed." :  address
-            btnViewLocation.isHidden = address == ""
-        }
+//        if let address = model.addr  {
+//          //  addressLbl.text = address == "" ? "Address not yet listed." :  address
+//            btnViewLocation.isHidden = address == ""
+//        }
         
     
         

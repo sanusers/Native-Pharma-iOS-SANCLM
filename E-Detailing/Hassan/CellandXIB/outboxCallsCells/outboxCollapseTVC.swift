@@ -15,6 +15,7 @@ protocol outboxCollapseTVCDelegate: AnyObject {
 
 class outboxCollapseTVC: UITableViewHeaderFooterView {
 
+    @IBOutlet var backgroundVXview: UIVisualEffectView!
     @IBOutlet var refreshBtn: UIButton!
     @IBOutlet var headerRefreshView: UIView!
     @IBOutlet var seperatorView: UIView!
@@ -30,7 +31,7 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
         refreshBtn.setTitle("", for: .normal)
         headerRefreshView.layer.cornerRadius = 3
         seperatorView.backgroundColor = .appLightTextColor
-        self.collapseIV.addTap {
+        self.addTap {
             self.delegate?.toggleSection(self, section: self.section)
         }
         

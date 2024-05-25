@@ -54,6 +54,8 @@
 		3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */; };
 		3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */; };
 		3825CFD92BA86F4800217D40 /* PrecallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD82BA86F4800217D40 /* PrecallsModel.swift */; };
+		3836A0692C01C14D0034DBCC /* FunEventsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */; };
+		3836A06A2C01C14D0034DBCC /* FunEventsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */; };
 		383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */; };
 		383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */; };
 		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
@@ -430,6 +432,8 @@
 		3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsDescriptionTVC.swift; sourceTree = "<group>"; };
 		3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsDescriptionTVC.xib; sourceTree = "<group>"; };
 		3825CFD82BA86F4800217D40 /* PrecallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrecallsModel.swift; sourceTree = "<group>"; };
+		3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunEventsTVC.swift; sourceTree = "<group>"; };
+		3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunEventsTVC.xib; sourceTree = "<group>"; };
 		383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TPdeviateReasonView.xib; sourceTree = "<group>"; };
 		383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPdeviateReasonView.swift; sourceTree = "<group>"; };
 		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
@@ -1020,6 +1024,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38E67B762C00D5CD006E98DE /* FunEvents */,
 				38DB8B1E2BF7708A0041B25C /* CalenderVIew */,
 				B287E6C029F2BC6A0097974D /* CellClass */,
 				38C4245C2A2B4D1F004A89EF /* CommonXib */,
@@ -1454,6 +1459,15 @@
 			path = Reports;
 			sourceTree = "<group>";
 		};
+		38E67B762C00D5CD006E98DE /* FunEvents */ = {
+			isa = PBXGroup;
+			children = (
+				3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */,
+				3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */,
+			);
+			path = FunEvents;
+			sourceTree = "<group>";
+		};
 		38E6B08E2B9866930014AF1E /* Resource */ = {
 			isa = PBXGroup;
 			children = (
@@ -1798,6 +1812,7 @@
 				38C4D5AC2A84F94500D7C5E0 /* ProductNameTableViewCell.xib in Resources */,
 				38C600DA2A93332100C733AF /* InputSampleTableViewCell.xib in Resources */,
 				38C1C43B2AC595B900DE95D1 /* AdditionalCallSampleInputTableViewCell.xib in Resources */,
+				3836A06A2C01C14D0034DBCC /* FunEventsTVC.xib in Resources */,
 				B287E68629F2A20F0097974D /* Satoshi-Regular.otf in Resources */,
 				38B18B762BD93BC1001FC958 /* InputDescriptionCVC.xib in Resources */,
 				B287E62C29F29C220097974D /* Assets.xcassets in Resources */,
@@ -2100,6 +2115,7 @@
 				386BEA122B7383830083D61F /* previewHomeView.swift in Sources */,
 				38D568F92B356077007CB86D /* VisitsCountTVC.swift in Sources */,
 				38D1F1F32B3429DD00CE8F86 /* ReportsModel.swift in Sources */,
+				3836A0692C01C14D0034DBCC /* FunEventsTVC.swift in Sources */,
 				B27ED25129F6A24600B90B61 /* MenuCell.swift in Sources */,
 				38D8363D2A4C13C30032588D /* MasterSyncTbCell.swift in Sources */,
 				3865F8CF2AFCCE74009AB984 /* TourPlanVC.swift in Sources */,

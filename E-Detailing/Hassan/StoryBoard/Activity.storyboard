@@ -2,7 +2,8 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -25,7 +26,7 @@
             <objects>
                 <viewController storyboardIdentifier="SingleSelectionVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="SingleSelectionVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
+                        <rect key="frame" x="0.0" y="0.0" width="580" height="640"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BRU-mp-h01">
@@ -805,6 +806,22 @@ Chennai</string>
                                             <constraint firstItem="usp-RC-grs" firstAttribute="leading" secondItem="tea-bb-JrD" secondAttribute="leading" id="zXB-Wj-Hwd"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dcO-bf-5nv">
+                                        <rect key="frame" x="12" y="74" width="1156" height="564.5"/>
+                                        <subviews>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="I4h-40-wgj">
+                                                <rect key="frame" x="0.0" y="-0.5" width="1156" height="565.5"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </tableView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="I4h-40-wgj" firstAttribute="height" secondItem="dcO-bf-5nv" secondAttribute="height" constant="1" id="4sm-nG-0s6"/>
+                                            <constraint firstItem="I4h-40-wgj" firstAttribute="width" secondItem="dcO-bf-5nv" secondAttribute="width" id="IXx-AR-bHS"/>
+                                            <constraint firstItem="I4h-40-wgj" firstAttribute="centerX" secondItem="dcO-bf-5nv" secondAttribute="centerX" id="Xdz-p3-els"/>
+                                            <constraint firstItem="I4h-40-wgj" firstAttribute="centerY" secondItem="dcO-bf-5nv" secondAttribute="centerY" id="kKt-Vf-SkO"/>
+                                        </constraints>
+                                    </view>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jFd-28-SVx">
                                         <rect key="frame" x="12" y="74" width="1156" height="564.5"/>
                                         <subviews>
@@ -1048,14 +1065,18 @@ Chennai</string>
                                     <constraint firstItem="jFd-28-SVx" firstAttribute="centerX" secondItem="8DQ-tH-m03" secondAttribute="centerX" id="Kwx-pd-hfd"/>
                                     <constraint firstAttribute="bottom" secondItem="KO7-o9-Vwc" secondAttribute="bottom" id="L1R-85-hGr"/>
                                     <constraint firstItem="rf6-VE-c8v" firstAttribute="leading" secondItem="VDZ-WP-CZV" secondAttribute="leading" id="LMa-po-RMh"/>
+                                    <constraint firstItem="dcO-bf-5nv" firstAttribute="centerX" secondItem="jFd-28-SVx" secondAttribute="centerX" id="PVX-E7-IMa"/>
                                     <constraint firstItem="jFd-28-SVx" firstAttribute="centerY" secondItem="8DQ-tH-m03" secondAttribute="centerY" id="RbD-BX-epf"/>
                                     <constraint firstItem="KO7-o9-Vwc" firstAttribute="leading" secondItem="VDZ-WP-CZV" secondAttribute="leading" id="TXm-TX-5MK"/>
                                     <constraint firstItem="KO7-o9-Vwc" firstAttribute="height" secondItem="VDZ-WP-CZV" secondAttribute="height" multiplier="0.135" id="YAF-JU-3nL"/>
                                     <constraint firstItem="jFd-28-SVx" firstAttribute="width" secondItem="8DQ-tH-m03" secondAttribute="width" id="b25-PK-wFA"/>
                                     <constraint firstItem="jFd-28-SVx" firstAttribute="height" secondItem="8DQ-tH-m03" secondAttribute="height" id="cIM-IW-veT"/>
                                     <constraint firstItem="KO7-o9-Vwc" firstAttribute="top" secondItem="8DQ-tH-m03" secondAttribute="bottom" id="dSa-nC-oTQ"/>
+                                    <constraint firstItem="dcO-bf-5nv" firstAttribute="centerY" secondItem="jFd-28-SVx" secondAttribute="centerY" id="gDk-vO-7Gp"/>
                                     <constraint firstItem="rf6-VE-c8v" firstAttribute="height" secondItem="VDZ-WP-CZV" secondAttribute="height" multiplier="0.1" id="iBX-pZ-vaA"/>
+                                    <constraint firstItem="dcO-bf-5nv" firstAttribute="width" secondItem="jFd-28-SVx" secondAttribute="width" id="isY-Ai-00z"/>
                                     <constraint firstItem="8DQ-tH-m03" firstAttribute="top" secondItem="rf6-VE-c8v" secondAttribute="bottom" id="pcs-ib-U7Y"/>
+                                    <constraint firstItem="dcO-bf-5nv" firstAttribute="height" secondItem="jFd-28-SVx" secondAttribute="height" id="s5U-Ef-2tg"/>
                                     <constraint firstItem="8DQ-tH-m03" firstAttribute="width" secondItem="VDZ-WP-CZV" secondAttribute="width" multiplier="0.98" id="w5J-DJ-0bT"/>
                                 </constraints>
                             </view>
@@ -1076,6 +1097,7 @@ Chennai</string>
                     <connections>
                         <outlet property="addressLbl" destination="QtK-rv-ipG" id="KQh-lj-M7I"/>
                         <outlet property="addressTit" destination="HrW-xo-ekn" id="kXR-XX-jHU"/>
+                        <outlet property="bottomHolderVIew" destination="KO7-o9-Vwc" id="Zyc-hd-ef4"/>
                         <outlet property="btnSkip" destination="Fmf-rP-OVy" id="WR2-po-FmA"/>
                         <outlet property="btnStartdetailing" destination="7hX-aH-ayL" id="NQ0-7D-vBR"/>
                         <outlet property="categoryLbl" destination="fdh-qs-nXR" id="nrt-Mj-LQ5"/>
@@ -1084,6 +1106,8 @@ Chennai</string>
                         <outlet property="dobTit" destination="Vgc-cZ-opS" id="wbE-Ae-vqh"/>
                         <outlet property="emailLbl" destination="hMo-hX-VMb" id="o2H-9y-m72"/>
                         <outlet property="emailTit" destination="k5S-7l-rwS" id="8rZ-9d-KSE"/>
+                        <outlet property="funEventsHolderVIew" destination="dcO-bf-5nv" id="tXf-xa-gZT"/>
+                        <outlet property="funEventsTable" destination="I4h-40-wgj" id="QKO-kP-Z7H"/>
                         <outlet property="mobileLbl" destination="raD-6x-UwO" id="TjS-WL-NPT"/>
                         <outlet property="mobileTit" destination="usp-RC-grs" id="vNy-My-y5I"/>
                         <outlet property="nameLbl" destination="ewe-n8-ywH" id="hoN-50-Ago"/>
@@ -1117,19 +1141,19 @@ Chennai</string>
     <resources>
         <image name="callFilterIcon" width="64" height="64"/>
         <image name="cancel" width="21.333333969116211" height="21.333333969116211"/>
-        <image name="left_Arrow_White" width="128" height="128"/>
+        <image name="left_Arrow_White" width="20" height="17"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

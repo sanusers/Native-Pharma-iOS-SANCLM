@@ -464,7 +464,7 @@ class CallVC : UIViewController {
 
     
     func navigateToPrecallVC(dcrCall: CallViewModel, index: Int) {
-        let precallvc = UIStoryboard.preCallVC
+        let precallvc = PreCallVC.initWithStory(pageType: .Precall)
         precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: index, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
         self.navigationController?.pushViewController(precallvc, animated: true)
     }

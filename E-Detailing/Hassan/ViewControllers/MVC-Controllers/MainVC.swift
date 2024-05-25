@@ -2987,10 +2987,11 @@ extension MainVC : collectionViewProtocols {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Log out", cancelAction: "Dismiss")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
-            print("no action")
             
+            Pipelines.shared.doLogout()
             commonAlert.addAdditionalCancelAction {
-                Pipelines.shared.doLogout()
+                
+                print("no action")
             }
         }
     }
@@ -3217,7 +3218,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         // Reload the whole section
         self.outboxTableView.reloadData()
-        //.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
+     
     }
     
     
