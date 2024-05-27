@@ -55,9 +55,9 @@ extension MainVC {
                  let jsonData = try encoder.encode(aDayplan)
                  
 
-                 if let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                 if var jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
                      print("JSON Dictionary: \(jsonObject)")
-                     
+                     jsonObject["InsMode"] = "0"
                      var toSendData = [String: Any]()
                      
                      let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: jsonObject)

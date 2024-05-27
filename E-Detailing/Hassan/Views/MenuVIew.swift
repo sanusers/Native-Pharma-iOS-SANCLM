@@ -471,6 +471,7 @@ class MenuView : BaseView{
         case edit
         case session
         case workType
+        case WorkTypeInfo = "work Type"
         case cluster
         case headQuater
         case jointCall

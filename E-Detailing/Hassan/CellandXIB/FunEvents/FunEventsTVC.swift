@@ -19,8 +19,9 @@ class FunEventsTVC: UITableViewCell {
         funDaysTitle.setFont(font: .medium(size: .BODY))
         eventDate.setFont(font: .medium(size: .BODY))
         funDaysTitle.textColor = .appTextColor
+        eventDate.textColor = .appTextColor
         holderView.layer.cornerRadius = 5
-        bgVXview.backgroundColor = .appGreen.withAlphaComponent(0.3)
+        bgVXview.backgroundColor = .appTextColor
         
     }
 

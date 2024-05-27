@@ -20,7 +20,7 @@ extension SpecifiedMenuView: UITextFieldDelegate {
 
             switch self.cellType {
         
-            case .workType:
+            case .workType, .WorkTypeInfo:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
                     toLOadData()
@@ -668,6 +668,9 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         case .doctorInfo:
             return self.listedDocArr?.count ?? 0
             
+        case .WorkTypeInfo:
+            return self.workTypeArr?.count ?? 0
+            
         case .chemistInfo:
             return self.chemistArr?.count ?? 0
             
@@ -1152,6 +1155,30 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
           
             return resourcecell
             
+        case .WorkTypeInfo:
+            let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
+            resourcecell.selectionStyle = .none
+            titleLbl.text = "Work type"
+            var yetTopassModal: NSManagedObject?
+            if let modelArr = self.workTypeArr {
+                let model: WorkType = modelArr[indexPath.row]
+                yetTopassModal = model
+                resourcecell.populateCell(model: model)
+                resourcecell.setupHeight(type: cellType)
+            }
+            resourcecell.countLbl.text = "\(indexPath.row + 1)."
+            resourcecell.btnEdit.addTap { [weak self] in
+                guard let welf = self else {return}
+                
+              
+                    welf.navigateToDetails(type: .chemist, model: yetTopassModal ?? NSManagedObject())
+                
+                
+              
+            }
+          
+            return resourcecell
+            
         case .chemistInfo:
             let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
             resourcecell.selectionStyle = .none
@@ -1429,7 +1456,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         case .doctorInfo, .unlistedDoctorinfo:
             return 110
          
-        case  .stockistInfo, .chemistInfo:
+        case  .stockistInfo, .chemistInfo, .WorkTypeInfo:
             
             return 110 - 33.3
             
@@ -1882,6 +1909,9 @@ class SpecifiedMenuView: BaseView {
 //
 //           }
            
+       case .WorkTypeInfo:
+           bottomHolderHeight.constant = 0
+           self.workTypeArr = DBManager.shared.getWorkType()
      
        case .clusterInfo:
            bottomHolderHeight.constant = 0

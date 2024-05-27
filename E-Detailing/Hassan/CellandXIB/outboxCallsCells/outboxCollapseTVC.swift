@@ -31,28 +31,10 @@ class outboxCollapseTVC: UITableViewHeaderFooterView {
         refreshBtn.setTitle("", for: .normal)
         headerRefreshView.layer.cornerRadius = 3
         seperatorView.backgroundColor = .appLightTextColor
-        self.addTap {
-            self.delegate?.toggleSection(self, section: self.section)
-        }
-        
         self.refreshBtn.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        
-        // Initialization code
         dateLbl.setFont(font: .bold(size: .BODY))
         dateLbl.textColor = .appTextColor
         vxView.backgroundColor = .appLightPink
-//        if #available(iOS 13.0, *) {
-//            collapseIV.image = UIImage(systemName: "Vector")
-//            syncIV.image = UIImage(named: "arrow.triangle.2.circlepath")
-//            syncIV.tintColor = .appLightPink
-//        } else {
-//            // Fallback on earlier versions
-//            collapseIV.image = UIImage(named: "arrowDown")
-//            syncIV.image = UIImage(named: "white_refresh")
-//
-//        }
-        
-      
         
     }
     

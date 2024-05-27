@@ -108,6 +108,10 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             return MenuView.CellType.holiday
         }
         
+        if MenuView.CellType(rawValue: name)?.rawValue ?? "" ==  MenuView.CellType.WorkTypeInfo.rawValue {
+            return MenuView.CellType.WorkTypeInfo
+        }
+        
         return MenuView.CellType(rawValue: name)
     }
     
@@ -204,7 +208,7 @@ class ReportsView : BaseView {
     
     func setHQlbl() {
         // let appsetup = AppDefaults.shared.getAppSetUp()
-            CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
+            CoreDataManager.shared.toRetriveSavedDayPlanHQ { hqModelArr in
                 let savedEntity = hqModelArr.first
                 guard let savedEntity = savedEntity else{
                     
@@ -339,7 +343,7 @@ class ReportsView : BaseView {
         //\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))
         contentDict.append(HolidayDict)
         
-        let WorkTypeDict : [String: String] = [MenuView.CellType.workType.rawValue   : String(DBManager.shared.getWorkType().count)]
+        let WorkTypeDict : [String: String] = [MenuView.CellType.WorkTypeInfo.rawValue   : String(DBManager.shared.getWorkType().count)]
         contentDict.append(WorkTypeDict)
         return contentDict as!  [[String: String]]
     }

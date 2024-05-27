@@ -160,43 +160,49 @@ extension PreCallVC: UITableViewDelegate, UITableViewDataSource, CollapsibleTabl
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if tableView == funEventsTable {
             let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "outboxCollapseTVC") as? outboxCollapseTVC
-            header?.backgroundVXview.backgroundColor = .appGreen.withAlphaComponent(0.3)
+            header?.backgroundVXview.backgroundColor = .appTextColor
             header?.backgroundVXview.layer.cornerRadius = 5
             header?.headerRefreshView.isHidden = true
             header?.seperatorView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-            header?.delegate = self
             header?.section = section
             switch segmentType[selectedSegmentsIndex] {
             case .Weeklyoffs:
-                
-   
+                     header?.delegate = nil
                     if weeklyoffSections[section].collapsed {
                         header?.collapseIV.image = UIImage(named: "chevlon.expand")
                     } else {
                         header?.collapseIV.image = UIImage(named: "chevlon.collapse")
                     }
-                   // header?.refreshdelegate = self
 
                     let object = weeklyoffSections[section]
                     let dateString = object.day
-                        header?.dateLbl.text = dateString
-                   header?.dateLbl.setFont(font: .medium(size: .BODY))
-
+                    header?.dateLbl.text = dateString
+                    header?.dateLbl.textColor = .appWhiteColor
+                    header?.collapseIV.tintColor = .appWhiteColor
+                    header?.dateLbl.setFont(font: .medium(size: .BODY))
+                    header?.collapseIV.isHidden = true
                     return header
                 
             case .Holidays:
-                
+                header?.delegate = self
                 if holidaysSections[section].collapsed {
                     header?.collapseIV.image = UIImage(named: "chevlon.expand")
                 } else {
                     header?.collapseIV.image = UIImage(named: "chevlon.collapse")
                 }
-               // header?.refreshdelegate = self
 
             let object = holidaysSections[section]
             let dateString = object.month
             header?.dateLbl.text = dateString
             header?.dateLbl.setFont(font: .medium(size: .BODY))
+                header?.dateLbl.textColor = .appWhiteColor
+                header?.collapseIV.tintColor = .appWhiteColor
+                header?.collapseIV.isHidden = false
+                
+                header?.addTap {
+                    guard let header = header else {return}
+                    header.delegate?.toggleSection(header, section: header.section)
+                }
 
                 return header
                 

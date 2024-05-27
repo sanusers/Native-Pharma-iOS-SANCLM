@@ -62,8 +62,8 @@ extension MasterSyncVC: MenuResponseProtocol {
                         self.fetchedHQObject = selectedObject
                         CoreDataManager.shared.removeHQ()
                         CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
-                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
-                            self.setHQlbl()
+                          //  LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
+                            self.setHQlbl(isTosetDayplanHQ: false)
                             self.isDayPlanSynced = true
                         }
                   
@@ -78,8 +78,8 @@ extension MasterSyncVC: MenuResponseProtocol {
                 self.fetchedHQObject = selectedObject
                 CoreDataManager.shared.removeHQ()
                 CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
-                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
-                    self.setHQlbl()
+                   // LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
+                    self.setHQlbl(isTosetDayplanHQ: false)
                 }
             }
 
@@ -131,7 +131,7 @@ extension CoreDataManager {
     }
     
     func removeDayPlanHQ() {
-        let fetchRequest: NSFetchRequest<SelectedHQ> = NSFetchRequest(entityName: "SelectedDayPlanHQ")
+        let fetchRequest: NSFetchRequest<SelectedDayPlanHQ> = NSFetchRequest(entityName: "SelectedDayPlanHQ")
 
         do {
             let slideBrands = try context.fetch(fetchRequest)
@@ -160,6 +160,32 @@ extension CoreDataManager {
             }
             completion(retrivedHq)
         })
+    }
+    
+    func saveToDayplanHQCoreData(hqModel: HQModel  , completion: (Bool) -> ()) {
+        let context = self.context
+        // Create a new managed object
+        if let entityDescription = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context) {
+            let savedCDHq = SelectedHQ(entity: entityDescription, insertInto: context)
+            
+            // Convert properties
+            savedCDHq.code                  = hqModel.code
+            savedCDHq.name                 = hqModel.name
+            savedCDHq.reportingToSF       = hqModel.reportingToSF
+            savedCDHq.steps                 = hqModel.steps
+            savedCDHq.sfHq                   = hqModel.sfHQ
+            savedCDHq.mapId                  = hqModel.mapId
+            // Convert and add groupedBrandsSlideModel
+            // Save to Core Data
+            do {
+                try context.save()
+                completion(true)
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                completion(false)
+            }
+        }
+        
     }
     
     
@@ -326,7 +352,10 @@ extension CoreDataManager {
         let headQuatersArr =  DBManager.shared.getSubordinate()
         let workTypeArr = DBManager.shared.getWorkType()
         
+        
+        
         guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+              let selectedDayPlanHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
          let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
         let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
         else {
@@ -373,18 +402,7 @@ extension CoreDataManager {
                     hqModel.sfHQ = aheadQuater.sfHq ?? ""
                     hqModel.mapId = aheadQuater.mapId ?? ""
                     
-//                    CoreDataManager.shared.removeHQ()
-//
-//                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-//                        if isSaved {
-//                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-//                                let aSavedHQ = selectedHQArr.first
-//                                selectedheadQuarters = aSavedHQ
-//
-//                            }
-//                        }
-//                    }
-                    
+
                     
                     guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
                
@@ -445,19 +463,7 @@ extension CoreDataManager {
                     hqModel.sfHQ = aheadQuater.sfHq ?? ""
                     hqModel.mapId = aheadQuater.mapId ?? ""
                     
-//                    CoreDataManager.shared.removeHQ()
-//
-//                    CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-//                        if isSaved {
-//                            CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-//                                let aSavedHQ = selectedHQArr.first
-//                                selectedheadQuarters = aSavedHQ
-//
-//                            }
-//                        }
-//                    }
-                    
-                    
+
                     guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
                
                     else {

@@ -1389,9 +1389,9 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-             //  LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-             //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-             //  LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -2662,7 +2662,7 @@ extension MainVC: MenuResponseProtocol {
                 aHQobj.steps = self.fetchedHQObject1?.steps ?? String()
                 aHQobj.sfHQ = self.fetchedHQObject1?.sfHq ?? String()
                 
-                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context)
                         
                 else {
                     fatalError("Entity not found")
@@ -2732,7 +2732,7 @@ extension MainVC: MenuResponseProtocol {
                 aHQobj.sfHQ = self.fetchedHQObject2?.sfHq ?? String()
                 
                 
-                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context)
                         
                 else {
                     fatalError("Entity not found")
@@ -2794,8 +2794,8 @@ extension MainVC: MenuResponseProtocol {
     }
     
     func setHQ(aHQobj: HQModel, completion: @escaping () -> () ) {
-        CoreDataManager.shared.removeHQ()
-        CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+        CoreDataManager.shared.removeDayPlanHQ()
+        CoreDataManager.shared.saveToDayplanHQCoreData(hqModel: aHQobj) { _ in
             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
             completion()
        
@@ -3671,7 +3671,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             header?.refreshdelegate = self
             
-            
+     
             
             
             let object = obj_sections[section].items.first
@@ -3682,6 +3682,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 header?.dateLbl.text = formattedDate
 
             return header
+            
+            header?.addTap {
+                guard let header = header else {return}
+                header.delegate?.toggleSection(header, section: header.section)
+            }
             
         } else {
             
@@ -4839,7 +4844,7 @@ extension MainVC: PopOverVCDelegate {
         } else {
             checkinDetailsView?.setupUI(type: HomeCheckinDetailsView.ViewType.checkout)
         }
-        
+        view.addSubview(checkinDetailsView ?? HomeCheckinDetailsView())
     }
     
     

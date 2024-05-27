@@ -285,7 +285,7 @@ class CallVC : UIViewController {
     
     func setHQlbl() {
         // let appsetup = AppDefaults.shared.getAppSetUp()
-            CoreDataManager.shared.toRetriveSavedHQ { hqModelArr in
+            CoreDataManager.shared.toRetriveSavedDayPlanHQ { hqModelArr in
                 let savedEntity = hqModelArr.first
                 guard let savedEntity = savedEntity else{
                     

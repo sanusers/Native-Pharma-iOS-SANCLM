@@ -287,7 +287,7 @@ class MasterSyncVC : UIViewController {
         backBtn.setTitle("", for: .normal)
       
         retryVIew.layer.cornerRadius = retryVIew.height / 2
-        setHQlbl()
+        setHQlbl(isTosetDayplanHQ: false)
         
      
         
@@ -357,9 +357,71 @@ class MasterSyncVC : UIViewController {
     
 
     
-    func setHQlbl() {
+    func setHQlbl(isTosetDayplanHQ: Bool) {
         // let appsetup = AppDefaults.shared.getAppSetUp()
+        if isTosetDayplanHQ {
+            guard self.fetchedHQObject != nil else {
+                CoreDataManager.shared.toRetriveSavedDayPlanHQ { hqModelArr in
+                    let savedEntity = hqModelArr.first
+                    guard let savedEntity = savedEntity else{
+                        
+                        self.lblHqName.text = "Select HQ"
+                        
+                        return
+                        
+                    }
+                    
+                    self.lblHqName.text = savedEntity.name == "" ? "Select HQ" : savedEntity.name
+                    
+                    let subordinates = DBManager.shared.getSubordinate()
+                    
+                    let asubordinate = subordinates.filter{$0.id == savedEntity.code}
+                    
+                    if !asubordinate.isEmpty {
+                        self.fetchedHQObject = asubordinate.first
+                        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                    }
+                
+                  
+      
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                    }
+                    
+                }
         
+                Shared.instance.isFetchingHQ = false
+                return
+            }
+            let aHQobj = HQModel()
+            aHQobj.code = self.fetchedHQObject?.id ?? ""
+            aHQobj.mapId = self.fetchedHQObject?.mapId ?? ""
+            aHQobj.name = self.fetchedHQObject?.name ?? ""
+            aHQobj.reportingToSF = self.fetchedHQObject?.reportingToSF ?? ""
+            aHQobj.steps = self.fetchedHQObject?.steps ?? ""
+            aHQobj.sfHQ = self.fetchedHQObject?.sfHq ?? ""
+            CoreDataManager.shared.removeDayPlanHQ()
+            CoreDataManager.shared.saveToDayplanHQCoreData(hqModel: aHQobj){ _ in
+                CoreDataManager.shared.toRetriveSavedDayPlanHQ { HQModelarr in
+                    dump(HQModelarr)
+                }
+            }
+            
+            CoreDataManager.shared.removeHQ()
+            CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in
+                CoreDataManager.shared.toRetriveSavedHQ { HQModelarr in
+                    dump(HQModelarr)
+                }
+            }
+        
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+        self.lblHqName.text =   self.fetchedHQObject?.name
+        Shared.instance.isFetchingHQ = false
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+            return
+        }
         
 
         
@@ -382,7 +444,7 @@ class MasterSyncVC : UIViewController {
                 
                 if !asubordinate.isEmpty {
                     self.fetchedHQObject = asubordinate.first
-                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                   // LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
                 }
             
               
@@ -410,7 +472,7 @@ class MasterSyncVC : UIViewController {
                 }
             }
         
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
+      //  LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aHQobj.code)
         self.lblHqName.text =   self.fetchedHQObject?.name
         Shared.instance.isFetchingHQ = false
         DispatchQueue.main.async {
@@ -640,6 +702,9 @@ class MasterSyncVC : UIViewController {
         masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in}
     }
     
+    func setParentHQ() {
+        
+    }
 
     
     
@@ -707,7 +772,7 @@ class MasterSyncVC : UIViewController {
                             if !filteredHQ.isEmpty {
                                 let cacheHQ = filteredHQ.first
                                 welf.fetchedHQObject = cacheHQ
-                                welf.setHQlbl()
+                                welf.setHQlbl(isTosetDayplanHQ: true)
                                 
                                 welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
                                     if dayPlan2 != nil {
@@ -748,7 +813,7 @@ class MasterSyncVC : UIViewController {
                                 // if !filteredHQ.isEmpty {
                                 let cacheHQ = filteredHQ
                                 welf.fetchedHQObject = cacheHQ
-                                welf.setHQlbl()
+                                welf.setHQlbl(isTosetDayplanHQ: true)
                                 // }
                                 completion(true)
                           
