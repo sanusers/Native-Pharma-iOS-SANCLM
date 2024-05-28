@@ -23,6 +23,7 @@ enum XIBs: String {
     case productSectionReusableView = "ProductSectionReusableView"
     case addNewTagInfoVIew =  "AddNewTagInfoVIew"
     case customCalenderView = "CustomCalenderView"
+    case dayReportsSortView = "DayReportsSortView"
     var nib: UINib {
         return UINib(nibName: self.rawValue, bundle: nil)
     }

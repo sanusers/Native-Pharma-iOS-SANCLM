@@ -9,7 +9,54 @@
 
 import Foundation
 import UIKit
+extension  DayReportView: DayReportsSortViewDelegate {
+    func userDidSort(sorted index: Int?) {
+        self.selectedSortIndex = index
+        hideAddedViews()
+        guard let index = index else {return}
+        switch index {
+        case 0:
+            toReorderRepotes(type: .orderAscending)
+        case 1:
+            toReorderRepotes(type: .orderDescending)
+        case 2:
+            toReorderRepotes(type: .orderByDate)
 
+        default:
+            print("Yet to sort")
+        }
+    
+    }
+    
+    func userDidCancel() {
+        hideAddedViews()
+    }
+    
+    func hideAddedViews() {
+        backgroundView.isHidden = true
+        self.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+
+            case dayReportsSortView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+    
+}
 
 class DayReportView: BaseView {
     
@@ -35,6 +82,7 @@ class DayReportView: BaseView {
     @IBOutlet var sortView: UIView!
     @IBOutlet var resultInfoLbl: UILabel!
     
+    @IBOutlet var backgroundView: UIView!
     @IBOutlet var clearView: UIView!
     
     @IBOutlet var clearIV: UIImageView!
@@ -50,7 +98,7 @@ class DayReportView: BaseView {
     var isTohideCount : Bool = false
     var isMatched: Bool = false
     var selectedSortIndex: Int? = nil
-    
+    var dayReportsSortView: DayReportsSortView?
     var isSortPresented = false
     private lazy var sortPopupView: SortVIew = {
         let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
@@ -71,10 +119,20 @@ class DayReportView: BaseView {
         super.willAppear(baseVC: baseVC)
         self.viewDayReportVC = baseVC as? ViewDayReportVC
         
-       
-       
-   
     }
+    
+    override func didLayoutSubviews(baseVC: BaseViewController) {
+        super.didLayoutSubviews(baseVC: baseVC)
+        let changePasswordViewwidth = self.bounds.width / 2.7
+        let changePasswordViewheight = self.bounds.height / 1.7
+        
+        let changePasswordViewcenterX = self.bounds.midX - (changePasswordViewwidth / 2)
+        let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
+        
+        self.dayReportsSortView?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
+        
+    }
+
     
     func initialSerups() {
         resultinfoView.isHidden = true
@@ -85,6 +143,7 @@ class DayReportView: BaseView {
     
     func setupUI() {
         clearIV.tintColor = .appTextColor
+        backgroundView.isHidden = true
         resultinfoView.isHidden = isMatched ? false : true
         resultInfoLbl.isHidden = isMatched ? false : true
         resultInfoLbl.setFont(font: .medium(size: .BODY))
@@ -107,23 +166,55 @@ class DayReportView: BaseView {
         aDayReportsTable.separatorStyle = .none
     }
     
+    
+    func toShowSortOptions() {
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+   
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case dayReportsSortView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                
+
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        dayReportsSortView = self.viewDayReportVC.loadCustomView(nibname: XIBs.dayReportsSortView) as? DayReportsSortView
+        dayReportsSortView?.delegate = self
+        dayReportsSortView?.selectedIndex = selectedSortIndex
+        dayReportsSortView?.isFromDayReport = true
+        dayReportsSortView?.setupUI()
+    
+
+        self.addSubview(dayReportsSortView ?? DayReportsSortView())
+    }
+    
+    
     func initTaps() {
         backHolderView.addTap {
             self.viewDayReportVC.navigationController?.popViewController(animated: true)
         }
         
+        backgroundView.addTap {
+            self.hideAddedViews()
+        }
+        
         sortView.addTap {
-            self.isSortPresented =  self.isSortPresented ? false : true
-            UIView.animate(withDuration: 1.0,
-                           delay: 0.15,
-                           usingSpringWithDamping: 2.0,
-                           initialSpringVelocity: 5.0,
-                           options: [.curveEaseOut],
-                           animations: {
+            
+            self.toShowSortOptions()
 
-                self.addOrRemoveSort(self.isSortPresented)
-
-                           }, completion: nil)
         }
         
         clearView.addTap {
@@ -579,7 +670,7 @@ extension DayReportView: SortVIewDelegate {
     func didSelected(index: Int?, isTosave: Bool) {
         selectedSortIndex = index
         isSortPresented =  isSortPresented ? false : true
-        addOrRemoveSort(isSortPresented)
+        //addOrRemoveSort(isSortPresented)
         switch index {
         case 0:
             toReorderRepotes(type: .orderAscending)
@@ -659,24 +750,24 @@ extension DayReportView: SortVIewDelegate {
         return Date()
     }
     
-    func addOrRemoveSort(_ isToAdd: Bool) {
-        let views: [UIView] = [self.aDayReportsTable, self.searchHolderVIew, clearView]
-        if isToAdd {
-            views.forEach { aView in
-                aView.alpha = 1
-                aView.isUserInteractionEnabled = true
-                
-                self.sortPopupView.removeFromSuperview()
-            }
-        } else {
-            views.forEach { aView in
-                aView.alpha = 0.3
-                aView.isUserInteractionEnabled = false
-                self.sortPopupView.selectedIndex = selectedSortIndex
-                self.sortPopupView.isFromDayReport = true
-                self.sortPopupView.toLoadData()
-                self.addSubview(self.sortPopupView)
-            }
-        }
-    }
+//    func addOrRemoveSort(_ isToAdd: Bool) {
+//        let views: [UIView] = [self.aDayReportsTable, self.searchHolderVIew, clearView]
+//        if isToAdd {
+//            views.forEach { aView in
+//                aView.alpha = 1
+//                aView.isUserInteractionEnabled = true
+//                
+//                self.sortPopupView.removeFromSuperview()
+//            }
+//        } else {
+//            views.forEach { aView in
+//                aView.alpha = 0.3
+//                aView.isUserInteractionEnabled = false
+//                self.sortPopupView.selectedIndex = selectedSortIndex
+//                self.sortPopupView.isFromDayReport = true
+//                self.sortPopupView.toLoadData()
+//                self.addSubview(self.sortPopupView)
+//            }
+//        }
+//    }
 }

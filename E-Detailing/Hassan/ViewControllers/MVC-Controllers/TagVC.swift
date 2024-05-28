@@ -289,14 +289,14 @@ class TagVC : UIViewController {
     }
 
     
-    func showAlert() {
+    func showAlert(desc: String) {
         print("Yet to implement")
-        showAlertToEnableLocation()
+        showAlertToEnableLocation(desc: desc)
     }
     
-    func showAlertToEnableLocation() {
+    func showAlertToEnableLocation(desc: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

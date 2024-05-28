@@ -156,7 +156,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
         Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
             guard coordinates != nil else {
-                welf.delegate?.showAlert()
+                welf.delegate?.showAlert(desc: "Please enable location services in Settings.")
                 return
             }
             welf.latitude = coordinates?.latitude

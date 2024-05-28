@@ -290,16 +290,20 @@ class MainVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
-        
-        
+        addObservers()
         updateLinks()
         setupUI()
         if istoRedirecttoCheckin() {
             checkinAction()
         }
 
+    }
+    
+    
+    func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
+        
         network.isReachable() { [weak self] reachability in
             guard let welf = self else {return}
         
@@ -351,15 +355,6 @@ class MainVC : UIViewController {
             }
             
         }
-        
-        
-        
-//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-//   
-//        } else {
-//          
-//
-//        }
     }
     
     func refreshUI(issynced: Bool? = false) {
@@ -482,8 +477,9 @@ class MainVC : UIViewController {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {return}
             guard let coordinates = coordinates else {
-                
-                welf.showAlertToEnableLocation()
+                // "Please connect to active network to update Password"
+              //   "Please enable location services in Settings."
+                welf.showAlertToNetworks(desc: "Please enable location services in Settings.")
                 
                 return
             }
@@ -1389,9 +1385,9 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+//               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+//               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+//               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -1467,7 +1463,9 @@ class MainVC : UIViewController {
         Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
             guard coordinates != nil else {
-                welf.showAlertToEnableLocation()
+                // "Please connect to active network to update Password"
+              //   "Please enable location services in Settings."
+                welf.showAlertToNetworks(desc: "Please enable location services in Settings.")
                 return
             }
             welf.latitude = coordinates?.latitude
@@ -3064,13 +3062,17 @@ extension MainVC : collectionViewProtocols {
                    }
                     
                 case "Slide Preview":
+                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
                     let vc = PreviewHomeVC.initWithStory()
                     self.navigationController?.pushViewController(vc, animated: true)
-                    
+                }  else {
+                    self.toSetupAlert()
+               }
                 case "Reports":
-                    let vc = ReportsVC.initWithStory(pageType: .reports)
-                    self.navigationController?.pushViewController(vc, animated: true)
-
+          
+                        let vc = ReportsVC.initWithStory(pageType: .reports)
+                        self.navigationController?.pushViewController(vc, animated: true)
+             
                 default:
                     print("Yet to")
                 }
@@ -3680,13 +3682,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 let formattedDate = date.toString(format: "MMMM dd, yyyy")
                 print(formattedDate)  // Output: January 19, 2024
                 header?.dateLbl.text = formattedDate
-
-            return header
-            
             header?.addTap {
                 guard let header = header else {return}
                 header.delegate?.toggleSection(header, section: header.section)
             }
+            return header
+            
+
             
         } else {
             
@@ -5105,9 +5107,11 @@ extension MainVC : addedSubViewsDelegate {
     }
     
     
-    func showAlertToEnableLocation() {
+    func showAlertToNetworks(desc: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
+       // "Please connect to active network to update Password"
+     //   "Please enable location services in Settings."
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()
@@ -5120,14 +5124,6 @@ extension MainVC : addedSubViewsDelegate {
         }
     }
     
-    func showNetwiorkAlert() {
-        let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Please connect to active network to update Password", okAction: "Ok")
-        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-            print("no action")
-            // self.toDeletePresentation()
-        }
-    }
     
     func redirectToSettings() {
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
@@ -5135,8 +5131,10 @@ extension MainVC : addedSubViewsDelegate {
         }
     }
     
-    func showAlert() {
-        showNetwiorkAlert()
+    func showAlert(desc: String) {
+        // "Please connect to active network to update Password"
+      //   "Please enable location services in Settings."
+      showAlertToNetworks(desc: desc)
     }
     
     func didClose() {

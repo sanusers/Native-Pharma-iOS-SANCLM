@@ -453,10 +453,10 @@ class AddproductsMenuView: BaseView {
             let productCount = additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
             
             
-            if inputCount > productCount {
-                self.toCreateToast("Input count is greater then product count")
-                return
-            }
+//            if inputCount > productCount {
+//                self.toCreateToast("Input count is greater then product count")
+//                return
+//            }
             
 //            if productCount > inputCount {
 //                self.toCreateToast("Please select Input")

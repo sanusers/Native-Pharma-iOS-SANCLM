@@ -1775,6 +1775,7 @@ class SpecifiedMenuView: BaseView {
             let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
             let temporaryselectedCompetitorsobj = NSManagedObject(entity: selectedCompetitorentity, insertInto: nil)  as! Competitor
         let temporaryselectedJointWorkobj = NSManagedObject(entity: selectedJointWorkentity, insertInto: nil)  as! JointWork
+   
             switch cellType {
             case .headQuater:
                 
@@ -1863,6 +1864,8 @@ class SpecifiedMenuView: BaseView {
            self.inputsArr = DBManager.shared.getInput()
            inputsArr = inputsArr?.filter {$0.code != "-1"}
            
+           self.inputsArr = self.inputsArr?.sorted(by: { $0.name ?? "" < $1.name ?? "" })
+           
        case . product:
            bottomHolderHeight.constant = 0
            self.productArr = DBManager.shared.getProduct()
@@ -1912,7 +1915,8 @@ class SpecifiedMenuView: BaseView {
        case .WorkTypeInfo:
            bottomHolderHeight.constant = 0
            self.workTypeArr = DBManager.shared.getWorkType()
-     
+           
+           self.workTypeArr = self.workTypeArr?.sorted(by: { $0.name ?? "" < $1.name ?? "" })
        case .clusterInfo:
            bottomHolderHeight.constant = 0
            self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
@@ -1958,6 +1962,8 @@ class SpecifiedMenuView: BaseView {
               
       
            }
+           
+          // self.clusterArr = self.clusterArr?.sorted(by: { $0.name ?? "" < $1.name ?? "" })
        case .headQuater:
            bottomHolderHeight.constant = 0
            self.headQuatersArr =  DBManager.shared.getSubordinate()

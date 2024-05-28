@@ -186,17 +186,17 @@ extension Weeklyoff {
     func setValues(fromDictionary dictionary: [String:Any])    {
         
         
-        if let codeValue = dictionary["State_Code"] as? Int{
+        if let codeValue = dictionary["State_Code"] as? String{
             state_Code = String(codeValue)
         }
         
-        if let codeValue = dictionary["Division_Code"] as? Int{
+        if let codeValue = dictionary["Division_Code"] as? String{
             division_Code = String(codeValue)
         }
         if let eTabsValue = dictionary["Flag"] as? String{
             flag = eTabsValue
         }
-        if let fwFlgValue = dictionary["Holiday_Mode"] as? Int  {
+        if let fwFlgValue = dictionary["Holiday_Mode"] as? String  {
             holiday_Mode = String(fwFlgValue)
         }
         if let sfCodeValue = dictionary["WTcode"] as? String{

@@ -16,7 +16,7 @@ class DBManager {
     static let shared = DBManager()
     
     var existingDates = [String]()
-    var  weeklyOff : Weeklyoff?
+    var  weeklyOff : [Weeklyoff]?
     var  holidays : [Holidays]?
     
     // MARK: - Core Data stack
@@ -414,7 +414,7 @@ class DBManager {
        // self.offsets = LocalStorage.shared.getOffset(key: LocalStorage.LocalValue.offsets)
         let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
         if !weeklyoffSetupArr.isEmpty {
-            weeklyOff = weeklyoffSetupArr[0]
+            weeklyOff = weeklyoffSetupArr
         }
         
       
@@ -483,7 +483,11 @@ class DBManager {
             
             
             
-            let weekoffIndex = Int(weeklyOff?.holiday_Mode ?? "0") ?? 0
+            var weekoffIndex : [Int] = []
+            //(weeklyOff?.holiday_Mode ?? "0") ?? 0
+            weeklyOff?.forEach({ aWeeklyoff in
+                weekoffIndex.append(Int(aWeeklyoff.holiday_Mode ?? "0") ?? 0)
+            })
             
             var monthIndex : [Int] = []
             
@@ -508,7 +512,11 @@ class DBManager {
                 monthIndex =  []
             }
             
-            let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex + 1)
+            var weekoffDates : [Date] = []
+            weekoffIndex.forEach { weeklyoffIndex in
+                weekoffDates.append(contentsOf: getWeekoffDates(forMonths: monthIndex, weekoffday: weeklyoffIndex))
+            }
+           
             
             // let weekoffDates = getDatesForDayIndex(weekoffIndex + 1, self.offsets)
             weeklyOffRawDates.append(contentsOf: weekoffDates)
@@ -683,10 +691,14 @@ class DBManager {
                     aSessionDetArr.isForWeekoff = false
                     aSessionDetArr.isForHoliday = true
                 } else {
-                    aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-                    aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
-                    aSessionDetArr.isForWeekoff = true
-                    aSessionDetArr.isForHoliday = false
+                    if let weeklyOff = weeklyOff, !weeklyOff.isEmpty {
+                        aSession.WTCode = weeklyOff[0].wtcode ?? ""
+                        aSession.WTName = weeklyOff[0].wtname ?? "Weekly off"
+                        aSessionDetArr.isForWeekoff = true
+                        aSessionDetArr.isForHoliday = false
+                   
+                    }
+    
                 }
                 
                 
@@ -2170,9 +2182,19 @@ class DBManager {
     
     func getWeeklyOff() -> [Weeklyoff]{
         let masterData = self.getMasterData()
-        guard let WeeklyoffSetupArray = masterData.weeklyoff?.allObjects as? [Weeklyoff] else{
+        guard var WeeklyoffSetupArray = masterData.weeklyoff?.allObjects as? [Weeklyoff] else{
             return [Weeklyoff]()
         }
+        
+        var uniqueHolidayModes = Set<String>()
+        WeeklyoffSetupArray = WeeklyoffSetupArray.filter { aWeeklyoff in
+            guard !uniqueHolidayModes.contains(aWeeklyoff.holiday_Mode ?? "0") else {
+                return false
+            }
+            uniqueHolidayModes.insert(aWeeklyoff.holiday_Mode ?? "0")
+            return true
+        }
+        
         let array = WeeklyoffSetupArray.sorted{(item1 , item2 ) -> Bool in
             return item1.index < item2.index
         }

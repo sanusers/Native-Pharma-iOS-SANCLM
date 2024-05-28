@@ -151,16 +151,16 @@ extension CallVC : addedSubViewsDelegate {
         self.didClose()
     }
     
-    func showAlert() {
+    func showAlert(desc: String) {
         print("Yet to implement")
-        showAlertToEnableLocation()
+        showAlertToEnableLocation(desc: desc)
     }
     
     
     
-    func showAlertToEnableLocation() {
+    func showAlertToEnableLocation(desc: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()
@@ -414,7 +414,7 @@ class CallVC : UIViewController {
             guard let welf = self else {return}
             guard let coordinates = coordinates else {
                 
-                welf.showAlert()
+                welf.showAlert(desc: "Please enable location services in Settings.")
                 
                 return
             }

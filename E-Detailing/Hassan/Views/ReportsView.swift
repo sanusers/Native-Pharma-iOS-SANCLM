@@ -339,7 +339,7 @@ class ReportsView : BaseView {
         contentDict.append(ClusterDict)
        // let  DoctorDict: [String: String] = [MenuView.CellType.doctorVisit.rawValue  : String(DBManager.shared.getVisitControl().count)]
       //  contentDict.append(DoctorDict)
-        let  HolidayDict: [String: String] = [MenuView.CellType.holiday.rawValue   : ""]
+        let  HolidayDict: [String: String] = [MenuView.CellType.holiday.rawValue   : "\(String(DBManager.shared.getHolidays().count)) " + "/" + " \(String(DBManager.shared.getWeeklyOff().count))"]
         //\(String(DBManager.shared.getHolidays().count)) / \(String(DBManager.shared.getWeeklyOff().count))
         contentDict.append(HolidayDict)
         

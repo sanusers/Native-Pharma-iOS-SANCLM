@@ -71,7 +71,7 @@ extension NearMeVC: addedSubViewsDelegate {
         print("Yet to implement")
     }
     
-    func showAlert() {
+    func showAlert(desc: String) {
         print("Yet to implement")
     }
     

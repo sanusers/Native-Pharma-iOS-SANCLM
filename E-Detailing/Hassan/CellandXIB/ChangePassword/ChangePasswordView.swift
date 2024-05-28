@@ -11,7 +11,7 @@ public protocol addedSubViewsDelegate: AnyObject {
     func didClose()
     func didUpdate()
     func didUpdateCustomerCheckin(dcrCall: CallViewModel)
-    func showAlert()
+    func showAlert(desc: String)
     func didUpdateFilters(filteredObjects: [NSManagedObject])
 }
 
@@ -225,7 +225,7 @@ class ChangePasswordView: UIView {
         guard let appsetup = self.appsetup else {return}
          
         if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            self.delegate?.showAlert()
+            self.delegate?.showAlert(desc: "Please connect to active network to update Password")
             return
         }
      //  {"tableName":"savechpwd","txOPW":"123","txNPW":"1234","txCPW":"1234","sfcode":"MR0026","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,"}

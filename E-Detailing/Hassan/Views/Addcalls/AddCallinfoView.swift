@@ -1884,7 +1884,7 @@ class AddCallinfoView : BaseView {
             guard let welf = self else {return}
             guard let coordinates = coordinates else {
                 
-                welf.showAlert()
+                welf.showAlert(desc: "Please enable location services in Settings.")
                 
                 return
             }
@@ -2006,8 +2006,8 @@ extension AddCallinfoView : addedSubViewsDelegate {
         print("Yet to implement")
     }
     
-    func showAlert() {
-        showAlertToEnableLocation()
+    func showAlert(desc: String) {
+        showAlertToEnableLocation(desc: desc)
     }
     
     
@@ -2015,9 +2015,9 @@ extension AddCallinfoView : addedSubViewsDelegate {
         print("Yet to implement")
     }
     
-    func showAlertToEnableLocation() {
+    func showAlertToEnableLocation(desc: String) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Please enable location services in Settings to submit call.", okAction: "Cancel",cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             // self.toDeletePresentation()

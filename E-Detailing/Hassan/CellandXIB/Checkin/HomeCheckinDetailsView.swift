@@ -73,8 +73,10 @@ class HomeCheckinDetailsView: UIView {
            
         case .checkin:
             retriveCheckinInfo()
+            return
         case .checkout:
             retriveCheckoutInfo()
+            return
         }
         
     

@@ -331,8 +331,8 @@ extension MenuView {
         
 
         _ = self.menuVC.selectedDate
-        let dateArr = self.sessionDetailsArr.date?.components(separatedBy: " ") //"1 Nov 2023"
-        let anotherDateArr = self.sessionDetailsArr.dayNo?.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
+       // let dateArr = self.sessionDetailsArr.date?.components(separatedBy: " ") //"1 Nov 2023"
+       // let anotherDateArr = self.sessionDetailsArr.dayNo?.components(separatedBy: "/") // MM/dd/yyyy - 09/12/2018
         var param = [String: Any]()
         param["SFCode"] = appdefaultSetup.sfCode
         param["SFName"] = appdefaultSetup.sfName

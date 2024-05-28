@@ -642,10 +642,10 @@ final class ConnectionHandler : NSObject {
                         }
                         
                     } else {
-                        if api == .deleteCall {
+                      //  if api == .deleteCall {
                             responseHandler.handleSuccess(value: JSON(), data: Data() )
                             
-                        }
+                      //  }
                     }
                 }
                 

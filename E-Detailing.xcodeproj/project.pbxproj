@@ -16,6 +16,8 @@
 		3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */; };
 		380566262B983AFD00BB9117 /* DCRdetailViewEditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */; };
 		380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */; };
+		3809319C2C04BE1400FC6A20 /* DayReportsSortView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3809319B2C04BE1400FC6A20 /* DayReportsSortView.xib */; };
+		3809319E2C04BF4400FC6A20 /* DayReportsSortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3809319D2C04BF4400FC6A20 /* DayReportsSortView.swift */; };
 		380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */; };
 		380DCDB42BFB4BE600F455C9 /* LeaveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
@@ -394,6 +396,8 @@
 		3803E1042A471E5D0066AF15 /* UnListedDoctor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnListedDoctor + Extension.swift"; sourceTree = "<group>"; };
 		380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditVC.swift; sourceTree = "<group>"; };
 		380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditView.swift; sourceTree = "<group>"; };
+		3809319B2C04BE1400FC6A20 /* DayReportsSortView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DayReportsSortView.xib; sourceTree = "<group>"; };
+		3809319D2C04BF4400FC6A20 /* DayReportsSortView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayReportsSortView.swift; sourceTree = "<group>"; };
 		380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveModels.swift; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
@@ -778,6 +782,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3809319A2C04B8A100FC6A20 /* SortView */ = {
+			isa = PBXGroup;
+			children = (
+				3809319B2C04BE1400FC6A20 /* DayReportsSortView.xib */,
+				3809319D2C04BF4400FC6A20 /* DayReportsSortView.swift */,
+			);
+			path = SortView;
+			sourceTree = "<group>";
+		};
 		380DCDB22BFB4BCF00F455C9 /* LeaveApplication */ = {
 			isa = PBXGroup;
 			children = (
@@ -1024,6 +1037,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				3809319A2C04B8A100FC6A20 /* SortView */,
 				38E67B762C00D5CD006E98DE /* FunEvents */,
 				38DB8B1E2BF7708A0041B25C /* CalenderVIew */,
 				B287E6C029F2BC6A0097974D /* CellClass */,
@@ -1839,6 +1853,7 @@
 				38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */,
 				3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
+				3809319C2C04BE1400FC6A20 /* DayReportsSortView.xib in Resources */,
 				38C94CB02A6026CE007F1871 /* LeaveStatusCell.xib in Resources */,
 				386A61D92BB2AC7000363C6C /* RCPASectionheader.xib in Resources */,
 				38FD4F042BBD763000EF9D3D /* CustomerCheckinView.xib in Resources */,
@@ -2017,6 +2032,7 @@
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
 				38111E212BB44F7600C46358 /* RCPAdetailsModal.swift in Sources */,
 				380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */,
+				3809319E2C04BF4400FC6A20 /* DayReportsSortView.swift in Sources */,
 				3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */,
 				38C855252A8CC9AB00C34A58 /* ProductViewModel.swift in Sources */,
 				38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */,
