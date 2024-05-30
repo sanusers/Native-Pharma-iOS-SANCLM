@@ -22,6 +22,7 @@ class CustomCalenderView : UIView {
     @IBOutlet var btnNext: UIButton!
     @IBOutlet var prevBtn: UIButton!
     @IBOutlet var dateInfoLbl: UILabel!
+    var isFromReportsFilter: Bool = false
     @IBAction func didTapPrevBtn(_ sender: Any) {
         self.moveCurrentPage(moveUp: false)
     }
@@ -51,11 +52,14 @@ class CustomCalenderView : UIView {
             if let nextMonth = calendar.date(byAdding: .month, value: 1 , to: self.currentPage ?? today) {
                 print("Next Month:", nextMonth)
                 self.currentPage = nextMonth
-                if today == self.currentPage {
-                    toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
-                } else {
-                    toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                if !isFromReportsFilter {
+                    if today == self.currentPage {
+                        toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+                    } else {
+                        toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                    }
                 }
+
               
                 
             }
@@ -67,12 +71,14 @@ class CustomCalenderView : UIView {
             if let previousMonth = calendar.date(byAdding: .month, value: -1 , to:  self.currentPage ?? self.today) {
                 print("Previous Month:", previousMonth)
                 self.currentPage = previousMonth
-               
-                if today == self.currentPage {
-                    toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
-                } else {
-                    toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                if !isFromReportsFilter {
+                    if today == self.currentPage {
+                        toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+                    } else {
+                        toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                    }
                 }
+
             }
             
 

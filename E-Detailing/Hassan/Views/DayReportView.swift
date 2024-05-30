@@ -287,9 +287,53 @@ extension DayReportView: VisitsCountTVCDelegate {
 }
 
 extension DayReportView : ViewAllInfoTVCDelegate {
+    func didRCPAtapped(isrcpaTapped: Bool, index: Int, responsecount: Int) {
+
+        
+        if self.isMatched {
+            filteredSelectedIndex = index
+            self.filtereddetailedReportsModelArr?[index].isEventsExtended = false
+            self.filtereddetailedReportsModelArr?[index].isSlidesExtended = false
+            self.filtereddetailedReportsModelArr?[index].isRCPAExtended = isrcpaTapped
+            self.filtereddetailedReportsModelArr?[index].rcpaCount = responsecount
+        } else {
+            self.selectedIndex = index
+            self.detailedReportsModelArr?[index].isRCPAExtended = isrcpaTapped
+            self.detailedReportsModelArr?[index].isEventsExtended = false
+            self.detailedReportsModelArr?[index].isSlidesExtended = false
+            self.detailedReportsModelArr?[index].rcpaCount = responsecount
+        }
+        self.toLoadData()
+        
+    }
+    
+    func didEventstapped(isEventstapped: Bool, index: Int, responsecount: Int) {
+        print("Yet to")
+    }
+    
+    func didSlidestapped(isSlidestapped: Bool, index: Int, responsecount: Int) {
+        if self.isMatched {
+            filteredSelectedIndex = index
+            self.filtereddetailedReportsModelArr?[index].isEventsExtended = false
+            self.filtereddetailedReportsModelArr?[index].isSlidesExtended = isSlidestapped
+            self.filtereddetailedReportsModelArr?[index].isRCPAExtended = false
+            self.filtereddetailedReportsModelArr?[index].slidesCount = responsecount
+            self.detailedReportsModelArr?[index].rcpaCount = Int()
+        } else {
+            self.selectedIndex = index
+            self.detailedReportsModelArr?[index].isRCPAExtended = false
+            self.detailedReportsModelArr?[index].isEventsExtended = false
+            self.detailedReportsModelArr?[index].isSlidesExtended = isSlidestapped
+            self.detailedReportsModelArr?[index].slidesCount = responsecount
+            self.detailedReportsModelArr?[index].rcpaCount = Int()
+        }
+        self.toLoadData()
+        
+    }
+    
 
     
-    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool,  index: Int) {
+    func didLessTapped(islessTapped: Bool, index: Int) {
         
         if isMatched {
             filteredSelectedIndex = index
@@ -307,28 +351,14 @@ extension DayReportView : ViewAllInfoTVCDelegate {
             model?.isRCPAExtended = false
         } else {
             model?.isCellExtended = !islessTapped
-            model?.isRCPAExtended = isrcpaTapped
+            model?.isRCPAExtended = false
+            model?.isEventsExtended = false
+            model?.isSlidesExtended = false
         }
         
     
+     
         self.toLoadData()
-        let indexpath = IndexPath(row: index, section: 2)
-        aDayReportsTable.scrollToRow(at: indexpath, at: .top, animated: true)
-        
-//        if islessTapped && !isrcpaTapped {
-//            self.isForViewmore = false
-//            self.toLoadData()
-//        } else if !islessTapped && isrcpaTapped{
-//            self.isForViewmore = true
-//            self.isForRCPA = isrcpaTapped
-//            self.toLoadData()
-//        } else {
-//            self.isForViewmore = true
-//            self.isForRCPA = isrcpaTapped
-//            self.toLoadData()
-//        }
-        
-
     }
     
     
@@ -416,12 +446,13 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 return cell
             } else {
                 let cell: ViewAllInfoTVC = tableView.dequeueReusableCell(withIdentifier: "ViewAllInfoTVC", for: indexPath) as! ViewAllInfoTVC
+                cell.reportsVM = self.viewDayReportVC.reportsVM
                 cell.selectedIndex = self.isMatched ? self.filteredSelectedIndex : self.selectedIndex
                 cell.delegate = self
                 cell.typeImage = self.selectedType.image
                //let model = self.detailedReportsModelArr?[indexPath.row]
                 cell.detailedReportModel = model
-                cell.cellType = model?.isRCPAExtended ?? false ? .showRCPA : .hideRCPA
+                cell.cellRCPAType = model?.isRCPAExtended ?? false ? .showRCPA : .hideRCPA
                 cell.reportModel = self.reportsModel
                 cell.toSetDataSourceForProducts()
                 cell.toSetDataSourceForInputs()
@@ -462,11 +493,11 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             if model?.isCellExtended == false {
                return  240
             }
-            else if  model?.isCellExtended == true &&  model?.isRCPAExtended == false  {
+            else if  model?.isCellExtended == true {
                //25 elevation padding, 60 header height (product)
                 
                 
-               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA Cell - 60, Remarks - 75, show options - 50, 20 - cache)
+               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA header - 60 , Each RCPA cell - 40, Remarks - 75, show options - 50, 20 - cache)
                 
                 var timeinfoHeight = CGFloat()
                  if self.viewDayReportVC.isToReduceLocationHeight {
@@ -475,26 +506,20 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                      timeinfoHeight = 100
                  }
                 
+                var rcpaSectionHeight : CGFloat = 0
+                if model?.isRCPAExtended ?? false  {
+                    rcpaSectionHeight = CGFloat((model?.rcpaCount ?? 0) * 40)
+                }
+                var slidesSectionHeight: CGFloat = 0
+                if model?.isSlidesExtended ?? false  {
+                    slidesSectionHeight = CGFloat((model?.slidesCount ?? 0) * 40)
+                }
                 
                let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
                 let inputCellHeight = toCalculateInputHeight(index: indexPath.row)
-                return 170 + timeinfoHeight + 60 + productCellHeight + 60 + inputCellHeight + 60 + 75 + 50 + 20
+                return 170 + timeinfoHeight + 40 + productCellHeight + 40 + inputCellHeight + 60 + rcpaSectionHeight + 60 + slidesSectionHeight + 60 + 75 + 50 + 20
      
-            } else if model?.isRCPAExtended == true  && model?.isCellExtended == true {
-                // 50 - elevation padding
-                // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40 Each, RCPA - 60, Remarks - 75, show options - 50 )
-               var timeinfoHeight = CGFloat()
-                if self.viewDayReportVC.isToReduceLocationHeight {
-                    timeinfoHeight = 0
-                } else {
-                    timeinfoHeight = 100
-                }
-                let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
-                let inputCellHeight = toCalculateInputHeight(index: indexPath.row)
-                 return 170 + timeinfoHeight + 60 + productCellHeight + 60 +  inputCellHeight + 60 + 75 + 50 + 10
-                //yet to configure RCPA -  + 130 
-   
-            } else {
+            }  else {
                 return CGFloat()
             }
             
@@ -502,7 +527,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func toCalculateProductsHeight(index : Int) -> CGFloat {
-        var eachCellSize : Int = 0
+        let eachCellSize : Int = 40
         var productStrArr : [String] = []
         productStrArr.removeAll()
         productStrArr.append("This is Title String")
@@ -511,26 +536,22 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             if productStrArr.last ==  "  )" {
                 productStrArr.removeLast()
             }
-            eachCellSize  = 40
-        } else {
-            eachCellSize  = 60
         }
 
-       
-//        if productStrArr.count >= 4 {
-//            eachCellSize = 40
-//        }
-//        else if productStrArr.count > 2 {
-//            eachCellSize = 30
-//        }
+        switch productStrArr.count  {
             
-        return CGFloat(productStrArr.count * eachCellSize)
-        
-      
+        case 1:
+            return CGFloat(productStrArr.count  * (eachCellSize * 2))
+            
+            
+            
+        default:
+            return CGFloat(productStrArr.count * eachCellSize)
+        }
     }
     
     func toCalculateInputHeight(index : Int) -> CGFloat {
-        var eachCellSize : Int = 0
+        let eachCellSize : Int = 40
         var productStrArr : [String] = []
         productStrArr.removeAll()
         productStrArr.append("This is Title String")
@@ -539,20 +560,16 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             if productStrArr.last ==  "  )" {
                 productStrArr.removeLast()
             }
-             eachCellSize = 40
-        } else {
-            eachCellSize = 60
         }
 
-       
-//        if productStrArr.count >= 4 {
-//            eachCellSize = 40
-//        }
-//        else if productStrArr.count > 2 {
-//            eachCellSize = 30
-//        }
+        switch productStrArr.count  {
             
-        return CGFloat(productStrArr.count * eachCellSize)
+        case 1:
+            return CGFloat(productStrArr.count  * (eachCellSize * 2))
+
+        default:
+            return CGFloat(productStrArr.count * eachCellSize)
+        }
         
       
     }

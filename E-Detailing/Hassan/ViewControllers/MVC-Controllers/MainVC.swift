@@ -2666,7 +2666,7 @@ extension MainVC: MenuResponseProtocol {
                     fatalError("Entity not found")
                 }
                 
-                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
                 
                 temporaryselectedHqobj.code                  = aHQobj.code
                 temporaryselectedHqobj.name                 = aHQobj.name
@@ -2736,7 +2736,7 @@ extension MainVC: MenuResponseProtocol {
                     fatalError("Entity not found")
                 }
                 
-                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
                 
                 temporaryselectedHqobj.code                  = aHQobj.code
                 temporaryselectedHqobj.name                 = aHQobj.name
@@ -5250,7 +5250,19 @@ extension Calendar {
 }
 
 
-extension MainVC :  HomeSideMenuViewDelegate {
+extension MainVC :  HomeSideMenuVCDelegate {
+    func didMasterSync() {
+       masterSyncAction(btnSync)
+    }
+    
+    func didProfileTapped() {
+        profileAction(btnProfile)
+    }
+    
+    func didLocationUpdated() {
+        notificationAction(btnNotification)
+    }
+    
     func refreshDashBoard() {
         print("Yet to refresh dashboard")
     }

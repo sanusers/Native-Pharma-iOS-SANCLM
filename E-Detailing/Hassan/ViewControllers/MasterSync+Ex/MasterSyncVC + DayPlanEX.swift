@@ -10,6 +10,7 @@
 import Foundation
 import CoreData
 import UIKit
+import Alamofire
 protocol MasterSyncVCDelegate: AnyObject {
     func isHQModified(hqDidChanged: Bool)
 }
@@ -166,7 +167,7 @@ extension CoreDataManager {
         let context = self.context
         // Create a new managed object
         if let entityDescription = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context) {
-            let savedCDHq = SelectedHQ(entity: entityDescription, insertInto: context)
+            let savedCDHq = SelectedDayPlanHQ(entity: entityDescription, insertInto: context)
             
             // Convert properties
             savedCDHq.code                  = hqModel.code
@@ -330,9 +331,9 @@ extension CoreDataManager {
         
         Shared.instance.showLoaderInWindow()
         let masterSyncVM = MasterSyncVM()
-        masterSyncVM.fetchMasterData(type: .clusters, sfCode: mapID, istoUpdateDCRlist: false, mapID: mapID) { [weak self] _  in
+        masterSyncVM.fetchMasterData(type: .clusters, sfCode: mapID, istoUpdateDCRlist: false, mapID: mapID) { _  in
             
-            guard let welf = self else {return}
+           // guard let welf = self else {return}
             completion(true)
             Shared.instance.removeLoaderInWindow()
           //  welf.toCreateToast("Clusters synced successfully")
@@ -342,7 +343,7 @@ extension CoreDataManager {
 
     private func convertEachDyPlan(_ eachDayPlan : DayPlan, context: NSManagedObjectContext) -> NSSet {
         
-
+        //let dispatchGroup = DispatchGroup()
         
         var aDaysessions : [Sessions] = []
         
@@ -354,22 +355,21 @@ extension CoreDataManager {
         
         
         
-        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
-              let selectedDayPlanHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
          let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
         let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
         else {
             fatalError("Entity not found")
         }
 
-        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
         let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
         let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
         
         if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
             let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
             var selectedterritories: [Territory]?
-            var selectedheadQuarters : SelectedHQ?
+            var selectedheadQuarters : SelectedDayPlanHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode
             let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -382,8 +382,29 @@ extension CoreDataManager {
                     return aTerritory.code?.contains(code) ?? false
                 }
             }
-            
             selectedterritories = filteredTerritories
+            
+            
+//            if filteredTerritories.isEmpty {
+//               dispatchGroup.enter()
+//              let masterVM =  MasterSyncVM()
+//                masterVM.fetchMasterData(type: .clusters, sfCode: eachDayPlan.rsf, istoUpdateDCRlist: false, mapID: eachDayPlan.rsf) { _ in
+//                    
+//                    let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
+//                    let filteredTerritories = clusterArr.filter { aTerritory in
+//                        // Check if any code in codesArray is contained in aTerritory
+//                        return codesArray.contains { code in
+//                            return aTerritory.code?.contains(code) ?? false
+//                      
+//                        }
+//                    }
+//                    
+//                    selectedterritories = filteredTerritories
+//                    dispatchGroup.leave()
+//                }
+//            }
+            
+           
             
             workTypeArr.forEach { aWorkType in
                 if aWorkType.code == eachDayPlan.wtCode  {
@@ -404,13 +425,13 @@ extension CoreDataManager {
                     
 
                     
-                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context)
                
                     else {
                         fatalError("Entity not found")
                     }
 
-                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
            
                     temporaryselectedHqobj.code                  = aheadQuater.id
                     temporaryselectedHqobj.name                 = aheadQuater.name
@@ -433,7 +454,7 @@ extension CoreDataManager {
         if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
             let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf2)
             var selectedterritories: [Territory]?
-            var selectedheadQuarters : SelectedHQ?
+            var selectedheadQuarters : SelectedDayPlanHQ?
             var selectedWorkTypes: WorkType?
             let codes = eachDayPlan.townCode2
             let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -445,6 +466,27 @@ extension CoreDataManager {
                 }
             }
             selectedterritories = filteredTerritories
+            
+            
+//            if filteredTerritories.isEmpty {
+//               dispatchGroup.enter()
+//              let masterVM =  MasterSyncVM()
+//                masterVM.fetchMasterData(type: .clusters, sfCode: eachDayPlan.rsf, istoUpdateDCRlist: false, mapID: eachDayPlan.rsf) { _ in
+//                    
+//                    let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
+//                    let filteredTerritories = clusterArr.filter { aTerritory in
+//                        // Check if any code in codesArray is contained in aTerritory
+//                        return codesArray.contains { code in
+//                            return aTerritory.code?.contains(code) ?? false
+//                      
+//                        }
+//                    }
+//                    
+//                    selectedterritories = filteredTerritories
+//                    dispatchGroup.leave()
+//                }
+//            }
+            
             
             workTypeArr.forEach { aWorkType in
                 if aWorkType.code == eachDayPlan.wtCode2  {
@@ -464,13 +506,13 @@ extension CoreDataManager {
                     hqModel.mapId = aheadQuater.mapId ?? ""
                     
 
-                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context)
+                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context)
                
                     else {
                         fatalError("Entity not found")
                     }
 
-                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
            
                     temporaryselectedHqobj.code                  = aheadQuater.id
                     temporaryselectedHqobj.name                 = aheadQuater.name
@@ -515,7 +557,7 @@ extension CoreDataManager {
         return cdDayPlans
     }
     
-    private func convertHeadQuartersToCDM(_ headQuarters: SelectedHQ, context: NSManagedObjectContext) -> SelectedHQ {
+    private func convertHeadQuartersToCDM(_ headQuarters: SelectedDayPlanHQ, context: NSManagedObjectContext) -> SelectedHQ {
         
       
             let cdHeadQuarters = SelectedHQ(context: context)
@@ -531,6 +573,24 @@ extension CoreDataManager {
         
         return cdHeadQuarters
     }
+    
+    public func convertHeadQuartersToSubordinate(_ headQuarters: SelectedDayPlanHQ, context: NSManagedObjectContext) ->  Subordinate{
+        
+      
+            let cdHeadQuarters = Subordinate(context: context)
+            // Convert properties of Subordinate
+            cdHeadQuarters.id = headQuarters.code
+            cdHeadQuarters.name = headQuarters.name
+            cdHeadQuarters.mapId = headQuarters.mapId
+            cdHeadQuarters.reportingToSF = headQuarters.reportingToSF
+            cdHeadQuarters.sfHq = headQuarters.sfHq
+            cdHeadQuarters.steps = headQuarters.steps
+          
+          
+        
+        return cdHeadQuarters
+    }
+    
     
     public func convertHeadQuartersToSubordinate(_ headQuarters: SelectedHQ, context: NSManagedObjectContext) ->  Subordinate{
         
@@ -548,7 +608,6 @@ extension CoreDataManager {
         
         return cdHeadQuarters
     }
-    
     
     private func convertWorkTypeToCDM(_ workType: WorkType, context: NSManagedObjectContext) -> WorkType {
         let cdWorkType = WorkType(context: context)
@@ -796,14 +855,14 @@ extension CoreDataManager {
       
         let context = self.context
 
-        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
          let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
         let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
         else {
             fatalError("Entity not found")
         }
 
-        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
         let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
         let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -106,19 +106,19 @@
                                                                 <rect key="frame" x="0.0" y="23.5" width="302.5" height="24"/>
                                                                 <subviews>
                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cfg-Y9-IV7">
-                                                                        <rect key="frame" x="105.5" y="0.0" width="151.5" height="35.5"/>
+                                                                        <rect key="frame" x="142" y="0.0" width="78.5" height="35.5"/>
                                                                         <subviews>
-                                                                            <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000298023199" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ciS-cR-74s">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="151.5" height="35.5"/>
+                                                                            <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.10000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ciS-cR-74s">
+                                                                                <rect key="frame" x="0.0" y="0.0" width="78.5" height="35.5"/>
                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Ufx-GM-rdg">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="151.5" height="35.5"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="78.5" height="35.5"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 </view>
                                                                                 <color key="backgroundColor" systemColor="systemGreenColor"/>
                                                                                 <blurEffect style="regular"/>
                                                                             </visualEffectView>
                                                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Approved" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gbj-qI-aT0">
-                                                                                <rect key="frame" x="2" y="10" width="147.5" height="16"/>
+                                                                                <rect key="frame" x="10" y="10" width="58.5" height="16"/>
                                                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                                                 <color key="textColor" systemColor="systemGreenColor"/>
                                                                                 <nil key="highlightedColor"/>
@@ -129,8 +129,8 @@
                                                                             <constraint firstItem="ciS-cR-74s" firstAttribute="leading" secondItem="Cfg-Y9-IV7" secondAttribute="leading" id="AOw-uX-Yrr"/>
                                                                             <constraint firstItem="ciS-cR-74s" firstAttribute="top" secondItem="Cfg-Y9-IV7" secondAttribute="top" id="KUZ-Pf-Oii"/>
                                                                             <constraint firstItem="gbj-qI-aT0" firstAttribute="centerY" secondItem="Cfg-Y9-IV7" secondAttribute="centerY" id="cNR-Bu-W0f"/>
-                                                                            <constraint firstAttribute="trailing" secondItem="gbj-qI-aT0" secondAttribute="trailing" constant="2" id="gPV-SO-iM8"/>
-                                                                            <constraint firstItem="gbj-qI-aT0" firstAttribute="leading" secondItem="Cfg-Y9-IV7" secondAttribute="leading" constant="2" id="lCS-LH-Oz5"/>
+                                                                            <constraint firstAttribute="trailing" secondItem="gbj-qI-aT0" secondAttribute="trailing" constant="10" id="gPV-SO-iM8"/>
+                                                                            <constraint firstItem="gbj-qI-aT0" firstAttribute="leading" secondItem="Cfg-Y9-IV7" secondAttribute="leading" constant="10" id="lCS-LH-Oz5"/>
                                                                             <constraint firstAttribute="bottom" secondItem="ciS-cR-74s" secondAttribute="bottom" id="qOf-Yh-nRa"/>
                                                                             <constraint firstAttribute="trailing" secondItem="ciS-cR-74s" secondAttribute="trailing" id="xxP-PR-Qwg"/>
                                                                             <constraint firstItem="gbj-qI-aT0" firstAttribute="centerX" secondItem="Cfg-Y9-IV7" secondAttribute="centerX" id="zqZ-Eo-bjX"/>
@@ -141,7 +141,6 @@
                                                                 <constraints>
                                                                     <constraint firstItem="Cfg-Y9-IV7" firstAttribute="height" secondItem="Wpg-Rw-Rqb" secondAttribute="height" multiplier="1.5" id="IB3-P9-7f1"/>
                                                                     <constraint firstItem="Cfg-Y9-IV7" firstAttribute="centerY" secondItem="Wpg-Rw-Rqb" secondAttribute="centerY" multiplier="1.5" id="UXC-mc-WSs"/>
-                                                                    <constraint firstItem="Cfg-Y9-IV7" firstAttribute="width" secondItem="Wpg-Rw-Rqb" secondAttribute="width" multiplier="0.5" id="VQd-OK-sJi"/>
                                                                     <constraint firstItem="Cfg-Y9-IV7" firstAttribute="centerX" secondItem="Wpg-Rw-Rqb" secondAttribute="centerX" multiplier="1.2" id="cOh-G5-Rb5"/>
                                                                 </constraints>
                                                             </view>

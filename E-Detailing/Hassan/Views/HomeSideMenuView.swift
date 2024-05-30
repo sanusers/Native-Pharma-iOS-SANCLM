@@ -23,9 +23,7 @@ class MenuItemModel{
 }
 
 
-protocol HomeSideMenuViewDelegate : AnyObject {
-    func refreshDashBoard()
-}
+
 
 extension HomeSideMenuView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -76,10 +74,13 @@ class HomeSideMenuView : BaseView{
     
     var menuVC :  HomeSideMenuVC!
     
-    @IBOutlet var closeHolderView: UIView!
-    @IBOutlet var topContainerView: UIView!
-    
-    @IBOutlet var titleLbl: UILabel!
+    @IBOutlet var profileBtn: UIButton!
+    @IBOutlet var syncBtn: UIButton!
+    @IBOutlet var locationBtn: UIButton!
+ 
+   // @IBOutlet var topContainerView: UIView!
+    @IBOutlet var closeBtn: UIButton!
+   // @IBOutlet var titleLbl: UILabel!
     @IBOutlet var sidemenuTable: UITableView!
     
     @IBOutlet weak var sideMenuHolderView : UIView!
@@ -97,20 +98,47 @@ class HomeSideMenuView : BaseView{
         setupUI()
         initVIews()
         cellRegistration()
-        
         toLoadData()
     }
+    @IBAction func profileAction(_ sender: Any) {
+        self.menuVC.dismiss(animated: false) {
+            self.menuVC.delegate?.didProfileTapped()
+        }
+      
+        
+    }
+    @IBAction func syncAction(_ sender: Any) {
+        
+        self.menuVC.dismiss(animated: false) {
+            self.menuVC.delegate?.didMasterSync()
+        }
+        
+      
+    }
+    
+    @IBAction func locationAction(_ sender: Any) {
+        
+        self.menuVC.dismiss(animated: false) {
+            self.menuVC.delegate?.didLocationUpdated()
+        }
+        
+       
+    }
+    
     
     func setupUI() {
-        titleLbl.setFont(font: .bold(size: .SUBHEADER))
-        topContainerView.backgroundColor = .appTextColor
-        titleLbl.text = "SAN Media Pvt Ltd.,"
-        titleLbl.textColor = .appWhiteColor
+        locationBtn.layer.cornerRadius = syncBtn.height / 2
+        profileBtn.layer.cornerRadius = syncBtn.height / 2
+        syncBtn.layer.cornerRadius = syncBtn.height / 2
+        //  titleLbl.setFont(font: .bold(size: .SUBHEADER))
+        // topContainerView.backgroundColor = .appTextColor
+        //   titleLbl.text = "SAN Media Pvt Ltd.,"
+        //  titleLbl.textColor = .appWhiteColor
         self.menuItemArr = self.toAppendMenuItems()
     }
     
     func initVIews() {
-        closeHolderView.addTap {
+        closeBtn.addTap {
             self.hideMenuAndDismiss()
         }
     }
@@ -202,15 +230,18 @@ class HomeSideMenuView : BaseView{
         while animationDuration > 1.6{
             animationDuration = animationDuration * 0.1
         }
-        UIView.animate(withDuration: animationDuration,
-                       delay: aniamteionWaitTime,
-                       usingSpringWithDamping: animationDampning,
-                       initialSpringVelocity: animationVelocity,
-                       options: [.curveEaseOut,.allowUserInteraction],
-                       animations: {
-                        self.sideMenuHolderView.transform = .identity
-                        self.backgroundColor = UIColor.black.withAlphaComponent(self.viewOpacity)
-                       }, completion: nil)
+//        UIView.animate(withDuration: animationDuration,
+//                       delay: aniamteionWaitTime,
+//                       usingSpringWithDamping: animationDampning,
+//                       initialSpringVelocity: animationVelocity,
+//                       options: [.curveEaseOut,.allowUserInteraction],
+//                       animations: {
+//                        self.sideMenuHolderView.transform = .identity
+//                        self.backgroundColor = UIColor.black.withAlphaComponent(self.viewOpacity)
+//                       }, completion: nil)
+        
+        self.sideMenuHolderView.transform = .identity
+        self.backgroundColor = UIColor.black.withAlphaComponent(self.viewOpacity)
     }
     
     func hideMenuAndDismiss(){

@@ -9,7 +9,54 @@
 
 import Foundation
 import UIKit
+extension  DetailedReportView: DayReportsSortViewDelegate {
+    func userDidSort(sorted index: Int?) {
+        self.selectedSortIndex = index
+        hideAddedViews()
+        guard let index = index else {return}
+        switch index {
+        case 0:
+            toReorderRepotes(type: .orderAscending)
+        case 1:
+            toReorderRepotes(type: .orderDescending)
+        case 2:
+            toReorderRepotes(type: .orderByDate)
+    
+        default:
+            print("Yet to sort")
+        }
+    
+    }
+    
+    func userDidCancel() {
+        hideAddedViews()
+    }
+    
+    func hideAddedViews() {
+        backgroundView.isHidden = true
+        self.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
 
+            case dayReportsSortView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+    
+}
 
 extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -100,7 +147,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-extension DetailedReportView: SortVIewDelegate {
+extension DetailedReportView {
     
     enum SortingType {
         case orderAscending
@@ -108,23 +155,7 @@ extension DetailedReportView: SortVIewDelegate {
         case orderByDate
     }
     
-    func didSelected(index: Int?, isTosave: Bool) {
-        selectedSortIndex = index
-        isSortPresented =  isSortPresented ? false : true
-        addOrRemoveSort(isSortPresented)
-        switch index {
-        case 0:
-            toReorderRepotes(type: .orderAscending)
-        case 1:
-            toReorderRepotes(type: .orderDescending)
-        case 2:
-            toReorderRepotes(type: .orderByDate)
-        case .none:
-            print("none")
-        case .some(_):
-            print("some")
-        }
-    }
+
     
     
     func toReorderRepotes(type: SortingType) {
@@ -324,6 +355,8 @@ class DetailedReportView: BaseView {
 
         return true
     }
+    var dayReportsSortView: DayReportsSortView?
+    @IBOutlet var backgroundView: UIView!
     
     @IBOutlet var titleLBL: UILabel!
     
@@ -357,12 +390,6 @@ class DetailedReportView: BaseView {
     var filteredreportsModel : [ReportsModel]?
     let datePicker = UIDatePicker()
     
-    private lazy var sortView: SortVIew = {
-        let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
-     
-        customView.delegate = self
-        return customView
-    }()
     
     var detailedreporsVC : DetailedReportVC!
     
@@ -384,6 +411,18 @@ class DetailedReportView: BaseView {
       
     }
     
+    override func didLayoutSubviews(baseVC: BaseViewController) {
+        super.didLayoutSubviews(baseVC: baseVC)
+        let changePasswordViewwidth = self.bounds.width / 2.7
+        let changePasswordViewheight = self.bounds.height / 1.7
+        
+        let changePasswordViewcenterX = self.bounds.midX - (changePasswordViewwidth / 2)
+        let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
+        
+        self.dayReportsSortView?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
+        
+    }
+    
     func cellRegistration() {
         reportsTable.register(UINib(nibName: "BasicReportsInfoTVC", bundle: nil), forCellReuseIdentifier: "BasicReportsInfoTVC")
     }
@@ -393,6 +432,40 @@ class DetailedReportView: BaseView {
         reportsTable.delegate = self
         reportsTable.dataSource = self
         reportsTable.reloadData()
+    }
+    
+    func toShowSortOptions() {
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+   
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case dayReportsSortView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                
+
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        dayReportsSortView = self.detailedreporsVC.loadCustomView(nibname: XIBs.dayReportsSortView) as? DayReportsSortView
+        dayReportsSortView?.delegate = self
+        dayReportsSortView?.selectedIndex = selectedSortIndex
+        dayReportsSortView?.isFromDayReport = true
+        dayReportsSortView?.setupUI()
+    
+
+        self.addSubview(dayReportsSortView ?? DayReportsSortView())
     }
     
     func toConfigureCellHeight() {
@@ -412,21 +485,17 @@ class DetailedReportView: BaseView {
             self.searchTF.placeholder = "Search"
         }
       
-        
-        sortFiltersView.addTap {
-            self.isSortPresented =  self.isSortPresented ? false : true
-            UIView.animate(withDuration: 1.0,
-                           delay: 0.15,
-                           usingSpringWithDamping: 2.0,
-                           initialSpringVelocity: 5.0,
-                           options: [.curveEaseOut],
-                           animations: {
-
-                self.addOrRemoveSort(self.isSortPresented)
-
-                           }, completion: nil)
+        backgroundView.addTap {
+            self.hideAddedViews()
         }
         
+        sortFiltersView.addTap {
+            self.toShowSortOptions()
+        }
+        
+//        filterDateTF.addTap {
+//            <#code#>
+//        }
 
     }
     func showDatePicker(){
@@ -470,29 +539,11 @@ class DetailedReportView: BaseView {
     @objc func cancelDatePicker(){
        self.endEditing(true)
      }
-   
-    func addOrRemoveSort(_ isToAdd: Bool) {
-        let views: [UIView] = [self.reportsTable, self.sortCalenderView, self.sortSearchView]
-        if isToAdd {
-            views.forEach { aView in
-                aView.alpha = 1
-                aView.isUserInteractionEnabled = true
-                
-                self.sortView.removeFromSuperview()
-            }
-        } else {
-            views.forEach { aView in
-                aView.alpha = 0.3
-                aView.isUserInteractionEnabled = false
-                self.sortView.selectedIndex = selectedSortIndex
-                self.sortView.toLoadData()
-                self.addSubview(self.sortView)
-            }
-        }
-    }
+
     
     func setupUI() {
         self.noreportsView.isHidden = true
+        backgroundView.isHidden = true
         self.noreportsLbl.setFont(font: .bold(size: .BODY))
         searchTF.delegate = self
         initTaps()

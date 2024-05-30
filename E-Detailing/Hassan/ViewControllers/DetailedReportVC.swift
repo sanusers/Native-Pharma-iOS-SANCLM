@@ -28,10 +28,23 @@ class DetailedReportVC: BaseViewController {
      
         return tourPlanVC
     }
-    
+    func showAlertToEnableNetwork(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+
+    }
 
     func toSetParamsAndGetResponse(_ selecteddate : Date) {
         
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            self.showAlertToEnableNetwork(desc: "Please connect to network to fetch repots.")
+            return
+        }
 
         let date = selecteddate
         let dateFormatter = DateFormatter()

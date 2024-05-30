@@ -35,4 +35,39 @@ class ReportsVM {
             result(.failure(ReportsError.unableConnect))
         })
     }
+    
+    func getDetailedRCPAdetais(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[RCPAresonseModel],ReportsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [RCPAresonseModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(ReportsError.unableConnect))
+        })
+    }
+    
+    
+    func getDetailedEventsdetais(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[EventResponse],ReportsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [EventResponse].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(ReportsError.unableConnect))
+        })
+    }
+    
+    func getSlideDetails(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[SlideDetailsResponse],ReportsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [SlideDetailsResponse].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(ReportsError.unableConnect))
+        })
+    }
+    
 }

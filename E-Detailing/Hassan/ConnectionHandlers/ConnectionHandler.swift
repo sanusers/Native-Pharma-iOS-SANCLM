@@ -25,6 +25,9 @@ final class ConnectionHandler : NSObject {
         case getpreCalls = "getcuslvst"
         case getLeaveStatus = "getleavestatus"
         case checkLeaveAvailability = "getlvlvalid"
+        case  getRCPA = "getdcr_rcpa"
+        case  getEvents = "getevent_rpt"
+        case  getSlides = "getslidedet"
     }
     
     static let shared = ConnectionHandler()
@@ -372,6 +375,9 @@ final class ConnectionHandler : NSObject {
                     var encodedPrecalls : [PrecallsModel]?
                     var encodedleaveInfo : [LeaveStatus]?
                     var encodedLeaveAvailability : [LeaveAvailability]?
+                    var encodedRcpaResponse : [RCPAresonseModel]?
+                    var encodedEventsResponse : [EventResponse]?
+                    var encodedSlidesResponse : [SlideDetailsResponse]?
                     if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { result in
                            // decodecObj
@@ -618,8 +624,96 @@ final class ConnectionHandler : NSObject {
                             
                          }
                     }
-
- 
+                  //  encodedRcpaResponse
+                    else if data["tableName"] as! String == TableName.getRCPA.rawValue {
+                     
+                     self.toConvertDataToObj(responseData: anyData ?? Data(), to: [RCPAresonseModel].self) { result in
+                         switch result {
+                         case .success(let decodecObj):
+                             encodedRcpaResponse = decodecObj
+                             do {
+                                 let jsonData = try JSONEncoder().encode(encodedRcpaResponse)
+                                 
+                                 // Convert Swift object to JSON string
+                                 
+                                 responseHandler.handleSuccess(value: self.convertToDictionary(encodedRcpaResponse) ?? JSON(), data: jsonData)
+                                 print("JSON Data:")
+                                 print(jsonData)
+                             } catch {
+                                 responseHandler.handleFailure(value: "Unable to decode.")
+                                 print("Error encoding JSON: \(error)")
+                             }
+                             
+                         case .failure(let error):
+                             responseHandler.handleFailure(value: "Unable to decode.")
+                             print("Error encoding JSON: \(error)")
+                             
+                         }
+                         
+                         
+                         
+                      }
+                 }
+                    //encodedEventsResponse
+                    else if data["tableName"] as! String == TableName.getEvents.rawValue {
+                     
+                     self.toConvertDataToObj(responseData: anyData ?? Data(), to: [EventResponse].self) { result in
+                         switch result {
+                         case .success(let decodecObj):
+                             encodedEventsResponse = decodecObj
+                             do {
+                                 let jsonData = try JSONEncoder().encode(encodedEventsResponse)
+                                 
+                                 // Convert Swift object to JSON string
+                                 
+                                 responseHandler.handleSuccess(value: self.convertToDictionary(encodedEventsResponse) ?? JSON(), data: jsonData)
+                                 print("JSON Data:")
+                                 print(jsonData)
+                             } catch {
+                                 responseHandler.handleFailure(value: "Unable to decode.")
+                                 print("Error encoding JSON: \(error)")
+                             }
+                             
+                         case .failure(let error):
+                             responseHandler.handleFailure(value: "Unable to decode.")
+                             print("Error encoding JSON: \(error)")
+                             
+                         }
+                         
+                         
+                         
+                      }
+                 }
+                    //
+                    else if data["tableName"] as! String == TableName.getSlides.rawValue {
+                     
+                     self.toConvertDataToObj(responseData: anyData ?? Data(), to: [SlideDetailsResponse].self) { result in
+                         switch result {
+                         case .success(let decodecObj):
+                             encodedSlidesResponse = decodecObj
+                             do {
+                                 let jsonData = try JSONEncoder().encode(encodedSlidesResponse)
+                                 
+                                 // Convert Swift object to JSON string
+                                 
+                                 responseHandler.handleSuccess(value: self.convertToDictionary(encodedSlidesResponse) ?? JSON(), data: jsonData)
+                                 print("JSON Data:")
+                                 print(jsonData)
+                             } catch {
+                                 responseHandler.handleFailure(value: "Unable to decode.")
+                                 print("Error encoding JSON: \(error)")
+                             }
+                             
+                         case .failure(let error):
+                             responseHandler.handleFailure(value: "Unable to decode.")
+                             print("Error encoding JSON: \(error)")
+                             
+                         }
+                         
+                         
+                         
+                      }
+                 }
                 } else   {
                     if let data = anyData,
                        let json = JSON(data){

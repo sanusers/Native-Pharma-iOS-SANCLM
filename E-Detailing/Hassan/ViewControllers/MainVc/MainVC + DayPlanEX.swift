@@ -31,7 +31,7 @@ class DayPlanSessions {
 struct Sessions {
     var cluster : [Territory]?
     var workType: WorkType?
-    var headQuarters: SelectedHQ?
+    var headQuarters: SelectedDayPlanHQ?
     var isRetrived : Bool?
     var  remarks : String?
     var isRejected: Bool?
@@ -140,14 +140,14 @@ extension MainVC {
                     let workTypeArr = DBManager.shared.getWorkType()
                     
                     
-                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: self.context),
+                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: self.context),
                           let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: self.context)
                          // let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
                     else {
                         fatalError("Entity not found")
                     }
                     
-                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
                     let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
                   //  let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
                     
@@ -157,7 +157,7 @@ extension MainVC {
                         
                         let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
                    
-                        var selectedheadQuarters : SelectedHQ?
+                        var selectedheadQuarters : SelectedDayPlanHQ?
                         var selectedWorkTypes: WorkType?
                         let codes = eachDayPlan.townCode
                         let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -188,13 +188,13 @@ extension MainVC {
                                 hqModel.mapId = aheadQuater.mapId ?? ""
                                 
 
-                                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: self.context)
+                                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: self.context)
                                         
                                 else {
                                     fatalError("Entity not found")
                                 }
                                 
-                                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
                                 
                                 temporaryselectedHqobj.code                  = hqModel.code
                                 temporaryselectedHqobj.name                 = hqModel.name
@@ -219,7 +219,7 @@ extension MainVC {
                     if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
                         let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf2)
                     
-                        var selectedheadQuarters : SelectedHQ?
+                        var selectedheadQuarters : SelectedDayPlanHQ?
                         var selectedWorkTypes: WorkType?
                         let codes = eachDayPlan.townCode2
                         let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -249,13 +249,13 @@ extension MainVC {
                                 hqModel.mapId = aheadQuater.mapId ?? ""
                                 
                                 
-                                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: self.context)
+                                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: self.context)
                            
                                 else {
                                     fatalError("Entity not found")
                                 }
 
-                                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
                        
                                 temporaryselectedHqobj.code                  = hqModel.code
                                 temporaryselectedHqobj.name                 = hqModel.name

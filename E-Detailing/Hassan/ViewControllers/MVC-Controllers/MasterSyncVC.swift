@@ -145,6 +145,7 @@ class MasterSyncVC : UIViewController {
     var isMaterSyncInProgress : Bool = false
     var isfromHome : Bool = false
      var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+    var isTosetDayplanHQ: Bool = true
 //    var animations: [LoadingStatus] = MasterInfoState.loadingStatusDict.map { $0.value } {
 //        didSet {
 //            _ = self.animations.filter { $0 == .loaded }
@@ -287,7 +288,7 @@ class MasterSyncVC : UIViewController {
         backBtn.setTitle("", for: .normal)
       
         retryVIew.layer.cornerRadius = retryVIew.height / 2
-        setHQlbl(isTosetDayplanHQ: false)
+        setHQlbl(isTosetDayplanHQ: true)
         
      
         
@@ -359,6 +360,7 @@ class MasterSyncVC : UIViewController {
     
     func setHQlbl(isTosetDayplanHQ: Bool) {
         // let appsetup = AppDefaults.shared.getAppSetUp()
+        self.isTosetDayplanHQ = isTosetDayplanHQ
         if isTosetDayplanHQ {
             guard self.fetchedHQObject != nil else {
                 CoreDataManager.shared.toRetriveSavedDayPlanHQ { hqModelArr in
@@ -495,18 +497,39 @@ class MasterSyncVC : UIViewController {
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
         
         vc.menuDelegate = self
-        CoreDataManager.shared.fetchSavedHQ{ [weak self] hqArr in
-            guard let welf = self else {return}
-            let savedEntity = hqArr.first
-            guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: welf.context)
-     
-            else {
-                fatalError("Entity not found")
-            }
-            let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        
+        if isTosetDayplanHQ {
             
-            welf.fetchedHQObject = CoreDataManager.shared.convertHeadQuartersToSubordinate(savedEntity ?? temporaryselectedHqobj, context: welf.context)
+            CoreDataManager.shared.fetchSavedDayPlanHQ{ [weak self] hqArr in
+                guard let welf = self else {return}
+                let savedEntity = hqArr.first
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: welf.context)
+         
+                else {
+                    fatalError("Entity not found")
+                }
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
+                
+                welf.fetchedHQObject = CoreDataManager.shared.convertHeadQuartersToSubordinate(savedEntity ?? temporaryselectedHqobj, context: welf.context)
+            }
+            
+        } else  {
+            CoreDataManager.shared.fetchSavedHQ{ [weak self] hqArr in
+                guard let welf = self else {return}
+                let savedEntity = hqArr.first
+                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: welf.context)
+         
+                else {
+                    fatalError("Entity not found")
+                }
+                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+                
+                welf.fetchedHQObject = CoreDataManager.shared.convertHeadQuartersToSubordinate(savedEntity ?? temporaryselectedHqobj, context: welf.context)
+            }
         }
+        
+        
+
         vc.selectedObject = self.fetchedHQObject
         
         self.modalPresentationStyle = .custom

@@ -66,37 +66,41 @@ func isTohideplanCollection(count : Int) -> Bool {
 class BasicReportsInfoTVC: UITableViewCell {
     
     func populateCell(_ model: ReportsModel) {
+        let setup = AppDefaults.shared.getAppSetUp()
+  
    
         var sessionImagesArr = [SessionImages]()
         
-        // if model.drs != 0 {
+        if setup.docNeed == 0 {
              let ListedDoctorsessionImage =  SessionImages(Image: UIImage(named: "ListedDoctor") ?? UIImage(), count: model.drs)
              sessionImagesArr.append(ListedDoctorsessionImage)
-        // }
+         }
         
-       // if model.chm != 0 {
+        if setup.chmNeed == 0 {
             let ChemistsessionImage =  SessionImages(Image: UIImage(named: "Chemist") ?? UIImage(), count: model.chm)
             sessionImagesArr.append(ChemistsessionImage)
-     //   }
+        }
         
-        // if model.stk != 0 {
+     if setup.stkNeed == 0 {
              let StockistsessionImage =  SessionImages(Image: UIImage(named: "Stockist") ?? UIImage(), count: model.stk)
              sessionImagesArr.append(StockistsessionImage)
-       //  }
+         }
         
+        if setup.hospNeed == 0 {
+            let HospitalsessionImage =  SessionImages(Image: UIImage(named: "hospital") ?? UIImage(), count: model.hos)
+            sessionImagesArr.append(HospitalsessionImage)
+        }
+
         
-        let HospitalsessionImage =  SessionImages(Image: UIImage(named: "hospital") ?? UIImage(), count: model.hos)
-        sessionImagesArr.append(HospitalsessionImage)
-        
-       // if model.cip != 0 {
+        if setup.hospNeed == 0 {
             let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.cip)
             sessionImagesArr.append(cipsessionImage)
-       // }
+        }
         
-      //  if model.udr != 0 {
+        if setup.unlNeed == 0 {
             let UnlistedDocsessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: model.udr)
             sessionImagesArr.append(UnlistedDocsessionImage)
-       // }
+        }
     
         self.sessionImages = sessionImagesArr
         
@@ -142,45 +146,96 @@ class BasicReportsInfoTVC: UITableViewCell {
             holderStackHeightConst.constant = tempstackHeight
         }
         
-        switch model.typ {
+        switch model.confirmed {
         case 0:
-            self.approvalType = .pending
+            switch model.typ {
+            case 0:
+                self.approvalType = .draft
+            default:
+                print("Yet to set approvalType")
+            }
+        
         case 1:
-            self.approvalType = .approved
+            
+            switch model.typ {
+            case 0:
+                self.approvalType = .finished
+            case 1:
+                self.approvalType = .finished
+            default:
+                print("Yet to set approvalType")
+            }
+      
         case 2:
-            self.approvalType = .rejected
+            switch model.typ {
+            case 0:
+                self.approvalType = .rejected
+            case 1:
+                self.approvalType = .rejected
+            default:
+                print("Yet to set approvalType")
+            }
+            
+        case 3:
+            switch model.typ {
+            case 0:
+                self.approvalType = .reEntry
+            case 1:
+                self.approvalType = .reEntry
+            default:
+                print("Yet to set approvalType")
+            }
         default:
-            self.approvalType = .pending
+            print("Yet to set approvalType")
+     
         }
 
         toLoadData()
     }
+//    if (status==0 && confirmStatus==0) {
+//    holder.status.setText("Draft");
+//     holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
+//    } else if ((status==0 || status==1) && confirmStatus==1) {
+//    holder.status.setText("Finished");
+//     holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_priority)));
+//    } else if ((status==0 || status==1) && confirmStatus==2) {
+//    holder.status.setText("Rejected");
+//     holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
+//    } else if ((status==0 || status==1) && confirmStatus==3) {
+//    holder.status.setText("ReEntry");
+//     holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
+//    }
     
     
     enum ApprovalType {
-        case approved
-        case pending
+        case draft
+        case finished
         case rejected
+        case reEntry
 
         var color: UIColor {
             switch self {
-            case .approved:
-                return .appGreen
-            case .pending:
+            case .draft:
                 return .appGreyColor
+            case .finished:
+                return .appGreen
             case .rejected:
                 return .appLightPink
+            case .reEntry:
+                return .appBlue
             }
         }
 
         var text: String {
             switch self {
-            case .approved:
-                return "Approved"
-            case .pending:
-                return "Pending"
+            case .draft:
+                return "Draft"
+            case .finished:
+                return "Finished"
             case .rejected:
                 return "Rejected"
+            case .reEntry:
+                return "ReEntry"
             }
         }
     }
@@ -292,7 +347,7 @@ class BasicReportsInfoTVC: UITableViewCell {
     func setupUI() {
         cellRegistration()
         blurVXview.backgroundColor = .systemGreen
-        blurVXview.alpha = 0.15
+       
       //  overAllContentsHolderView.elevate(2)
         overAllContentsHolderView.layer.cornerRadius = 5
         overAllContentsHolderView.backgroundColor = .appWhiteColor
@@ -336,17 +391,26 @@ class BasicReportsInfoTVC: UITableViewCell {
     }
 
     func setArrovalView() {
+        blurVXview.alpha = 0.1
         switch self.approvalType {
             
-        case .approved:
+        case .draft:
+          //  statisInfoView.backgroundColor = approvalType.color
             statusInfoLbl.text = approvalType.text
             statusInfoLbl.textColor = approvalType.color
             blurVXview.backgroundColor = approvalType.color
-        case .pending:
+        case .finished:
+          //  statisInfoView.backgroundColor = approvalType.color
             statusInfoLbl.text = approvalType.text
-            statusInfoLbl.textColor = .black
+            statusInfoLbl.textColor = approvalType.color
             blurVXview.backgroundColor = approvalType.color
         case .rejected:
+          //  statisInfoView.backgroundColor = approvalType.color
+            statusInfoLbl.text = approvalType.text
+            statusInfoLbl.textColor = approvalType.color
+            blurVXview.backgroundColor = approvalType.color
+        case .reEntry:
+          //  statisInfoView.backgroundColor = approvalType.color
             statusInfoLbl.text = approvalType.text
             statusInfoLbl.textColor = approvalType.color
             blurVXview.backgroundColor = approvalType.color

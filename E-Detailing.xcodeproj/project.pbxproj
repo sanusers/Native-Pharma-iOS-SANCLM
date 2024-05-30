@@ -47,6 +47,7 @@
 		381BC2602BAC617800804B85 /* AdditionalCallsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381BC25E2BAC617800804B85 /* AdditionalCallsHeader.xib */; };
 		381BC2622BAC65D400804B85 /* AddproductsMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */; };
 		381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */; };
+		381E75102C0758710003B892 /* RCPASectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381E750F2C0758710003B892 /* RCPASectionHeader.swift */; };
 		3825CFCC2BA806B600217D40 /* DCRfiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFC82BA806B600217D40 /* DCRfiltersView.swift */; };
 		3825CFCD2BA806B600217D40 /* addedFiltersCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */; };
 		3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */; };
@@ -262,6 +263,14 @@
 		38DD14B72B4FEEF60036384F /* HomeSideMenuTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD14B52B4FEEF60036384F /* HomeSideMenuTVC.swift */; };
 		38DD14B82B4FEEF60036384F /* HomeSideMenuTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DD14B62B4FEEF60036384F /* HomeSideMenuTVC.xib */; };
 		38DD14BA2B5002340036384F /* MenuResponseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD14B92B5002340036384F /* MenuResponseProtocol.swift */; };
+		38DD9E5D2C08587D000A9575 /* RCPAdetailsInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD9E5B2C08587D000A9575 /* RCPAdetailsInfoCVC.swift */; };
+		38DD9E5E2C08587D000A9575 /* RCPAdetailsInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DD9E5C2C08587D000A9575 /* RCPAdetailsInfoCVC.xib */; };
+		38DD9E622C085E13000A9575 /* RCPAdetailsDesctiptionCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DD9E602C085E13000A9575 /* RCPAdetailsDesctiptionCVC.xib */; };
+		38DD9E642C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD9E632C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift */; };
+		38DD9E672C0886B9000A9575 /* SlidesInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD9E652C0886B9000A9575 /* SlidesInfoCVC.swift */; };
+		38DD9E682C0886B9000A9575 /* SlidesInfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DD9E662C0886B9000A9575 /* SlidesInfoCVC.xib */; };
+		38DD9E6B2C088761000A9575 /* SlidesDescriptionCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DD9E692C088761000A9575 /* SlidesDescriptionCVC.swift */; };
+		38DD9E6C2C088761000A9575 /* SlidesDescriptionCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DD9E6A2C088761000A9575 /* SlidesDescriptionCVC.xib */; };
 		38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0409E2AA1FEAA007B757E /* TagDetailsView.swift */; };
 		38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E040A02AA1FEB8007B757E /* TagDetailsView.xib */; };
 		38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E040A22AA215E8007B757E /* TagViewVC.swift */; };
@@ -427,6 +436,7 @@
 		381BC25E2BAC617800804B85 /* AdditionalCallsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AdditionalCallsHeader.xib; sourceTree = "<group>"; };
 		381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddproductsMenuView.swift; sourceTree = "<group>"; };
 		381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddproductsMenuVC.swift; sourceTree = "<group>"; };
+		381E750F2C0758710003B892 /* RCPASectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPASectionHeader.swift; sourceTree = "<group>"; };
 		3825CFC82BA806B600217D40 /* DCRfiltersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCRfiltersView.swift; sourceTree = "<group>"; };
 		3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addedFiltersCVC.xib; sourceTree = "<group>"; };
 		3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addedFiltersCVC.swift; sourceTree = "<group>"; };
@@ -642,6 +652,14 @@
 		38DD14B52B4FEEF60036384F /* HomeSideMenuTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSideMenuTVC.swift; sourceTree = "<group>"; };
 		38DD14B62B4FEEF60036384F /* HomeSideMenuTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeSideMenuTVC.xib; sourceTree = "<group>"; };
 		38DD14B92B5002340036384F /* MenuResponseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuResponseProtocol.swift; sourceTree = "<group>"; };
+		38DD9E5B2C08587D000A9575 /* RCPAdetailsInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPAdetailsInfoCVC.swift; sourceTree = "<group>"; };
+		38DD9E5C2C08587D000A9575 /* RCPAdetailsInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RCPAdetailsInfoCVC.xib; sourceTree = "<group>"; };
+		38DD9E602C085E13000A9575 /* RCPAdetailsDesctiptionCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RCPAdetailsDesctiptionCVC.xib; sourceTree = "<group>"; };
+		38DD9E632C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPAdetailsDesctiptionCVC.swift; sourceTree = "<group>"; };
+		38DD9E652C0886B9000A9575 /* SlidesInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesInfoCVC.swift; sourceTree = "<group>"; };
+		38DD9E662C0886B9000A9575 /* SlidesInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SlidesInfoCVC.xib; sourceTree = "<group>"; };
+		38DD9E692C088761000A9575 /* SlidesDescriptionCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesDescriptionCVC.swift; sourceTree = "<group>"; };
+		38DD9E6A2C088761000A9575 /* SlidesDescriptionCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SlidesDescriptionCVC.xib; sourceTree = "<group>"; };
 		38E0409E2AA1FEAA007B757E /* TagDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDetailsView.swift; sourceTree = "<group>"; };
 		38E040A02AA1FEB8007B757E /* TagDetailsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagDetailsView.xib; sourceTree = "<group>"; };
 		38E040A22AA215E8007B757E /* TagViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewVC.swift; sourceTree = "<group>"; };
@@ -824,6 +842,15 @@
 				38F33A742BD794C3005EC7B0 /* ProductSectionReusableView.swift */,
 				38B18B742BD93BC1001FC958 /* InputDescriptionCVC.swift */,
 				38B18B752BD93BC1001FC958 /* InputDescriptionCVC.xib */,
+				381E750F2C0758710003B892 /* RCPASectionHeader.swift */,
+				38DD9E5B2C08587D000A9575 /* RCPAdetailsInfoCVC.swift */,
+				38DD9E5C2C08587D000A9575 /* RCPAdetailsInfoCVC.xib */,
+				38DD9E602C085E13000A9575 /* RCPAdetailsDesctiptionCVC.xib */,
+				38DD9E632C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift */,
+				38DD9E652C0886B9000A9575 /* SlidesInfoCVC.swift */,
+				38DD9E662C0886B9000A9575 /* SlidesInfoCVC.xib */,
+				38DD9E692C088761000A9575 /* SlidesDescriptionCVC.swift */,
+				38DD9E6A2C088761000A9575 /* SlidesDescriptionCVC.xib */,
 			);
 			path = ReportsViewMore;
 			sourceTree = "<group>";
@@ -1747,9 +1774,11 @@
 				38D568FE2B3560C6007CB86D /* VisitsCountCVC.xib in Resources */,
 				38CA1FF02B611CBF00AFCFD2 /* PlayPresentationCVC.xib in Resources */,
 				38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */,
+				38DD9E5E2C08587D000A9575 /* RCPAdetailsInfoCVC.xib in Resources */,
 				38E42B1F2B679634001E0F07 /* VideoPlayerCVC.xib in Resources */,
 				38E189242BB15FB30093C446 /* JfwView.xib in Resources */,
 				38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */,
+				38DD9E6C2C088761000A9575 /* SlidesDescriptionCVC.xib in Resources */,
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
 				383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */,
 				B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */,
@@ -1777,6 +1806,7 @@
 				384555702BA9C87F00F6CE1A /* ProductsInfoHeader.xib in Resources */,
 				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
+				38DD9E622C085E13000A9575 /* RCPAdetailsDesctiptionCVC.xib in Resources */,
 				38B18B732BD93AD7001FC958 /* ProductSectionTitleCVC.xib in Resources */,
 				3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */,
 				38EF4C672B749DAE00F78F2E /* BrandsPreviewCVC.xib in Resources */,
@@ -1818,6 +1848,7 @@
 				38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */,
 				381BC2602BAC617800804B85 /* AdditionalCallsHeader.xib in Resources */,
 				B287E68529F2A20F0097974D /* Satoshi-MediumItalic.otf in Resources */,
+				38DD9E682C0886B9000A9575 /* SlidesInfoCVC.xib in Resources */,
 				38D2E0C42B04FC03002DD291 /* SelectAllTypesTVC.xib in Resources */,
 				38D7E1E52B677FD500085293 /* PlayPDFCVC.xib in Resources */,
 				B287E67D29F2A20F0097974D /* Satoshi-Black.otf in Resources */,
@@ -1941,9 +1972,11 @@
 				38EF4C692B74D78900F78F2E /* SpecifiedTypeMenuVC.swift in Sources */,
 				38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */,
 				381BC25F2BAC617800804B85 /* AdditionalCallsHeader.swift in Sources */,
+				38DD9E5D2C08587D000A9575 /* RCPAdetailsInfoCVC.swift in Sources */,
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
 				386A61D82BB2AC7000363C6C /* RCPASectionheader.swift in Sources */,
 				38C90ADC2A7785F5003CC0C8 /* DCRCallCell.swift in Sources */,
+				38DD9E6B2C088761000A9575 /* SlidesDescriptionCVC.swift in Sources */,
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,
 				38E8B5D82B0B642D00C40042 /* SessionAPIResponseModel.swift in Sources */,
 				38E3C36B2AFA047400623C33 /* Codable.swift in Sources */,
@@ -1984,6 +2017,7 @@
 				38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */,
 				38D528AA2A9A0AE600AD3F78 /* NearMeVC.swift in Sources */,
 				38CCDE7B2A5442E5007AA5FF /* JointWork + Extension.swift in Sources */,
+				38DD9E672C0886B9000A9575 /* SlidesInfoCVC.swift in Sources */,
 				38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */,
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
@@ -2079,6 +2113,7 @@
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38111E1E2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift in Sources */,
 				38866E722BB2D3D500F9E576 /* CompetitorsFooter.swift in Sources */,
+				38DD9E642C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */,
 				38E189262BB16DF60093C446 /* JfwView.swift in Sources */,
@@ -2114,6 +2149,7 @@
 				38B18B772BD93BC1001FC958 /* InputDescriptionCVC.swift in Sources */,
 				3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */,
 				3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */,
+				381E75102C0758710003B892 /* RCPASectionHeader.swift in Sources */,
 				38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */,
 				38D569022B3564FD007CB86D /* DayReportView.swift in Sources */,
 				38E5E4612AEBB39B00AF053A /* JointWorkTableViewCell.swift in Sources */,

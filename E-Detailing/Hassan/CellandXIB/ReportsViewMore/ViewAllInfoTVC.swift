@@ -13,21 +13,16 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         
-        switch self.cellType {
-            
-        case .showRCPA:
-           
-            //MARK: - rcpa cell (+1 section)
-            return 8
-        case .hideRCPA:
-            return 7
-        }
+            return 7 + 1 + 1
+
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         
         switch section {
+        case 0:
+            return 1
         case 1:
             if self.isTohideLocationInfo {
                 return 0
@@ -41,27 +36,36 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             return inputStrArr.count
             
         case 4:
-            return 1
-            
-            
-            
-        default:
-            switch self.cellType {
-                
+            switch self.cellRCPAType {
             case .showRCPA:
-                switch section {
-                    //MARK: - rcpa cell (+1 section)
-                case 4:
-                    return 3
-                default:
-                    return 1
-                }
+                return rcpaResponseModel.count
             case .hideRCPA:
-                switch section {
-                default:
-                    return 1
-                }
+                return 0
             }
+           
+            
+        case 5:
+            switch self.cellSlidesType {
+            case .showSlides:
+                return slidesResponseModel.count
+            case .hideSlides:
+                return 0
+            }
+            
+        case 6:
+            switch self.cellEventsType {
+            case .showEvents:
+                return 0
+            case .hideEvents:
+                return 0
+            }
+        case 7:
+            return 1
+           
+        case 8:
+            return 1
+        default:
+            return 0
         }
         
 
@@ -84,35 +88,21 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             return CGSize(width: collectionView.width, height: 40)
             
         case 4:
-            return CGSize(width: collectionView.width, height: 60)
-        default:
-            switch self.cellType {
-                
-            case .showRCPA:
-                switch indexPath.section {
+            return CGSize(width: collectionView.width, height: 40)
+            
+        case 5:
+            return CGSize(width: collectionView.width, height: 40)
+            
+        case 6:
+            return CGSize(width: collectionView.width, height: 40)
 
-                    
-                    //MARK: - rcpa cell (+1 section)
-                case 5:
-                    return CGSize(width: collectionView.width, height: 40)
-                    
-                case 6:
-                    return CGSize(width: collectionView.width, height: 75)
-                case 7:
-                    return CGSize(width: collectionView.width, height: 50)
-                default:
-                    return CGSize()
-                }
-            case .hideRCPA:
-                switch indexPath.section {
-                case 5:
-                    return CGSize(width: collectionView.width, height: 75)
-                case 6:
-                    return CGSize(width: collectionView.width, height: 50)
-                default:
-                    return CGSize()
-                }
-            }
+        case 7:
+            return CGSize(width: collectionView.width, height: 75)
+        case 8:
+            return CGSize(width: collectionView.width, height: 50)
+            
+        default:
+            return CGSize()
         }
         
         
@@ -154,6 +144,83 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             default:
                 print("No header")
             }
+            
+        case 4, 5, 6:
+     
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                  withReuseIdentifier: "\(RCPASectionReusableView.self)",
+                                  for: indexPath)  // Or simply withReuseIdentifier: "Item1HeaderView"
+                headerView.backgroundColor = .clear
+             
+                guard let typedHeaderView = headerView as? RCPASectionReusableView else { return headerView
+                }
+                typedHeaderView.sectionHolderView.layer.borderWidth = 1
+                typedHeaderView.sectionHolderView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+       
+                switch indexPath.section {
+                case 4:
+                    typedHeaderView.sectionImage.image =  self.cellRCPAType == .hideRCPA ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.up")
+                    typedHeaderView.sectionTitle.text =  "RCPA"
+                    typedHeaderView.addTap {
+                        if self.cellRCPAType == .showRCPA {
+                            self.cellRCPAType =  .hideRCPA
+                            self.delegate?.didRCPAtapped(isrcpaTapped: false, index: self.selectedIndex ?? 0, responsecount: 0)
+                            self.extendedInfoCollection.reloadData()
+                            return
+                        }
+                        self.makeRcpaApiCall()  {response in
+                            self.cellSlidesType =  .hideSlides
+                            self.cellRCPAType =  self.cellRCPAType == .showRCPA ?  .hideRCPA :  .showRCPA
+                            self.delegate?.didRCPAtapped(isrcpaTapped: self.cellRCPAType == .showRCPA ? true :  false, index: self.selectedIndex ?? 0, responsecount: response.count)
+                            self.extendedInfoCollection.reloadData()
+                         
+                        }
+                    }
+                case 5:
+                    typedHeaderView.sectionImage.image =  self.cellSlidesType == .hideSlides ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.up")
+                    typedHeaderView.sectionTitle.text =  "Slide info"
+                    typedHeaderView.addTap {
+                        if self.cellSlidesType == .showSlides {
+                            self.cellSlidesType =  .hideSlides
+                            self.delegate?.didSlidestapped(isSlidestapped: false, index: self.selectedIndex ?? 0, responsecount: 0)
+                            self.extendedInfoCollection.reloadData()
+                            return
+                        }
+                        
+                        self.makeSlidesInfoApiCall()  { response in
+                            self.cellSlidesType =  .showSlides
+                            self.cellRCPAType = .hideRCPA
+                            self.delegate?.didSlidestapped(isSlidestapped: true, index: self.selectedIndex ?? 0, responsecount: response.count)
+                            //(isrcpaTapped: true, index: self.selectedIndex ?? 0, responsecount: response.count)
+                            self.extendedInfoCollection.reloadData()
+                         
+                        }
+                    }
+                    
+                case 6:
+                    typedHeaderView.sectionImage.image =  self.cellEventsType == .hideEvents ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.up")
+                    typedHeaderView.sectionTitle.text =  "Event capture"
+                    typedHeaderView.addTap {
+//                        self.makeEventsInfoApiCall { response in
+//                            self.cellRCPAType =  .showRCPA
+//                            self.delegate?.didRCPAtapped(isrcpaTapped: true, index: self.selectedIndex ?? 0, responsecount: response.count)
+//                            self.extendedInfoCollection.reloadData()
+//                         
+//                        }
+                    }
+                default:
+                    print("No header")
+                }
+            
+            
+                return typedHeaderView
+            default:
+                print("No header")
+            }
+            
         default:
             return UICollectionReusableView()
         }
@@ -165,8 +232,8 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         // Return the size of your header
-        if section == 2 || section == 3   {
-            return CGSize(width: collectionView.frame.width, height: 70)
+        if section == 2 || section == 3 || section == 4  || section == 5 || section == 6   {
+            return CGSize(width: collectionView.frame.width, height: 60)
         } else {
             return CGSize()
         }
@@ -206,75 +273,69 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
-            
-
+       
         case 4:
-            let cell: rcpaCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "rcpaCVC", for: indexPath) as! rcpaCVC
-            cell.addTap {
-               // self.cellType =   self.cellType == .showRCPA ?  .hideRCPA : .showRCPA
-               // self.delegate?.didLessTapped(islessTapped: false, isrcpaTapped: self.cellType  == .hideRCPA ?  false : true, index: self.selectedIndex ?? 0)
-                //self.cellType == .showRCPA ? true : false
-             //   self.extendedInfoCollection.reloadData()
-            }
-            return cell
-        default:
-            switch self.cellType {
-                
+            switch self.cellRCPAType {
             case .showRCPA:
-                switch indexPath.section {
-                    //MARK: - rcpa cell (+1 section)
-                case 5:
-
-                        let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-                    cell.topopulateCell(modelStr: SampleProduct(prodName: "-", isPromoted: false, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true, remarks: "-"))
-                        return cell
-         
-                case 6:
-                    let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
+                switch indexPath.row {
+                case 0:
+                    let cell: RCPAdetailsInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "RCPAdetailsInfoCVC", for: indexPath) as! RCPAdetailsInfoCVC
                     return cell
-                    
-                    
-                case 7:
-                    let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
-                    cell.addTap {
-                        
-                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false, index: self.selectedIndex ?? 0)
-                    }
-                    return cell
-                    
                 default:
-                    return UICollectionViewCell()
+                    let cell: RCPAdetailsDesctiptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "RCPAdetailsDesctiptionCVC", for: indexPath) as! RCPAdetailsDesctiptionCVC
+                    return cell
                 }
             case .hideRCPA:
-                switch indexPath.section {
-                case 5:
-                    let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
-                    cell.remarksDesc.text =  self.reportModel?.remarks ?? "-"
-                    return cell
-                case 6:
-                    let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
-                    cell.addTap {
-                        
-                        self.delegate?.didLessTapped(islessTapped: true, isrcpaTapped: false, index: self.selectedIndex ?? 0)
-                    }
-                    return cell
-                    
-                default:
-                    return UICollectionViewCell()
-                }
+                return UICollectionViewCell()
             }
-        }
-        
 
-        
+          //  SlidesDescriptionCVC
+        case 5:
+            switch self.cellSlidesType {
+            case .showSlides:
+                switch indexPath.row {
+                case 0:
+                    let cell: SlidesInfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SlidesInfoCVC", for: indexPath) as! SlidesInfoCVC
+                    return cell
+                default:
+                    let cell: SlidesDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SlidesDescriptionCVC", for: indexPath) as! SlidesDescriptionCVC
+                    let model = self.slidesResponseModel[indexPath.row]
+                    cell.setupUI(currentRating: model.rating, selectedIndex: 0)
+                    cell.populateCell(model: model)
+                    return cell
+                }
+            case .hideSlides:
+                return UICollectionViewCell()
+            }
+        case 6:
+            return UICollectionViewCell()
+        case 7:
+            let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
+         
+            return cell
+            
+        case 8:
+            let cell: ViewmoreCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewmoreCVC", for: indexPath) as! ViewmoreCVC
+            cell.addTap {
+                
+                self.delegate?.didLessTapped(islessTapped: true, index: self.selectedIndex ?? 0)
+            }
+            return cell
+            
+        default:
+           return UICollectionViewCell()
+        }
     }
     
     
 }
 
 protocol ViewAllInfoTVCDelegate: AnyObject {
-    func didLessTapped(islessTapped: Bool, isrcpaTapped: Bool, index: Int)
-        
+    func didRCPAtapped(isrcpaTapped: Bool, index: Int, responsecount: Int)
+    func didEventstapped(isEventstapped: Bool, index: Int, responsecount: Int)
+    func didSlidestapped(isSlidestapped: Bool, index: Int, responsecount: Int)
+    
+    func didLessTapped(islessTapped: Bool, index: Int)
     
 }
 
@@ -295,9 +356,21 @@ struct SampleInput {
 
 class ViewAllInfoTVC: UITableViewCell {
     
-    enum CellType {
+    enum CellRCPAType {
         case showRCPA
         case hideRCPA
+
+    }
+    
+    enum cellEventsType {
+        case showEvents
+        case hideEvents
+    }
+    
+    enum CellSlidesType {
+        
+             case showSlides
+             case hideSlides
     }
     
     
@@ -307,9 +380,16 @@ class ViewAllInfoTVC: UITableViewCell {
     weak var delegate: ViewAllInfoTVCDelegate?
     var rcpaTapped: Bool = false
     //var selectedType: CellType = .All
-    var cellType: CellType = .hideRCPA
+    var cellRCPAType: CellRCPAType = .hideRCPA
+    var cellEventsType: cellEventsType = .hideEvents
+    var cellSlidesType: CellSlidesType = .hideSlides
     var reportModel: ReportsModel?
+    var reportsVM: ReportsVM?
     var detailedReportModel: DetailedReportsModel?
+    var slidesResponseModel : [SlideDetailsResponse] = []
+    var rcpaResponseModel : [RCPAresonseModel] = []
+    var eventsResponseModel : [EventResponse] = []
+    var ResponseModel : [EventResponse] = []
     var productStrArr : [SampleProduct] = []
     var inputStrArr: [SampleInput] = []
     var typeImage: UIImage?
@@ -505,6 +585,19 @@ class ViewAllInfoTVC: UITableViewCell {
         extendedInfoCollection.register(UINib(nibName: "InputDescriptionCVC", bundle: nil), forCellWithReuseIdentifier: "InputDescriptionCVC")
         
         
+        extendedInfoCollection.register(UINib(nibName: "RCPAsectionHeader", bundle: nil), forCellWithReuseIdentifier: "RCPAsectionHeader")
+        
+        
+        extendedInfoCollection.register(UINib(nibName: "RCPAdetailsDesctiptionCVC", bundle: nil), forCellWithReuseIdentifier: "RCPAdetailsDesctiptionCVC")
+        
+        extendedInfoCollection.register(UINib(nibName: "RCPAdetailsInfoCVC", bundle: nil), forCellWithReuseIdentifier: "RCPAdetailsInfoCVC")
+        
+        extendedInfoCollection.register(UINib(nibName: "SlidesDescriptionCVC", bundle: nil), forCellWithReuseIdentifier: "SlidesDescriptionCVC")
+        extendedInfoCollection.register(UINib(nibName: "SlidesInfoCVC", bundle: nil), forCellWithReuseIdentifier: "SlidesInfoCVC")
+        
+        
+        extendedInfoCollection.register(RCPASectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "RCPASectionReusableView")
+        
         extendedInfoCollection.register(CustomHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CustomHeaderView.identifier)
         
         extendedInfoCollection.register(ProductSectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ProductSectionReusableView")
@@ -518,6 +611,120 @@ class ViewAllInfoTVC: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func makeRcpaApiCall(completion: @escaping ([RCPAresonseModel]) -> ()) {
+
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        
+        var param: [String: Any] = [:]
+        param["tableName"] = "getdcr_rcpa"
+        param["dcrdetail_cd"] = detailedReportModel?.transDetailSlno
+        param["sfcode"] = appsetup.sfCode
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType
+        param["Designation"] = appsetup.desig
+        param["subdivision_code"] = appsetup.subDivisionCode
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        let toSendData: [String: Any] = ["data" :  paramData]
+        Shared.instance.showLoaderInWindow()
+        reportsVM?.getDetailedRCPAdetais(params: toSendData, api: .getReports, paramData: param) { result in
+            Shared.instance.removeLoaderInWindow()
+            switch result {
+            case .success(let response):
+                dump(response)
+                self.rcpaResponseModel.removeAll()
+                let aRCPAresonseModel = RCPAresonseModel()
+                self.rcpaResponseModel.append(aRCPAresonseModel)
+                self.rcpaResponseModel.append(contentsOf: response)
+                completion(self.rcpaResponseModel)
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion([])
+                self.toCreateToast("Error while fetching response from server.")
+                
+            }
+        }
+    }
+
+    
+    func makeSlidesInfoApiCall(completion: @escaping ([SlideDetailsResponse]) -> ()) {
+
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        // {"tableName":"getslidedet","ACd":"KS134-306","Mslcd":"KS134-73","sfcode":"MR7224","division_code":"47","Rsf":"MR7224","sf_type":"1","Designation":"0","state_code":"15","subdivision_code":"84,"}
+        var param: [String: Any] = [:]
+        param["tableName"] = "getslidedet"
+        param["Mslcd"] = detailedReportModel?.code
+        param["ACd"] = reportModel?.aCode
+        
+        param["sfcode"] = appsetup.sfCode
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType
+        param["Designation"] = appsetup.desig
+        param["state_code"] = appsetup.stateCode
+        param["subdivision_code"] = appsetup.subDivisionCode
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        let toSendData: [String: Any] = ["data" :  paramData]
+        Shared.instance.showLoaderInWindow()
+        reportsVM?.getSlideDetails(params: toSendData, api: .getReports, paramData: param) { result in
+            Shared.instance.removeLoaderInWindow()
+            switch result {
+            case .success(let response):
+                dump(response)
+                self.slidesResponseModel.removeAll()
+                let aRCPAresonseModel = SlideDetailsResponse()
+                self.slidesResponseModel.append(aRCPAresonseModel)
+                self.slidesResponseModel.append(contentsOf: response)
+                completion(self.slidesResponseModel)
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion([])
+                self.toCreateToast("Error while fetching response from server.")
+                
+            }
+        }
+    }
+    func makeEventsInfoApiCall(completion: @escaping ([RCPAresonseModel]) -> ()) {
+
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+      //  {"tableName":"getevent_rpt","dcr_cd":"DP3-819","dcrdetail_cd":"DP3-1288","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,"}
+        var param: [String: Any] = [:]
+        param["tableName"] = "getevent_rpt"
+        param["dcr_cd"] = detailedReportModel?.code
+        param["dcrdetail_cd"] = detailedReportModel?.transDetailSlno
+        
+        param["sfcode"] = appsetup.sfCode
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appsetup.sfType
+        param["Designation"] = appsetup.desig
+        param["state_code"] = appsetup.stateCode
+        param["subdivision_code"] = appsetup.subDivisionCode
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        let toSendData: [String: Any] = ["data" :  paramData]
+        Shared.instance.showLoaderInWindow()
+        reportsVM?.getDetailedEventsdetais(params: toSendData, api: .getReports, paramData: param) { result in
+            Shared.instance.removeLoaderInWindow()
+            switch result {
+            case .success(let response):
+                dump(response)
+                self.rcpaResponseModel.removeAll()
+                let aRCPAresonseModel = EventResponse()
+                self.eventsResponseModel.append(aRCPAresonseModel)
+                self.eventsResponseModel.append(contentsOf: response)
+                completion(self.rcpaResponseModel)
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion([])
+                self.toCreateToast("Error while fetching response from server.")
+                
+            }
+        }
     }
     
 }

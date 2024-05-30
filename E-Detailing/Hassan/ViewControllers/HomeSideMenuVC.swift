@@ -11,11 +11,18 @@ import Foundation
 import UIKit
 
 
+protocol HomeSideMenuVCDelegate : AnyObject {
+    func didClose()
+    func didMasterSync()
+    func didProfileTapped()
+    func didLocationUpdated()
+}
+
 
 class HomeSideMenuVC: BaseViewController {
     @IBOutlet weak var menuView : HomeSideMenuView!
     var menuDelegate : MenuResponseProtocol?
-    weak var delegate: HomeSideMenuViewDelegate?
+    weak var delegate: HomeSideMenuVCDelegate?
     //MARK:- view life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
