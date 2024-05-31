@@ -33,6 +33,11 @@ class WTsheetCVC: UICollectionViewCell {
         workTypeDesc.text = model.wtype
         clusterDesc.text = model.terrWrk
         HQdesc.text = "-"
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+            HQ.isHidden = true
+            HQdesc.isHidden = true
+        }
+    
         //model.
     }
 

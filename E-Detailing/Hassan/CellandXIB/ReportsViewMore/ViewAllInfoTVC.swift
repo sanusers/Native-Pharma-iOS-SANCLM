@@ -172,6 +172,10 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                             return
                         }
                         self.makeRcpaApiCall()  {response in
+                            if response.isEmpty {
+                                self.toCreateToast("No RCPA found!")
+                                return
+                            }
                             self.cellSlidesType =  .hideSlides
                             self.cellRCPAType =  self.cellRCPAType == .showRCPA ?  .hideRCPA :  .showRCPA
                             self.delegate?.didRCPAtapped(isrcpaTapped: self.cellRCPAType == .showRCPA ? true :  false, index: self.selectedIndex ?? 0, responsecount: response.count)
@@ -191,6 +195,10 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         }
                         
                         self.makeSlidesInfoApiCall()  { response in
+                            if response.isEmpty {
+                                self.toCreateToast("No slide info found!")
+                                return
+                            }
                             self.cellSlidesType =  .showSlides
                             self.cellRCPAType = .hideRCPA
                             self.delegate?.didSlidestapped(isSlidestapped: true, index: self.selectedIndex ?? 0, responsecount: response.count)
@@ -204,12 +212,18 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     typedHeaderView.sectionImage.image =  self.cellEventsType == .hideEvents ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.up")
                     typedHeaderView.sectionTitle.text =  "Event capture"
                     typedHeaderView.addTap {
-//                        self.makeEventsInfoApiCall { response in
-//                            self.cellRCPAType =  .showRCPA
-//                            self.delegate?.didRCPAtapped(isrcpaTapped: true, index: self.selectedIndex ?? 0, responsecount: response.count)
-//                            self.extendedInfoCollection.reloadData()
-//                         
-//                        }
+                        
+                        self.makeEventsInfoApiCall { response in
+                            if response.isEmpty {
+                                self.toCreateToast("No captured events found!")
+                                return
+                            }
+                            self.cellRCPAType =  .showRCPA
+                            
+                            self.delegate?.didEventstapped(isEventstapped: true, index: self.selectedIndex ?? 0, response: response)
+                            self.extendedInfoCollection.reloadData()
+                         
+                        }
                     }
                 default:
                     print("No header")
@@ -311,7 +325,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             return UICollectionViewCell()
         case 7:
             let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
-         
+            cell.remarksDesc.text = detailedReportModel?.remarks
             return cell
             
         case 8:
@@ -332,7 +346,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
 protocol ViewAllInfoTVCDelegate: AnyObject {
     func didRCPAtapped(isrcpaTapped: Bool, index: Int, responsecount: Int)
-    func didEventstapped(isEventstapped: Bool, index: Int, responsecount: Int)
+    func didEventstapped(isEventstapped: Bool, index: Int, response: [EventResponse])
     func didSlidestapped(isSlidestapped: Bool, index: Int, responsecount: Int)
     
     func didLessTapped(islessTapped: Bool, index: Int)
@@ -636,6 +650,10 @@ class ViewAllInfoTVC: UITableViewCell {
             case .success(let response):
                 dump(response)
                 self.rcpaResponseModel.removeAll()
+                if response.isEmpty {
+                    completion(response)
+                    return
+                }
                 let aRCPAresonseModel = RCPAresonseModel()
                 self.rcpaResponseModel.append(aRCPAresonseModel)
                 self.rcpaResponseModel.append(contentsOf: response)
@@ -676,6 +694,10 @@ class ViewAllInfoTVC: UITableViewCell {
             case .success(let response):
                 dump(response)
                 self.slidesResponseModel.removeAll()
+                if response.isEmpty {
+                    completion(response)
+                    return
+                }
                 let aRCPAresonseModel = SlideDetailsResponse()
                 self.slidesResponseModel.append(aRCPAresonseModel)
                 self.slidesResponseModel.append(contentsOf: response)
@@ -688,14 +710,15 @@ class ViewAllInfoTVC: UITableViewCell {
             }
         }
     }
-    func makeEventsInfoApiCall(completion: @escaping ([RCPAresonseModel]) -> ()) {
+    func makeEventsInfoApiCall(completion: @escaping ([EventResponse]) -> ()) {
 
         let appsetup = AppDefaults.shared.getAppSetUp()
         
       //  {"tableName":"getevent_rpt","dcr_cd":"DP3-819","dcrdetail_cd":"DP3-1288","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,"}
         var param: [String: Any] = [:]
         param["tableName"] = "getevent_rpt"
-        param["dcr_cd"] = detailedReportModel?.code
+        param["dcr_cd"] = reportModel?.aCode
+        //detailedReportModel?.a
         param["dcrdetail_cd"] = detailedReportModel?.transDetailSlno
         
         param["sfcode"] = appsetup.sfCode
@@ -713,11 +736,13 @@ class ViewAllInfoTVC: UITableViewCell {
             switch result {
             case .success(let response):
                 dump(response)
-                self.rcpaResponseModel.removeAll()
-                let aRCPAresonseModel = EventResponse()
-                self.eventsResponseModel.append(aRCPAresonseModel)
+                self.eventsResponseModel.removeAll()
+                if response.isEmpty {
+                    completion(response)
+                    return
+                }
                 self.eventsResponseModel.append(contentsOf: response)
-                completion(self.rcpaResponseModel)
+                completion(self.eventsResponseModel)
             case .failure(let error):
                 print(error.localizedDescription)
                 completion([])

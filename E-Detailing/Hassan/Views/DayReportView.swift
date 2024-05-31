@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 extension  DayReportView: DayReportsSortViewDelegate {
     func userDidSort(sorted index: Int?) {
         self.selectedSortIndex = index
@@ -41,7 +42,10 @@ extension  DayReportView: DayReportsSortViewDelegate {
             case dayReportsSortView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-                
+               
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
                 
             default:
                 aAddedView.isUserInteractionEnabled = true
@@ -100,6 +104,9 @@ class DayReportView: BaseView {
     var selectedSortIndex: Int? = nil
     var dayReportsSortView: DayReportsSortView?
     var isSortPresented = false
+    var checkinVIew: CustomerCheckinView?
+    var eventsResponse : [EventResponse]?
+    var downloadingIndex: Int?
     private lazy var sortPopupView: SortVIew = {
         let customView = SortVIew(frame: CGRect(x: (self.width / 2) - (self.width / 3) / 2, y: (self.height / 2) - 150, width: self.width / 3, height: 300))
         customView.isFromDayReport = true
@@ -130,6 +137,14 @@ class DayReportView: BaseView {
         let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
         
         self.dayReportsSortView?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
+        
+        let checkinVIewwidth = self.bounds.width / 3.5
+        let checkinVIewheight = self.bounds.height / 2
+        
+        let checkinVIewcenterX = self.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = self.bounds.midY - (checkinVIewheight / 2)
+
+        checkinVIew?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
         
     }
 
@@ -265,6 +280,44 @@ class DayReportView: BaseView {
     }
     
     
+
+    
+    func viewImageAction(events: [EventResponse]) {
+        
+    
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+        //  backgroundView.toAddBlurtoVIew()
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+          
+                
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        checkinVIew = self.viewDayReportVC.loadCustomView(nibname: XIBs.customerCheckinVIew) as? CustomerCheckinView
+        checkinVIew?.delegate = self
+     //   checkinVIew?.setupTaggeImage(fetchedImageData: imageData)
+        checkinVIew?.setupTaggedImages(fetchedImageData: events)
+        self.addSubview(checkinVIew ?? CustomerCheckinView())
+        
+    }
+    
+    
 }
 
 extension DayReportView: VisitsCountTVCDelegate {
@@ -307,8 +360,16 @@ extension DayReportView : ViewAllInfoTVCDelegate {
         
     }
     
-    func didEventstapped(isEventstapped: Bool, index: Int, responsecount: Int) {
+    func didEventstapped(isEventstapped: Bool, index: Int, response : [EventResponse]) {
         print("Yet to")
+        self.eventsResponse = response
+       // let prefixURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
+       // let modifiedUrlString = prefixURL.replacingOccurrences(of: "photos/", with: "")
+
+        guard let eventsResponse = self.eventsResponse else {return}
+        self.viewImageAction(events: eventsResponse)
+
+
     }
     
     func didSlidestapped(isSlidestapped: Bool, index: Int, responsecount: Int) {
@@ -788,3 +849,46 @@ extension DayReportView: SortVIewDelegate {
 //        }
 //    }
 }
+extension DayReportView : addedSubViewsDelegate {
+    func didClose() {
+       backgroundView.isHidden = true
+        backgroundView.alpha = 0.3
+        self.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+
+            case checkinVIew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+    func didUpdate() {
+        print("Yet to implement")
+    }
+    
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        print("Yet to implement")
+    }
+    
+    func showAlert(desc: String) {
+        print("Yet to implement")
+    }
+    
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        print("Yet to implement")
+    }
+    
+    
+}
+

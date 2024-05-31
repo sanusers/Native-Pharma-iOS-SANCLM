@@ -101,13 +101,15 @@ class MasterSyncVM {
         
        // {"tableName":"gettodaydcr","sfcode":"MGR0941","division_code":"63,","Rsf":"MGR0941","sf_type":"2","Designation":"MGR","state_code":"13","subdivision_code":"86,","ReqDt":"2024-02-12 15:27:16"}
         
-        param["tableName"] = isFromDCR ?? false ? "gettodaydcr" : "getmydayplan"
+        param["tableName"] =  "gettodaydcr"
+        //isFromDCR ?? false ? "gettodaydcr" : "getmydayplan"
         param["ReqDt"] = date
         param["sfcode"] = "\(appsetup.sfCode!)"
         param["division_code"] = "\(appsetup.divisionCode!)"
 
        // let rsf = LocalStorage.shared.getString(key: LocalStorage.LocalValue.rsfIDPlan1)
-        param["Rsf"] =  isFromDCR ?? false ? appsetup.sfCode! : getRSF
+        param["Rsf"] =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        //isFromDCR ?? false ? appsetup.sfCode ?? "" : getRSF
         param["sf_type"] = "\(appsetup.sfType!)"
         param["Designation"] = "\(appsetup.dsName!)"
         param["state_code"] = "\(appsetup.stateCode!)"

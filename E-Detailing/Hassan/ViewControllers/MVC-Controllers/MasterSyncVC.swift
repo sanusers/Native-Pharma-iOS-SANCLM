@@ -722,7 +722,11 @@ class MasterSyncVC : UIViewController {
     
 
     func toSaveDayplansToDB(model: [MyDayPlanResponseModel]) {
-        masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in}
+        masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in
+            //refreshDayplan
+            NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
+            
+        }
     }
     
     func setParentHQ() {
@@ -834,10 +838,12 @@ class MasterSyncVC : UIViewController {
                                 let filteredHQ = subordinateArr.first
                                 //.filter {$0.mapId == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)}
                                 // if !filteredHQ.isEmpty {
+                                
                                 let cacheHQ = filteredHQ
                                 welf.fetchedHQObject = cacheHQ
                                 welf.setHQlbl(isTosetDayplanHQ: true)
                                 // }
+                                NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
                                 completion(true)
                           
                             return

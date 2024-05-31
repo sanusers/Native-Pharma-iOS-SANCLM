@@ -389,12 +389,13 @@ class EventResponse: Codable {
     let eventImg: String
     let title: String
     let remarks: String
-    
+    var imageData: Data
     enum CodingKeys: String, CodingKey {
         case sfCode = "sf_code"
         case eventImg = "Eventimg"
         case title
         case remarks
+        case imageData
     }
     
     required init(from decoder: any Decoder) throws {
@@ -403,6 +404,7 @@ class EventResponse: Codable {
         self.eventImg = container.safeDecodeValue(forKey: .eventImg)
         self.title = container.safeDecodeValue(forKey:  .title)
         self.remarks = container.safeDecodeValue(forKey:  .remarks)
+        self.imageData = Data()
     }
     
     init(){
@@ -411,7 +413,7 @@ class EventResponse: Codable {
     eventImg = String()
     title = String()
     remarks = String()
-        
+        imageData = Data()
         
         
         

@@ -557,10 +557,10 @@ extension CoreDataManager {
         return cdDayPlans
     }
     
-    private func convertHeadQuartersToCDM(_ headQuarters: SelectedDayPlanHQ, context: NSManagedObjectContext) -> SelectedHQ {
+    private func convertHeadQuartersToCDM(_ headQuarters: SelectedDayPlanHQ, context: NSManagedObjectContext) -> SelectedDayPlanHQ {
         
       
-            let cdHeadQuarters = SelectedHQ(context: context)
+            let cdHeadQuarters = SelectedDayPlanHQ(context: context)
             // Convert properties of Subordinate
             cdHeadQuarters.code = headQuarters.code
             cdHeadQuarters.name = headQuarters.name
@@ -739,12 +739,7 @@ extension CoreDataManager {
                           
                             
                             if territories.isEmpty {
-//                                let masterSyncVM = MasterSyncVM()
-//                                masterSyncVM.fetchMasterData(type: .clusters, sfCode: eachPlan.rsfID ?? "" , istoUpdateDCRlist: false, mapID: eachPlan.rsfID ?? "") {  _ in
-//                                    territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
-//                                    dispatchGroup.leave()
-//                                 
-//                                }
+
                             } else {
                                 // Filter territories based on codes
                                 let filteredTerritories = territories.filter { territory in
@@ -752,12 +747,10 @@ extension CoreDataManager {
                                 }
                                 // Extract names as a comma-separated string
                                 aDayPlan.townName = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
-                             //   dispatchGroup.leave()
+                   
                             }
                             
-
-     
-                         //   dispatchGroup.wait()
+                            retrivedPlansArr.append(aDayPlan)
                             
                         case 1:
                             aDayPlan.isRetrived2 = eachPlan.isRetrived
@@ -773,18 +766,6 @@ extension CoreDataManager {
                             let territoryCodes =   aDayPlan.townCode.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
                             
                             if territories.isEmpty {
-//                                let masterSyncVM = MasterSyncVM()
-//                                masterSyncVM.fetchMasterData(type: .clusters, sfCode: eachPlan.rsfID ?? "" , istoUpdateDCRlist: false, mapID: eachPlan.rsfID ?? "") {  _ in
-//                                    territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
-//                                    // Filter territories based on codes
-//                                    let filteredTerritories = territories.filter { territory in
-//                                        return territoryCodes.contains(territory.code ?? "")
-//                                    }
-//                                    // Extract names as a comma-separated string
-//                                    aDayPlan.townName2 = filteredTerritories.map { $0.name ?? "" }.joined(separator: ", ")
-//                                    dispatchGroup.leave()
-//                                 
-//                                }
                             } else {
                                 // Filter territories based on codes
                                 let filteredTerritories = territories.filter { territory in
@@ -796,7 +777,7 @@ extension CoreDataManager {
                             }
                             
                             
-                            
+                            retrivedPlansArr.append(aDayPlan)
 
      
                             
@@ -807,13 +788,13 @@ extension CoreDataManager {
                     }
                 }
                 
-                retrivedPlansArr.append(aDayPlan)
+         
             }
         }
         
-     //   dispatchGroup.notify(queue: .main) {
+
             completion(retrivedPlansArr)
-     //   }
+
         
        
     }
@@ -911,7 +892,12 @@ extension CoreDataManager {
                 firstEachPlan.planDate = session[index].planDate ?? Date()
                 firstEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
-                firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    firstEachPlan.rsfID =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                } else {
+                    firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+                }
+           
                 firstEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
                 let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
                 
@@ -932,7 +918,11 @@ extension CoreDataManager {
                 // Set properties based on session or adjust as needed
                 secondEachPlan.isRetrived = session[index].isRetrived ?? false
                 // Set properties based on session or adjust as needed
-                secondEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    secondEachPlan.rsfID =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                } else {
+                    secondEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+                }
                 secondEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
                 let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
                 

@@ -36,7 +36,7 @@ class SlidesDescriptionCVC: UICollectionViewCell, RatingStarViewDelegate {
     
     override func layoutSubviews() {
         addedreviewView?.frame = reviewView.bounds
-        reviewView.addSubview(addedreviewView ?? RatingStarView())
+    
     }
     
     func setupUI(currentRating: Int, selectedIndex: Int) {
@@ -45,6 +45,12 @@ class SlidesDescriptionCVC: UICollectionViewCell, RatingStarViewDelegate {
         addedreviewView?.currentRating = currentRating
         addedreviewView?.delegate = self
         addedreviewView?.prevValue(value: CGFloat(currentRating))
+        self.contentView.subviews.forEach { aUIView in
+            if aUIView == addedreviewView {
+                addedreviewView?.removeFromSuperview()
+            }
+        }
+        reviewView.addSubview(addedreviewView ?? RatingStarView())
     }
 
 }

@@ -15,6 +15,7 @@ enum CellType: String {
     case Doctor
     case Chemist
     case Stockist
+    case UnlistedDoctor
     case Hospital
     case CIP
     
@@ -33,6 +34,8 @@ enum CellType: String {
             return .appBrown
         case .CIP:
             return .calenderMarkerColor
+        case .UnlistedDoctor:
+            return .appLightTextColor.withAlphaComponent(0.2)
         }
     }
     
@@ -51,6 +54,10 @@ enum CellType: String {
             return UIImage(named: "hospital") ?? UIImage()
         case .CIP:
             return UIImage(named: "cip") ?? UIImage()
+        case .UnlistedDoctor:
+            return UIImage(named: "Doctor") ?? UIImage()
+            
+            
         }
     }
     
@@ -90,32 +97,44 @@ class VisitsCountCVC: UICollectionViewCell {
         countsLbl.textColor = .appWhiteColor
         typesLbl.setFont(font: .medium(size: .BODY))
         holderView.layer.cornerRadius = 4
+       
         switch self.type {
             
         case .All:
             visualBlurView.backgroundColor = type.coclor
             contsView.backgroundColor = type.coclor
             typesLbl.text = type.text
+            typesLbl.textColor = type.coclor
         case .Doctor:
             visualBlurView.backgroundColor = type.coclor
             contsView.backgroundColor = type.coclor
             typesLbl.text = type.text
+            typesLbl.textColor = type.coclor
         case .Chemist:
             visualBlurView.backgroundColor = type.coclor
             contsView.backgroundColor = type.coclor
             typesLbl.text = type.text
+            typesLbl.textColor = type.coclor
         case .Stockist:
             visualBlurView.backgroundColor = type.coclor
             contsView.backgroundColor = type.coclor
             typesLbl.text = type.text
+            typesLbl.textColor = type.coclor
         case .Hospital:
             visualBlurView.backgroundColor = type.coclor
             contsView.backgroundColor = type.coclor
             typesLbl.text = type.text
+            typesLbl.textColor = type.coclor
         case .CIP:
             visualBlurView.backgroundColor = type.coclor
             contsView.backgroundColor = type.coclor
             typesLbl.text = type.text
+            typesLbl.textColor = type.coclor
+        case .UnlistedDoctor:
+            visualBlurView.backgroundColor = type.coclor
+            contsView.backgroundColor = type.coclor
+            typesLbl.text = type.text
+            typesLbl.textColor = .appTextColor
         }
         
     }

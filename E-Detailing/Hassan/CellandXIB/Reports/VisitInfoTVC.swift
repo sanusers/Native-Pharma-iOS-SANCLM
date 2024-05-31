@@ -100,12 +100,13 @@ class VisitInfoTVC: UITableViewCell {
           
         }
         
-        let descLbl : [UILabel] =   [visitTimeDesc, modifiedTimeDesc, clusterDesc, pobDesc, feedBaxkDesc, viewMoreDesc, userTitle, jointWorkDesc, remarksDesc]
+        let descLbl : [UILabel] =   [visitTimeDesc, modifiedTimeDesc, clusterDesc, pobDesc, feedBaxkDesc, viewMoreDesc, userTitle, jointWorkDesc]
         descLbl.forEach { lbl in
             lbl.setFont(font: .bold(size: .BODY))
             lbl.textColor = .appTextColor
         }
-
+        remarksDesc.setFont(font: .medium(size: .BODY))
+        remarksDesc.textColor = .appTextColor
         
     }
 

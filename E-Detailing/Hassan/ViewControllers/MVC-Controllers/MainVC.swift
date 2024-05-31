@@ -304,6 +304,9 @@ class MainVC : UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshDayplan) , name: NSNotification.Name("daplanRefreshed"), object: nil)
+        
+        
         network.isReachable() { [weak self] reachability in
             guard let welf = self else {return}
         
@@ -1302,6 +1305,10 @@ class MainVC : UIViewController {
 
     }
     
+    @objc func refreshDayplan() {
+        refreshUI()
+    }
+    
     @objc func dcrcallsAdded() {
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             toSetParams(isfromSyncCall: true) {
@@ -1388,7 +1395,7 @@ class MainVC : UIViewController {
 //               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
 //               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
 //               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
-        
+        let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
@@ -1397,8 +1404,12 @@ class MainVC : UIViewController {
         let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
         let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
         //dateFormatter.date(from: storedDateString) ?? Date()
+        if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
+            CoreDataManager.shared.removeAllDayPlans()
+        }
+     
         
-        let currentDate = Date()
+    
 
         if appSetups.srtNeed == 1 {
             

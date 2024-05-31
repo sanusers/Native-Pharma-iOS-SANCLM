@@ -224,7 +224,7 @@ class EventCaptureResponse: Codable {
     var sfCode: String
     var title: String
     var remarks: String
-    
+    var imageData : Data
     enum CodingKeys: String, CodingKey {
         case transactionSerialNumber = "Trans_SlNo"
         case transactionDetailSerialNumber = "Trans_Detail_Slno"
@@ -233,6 +233,7 @@ class EventCaptureResponse: Codable {
         case sfCode = "sf_code"
         case title
         case remarks
+        case imageData
     }
 }
 

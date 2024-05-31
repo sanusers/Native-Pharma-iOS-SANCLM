@@ -10,6 +10,33 @@
 import Foundation
 import UIKit
 import CoreLocation
+
+extension CustomerCheckinView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let capturedEvents = capturedEvents else {return 0}
+        return capturedEvents.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let capturedEvents = capturedEvents else {return UICollectionViewCell()}
+        let model = capturedEvents[indexPath.row]
+        let cell:  EventCaptureCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "EventCaptureCVC", for: indexPath) as! EventCaptureCVC
+        cell.toDownloadimage(model: model)
+
+        return cell
+    
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.width, height: collectionView.height)
+    }
+    
+    func setLabels() {
+        
+    }
+    
+}
+ 
 class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     
 
@@ -99,6 +126,22 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     }
     
     
+    func setupTaggedImages(fetchedImageData: [EventResponse]) {
+        self.layer.cornerRadius = 5
+        checkinStack.isHidden = true
+        taggingStack.isHidden = true
+        taggedIMageHolder.isHidden = false
+       // taggedImage.image = UIImage(data: fetchedImageData)
+        self.capturedEvents = fetchedImageData
+        toloadCollection()
+    }
+    func toloadCollection() {
+        eventsCollection.register(UINib(nibName: "EventCaptureCVC", bundle: nil), forCellWithReuseIdentifier: "EventCaptureCVC")
+        eventsCollection.delegate = self
+        eventsCollection.dataSource = self
+        eventsCollection.reloadData()
+    }
+    
     func setupTaggeImage(fetchedImageData: Data) {
         self.layer.cornerRadius = 5
         checkinStack.isHidden = true
@@ -130,7 +173,10 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     
     @IBOutlet var btnCheckin: ShadowButton!
     
+    @IBOutlet var eventsCollection: UICollectionView!
     
+    @IBOutlet var descriptionLbl: UILabel!
+    @IBOutlet var nameLbl: UILabel!
     //Tagging
     
     @IBOutlet var lblTaginfo: UILabel!
@@ -155,6 +201,7 @@ class CustomerCheckinView: UIView, CLLocationManagerDelegate {
     var appsetup : AppSetUp?
     var delegate:  addedSubViewsDelegate?
     var userstrtisticsVM: UserStatisticsVM?
+    var capturedEvents: [EventResponse]?
     var locManager : CLLocationManager?
     var currentLocation: CLLocation?
     var latitude: Double?

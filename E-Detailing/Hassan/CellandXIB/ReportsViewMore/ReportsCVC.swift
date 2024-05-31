@@ -19,7 +19,7 @@ class ReportsCVC: UICollectionViewCell {
         // Initialization code
         remarksDesc.textColor = .appTextColor
         remarksTitle.textColor = .appLightTextColor
-        remarksDesc.setFont(font: .bold(size: .BODY))
+        remarksDesc.setFont(font: .medium(size: .BODY))
         remarksTitle.setFont(font: .medium(size: .BODY))
         
         

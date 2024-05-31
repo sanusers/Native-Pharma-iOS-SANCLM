@@ -59,6 +59,8 @@
 		3825CFD92BA86F4800217D40 /* PrecallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD82BA86F4800217D40 /* PrecallsModel.swift */; };
 		3836A0692C01C14D0034DBCC /* FunEventsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */; };
 		3836A06A2C01C14D0034DBCC /* FunEventsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */; };
+		3837081F2C09A485002A0F3C /* EventCaptureCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3837081D2C09A485002A0F3C /* EventCaptureCVC.swift */; };
+		383708202C09A485002A0F3C /* EventCaptureCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3837081E2C09A485002A0F3C /* EventCaptureCVC.xib */; };
 		383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */; };
 		383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */; };
 		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
@@ -448,6 +450,8 @@
 		3825CFD82BA86F4800217D40 /* PrecallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrecallsModel.swift; sourceTree = "<group>"; };
 		3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunEventsTVC.swift; sourceTree = "<group>"; };
 		3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunEventsTVC.xib; sourceTree = "<group>"; };
+		3837081D2C09A485002A0F3C /* EventCaptureCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCVC.swift; sourceTree = "<group>"; };
+		3837081E2C09A485002A0F3C /* EventCaptureCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCVC.xib; sourceTree = "<group>"; };
 		383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TPdeviateReasonView.xib; sourceTree = "<group>"; };
 		383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPdeviateReasonView.swift; sourceTree = "<group>"; };
 		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
@@ -851,6 +855,8 @@
 				38DD9E662C0886B9000A9575 /* SlidesInfoCVC.xib */,
 				38DD9E692C088761000A9575 /* SlidesDescriptionCVC.swift */,
 				38DD9E6A2C088761000A9575 /* SlidesDescriptionCVC.xib */,
+				3837081D2C09A485002A0F3C /* EventCaptureCVC.swift */,
+				3837081E2C09A485002A0F3C /* EventCaptureCVC.xib */,
 			);
 			path = ReportsViewMore;
 			sourceTree = "<group>";
@@ -1795,6 +1801,7 @@
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38107C632B36FA0400ACEDF3 /* ViewmoreCVC.xib in Resources */,
 				38107C5F2B36F97E00ACEDF3 /* ReportsCVC.xib in Resources */,
+				383708202C09A485002A0F3C /* EventCaptureCVC.xib in Resources */,
 				38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */,
 				38FDD4162B99881500566A04 /* CommonResouceInfoTVC.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
@@ -1996,6 +2003,7 @@
 				38C41C2D2B8E0AFA0013361E /* ChangePasswordView.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */,
+				3837081F2C09A485002A0F3C /* EventCaptureCVC.swift in Sources */,
 				38866E7A2BB2E11800F9E576 /* CompetitorsDetailsHeader.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,
 				38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */,

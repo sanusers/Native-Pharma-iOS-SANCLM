@@ -97,12 +97,32 @@ class VisitsCountTVC: UITableViewCell {
     }
     
     func topopulateCell(model: ReportsModel) {
+        let setups = AppDefaults.shared.getAppSetUp()
+        type.removeAll()
+        type.append(.All)
+        
+        if setups.docNeed == 0 {
+            type.append(.Doctor)
+        }
+        
+        if setups.chmNeed == 0 {
+            type.append(.Chemist)
+        }
+        
+        if setups.stkNeed == 0 {
+            type.append(.Stockist)
+        }
+        
+        if setups.unlNeed == 0 {
+            type.append(.UnlistedDoctor)
+        }
         
         var totalVisitCount: Int = 0
-        let   docCount = model.drs
+        let  docCount = model.drs
         let chmCount = model.chm
         let  stkCount = model.stk
         let cipCount = model.cip
+        let unlistCount = model.udr
         let hospCount = model.hos
        // visitsInfo.removeAll()
       //  if model.drs != 0 {
@@ -153,7 +173,7 @@ class VisitsCountTVC: UITableViewCell {
 //            let avisitsInfo = VisitCount(type: type, count: totalVisitCount)
 //            visitsInfo.append(avisitsInfo)
 //        }
-         totalVisitCount = docCount + chmCount + stkCount + hospCount + cipCount
+         totalVisitCount = docCount + chmCount + stkCount + hospCount + cipCount + unlistCount
         visitsInfo.removeAll()
         self.type.forEach { cellType in
             switch cellType {
@@ -175,6 +195,9 @@ class VisitsCountTVC: UITableViewCell {
                 visitsInfo.append(avisitsInfo)
             case .CIP:
                 let avisitsInfo = VisitCount(type: cellType, count: cipCount)
+                visitsInfo.append(avisitsInfo)
+            case .UnlistedDoctor:
+                let avisitsInfo = VisitCount(type: cellType, count: unlistCount)
                 visitsInfo.append(avisitsInfo)
             }
           
