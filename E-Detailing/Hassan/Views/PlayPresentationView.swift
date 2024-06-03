@@ -209,7 +209,12 @@ class  PlayPresentationView: BaseView {
     
     func toHandleFirstSlide() {
         guard let slideID = self.selectedSlideID else {return}
-        let adetailedSlide = DetailedSlide(slideID: slideID, isLiked: nil, isDisliked: nil, remarks: nil, isShared: nil)
+        var adetailedSlide = DetailedSlide(slideID: slideID, isLiked: nil, isDisliked: nil, remarks: nil, isShared: nil)
+//        let slideTime = backgroundTimer.stop()
+//        let startTime = slideTime.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+//        let endTime = slideTime.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+//        adetailedSlide.startTime = startTime
+//        adetailedSlide.endTime = endTime
         Shared.instance.detailedSlides.append(adetailedSlide)
         updateLikeUI(isLiked: false)
         updateDisLikeUI(isDisLiked: false)
@@ -594,8 +599,8 @@ class  PlayPresentationView: BaseView {
         }
         self.selectedSlideModel = playPresentationVC.selectedSlideModel
         if let selectedSlideModel =  self.selectedSlideModel , selectedSlideModel.count > 0 {
-            self.selectedSlideID =  self.selectedSlideModel?[0].slideId ?? Int()
-            self.selectedSlideURL = slideURL+(self.selectedSlideModel?[0].filePath ?? String())
+            self.selectedSlideID =  selectedSlideModel.first?.slideId ?? Int()
+            self.selectedSlideURL = slideURL+(selectedSlideModel.first?.filePath ?? String())
             self.backgroundTimer = BackgroundTimer()
             self.backgroundTimer.start()
             self.toHandleFirstSlide()
@@ -681,27 +686,31 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
              let startTime = slideTime.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
              let endTime = slideTime.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
          
-             var lastSlide = Shared.instance.detailedSlides.last
-             lastSlide?.startTime = startTime
-             lastSlide?.endTime = endTime
-             
-             dump(lastSlide)
-             
-             guard let lastSlideElement = lastSlide else {
-                 return
+             // Retrieve the last slide from Shared.instance.detailedSlides
+             if var lastSlide = Shared.instance.detailedSlides.last {
+                 lastSlide.startTime = startTime
+                 lastSlide.endTime = endTime
+
+                 // Log the last slide for debugging purposes
+                 dump(lastSlide)
+
+                 // Update the last slide in the Shared.instance.detailedSlides
+                 if let index = Shared.instance.detailedSlides.lastIndex(where: { $0.slideID == lastSlide.slideID }) {
+                     Shared.instance.detailedSlides[index] = lastSlide
+                 }
+
+                 // Check if there's an existing slide with the same slideID as the selectedSlideID
+                 if let existingSlideIndex = Shared.instance.detailedSlides.firstIndex(where: { $0.slideID == selectedSlideID }) {
+                     // Update the existing slide's start and end times
+                     Shared.instance.detailedSlides[existingSlideIndex].startTime = startTime
+                     Shared.instance.detailedSlides[existingSlideIndex].endTime = endTime
+                 }
+
+                 // Log the detailedSlides array for debugging purposes
+                 dump(Shared.instance.detailedSlides)
              }
-       
-             let exceptionExistingSlide = Shared.instance.detailedSlides.filter{ $0.slideID ==  selectedSlideID }.first
-             
-             if var existingSlide = exceptionExistingSlide {
-                 existingSlide.startTime = startTime
-                 existingSlide.endTime = endTime
-             }
-             
-           //  Shared.instance.detailedSlides = Shared.instance.detailedSlides.filter{ $0.slideID !=  selectedSlideID }
-             
-          //   Shared.instance.detailedSlides.append(lastSlideElement)
-             dump(Shared.instance.detailedSlides)
+
+             // Restart the background time
              self.backgroundTimer.start()
          default:
              print("Yet to")

@@ -9,6 +9,7 @@
 
 import UIKit
 
+
 extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -185,7 +186,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     }
                 case 5:
                     typedHeaderView.sectionImage.image =  self.cellSlidesType == .hideSlides ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.up")
-                    typedHeaderView.sectionTitle.text =  "Slide info"
+                    typedHeaderView.sectionTitle.text =  "Slide Details"
                     typedHeaderView.addTap {
                         if self.cellSlidesType == .showSlides {
                             self.cellSlidesType =  .hideSlides
@@ -316,6 +317,9 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     let model = self.slidesResponseModel[indexPath.row]
                     cell.setupUI(currentRating: model.rating, selectedIndex: 0)
                     cell.populateCell(model: model)
+                    cell.infoView.addTap {
+                        self.delegate?.didDurationInfoTapped(view: cell.infoView, startTime: model.startTime, endTime: model.endTime)
+                    }
                     return cell
                 }
             case .hideSlides:
@@ -348,8 +352,8 @@ protocol ViewAllInfoTVCDelegate: AnyObject {
     func didRCPAtapped(isrcpaTapped: Bool, index: Int, responsecount: Int)
     func didEventstapped(isEventstapped: Bool, index: Int, response: [EventResponse])
     func didSlidestapped(isSlidestapped: Bool, index: Int, responsecount: Int)
-    
     func didLessTapped(islessTapped: Bool, index: Int)
+    func didDurationInfoTapped(view: UIView, startTime: String, endTime: String)
     
 }
 

@@ -17,7 +17,7 @@ class ProductSectionReusableView: UICollectionReusableView {
         label.backgroundColor = .clear
         label.text = "Product"
         label.clipsToBounds = true
-        label.backgroundColor = .clear
+       
         label.setFont(font: .medium(size: .BODY))
         return label
     }()
@@ -26,6 +26,7 @@ class ProductSectionReusableView: UICollectionReusableView {
         let label = PaddedLabel()
         label.text = "Product Name"
         label.textColor = .appTextColor
+        label.setSpecificCornersForLeft(cornerRadius: 3)
         label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
@@ -72,6 +73,7 @@ class ProductSectionReusableView: UICollectionReusableView {
         label.textColor = .appTextColor
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
+        label.setSpecificCornersForRight(cornerRadius: 3)
         return label
     }()
     
@@ -98,7 +100,7 @@ class ProductSectionReusableView: UICollectionReusableView {
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
         stackView.spacing = 0
-        stackView.layer.cornerRadius = 5
+       
 //
         
         // Define the width for the first label (1/3 of the stack view's width)
@@ -122,6 +124,7 @@ class ProductSectionReusableView: UICollectionReusableView {
             }
 
             stackView.addArrangedSubview(label)
+    
           }
         
         let overAllStack = UIStackView(arrangedSubviews: [sectionTitle, stackView])

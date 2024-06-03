@@ -25,6 +25,7 @@ class InputSectionReusableView: UICollectionReusableView {
         let label = PaddedLabel()
         label.text = "Input Name"
         label.textColor = .appTextColor
+        label.setSpecificCornersForLeft(cornerRadius: 3)
         label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
@@ -43,6 +44,7 @@ class InputSectionReusableView: UICollectionReusableView {
         label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         label.clipsToBounds = true
         label.setFont(font: .bold(size: .BODY))
+        label.setSpecificCornersForRight(cornerRadius: 3)
         return label
     }()
 
@@ -78,7 +80,7 @@ class InputSectionReusableView: UICollectionReusableView {
         overAllStack.alignment = .fill
         overAllStack.distribution = .fillEqually
         overAllStack.spacing = 0 // Adjust spacing between labels
-        
+        overAllStack.layer.cornerRadius = 5
         // Add stack view to the view hierarchy
         addSubview(overAllStack)
         

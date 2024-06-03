@@ -16,7 +16,8 @@ final class ConnectionHandler : NSObject {
     
     enum TableName: String {
         case getDayPlan = "getmydayplan"
-        case reports = "getdayrpt"
+        case reports = "getdayrpt_edet"
+                //"getdayrpt"
         case detailedReport = "getvwvstdet"
         case getToadyCalls = "gettodycalls"
         case checkin = "savetp_attendance"

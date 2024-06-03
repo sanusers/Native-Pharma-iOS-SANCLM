@@ -119,8 +119,15 @@ class DayReportsSortView: UIView{
     func setupUI() {
         self.layer.cornerRadius = 5
         btnCancel.layer.cornerRadius = 5
+        btnCancel.layer.borderWidth = 1
+        btnCancel.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         btnSave.layer.cornerRadius = 5
-        sortOptions = ["Ascending by name", "Descending by name", isFromDayReport ?  "Visit time" : "Submission date"]
+        if isFromDayReport {
+            sortOptions = ["Ascending by name", "Descending by name", "Ascending by Visit time", "Descending by Visit time" ]
+        } else {
+            sortOptions = ["Ascending by name", "Descending by name", "Ascending by Submission date", "Descending by Submission date"]
+        }
+     
         sortOptionsTable.register(UINib(nibName: "RadioSelectionTVC", bundle: nil), forCellReuseIdentifier: "RadioSelectionTVC")
         toloadTable()
         btnCancel.addTap {

@@ -20,8 +20,9 @@ extension  DetailedReportView: DayReportsSortViewDelegate {
         case 1:
             toReorderRepotes(type: .orderDescending)
         case 2:
-            toReorderRepotes(type: .orderByDate)
-    
+            toReorderRepotes(type: .orderByDateAscending)
+        case 3:
+            toReorderRepotes(type: .orderByDateDesending)
         default:
             print("Yet to sort")
         }
@@ -152,7 +153,8 @@ extension DetailedReportView {
     enum SortingType {
         case orderAscending
         case orderDescending
-        case orderByDate
+        case orderByDateAscending
+        case orderByDateDesending
     }
     
 
@@ -178,7 +180,7 @@ extension DetailedReportView {
                 self.reportsModel = self.reportsModel?.sorted { $0.sfName > $1.sfName }
             }
             self.toLoadData()
-        case .orderByDate:
+        case .orderByDateAscending:
             print("Yet to implement")
             if isMatched {
                 self.filteredreportsModel = self.filteredreportsModel?.sorted {
@@ -198,6 +200,31 @@ extension DetailedReportView {
                                                                                                                
                     let date2 = toCOnvertTimeTodate($1.adate) // Handle invalid time strings
                     return date1 < date2
+                    
+                }
+                
+            }
+            self.toLoadData()
+        case .orderByDateDesending:
+            print("Yet to implement")
+            if isMatched {
+                self.filteredreportsModel = self.filteredreportsModel?.sorted {
+                    let date1 = toCOnvertTimeTodate($0.adate)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.adate) // Handle invalid time strings
+                    return date1 > date2
+                    
+                }
+                  
+            } else {
+             //   self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name < $1.name }
+                
+                
+                self.reportsModel = self.reportsModel?.sorted {
+                  let date1 = toCOnvertTimeTodate($0.adate)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.adate) // Handle invalid time strings
+                    return date1 > date2
                     
                 }
                 

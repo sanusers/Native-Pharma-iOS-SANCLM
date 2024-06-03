@@ -54,7 +54,8 @@ class DetailedReportVC: BaseViewController {
             let finalFormattedString = dateFormatter.string(from: date)
         
         var param = [String: Any]()
-        param["tableName"] = "getdayrpt"
+        param["tableName"] =  "getdayrpt_edet"
+        //"getdayrpt"
         param["sfcode"] = appdefaultSetup?.sfCode
         //"MR2697"
         //appdefaultSetup.sfCode

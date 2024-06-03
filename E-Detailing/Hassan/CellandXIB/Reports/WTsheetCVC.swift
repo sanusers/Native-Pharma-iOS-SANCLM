@@ -30,7 +30,12 @@ class WTsheetCVC: UICollectionViewCell {
     
     func populateCell(model: ReportsModel) {
         seperatorView.backgroundColor = isLastElement ? .clear : .appSelectionColor
-        workTypeDesc.text = model.wtype
+        if model.additionalWorktype.isEmpty {
+            workTypeDesc.text = model.wtype
+        } else {
+            workTypeDesc.text = "\(model.wtype), \(model.additionalWorktype)"
+        }
+       
         clusterDesc.text = model.terrWrk
         HQdesc.text = "-"
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {

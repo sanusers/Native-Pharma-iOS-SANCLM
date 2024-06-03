@@ -13,6 +13,7 @@ class SlidesInfoCVC: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        hilderview.layer.cornerRadius = 3
         hilderview.backgroundColor = UIColor.appLightTextColor.withAlphaComponent(0.2)
     }
 

@@ -22,6 +22,7 @@ class PopOverVC: UIViewController {
         case presentation
         case profile
         case customMarker
+        case timeLine
     }
     
     
@@ -35,12 +36,14 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             userProfileInfoView.isHidden = true
+            timeInfoView.isHidden = true
             toLOadData()
         case .HomeGraph:
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = true
             graphInfoView.isHidden = false
+            timeInfoView.isHidden = true
             setupUI()
             
         case .calls:
@@ -48,21 +51,25 @@ class PopOverVC: UIViewController {
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
+            timeInfoView.isHidden = true
             toLOadData()
         case .presentation:
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
+            timeInfoView.isHidden = true
             toLOadData()
         case .profile:
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = false
             self.contentTable.isHidden = true
             graphInfoView.isHidden = true
+            timeInfoView.isHidden = true
             setProfileInfo()
         case .customMarker:
             customMarkerView.isHidden = false
+            timeInfoView.isHidden = true
             print("Yet to implement")
             setCustomerInfo()
             
@@ -71,7 +78,15 @@ class PopOverVC: UIViewController {
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
+            timeInfoView.isHidden = true
             toLOadData()
+        case .timeLine:
+            customMarkerView.isHidden = true
+            userProfileInfoView.isHidden = true
+            self.contentTable.isHidden = true
+            graphInfoView.isHidden = true
+            timeInfoView.isHidden = false
+            setTimeline()
         }
     }
     
@@ -114,6 +129,19 @@ class PopOverVC: UIViewController {
     
     @IBOutlet var viewTaggedImgHolder: UIStackView!
     
+    
+    //Timeinfo
+    
+    @IBOutlet var timeInfoView: UIView!
+    
+    @IBOutlet var lblTimeINfo: UILabel!
+    
+    @IBOutlet var lblStartTime: UILabel!
+    
+    
+    @IBOutlet var lblEndTime: UILabel!
+    
+    
     var delegate: PopOverVCDelegate?
     var strArr = [String]()
     var isExist = Bool()
@@ -125,10 +153,29 @@ class PopOverVC: UIViewController {
     var avgCalls: Int = 0
     var color : UIColor? = .appWhiteColor
     var visitViewModel : VisitViewModel?
+    var startTime: String = ""
+    var endTime: String = ""
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
        
         toSetPageType(self.pageType)
+    }
+    
+    func setTimeline() {
+        lblTimeINfo.text = "Timeline"
+        timeInfoView.backgroundColor = color
+        timeInfoView.layer.cornerRadius = 5
+        lblTimeINfo.textColor = .appWhiteColor
+        lblTimeINfo.setFont(font: .bold(size: .BODY))
+        lblStartTime.setFont(font: .medium(size: .BODY))
+        lblEndTime.setFont(font: .medium(size: .BODY))
+        lblStartTime.textColor = .appWhiteColor
+        lblEndTime.textColor = .appWhiteColor
+        lblStartTime.text = startTime
+        lblEndTime.text = endTime
+        
     }
 
     func setCustomerInfo() {
@@ -245,7 +292,7 @@ class PopOverVC: UIViewController {
      
         popover.backgroundColor = .appWhiteColor
        // popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
-        popover.permittedArrowDirections = pagetype == .HomeGraph || pagetype == .customMarker ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
+        popover.permittedArrowDirections = pagetype == .HomeGraph || pagetype == .customMarker  || pagetype == .timeLine ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
         
         return infoWindow
     }
@@ -314,6 +361,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
             return 0
         case .events:
             return 40
+        case .timeLine:
+            return UITableView.automaticDimension
         }
         
    

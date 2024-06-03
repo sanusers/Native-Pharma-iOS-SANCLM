@@ -44,6 +44,7 @@ extension Shared{
     enum Loaders : String{
         case common = "loader"
         case mastersync = "loading"
+        case launch = "Launch"
         
     }
     

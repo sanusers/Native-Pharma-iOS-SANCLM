@@ -29,7 +29,7 @@ class RCPAdetailsInfoCVC: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
         hollderStack.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-        
+        hollderStack.layer.cornerRadius = 3
         let labels: [UILabel] = [productNameLbl, productQtyLbl, chemistNameLBl, competitorNameLbl, competitorProductNameLbl, competitorProductQty]
         labels.forEach { aLabel in
             aLabel.setFont(font: .bold(size: .BODY))

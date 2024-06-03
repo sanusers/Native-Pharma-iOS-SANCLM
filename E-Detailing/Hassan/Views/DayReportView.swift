@@ -21,8 +21,9 @@ extension  DayReportView: DayReportsSortViewDelegate {
         case 1:
             toReorderRepotes(type: .orderDescending)
         case 2:
-            toReorderRepotes(type: .orderByDate)
-
+            toReorderRepotes(type: .orderByDateAscending)
+        case 3:
+            toReorderRepotes(type: .orderByDateDesending)
         default:
             print("Yet to sort")
         }
@@ -169,7 +170,8 @@ class DayReportView: BaseView {
         seperatorView.backgroundColor = .appSelectionColor
         ussrNameLbl.setFont(font: .bold(size: .SUBHEADER))
         ussrNameLbl.textColor = .appLightPink
-        self.ussrNameLbl.text = "\(viewDayReportVC.appdefaultSetup!.sfName!) - \(viewDayReportVC.appdefaultSetup!.desig!) - designation"
+        self.ussrNameLbl.text = "\(viewDayReportVC.appdefaultSetup!.sfName!)"
+            // - \(viewDayReportVC.appdefaultSetup!.desig!)
         initTaps()
         mockData()
         sortView.layer.cornerRadius = 5
@@ -340,6 +342,18 @@ extension DayReportView: VisitsCountTVCDelegate {
 }
 
 extension DayReportView : ViewAllInfoTVCDelegate {
+    func didDurationInfoTapped(view: UIView, startTime: String, endTime: String) {
+        print("Tapped -->")
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 4 , height: self.height / 7.5), on: view,  pagetype: .timeLine)
+
+        vc.color = .appTextColor
+        vc.startTime = "Start Time : \(startTime)"
+        //self.totalCalls
+        vc.endTime = "End Time : \(endTime)"
+        //self.averageCalls
+        self.viewDayReportVC?.navigationController?.present(vc, animated: true)
+    }
+    
     func didRCPAtapped(isrcpaTapped: Bool, index: Int, responsecount: Int) {
 
         
@@ -461,7 +475,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         case 0:
 //            let cell: WTsheetTVC = tableView.dequeueReusableCell(withIdentifier: "WTsheetTVC", for: indexPath) as! WTsheetTVC
 //            return cell
-                        let cell: ListedWorkTypesTVC = tableView.dequeueReusableCell(withIdentifier: "ListedWorkTypesTVC", for: indexPath) as! ListedWorkTypesTVC
+            let cell: ListedWorkTypesTVC = tableView.dequeueReusableCell(withIdentifier: "ListedWorkTypesTVC", for: indexPath) as! ListedWorkTypesTVC
             cell.wtModel = self.reportsModel
             cell.toloadData()
             cell.selectionStyle = .none
@@ -742,7 +756,8 @@ extension DayReportView: SortVIewDelegate {
     enum SortingType {
         case orderAscending
         case orderDescending
-        case orderByDate
+        case orderByDateAscending
+        case orderByDateDesending
     }
     
     func didSelected(index: Int?, isTosave: Bool) {
@@ -755,11 +770,14 @@ extension DayReportView: SortVIewDelegate {
         case 1:
             toReorderRepotes(type: .orderDescending)
         case 2:
-            toReorderRepotes(type: .orderByDate)
+            toReorderRepotes(type: .orderByDateAscending)
+        case 3:
+            toReorderRepotes(type: .orderByDateDesending)
+  
         case .none:
-            print("none")
+            print("Yet to")
         case .some(_):
-            print("some")
+            print("Yet to")
         }
     }
     
@@ -785,7 +803,7 @@ extension DayReportView: SortVIewDelegate {
                 self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name > $1.name }
             }
             self.toLoadData()
-        case .orderByDate:
+        case .orderByDateAscending:
             print("Yet to implement")
             if isMatched {
                 self.filtereddetailedReportsModelArr = self.filtereddetailedReportsModelArr?.sorted {
@@ -805,6 +823,31 @@ extension DayReportView: SortVIewDelegate {
                                                                                                                
                     let date2 = toCOnvertTimeTodate($1.visitTime) // Handle invalid time strings
                     return date1 < date2
+                    
+                }
+                
+            }
+            self.toLoadData()
+        case .orderByDateDesending:
+            print("Yet to implement")
+            if isMatched {
+                self.filtereddetailedReportsModelArr = self.filtereddetailedReportsModelArr?.sorted {
+                  let date1 = toCOnvertTimeTodate($0.visitTime)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.visitTime) // Handle invalid time strings
+                    return date1 > date2
+                    
+                }
+                  
+            } else {
+             //   self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted { $0.name < $1.name }
+                
+                
+                self.detailedReportsModelArr = self.detailedReportsModelArr?.sorted {
+                  let date1 = toCOnvertTimeTodate($0.visitTime)
+                                                                                                               
+                    let date2 = toCOnvertTimeTodate($1.visitTime) // Handle invalid time strings
+                    return date1 > date2
                     
                 }
                 

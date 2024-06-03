@@ -32,8 +32,18 @@ class SplashVC: BaseViewController{
     
     func callStartupActions(){
         
-
-         AppDelegate.shared.setupRootViewControllers(isFromlaunch: true)
+        self.splashView?.SplashImageHolderView.isHidden = false
+        Shared.instance.showLoader(in: self.splashView.SplashImageHolderView, loaderType: .launch)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            UIView.animate(withDuration: 1, delay: 0, animations: {
+                self.splashView?.SplashImageHolderView.isHidden = false
+                Shared.instance.removeLoader(in: self.splashView.SplashImageHolderView)
+                AppDelegate.shared.setupRootViewControllers(isFromlaunch: true)
+            })
+        }
+        
+       
 
 
     }

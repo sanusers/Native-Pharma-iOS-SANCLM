@@ -26,13 +26,13 @@
                         </constraints>
                     </view>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S4a-fL-7Tq">
-                        <rect key="frame" x="15.333333333333314" y="1.6666666666666643" width="982.33333333333348" height="65.666666666666686"/>
+                        <rect key="frame" x="15.333333333333314" y="1.6666666666666679" width="982.33333333333348" height="58.333333333333329"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UEK-OT-ncd">
-                                <rect key="frame" x="0.0" y="0.0" width="196.33333333333334" height="65.666666666666671"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UEK-OT-ncd">
+                                <rect key="frame" x="0.0" y="0.0" width="196.33333333333334" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVz-7u-z8Q">
-                                        <rect key="frame" x="10" y="24.333333333333329" width="96.333333333333329" height="17"/>
+                                        <rect key="frame" x="0.0" y="20.666666666666664" width="96.333333333333329" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -41,14 +41,14 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="aVz-7u-z8Q" firstAttribute="centerY" secondItem="UEK-OT-ncd" secondAttribute="centerY" id="IIV-Bg-uOo"/>
-                                    <constraint firstItem="aVz-7u-z8Q" firstAttribute="leading" secondItem="UEK-OT-ncd" secondAttribute="leading" constant="10" id="dC5-qj-vhV"/>
+                                    <constraint firstItem="aVz-7u-z8Q" firstAttribute="leading" secondItem="UEK-OT-ncd" secondAttribute="leading" id="dC5-qj-vhV"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v0n-jU-2Mh">
-                                <rect key="frame" x="196.33333333333331" y="0.0" width="98.333333333333314" height="65.666666666666671"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v0n-jU-2Mh">
+                                <rect key="frame" x="196.33333333333331" y="0.0" width="98.333333333333314" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Qty" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G0k-PN-jdt">
-                                        <rect key="frame" x="4.9999999999999982" y="24.333333333333329" width="24.333333333333329" height="17"/>
+                                        <rect key="frame" x="4.9999999999999982" y="20.666666666666664" width="24.333333333333329" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -60,11 +60,11 @@
                                     <constraint firstItem="G0k-PN-jdt" firstAttribute="leading" secondItem="v0n-jU-2Mh" secondAttribute="leading" constant="5" id="Nip-Dh-fcn"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gJ2-JM-h5T">
-                                <rect key="frame" x="294.66666666666669" y="0.0" width="137.66666666666669" height="65.666666666666671"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gJ2-JM-h5T">
+                                <rect key="frame" x="294.66666666666669" y="0.0" width="137.66666666666669" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chemist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M3Y-A8-OZA">
-                                        <rect key="frame" x="5.0000000000000071" y="24.333333333333329" width="127.66666666666669" height="17"/>
+                                        <rect key="frame" x="5.0000000000000071" y="20.666666666666664" width="127.66666666666669" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -77,11 +77,11 @@
                                     <constraint firstItem="M3Y-A8-OZA" firstAttribute="leading" secondItem="gJ2-JM-h5T" secondAttribute="leading" constant="5" id="Ybf-x4-5KH"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBY-YM-tRC">
-                                <rect key="frame" x="432.33333333333337" y="0.0" width="167" height="65.666666666666671"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBY-YM-tRC">
+                                <rect key="frame" x="432.33333333333337" y="0.0" width="167" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Competitor Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KT9-Ba-ljp">
-                                        <rect key="frame" x="5" y="24.333333333333329" width="157" height="17"/>
+                                        <rect key="frame" x="5" y="20.666666666666664" width="157" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -94,11 +94,11 @@
                                     <constraint firstAttribute="trailing" secondItem="KT9-Ba-ljp" secondAttribute="trailing" constant="5" id="iFc-Uc-xqP"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egA-yQ-n6a">
-                                <rect key="frame" x="599.33333333333326" y="0.0" width="226" height="65.666666666666671"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egA-yQ-n6a">
+                                <rect key="frame" x="599.33333333333326" y="0.0" width="226" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Competitor Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e0u-sg-22V">
-                                        <rect key="frame" x="5" y="24.333333333333329" width="216" height="17"/>
+                                        <rect key="frame" x="5" y="20.666666666666664" width="216" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -111,11 +111,11 @@
                                     <constraint firstItem="e0u-sg-22V" firstAttribute="leading" secondItem="egA-yQ-n6a" secondAttribute="leading" constant="5" id="nX7-Td-Pan"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HGV-5W-trZ">
-                                <rect key="frame" x="825.33333333333326" y="0.0" width="157" height="65.666666666666671"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HGV-5W-trZ">
+                                <rect key="frame" x="825.33333333333326" y="0.0" width="157" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Qty" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mxN-cA-9NL">
-                                        <rect key="frame" x="5" y="24.333333333333329" width="147" height="17"/>
+                                        <rect key="frame" x="5" y="20.666666666666664" width="147" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -143,7 +143,7 @@
             <constraints>
                 <constraint firstItem="fdx-s6-YLw" firstAttribute="centerX" secondItem="WBR-VO-Qbc" secondAttribute="centerX" id="9SB-7Q-HdF"/>
                 <constraint firstAttribute="bottom" secondItem="fdx-s6-YLw" secondAttribute="bottom" constant="1" id="RKV-VB-eiX"/>
-                <constraint firstItem="S4a-fL-7Tq" firstAttribute="height" secondItem="WBR-VO-Qbc" secondAttribute="height" multiplier="0.9" id="dex-1f-8fV"/>
+                <constraint firstItem="S4a-fL-7Tq" firstAttribute="height" secondItem="WBR-VO-Qbc" secondAttribute="height" multiplier="0.8" id="dex-1f-8fV"/>
                 <constraint firstItem="S4a-fL-7Tq" firstAttribute="centerX" secondItem="WBR-VO-Qbc" secondAttribute="centerX" id="fKW-rg-Hxw"/>
                 <constraint firstItem="S4a-fL-7Tq" firstAttribute="width" secondItem="WBR-VO-Qbc" secondAttribute="width" multiplier="0.97" id="fcV-Wh-YiJ"/>
                 <constraint firstItem="fdx-s6-YLw" firstAttribute="width" secondItem="WBR-VO-Qbc" secondAttribute="width" multiplier="0.97" id="ue1-QN-Fkl"/>

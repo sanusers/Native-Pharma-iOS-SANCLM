@@ -37,7 +37,7 @@ class ReportsModel: Codable {
     let rmdr: Int
     let terrWrk: String
     let confirmed: Int
-
+    let additionalWorktype : String
     
     init() {
         self.aCode = String()
@@ -65,6 +65,7 @@ class ReportsModel: Codable {
         self.rmdr = Int()
         self.terrWrk = String()
         self.confirmed = Int()
+        additionalWorktype = String()
     }
     
     required init(from decoder: Decoder) throws {
@@ -94,6 +95,8 @@ class ReportsModel: Codable {
         self.rmdr = container.safeDecodeValue(forKey: .rmdr)
         self.terrWrk = container.safeDecodeValue(forKey: .terrWrk)
         self.confirmed = container.safeDecodeValue(forKey: .confirmed)
+        self.additionalWorktype = container.safeDecodeValue(forKey: .additionalWorktype)
+        
     }
     
     enum CodingKeys: String, CodingKey {
@@ -119,6 +122,7 @@ class ReportsModel: Codable {
         case rmdr = "Rmdr"
         case terrWrk = "TerrWrk"
         case confirmed = "Confirmed"
+        case additionalWorktype = "Additional_Temp_Details"
     }
 }
 

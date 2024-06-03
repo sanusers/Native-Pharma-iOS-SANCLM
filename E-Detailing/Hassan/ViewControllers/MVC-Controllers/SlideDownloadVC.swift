@@ -148,9 +148,9 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                                         Shared.instance.iscelliterating = false
                                         Shared.instance.isSlideDownloading = false
                                         if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
-                                            self.toSetupAlert(text: "Slides downloading completed")
+                                            self.toSetupAlert(text: "Slides downloading completed", isEncounteredError: false)
                                         } else {
-                                            self.toSetupAlert(text: "Slides download pending please do retry later.", istoPoP: true)
+                                            self.toSetupAlert(text: "Slides download pending please do retry later.", isEncounteredError: true)
                                            
                                         }
                                       
@@ -341,12 +341,12 @@ class SlideDownloadVC : UIViewController {
 
     
     
-    func toSetupAlert(text: String, istoPoP : Bool? = false) {
+    func toSetupAlert(text: String, isEncounteredError : Bool) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
             print("no action")
-            if istoPoP ?? false {
+            if isEncounteredError  {
                 self.dismiss(animated: false) {
                     self.delegate?.didEncounterError()
                     Pipelines.shared.toStopDownload()
@@ -354,6 +354,12 @@ class SlideDownloadVC : UIViewController {
                     Shared.instance.iscelliterating = false
                 }
                
+            } else {
+                self.dismiss(animated: false) {
+                    Pipelines.shared.toStopDownload()
+                    Shared.instance.isSlideDownloading = false
+                    Shared.instance.iscelliterating = false
+                }
             }
    
         }

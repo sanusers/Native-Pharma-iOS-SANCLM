@@ -35,7 +35,7 @@ enum CellType: String {
         case .CIP:
             return .calenderMarkerColor
         case .UnlistedDoctor:
-            return .appLightTextColor.withAlphaComponent(0.2)
+            return .appLightTextColor
         }
     }
     

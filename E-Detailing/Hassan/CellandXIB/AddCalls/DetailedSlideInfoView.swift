@@ -41,7 +41,7 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
         cell.setupUI(currentRating: Int(model.remarksValue ?? 0), selectedIndex: indexPath.row)
         let startTimeStr = model.startTime ?? ""
         let endtimeStr = model.endTime ?? ""
-       let startTime = startTimeStr.toDate()
+        let startTime = startTimeStr.toDate()
         let endTime = endtimeStr.toDate()
         cell.timeLine.text = "\(startTime.toString(format: "HH:mm:ss", timeZone: nil)) - \(endTime.toString(format: "HH:mm:ss", timeZone: nil))"
        // let remarksStr =   Shared.instance.detailedSlides[indexPath.row].remarks
@@ -103,19 +103,40 @@ class DetailedSlideInfoView: UIView {
         
         
         var brandWiseCategorizedSlides = [DetailedSlide]()
+        var startTime: [String] = []
+        var endTime: [String] = []
         for (brandCode, detailedSlide) in capturedBrandWiseGroupedSlides {
+           
+            
+            // Find the minimum start time and maximum end time
+            let startTimes = detailedSlide.compactMap { $0.startTime }
+            let endTimes = detailedSlide.compactMap { $0.endTime }
+            let startRawTimes : [Date] = startTimes.map { aString in
+               let date = aString.toDate()
+                return date
+            }
+            let endRawTimes : [Date] = endTimes.map { aString in
+               let date = aString.toDate()
+                return date
+            }
+            
+//  startRawTimes.min()
+ //     endTimes.max()
+     
+            
             var aDetailedSlide = DetailedSlide()
             var filteredBrand : Brand?
             if let cachedetailedSlide = detailedSlide.first {
                 aDetailedSlide = cachedetailedSlide
                 let cacheBrand = DBManager.shared.getBrands()
                 filteredBrand = cacheBrand.filter{ $0.code ==  "\(cachedetailedSlide.brandCode ?? 0)" }.first
-                aDetailedSlide.startTime = cachedetailedSlide.startTime
+                aDetailedSlide.startTime =  startRawTimes.min()?.toString(format: "yyyy-MM-dd HH:mm:ss")
+                //cachedetailedSlide.startTime
             }
-            
-            if let lastSlide = detailedSlide.last {
-                aDetailedSlide.endTime = lastSlide.endTime
-            }
+            aDetailedSlide.endTime = endRawTimes.max()?.toString(format: "yyyy-MM-dd HH:mm:ss")
+//            if let lastSlide = detailedSlide.last {
+//                aDetailedSlide.endTime = lastSlide.endTime
+//            }
  
             var groupedSlide = [SlidesModel]()
             
@@ -128,16 +149,6 @@ class DetailedSlideInfoView: UIView {
         
             aDetailedSlide.groupedSlides = groupedSlide
             aDetailedSlide.brand = filteredBrand
-//            aDetailedSlide.groupedSlides = groupedSlide
-//            aDetailedSlide.slidesModel = detailedSlide.fi
-//            aDetailedSlide.brand =
-//            aDetailedSlide.brandCode =
-//            aDetailedSlide.slideID =
-//            aDetailedSlide.isLiked =
-//            aDetailedSlide.isDisliked =
-//            aDetailedSlide.remarks =
-//            aDetailedSlide.remarksValue =
-//            aDetailedSlide.isShared =
             brandWiseCategorizedSlides.append(aDetailedSlide)
         }
          dump(brandWiseCategorizedSlides)

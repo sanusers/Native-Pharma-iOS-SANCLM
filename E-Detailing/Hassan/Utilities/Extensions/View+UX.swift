@@ -224,19 +224,21 @@ extension UIView {
 
     
     
-    func setSpecificCornersForLeftCorners(cornerRadius : CGFloat)
+    func setSpecificCornersForLeft(cornerRadius : CGFloat)
     {
         self.clipsToBounds = true
         self.layer.cornerRadius = cornerRadius
         self.layer.maskedCorners = [.layerMinXMaxYCorner  , .layerMinXMinYCorner]
     }
     
-    func setSpecificCornersForLeft(cornerRadius : CGFloat)
+    
+    func setSpecificCornersForRight(cornerRadius : CGFloat)
     {
         self.clipsToBounds = true
         self.layer.cornerRadius = cornerRadius
-        self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        self.layer.maskedCorners = [.layerMaxXMinYCorner  , .layerMaxXMaxYCorner]
     }
+
 
     func setSpecificCornersForBottom(cornerRadius : CGFloat)
     {
