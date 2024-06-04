@@ -319,15 +319,24 @@ extension CoreDataManager {
         }
     }
     
-    func toCheckDayPlanExistence(_ uuid: UUID, completion: (Bool) -> ()) {
+    func toCheckDayPlanExistence(_ planDate: Date, completion: (Bool) -> ()) {
         
+        // Date formatter to convert date to string
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM dd, yyyy" // Format: "June 04, 2024"
+        let formattedDate = dateFormatter.string(from: planDate)
+        
+        let fetchRequest: NSFetchRequest<EachDayPlan> = EachDayPlan.fetchRequest()
         do {
-            let request = EachDayPlan.fetchRequest() as NSFetchRequest
-            let pred = NSPredicate(format: "uuid == '\(uuid)'")
-            //LIKE
-            request.predicate = pred
-            let films = try context.fetch(request)
-            if films.isEmpty {
+           
+            let savedDayPlans = try context.fetch(fetchRequest)
+            // Filter the results by comparing formatted dates
+            let filteredPlans = savedDayPlans.filter { dayPlan in
+                let planDateString = dateFormatter.string(from: dayPlan.planDate ?? Date())
+                return planDateString == formattedDate
+            }
+            
+            if filteredPlans.isEmpty {
                 completion(false)
             } else {
                 completion(true)
@@ -679,8 +688,8 @@ extension CoreDataManager {
     
     
     
-    func toSaveDayPlan(aDayPlan: DayPlan  , completion: @escaping (Bool) -> ()) {
-        toCheckDayPlanExistence(aDayPlan.uuid) { isExists in
+    func toSaveDayPlan(aDayPlan: DayPlan, date: Date, completion: @escaping (Bool) -> ()) {
+        toCheckDayPlanExistence(date) { isExists in
             if !isExists {
                 let context = self.context
                 // Create a new managed object
@@ -703,11 +712,62 @@ extension CoreDataManager {
                     }
                 }
             } else {
-                completion(false)
+                updateExistingManagedObjects(with: aDayPlan, for: date) {
+                    isUpdated in
+                    completion(isUpdated)
+                }
+
             }
         }
     }
     
+    
+    func updateExistingManagedObjects(with aDayPlan: DayPlan, for date: Date, completion: @escaping (Bool) -> Void) {
+        let fetchRequest: NSFetchRequest<EachDayPlan> = EachDayPlan.fetchRequest()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM dd, yyyy" // Format: "June 04, 2024"
+
+        let formattedDate = dateFormatter.string(from: date)
+        
+        do {
+            let savedDayPlans = try self.context.fetch(fetchRequest)
+            let filteredPlans = filterPlans(savedDayPlans, by: formattedDate, using: dateFormatter)
+            
+            // Delete existing plans
+            deleteFilteredPlans(filteredPlans)
+            
+            // Add new plan
+            addNewPlan(aDayPlan, for: date)
+            
+            // Save the changes
+            try self.context.save()
+            completion(true) // Assuming completion handler for success
+        } catch {
+            print("Failed to fetch or update Core Data: \(error)")
+            completion(false)
+        }
+    }
+
+    private func filterPlans(_ savedDayPlans: [EachDayPlan], by formattedDate: String, using dateFormatter: DateFormatter) -> [EachDayPlan] {
+        return savedDayPlans.filter { dayPlan in
+            let planDateString = dateFormatter.string(from: dayPlan.planDate ?? Date())
+            return planDateString == formattedDate
+        }
+    }
+
+    private func deleteFilteredPlans(_ filteredPlans: [EachDayPlan]) {
+        for plan in filteredPlans {
+            self.context.delete(plan)
+        }
+    }
+
+    private func addNewPlan(_ aDayPlan: DayPlan, for date: Date) {
+        let newPlan = EachDayPlan(context: self.context)
+        newPlan.uuid = aDayPlan.uuid
+        newPlan.planDate = aDayPlan.tpDt.toDate()
+        newPlan.isRejected = aDayPlan.isRejected
+        newPlan.eachPlan = convertEachDyPlan(aDayPlan, context: context)
+    }
     
     func retriveSavedDayPlans(byDate: Date, completion: @escaping ([DayPlan] ) -> ()) {
         let userConfig = AppDefaults.shared.getAppSetUp()
@@ -732,7 +792,7 @@ extension CoreDataManager {
                 aDayPlan.isRejected = eachDayPlan.isRejected
                 aDayPlan.rejectionReason = eachDayPlan.rejectionReason ?? String()
                 
-                aDayPlan.insMode = ""
+                aDayPlan.insMode = "0"
                 aDayPlan.appver = ""
                 aDayPlan.mod = ""
                 
@@ -815,10 +875,11 @@ extension CoreDataManager {
                 
          
             }
+            completion(retrivedPlansArr)
         }
         
 
-            completion(retrivedPlansArr)
+         
 
         
        
@@ -887,133 +948,235 @@ extension CoreDataManager {
 //            //  completion()
 //        }
 //    }
-    
-    
-    func saveSessionAsEachDayPlan(planDate: Date = Date(), session: [Sessions], completion: @escaping (Bool) -> ()) {
-      
+    func saveSessionAsEachDayPlan(planDate: Date, session: [Sessions], completion: @escaping (Bool) -> ()) {
         let context = self.context
 
-        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
-         let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
-        let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
-        else {
-            fatalError("Entity not found")
-        }
+        // Define the date formatter
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-yy-dd"
 
-        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
-        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+        // Format the planDate to the desired format
+        let formattedPlanDate = dateFormatter.string(from: planDate)
 
-        guard let eachDayPlanEntity = NSEntityDescription.entity(forEntityName: "EachDayPlan", in: context) else {
-            fatalError("Entity not found")
-        }
+        // Define the fetch request to get all EachDayPlans
+        let fetchRequest: NSFetchRequest<EachDayPlan> = EachDayPlan.fetchRequest()
 
-        let eachDayPlan = EachDayPlan(entity: eachDayPlanEntity, insertInto: context)
-        eachDayPlan.planDate = Date() // Set the planDate as needed
-
-        // Set other properties based on the session
-        eachDayPlan.uuid = UUID()
-        eachDayPlan.remarks = session[0].remarks ?? ""
-        eachDayPlan.isRejected = session[0].isRejected ?? false
-        eachDayPlan.rejectionReason = session[0].rejectionReason
-        eachDayPlan.planDate = session[0].planDate ?? Date()
-        // Convert and add EachPlan objects
-        
-        
-        
-  
-        
-        
-        let eachPlanSet = NSMutableSet()
-        // Add EachPlan for the first index
-      //  let firstEachPlan = EachPlan(context: context)
-        
-        guard let firstPlanEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
-            fatalError("Entity not found")
-        }
-        let firstEachPlan = EachPlan(entity: firstPlanEntity, insertInto: context)
-
-        
-        
-        guard let secondPlanEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
-            fatalError("Entity not found")
-        }
-        let secondEachPlan = EachPlan(entity: secondPlanEntity, insertInto: context)
-
- 
-      //  CoreDataManager.shared.removeSessionTerrioriesFromCoreData()
-        session.enumerated().forEach { index, aSession in
-            
-            switch index {
-            case 0:
-                firstEachPlan.planDate = session[index].planDate ?? Date()
-                firstEachPlan.isRetrived = session[index].isRetrived ?? false
-                // Set properties based on session or adjust as needed
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                    firstEachPlan.rsfID =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-                } else {
-                    firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
-                }
-           
-                firstEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
-                let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
-                
-                if let territoryArray = SelectedTerritories.allObjects as? [Territory] {
-                    // Now territoryArray contains your Territory core data objects
-                    // Use this array as needed
-                    let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
-                    firstEachPlan.townCodes = territoryCodes
-                } else {
-                    print("Failed to convert NSSet to [Territory]")
-                }
-                
-                eachPlanSet.add(firstEachPlan)
-               
-            case 1:
-                secondEachPlan.planDate =  session[index].planDate ?? Date()
-                secondEachPlan.isRetrived = session[index].isRetrived ?? false
-                // Set properties based on session or adjust as needed
-                secondEachPlan.isRetrived = session[index].isRetrived ?? false
-                // Set properties based on session or adjust as needed
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                    secondEachPlan.rsfID =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-                } else {
-                    secondEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
-                }
-                secondEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
-                let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
-                
-                if let territoryArray = SelectedTerritories.allObjects as? [Territory] {
-                    // Now territoryArray contains your Territory core data objects
-                    // Use this array as needed
-                    let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
-                    secondEachPlan.townCodes = territoryCodes
-                } else {
-                    print("Failed to convert NSSet to [Territory]")
-                }
-         
-                eachPlanSet.add(secondEachPlan)
-                
-
-            default:
-                print("Yet to implement")
-            }
-        }
-        
-
-            eachDayPlan.eachPlan = eachPlanSet
-        
-
-        // Save to Core Data
         do {
+            // Fetch all existing EachDayPlans
+            let existingPlans = try context.fetch(fetchRequest)
+            
+            // Filter the fetched plans to find matches based on the formatted date
+            let matchedPlans = existingPlans.filter { eachDayPlan in
+                if let planDate = eachDayPlan.planDate {
+                    let formattedExistingDate = dateFormatter.string(from: planDate)
+                    return formattedExistingDate == formattedPlanDate
+                }
+                return false
+            }
+
+            
+                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
+                     let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+                    let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+                    else {
+                        fatalError("Entity not found")
+                    }
+            
+                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
+                    let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+                    let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+            
+            
+            // Update all matched plans
+            for eachDayPlan in matchedPlans {
+                updateEachDayPlan(eachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
+            }
+
+            // If no matched plans found, create a new one
+            if matchedPlans.isEmpty {
+                guard let eachDayPlanEntity = NSEntityDescription.entity(forEntityName: "EachDayPlan", in: context) else {
+                    fatalError("EachDayPlan entity not found")
+                }
+                let newEachDayPlan = EachDayPlan(entity: eachDayPlanEntity, insertInto: context)
+                updateEachDayPlan(newEachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
+            }
+
+            // Save to Core Data
             try context.save()
             completion(true)
         } catch {
-            print("Failed to save EachDayPlan to Core Data: \(error)")
+            print("Failed to fetch or save EachDayPlan to Core Data: \(error)")
             completion(false)
         }
-
     }
+    private func updateEachDayPlan(_ eachDayPlan: EachDayPlan, with session: [Sessions], temporaryObjects: (NSManagedObject, NSManagedObject, NSManagedObject), context: NSManagedObjectContext) {
+        let (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj) = temporaryObjects
+        
+        eachDayPlan.planDate = Date() // or keep the existing date if needed
+        eachDayPlan.uuid = UUID()
+        eachDayPlan.remarks = session.first?.remarks ?? ""
+        eachDayPlan.isRejected = session.first?.isRejected ?? false
+        eachDayPlan.rejectionReason = session.first?.rejectionReason
+
+        let eachPlanSet = NSMutableSet()
+
+        session.enumerated().forEach { index, aSession in
+            guard let planEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
+                fatalError("EachPlan entity not found")
+            }
+
+            let eachPlan = EachPlan(entity: planEntity, insertInto: context)
+            eachPlan.planDate = aSession.planDate ?? Date()
+            eachPlan.isRetrived = aSession.isRetrived ?? false
+
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                eachPlan.rsfID = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+            } else {
+                eachPlan.rsfID = convertHeadQuartersToCDM(aSession.headQuarters ?? temporaryselectedHqobj as! SelectedDayPlanHQ, context: context).code
+            }
+
+            eachPlan.wortTypeCode = convertWorkTypeToCDM(aSession.workType ?? temporaryselectedWTobj as! WorkType, context: context).code
+            let selectedTerritories = convertClustersToCDM(aSession.cluster ?? [temporaryselectedClusterobj as! Territory], context: context)
+            
+            if let territoryArray = selectedTerritories.allObjects as? [Territory] {
+                let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
+                eachPlan.townCodes = territoryCodes
+            } else {
+                print("Failed to convert NSSet to [Territory]")
+            }
+
+            eachPlanSet.add(eachPlan)
+        }
+
+        eachDayPlan.eachPlan = eachPlanSet
+    }
+    
+//    func saveSessionAsEachDayPlan(planDate: Date, session: [Sessions], completion: @escaping (Bool) -> ()) {
+//      
+//        let context = self.context
+//
+//        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: context),
+//         let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+//        let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+//        else {
+//            fatalError("Entity not found")
+//        }
+//
+//        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
+//        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+//        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+//
+//        guard let eachDayPlanEntity = NSEntityDescription.entity(forEntityName: "EachDayPlan", in: context) else {
+//            fatalError("Entity not found")
+//        }
+//
+//        let eachDayPlan = EachDayPlan(entity: eachDayPlanEntity, insertInto: context)
+//        eachDayPlan.planDate = Date() // Set the planDate as needed
+//
+//        // Set other properties based on the session
+//        eachDayPlan.uuid = UUID()
+//        eachDayPlan.remarks = session[0].remarks ?? ""
+//        eachDayPlan.isRejected = session[0].isRejected ?? false
+//        eachDayPlan.rejectionReason = session[0].rejectionReason
+//        eachDayPlan.planDate =  planDate
+//        //session[0].planDate ?? Date()
+//        // Convert and add EachPlan objects
+//        
+//        
+//        
+//  
+//        
+//        
+//        let eachPlanSet = NSMutableSet()
+//        // Add EachPlan for the first index
+//      //  let firstEachPlan = EachPlan(context: context)
+//        
+//        guard let firstPlanEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
+//            fatalError("Entity not found")
+//        }
+//        let firstEachPlan = EachPlan(entity: firstPlanEntity, insertInto: context)
+//
+//        
+//        
+//        guard let secondPlanEntity = NSEntityDescription.entity(forEntityName: "EachPlan", in: context) else {
+//            fatalError("Entity not found")
+//        }
+//        let secondEachPlan = EachPlan(entity: secondPlanEntity, insertInto: context)
+//
+// 
+//      //  CoreDataManager.shared.removeSessionTerrioriesFromCoreData()
+//        session.enumerated().forEach { index, aSession in
+//            
+//            switch index {
+//            case 0:
+//                firstEachPlan.planDate = session[index].planDate ?? Date()
+//                firstEachPlan.isRetrived = session[index].isRetrived ?? false
+//                // Set properties based on session or adjust as needed
+//                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                    firstEachPlan.rsfID =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+//                } else {
+//                    firstEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+//                }
+//           
+//                firstEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
+//                let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+//                
+//                if let territoryArray = SelectedTerritories.allObjects as? [Territory] {
+//                    // Now territoryArray contains your Territory core data objects
+//                    // Use this array as needed
+//                    let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
+//                    firstEachPlan.townCodes = territoryCodes
+//                } else {
+//                    print("Failed to convert NSSet to [Territory]")
+//                }
+//                
+//                eachPlanSet.add(firstEachPlan)
+//               
+//            case 1:
+//                secondEachPlan.planDate =  session[index].planDate ?? Date()
+//                secondEachPlan.isRetrived = session[index].isRetrived ?? false
+//                // Set properties based on session or adjust as needed
+//                secondEachPlan.isRetrived = session[index].isRetrived ?? false
+//                // Set properties based on session or adjust as needed
+//                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                    secondEachPlan.rsfID =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+//                } else {
+//                    secondEachPlan.rsfID =  convertHeadQuartersToCDM(session[index].headQuarters ?? temporaryselectedHqobj, context: self.context).code
+//                }
+//                secondEachPlan.wortTypeCode = convertWorkTypeToCDM(session[index].workType ?? temporaryselectedWTobj, context: self.context).code
+//                let SelectedTerritories = convertClustersToCDM(session[index].cluster ?? [temporaryselectedClusterobj], context: self.context)
+//                
+//                if let territoryArray = SelectedTerritories.allObjects as? [Territory] {
+//                    // Now territoryArray contains your Territory core data objects
+//                    // Use this array as needed
+//                    let territoryCodes = territoryArray.map { $0.code ?? "" }.joined(separator: ", ")
+//                    secondEachPlan.townCodes = territoryCodes
+//                } else {
+//                    print("Failed to convert NSSet to [Territory]")
+//                }
+//         
+//                eachPlanSet.add(secondEachPlan)
+//                
+//
+//            default:
+//                print("Yet to implement")
+//            }
+//        }
+//        
+//
+//            eachDayPlan.eachPlan = eachPlanSet
+//        
+//
+//        // Save to Core Data
+//        do {
+//            try context.save()
+//            completion(true)
+//        } catch {
+//            print("Failed to save EachDayPlan to Core Data: \(error)")
+//            completion(false)
+//        }
+//
+//    }
 }
     
 

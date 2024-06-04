@@ -91,7 +91,7 @@ class MasterSyncVM {
     func toGetMyDayPlan(type: MasterInfo, isToloadDB: Bool, date: Date = Date(), isFromDCR: Bool? = false, completion: @escaping (Result<[MyDayPlanResponseModel],MasterSyncErrors>) -> ()) {
         
  
-        let date = date.toString(format: "yyyy-MM-dd HH:mm:ss")
+        let ReqDt = date.toString(format: "yyyy-MM-dd HH:mm:ss")
         var param = [String: Any]()
         
         
@@ -103,7 +103,7 @@ class MasterSyncVM {
         
         param["tableName"] =  "gettodaydcr"
         //isFromDCR ?? false ? "gettodaydcr" : "getmydayplan"
-        param["ReqDt"] = date
+        param["ReqDt"] = ReqDt
         param["sfcode"] = "\(appsetup.sfCode!)"
         param["division_code"] = "\(appsetup.divisionCode!)"
 
@@ -129,7 +129,7 @@ class MasterSyncVM {
             case .success(let model):
                 dump(model)
                 if isToloadDB {
-                    welf.toUpdateDataBase(aDayplan: welf.toConvertResponseToDayPlan(model: model)) {_ in
+                    welf.toUpdateDataBase(planDate: date, aDayplan: welf.toConvertResponseToDayPlan(model: model)) {_ in
                         
                         completion(result)
                     }
@@ -149,21 +149,12 @@ class MasterSyncVM {
         
     }
     
-    func toUpdateDataBase(aDayplan: DayPlan, completion: @escaping (Bool) -> ()) {
-        CoreDataManager.shared.removeAllDayPlans()
-        CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan) { isComleted in
+    func toUpdateDataBase(planDate: Date, aDayplan: DayPlan, completion: @escaping (Bool) -> ()) {
+      //  CoreDataManager.shared.removeAllDayPlans()
+        CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan, date: planDate) { isComleted in
             
             completion(true)
-            
-//            if isComleted {
-//               // self.toCreateToast("Saved successfully")
-//
-//                CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
-//                    dump(dayplans)
-//                }
-//            
-//              
-//            } 
+
         }
     }
     
@@ -177,7 +168,7 @@ class MasterSyncVM {
         aDayPlan.designation = "\(userConfig.desig!)"
         aDayPlan.stateCode = "\(userConfig.stateCode!)"
         aDayPlan.subdivisionCode = userConfig.subDivisionCode ?? ""
-     
+        aDayPlan.isRetrived = true
         model.enumerated().forEach {index, aMyDayPlanResponseModel in
             switch index {
             case 0:

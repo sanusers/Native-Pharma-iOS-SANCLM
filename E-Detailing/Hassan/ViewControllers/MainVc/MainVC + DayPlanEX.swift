@@ -282,7 +282,7 @@ extension MainVC {
         
                 }
                 
-                completion(aDaysessions)
+               // completion(aDaysessions)
             }
             
             completion(aDaysessions)

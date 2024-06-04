@@ -429,8 +429,8 @@ class MainVC : UIViewController {
             layout.collectionView?.isScrollEnabled = true
         }
         
-        self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .left))
-        self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .right))
+       // self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .left))
+       // self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .right))
         
         
         [btnCall,btnActivity].forEach { button in
@@ -691,7 +691,7 @@ class MainVC : UIViewController {
         lblDate.text = dateFormatter.string(from:  date)
     }
     
-    func toConfigureMydayPlan(planDate: Date) {
+    func toConfigureMydayPlan(planDate: Date, isRetrived: Bool? = false) {
         
         
         
@@ -1028,15 +1028,14 @@ class MainVC : UIViewController {
     
     
     
-    func updateEachDayPlan(yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
+    func updateEachDayPlan(planDate: Date, yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
         // Remove all existing day plans
-        CoreDataManager.shared.removeAllDayPlans()
+     //   CoreDataManager.shared.removeAllDayPlans()
         
         // Save sessions as day plans
+
         
-        
-        
-        CoreDataManager.shared.saveSessionAsEachDayPlan(session: yetToSaveSession) { isCompleted in
+        CoreDataManager.shared.saveSessionAsEachDayPlan(planDate: planDate, session: yetToSaveSession) { isCompleted in
             // [weak self]
             //   guard let welf = self else { return }
             if isCompleted {
@@ -1592,7 +1591,7 @@ class MainVC : UIViewController {
         
         self.homeLineChartView = ahomeLineChartView
         
-        dateInfoLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
+        dateInfoLbl.text = toTrimDate(date: selectedToday , isForMainLabel: true)
         lineChatrtView?.addSubview(homeLineChartView ?? HomeLineChartView())
         
     }
@@ -1742,36 +1741,7 @@ class MainVC : UIViewController {
     }
     
     
-//    func toSeperateOutboxSections(outboxArr : [TodayCallsModel]) {
-//        // Dictionary to store arrays of TodayCallsModel for each day
-//        var callsByDay: [String: [TodayCallsModel]] = [:]
-//        var eventsByday: [String : UnsyncedEventCaptureModel] = [:]
-//        // Create a DateFormatter to parse the vstTime
-//
-//        
-//        
-//        // Iterate through the array and organize elements by day
-//        for call in outboxArr {
-//             let date = call.vstTime.toDate() 
-//                let dayString = date.toString(format: "yyyy-MM-dd")
-//                
-//                // Check if the day key exists in the dictionary
-//                if callsByDay[dayString] == nil {
-//                    callsByDay[dayString] = [call]
-//                } else {
-//                    callsByDay[dayString]?.append(call)
-//                }
-//            
-//        }
-//        obj_sections.removeAll()
-//        // Iterate through callsByDay and create Section objects
-//        for (day, calls) in callsByDay {
-//            let section = Section(items: calls, date: day)
-//            obj_sections.append(section)
-//        }
-//        
-//        
-//    }
+
     
     func toSeperateOutboxSections(outboxArr: [TodayCallsModel], completion: @escaping () -> ()) {
         // Dictionary to store arrays of TodayCallsModel for each day
@@ -1796,7 +1766,7 @@ class MainVC : UIViewController {
         let dispatchGroup = DispatchGroup()
         
         // Fetch UnsyncedEventCaptureModel data and organize by day
-        dispatchGroup.enter()
+    //    dispatchGroup.enter()
         CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventCaptures in
             for eventCapture in unsyncedEventCaptures {
                 if let eventDate = eventCapture.eventcaptureDate {
@@ -1807,12 +1777,12 @@ class MainVC : UIViewController {
                         eventsByDay[dayString]?.append(eventCapture)
                     }
                 }
-                dispatchGroup.leave()
+           //     dispatchGroup.leave()
             }
            
         }
         
-        dispatchGroup.enter()
+      //  dispatchGroup.enter()
         
         var dateArr: [Date] = []
         
@@ -1820,15 +1790,15 @@ class MainVC : UIViewController {
             aDayplans.forEach { eachDayPlan in
                 dateArr.append(eachDayPlan.planDate ?? Date())
             }
-            dispatchGroup.leave()
+          //  dispatchGroup.leave()
         }
         
-        dispatchGroup.enter()
+     
         
         for aDate in dateArr {
             toFetchExistingPlan(byDate: aDate) {existingSessions in
                 for aExistingSessions in existingSessions {
-                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) {
+                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && aExistingSessions.isRetrived == false  {
                         let dayString = dateFormatter.string(from: aExistingSessions.planDate ?? Date())
                         if plansByDay[dayString] == nil {
                           
@@ -1839,14 +1809,15 @@ class MainVC : UIViewController {
                     }
                     
                 }
-                dispatchGroup.leave()
+           
             }
+          
         }
         
 
         
         // Wait for all async tasks to complete
-        dispatchGroup.notify(queue: .main) {
+     //   dispatchGroup.notify(queue: .main) {
             // Create sections combining calls and events
             obj_sections.removeAll()
             let allDays = Set(callsByDay.keys).union(Set(eventsByDay.keys)).union(Set(plansByDay.keys))
@@ -1859,7 +1830,7 @@ class MainVC : UIViewController {
                 obj_sections.append(section)
             }
             completion()
-        }
+      //  }
     }
 
 
@@ -2527,17 +2498,17 @@ extension MainVC {
             } else {
                 yetToSaveSession.indices.forEach { index in
                     if  yetToSaveSession[index].isRetrived == true {
-                        yetToSaveSession[index].planDate = self.selectedRawDate
+                        yetToSaveSession[index].planDate =  selectedToday
                     } else {
                         yetToSaveSession[index].isRetrived = false
-                        yetToSaveSession[index].planDate = self.selectedRawDate
+                        yetToSaveSession[index].planDate =  selectedToday
                     }
                 }
             }
             
             
             
-            updateEachDayPlan(yetToSaveSession: yetToSaveSession) { [weak self] _  in
+            updateEachDayPlan(planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
                 guard let welf = self else {return}
                 guard var nonNilSession = welf.sessions else {
                     return
@@ -2555,12 +2526,13 @@ extension MainVC {
                   
                             nonNilSession.indices.forEach { index in
                                 nonNilSession[index].isRetrived = false
-                                nonNilSession[index].planDate = welf.selectedRawDate == nil ? Date() : welf.selectedRawDate
+                                nonNilSession[index].planDate = welf.selectedToday
                             }
                             
                             welf.sessions = nonNilSession
                             
-                            welf.setSegment(.workPlan)
+                          //  welf.setSegment(.workPlan)
+                            welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                         }
                         
                     }
@@ -2571,15 +2543,15 @@ extension MainVC {
                    // welf.toConfigureMydayPlan()
                     nonNilSession.indices.forEach { index in
                         nonNilSession[index].isRetrived = true
-                        nonNilSession[index].planDate = welf.selectedRawDate == nil ? Date() : welf.selectedRawDate
+                        nonNilSession[index].planDate = welf.selectedToday
                         
                     }
                     
                     welf.sessions = nonNilSession
                     
-                    welf.setSegment(.workPlan)
-                    
-                //    welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false)
+                   // welf.setSegment(.workPlan)
+                    welf.toConfigureMydayPlan(planDate: welf.selectedToday)
+               
                     
                     welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
                     
@@ -4654,11 +4626,9 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             if model?.editflag != "0" {
                 print("-----> YET TO CALL API <------")
                 welf.selectedToday = date
+                
                 welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
-                Shared.instance.showLoaderInWindow()
-                welf.toSetParams(date: date, isfromSyncCall: true) {
-                    Shared.instance.removeLoaderInWindow()
-                }
+      
                 return
                 
             } else  {
@@ -4701,25 +4671,41 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
        // Shared.instance.showLoaderInWindow()
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] _ in
-                Shared.instance.removeLoaderInWindow()
-                guard let welf = self else {return}
-                welf.toConfigureMydayPlan(planDate: date)
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "MMMM d, yyyy"
-                welf.lblDate.text = dateFormatter.string(from: date)
-                welf.selectedRawDate = date
-                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
-                welf.tourPlanCalander.reloadData()
+            masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] result in
+                switch result {
+                case .success(let response):
+                    Shared.instance.removeLoaderInWindow()
+                    guard let welf = self else {return}
+                    welf.upDateplansToDB(planDate: date, model: response)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "MMMM d, yyyy"
+                    welf.lblDate.text = dateFormatter.string(from: date)
+                    welf.selectedRawDate = date
+                    welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+                    welf.tourPlanCalander.reloadData()
+                case .failure(let error):
+                    self?.toCreateToast(error.rawValue)
+                }
+
+            }
+            self.toSetParams(date: date, isfromSyncCall: true) {
+               
             }
         } else {
-            
+            self.todayCallsModel = nil
+            self.callsCountLbl.text = "Call Count: \(0)"
             toConfigureMydayPlan(planDate: date)
             
         }
     }
     
-    
+    func upDateplansToDB(planDate: Date, model: [MyDayPlanResponseModel]) {
+        masterVM?.toUpdateDataBase(planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in
+            //refreshDayplan
+          //  NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
+            self.toConfigureMydayPlan(planDate: planDate)
+        }
+    }
     
     func getCurrentMonth(from selectedDate: Date) -> Int {
         let calendar = Calendar.current
@@ -4788,40 +4774,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         
     }
-    
-    
-//    func toFindSequentialNonfilledDates(selectedDate: Date) -> Date? {
-//   
-//        
-//        let calendar = Calendar.current
-//        
-//       let currentMonth = calendar.component(.month, from: Date())
-//
-//        
-//        let filteredDates = homeDataArr.filter { dateObject in
-//            guard let date = dateObject.dcr_dt?.toDate(format: "yyyy-MM-dd") else { return false }
-//            
-//            let isDateInCurrentMonth = Calendar.current.isDate(date, equalTo: selectedDate, toGranularity: .month)
-//            
-//            if currentMonth == getCurrentMonth(from: selectedDate) {
-//                // If selectedDate is in the current month, filter dates in the current month only
-//                return isDateInCurrentMonth && !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
-//            } else {
-//                // If selectedDate is not in the current month, consider dates from both current and previous months
-//                
-//                return  !homeDataArr.contains { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") == date }
-//            }
-//        }
-//        
-//
-//            if let leastDate = filteredDates.min(by: { $0.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() < $1.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date() }) {
-//                print("Least date: \(leastDate.dcr_dt ?? "")")
-//                return leastDate.dcr_dt?.toDate(format: "yyyy-MM-dd")
-//            }
-//        
-//        return nil
-//        
-//    }
+
     
 }
 

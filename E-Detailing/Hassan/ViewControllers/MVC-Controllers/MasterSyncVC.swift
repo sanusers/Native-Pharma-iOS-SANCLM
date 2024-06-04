@@ -721,8 +721,8 @@ class MasterSyncVC : UIViewController {
     }
     
 
-    func toSaveDayplansToDB(model: [MyDayPlanResponseModel]) {
-        masterVM?.toUpdateDataBase(aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in
+    func toSaveDayplansToDB(planDate: Date, model: [MyDayPlanResponseModel]) {
+        masterVM?.toUpdateDataBase(planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in
             //refreshDayplan
             NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
             
@@ -805,14 +805,14 @@ class MasterSyncVC : UIViewController {
                                     if dayPlan2 != nil {
                                         welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
                                             
-                                            welf.toSaveDayplansToDB(model: responseModel)
+                                            welf.toSaveDayplansToDB(planDate: Date(), model: responseModel)
                                             
                                             dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
                                             
                                             completion(true)
                                         }
                                     } else {
-                                        welf.toSaveDayplansToDB(model: responseModel)
+                                        welf.toSaveDayplansToDB(planDate: Date(), model: responseModel)
                                         
                                         dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
                                         
