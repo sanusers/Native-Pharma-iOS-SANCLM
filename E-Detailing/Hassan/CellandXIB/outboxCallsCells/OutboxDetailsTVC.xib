@@ -113,7 +113,7 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work Plan - Field Work" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="33c-lx-Y1F">
-                                        <rect key="frame" x="15" y="16" width="162" height="18"/>
+                                        <rect key="frame" x="15" y="16" width="268" height="18"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -125,6 +125,7 @@
                                     <constraint firstItem="33c-lx-Y1F" firstAttribute="centerY" secondItem="hTL-EL-Ugd" secondAttribute="centerY" id="U0Y-Ff-VtZ"/>
                                     <constraint firstAttribute="height" constant="50" id="UZK-3X-FZh"/>
                                     <constraint firstItem="v3H-Ra-mit" firstAttribute="centerY" secondItem="hTL-EL-Ugd" secondAttribute="centerY" id="hTl-LI-ONB"/>
+                                    <constraint firstItem="v3H-Ra-mit" firstAttribute="leading" secondItem="33c-lx-Y1F" secondAttribute="trailing" constant="5" id="ntL-EN-U0N"/>
                                     <constraint firstAttribute="trailing" secondItem="v3H-Ra-mit" secondAttribute="trailing" constant="15" id="w8Z-Fm-M7e"/>
                                 </constraints>
                             </view>

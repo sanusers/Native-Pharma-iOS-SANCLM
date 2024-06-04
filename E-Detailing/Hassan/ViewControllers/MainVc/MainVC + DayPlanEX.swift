@@ -42,9 +42,9 @@ struct Sessions {
 
 extension MainVC {
     
-    func callSavePlanAPI(completion: @escaping (Bool) -> Void) {
+    func callSavePlanAPI(byDate: Date, completion: @escaping (Bool) -> Void) {
         var dayEntities : [DayPlan] = []
-        CoreDataManager.shared.retriveSavedDayPlans() { dayplan in
+        CoreDataManager.shared.retriveSavedDayPlans(byDate: byDate) { dayplan in
             
             dayEntities = dayplan
             
@@ -124,10 +124,12 @@ extension MainVC {
     //                            }
     
 
-    func toFetchExistingPlan(completion: @escaping ([Sessions]) -> ())  {
+    
+    
+    func toFetchExistingPlan(byDate: Date, completion: @escaping ([Sessions]) -> ())  {
     
         var todayPlans : [DayPlan] = []
-        CoreDataManager.shared.retriveSavedDayPlans() {dayplan in
+        CoreDataManager.shared.retriveSavedDayPlans(byDate: byDate) {dayplan in
             todayPlans = dayplan
             
             var aDaysessions : [Sessions] = []

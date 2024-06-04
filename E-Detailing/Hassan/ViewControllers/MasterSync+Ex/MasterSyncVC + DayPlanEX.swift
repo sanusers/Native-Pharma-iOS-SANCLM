@@ -294,6 +294,31 @@ extension CoreDataManager {
         
     }
     
+    func fetchEachDayPlan(byDate: Date, completion: ([EachDayPlan]) -> () ) {
+        // Date formatter to convert date to string
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM dd, yyyy" // Format: "June 04, 2024"
+        
+        let formattedDate = dateFormatter.string(from: byDate)
+        
+        let fetchRequest: NSFetchRequest<EachDayPlan> = EachDayPlan.fetchRequest()
+        
+        do {
+            let savedDayPlans = try context.fetch(fetchRequest)
+            
+            // Filter the results by comparing formatted dates
+            let filteredPlans = savedDayPlans.filter { dayPlan in
+                let planDateString = dateFormatter.string(from: dayPlan.planDate ?? Date())
+                return planDateString == formattedDate
+            }
+            
+            completion(filteredPlans)
+        } catch {
+            print("Unable to fetch plans for the date \(formattedDate): \(error)")
+            completion([]) // Return an empty array in case of an error
+        }
+    }
+    
     func toCheckDayPlanExistence(_ uuid: UUID, completion: (Bool) -> ()) {
         
         do {
@@ -684,11 +709,11 @@ extension CoreDataManager {
     }
     
     
-    func retriveSavedDayPlans(completion: @escaping ([DayPlan] ) -> ()) {
+    func retriveSavedDayPlans(byDate: Date, completion: @escaping ([DayPlan] ) -> ()) {
         let userConfig = AppDefaults.shared.getAppSetUp()
         var retrivedPlansArr = [DayPlan]()
       //  let dispatchGroup = DispatchGroup()
-        CoreDataManager.shared.fetchEachDayPlan { eachDayPlanArr in
+        CoreDataManager.shared.fetchEachDayPlan(byDate: byDate) { eachDayPlanArr in
             eachDayPlanArr.forEach { eachDayPlan in
                 let aDayPlan = DayPlan()
                 //  aDayPlan.uuid = eachDayPlan.uuid ?? UUID()
@@ -799,6 +824,38 @@ extension CoreDataManager {
        
     }
     
+    
+    
+    func removeAdayPlans(planDate: Date) {
+        
+        // Date formatter to convert date to string
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM dd, yyyy" // Format: "June 04, 2024"
+        
+        let formattedDate = dateFormatter.string(from: planDate)
+        
+        let fetchRequest: NSFetchRequest<EachDayPlan> = EachDayPlan.fetchRequest()
+
+        do {
+            var savedDayPlans = try context.fetch(fetchRequest)
+            // Filter the results by comparing formatted dates
+   
+            let filteredPlans = savedDayPlans.filter { $0.planDate?.toString(format: "MMMM dd, yyyy") != formattedDate }
+            // Remove filtered plans using NSBatchDeleteRequest for performance
+            savedDayPlans = filteredPlans
+            // Remove filtered plans from Core Data context
+              for plan in filteredPlans {
+                  context.delete(plan)
+              }
+            
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    
+
     
     func removeAllDayPlans() {
         let fetchRequest: NSFetchRequest<EachDayPlan> = NSFetchRequest(entityName: "EachDayPlan")

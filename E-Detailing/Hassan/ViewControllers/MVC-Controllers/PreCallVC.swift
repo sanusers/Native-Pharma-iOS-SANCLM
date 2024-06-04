@@ -532,7 +532,7 @@ class PreCallVC : UIViewController {
         
        let weekoffIndex = Int(weeklyOff?.holiday_Mode ?? "0") ?? 0
        let monthIndex =  [0, 1]
-        let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex + 1)
+        let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex)
         dump(weekoffDates)
         self.weeklyoffSections = weekoffDates
         toLoadFunEventsTable()

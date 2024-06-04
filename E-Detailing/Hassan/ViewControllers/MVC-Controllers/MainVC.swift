@@ -239,7 +239,12 @@ class MainVC : UIViewController {
     var unsavedIndex : Int?
     var isTohightCell: Bool = false
     
-    private lazy var today: Date = {
+    private lazy var celenderToday: Date = {
+        return Date()
+    }()
+    
+    
+    private lazy var selectedToday: Date = {
         return Date()
     }()
     
@@ -314,13 +319,13 @@ class MainVC : UIViewController {
                 
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                welf.toConfigureMydayPlan()
+                welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                 welf.refreshUI()
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                welf.toPostDayplan() {
+                welf.toPostDayplan(byDate: welf.selectedToday) {
                    // if !Shared.instance.isDayplanSet {
-                        welf.toSetDayplan() {
+                    welf.toSetDayplan(byDate: welf.selectedToday) {
                             welf.refreshUI()
                         }
                   //  } else {
@@ -340,13 +345,13 @@ class MainVC : UIViewController {
                 
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                welf.toConfigureMydayPlan()
+                welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                 welf.refreshUI()
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                welf.toPostDayplan() {
+                welf.toPostDayplan(byDate: welf.selectedToday) {
                    // if !Shared.instance.isDayplanSet {
-                        welf.toSetDayplan() {
+                    welf.toSetDayplan(byDate: welf.selectedToday) {
                             welf.refreshUI()
                         }
                   //  } else {
@@ -686,11 +691,11 @@ class MainVC : UIViewController {
         lblDate.text = dateFormatter.string(from:  date)
     }
     
-    func toConfigureMydayPlan() {
+    func toConfigureMydayPlan(planDate: Date) {
         
         
         
-        toFetchExistingPlan() { existingSessions in
+        toFetchExistingPlan(byDate: planDate) { existingSessions in
             self.sessions = existingSessions
             if !(self.sessions?.isEmpty ?? false) {
                 
@@ -1311,7 +1316,7 @@ class MainVC : UIViewController {
     
     @objc func dcrcallsAdded() {
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-            toSetParams(isfromSyncCall: true) {
+            toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                 // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {}
             }
@@ -1328,12 +1333,12 @@ class MainVC : UIViewController {
     }
     
     
-    func toPostDayplan(completion: @escaping () -> ()) {
+    func toPostDayplan(byDate:Date, completion: @escaping () -> ()) {
         
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             
             
-            callSavePlanAPI() {  [weak self] isUploaded in
+            callSavePlanAPI(byDate: byDate) {  [weak self] isUploaded in
                 guard let welf = self else {return}
                 
                 guard var nonNilSession = welf.sessions else {
@@ -1341,7 +1346,7 @@ class MainVC : UIViewController {
                 }
                 
                 if isUploaded {
-                    welf.toConfigureMydayPlan()
+                    welf.toConfigureMydayPlan(planDate: byDate)
                 } else {
                     
           
@@ -1360,25 +1365,26 @@ class MainVC : UIViewController {
             }
             
         } else {
+            self.toCreateToast("Please connect to internet!")
             completion()
         }
         
     }
     
-    func toSetDayplan(completion: @escaping () -> ()) {
+    func toSetDayplan(byDate: Date, completion: @escaping () -> ()) {
         
         if !isPlanningNewDCR {
         
                 masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
-                    self.toConfigureMydayPlan()
-                    self.toSetParams(isfromSyncCall: false) {
+                    self.toConfigureMydayPlan(planDate: byDate)
+                    self.toSetParams(date: byDate, isfromSyncCall: false) {
                         Shared.instance.isDayplanSet = true
                         completion()
                     }
                 }
         } else {
             
-            self.toSetParams(isfromSyncCall: false) {
+            self.toSetParams(date: byDate, isfromSyncCall: false) {
                 self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
                 completion()
             }
@@ -1405,7 +1411,7 @@ class MainVC : UIViewController {
         let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
         //dateFormatter.date(from: storedDateString) ?? Date()
         if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
-            CoreDataManager.shared.removeAllDayPlans()
+           // CoreDataManager.shared.removeAdayPlans(planDate: currentDate)
         }
      
         
@@ -1723,14 +1729,14 @@ class MainVC : UIViewController {
                 completion()
             }
             
-            CoreDataManager.shared.fetchEachDayPlan { unsyncedEventCaptures in
-                if self.outBoxDataArr?.count ?? 0 == 0 && unsyncedEventCaptures.isEmpty {
-                    self.toConfigureClearCalls(istoEnable: false)
-                } else {
-                    self.toConfigureClearCalls(istoEnable: true)
-                }
-                completion()
-            }
+//            self.toFetchExistingPlan { fetchedEachDayPlan in
+//                if self.outBoxDataArr?.count ?? 0 == 0 && fetchedEachDayPlan.isEmpty {
+//                    self.toConfigureClearCalls(istoEnable: false)
+//                } else {
+//                    self.toConfigureClearCalls(istoEnable: true)
+//                }
+//                completion()
+//            }
             
         }
     }
@@ -1808,27 +1814,43 @@ class MainVC : UIViewController {
         
         dispatchGroup.enter()
         
-        toFetchExistingPlan() {existingSessions in
-            for aExistingSessions in existingSessions {
-                if !(aExistingSessions.isRetrived ?? true) {
-                    let dayString = dateFormatter.string(from: aExistingSessions.planDate ?? Date())
-                    if plansByDay[dayString] == nil {
-                      
-                        plansByDay[dayString] = [aExistingSessions]
-                    } else {
-                        plansByDay[dayString]?.append(aExistingSessions)
-                    }
-                }
-  
+        var dateArr: [Date] = []
+        
+        CoreDataManager.shared.fetchEachDayPlan { aDayplans in
+            aDayplans.forEach { eachDayPlan in
+                dateArr.append(eachDayPlan.planDate ?? Date())
             }
             dispatchGroup.leave()
         }
+        
+        dispatchGroup.enter()
+        
+        for aDate in dateArr {
+            toFetchExistingPlan(byDate: aDate) {existingSessions in
+                for aExistingSessions in existingSessions {
+                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) {
+                        let dayString = dateFormatter.string(from: aExistingSessions.planDate ?? Date())
+                        if plansByDay[dayString] == nil {
+                          
+                            plansByDay[dayString] = [aExistingSessions]
+                        } else {
+                            plansByDay[dayString]?.append(aExistingSessions)
+                        }
+                    }
+                    
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+
         
         // Wait for all async tasks to complete
         dispatchGroup.notify(queue: .main) {
             // Create sections combining calls and events
             obj_sections.removeAll()
-            let allDays = Set(callsByDay.keys).union(eventsByDay.keys)
+            let allDays = Set(callsByDay.keys).union(Set(eventsByDay.keys)).union(Set(plansByDay.keys))
+     
             for day in allDays {
                 let calls = callsByDay[day] ?? []
                 let events = eventsByDay[day] ?? []
@@ -1842,10 +1864,14 @@ class MainVC : UIViewController {
 
 
     
-    func toSetParams(date: Date? = Date(), isfromSyncCall: Bool, completion: @escaping () -> ()) {
-      //  Shared.instance.showLoader(in: self.viewCalls)
+    func toSetParams(date: Date, isfromSyncCall: Bool, completion: @escaping () -> ()) {
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            self.toCreateToast("Please connect to internet")
+            completion()
+            return
+        }
         let appsetup = AppDefaults.shared.getAppSetUp()
-        let date = date?.toString(format: "yyyy-MM-dd HH:mm:ss")
+        let date = date.toString(format: "yyyy-MM-dd HH:mm:ss")
         var params = [String : Any]()
         params["tableName"] = "gettodycalls"
         params["sfcode"] =  appsetup.sfCode ?? ""
@@ -2167,8 +2193,8 @@ class MainVC : UIViewController {
             viewDayPlanStatus.isHidden = true
             
         
-               toLoadWorktypeTable()
-            
+            toLoadWorktypeTable()
+            toLoadOutboxTable()
             
            
            // if isfromSwipe ?? false {
@@ -2224,7 +2250,7 @@ class MainVC : UIViewController {
         
         if moveUp {
             
-            if let nextMonth = calendar.date(byAdding: .month, value: 0 , to: self.today) {
+            if let nextMonth = calendar.date(byAdding: .month, value: 0 , to: self.celenderToday) {
                 print("Next Month:", nextMonth)
                 self.currentPage = nextMonth
 
@@ -2236,7 +2262,7 @@ class MainVC : UIViewController {
         } else if !moveUp{
 
             
-            if let previousMonth = calendar.date(byAdding: .month, value: -1 , to: self.today) {
+            if let previousMonth = calendar.date(byAdding: .month, value: -1 , to: self.celenderToday) {
                 print("Previous Month:", previousMonth)
                 self.currentPage = previousMonth
                
@@ -2368,7 +2394,7 @@ extension MainVC {
         CoreDataManager.shared.removeAllOutboxParams()
         CoreDataManager.shared.removeUnsyncedHomeData()
         CoreDataManager.shared.removeAllUnsyncedEventCaptures()
-        CoreDataManager.shared.removeAllDayPlans()
+       // CoreDataManager.shared.removeAllDayPlans()
         toSeperateDCR(istoAppend: false)
         self.updateDcr()
         DispatchQueue.main.async {
@@ -2409,10 +2435,10 @@ extension MainVC {
     }
 
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
-
-        toSetParams(isfromSyncCall: true) {
+        Shared.instance.showLoaderInWindow()
+        toSetParams(date: self.selectedToday, isfromSyncCall: true) {
             self.refreshDashboard {
-                
+                Shared.instance.removeLoaderInWindow()
             }
         }
 
@@ -2496,7 +2522,6 @@ extension MainVC {
             if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
                 yetToSaveSession.indices.forEach { index in
                     yetToSaveSession[index].isRetrived = true
-                    //yetToSaveSession[index] = true
                     yetToSaveSession[index].planDate = self.selectedRawDate
                 }
             } else {
@@ -2519,9 +2544,9 @@ extension MainVC {
                 }
 
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                    welf.callSavePlanAPI() { isUploaded in
+                    welf.callSavePlanAPI(byDate: welf.selectedToday) { isUploaded in
                         if isUploaded {
-                            welf.toConfigureMydayPlan()
+                            welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                             
                             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
                             
@@ -2848,7 +2873,7 @@ extension MainVC : MasterSyncVCDelegate {
     func isHQModified(hqDidChanged: Bool) {
         
                 if hqDidChanged {
-                    toConfigureMydayPlan()
+                    toConfigureMydayPlan(planDate: self.selectedToday)
     
                 }
         
@@ -3320,6 +3345,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let model = obj_sections[indexPath.section].items
             let eventModel = obj_sections[indexPath.section].eventCaptures
             let plansModel = obj_sections[indexPath.section].myDayplans
+            let date = obj_sections[indexPath.section].date
             cell.delegate = self
             cell.viewController = self
             cell.todayCallsModel = model
@@ -3331,11 +3357,29 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             //self.outBoxDataArr?.count ?? 0
             cell.callsCountLbl.text = "\(count)"
             cell.eventCOuntLbl.text = "\(eventModel.count)"
-            var myDayplanTitle = ""
-            plansModel.forEach { aSession in
-                myDayplanTitle += aSession.workType?.name ?? ""
+            var firstPlan = ""
+            var secondPlan = ""
+            plansModel.enumerated().forEach { index, aSession in
+                switch index {
+                case 0:
+                    if let wtName = aSession.workType?.name  {
+                        firstPlan = wtName
+                    }
+                case 1:
+                    if plansModel.count != 2 {
+                        if let wtName = aSession.workType?.name  {
+                            secondPlan = wtName
+                        }
+                    }
+          
+                default:
+                    print("Yet to")
+                }
+   
+                
+               
             }
-            cell.workPlanTitLbl.text = "Work Plan - \(myDayplanTitle)"
+            cell.workPlanTitLbl.text = "Work Plan - \(firstPlan), \(secondPlan)"
             cell.toLoadData()
             
             
@@ -3349,6 +3393,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
             }
             
+            cell.workPlanRefreshView.addTap {
+              
+                let dateString = date
+                let rawDate = dateString.toDate()
+                self.toPostDayplan(byDate: rawDate) {
+                }
+            }
             
             cell.callsCollapseIV.addTap {
                 cell.eventExpandState  = .eventNotExpanded
@@ -3548,11 +3599,14 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         switch type {
             
         case .workType:
-            if let nonnillsession = self.sessions, nonnillsession.count > 1 {
-                if let workType = sessions?[1].workType  {
-                    vc.selectedObject = workType
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                if let nonnillsession = self.sessions, nonnillsession.count > 1 {
+                    if let workType = sessions?[1].workType  {
+                        vc.selectedObject = workType
+                    }
                 }
             }
+
 
             
          
@@ -4285,9 +4339,18 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         let weeklyoffSetupArr : [Weeklyoff]? = DBManager.shared.getWeeklyOff()
 
         guard let  weeklyoffSetupArr = weeklyoffSetupArr, !weeklyoffSetupArr.isEmpty else {return}
-        let weeklyOff = weeklyoffSetupArr[0]
-        let weekoffIndex = Int(weeklyOff.holiday_Mode ?? "0") ?? 0
-        let weekoffDates = self.getWeekoffDates(forMonths: [-1, 0, 1], weekoffday: weekoffIndex + 1)
+        var weekoffIndex : [Int] = []
+        //(weeklyOff?.holiday_Mode ?? "0") ?? 0
+        weeklyoffSetupArr.forEach({ aWeeklyoff in
+            weekoffIndex.append(Int(aWeeklyoff.holiday_Mode ?? "0") ?? 0)
+        })
+        var weekoffDates : [Date] = []
+        let monthIndex : [Int] = [-1, 0]
+        weekoffIndex.forEach { weeklyoffIndex in
+            weekoffDates.append(contentsOf: getWeekoffDates(forMonths: monthIndex, weekoffday: weeklyoffIndex))
+        }
+        
+
         let dcrWeeklyoffDateStrArr: [String] = {
             var dateStrings = [String]()
             
@@ -4540,16 +4603,34 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         
         cell.addTap { [weak self] in
+          
             //Shared.instance.showLoaderInWindow()
             guard let welf = self else {return}
+//            if model == nil {
+//                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+//                welf.selectedRawDate = date
+//                welf.sessions?.removeAll()
+//                welf.fetchedWorkTypeObject1 = nil
+//                welf.isPlanningNewDCR = true
+//                welf.fetchedClusterObject1 = nil
+//                welf.fetchedHQObject1 = nil
+//                welf.fetchedHQObject2 = nil
+//                welf.fetchedClusterObject2 = nil
+//                welf.fetchedWorkTypeObject2 = nil
+//                welf.toAddnewSession()
+//                welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
+//                welf.setSegment(.workPlan)
+//                welf.tourPlanCalander.reloadData()
+//                welf.toSetParams(date: date, isfromSyncCall: false) {}
+//                let dateFormatter = DateFormatter()
+//                dateFormatter.dateFormat = "MMMM d, yyyy"
+//                welf.lblDate.text = dateFormatter.string(from: date)
+//            }
             let selectedDate = date.toString(format: "yyyy-MM-dd")
+            
             /// note:- future date selection action
             if welf.isFurureDate(date: date) {
-                
-              
-                
                 welf.showAlertToFilldates(description: "Day planing for future dates are restricted.")
-                //welf.toCreateToast("Day planing for future dates are restricted.")
           
                 return
             }
@@ -4559,7 +4640,6 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
            let isForsequential = false
             if isForsequential {
                 welf.getNonExistingDatesInCurrentMonth(selectedDate: date) { tobefilledDate in
-                    Shared.instance.removeLoaderInWindow()
                     guard let tobefilledDate = tobefilledDate else {return}
                      //Shared.instance.showLoaderInWindow()
                      if tobefilledDate.toDate(format: "yyyy-MM-dd") < selectedDate.toDate(format: "yyyy-MM-dd")  {
@@ -4570,45 +4650,34 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                  }
             }
 
-            
             /// note:- DCR edit flag
-            if model?.editflag == "0" {
+            if model?.editflag != "0" {
                 print("-----> YET TO CALL API <------")
+                welf.selectedToday = date
                 welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
+                Shared.instance.showLoaderInWindow()
+                welf.toSetParams(date: date, isfromSyncCall: true) {
+                    Shared.instance.removeLoaderInWindow()
+                }
+                return
                 
-                
+            } else  {
+              //  welf.toCreateToast("OOPS you cant edit \(selectedDate)")
+                welf.showAlertToFilldates(description: "OOPS you cant edit \(selectedDate)")
+                return
             }
             
             
             /// note:- Today date selection action
-            let today = Date()
-            if today.toString(format: "yyyy-MM-dd")  ==  date.toString(format: "yyyy-MM-dd") {
-                welf.callDayPLanAPI(date: today, isFromDCRDates: false)
-            }
+//            let today = Date()
+//            if today.toString(format: "yyyy-MM-dd")  ==  date.toString(format: "yyyy-MM-dd") {
+//                welf.selectedToday = date
+//                welf.callDayPLanAPI(date: today, isFromDCRDates: false)
+//         
+//            }
             
             
-            if model == nil {
-                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
-                welf.selectedRawDate = date
-                welf.sessions?.removeAll()
-                welf.fetchedWorkTypeObject1 = nil
-                welf.isPlanningNewDCR = true
-                welf.fetchedClusterObject1 = nil
-                welf.fetchedHQObject1 = nil
-                welf.fetchedHQObject2 = nil
-                welf.fetchedClusterObject2 = nil
-                welf.fetchedWorkTypeObject2 = nil
-                welf.toAddnewSession()
-                welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
-                welf.setSegment(.workPlan)
-                welf.tourPlanCalander.reloadData()
-                welf.toSetParams(date: date, isfromSyncCall: false) {}
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "MMMM d, yyyy"
-                welf.lblDate.text = dateFormatter.string(from: date)
-            } else {
-            
-            }
+ 
            
         }
         
@@ -4635,7 +4704,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] _ in
                 Shared.instance.removeLoaderInWindow()
                 guard let welf = self else {return}
-                welf.toConfigureMydayPlan()
+                welf.toConfigureMydayPlan(planDate: date)
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MMMM d, yyyy"
                 welf.lblDate.text = dateFormatter.string(from: date)
@@ -4645,7 +4714,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             }
         } else {
             
-            toConfigureMydayPlan()
+            toConfigureMydayPlan(planDate: date)
             
         }
     }
@@ -5013,7 +5082,7 @@ extension MainVC: PopOverVCDelegate {
                 dump(response)
                 self.toCreateToast("Calls deleted Successfully")
                // self.removeAllAddedCall(id: model.custCode)
-                self.toSetParams(isfromSyncCall: true) {
+                self.toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                     self.refreshDashboard {
                         Shared.instance.removeLoaderInWindow()
                     }

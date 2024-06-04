@@ -159,7 +159,13 @@ class OutboxDetailsTVC: UITableViewCell {
             
             let inDateStr = intime.toDate(format: "yyyy-MM-dd HH:mm:ss")
             
-           
+//            if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
+//                let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
+//                let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
+//                
+//            }
+            
+       
             
             checkinLbl.text =  "Check IN - \(inDateStr.toString(format: "hh:mm a"))"
             
