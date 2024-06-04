@@ -14,6 +14,7 @@ class ViewDayReportVC: BaseViewController {
     var reportsModel : ReportsModel?
     var isToReduceLocationHeight : Bool = false
     var appdefaultSetup : AppSetUp? = nil
+    var dcrDate: String = ""
     @IBOutlet weak var dayReportView: DayReportView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,10 +22,11 @@ class ViewDayReportVC: BaseViewController {
         // Do any additional setup after loading the view.
     }
     
-    class func initWithStory(model: ReportsModel) -> ViewDayReportVC {
+    class func initWithStory(model: ReportsModel, dcrDate: String) -> ViewDayReportVC {
         let tourPlanVC : ViewDayReportVC = UIStoryboard.Hassan.instantiateViewController()
       //  tourPlanVC.homeVM = HomeViewModal()
         tourPlanVC.reportsModel = model
+        tourPlanVC.dcrDate = dcrDate
         tourPlanVC.reportsVM = ReportsVM()
         return tourPlanVC
     }

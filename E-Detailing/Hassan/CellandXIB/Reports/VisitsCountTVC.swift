@@ -53,7 +53,9 @@ extension VisitsCountTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.width / 8, height: collectionView.height)
+        return CGSize(width:visitsInfo[indexPath.item].type.rawValue.size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17)]).width + 50, height: collectionView.height)
+        
+     //   return CGSize(width: collectionView.width / 8, height: collectionView.height)
     }
     
     

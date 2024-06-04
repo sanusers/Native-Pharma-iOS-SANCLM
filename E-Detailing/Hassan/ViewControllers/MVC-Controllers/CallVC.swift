@@ -263,6 +263,7 @@ class CallVC : UIViewController {
     
     @IBOutlet var  backGroundVXview : UIView!
     
+    var selectedTerritories = [Territory]()
     private var dcrSegmentControl : UISegmentedControl!
     private var callListViewModel : CallListViewModel!
     
@@ -651,7 +652,18 @@ extension CallVC : collectionViewProtocols {
         switch collectionView {
             case self.callCollectionView :
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DoctorCallCell", for: indexPath) as! DoctorCallCell
+           // cell.selectedTerritories = self.selectedTerritories
                 cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+            cell.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+            cell.btnTownName.tintColor = .appLightTextColor
+            
+            selectedTerritories.forEach { aTerritory in
+                if aTerritory.code ==  cell.CallDetail.townCode {
+                    cell.btnTownName.backgroundColor = .appLightPink.withAlphaComponent(0.2)
+                    cell.btnTownName.tintColor = .appLightPink
+                }
+            }
+            
                 return cell
             case self.headerCollectionView :
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRSelectionTitleCell", for: indexPath) as! DCRSelectionTitleCell

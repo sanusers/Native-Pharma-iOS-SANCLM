@@ -24,6 +24,15 @@ class RCPAdetailsDesctiptionCVC: UICollectionViewCell {
     @IBOutlet var competitorProductQty: UILabel!
     
     
+    func populateCell(model: RCPAresonseModel) {
+        productNameLbl.text = model.opName
+        productQtyLbl.text = "\(model.opQty)"
+        chemistNameLBl.text = model.chmName
+        competitorNameLbl.text = model.compName
+        competitorProductNameLbl.text = model.compPName
+        competitorProductQty.text = "\(model.cpQty)" 
+        
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

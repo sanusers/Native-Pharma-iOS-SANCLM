@@ -24,7 +24,7 @@ class ProductSectionReusableView: UICollectionReusableView {
     
     let productLbl: UILabel = {
         let label = PaddedLabel()
-        label.text = "Product Name"
+        label.text = "  Product Name"
         label.textColor = .appTextColor
         label.setSpecificCornersForLeft(cornerRadius: 3)
         label.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)

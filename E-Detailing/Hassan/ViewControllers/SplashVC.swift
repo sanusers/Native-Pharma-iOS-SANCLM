@@ -37,7 +37,7 @@ class SplashVC: BaseViewController{
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             UIView.animate(withDuration: 1, delay: 0, animations: {
-                self.splashView?.SplashImageHolderView.isHidden = false
+                self.splashView?.SplashImageHolderView.isHidden = true
                 Shared.instance.removeLoader(in: self.splashView.SplashImageHolderView)
                 AppDelegate.shared.setupRootViewControllers(isFromlaunch: true)
             })

@@ -25,6 +25,7 @@ class DoctorCallCell: UICollectionViewCell {
     
     
     func setupUI() {
+        btnTownName.layer.cornerRadius = 3
         lblName.setFont(font: .bold(size: .SUBHEADER))
         lblName.textColor = .appTextColor
         lblCategory.setFont(font: .medium(size: .BODY))
@@ -35,31 +36,41 @@ class DoctorCallCell: UICollectionViewCell {
         lblTownName.textColor = .appLightPink
     }
     
+    var selectedTerritories: [Territory]?
+    
+    func tosetTerritoryLbl(selectedTerritories : [Territory]) -> Void {
+        selectedTerritories.forEach { aTerritory in
+            if aTerritory.code == CallDetail.townCode {
+                self.btnTownName.backgroundColor = .appLightPink.withAlphaComponent(0.2)
+                self.btnTownName.tintColor = .appPink
+            } else {
+                self.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+                self.btnTownName.tintColor = .appTextColor
+            }
+        }
+    }
+    
     var CallDetail : CallViewModel! {
         didSet{
+          
+            
             self.lblName.text = CallDetail.name
             self.lblTownName.text = CallDetail.territory
             self.lblCategory.text = CallDetail.category
             self.lblSpecialty.text =  CallDetail.speciality
             
-            
+         
             self.btnTownName.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
             
             self.btnTownName.setTitle(CallDetail.territory, for: .normal)
             
-            self.btnTownName.backgroundColor = UIColor(red: CGFloat(241.0/255.0), green: CGFloat(83.0/255.0), blue: CGFloat(110.0/255.0), alpha: CGFloat(0.2))
+            
+            guard let selectedTerritories = self.selectedTerritories else {return}
+            
+           // tosetTerritoryLbl(selectedTerritories: selectedTerritories)
             
             
-            
-            
-            
-//            if DCRType.doctor == CallDetail.type || DCRType.unlistedDoctor == CallDetail.type {
-//                self.lblCategory.text = CallDetail.category
-//                self.lblSpecialty.text =  CallDetail.speciality
-//            }else {
-//                self.lblCategory.text = ""
-//                self.lblSpecialty.text = ""
-//            }
+
             
             
             

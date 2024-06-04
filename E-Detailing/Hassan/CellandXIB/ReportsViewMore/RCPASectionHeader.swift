@@ -14,8 +14,7 @@ class RCPASectionReusableView: UICollectionReusableView {
     let sectionHolderView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = 5
-        view.elevate(2)
+        view.layer.cornerRadius = 3
         return view
     }()
     

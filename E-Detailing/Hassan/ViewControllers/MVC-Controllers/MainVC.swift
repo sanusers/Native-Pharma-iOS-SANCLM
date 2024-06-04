@@ -1723,6 +1723,15 @@ class MainVC : UIViewController {
                 completion()
             }
             
+            CoreDataManager.shared.fetchEachDayPlan { unsyncedEventCaptures in
+                if self.outBoxDataArr?.count ?? 0 == 0 && unsyncedEventCaptures.isEmpty {
+                    self.toConfigureClearCalls(istoEnable: false)
+                } else {
+                    self.toConfigureClearCalls(istoEnable: true)
+                }
+                completion()
+            }
+            
         }
     }
     
@@ -1762,6 +1771,7 @@ class MainVC : UIViewController {
         // Dictionary to store arrays of TodayCallsModel for each day
         var callsByDay: [String: [TodayCallsModel]] = [:]
         var eventsByDay: [String: [UnsyncedEventCaptureModel]] = [:]
+        var plansByDay : [String: [Sessions]] = [:]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
@@ -1791,6 +1801,25 @@ class MainVC : UIViewController {
                         eventsByDay[dayString]?.append(eventCapture)
                     }
                 }
+                dispatchGroup.leave()
+            }
+           
+        }
+        
+        dispatchGroup.enter()
+        
+        toFetchExistingPlan() {existingSessions in
+            for aExistingSessions in existingSessions {
+                if !(aExistingSessions.isRetrived ?? true) {
+                    let dayString = dateFormatter.string(from: aExistingSessions.planDate ?? Date())
+                    if plansByDay[dayString] == nil {
+                      
+                        plansByDay[dayString] = [aExistingSessions]
+                    } else {
+                        plansByDay[dayString]?.append(aExistingSessions)
+                    }
+                }
+  
             }
             dispatchGroup.leave()
         }
@@ -1803,37 +1832,14 @@ class MainVC : UIViewController {
             for day in allDays {
                 let calls = callsByDay[day] ?? []
                 let events = eventsByDay[day] ?? []
-                let section = Section(items: calls, eventCaptures: events, date: day)
+                let dayPlans = plansByDay[day] ?? []
+                let section = Section(items: calls, eventCaptures: events, date: day, sessions: dayPlans)
                 obj_sections.append(section)
             }
             completion()
         }
     }
-    
 
-//    let dispatchGroup = DispatchGroup()
-//        dispatchGroup.enter()
-//        CoreDataManager.shared.toRetriveEventcaptureCDM {
-//              unsyncedEventCaptures in
-//            
-//            
-//            
-//            for aEvent in unsyncedEventCaptures {
-//                
-//                let dayString = aEvent.eventcaptureDate?.toString(format: "yyyy-MM-dd")
-//                if eventsByday[dayString ?? ""] == nil {
-//                    eventsByday[dayString ?? ""] = aEvent
-//                } else {
-//                    eventsByday[dayString ?? ""]?.append(aEvent)
-//                }
-//            }
-//            
-//            dispatchGroup.leave()
-//            
-//            
-//        }
-    
-    
 
     
     func toSetParams(date: Date? = Date(), isfromSyncCall: Bool, completion: @escaping () -> ()) {
@@ -2362,6 +2368,7 @@ extension MainVC {
         CoreDataManager.shared.removeAllOutboxParams()
         CoreDataManager.shared.removeUnsyncedHomeData()
         CoreDataManager.shared.removeAllUnsyncedEventCaptures()
+        CoreDataManager.shared.removeAllDayPlans()
         toSeperateDCR(istoAppend: false)
         self.updateDcr()
         DispatchQueue.main.async {
@@ -2382,7 +2389,16 @@ extension MainVC {
             checkinAction()
             
         } else {
+            var selectedTerritories = [Territory]()
             let callVC = UIStoryboard.callVC
+            if let fetchedClusterObject1 = fetchedClusterObject1 {
+                selectedTerritories.append(contentsOf: fetchedClusterObject1)
+            }
+                
+                if let fetchedClusterObject2 = fetchedClusterObject2 {
+                    selectedTerritories.append(contentsOf:fetchedClusterObject2)
+          }
+            callVC.selectedTerritories = selectedTerritories
             
             self.navigationController?.pushViewController(callVC, animated: true)
         }
@@ -3303,16 +3319,23 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let cell = tableView.dequeueReusableCell(withIdentifier: "OutboxDetailsTVC", for: indexPath) as! OutboxDetailsTVC
             let model = obj_sections[indexPath.section].items
             let eventModel = obj_sections[indexPath.section].eventCaptures
+            let plansModel = obj_sections[indexPath.section].myDayplans
             cell.delegate = self
             cell.viewController = self
             cell.todayCallsModel = model
             cell.eventCaptureModel = eventModel
+            cell.myDayPlans = plansModel
             //[indexPath.row]
             //self.outBoxDataArr
             let count = model.count
             //self.outBoxDataArr?.count ?? 0
             cell.callsCountLbl.text = "\(count)"
             cell.eventCOuntLbl.text = "\(eventModel.count)"
+            var myDayplanTitle = ""
+            plansModel.forEach { aSession in
+                myDayplanTitle += aSession.workType?.name ?? ""
+            }
+            cell.workPlanTitLbl.text = "Work Plan - \(myDayplanTitle)"
             cell.toLoadData()
             
             

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,9 +14,6 @@
         </array>
         <array key="Satoshi-Medium.otf">
             <string>Satoshi-Medium</string>
-        </array>
-        <array key="Satoshi-Regular.otf">
-            <string>Satoshi-Regular</string>
         </array>
     </customFonts>
     <objects>
@@ -73,26 +70,20 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wgK-Dc-bMp">
                                         <rect key="frame" x="0.0" y="123.5" width="219" height="36.5"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5cJ-qE-kbN" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="30" height="36.5"/>
-                                                <color key="backgroundColor" red="0.94509803921568625" green="0.32549019607843138" blue="0.43137254901960786" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
-                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal">
-                                                    <color key="titleColor" red="0.94509803921568625" green="0.32549019607843138" blue="0.43137254901960786" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                        <real key="value" value="5"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VbM-xh-kql">
+                                                <rect key="frame" x="0.0" y="0.0" width="64" height="36.5"/>
+                                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Button">
+                                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="0.0"/>
+                                                </buttonConfiguration>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="5cJ-qE-kbN" firstAttribute="top" secondItem="wgK-Dc-bMp" secondAttribute="top" id="1RU-Cb-kqp"/>
-                                            <constraint firstAttribute="bottom" secondItem="5cJ-qE-kbN" secondAttribute="bottom" id="H3C-0c-oRP"/>
-                                            <constraint firstItem="5cJ-qE-kbN" firstAttribute="leading" secondItem="wgK-Dc-bMp" secondAttribute="leading" id="oXx-yD-fXz"/>
+                                            <constraint firstItem="VbM-xh-kql" firstAttribute="top" secondItem="wgK-Dc-bMp" secondAttribute="top" id="9eL-RB-4Tl"/>
+                                            <constraint firstAttribute="bottom" secondItem="VbM-xh-kql" secondAttribute="bottom" id="eAt-Q2-nCg"/>
+                                            <constraint firstItem="VbM-xh-kql" firstAttribute="leading" secondItem="wgK-Dc-bMp" secondAttribute="leading" id="fKA-7T-u03"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -127,7 +118,7 @@
             </collectionViewCellContentView>
             <size key="customSize" width="243" height="188"/>
             <connections>
-                <outlet property="btnTownName" destination="5cJ-qE-kbN" id="blz-GQ-Sfy"/>
+                <outlet property="btnTownName" destination="VbM-xh-kql" id="1PN-60-Ure"/>
                 <outlet property="lblCategory" destination="wiK-cQ-VKY" id="wRb-8H-x4N"/>
                 <outlet property="lblName" destination="6cV-R7-acg" id="Rvi-MA-thz"/>
                 <outlet property="lblSpecialty" destination="FdZ-5C-kIa" id="EyI-ro-4KL"/>

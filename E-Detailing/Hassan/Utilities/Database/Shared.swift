@@ -46,6 +46,7 @@ extension Shared{
         case mastersync = "loading"
         case launch = "Launch"
         
+        
     }
     
     func showLoaderInWindow(){
@@ -103,7 +104,7 @@ extension Shared{
         
         
         
-        let jeremyGif = loaderType == .common ? UIImage.gif(asset: "loader") : UIImage.gif(asset: "loading")
+        let jeremyGif = loaderType == .common ? UIImage.gif(asset: "loader") : loaderType == .mastersync ? UIImage.gif(asset: "loading") :  UIImage.gif(asset: "launch")
         //UIImage.gifImageWithName("loader")
         let view = UIView()
         view.backgroundColor = UIColor.appLightTextColor.withAlphaComponent(0.05)

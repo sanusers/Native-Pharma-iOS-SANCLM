@@ -36,10 +36,11 @@ class CustomCalenderView : UIView {
     var selectedToDate: Date?
     var isForFrom: Bool = false
     var isPastDaysAllowed: Bool = false
-    private lazy var today: Date = {
-        return Date()
-    }()
-    private var currentPage: Date?
+    var isFromReports :Bool = false
+    var today: Date = Date()
+    
+  
+    var currentPage: Date?
     private func moveCurrentPage(moveUp: Bool) {
         
         let calendar = Calendar.current
@@ -54,17 +55,13 @@ class CustomCalenderView : UIView {
                 self.currentPage = nextMonth
                 if !isFromReportsFilter {
                     if today == self.currentPage {
-                        toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+                        toDisableNextPrevBtn(enableprevBtn: isFromReports ? true : false, enablenextBtn: true)
                     } else {
                         toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
                     }
                 }
-
-              
-                
             }
  
-
         } else if !moveUp{
 
             
@@ -73,7 +70,7 @@ class CustomCalenderView : UIView {
                 self.currentPage = previousMonth
                 if !isFromReportsFilter {
                     if today == self.currentPage {
-                        toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+                        toDisableNextPrevBtn(enableprevBtn:  isFromReports ? true : false, enablenextBtn: true)
                     } else {
                         toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
                     }
@@ -120,7 +117,8 @@ class CustomCalenderView : UIView {
         
         self.layer.cornerRadius = 5
         dateInfoLbl.text = toTrimDate(date: today , isForMainLabel: true)
-        toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
+ 
+        toDisableNextPrevBtn(enableprevBtn:  self.isFromReports ? false : true, enablenextBtn: true)
         self.isPastDaysAllowed = isPastDaysAllowed
         //toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
         self.viewCalendar.register(MyDayPlanCalenderCell.self, forCellReuseIdentifier: "MyDayPlanCalenderCell")
@@ -173,25 +171,29 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
         //  let toCompareDate = dateFormatter.string(from: date)
         cell.addedIV.isHidden = false
         cell.customLabel.text = toTrimDate(date: date)
-        
+        cell.customLabel.textColor = .appTextColor
         
         
         cell.contentHolderView.backgroundColor = .appWhiteColor
         
         if let selectedFromDate = self.selectedFromDate, let selectedToDate = self.selectedToDate {
               if date >= selectedFromDate && date <= selectedToDate {
-                  cell.contentHolderView.backgroundColor = .appLightPink
+                  cell.contentHolderView.backgroundColor = .appTextColor
+                  cell.customLabel.textColor = .appWhiteColor
+                  
               }
           } else {
               if let selectedFromDate = self.selectedFromDate {
                   if Calendar.current.isDate(selectedFromDate, inSameDayAs: date) {
-                      cell.contentHolderView.backgroundColor = .appLightPink
+                      cell.contentHolderView.backgroundColor = .appTextColor
+                      cell.customLabel.textColor = .appWhiteColor
                   }
               }
               
               if let selectedToDate = self.selectedToDate {
                   if Calendar.current.isDate(selectedToDate, inSameDayAs: date) {
-                      cell.contentHolderView.backgroundColor = .appLightPink
+                      cell.contentHolderView.backgroundColor = .appTextColor
+                      cell.customLabel.textColor = .appWhiteColor
                   }
               }
           }
@@ -254,7 +256,7 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
         }
 
         if date >= selectedFromDate && date <= selectedToDate {
-            return .appLightPink
+            return .appTextColor
         }
 
         return nil

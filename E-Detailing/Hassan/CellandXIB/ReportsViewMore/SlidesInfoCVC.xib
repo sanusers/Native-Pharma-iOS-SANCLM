@@ -32,7 +32,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="371.33333333333331" height="56.666666666666664"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brand Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xr7-qH-dG0">
-                                                <rect key="frame" x="0.0" y="19" width="361.33333333333331" height="19"/>
+                                                <rect key="frame" x="5" y="19" width="356.33333333333331" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -40,7 +40,7 @@
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="Xr7-qH-dG0" firstAttribute="leading" secondItem="Ns8-sQ-2cx" secondAttribute="leading" id="Hnb-Ef-hjn"/>
+                                            <constraint firstItem="Xr7-qH-dG0" firstAttribute="leading" secondItem="Ns8-sQ-2cx" secondAttribute="leading" constant="5" id="Hnb-Ef-hjn"/>
                                             <constraint firstAttribute="trailing" secondItem="Xr7-qH-dG0" secondAttribute="trailing" constant="10" id="guW-TJ-roh"/>
                                             <constraint firstItem="Xr7-qH-dG0" firstAttribute="centerY" secondItem="Ns8-sQ-2cx" secondAttribute="centerY" id="pdm-tT-OMr"/>
                                         </constraints>

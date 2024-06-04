@@ -152,6 +152,7 @@ class OutboxDetailsTVC: UITableViewCell {
     var viewController: UIViewController?
     var delegate: OutboxDetailsTVCDelegate?
     var eventCaptureModel: [UnsyncedEventCaptureModel] = []
+    var myDayPlans : [Sessions] = []
     var todayCallsModel: [TodayCallsModel] = []  {
         didSet {
             let intime = self.todayCallsModel.first?.vstTime ?? ""

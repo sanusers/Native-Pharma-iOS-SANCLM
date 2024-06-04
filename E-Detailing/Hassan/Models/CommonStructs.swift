@@ -32,18 +32,20 @@ struct Section {
     var date: String
     var items: [TodayCallsModel]
     var eventCaptures: [UnsyncedEventCaptureModel]
+    var myDayplans: [Sessions]
     var isCallExpanded: Bool
     var isEventEcpanded: Bool
     var collapsed: Bool
     var isLoading = Bool()
     
-    init(items: [TodayCallsModel] , eventCaptures: [UnsyncedEventCaptureModel], collapsed: Bool = true, isCallExpanded: Bool = false, isEventEcpanded: Bool = false, date: String) {
+    init(items: [TodayCallsModel] , eventCaptures: [UnsyncedEventCaptureModel], collapsed: Bool = true, isCallExpanded: Bool = false, isEventEcpanded: Bool = false, date: String, sessions: [Sessions]) {
     self.items = items
     self.collapsed = collapsed
     self.isCallExpanded = isCallExpanded
     self.date = date
     self.eventCaptures = eventCaptures
     self.isEventEcpanded = isEventEcpanded
+    self.myDayplans = sessions
   }
 }
     

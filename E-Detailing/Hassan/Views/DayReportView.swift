@@ -158,6 +158,8 @@ class DayReportView: BaseView {
     }
     
     func setupUI() {
+        pageTitleLbl.setFont(font: .bold(size: .BODY))
+        pageTitleLbl.text = "Day Report ( \(self.viewDayReportVC.dcrDate) )"
         clearIV.tintColor = .appTextColor
         backgroundView.isHidden = true
         resultinfoView.isHidden = isMatched ? false : true
@@ -330,7 +332,14 @@ extension DayReportView: VisitsCountTVCDelegate {
         }
         
         if index != 0 {
-            self.viewDayReportVC.toSetParamsAndGetResponse(index)
+            
+            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                self.viewDayReportVC.toSetParamsAndGetResponse(index)
+            } else {
+                self.toCreateToast("Please connect to internet.")
+            }
+            
+           
         }
         self.isMatched = false
         self.searchTF.text = ""
@@ -479,7 +488,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
             cell.wtModel = self.reportsModel
             cell.toloadData()
             cell.selectionStyle = .none
-                        return cell
+            return cell
             
             
         case 1:

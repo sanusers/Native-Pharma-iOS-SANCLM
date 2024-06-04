@@ -38,7 +38,7 @@ class AddCallinfoVC: BaseViewController {
     
     
     func setupParam(dcrCall: CallViewModel) {
-        
+        let dcrCall = dcrCall.toRetriveDCRdata(dcrcall: dcrCall)
         
         let persistentContainer = appdelegate.persistentContainer
         let managedObjectContext = persistentContainer.viewContext

@@ -86,16 +86,16 @@ class BasicReportsInfoTVC: UITableViewCell {
              sessionImagesArr.append(StockistsessionImage)
          }
         
-        if setup.hospNeed == 0 {
-            let HospitalsessionImage =  SessionImages(Image: UIImage(named: "hospital") ?? UIImage(), count: model.hos)
-            sessionImagesArr.append(HospitalsessionImage)
-        }
-
-        
-        if setup.hospNeed == 0 {
-            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.cip)
-            sessionImagesArr.append(cipsessionImage)
-        }
+//        if setup.hospNeed == 0 {
+//            let HospitalsessionImage =  SessionImages(Image: UIImage(named: "hospital") ?? UIImage(), count: model.hos)
+//            sessionImagesArr.append(HospitalsessionImage)
+//        }
+//
+//        
+//        if setup.cipNeed == 0 {
+//            let cipsessionImage =  SessionImages(Image: UIImage(named: "cip") ?? UIImage(), count: model.cip)
+//            sessionImagesArr.append(cipsessionImage)
+//        }
         
         if setup.unlNeed == 0 {
             let UnlistedDocsessionImage =  SessionImages(Image: UIImage(named: "Doctor") ?? UIImage(), count: model.udr)
@@ -105,7 +105,12 @@ class BasicReportsInfoTVC: UITableViewCell {
         self.sessionImages = sessionImagesArr
         
         userNameLbl.text = model.sfName
-        WTdescLbl.text = model.wtype
+        if model.additionalWorktype.isEmpty {
+            WTdescLbl.text = model.wtype
+        } else {
+            WTdescLbl.text = "\(model.wtype), \(model.additionalWorktype)"
+        }
+        
         remarksDescLbl.text =  model.remarks == "" ? "No remarks available" :  model.remarks
         checkINinfoLbl.text =  model.intime
         checkOUTinfoLbl.text = model.outtime
@@ -149,8 +154,9 @@ class BasicReportsInfoTVC: UITableViewCell {
         switch model.confirmed {
         case 0:
             switch model.typ {
-            case 0:
+            case 0, 1:
                 self.approvalType = .draft
+                
             default:
                 print("Yet to set approvalType")
             }
@@ -229,7 +235,7 @@ class BasicReportsInfoTVC: UITableViewCell {
         var text: String {
             switch self {
             case .draft:
-                return "Draft"
+                return "Pending"
             case .finished:
                 return "Finished"
             case .rejected:
@@ -397,7 +403,7 @@ class BasicReportsInfoTVC: UITableViewCell {
         case .draft:
           //  statisInfoView.backgroundColor = approvalType.color
             statusInfoLbl.text = approvalType.text
-            statusInfoLbl.textColor = approvalType.color
+            statusInfoLbl.textColor = .appTextColor
             blurVXview.backgroundColor = approvalType.color
         case .finished:
           //  statisInfoView.backgroundColor = approvalType.color

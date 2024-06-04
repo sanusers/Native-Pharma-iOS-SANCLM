@@ -32,7 +32,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="196.33333333333334" height="58.333333333333336"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVz-7u-z8Q">
-                                        <rect key="frame" x="0.0" y="20.666666666666664" width="96.333333333333329" height="17"/>
+                                        <rect key="frame" x="5" y="20.666666666666664" width="96.333333333333329" height="17"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -41,7 +41,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="aVz-7u-z8Q" firstAttribute="centerY" secondItem="UEK-OT-ncd" secondAttribute="centerY" id="IIV-Bg-uOo"/>
-                                    <constraint firstItem="aVz-7u-z8Q" firstAttribute="leading" secondItem="UEK-OT-ncd" secondAttribute="leading" id="dC5-qj-vhV"/>
+                                    <constraint firstItem="aVz-7u-z8Q" firstAttribute="leading" secondItem="UEK-OT-ncd" secondAttribute="leading" constant="5" id="dC5-qj-vhV"/>
                                 </constraints>
                             </view>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v0n-jU-2Mh">

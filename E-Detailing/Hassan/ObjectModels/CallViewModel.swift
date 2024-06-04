@@ -317,6 +317,7 @@ public class CallViewModel {
                qualification = doccall.docDesig ?? ""
                category = doccall.category ?? ""
                speciality = doccall.speciality ?? ""
+                townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
                 specialityCode = doccall.specialityCode ?? ""
@@ -334,6 +335,7 @@ public class CallViewModel {
             
                category =  ""
                speciality =  ""
+                townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
                 specialityCode = ""
@@ -351,6 +353,7 @@ public class CallViewModel {
             
                category =  ""
                speciality =  ""
+                townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
                 specialityCode = ""
@@ -368,7 +371,7 @@ public class CallViewModel {
                email = doccall.email ?? ""
                address = doccall.addrs ?? ""
                qualification =  ""
-                
+                townName = doccall.townName ?? ""
                category = doccall.category ?? ""
                speciality = doccall.specialtyName ?? ""
                 territory = doccall.townName ?? ""

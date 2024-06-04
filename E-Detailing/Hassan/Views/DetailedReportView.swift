@@ -43,6 +43,9 @@ extension  DetailedReportView: DayReportsSortViewDelegate {
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 
+            case customCalenderView:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
                 
             default:
                 aAddedView.isUserInteractionEnabled = true
@@ -70,8 +73,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let modal =  isMatched ? filteredreportsModel?[indexPath.row] ?? ReportsModel() : reportsModel?[indexPath.row] ?? ReportsModel()
         cell.populateCell(modal)
         cell.nextActionVIew.addTap {
-            let vc = ViewDayReportVC.initWithStory(model: modal)
-            
+            let vc = ViewDayReportVC.initWithStory(model: modal, dcrDate: modal.rptdate)
             if isTohideCheckin(modal) && isTohideCheckout(modal) {
                 vc.isToReduceLocationHeight = true
             }
@@ -407,6 +409,7 @@ class DetailedReportView: BaseView {
     
     @IBOutlet var clearView: UIView!
     
+    @IBOutlet var calendarView: UIView!
     var selectedSortIndex: Int? = nil
     
     var isSortPresented = false
@@ -415,9 +418,8 @@ class DetailedReportView: BaseView {
     var isMatched : Bool = false
     var reportsModel : [ReportsModel]?
     var filteredreportsModel : [ReportsModel]?
-    let datePicker = UIDatePicker()
-    
-    
+    var fromDate: Date?
+    var customCalenderView: CustomCalenderView?
     var detailedreporsVC : DetailedReportVC!
     
     override func didLoad(baseVC: BaseViewController) {
@@ -447,6 +449,17 @@ class DetailedReportView: BaseView {
         let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
         
         self.dayReportsSortView?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
+        
+        
+        
+        let checkinVIewwidth = self.bounds.width / 3
+        let checkinVIewheight = self.bounds.height / 2
+        
+        let checkinVIewcenterX = self.bounds.midX - (checkinVIewwidth / 2)
+        let checkinVIewcenterY = self.bounds.midY - (checkinVIewheight / 2)
+
+        customCalenderView?.frame = CGRect(x: checkinVIewcenterX, y: checkinVIewcenterY, width: checkinVIewwidth, height: checkinVIewheight)
+        
         
     }
     
@@ -520,38 +533,64 @@ class DetailedReportView: BaseView {
             self.toShowSortOptions()
         }
         
+        calendarView.addTap {
+            self.calenderAction(isForFrom: true)
+        }
+        
 //        filterDateTF.addTap {
 //            <#code#>
 //        }
 
     }
-    func showDatePicker(){
-      //Formate Date
-      datePicker.datePickerMode = .date
-        datePicker.tintColor = .appTextColor
-   
-     //ToolBar
-     let toolbar = UIToolbar();
-     toolbar.sizeToFit()
-        
-        
-        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(donedatePicker));
-       doneButton.tintColor = .appTextColor
-      //  let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(cancelDatePicker));
-        cancelButton.tintColor = .appLightPink
-        toolbar.setItems([doneButton,cancelButton], animated: true)
-//spaceButton,
-        filterDateTF.inputAccessoryView = toolbar
-        filterDateTF.inputView = datePicker
-
-   }
     
+
+    func calenderAction(isForFrom: Bool) {
+        
+    
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+        //  backgroundView.toAddBlurtoVIew()
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case customCalenderView:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+              
+            default:
+                print("Yet to implement")
+          
+                
+                aAddedView.isUserInteractionEnabled = false
+              
+                
+            }
+            
+        }
+        
+        customCalenderView = self.detailedreporsVC.loadCustomView(nibname: XIBs.customCalenderView) as? CustomCalenderView
+        customCalenderView?.setupUI(isPastDaysAllowed: true)
+        customCalenderView?.today = self.fromDate ?? Date()
+       // customCalenderView?.currentPage = self.fromDate ?? Date()
+        customCalenderView?.isFromReports = true
+        customCalenderView?.completion = self
+        customCalenderView?.selectedFromDate = fromDate
+        customCalenderView?.isForFrom = isForFrom
+
+        self.addSubview(customCalenderView ?? CustomCalenderView())
+        
+    }
+    
+    
+
     @objc func donedatePicker(){
 
-  
-     filterDateTF.text = toConvertDate(date: datePicker.date)
-     self.detailedreporsVC.toSetParamsAndGetResponse(datePicker.date)
+    guard let fromDate = self.fromDate else {return}
+    filterDateTF.text = toConvertDate(date: fromDate)
+     self.detailedreporsVC.toSetParamsAndGetResponse(fromDate)
      self.endEditing(true)
    }
     
@@ -577,11 +616,12 @@ class DetailedReportView: BaseView {
        //searchTF.placeholder = UIFont(name: "Satoshi-Bold", size: 14)
         searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
         titleLBL.setFont(font: .bold(size: .BODY))
-        filterDateTF.inputView = datePicker
+
         filterDateTF.font = UIFont(name: "Satoshi-Bold", size: 14)
      
         filterDateTF.text = toConvertDate(date: Date())
-        showDatePicker()
+        self.fromDate = Date()
+        filterDateTF.isUserInteractionEnabled = false
         toConfigureCellHeight()
         cellRegistration()
         reportsTable.separatorStyle = .none
@@ -604,4 +644,62 @@ class DetailedReportView: BaseView {
         
         initTaps()
     }
+}
+extension DetailedReportView: CustomCalenderViewDelegate {
+    
+    
+    func didClose() {
+        backgroundView.isHidden = true
+       // stopBackgroundColorAnimation(view: toDateCurveVIew)
+       // stopBackgroundColorAnimation(view: fromDateCurveView)
+    
+         backgroundView.alpha = 0.3
+         self.subviews.forEach { aAddedView in
+             
+             switch aAddedView {
+
+             case customCalenderView:
+                 aAddedView.removeFromSuperview()
+                 aAddedView.alpha = 0
+                 
+             default:
+                 aAddedView.isUserInteractionEnabled = true
+                 aAddedView.alpha = 1
+                 print("Yet to implement")
+                 
+                 // aAddedView.alpha = 1
+                 
+             }
+             
+         }
+    }
+    
+    func didSelectDate(selectedDate: Date, isforFrom: Bool) {
+
+        self.fromDate = selectedDate
+        donedatePicker()
+
+        backgroundView.isHidden = true
+         backgroundView.alpha = 0.3
+         self.subviews.forEach { aAddedView in
+             
+             switch aAddedView {
+
+             case customCalenderView:
+                 aAddedView.removeFromSuperview()
+                 aAddedView.alpha = 0
+                 
+             default:
+                 aAddedView.isUserInteractionEnabled = true
+                 aAddedView.alpha = 1
+                 print("Yet to implement")
+                 
+                 // aAddedView.alpha = 1
+                 
+             }
+             
+         }
+    }
+    
+    
 }

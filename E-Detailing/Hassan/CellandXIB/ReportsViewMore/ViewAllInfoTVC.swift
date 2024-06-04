@@ -158,8 +158,9 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
              
                 guard let typedHeaderView = headerView as? RCPASectionReusableView else { return headerView
                 }
+
                 typedHeaderView.sectionHolderView.layer.borderWidth = 1
-                typedHeaderView.sectionHolderView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+                typedHeaderView.sectionHolderView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.1).cgColor
        
                 switch indexPath.section {
                 case 4:
@@ -298,6 +299,8 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     return cell
                 default:
                     let cell: RCPAdetailsDesctiptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "RCPAdetailsDesctiptionCVC", for: indexPath) as! RCPAdetailsDesctiptionCVC
+                    let model = rcpaResponseModel[indexPath.row]
+                    cell.populateCell(model: model)
                     return cell
                 }
             case .hideRCPA:
