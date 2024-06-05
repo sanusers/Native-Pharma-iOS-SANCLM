@@ -570,9 +570,11 @@
                 <outlet property="callsoverallInfoVIew" destination="DDv-kr-v8m" id="Icb-pG-h6G"/>
                 <outlet property="cellStack" destination="j6f-4U-yDC" id="RWV-m4-WSf"/>
                 <outlet property="cellStackHeightConst" destination="F25-6z-pfe" id="ErA-0M-cN3"/>
+                <outlet property="checkinHeightConst" destination="mH8-4M-Kca" id="Coa-CD-g6P"/>
                 <outlet property="checkinLbl" destination="H8C-cV-j1c" id="7OS-dp-Gj0"/>
                 <outlet property="checkinRefreshVIew" destination="QsU-aH-nTE" id="4n0-T2-eSY"/>
                 <outlet property="checkinVIew" destination="pkr-3h-bj0" id="0AH-vF-9C2"/>
+                <outlet property="checkoutHeightConst" destination="h1e-2q-uC2" id="1sb-0L-k7n"/>
                 <outlet property="checkoutRefreshView" destination="wIw-6y-eVp" id="TaA-OP-M6v"/>
                 <outlet property="checkoutVIew" destination="uHP-hn-11d" id="0nB-9d-M3s"/>
                 <outlet property="checkoutinfoLbl" destination="cnk-hQ-f2k" id="cMS-ml-baA"/>

@@ -487,7 +487,7 @@ class MainVC : UIViewController {
             guard let coordinates = coordinates else {
                 // "Please connect to active network to update Password"
               //   "Please enable location services in Settings."
-                welf.showAlertToNetworks(desc: "Please enable location services in Settings.")
+                welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
                 
                 return
             }
@@ -1028,14 +1028,14 @@ class MainVC : UIViewController {
     
     
     
-    func updateEachDayPlan(planDate: Date, yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
+    func updateEachDayPlan(isSynced: Bool, planDate: Date, yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
         // Remove all existing day plans
      //   CoreDataManager.shared.removeAllDayPlans()
         
         // Save sessions as day plans
 
         
-        CoreDataManager.shared.saveSessionAsEachDayPlan(planDate: planDate, session: yetToSaveSession) { isCompleted in
+        CoreDataManager.shared.saveSessionAsEachDayPlan(isSynced: isSynced, planDate: planDate, session: yetToSaveSession) { isCompleted in
             // [weak self]
             //   guard let welf = self else { return }
             if isCompleted {
@@ -1310,7 +1310,10 @@ class MainVC : UIViewController {
     }
     
     @objc func refreshDayplan() {
-        refreshUI()
+        masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: false) {_ in
+            self.refreshUI()
+        }
+        
     }
     
     @objc func dcrcallsAdded() {
@@ -1481,7 +1484,7 @@ class MainVC : UIViewController {
             guard coordinates != nil else {
                 // "Please connect to active network to update Password"
               //   "Please enable location services in Settings."
-                welf.showAlertToNetworks(desc: "Please enable location services in Settings.")
+                welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
                 return
             }
             welf.latitude = coordinates?.latitude
@@ -1763,7 +1766,7 @@ class MainVC : UIViewController {
             
         }
         
-        let dispatchGroup = DispatchGroup()
+   
         
         // Fetch UnsyncedEventCaptureModel data and organize by day
     //    dispatchGroup.enter()
@@ -1798,10 +1801,9 @@ class MainVC : UIViewController {
         for aDate in dateArr {
             toFetchExistingPlan(byDate: aDate) {existingSessions in
                 for aExistingSessions in existingSessions {
-                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && aExistingSessions.isRetrived == false  {
+                    if aExistingSessions.isSynced == false  {
                         let dayString = dateFormatter.string(from: aExistingSessions.planDate ?? Date())
                         if plansByDay[dayString] == nil {
-                          
                             plansByDay[dayString] = [aExistingSessions]
                         } else {
                             plansByDay[dayString]?.append(aExistingSessions)
@@ -2354,18 +2356,14 @@ extension MainVC {
 
     }
 
-
-
-    @IBAction func didTapClearCalls() {
-        
-        
+    func clearAction() {
         self.outboxCountVIew.isHidden = true
         self.outBoxDataArr?.removeAll()
         //LocalStorage.shared.setData(LocalStorage.LocalValue.outboxParams, data: Data())
         CoreDataManager.shared.removeAllOutboxParams()
         CoreDataManager.shared.removeUnsyncedHomeData()
         CoreDataManager.shared.removeAllUnsyncedEventCaptures()
-       // CoreDataManager.shared.removeAllDayPlans()
+    
         toSeperateDCR(istoAppend: false)
         self.updateDcr()
         DispatchQueue.main.async {
@@ -2374,6 +2372,11 @@ extension MainVC {
             self.toLoadDcrCollection()
             self.toIntegrateChartView(self.chartType, self.cacheDCRindex)
         }
+    }
+
+    @IBAction func didTapClearCalls() {
+        showAlertToNetworks(desc: "This action will clear all of unsynced outbox calls. Are you sure you want to proceed?", isToclearacalls: true)
+        
     }
 
     @IBAction func outboxCallSyncAction(_ sender: UIButton) {
@@ -2500,7 +2503,7 @@ extension MainVC {
                     if  yetToSaveSession[index].isRetrived == true {
                         yetToSaveSession[index].planDate =  selectedToday
                     } else {
-                        yetToSaveSession[index].isRetrived = false
+                        yetToSaveSession[index].isRetrived = true
                         yetToSaveSession[index].planDate =  selectedToday
                     }
                 }
@@ -2508,7 +2511,7 @@ extension MainVC {
             
             
             
-            updateEachDayPlan(planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
+            updateEachDayPlan(isSynced: LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork), planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
                 guard let welf = self else {return}
                 guard var nonNilSession = welf.sessions else {
                     return
@@ -2539,8 +2542,6 @@ extension MainVC {
                     
                 } else {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: true)
-                 //   welf.masterVM?.toUpdateDataBase(aDayplan: <#T##DayPlan#>, completion: <#T##(Bool) -> ()#>)
-                   // welf.toConfigureMydayPlan()
                     nonNilSession.indices.forEach { index in
                         nonNilSession[index].isRetrived = true
                         nonNilSession[index].planDate = welf.selectedToday
@@ -2560,10 +2561,7 @@ extension MainVC {
                     } else {
                         welf.configureAddplanBtn(true)
                     }
-                    
-                   
-                    
-                  //  welf.configureSaveplanBtn(<#T##isToEnable: Bool##Bool#>)
+
                     
                     welf.toCreateToast("You are not connected to internet")
                 }
@@ -3318,6 +3316,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let eventModel = obj_sections[indexPath.section].eventCaptures
             let plansModel = obj_sections[indexPath.section].myDayplans
             let date = obj_sections[indexPath.section].date
+     
             cell.delegate = self
             cell.viewController = self
             cell.todayCallsModel = model
@@ -3338,20 +3337,20 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                         firstPlan = wtName
                     }
                 case 1:
-                    if plansModel.count != 2 {
                         if let wtName = aSession.workType?.name  {
                             secondPlan = wtName
                         }
-                    }
-          
+                    
                 default:
                     print("Yet to")
                 }
-   
-                
-               
             }
-            cell.workPlanTitLbl.text = "Work Plan - \(firstPlan), \(secondPlan)"
+            if !secondPlan.isEmpty {
+                cell.workPlanTitLbl.text = "Work Plan - \(firstPlan), \(secondPlan)"
+            } else {
+                cell.workPlanTitLbl.text = "Work Plan - \(firstPlan)"
+            }
+           
             cell.toLoadData()
             
             
@@ -3657,22 +3656,31 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         // return UITableView.automaticDimension
         
         if tableView == self.outboxTableView {
+            //290 -  checkin - 50 || work plan - 50 || call detail - 50 || event cpature - 50 || check out - 50
             let callsCount = obj_sections[indexPath.section].items.count
             let eventsCount = obj_sections[indexPath.section].eventCaptures.count
+            var istohideCheckin: Bool = true
+            var istohideCheckout: Bool = true
             
-
+            var cellHeight : Int = 290
+            if istohideCheckin {
+                cellHeight = cellHeight - 50
+            }
             
-            //self.outBoxDataArr?.count ?? 0
+            if istohideCheckout {
+                cellHeight = cellHeight - 50
+            }
             switch indexPath.section {
+
             default:
                 if  obj_sections[indexPath.section].isCallExpanded == true  {
-                    return CGFloat(290 + 10 + (90 * callsCount))
+                    return CGFloat(cellHeight + 10 + (90 * callsCount))
                 }
                 if obj_sections[indexPath.section].isEventEcpanded == true {
-                    return CGFloat(290 + 10 + (90 * eventsCount))
+                    return CGFloat(cellHeight + 10 + (90 * eventsCount))
                 }
                 else {
-                    return 290 + 10
+                    return CGFloat(cellHeight + 10)
                 }
             }
             
@@ -3735,13 +3743,21 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
      
             
-            
-            let object = obj_sections[section].items.first
-            let dateString = object?.vstTime ?? ""
-                let date = dateString.toDate()
-                let formattedDate = date.toString(format: "MMMM dd, yyyy")
-                print(formattedDate)  // Output: January 19, 2024
+            let dayPlan = obj_sections[section].myDayplans.first
+            if let dayPlan = dayPlan {
+                let formattedDate =  dayPlan.planDate?.toString(format: "MMMM dd, yyyy")
                 header?.dateLbl.text = formattedDate
+            } else {
+                let object = obj_sections[section].items.first
+                
+                let dateString = object?.vstTime ?? ""
+                    let date = dateString.toDate()
+                    let formattedDate = date.toString(format: "MMMM dd, yyyy")
+                    print(formattedDate)  // Output: January 19, 2024
+                    header?.dateLbl.text = formattedDate
+            }
+            
+
             header?.addTap {
                 guard let header = header else {return}
                 header.delegate?.toggleSection(header, section: header.section)
@@ -4676,7 +4692,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 case .success(let response):
                     Shared.instance.removeLoaderInWindow()
                     guard let welf = self else {return}
-                    welf.upDateplansToDB(planDate: date, model: response)
+                    welf.upDateplansToDB(isSynced: true, planDate: date, model: response)
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MMMM d, yyyy"
                     welf.lblDate.text = dateFormatter.string(from: date)
@@ -4699,8 +4715,8 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         }
     }
     
-    func upDateplansToDB(planDate: Date, model: [MyDayPlanResponseModel]) {
-        masterVM?.toUpdateDataBase(planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in
+    func upDateplansToDB(isSynced: Bool, planDate: Date, model: [MyDayPlanResponseModel]) {
+        masterVM?.toUpdateDataBase(isSynced: isSynced, planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(isSynced: isSynced, model: model) ?? DayPlan()) {_ in
             //refreshDayplan
           //  NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
             self.toConfigureMydayPlan(planDate: planDate)
@@ -5163,19 +5179,24 @@ extension MainVC : addedSubViewsDelegate {
     }
     
     
-    func showAlertToNetworks(desc: String) {
+    func showAlertToNetworks(desc: String, isToclearacalls: Bool) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
-       // "Please connect to active network to update Password"
-     //   "Please enable location services in Settings."
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "Cancel")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
-            print("no action")
+            print("yes action")
             // self.toDeletePresentation()
+            if isToclearacalls {
+                self.clearAction()
+            } else {
+                self.redirectToSettings()
+            }
             
         }
         commonAlert.addAdditionalCancelAction {
-            print("yes action")
-            self.redirectToSettings()
+            print("no action")
+        
+  
+        
             
         }
     }
@@ -5190,7 +5211,7 @@ extension MainVC : addedSubViewsDelegate {
     func showAlert(desc: String) {
         // "Please connect to active network to update Password"
       //   "Please enable location services in Settings."
-      showAlertToNetworks(desc: desc)
+        showAlertToNetworks(desc: desc, isToclearacalls: false)
     }
     
     func didClose() {
@@ -5354,16 +5375,51 @@ extension MainVC: OutboxDetailsTVCDelegate {
     func didTapoutboxEdit(dcrCall: TodayCallsModel) {
         print("Tapped")
         dump(dcrCall)
-        let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
-       let filteredDoctores = listedDocters.filter { aDoctorFencing in
-            aDoctorFencing.code == dcrCall.custCode
+        switch dcrCall.custType {
+        case 1:
+            let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredDoctores = listedDocters.filter { aDoctorFencing in
+                 aDoctorFencing.code == dcrCall.custCode
+             }
+             guard let nonNilDoctors = filteredDoctores.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilDoctors , type: DCRType.doctor)
+             editDCRcall(call: aCallVM, type: DCRType.doctor)
+        case 2:
+            let listedChemist = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredChemist = listedChemist.filter { chemist  in
+                chemist.code == dcrCall.custCode
+             }
+             guard let nonNilChemist = filteredChemist.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.chemist)
+             editDCRcall(call: aCallVM, type: DCRType.chemist)
+        case 3:
+            let listedChemist = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredChemist = listedChemist.filter { chemist  in
+                chemist.code == dcrCall.custCode
+             }
+             guard let nonNilChemist = filteredChemist.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.stockist)
+             editDCRcall(call: aCallVM, type: DCRType.stockist)
+        case 4:
+            let listedChemist = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredChemist = listedChemist.filter { chemist  in
+                chemist.code == dcrCall.custCode
+             }
+             guard let nonNilChemist = filteredChemist.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.stockist)
+             editDCRcall(call: aCallVM, type: DCRType.stockist)
+        default:
+            print("Yet to")
         }
-        guard let nonNilDoctors = filteredDoctores.first else {
-            
-            
-            return}
-        let aCallVM = CallViewModel(call: nonNilDoctors , type: DCRType.doctor)
-        editDCRcall(call: aCallVM, type: DCRType.doctor)
+
     }
     
     

@@ -1624,37 +1624,7 @@ class SpecifiedMenuView: BaseView {
         saveView.addTap { [weak self] in
             
             guard let welf = self else {return}
-            welf.filteredTerritories = welf.clusterArr?.filter { territory in
-                guard let code = territory.code else {
-                    return false
-                }
-                return welf.selectedClusterID[code] == true
-            }
-            
-
-      
-            welf.filteredCompetitors = welf.competitorsArr?.filter { territory in
-                guard let code = territory.compProductSlNo else {
-                    return false
-                }
-                return welf.selectedCompetitorID[code] == true
-            }
-            
-            
-            welf.filteredLeave = welf.leaveArr?.filter { leave in
-                guard let code = leave.leaveCode else {
-                    return false
-                }
-                return welf.selectedLeaveID[code] == true
-            }
-            
-            welf.filteredJfw = welf.jointWorkArr?.filter { territory in
-                      guard let code = territory.code else {
-                          return false
-                      }
-                    return welf.selectedJwID[code] == true
-                  }
-    
+           
             
             welf.hideMenuAndDismiss()
         }
@@ -1672,13 +1642,9 @@ class SpecifiedMenuView: BaseView {
         
         closeTapView.addTap { [weak self] in
             guard let welf = self else {return}
-            welf.filteredTerritories = welf.clusterArr?.filter { territory in
-                guard let code = territory.code else {
-                    return false
-                }
-                return welf.selectedClusterID[code] == true
-            }
-            welf.hideMenuAndDismiss()
+            let rtlValue : CGFloat = 1
+            let width = welf.width
+            welf.hideAnimation(width: width, rtlValue: rtlValue)
         }
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handleMenuPan(_:)))
@@ -1687,8 +1653,7 @@ class SpecifiedMenuView: BaseView {
     }
     
     @objc func handleMenuPan(_ gesture : UIPanGestureRecognizer){
-      
-        let _ : CGFloat =   -1
+        let rtlValue : CGFloat = 1
         //isRTL ? 1 :
         let translation = gesture.translation(in: self.sideMenuHolderView)
         let xMovement = translation.x
@@ -1712,18 +1677,8 @@ class SpecifiedMenuView: BaseView {
                 self.backgroundColor = UIColor.black.withAlphaComponent(self.viewOpacity)
             }else{//hide
                 
-             
-                filteredTerritories = clusterArr?.filter { territory in
-                    guard let code = territory.code else {
-                        return false
-                    }
-                    return selectedClusterID[code] == true
-                }
-                
-
-                
-                
-                self.hideMenuAndDismiss()
+                self.hideAnimation(width: width, rtlValue: rtlValue)
+          
             }
             
         }
@@ -1759,6 +1714,38 @@ class SpecifiedMenuView: BaseView {
         while animationDuration > 1.6{
             animationDuration = animationDuration * 0.1
         }
+        
+     filteredTerritories = clusterArr?.filter { territory in
+            guard let code = territory.code else {
+                return false
+            }
+            return selectedClusterID[code] == true
+        }
+        
+
+  
+        filteredCompetitors = competitorsArr?.filter { territory in
+            guard let code = territory.compProductSlNo else {
+                return false
+            }
+            return selectedCompetitorID[code] == true
+        }
+        
+        
+       filteredLeave = leaveArr?.filter { leave in
+            guard let code = leave.leaveCode else {
+                return false
+            }
+            return selectedLeaveID[code] == true
+        }
+        
+        filteredJfw = jointWorkArr?.filter { territory in
+                  guard let code = territory.code else {
+                      return false
+                  }
+                return selectedJwID[code] == true
+              }
+
             
             guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "Subordinate", in: context),
                   let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
@@ -1818,19 +1805,20 @@ class SpecifiedMenuView: BaseView {
     }
     
     func hideAnimation(width: CGFloat, rtlValue: CGFloat) {
-        UIView.animate(withDuration: animationDuration,
-                       delay: aniamteionWaitTime,
-                       usingSpringWithDamping: animationDampning,
-                       initialSpringVelocity: animationVelocity,
-                       options: [.curveEaseOut,.allowUserInteraction],
-                       animations: {
-                        self.sideMenuHolderView.transform = CGAffineTransform(translationX: width * rtlValue,
-                                                                              y: 0)
-                        self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
-                       }) { (val) in
-            
-                           self.specifiedMenuVC.dismiss(animated: true)
-        }
+        self.specifiedMenuVC.dismiss(animated: false)
+//        UIView.animate(withDuration: animationDuration,
+//                       delay: aniamteionWaitTime,
+//                       usingSpringWithDamping: animationDampning,
+//                       initialSpringVelocity: animationVelocity,
+//                       options: [.curveEaseOut,.allowUserInteraction],
+//                       animations: {
+//                        self.sideMenuHolderView.transform = CGAffineTransform(translationX: width * rtlValue,
+//                                                                              y: 0)
+//                        self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
+//                       }) { (val) in
+//            
+//                           self.specifiedMenuVC.dismiss(animated: true)
+//        }
     }
     
     func toLOadData() {

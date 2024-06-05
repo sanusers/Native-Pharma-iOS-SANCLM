@@ -692,8 +692,6 @@ class LeaveApplicationVC: UIViewController {
         
         let selectedLeaveType = self.selectedLeveType
         
-        let url = APIUrl + "save/leavemodule"
-        
        // {"tableName":"saveleave","sfcode":"MR0026","FDate":"2023-7-6","TDate":"2023-7-6","LeaveType":"CL","NOD":"1","LvOnAdd":"","LvRem":"test","division_code":"8,","Rsf":"MR0026","sf_type":"1","Designation":"TBM","state_code":"28","subdivision_code":"62,","sf_emp_id":"give emp id here","leave_typ_code":"give leavetype code here"}
         
         var param = [String: Any]()
@@ -718,7 +716,6 @@ class LeaveApplicationVC: UIViewController {
         var tosendData = [String: Any]()
         tosendData["data"] = paramData
 
-        print(url)
 
         Shared.instance.showLoaderInWindow()
         userStatisticsVM.toSubmitLeave(params: tosendData, api: .toSubmitLeave, paramData: param) { result in

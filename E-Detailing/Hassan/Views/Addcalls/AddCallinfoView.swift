@@ -819,7 +819,9 @@ extension AddCallinfoView: tableViewProtocols {
                 return 60
             }
         case .rcppa:
-      
+            guard indexPath.section < self.rcpaDetailsModel.count else {
+                return 50 + 5 + 5 + 60
+            }
             guard let addedProduct = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct else {
                 return 50 + 5 + 5 + 60
             }

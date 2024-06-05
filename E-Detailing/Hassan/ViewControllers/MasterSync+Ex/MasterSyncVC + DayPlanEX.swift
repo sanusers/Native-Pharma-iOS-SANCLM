@@ -480,7 +480,7 @@ extension CoreDataManager {
             
 
             
-            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected)
+            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isSynced: eachDayPlan.isSynced)
           
             aDaysessions.append(tempSession)
         }
@@ -563,7 +563,7 @@ extension CoreDataManager {
             }
 
             
-            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected)
+            let tempSession = Sessions(cluster: selectedterritories ?? [temporaryselectedClusterobj], workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isSynced: eachDayPlan.isSynced)
           //selectedheadQuarters ?? SelectedHQ()
             aDaysessions.append(tempSession)
         }
@@ -688,7 +688,7 @@ extension CoreDataManager {
     
     
     
-    func toSaveDayPlan(aDayPlan: DayPlan, date: Date, completion: @escaping (Bool) -> ()) {
+    func toSaveDayPlan(isSynced: Bool, aDayPlan: DayPlan, date: Date, completion: @escaping (Bool) -> ()) {
         toCheckDayPlanExistence(date) { isExists in
             if !isExists {
                 let context = self.context
@@ -700,6 +700,7 @@ extension CoreDataManager {
                     entityDayPlan.uuid = aDayPlan.uuid
                     entityDayPlan.planDate = aDayPlan.tpDt.toDate()
                     entityDayPlan.isRejected = aDayPlan.isRejected
+                    entityDayPlan.isSynced = isSynced
                     entityDayPlan.eachPlan = convertEachDyPlan(aDayPlan , context: context)
                     
                     // Save to Core Data
@@ -712,7 +713,7 @@ extension CoreDataManager {
                     }
                 }
             } else {
-                updateExistingManagedObjects(with: aDayPlan, for: date) {
+                updateExistingManagedObjects( isSynced: isSynced, with: aDayPlan, for: date) {
                     isUpdated in
                     completion(isUpdated)
                 }
@@ -722,7 +723,7 @@ extension CoreDataManager {
     }
     
     
-    func updateExistingManagedObjects(with aDayPlan: DayPlan, for date: Date, completion: @escaping (Bool) -> Void) {
+    func updateExistingManagedObjects(isSynced: Bool, with aDayPlan: DayPlan, for date: Date, completion: @escaping (Bool) -> Void) {
         let fetchRequest: NSFetchRequest<EachDayPlan> = EachDayPlan.fetchRequest()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM dd, yyyy" // Format: "June 04, 2024"
@@ -737,6 +738,7 @@ extension CoreDataManager {
             deleteFilteredPlans(filteredPlans)
             
             // Add new plan
+            aDayPlan.isSynced = isSynced
             addNewPlan(aDayPlan, for: date)
             
             // Save the changes
@@ -766,6 +768,7 @@ extension CoreDataManager {
         newPlan.uuid = aDayPlan.uuid
         newPlan.planDate = aDayPlan.tpDt.toDate()
         newPlan.isRejected = aDayPlan.isRejected
+        newPlan.isSynced = aDayPlan.isSynced
         newPlan.eachPlan = convertEachDyPlan(aDayPlan, context: context)
     }
     
@@ -799,7 +802,7 @@ extension CoreDataManager {
                 aDayPlan.tpVwFlg = ""
                 aDayPlan.tpCluster = ""
                 aDayPlan.tpWorkType = ""
-
+                aDayPlan.isSynced = eachDayPlan.isSynced
            
                 if let  eachDayPlansSet = eachDayPlan.eachPlan as? Set<EachPlan>  {
                     let eachDayPlansArray = Array(eachDayPlansSet)
@@ -948,7 +951,7 @@ extension CoreDataManager {
 //            //  completion()
 //        }
 //    }
-    func saveSessionAsEachDayPlan(planDate: Date, session: [Sessions], completion: @escaping (Bool) -> ()) {
+    func saveSessionAsEachDayPlan(isSynced: Bool, planDate: Date, session: [Sessions], completion: @escaping (Bool) -> ()) {
         let context = self.context
 
         // Define the date formatter
@@ -989,7 +992,7 @@ extension CoreDataManager {
             
             // Update all matched plans
             for eachDayPlan in matchedPlans {
-                updateEachDayPlan(eachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
+                updateEachDayPlan(isSynced, eachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
             }
 
             // If no matched plans found, create a new one
@@ -998,7 +1001,7 @@ extension CoreDataManager {
                     fatalError("EachDayPlan entity not found")
                 }
                 let newEachDayPlan = EachDayPlan(entity: eachDayPlanEntity, insertInto: context)
-                updateEachDayPlan(newEachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
+                updateEachDayPlan(isSynced, newEachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
             }
 
             // Save to Core Data
@@ -1009,7 +1012,7 @@ extension CoreDataManager {
             completion(false)
         }
     }
-    private func updateEachDayPlan(_ eachDayPlan: EachDayPlan, with session: [Sessions], temporaryObjects: (NSManagedObject, NSManagedObject, NSManagedObject), context: NSManagedObjectContext) {
+    private func updateEachDayPlan(_ isSynced: Bool, _ eachDayPlan: EachDayPlan, with session: [Sessions], temporaryObjects: (NSManagedObject, NSManagedObject, NSManagedObject), context: NSManagedObjectContext) {
         let (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj) = temporaryObjects
         
         eachDayPlan.planDate = Date() // or keep the existing date if needed
@@ -1017,7 +1020,7 @@ extension CoreDataManager {
         eachDayPlan.remarks = session.first?.remarks ?? ""
         eachDayPlan.isRejected = session.first?.isRejected ?? false
         eachDayPlan.rejectionReason = session.first?.rejectionReason
-
+        eachDayPlan.isSynced = isSynced
         let eachPlanSet = NSMutableSet()
 
         session.enumerated().forEach { index, aSession in

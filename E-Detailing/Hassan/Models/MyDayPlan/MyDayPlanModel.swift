@@ -48,6 +48,7 @@ class DayPlan: Codable {
         uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid) ?? UUID()
         isRetrived = try container.decodeIfPresent(Bool.self, forKey: .isRetrived) ?? Bool()
         isRetrived2 = try container.decodeIfPresent(Bool.self, forKey: .isRetrived2) ?? Bool()
+        isSynced = try container.decodeIfPresent(Bool.self, forKey: .isSynced) ?? Bool()
     }
     
     
@@ -85,6 +86,7 @@ class DayPlan: Codable {
     var uuid: UUID
     var isRetrived: Bool
     var isRetrived2: Bool
+    var isSynced : Bool
     enum CodingKeys: String, CodingKey {
         case tableName = "tableName"
         case sfcode = "sfcode"
@@ -120,6 +122,7 @@ class DayPlan: Codable {
         case uuid
         case isRetrived
         case isRetrived2
+        case isSynced
     }
     
     init() {
@@ -157,5 +160,6 @@ class DayPlan: Codable {
         rsf2 = String()
         isRetrived = Bool()
         isRetrived2 = Bool()
+        isSynced = Bool()
     }
 }

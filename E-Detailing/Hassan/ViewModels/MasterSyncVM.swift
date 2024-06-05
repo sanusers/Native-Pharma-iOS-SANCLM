@@ -129,7 +129,7 @@ class MasterSyncVM {
             case .success(let model):
                 dump(model)
                 if isToloadDB {
-                    welf.toUpdateDataBase(planDate: date, aDayplan: welf.toConvertResponseToDayPlan(model: model)) {_ in
+                    welf.toUpdateDataBase(isSynced: true, planDate: date, aDayplan: welf.toConvertResponseToDayPlan(isSynced: true, model: model)) {_ in
                         
                         completion(result)
                     }
@@ -149,16 +149,16 @@ class MasterSyncVM {
         
     }
     
-    func toUpdateDataBase(planDate: Date, aDayplan: DayPlan, completion: @escaping (Bool) -> ()) {
+    func toUpdateDataBase(isSynced: Bool, planDate: Date, aDayplan: DayPlan, completion: @escaping (Bool) -> ()) {
       //  CoreDataManager.shared.removeAllDayPlans()
-        CoreDataManager.shared.toSaveDayPlan(aDayPlan: aDayplan, date: planDate) { isComleted in
+        CoreDataManager.shared.toSaveDayPlan(isSynced: isSynced, aDayPlan: aDayplan, date: planDate) { isComleted in
             
             completion(true)
 
         }
     }
     
-    func toConvertResponseToDayPlan(model: [MyDayPlanResponseModel]) -> DayPlan  {
+    func toConvertResponseToDayPlan(isSynced: Bool, model: [MyDayPlanResponseModel]) -> DayPlan  {
         let aDayPlan = DayPlan()
         let userConfig = AppDefaults.shared.getAppSetUp()
         aDayPlan.tableName = "gettodaytpnew"
@@ -169,6 +169,7 @@ class MasterSyncVM {
         aDayPlan.stateCode = "\(userConfig.stateCode!)"
         aDayPlan.subdivisionCode = userConfig.subDivisionCode ?? ""
         aDayPlan.isRetrived = true
+        aDayPlan.isSynced = isSynced
         model.enumerated().forEach {index, aMyDayPlanResponseModel in
             switch index {
             case 0:

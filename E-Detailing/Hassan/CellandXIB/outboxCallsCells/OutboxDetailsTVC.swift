@@ -155,24 +155,16 @@ class OutboxDetailsTVC: UITableViewCell {
     var myDayPlans : [Sessions] = []
     var todayCallsModel: [TodayCallsModel] = []  {
         didSet {
-            let intime = self.todayCallsModel.first?.vstTime ?? ""
-            
-            let inDateStr = intime.toDate(format: "yyyy-MM-dd HH:mm:ss")
-            
-//            if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
-//                let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
-//                let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
-//                
-//            }
-            
-       
-            
-            checkinLbl.text =  "Check IN - \(inDateStr.toString(format: "hh:mm a"))"
-            
-            
-            let outtime = self.todayCallsModel.last?.vstTime ?? ""
-            let outDateStr = outtime.toDate(format: "yyyy-MM-dd HH:mm:ss")
-            checkoutinfoLbl.text = "Check OUT - \(outDateStr.toString(format: "hh:mm a"))"
+//            let intime = self.todayCallsModel.first?.vstTime ?? ""
+//            
+//            let inDateStr = intime.toDate(format: "yyyy-MM-dd HH:mm:ss")
+//            
+//            checkinLbl.text =  "Check IN - \(inDateStr.toString(format: "hh:mm a"))"
+//            
+//            let outtime = self.todayCallsModel.last?.vstTime ?? ""
+//            let outDateStr = outtime.toDate(format: "yyyy-MM-dd HH:mm:ss")
+//            checkoutinfoLbl.text = "Check OUT - \(outDateStr.toString(format: "hh:mm a"))"
+
         }
     }
     
@@ -188,7 +180,8 @@ class OutboxDetailsTVC: UITableViewCell {
     @IBOutlet var checkinRefreshVIew: UIView!
     @IBOutlet var checkinLbl: UILabel!
     
-///Workplan
+    @IBOutlet var checkinHeightConst: NSLayoutConstraint!
+    ///Workplan
     @IBOutlet var workPlanView: UIView!
     
     @IBOutlet var workPlanRefreshView: UIView!
@@ -256,6 +249,7 @@ class OutboxDetailsTVC: UITableViewCell {
     
     //Checkout
     
+    @IBOutlet var checkoutHeightConst: NSLayoutConstraint!
     @IBOutlet var checkoutVIew: UIView!
     @IBOutlet var checkoutRefreshView: UIView!
     
@@ -278,13 +272,29 @@ class OutboxDetailsTVC: UITableViewCell {
     }
     
     func toSetEventsCellheight(callsExpandState: EventState) {
+        checkinHeightConst.constant = 0 // 50
+        checkoutHeightConst.constant = 0 // 50
+        checkinLbl.isHidden = true
+        checkoutinfoLbl.isHidden = true
+        checkoutRefreshView.isHidden = true
+        checkinRefreshVIew.isHidden = true
         let count = self.todayCallsModel.count
         let eventsCount = self.eventCaptureModel.count
-      
+        var istohideCheckin: Bool = true
+        var istohideCheckout: Bool = true
+        var cellHeight : Int = 290
+        if istohideCheckin {
+            cellHeight = cellHeight - 50
+        }
+        
+        if istohideCheckout {
+            cellHeight = cellHeight - 50
+        }
+        
         switch callsExpandState {
         case .eventExpanded:
             self.eventExpandState = callsExpandState
-            cellStackHeightConst.constant = CGFloat(290 + 90 * eventsCount)
+            cellStackHeightConst.constant = CGFloat(cellHeight + 90 * eventsCount)
             eventsSubdetailVIew.isHidden = false
             eventSubdetailHeightConst.constant = CGFloat(90 * eventsCount)
             eventsDetailStackHeightConst.constant = CGFloat(50 + 90 * eventsCount)
@@ -294,9 +304,9 @@ class OutboxDetailsTVC: UITableViewCell {
         case .eventNotExpanded:
            
             if self.callsExpandState == .callsExpanded {
-                cellStackHeightConst.constant = CGFloat(290 + 90 * count)
+                cellStackHeightConst.constant = CGFloat(cellHeight + 90 * count)
             } else if self.callsExpandState == .callsNotExpanded {
-                cellStackHeightConst.constant = 290
+                cellStackHeightConst.constant = CGFloat(cellHeight)
             }
            
             eventsSubdetailVIew.isHidden = true
@@ -312,12 +322,30 @@ class OutboxDetailsTVC: UITableViewCell {
     
     
     func toSetCallsCellHeight(callsExpandState: cellState) {
+        checkinHeightConst.constant = 0 // 50
+        checkoutHeightConst.constant = 0 // 50
+        checkinLbl.isHidden = true
+        checkoutinfoLbl.isHidden = true
+        checkoutRefreshView.isHidden = true
+        checkinRefreshVIew.isHidden = true
+        var istohideCheckin: Bool = true
+        var istohideCheckout: Bool = true
+        var cellHeight : Int = 290
+        if istohideCheckin {
+            cellHeight = cellHeight - 50
+        }
+        
+        if istohideCheckout {
+            cellHeight = cellHeight - 50
+        }
+        
+        
         let count = self.todayCallsModel.count
         let eventsCount = self.eventCaptureModel.count
         switch callsExpandState {
         case .callsExpanded:
             self.callsExpandState = callsExpandState
-            cellStackHeightConst.constant = CGFloat(290 + 90 * count)
+            cellStackHeightConst.constant = CGFloat(cellHeight + 90 * count)
             callSubDetailVIew.isHidden = false
             callSubdetailHeightConst.constant = CGFloat(90 * count)
             callDetailStackHeightConst.constant = CGFloat(50 + 90 * count)
@@ -330,10 +358,10 @@ class OutboxDetailsTVC: UITableViewCell {
         case .callsNotExpanded:
             self.callsExpandState = callsExpandState
             if self.eventExpandState == .eventExpanded {
-                cellStackHeightConst.constant = CGFloat(290 + 90 * eventsCount)
+                cellStackHeightConst.constant = CGFloat(cellHeight + 90 * eventsCount)
                 
             } else if  self.eventExpandState == .eventNotExpanded {
-                cellStackHeightConst.constant = 290
+                cellStackHeightConst.constant = CGFloat(cellHeight)
             }
             
             callSubDetailVIew.isHidden = true

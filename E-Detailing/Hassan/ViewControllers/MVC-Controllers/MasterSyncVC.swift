@@ -721,8 +721,8 @@ class MasterSyncVC : UIViewController {
     }
     
 
-    func toSaveDayplansToDB(planDate: Date, model: [MyDayPlanResponseModel]) {
-        masterVM?.toUpdateDataBase(planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(model: model) ?? DayPlan()) {_ in
+    func toSaveDayplansToDB(isSynced: Bool,planDate: Date, model: [MyDayPlanResponseModel]) {
+        masterVM?.toUpdateDataBase(isSynced: isSynced, planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(isSynced: isSynced, model: model) ?? DayPlan()) {_ in
             //refreshDayplan
             NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
             
@@ -772,10 +772,36 @@ class MasterSyncVC : UIViewController {
                     let model: [MyDayPlanResponseModel] = responseModel
                     welf.isDayPlanSynced = true
                     if model.count > 0 {
-                        let sessionArray = model.filter{$0.SFMem != ""}
-                        
                         var dayPlan1: MyDayPlanResponseModel?
                         var dayPlan2: MyDayPlanResponseModel?
+                        let sessionArray = model.filter{$0.SFMem != ""}
+                        let leaveArray = model.filter{$0.SFMem == ""}
+                        if !leaveArray.isEmpty {
+//                            leaveArray.enumerated().forEach { index, aMyDayPlanResponseModel in
+//                                switch index {
+//                                case 0:
+//                                    dayPlan1 = aMyDayPlanResponseModel
+//                                case 1:
+//                                    dayPlan2 = aMyDayPlanResponseModel
+//                                default:
+//                                    print("Yet to implement")
+//                                }
+//                            }
+                            let subordinateArr =  DBManager.shared.getSubordinate()
+                            let cacheHQ = subordinateArr.first
+                            welf.fetchedHQObject = cacheHQ
+                            welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
+                            welf.setHQlbl(isTosetDayplanHQ: true)
+                            welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
+                                completion(true)
+                            }
+                        }
+                        
+                        
+                        if sessionArray.isEmpty {
+                            completion(true)
+                        }
+                 
                         sessionArray.enumerated().forEach { index, aMyDayPlanResponseModel in
                             switch index {
                             case 0:
@@ -805,14 +831,14 @@ class MasterSyncVC : UIViewController {
                                     if dayPlan2 != nil {
                                         welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
                                             
-                                            welf.toSaveDayplansToDB(planDate: Date(), model: responseModel)
+                                            welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
                                             
                                             dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
                                             
                                             completion(true)
                                         }
                                     } else {
-                                        welf.toSaveDayplansToDB(planDate: Date(), model: responseModel)
+                                        welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
                                         
                                         dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
                                         
@@ -991,7 +1017,7 @@ extension MasterSyncVC : tableViewProtocols {
       
 
         
-        self.masterData = [MasterInfo.subordinate, MasterInfo.myDayPlan, MasterInfo.dcrDateSync, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.docFeedback, MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors, MasterInfo.clusters,  MasterInfo.inputs ,MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors, MasterInfo.leaveType, MasterInfo.homeSetup, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.doctorFencing]
+        self.masterData = [MasterInfo.subordinate, MasterInfo.myDayPlan, MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.docFeedback]
         //MasterInfo.competitors,
         //MasterInfo.subordinateMGR,
 

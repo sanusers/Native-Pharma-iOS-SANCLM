@@ -38,6 +38,7 @@ struct Sessions {
     var rejectionReason: String?
     var isFirstCell : Bool?
     var planDate: Date?
+    var isSynced: Bool?
 }
 
 extension MainVC {
@@ -211,7 +212,7 @@ extension MainVC {
                             }
                             
                         }
-                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isFirstCell: true, planDate: eachDayPlan.tpDt.toDate())
+                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isFirstCell: true, planDate: eachDayPlan.tpDt.toDate(), isSynced: eachDayPlan.isSynced)
                         aDaysessions.append(tempSession)
                         
 
@@ -274,7 +275,7 @@ extension MainVC {
                         }
                         
                         
-                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isFirstCell: false, planDate: eachDayPlan.tpDt.toDate())
+                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isFirstCell: false, planDate: eachDayPlan.tpDt.toDate(), isSynced: eachDayPlan.isSynced)
                       
                         aDaysessions.append(tempSession)
                     }
