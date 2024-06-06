@@ -98,7 +98,7 @@ class CalldetailsCVC: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        eventOptionIV.isHidden = true
                 if let layout = self.eventsCollection.collectionViewLayout as? UICollectionViewFlowLayout {
                     layout.scrollDirection = .horizontal
                     layout.collectionView?.isScrollEnabled = true

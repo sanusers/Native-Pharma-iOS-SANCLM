@@ -3297,7 +3297,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let eventModel = obj_sections[indexPath.section].eventCaptures
             let plansModel = obj_sections[indexPath.section].myDayplans
             let date = obj_sections[indexPath.section].date
-     
+            var custCodes: [String] = model.map { $0.custCode }
             cell.delegate = self
             cell.viewController = self
             cell.todayCallsModel = model
@@ -3361,14 +3361,32 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             }
             
             cell.callsRefreshVIew.addTap {
-                let custCode: String = model.first?.custCode ?? ""
-                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+             
+                guard LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) else {
                     self.showAlertToPushCalls(desc: "Internet connection is required to sync calls.")
                     return
                 }
-                self.toretryDCRupload(custCode: custCode, date: date) { _ in
-                  //  self.toLoadOutboxTable()
+
+                func syncNextCode() {
+                    guard !custCodes.isEmpty else {
+                        Shared.instance.removeLoaderInWindow()
+                        // All codes have been processed
+                        self.toCreateToast("Sync completed")
+                        Shared.instance.showLoaderInWindow()
+                        self.toUploadUnsyncedImage {
+                            self.toLoadOutboxTable()
+                            Shared.instance.removeLoaderInWindow()
+                        }
+                        return
+                    }
+
+                    let code = custCodes.removeFirst()
+                    self.toretryDCRupload(custCode: code, date: date) { _ in
+                        syncNextCode() // Process the next code
+                    }
                 }
+                Shared.instance.showLoaderInWindow()
+                syncNextCode() // Start the first sync
             }
             
             cell.callsCollapseIV.addTap {
@@ -3880,7 +3898,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                         }
                     }
                 } else {
-               
+                    Shared.instance.removeLoaderInWindow()
                     completion(true)
                 }
                 
@@ -3902,38 +3920,27 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     
     func toSendParamsToAPISerially(index: Int, items: [JSON], completion: @escaping (Bool) -> Void) {
- 
-        guard index < items.count else {
-            // All items processed, exit the recursion
-         
-            completion(true)
-            return
-        }
-        
-        let params = items[index]
-        
-        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: params)
-        
-        // Perform your asynchronous task or function
-        var toSendData = [String: Any]()
-        toSendData["data"] = jsonDatum
-        
-        if params.isEmpty {
-       
-            completion(true)
-            
-            return
-        }
-        
-        self.sendAPIrequest(toSendData, paramData: params) { callstatus in
+      guard index < items.count else {
+        completion(true) // All items processed, signal completion
+        return
+      }
 
-            let nextIndex = index + 1
-            self.toSendParamsToAPISerially(index: nextIndex, items: items) {_ in}
-   
-            
-        }
+      let currentItem = items[index]
 
-        
+      // Attempt to convert JSON to Data
+      guard let jsonData = try? JSONSerialization.data(withJSONObject: currentItem, options: []) else {
+        completion(false) // Error converting JSON, signal failure
+        return
+      }
+
+      // Prepare data for API request
+      let toSendData = ["data": jsonData]
+
+      // Send API request
+      sendAPIrequest(toSendData, paramData: currentItem) { callStatus in
+        let nextIndex = index + 1
+        self.toSendParamsToAPISerially(index: nextIndex, items: items, completion: completion)
+      }
     }
     
     struct callstatus {
@@ -4719,7 +4726,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
           lblDate.text = dateFormatter.string(from: Date())
           self.todayCallsModel = nil
           self.callsCountLbl.text = "Call Count: \(0)"
-          toConfigureMydayPlan(planDate: date)
+          toConfigureMydayPlan(planDate: Date())
             
         }
     }
