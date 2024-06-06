@@ -363,5 +363,69 @@ class MasterSyncVM {
  
     }
     
+    
+    func callSavePlanAPI(byDate: Date, completion: @escaping (Bool) -> Void) -> Void {
+        var dayEntities : [DayPlan] = []
+        CoreDataManager.shared.retriveSavedDayPlans(byDate: byDate) { dayplan in
+            
+            dayEntities = dayplan
+            
+            let optionalaDayplan = dayEntities.first
+            guard let aDayplan = optionalaDayplan else {
+                completion(false)
+                return }
+            if aDayplan.isSynced {
+                completion(true)
+                return
+            }
+             do {
+                 let encoder = JSONEncoder()
+                 let jsonData = try encoder.encode(aDayplan)
+                 
+
+                 if var jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                     print("JSON Dictionary: \(jsonObject)")
+                     jsonObject["InsMode"] = "0"
+                     
+                     var toSendData = [String: Any]()
+                     
+                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: jsonObject)
+                     
+                     toSendData["data"] = jsonDatum
+                     
+                     let userststisticsVM = UserStatisticsVM()
+                     userststisticsVM.saveMyDayPlan(params: toSendData, api: .myDayPlan, paramData: jsonObject, { result in
+                      //   guard let welf = self else {return}
+                         switch result {
+                             
+                         case .success(let response):
+                             dump(response)
+                             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
+                             completion(true)
+                         case .failure(_ ):
+                             completion(false)
+                             
+                         }
+                         
+                     })
+                     
+                     
+                     
+                 } else {
+                     print("Failed to convert data to JSON dictionary")
+                 }
+                 
+                 
+                 // jsonData now contains the JSON representation of yourObject
+             } catch {
+                 print("Error encoding object to JSON: \(error)")
+             }
+        }
+         
+        
+         
+
+    }
+    
 
 }

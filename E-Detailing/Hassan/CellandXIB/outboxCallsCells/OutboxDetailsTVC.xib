@@ -594,6 +594,7 @@
                 <outlet property="eventsSubdetailVIew" destination="hRm-Vj-fki" id="wWI-mD-KIb"/>
                 <outlet property="eventsViewSeperator" destination="hmA-uY-agA" id="qqa-2r-Igk"/>
                 <outlet property="eventscountVxview" destination="NQf-sd-v7E" id="CN7-yY-3tX"/>
+                <outlet property="workPlanHeightConstraint" destination="UZK-3X-FZh" id="DKM-9b-6hq"/>
                 <outlet property="workPlanRefreshView" destination="v3H-Ra-mit" id="4fK-Bd-hqH"/>
                 <outlet property="workPlanTitLbl" destination="33c-lx-Y1F" id="SUi-5B-YNq"/>
                 <outlet property="workPlanView" destination="hTL-EL-Ugd" id="kqG-EA-rYs"/>

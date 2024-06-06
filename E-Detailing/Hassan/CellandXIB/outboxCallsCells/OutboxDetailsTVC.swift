@@ -192,6 +192,10 @@ class OutboxDetailsTVC: UITableViewCell {
     @IBOutlet var workPlanRefreshView: UIView!
     
     @IBOutlet var workPlanTitLbl: UILabel!
+    
+    @IBOutlet var workPlanHeightConstraint: NSLayoutConstraint!
+    
+    
     ///Calls
     @IBOutlet var callsoverallInfoVIew: UIView!
     
@@ -260,6 +264,10 @@ class OutboxDetailsTVC: UITableViewCell {
     
     @IBOutlet var checkoutinfoLbl: UILabel!
     
+    var isTohideWorkPlan: Bool = false
+    var istohideCheckin: Bool = true
+    var istohideCheckout: Bool = true
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
@@ -277,23 +285,34 @@ class OutboxDetailsTVC: UITableViewCell {
     }
     
     func toSetEventsCellheight(callsExpandState: EventState) {
-        checkinHeightConst.constant = 0 // 50
-        checkoutHeightConst.constant = 0 // 50
-        checkinLbl.isHidden = true
-        checkoutinfoLbl.isHidden = true
-        checkoutRefreshView.isHidden = true
-        checkinRefreshVIew.isHidden = true
+
         let count = self.todayCallsModel.count
         let eventsCount = self.eventCaptureModel.count
-        var istohideCheckin: Bool = true
-        var istohideCheckout: Bool = true
+
         var cellHeight : Int = 290
         if istohideCheckin {
             cellHeight = cellHeight - 50
+            checkinRefreshVIew.isHidden = true
+            checkinLbl.isHidden = true
+            checkinHeightConst.constant = 0 // 50
         }
         
         if istohideCheckout {
             cellHeight = cellHeight - 50
+            checkoutRefreshView.isHidden = true
+            checkoutinfoLbl.isHidden = true
+            checkoutHeightConst.constant = 0 // 50
+        }
+        
+        if isTohideWorkPlan {
+            cellHeight = cellHeight - 50
+            workPlanHeightConstraint.constant = 0 // 50
+            workPlanRefreshView.isHidden = true
+            workPlanTitLbl.isHidden = true
+        } else {
+            workPlanHeightConstraint.constant = 50 // 0
+            workPlanRefreshView.isHidden = false
+            workPlanTitLbl.isHidden = false
         }
         
         switch callsExpandState {
@@ -327,23 +346,34 @@ class OutboxDetailsTVC: UITableViewCell {
     
     
     func toSetCallsCellHeight(callsExpandState: cellState) {
-        checkinHeightConst.constant = 0 // 50
-        checkoutHeightConst.constant = 0 // 50
-        checkinLbl.isHidden = true
-        checkoutinfoLbl.isHidden = true
-        checkoutRefreshView.isHidden = true
-        checkinRefreshVIew.isHidden = true
-        var istohideCheckin: Bool = true
-        var istohideCheckout: Bool = true
+     
+
         var cellHeight : Int = 290
         if istohideCheckin {
             cellHeight = cellHeight - 50
+            checkinRefreshVIew.isHidden = true
+            checkinLbl.isHidden = true
+            checkinHeightConst.constant = 0 // 50
         }
         
         if istohideCheckout {
             cellHeight = cellHeight - 50
+            checkoutHeightConst.constant = 0 // 50
+            checkoutinfoLbl.isHidden = true
+            checkoutRefreshView.isHidden = true
         }
         
+        
+        if isTohideWorkPlan {
+            cellHeight = cellHeight - 50
+            workPlanHeightConstraint.constant = 0 // 50
+            workPlanRefreshView.isHidden = true
+            workPlanTitLbl.isHidden = true
+        } else {
+            workPlanHeightConstraint.constant = 50 // 0
+            workPlanRefreshView.isHidden = false
+            workPlanTitLbl.isHidden = false
+        }
         
         let count = self.todayCallsModel.count
         let eventsCount = self.eventCaptureModel.count

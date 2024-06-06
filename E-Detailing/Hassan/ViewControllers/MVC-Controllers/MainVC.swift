@@ -1193,6 +1193,7 @@ class MainVC : UIViewController {
     }
     
     func setupUI() {
+        
         cellRegistration()
         initView()
         rejectionVIew.isHidden = true
@@ -1230,7 +1231,7 @@ class MainVC : UIViewController {
         
         btnFinalSubmit.backgroundColor = .appTextColor
         
-        //outboxCountVIew.isHidden = true
+        
         outboxCallsCountLabel.setFont(font: .medium(size: .BODY))
         outboxCallsCountLabel.textColor = .appWhiteColor
         outboxCountVIew.layer.cornerRadius = outboxCountVIew.height / 2
@@ -3183,13 +3184,14 @@ extension MainVC : collectionViewProtocols {
             let size = CGSize(width: width - 10, height: self.analysisCollectionView.frame.height)
             return size
         case self.eventCollectionView:
-            let width = self.eventCollectionView.bounds.width - Constants.spacing
-            let size = CGSize(width: width, height: 60)
-            return size
+          //  eventArr[indexPath.row]
+            return CGSize(width:eventArr[indexPath.item].size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]).width + 20, height: collectionView.height / 5.5)
+            
+         //   let width = self.eventCollectionView.bounds.width - Constants.spacing
+           // let size = CGSize(width: width, height: self.analysisCollectionView.frame.height / 3)
+          //  return size
         default :
-            let width = self.analysisCollectionView.frame.width / 3
-            let size = CGSize(width: width - 10, height: self.analysisCollectionView.frame.height)
-            return size
+            return CGSize()
             
         }
     }
@@ -3309,26 +3311,33 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             cell.eventCOuntLbl.text = "\(eventModel.count)"
             var firstPlan = ""
             var secondPlan = ""
-            plansModel.enumerated().forEach { index, aSession in
-                switch index {
-                case 0:
-                    if let wtName = aSession.workType?.name  {
-                        firstPlan = wtName
-                    }
-                case 1:
+            if !plansModel.isEmpty {
+                plansModel.enumerated().forEach { index, aSession in
+                    switch index {
+                    case 0:
                         if let wtName = aSession.workType?.name  {
-                            secondPlan = wtName
+                            firstPlan = wtName
                         }
-                    
-                default:
-                    print("Yet to")
+                    case 1:
+                            if let wtName = aSession.workType?.name  {
+                                secondPlan = wtName
+                            }
+                        
+                    default:
+                        print("Yet to")
+                    }
                 }
-            }
-            if !secondPlan.isEmpty {
-                cell.workPlanTitLbl.text = "Work Plan - \(firstPlan), \(secondPlan)"
+                if !secondPlan.isEmpty {
+                    cell.workPlanTitLbl.text = "Work Plan - \(firstPlan), \(secondPlan)"
+                } else {
+                    cell.workPlanTitLbl.text = "Work Plan - \(firstPlan)"
+                }
+                cell.isTohideWorkPlan = false
             } else {
-                cell.workPlanTitLbl.text = "Work Plan - \(firstPlan)"
+                cell.isTohideWorkPlan = true
             }
+
+
            
             cell.toLoadData()
             
@@ -3649,6 +3658,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             //290 -  checkin - 50 || work plan - 50 || call detail - 50 || event cpature - 50 || check out - 50
             let callsCount = obj_sections[indexPath.section].items.count
             let eventsCount = obj_sections[indexPath.section].eventCaptures.count
+            let plansModel = obj_sections[indexPath.section].myDayplans
+            
             let istohideCheckin: Bool = true
             let istohideCheckout: Bool = true
             
@@ -3660,6 +3671,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             if istohideCheckout {
                 cellHeight = cellHeight - 50
             }
+             
+            if plansModel.isEmpty {
+                cellHeight = cellHeight - 50
+            }
+            
             switch indexPath.section {
 
             default:

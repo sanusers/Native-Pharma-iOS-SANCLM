@@ -196,7 +196,7 @@
                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XuO-Qt-gsa">
                                                                         <rect key="frame" x="0.0" y="0.0" width="90.5" height="33"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="TJy-t3-TXH">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="91" height="33"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="90.5" height="33"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemPinkColor"/>
@@ -259,7 +259,7 @@
                                                                         <visualEffectView opaque="NO" alpha="0.05000000074505806" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0on-AS-Tco">
                                                                             <rect key="frame" x="2" y="0.0" width="358.5" height="64"/>
                                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="NF0-wt-8i6">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="358" height="64"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="358.5" height="64"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             </view>
                                                                             <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1986,7 +1986,7 @@
                                                                 <rect key="frame" x="0.0" y="164" width="1121" height="381.5"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No. 569, mount road, satya murthy nagar, Teynampet, Chennai, Tamil Nadu 600 018, India" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jPV-Xv-9V4">
-                                                                        <rect key="frame" x="0.0" y="5" width="1121" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="5" width="1121" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -3568,7 +3568,7 @@
                                                         <rect key="frame" x="148" y="0.0" width="138" height="50"/>
                                                         <subviews>
                                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CnK-lj-X4W">
-                                                                <rect key="frame" x="53.5" y="16.5" width="31" height="17.5"/>
+                                                                <rect key="frame" x="53" y="17" width="31.5" height="16.5"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -3708,7 +3708,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAN Media Pvt Ltd.," textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p5b-8C-aas">
-                                        <rect key="frame" x="95" y="39" width="148.5" height="20"/>
+                                        <rect key="frame" x="95" y="39.5" width="146" height="19"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -5308,7 +5308,7 @@
                                         <rect key="frame" x="992.5" y="4" width="170" height="57.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Finish Detailing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqJ-Cj-rQL">
-                                                <rect key="frame" x="28" y="18.5" width="114" height="20"/>
+                                                <rect key="frame" x="30.5" y="19" width="109" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -6007,10 +6007,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KSI-If-3fn">
-                                <rect key="frame" x="0.0" y="702.5" width="1183" height="97.5"/>
+                                <rect key="frame" x="0.0" y="702.5" width="1184.5" height="97.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Ar6-AX-PYj">
-                                        <rect key="frame" x="902" y="41" width="266" height="45"/>
+                                        <rect key="frame" x="903" y="41" width="266" height="45"/>
                                         <subviews>
                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nMp-Bf-vW8">
                                                 <rect key="frame" x="0.0" y="0.0" width="128" height="45"/>
@@ -6035,7 +6035,7 @@
                                                 <rect key="frame" x="138" y="0.0" width="128" height="45"/>
                                                 <subviews>
                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Final submit" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xyx-sB-aws">
-                                                        <rect key="frame" x="24.5" y="13.5" width="79" height="17.5"/>
+                                                        <rect key="frame" x="26" y="14" width="76" height="16.5"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -6062,7 +6062,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wLY-6b-9bG">
-                                <rect key="frame" x="0.0" y="-4" width="1183" height="82"/>
+                                <rect key="frame" x="0.0" y="-4" width="1184.5" height="82"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h9w-xS-O5w">
                                         <rect key="frame" x="5" y="16.5" width="65.5" height="65.5"/>
@@ -6083,7 +6083,7 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Doctor name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1td-rp-gvV">
-                                        <rect key="frame" x="75.5" y="40" width="91" height="19"/>
+                                        <rect key="frame" x="75.5" y="40.5" width="87" height="17.5"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                         <color key="textColor" systemColor="systemBackgroundColor"/>
                                         <nil key="highlightedColor"/>
@@ -6100,17 +6100,17 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mdo-28-WET">
-                                <rect key="frame" x="0.0" y="78" width="1183" height="65.5"/>
+                                <rect key="frame" x="0.0" y="78" width="1184.5" height="65.5"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Wl-jG-S3l">
-                                        <rect key="frame" x="0.0" y="60.5" width="1183" height="1"/>
+                                        <rect key="frame" x="0.0" y="60.5" width="1184.5" height="1"/>
                                         <color key="backgroundColor" systemColor="secondaryLabelColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="JlP-td-vcY"/>
                                         </constraints>
                                     </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ZMv-A6-123">
-                                        <rect key="frame" x="0.0" y="0.0" width="1183" height="65.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1184.5" height="65.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bx9-vq-lbn">
                                             <size key="itemSize" width="128" height="128"/>
@@ -6142,27 +6142,27 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jJy-8J-VF7">
-                                <rect key="frame" x="17.5" y="148.5" width="1148" height="574"/>
+                                <rect key="frame" x="17.5" y="148.5" width="1149" height="574"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="8cE-yf-2ih">
-                                        <rect key="frame" x="0.0" y="0.0" width="1148" height="574"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1149" height="574"/>
                                         <subviews>
                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fnC-wI-HGp">
-                                                <rect key="frame" x="0.0" y="0.0" width="344.5" height="574"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="574"/>
                                                 <subviews>
                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZVi-sm-FrG">
-                                                        <rect key="frame" x="0.0" y="0.0" width="344.5" height="49"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="49"/>
                                                         <subviews>
                                                             <stackView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2CW-F4-DtD">
-                                                                <rect key="frame" x="10" y="5" width="324.5" height="39"/>
+                                                                <rect key="frame" x="10" y="5" width="325" height="39"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-4F-p13">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="48.5" height="39"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="26" height="39"/>
                                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
                                                                     </imageView>
                                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QYf-HS-1zw">
-                                                                        <rect key="frame" x="48.5" y="0.0" width="276" height="39"/>
+                                                                        <rect key="frame" x="26" y="0.0" width="299" height="39"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                         <connections>
@@ -6170,7 +6170,7 @@
                                                                         </connections>
                                                                     </textField>
                                                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QWn-MY-ERR">
-                                                                        <rect key="frame" x="324.5" y="0.0" width="0.0" height="39"/>
+                                                                        <rect key="frame" x="325" y="0.0" width="0.0" height="39"/>
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xmark.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="gHW-JR-PLw">
                                                                                 <rect key="frame" x="0.0" y="0.5" width="0.0" height="38"/>
@@ -6201,10 +6201,10 @@
                                                         </constraints>
                                                     </view>
                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XTa-i1-F6F">
-                                                        <rect key="frame" x="0.0" y="54" width="344.5" height="520"/>
+                                                        <rect key="frame" x="0.0" y="54" width="345" height="520"/>
                                                         <subviews>
                                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="1" estimatedSectionFooterHeight="-1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MRL-zC-tDE">
-                                                                <rect key="frame" x="0.0" y="0.0" width="344.5" height="520"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="520"/>
                                                             </tableView>
                                                         </subviews>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -6240,7 +6240,7 @@
                                                                                                 <rect key="frame" x="0.0" y="11" width="327.5" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Chemist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDQ-aw-rhK">
-                                                                                                        <rect key="frame" x="15" y="17" width="135.5" height="17.5"/>
+                                                                                                        <rect key="frame" x="15" y="17.5" width="136" height="16.5"/>
                                                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <nil key="highlightedColor"/>
@@ -6300,16 +6300,16 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="327.5" height="73"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IJA-1r-7oe">
-                                                                                                <rect key="frame" x="13.5" y="11" width="300" height="51"/>
+                                                                                                <rect key="frame" x="0.0" y="11" width="327.5" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meb-Ly-iph">
-                                                                                                        <rect key="frame" x="15" y="16.5" width="133.5" height="17.5"/>
+                                                                                                        <rect key="frame" x="15" y="17" width="134" height="16.5"/>
                                                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                                                         <nil key="textColor"/>
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7lw-l7-meY">
-                                                                                                        <rect key="frame" x="259.5" y="13.5" width="25.5" height="23.5"/>
+                                                                                                        <rect key="frame" x="287" y="13.5" width="25.5" height="23.5"/>
                                                                                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                                                                     </imageView>
@@ -6361,7 +6361,7 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="327.5" height="72.5"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSF-hY-yTQ">
-                                                                                                <rect key="frame" x="13.5" y="11" width="300" height="51"/>
+                                                                                                <rect key="frame" x="14" y="11" width="300" height="51"/>
                                                                                                 <subviews>
                                                                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Qty" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S8K-m3-gSf">
                                                                                                         <rect key="frame" x="15" y="1" width="270" height="48.5"/>
@@ -6418,7 +6418,7 @@
                                                                                         <rect key="frame" x="0.0" y="18.5" width="327.5" height="72.5"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cY9-Wr-32I">
-                                                                                                <rect key="frame" x="13.5" y="11" width="300" height="50.5"/>
+                                                                                                <rect key="frame" x="14" y="11" width="300" height="50.5"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ld7-ly-d3r">
                                                                                                         <rect key="frame" x="15" y="25" width="0.0" height="0.0"/>
@@ -6470,7 +6470,7 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="327.5" height="73"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="690-xZ-7qs">
-                                                                                                <rect key="frame" x="13.5" y="11" width="300" height="51"/>
+                                                                                                <rect key="frame" x="14" y="11" width="300" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slb-Mv-I8u">
                                                                                                         <rect key="frame" x="15" y="25.5" width="0.0" height="0.0"/>
@@ -6522,7 +6522,7 @@
                                                                                         <rect key="frame" x="0.0" y="27" width="327.5" height="64"/>
                                                                                         <subviews>
                                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VFu-Gw-r3B">
-                                                                                                <rect key="frame" x="13.5" y="6.5" width="300" height="51"/>
+                                                                                                <rect key="frame" x="14" y="6.5" width="300" height="51"/>
                                                                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -6595,23 +6595,23 @@
                                                 </constraints>
                                             </view>
                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eX7-Lo-4Z8">
-                                                <rect key="frame" x="354.5" y="0.0" width="793.5" height="574"/>
+                                                <rect key="frame" x="355" y="0.0" width="794" height="574"/>
                                                 <subviews>
                                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lSo-vd-38N">
-                                                        <rect key="frame" x="0.0" y="0.0" width="793.5" height="574"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="794" height="574"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     </tableView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="axu-tE-afL">
-                                                        <rect key="frame" x="238" y="143.5" width="317.5" height="287"/>
+                                                        <rect key="frame" x="238" y="143.5" width="318" height="287"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="KJk-rC-wUL">
-                                                                <rect key="frame" x="0.0" y="0.0" width="317.5" height="287"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="318" height="287"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no RCPA" translatesAutoresizingMaskIntoConstraints="NO" id="cdh-4d-cGl">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="317.5" height="258.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="318" height="258.5"/>
                                                                     </imageView>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yet to add RCPA" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O2X-sA-bRm">
-                                                                        <rect key="frame" x="0.0" y="258.5" width="317.5" height="28.5"/>
+                                                                        <rect key="frame" x="0.0" y="258.5" width="318" height="28.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -6659,12 +6659,12 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gB2-1j-N7a">
-                                <rect key="frame" x="0.0" y="2" width="1183" height="820"/>
+                                <rect key="frame" x="0.0" y="2" width="1184.5" height="820"/>
                                 <subviews>
                                     <visualEffectView opaque="NO" alpha="0.30000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F1e-Cl-Kmz">
-                                        <rect key="frame" x="0.0" y="0.0" width="1183" height="820"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1184.5" height="820"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="MGi-B8-WUw">
-                                            <rect key="frame" x="0.0" y="0.0" width="1183" height="820"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="1185" height="820"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -6757,29 +6757,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iwu-Nx-8vm">
-                                <rect key="frame" x="15" y="120" width="1150" height="858.5"/>
+                                <rect key="frame" x="15" y="124.5" width="1150" height="900"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mkm-s0-Kvj">
-                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="858.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="900"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="754-Ux-6JG" userLabel="Calendar View" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="64.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="67.5"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m6g-uk-Xgq">
-                                                        <rect key="frame" x="19" y="0.0" width="345.5" height="64.5"/>
+                                                        <rect key="frame" x="19" y="0.0" width="345.5" height="67.5"/>
                                                         <subviews>
                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" translatesAutoresizingMaskIntoConstraints="NO" id="WXF-Vx-R60">
-                                                                <rect key="frame" x="0.0" y="0.0" width="28" height="64.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="28" height="67.5"/>
                                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </imageView>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Select Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tYF-Pi-hRi">
-                                                                <rect key="frame" x="28" y="0.0" width="289.5" height="64.5"/>
+                                                                <rect key="frame" x="28" y="0.0" width="289.5" height="67.5"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="upAndDownArrow" translatesAutoresizingMaskIntoConstraints="NO" id="1Xn-HU-KuF">
-                                                                <rect key="frame" x="317.5" y="0.0" width="28" height="64.5"/>
+                                                                <rect key="frame" x="317.5" y="0.0" width="28" height="67.5"/>
                                                             </imageView>
                                                         </subviews>
                                                         <constraints>
@@ -6788,7 +6788,7 @@
                                                         </constraints>
                                                     </stackView>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cFJ-wq-PAP">
-                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="64.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="67.5"/>
                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                         <connections>
                                                             <action selector="dateAction:" destination="5EL-ve-o95" eventType="touchUpInside" id="xym-vY-adi"/>
@@ -6816,10 +6816,10 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RtE-F1-qgh" userLabel="Segment View">
-                                                <rect key="frame" x="0.0" y="74.5" width="383.5" height="64"/>
+                                                <rect key="frame" x="0.0" y="77.5" width="383.5" height="67.5"/>
                                                 <subviews>
                                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hcn-Pi-0ap">
-                                                        <rect key="frame" x="8.5" y="0.0" width="366.5" height="64"/>
+                                                        <rect key="frame" x="8.5" y="0.0" width="366.5" height="67.5"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="7Pq-QQ-O18">
                                                             <size key="itemSize" width="128" height="128"/>
@@ -6829,7 +6829,7 @@
                                                         </collectionViewFlowLayout>
                                                         <cells>
                                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="DkX-3M-1zO">
-                                                                <rect key="frame" x="0.0" y="-32" width="128" height="128"/>
+                                                                <rect key="frame" x="0.0" y="-30.5" width="128" height="128"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="qmY-Hq-VMb">
                                                                     <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
@@ -6839,7 +6839,7 @@
                                                         </cells>
                                                     </collectionView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MTG-iL-tI1">
-                                                        <rect key="frame" x="352" y="1" width="25" height="25"/>
+                                                        <rect key="frame" x="352" y="2" width="25" height="25"/>
                                                         <subviews>
                                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r3D-aS-AyZ">
                                                                 <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -6859,7 +6859,7 @@
                                                         </constraints>
                                                     </view>
                                                     <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mjT-Rx-mpz">
-                                                        <rect key="frame" x="10" y="16.5" width="363.5" height="32"/>
+                                                        <rect key="frame" x="10" y="18" width="363.5" height="32"/>
                                                         <segments>
                                                             <segment title="Work Plan"/>
                                                             <segment title="Calls"/>
@@ -6869,7 +6869,7 @@
                                                         <color key="selectedSegmentTintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </segmentedControl>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="037-Tl-XnG">
-                                                        <rect key="frame" x="0.0" y="59" width="383.5" height="1"/>
+                                                        <rect key="frame" x="0.0" y="62" width="383.5" height="1"/>
                                                         <color key="backgroundColor" systemColor="systemGray4Color"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="r5n-ea-IUD"/>
@@ -6897,19 +6897,19 @@
                                                 </constraints>
                                             </view>
                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bPL-88-6BY">
-                                                <rect key="frame" x="0.0" y="148.5" width="383.5" height="710"/>
+                                                <rect key="frame" x="0.0" y="155" width="383.5" height="745"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MIb-5r-Oss">
-                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="71"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="74.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IZu-NJ-KPP">
-                                                                <rect key="frame" x="15" y="35.5" width="245.5" height="0.0"/>
+                                                                <rect key="frame" x="15" y="37" width="245.5" height="0.0"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3QO-rs-lGw" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                <rect key="frame" x="275.5" y="14.5" width="88" height="42.5"/>
+                                                                <rect key="frame" x="275.5" y="15" width="88" height="44.5"/>
                                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="16"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -6938,10 +6938,10 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ElA-QC-3QL">
-                                                        <rect key="frame" x="0.0" y="71" width="383.5" height="558"/>
+                                                        <rect key="frame" x="0.0" y="74.5" width="383.5" height="586"/>
                                                         <subviews>
                                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Lvc-4d-RJE">
-                                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="558"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="586"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                             </tableView>
                                                         </subviews>
@@ -6954,10 +6954,10 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QGM-Vu-zRm">
-                                                        <rect key="frame" x="0.0" y="629" width="383.5" height="71"/>
+                                                        <rect key="frame" x="0.0" y="660.5" width="383.5" height="74.5"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sda-G5-05X" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                <rect key="frame" x="15" y="2" width="172" height="67.5"/>
+                                                                <rect key="frame" x="15" y="2" width="172" height="70.5"/>
                                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="13"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -6974,7 +6974,7 @@
                                                                 </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sLn-iL-2d2" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                <rect key="frame" x="197" y="2" width="171.5" height="67.5"/>
+                                                                <rect key="frame" x="197" y="2" width="171.5" height="70.5"/>
                                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="13"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -7018,7 +7018,7 @@
                                                 </constraints>
                                             </view>
                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xcx-lu-0Hu" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="148.5" width="383.5" height="710"/>
+                                                <rect key="frame" x="0.0" y="155" width="383.5" height="745"/>
                                                 <subviews>
                                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WYd-h9-nzd">
                                                         <rect key="frame" x="0.0" y="0.0" width="383.5" height="0.0"/>
@@ -7057,10 +7057,10 @@
                                                         </constraints>
                                                     </view>
                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xvs-2g-WBt">
-                                                        <rect key="frame" x="0.0" y="5" width="383.5" height="624"/>
+                                                        <rect key="frame" x="0.0" y="5" width="383.5" height="655.5"/>
                                                         <subviews>
                                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="RN4-CP-KSN">
-                                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="624"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="655.5"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <connections>
                                                                     <outlet property="dataSource" destination="5EL-ve-o95" id="yPf-RU-P33"/>
@@ -7077,10 +7077,10 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I7K-aa-Uo7">
-                                                        <rect key="frame" x="0.0" y="629" width="383.5" height="71"/>
+                                                        <rect key="frame" x="0.0" y="660.5" width="383.5" height="74.5"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hy7-eH-KCW">
-                                                                <rect key="frame" x="19" y="2" width="345.5" height="67.5"/>
+                                                                <rect key="frame" x="19" y="2" width="345.5" height="70.5"/>
                                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="13"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -7124,19 +7124,19 @@
                                                 </constraints>
                                             </view>
                                             <view hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9eF-SM-7dc">
-                                                <rect key="frame" x="0.0" y="74.5" width="383.5" height="784"/>
+                                                <rect key="frame" x="0.0" y="77.5" width="383.5" height="822.5"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bFI-ia-UXN">
-                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="62.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="65.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Call Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FOs-8I-Ugk">
-                                                                <rect key="frame" x="15" y="20.5" width="84" height="21.5"/>
+                                                                <rect key="frame" x="15" y="22" width="84" height="21.5"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="17"/>
                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gz-j8-cDq" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                <rect key="frame" x="277.5" y="11" width="96" height="40.5"/>
+                                                                <rect key="frame" x="277.5" y="11.5" width="96" height="42.5"/>
                                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="0.14999999999999999" colorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -7148,7 +7148,7 @@
                                                                 </connections>
                                                             </button>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gUb-c7-YEU">
-                                                                <rect key="frame" x="9.5" y="61.5" width="364.5" height="1"/>
+                                                                <rect key="frame" x="9.5" y="64.5" width="364.5" height="1"/>
                                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="1" id="QJC-Zl-rEd"/>
@@ -7172,7 +7172,7 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pDE-76-HB5">
-                                                        <rect key="frame" x="20" y="62.5" width="343.5" height="402.5"/>
+                                                        <rect key="frame" x="20" y="65.5" width="343.5" height="403"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dpc-3B-9I7">
                                                                 <rect key="frame" x="0.0" y="0.0" width="343.5" height="60.5"/>
@@ -7241,15 +7241,12 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oYE-jq-Chu">
-                                                        <rect key="frame" x="0.0" y="465" width="383.5" height="319"/>
+                                                        <rect key="frame" x="0.0" y="468.5" width="383.5" height="354"/>
                                                         <subviews>
                                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="uGC-lU-mTh">
-                                                                <rect key="frame" x="20" y="0.0" width="315" height="314"/>
+                                                                <rect key="frame" x="20" y="0.0" width="345" height="349"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="width" constant="315" id="Mun-SC-7AL"/>
-                                                                </constraints>
-                                                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="91C-F9-5m3">
+                                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="91C-F9-5m3">
                                                                     <size key="itemSize" width="128" height="128"/>
                                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -7257,27 +7254,27 @@
                                                                 </collectionViewFlowLayout>
                                                                 <cells>
                                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DayPlanEventCell" id="Gmd-56-RNV" customClass="DayPlanEventCell" customModule="E_Detailing" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="70" height="37.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="2my-qy-ynp">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="70" height="37.5"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                             <subviews>
                                                                                 <visualEffectView opaque="NO" alpha="0.10000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kHy-GS-BlF">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="37.5"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="s09-8R-hhc">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="70" height="38"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     </view>
                                                                                     <blurEffect style="regular"/>
                                                                                 </visualEffectView>
                                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5rP-ex-L8F">
-                                                                                    <rect key="frame" x="10" y="10" width="50" height="17.5"/>
+                                                                                    <rect key="frame" x="10" y="10" width="108" height="108"/>
                                                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                     <constraints>
                                                                                         <constraint firstAttribute="width" constant="50" id="8RG-KP-ivg"/>
                                                                                     </constraints>
-                                                                                    <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
+                                                                                    <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="12"/>
                                                                                     <color key="textColor" red="0.027450980390000001" green="0.3803921569" blue="0.27058823529999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                     <nil key="highlightedColor"/>
                                                                                 </label>
@@ -7311,6 +7308,7 @@
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="bottom" secondItem="uGC-lU-mTh" secondAttribute="bottom" constant="5" id="6Im-Ft-7ng"/>
+                                                            <constraint firstItem="uGC-lU-mTh" firstAttribute="width" secondItem="oYE-jq-Chu" secondAttribute="width" multiplier="0.9" id="OXi-lS-jhe"/>
                                                             <constraint firstItem="uGC-lU-mTh" firstAttribute="top" secondItem="oYE-jq-Chu" secondAttribute="top" id="gk7-bW-OoC"/>
                                                         </constraints>
                                                     </view>
@@ -7338,7 +7336,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Iaw-MB-lx5" userLabel="Work Plan View" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="148.5" width="383.5" height="710"/>
+                                                <rect key="frame" x="0.0" y="155" width="383.5" height="745"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vqq-LY-6Jn">
                                                         <rect key="frame" x="9.5" y="5" width="364.5" height="40"/>
@@ -7376,7 +7374,7 @@
                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.10000000149011612" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pzC-ih-esu">
                                                                         <rect key="frame" x="2" y="0.0" width="352.5" height="42.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="wXJ-Lo-jIK">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="352" height="42"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="352.5" height="42.5"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="0.83143153530000002" colorSpace="custom" customColorSpace="sRGB"/>
@@ -7465,23 +7463,23 @@
                                                         </constraints>
                                                     </view>
                                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsMultipleSelection="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="efr-5G-JYB">
-                                                        <rect key="frame" x="5" y="92" width="373.5" height="466"/>
+                                                        <rect key="frame" x="5" y="92" width="373.5" height="494"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     </tableView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7rH-vO-V1X">
-                                                        <rect key="frame" x="0.0" y="563" width="383.5" height="142"/>
+                                                        <rect key="frame" x="0.0" y="591" width="383.5" height="149"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="cRX-mf-aZR">
-                                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="142"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="383.5" height="149"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fyy-Qw-cSu">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="66"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="383.5" height="69.5"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="npU-2S-yM7">
-                                                                                <rect key="frame" x="9.5" y="0.0" width="364.5" height="66"/>
+                                                                                <rect key="frame" x="9.5" y="0.0" width="364.5" height="69.5"/>
                                                                                 <subviews>
                                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sas-1Q-IMZ" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="177.5" height="66"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="177.5" height="69.5"/>
                                                                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="13"/>
                                                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -7498,7 +7496,7 @@
                                                                                         </connections>
                                                                                     </button>
                                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2AB-mV-kYS" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="187.5" y="0.0" width="177" height="66"/>
+                                                                                        <rect key="frame" x="187.5" y="0.0" width="177" height="69.5"/>
                                                                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="13"/>
                                                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -7526,10 +7524,10 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pAc-pg-jib">
-                                                                        <rect key="frame" x="0.0" y="76" width="383.5" height="66"/>
+                                                                        <rect key="frame" x="0.0" y="79.5" width="383.5" height="69.5"/>
                                                                         <subviews>
                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MCM-5H-Rvi" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                                                <rect key="frame" x="9.5" y="0.0" width="364.5" height="66"/>
+                                                                                <rect key="frame" x="9.5" y="0.0" width="364.5" height="69.5"/>
                                                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="13"/>
                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -7614,10 +7612,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UMW-MG-8fy">
-                                        <rect key="frame" x="398.5" y="0.0" width="751.5" height="858.5"/>
+                                        <rect key="frame" x="398.5" y="0.0" width="751.5" height="900"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="nBa-JO-Ezc">
-                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="858.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="900"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iLI-yy-cXU">
                                                         <rect key="frame" x="0.0" y="0.0" width="751.5" height="40"/>
@@ -7656,16 +7654,16 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rYV-Lq-Nd3">
-                                                        <rect key="frame" x="0.0" y="45" width="751.5" height="708.5"/>
+                                                        <rect key="frame" x="0.0" y="45" width="751.5" height="750"/>
                                                         <subviews>
                                                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="PV5-OZ-toT">
-                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="708.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="750"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OXS-PH-NNs">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="751.5" height="71"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="751.5" height="75"/>
                                                                         <subviews>
                                                                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="qBS-86-5QP">
-                                                                                <rect key="frame" x="441" y="5" width="300.5" height="62"/>
+                                                                                <rect key="frame" x="441" y="5" width="300.5" height="66"/>
                                                                                 <segments>
                                                                                     <segment title="Monthly"/>
                                                                                     <segment title="Quarterly"/>
@@ -7683,13 +7681,13 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OGq-k9-K5H">
-                                                                        <rect key="frame" x="0.0" y="76" width="751.5" height="212.5"/>
+                                                                        <rect key="frame" x="0.0" y="80" width="751.5" height="225"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="bQY-JE-7xg">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="212.5"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="225"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nio-Rs-KB2" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="245.5" height="212.5"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="245.5" height="225"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Primary Sales" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y6A-CS-8xb">
                                                                                                 <rect key="frame" x="10" y="20" width="220.5" height="20"/>
@@ -7735,7 +7733,7 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JxC-e9-wsg" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="255.5" y="0.0" width="240.5" height="212.5"/>
+                                                                                        <rect key="frame" x="255.5" y="0.0" width="240.5" height="225"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Secondary Sales" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hqs-Ri-OYD">
                                                                                                 <rect key="frame" x="10" y="20" width="215.5" height="20"/>
@@ -7780,7 +7778,7 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ys8-F3-XKC" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="506" y="0.0" width="245.5" height="212.5"/>
+                                                                                        <rect key="frame" x="506" y="0.0" width="245.5" height="225"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RCPA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClA-ae-SUJ">
                                                                                                 <rect key="frame" x="10" y="20" width="220.5" height="20"/>
@@ -7851,13 +7849,13 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xvm-cD-RKl">
-                                                                        <rect key="frame" x="0.0" y="293.5" width="751.5" height="415"/>
+                                                                        <rect key="frame" x="0.0" y="310" width="751.5" height="440"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Nbf-1c-UV0">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="415"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="440"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bvX-Vz-6l7" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="245.5" height="415"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="245.5" height="440"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PCPM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VFi-cd-Wgx">
                                                                                                 <rect key="frame" x="10" y="20" width="220.5" height="20"/>
@@ -7885,7 +7883,7 @@
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Y4-V3-oxr" customClass="UICircularProgressRing" customModule="UICircularProgressRing">
-                                                                                                <rect key="frame" x="80" y="145" width="145.5" height="250"/>
+                                                                                                <rect key="frame" x="80" y="145" width="145.5" height="275"/>
                                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                                             </view>
                                                                                         </subviews>
@@ -7910,7 +7908,7 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yEx-E5-mFn" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                        <rect key="frame" x="255.5" y="0.0" width="240.5" height="415"/>
+                                                                                        <rect key="frame" x="255.5" y="0.0" width="240.5" height="440"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BDL Coverage" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YTh-Tr-9In">
                                                                                                 <rect key="frame" x="10" y="20" width="215.5" height="20"/>
@@ -7931,25 +7929,25 @@
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Target" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eCe-iJ-KvF">
-                                                                                                <rect key="frame" x="10" y="335" width="100.5" height="20"/>
+                                                                                                <rect key="frame" x="10" y="360" width="100.5" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.26274509800000001" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Actual" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rOE-NP-ZbC">
-                                                                                                <rect key="frame" x="120.5" y="335" width="110" height="20"/>
+                                                                                                <rect key="frame" x="120.5" y="360" width="110" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                                                 <color key="textColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="109.56L" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yyg-7Q-6j8">
-                                                                                                <rect key="frame" x="10" y="375" width="100.5" height="20"/>
+                                                                                                <rect key="frame" x="10" y="400" width="100.5" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.26274509800000001" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26.75L" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="apn-QI-htj">
-                                                                                                <rect key="frame" x="120.5" y="375" width="110" height="20"/>
+                                                                                                <rect key="frame" x="120.5" y="400" width="110" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
                                                                                                 <color key="textColor" red="0.0" green="0.77647058820000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -7981,7 +7979,7 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zMJ-eG-dXU">
-                                                                                        <rect key="frame" x="506" y="0.0" width="245.5" height="415"/>
+                                                                                        <rect key="frame" x="506" y="0.0" width="245.5" height="440"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RCPA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hqn-TQ-9O2">
                                                                                                 <rect key="frame" x="10" y="20" width="220.5" height="17.5"/>
@@ -8056,13 +8054,13 @@
                                                                 </constraints>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="xlx-Jk-5Sg">
-                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="708.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="750"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mFu-js-11l">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="751.5" height="177"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="751.5" height="187.5"/>
                                                                         <subviews>
                                                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="gti-cd-VtQ">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="177"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="187.5"/>
                                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PT8-Mk-Ro1">
                                                                                     <size key="itemSize" width="128" height="128"/>
@@ -8082,7 +8080,7 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qqf-SC-BAZ">
-                                                                        <rect key="frame" x="0.0" y="182" width="751.5" height="64"/>
+                                                                        <rect key="frame" x="0.0" y="192.5" width="751.5" height="67.5"/>
                                                                         <subviews>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Average Doctor Calls" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="swu-Qt-CHX">
                                                                                 <rect key="frame" x="5" y="12" width="579" height="27.5"/>
@@ -8091,16 +8089,16 @@
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bLN-Pd-osJ">
-                                                                                <rect key="frame" x="736.5" y="32" width="0.0" height="0.0"/>
+                                                                                <rect key="frame" x="736.5" y="33.5" width="0.0" height="0.0"/>
                                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                                 <nil key="textColor"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
                                                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PQx-Lp-khI" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                <rect key="frame" x="599" y="5" width="132.5" height="51"/>
+                                                                                <rect key="frame" x="599" y="5" width="132.5" height="54"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2023" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HkE-wV-oUT">
-                                                                                        <rect key="frame" x="10" y="14.5" width="82.5" height="22.5"/>
+                                                                                        <rect key="frame" x="10" y="15.5" width="82.5" height="22.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -8113,7 +8111,7 @@
                                                                                         </constraints>
                                                                                     </imageView>
                                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kFr-fa-dDm">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="132.5" height="51"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="132.5" height="54"/>
                                                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                     </button>
                                                                                 </subviews>
@@ -8154,28 +8152,28 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TgN-lV-PDg">
-                                                                        <rect key="frame" x="0.0" y="251" width="751.5" height="457.5"/>
+                                                                        <rect key="frame" x="0.0" y="265" width="751.5" height="485"/>
                                                                         <subviews>
                                                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VqE-tI-Fdx">
-                                                                                <rect key="frame" x="10" y="381" width="731.5" height="66.5"/>
+                                                                                <rect key="frame" x="10" y="403" width="731.5" height="72"/>
                                                                                 <subviews>
                                                                                     <stackView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="HDu-d1-eEl">
-                                                                                        <rect key="frame" x="18.5" y="0.0" width="694.5" height="66.5"/>
+                                                                                        <rect key="frame" x="18.5" y="0.0" width="694.5" height="72"/>
                                                                                         <subviews>
                                                                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5bh-xx-MQS">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="218" height="66.5"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="218" height="72"/>
                                                                                                 <subviews>
                                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o5B-Ik-TvA">
-                                                                                                        <rect key="frame" x="0.0" y="0.0" width="218" height="66.5"/>
+                                                                                                        <rect key="frame" x="0.0" y="0.0" width="218" height="72"/>
                                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="8yt-oe-bL3">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="66"/>
+                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="72"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                         </view>
                                                                                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                                                                                                         <blurEffect style="regular"/>
                                                                                                     </visualEffectView>
                                                                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="January" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1Z-AY-AR0">
-                                                                                                        <rect key="frame" x="5" y="24.5" width="208" height="18"/>
+                                                                                                        <rect key="frame" x="5" y="27" width="208" height="18"/>
                                                                                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                                                                                         <nil key="textColor"/>
                                                                                                         <nil key="highlightedColor"/>
@@ -8194,19 +8192,19 @@
                                                                                                 </constraints>
                                                                                             </view>
                                                                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UBK-LI-KS0">
-                                                                                                <rect key="frame" x="238" y="0.0" width="218.5" height="66.5"/>
+                                                                                                <rect key="frame" x="238" y="0.0" width="218.5" height="72"/>
                                                                                                 <subviews>
                                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjI-eF-3YO">
-                                                                                                        <rect key="frame" x="0.0" y="0.0" width="218.5" height="66.5"/>
+                                                                                                        <rect key="frame" x="0.0" y="0.0" width="218.5" height="72"/>
                                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Jmh-Hp-dAu">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="219" height="66"/>
+                                                                                                            <rect key="frame" x="0.0" y="0.0" width="219" height="72"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                         </view>
                                                                                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                                                                                                         <blurEffect style="regular"/>
                                                                                                     </visualEffectView>
                                                                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Febraury" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lqt-e7-sbt">
-                                                                                                        <rect key="frame" x="5" y="24.5" width="208.5" height="18"/>
+                                                                                                        <rect key="frame" x="5" y="27" width="208.5" height="18"/>
                                                                                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                                                                                         <nil key="textColor"/>
                                                                                                         <nil key="highlightedColor"/>
@@ -8225,19 +8223,19 @@
                                                                                                 </constraints>
                                                                                             </view>
                                                                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w79-Oo-6Wm">
-                                                                                                <rect key="frame" x="476.5" y="0.0" width="218" height="66.5"/>
+                                                                                                <rect key="frame" x="476.5" y="0.0" width="218" height="72"/>
                                                                                                 <subviews>
                                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="twn-fX-LNl">
-                                                                                                        <rect key="frame" x="0.0" y="0.0" width="218" height="66.5"/>
+                                                                                                        <rect key="frame" x="0.0" y="0.0" width="218" height="72"/>
                                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Fl3-Jf-OxK">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="66"/>
+                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="72"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                         </view>
                                                                                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                                                                                                         <blurEffect style="regular"/>
                                                                                                     </visualEffectView>
                                                                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="March" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cco-7e-NmB">
-                                                                                                        <rect key="frame" x="5" y="24.5" width="208" height="18"/>
+                                                                                                        <rect key="frame" x="5" y="27" width="208" height="18"/>
                                                                                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                                                                                         <nil key="textColor"/>
                                                                                                         <nil key="highlightedColor"/>
@@ -8267,7 +8265,7 @@
                                                                                 </constraints>
                                                                             </view>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nJH-6C-wCF">
-                                                                                <rect key="frame" x="10" y="10" width="731.5" height="366"/>
+                                                                                <rect key="frame" x="10" y="10" width="731.5" height="388"/>
                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                             </view>
                                                                         </subviews>
@@ -8298,13 +8296,13 @@
                                                                 </constraints>
                                                             </stackView>
                                                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="ieB-qE-cto">
-                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="708.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="750"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9m1-k8-Plh">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="751.5" height="177"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="751.5" height="187.5"/>
                                                                         <subviews>
                                                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="nbs-uf-3IE">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="177"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="751.5" height="187.5"/>
                                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="q1s-SH-g3Z">
                                                                                     <size key="itemSize" width="128" height="128"/>
@@ -8328,19 +8326,19 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0SV-64-EVf">
-                                                                        <rect key="frame" x="0.0" y="182" width="751.5" height="77.5"/>
+                                                                        <rect key="frame" x="0.0" y="192.5" width="751.5" height="81"/>
                                                                         <subviews>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brand" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iGk-5J-5NQ">
-                                                                                <rect key="frame" x="5" y="25" width="165.5" height="27.5"/>
+                                                                                <rect key="frame" x="5" y="26.5" width="165.5" height="27.5"/>
                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="22"/>
                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Moy-bC-3iG" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                <rect key="frame" x="371" y="5" width="180" height="62.5"/>
+                                                                                <rect key="frame" x="371" y="5" width="180" height="66"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Product" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YLu-ah-ogH">
-                                                                                        <rect key="frame" x="10" y="20" width="140" height="22.5"/>
+                                                                                        <rect key="frame" x="10" y="21.5" width="140" height="22.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -8371,10 +8369,10 @@
                                                                                 </userDefinedRuntimeAttributes>
                                                                             </view>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gc2-KO-aCQ" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                <rect key="frame" x="561" y="5" width="180.5" height="62.5"/>
+                                                                                <rect key="frame" x="561" y="5" width="180.5" height="66"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Speciality" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ga-jp-qxW">
-                                                                                        <rect key="frame" x="10" y="20" width="140.5" height="22.5"/>
+                                                                                        <rect key="frame" x="10" y="21.5" width="140.5" height="22.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -8405,10 +8403,10 @@
                                                                                 </userDefinedRuntimeAttributes>
                                                                             </view>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C1I-3F-Uf1" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
-                                                                                <rect key="frame" x="180.5" y="5" width="180.5" height="62.5"/>
+                                                                                <rect key="frame" x="180.5" y="5" width="180.5" height="66"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brand" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9uQ-Jq-lNs">
-                                                                                        <rect key="frame" x="10" y="20" width="135.5" height="22.5"/>
+                                                                                        <rect key="frame" x="10" y="21.5" width="135.5" height="22.5"/>
                                                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="18"/>
                                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -8459,10 +8457,10 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R31-y8-0rh">
-                                                                        <rect key="frame" x="0.0" y="264.5" width="751.5" height="444"/>
+                                                                        <rect key="frame" x="0.0" y="278.5" width="751.5" height="471.5"/>
                                                                         <subviews>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rFD-BO-wFz" customClass="LineChartView" customModule="Charts">
-                                                                                <rect key="frame" x="5" y="5" width="741.5" height="434"/>
+                                                                                <rect key="frame" x="5" y="5" width="741.5" height="461.5"/>
                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                             </view>
                                                                         </subviews>
@@ -8511,7 +8509,7 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hMD-Wr-Obf">
-                                                        <rect key="frame" x="0.0" y="758.5" width="751.5" height="100"/>
+                                                        <rect key="frame" x="0.0" y="800" width="751.5" height="100"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quick Links" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kDu-iV-P7E">
                                                                 <rect key="frame" x="5" y="5" width="118" height="27.5"/>
@@ -8577,10 +8575,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KCe-uD-Ip8">
-                                <rect key="frame" x="0.0" y="0.0" width="1180" height="100"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1180" height="104.5"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3gI-1o-cKC">
-                                        <rect key="frame" x="990" y="35" width="170" height="50"/>
+                                        <rect key="frame" x="990" y="37.5" width="170" height="50"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Iiy-6n-RHw">
                                                 <rect key="frame" x="0.0" y="0.0" width="170" height="50"/>
@@ -8631,7 +8629,7 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oY3-T9-Wl5">
-                                        <rect key="frame" x="15" y="35" width="50" height="50"/>
+                                        <rect key="frame" x="15" y="37.5" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="APk-51-hba"/>
                                             <constraint firstAttribute="width" constant="50" id="kmB-Di-1NT"/>
@@ -8644,7 +8642,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAN Media Pvt Ltd.," textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wii-Jq-Ae3">
-                                        <rect key="frame" x="95" y="46" width="204.5" height="27.5"/>
+                                        <rect key="frame" x="95" y="49" width="204.5" height="27.5"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="22"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -8662,12 +8660,12 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uzp-cR-mIp">
-                                <rect key="frame" x="0.0" y="0.0" width="1180" height="998.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1180" height="1044.5"/>
                                 <subviews>
                                     <visualEffectView opaque="NO" alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9kK-0K-r1s">
-                                        <rect key="frame" x="0.0" y="0.0" width="1180" height="998.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1180" height="1044.5"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="kUR-Fu-ZEm">
-                                            <rect key="frame" x="0.0" y="0.0" width="1180" height="998"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="1180" height="1044"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -9150,7 +9148,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="425" height="49"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7G-nK-uSu">
-                                                                        <rect key="frame" x="0.0" y="15.5" width="48.5" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="16" width="47" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -9181,7 +9179,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="425" height="49"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jo2-V5-9L5">
-                                                                        <rect key="frame" x="0.0" y="16" width="62.5" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="16.5" width="62" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -9550,7 +9548,7 @@ VmVyc2lvbiA6IDEuMAM
                                         <rect key="frame" x="0.0" y="0.0" width="1180" height="57.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KqT-RF-vz0">
-                                                <rect key="frame" x="1111" y="16.5" width="49" height="25"/>
+                                                <rect key="frame" x="1111" y="17" width="49" height="23.5"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="20"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -9559,7 +9557,7 @@ VmVyc2lvbiA6IDEuMAM
                                                 <rect key="frame" x="0.0" y="0.0" width="203.5" height="57.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iQy-z8-BBE">
-                                                        <rect key="frame" x="20" y="16.5" width="49" height="25"/>
+                                                        <rect key="frame" x="20" y="17" width="49" height="23.5"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="20"/>
                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
@@ -9643,7 +9641,7 @@ VmVyc2lvbiA6IDEuMAM
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap on each to sync individually" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ugs-L2-vzj">
-                                                        <rect key="frame" x="18" y="12" width="243.5" height="21.5"/>
+                                                        <rect key="frame" x="18" y="12" width="242" height="20"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="17"/>
                                                         <color key="textColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="highlightedColor"/>
@@ -9679,7 +9677,7 @@ VmVyc2lvbiA6IDEuMAM
                                                                     <rect key="frame" x="10" y="5" width="310.5" height="40"/>
                                                                     <subviews>
                                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="akb-Fm-KZ2">
-                                                                            <rect key="frame" x="20" y="9" width="45.5" height="22.5"/>
+                                                                            <rect key="frame" x="20" y="9.5" width="44.5" height="21"/>
                                                                             <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
                                                                             <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                             <nil key="highlightedColor"/>
@@ -9844,7 +9842,7 @@ VmVyc2lvbiA6IDEuMAM
                                                         </constraints>
                                                     </view>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Product &amp; Input" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a0S-I8-3lw">
-                                                        <rect key="frame" x="15" y="17.5" width="142.5" height="19"/>
+                                                        <rect key="frame" x="15" y="18.5" width="137" height="17.5"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="highlightedColor"/>
@@ -10170,7 +10168,7 @@ VmVyc2lvbiA6IDEuMAM
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Leave Application" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="drO-QM-rSp">
-                                        <rect key="frame" x="70.5" y="40" width="123.5" height="19"/>
+                                        <rect key="frame" x="70.5" y="40.5" width="119.5" height="17.5"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                         <color key="textColor" systemColor="systemBackgroundColor"/>
                                         <nil key="highlightedColor"/>
@@ -10253,7 +10251,7 @@ VmVyc2lvbiA6IDEuMAM
                                                                                                                                         <rect key="frame" x="0.0" y="13" width="381" height="61"/>
                                                                                                                                         <subviews>
                                                                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jE6-d4-rax">
-                                                                                                                                                <rect key="frame" x="15" y="21.5" width="70.5" height="17.5"/>
+                                                                                                                                                <rect key="frame" x="15" y="22" width="71" height="16.5"/>
                                                                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                                                                 <nil key="highlightedColor"/>
@@ -10346,7 +10344,7 @@ VmVyc2lvbiA6IDEuMAM
                                                                                                                                         <rect key="frame" x="0.0" y="13" width="381" height="61.5"/>
                                                                                                                                         <subviews>
                                                                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Casual Leave" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jyB-ub-dbM">
-                                                                                                                                                <rect key="frame" x="15" y="22" width="83" height="17.5"/>
+                                                                                                                                                <rect key="frame" x="15" y="22.5" width="84.5" height="16.5"/>
                                                                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                                                                 <nil key="highlightedColor"/>
@@ -10531,7 +10529,7 @@ VmVyc2lvbiA6IDEuMAM
                                                                                                                                         <rect key="frame" x="0.0" y="13" width="380.5" height="61"/>
                                                                                                                                         <subviews>
                                                                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L8r-y9-9Zv">
-                                                                                                                                                <rect key="frame" x="15" y="21.5" width="70.5" height="17.5"/>
+                                                                                                                                                <rect key="frame" x="15" y="22" width="71" height="16.5"/>
                                                                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                                                                 <nil key="highlightedColor"/>
@@ -10606,13 +10604,13 @@ VmVyc2lvbiA6IDEuMAM
                                                                                                                                         <rect key="frame" x="0.0" y="13" width="380.5" height="61.5"/>
                                                                                                                                         <subviews>
                                                                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VMf-vf-fkC">
-                                                                                                                                                <rect key="frame" x="15" y="22" width="73.5" height="17.5"/>
+                                                                                                                                                <rect key="frame" x="15" y="22.5" width="70.5" height="16.5"/>
                                                                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                                                                 <nil key="highlightedColor"/>
                                                                                                                                             </label>
                                                                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="to upload" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ISb-m1-ZUF">
-                                                                                                                                                <rect key="frame" x="93.5" y="22" width="58.5" height="17.5"/>
+                                                                                                                                                <rect key="frame" x="90.5" y="22.5" width="59.5" height="16.5"/>
                                                                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
                                                                                                                                                 <nil key="textColor"/>
                                                                                                                                                 <nil key="highlightedColor"/>
@@ -10774,7 +10772,7 @@ VmVyc2lvbiA6IDEuMAM
                                                                                         <rect key="frame" x="0.0" y="0.0" width="801.5" height="47"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Leave taken" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RjO-i5-VvS">
-                                                                                                <rect key="frame" x="15" y="14" width="82.5" height="19"/>
+                                                                                                <rect key="frame" x="15" y="15" width="81.5" height="17.5"/>
                                                                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>

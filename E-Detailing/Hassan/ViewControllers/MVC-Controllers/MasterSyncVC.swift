@@ -760,127 +760,129 @@ class MasterSyncVC : UIViewController {
                 }
             }
         case .myDayPlan:
-            
-            mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
-                //  completion(true)
-                guard let welf = self else {return}
-                
-                switch result {
-                    
-                case .success(let responseModel):
-                    
-                    let model: [MyDayPlanResponseModel] = responseModel
-                    welf.isDayPlanSynced = true
-                    if model.count > 0 {
-                        var dayPlan1: MyDayPlanResponseModel?
-                        var dayPlan2: MyDayPlanResponseModel?
-                        let sessionArray = model.filter{$0.SFMem != ""}
-                        let leaveArray = model.filter{$0.SFMem == ""}
-                        if !leaveArray.isEmpty {
-//                            leaveArray.enumerated().forEach { index, aMyDayPlanResponseModel in
-//                                switch index {
-//                                case 0:
-//                                    dayPlan1 = aMyDayPlanResponseModel
-//                                case 1:
-//                                    dayPlan2 = aMyDayPlanResponseModel
-//                                default:
-//                                    print("Yet to implement")
-//                                }
-//                            }
-                            let subordinateArr =  DBManager.shared.getSubordinate()
-                            let cacheHQ = subordinateArr.first
-                            welf.fetchedHQObject = cacheHQ
-                            welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
-                            welf.setHQlbl(isTosetDayplanHQ: true)
-                            welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
+            mastersyncVM?.callSavePlanAPI(byDate: Date()) {isUploaded in
+                self.mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
+                    guard let welf = self else {return}
+                    //  completion(true)
+                    switch result {
+                        
+                    case .success(let responseModel):
+                        
+                        let model: [MyDayPlanResponseModel] = responseModel
+                        welf.isDayPlanSynced = true
+                        if model.count > 0 {
+                            var dayPlan1: MyDayPlanResponseModel?
+                            var dayPlan2: MyDayPlanResponseModel?
+                            let sessionArray = model.filter{$0.SFMem != ""}
+                            let leaveArray = model.filter{$0.SFMem == ""}
+                            if !leaveArray.isEmpty {
+    //                            leaveArray.enumerated().forEach { index, aMyDayPlanResponseModel in
+    //                                switch index {
+    //                                case 0:
+    //                                    dayPlan1 = aMyDayPlanResponseModel
+    //                                case 1:
+    //                                    dayPlan2 = aMyDayPlanResponseModel
+    //                                default:
+    //                                    print("Yet to implement")
+    //                                }
+    //                            }
+                                let subordinateArr =  DBManager.shared.getSubordinate()
+                                let cacheHQ = subordinateArr.first
+                                welf.fetchedHQObject = cacheHQ
+                                welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
+                                welf.setHQlbl(isTosetDayplanHQ: true)
+                                welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
+                                    completion(true)
+                                }
+                            }
+                            
+                            
+                            if sessionArray.isEmpty {
                                 completion(true)
                             }
-                        }
-                        
-                        
-                        if sessionArray.isEmpty {
-                            completion(true)
-                        }
-                 
-                        sessionArray.enumerated().forEach { index, aMyDayPlanResponseModel in
-                            switch index {
-                            case 0:
-                                dayPlan1 = aMyDayPlanResponseModel
-                            case 1:
-                                dayPlan2 = aMyDayPlanResponseModel
-                            default:
-                                print("Yet to implement")
+                     
+                            sessionArray.enumerated().forEach { index, aMyDayPlanResponseModel in
+                                switch index {
+                                case 0:
+                                    dayPlan1 = aMyDayPlanResponseModel
+                                case 1:
+                                    dayPlan2 = aMyDayPlanResponseModel
+                                default:
+                                    print("Yet to implement")
+                                }
                             }
-                        }
-                        // let aDayArr = model.filter{$0.SFMem != ""}.first
-                        
-                        
-                        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-                        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
-                        
-                        welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) , istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
+                            // let aDayArr = model.filter{$0.SFMem != ""}.first
                             
-                            let subordinateArr =  DBManager.shared.getSubordinate()
-                            let filteredHQ = subordinateArr.filter {  $0.id == dayPlan1?.SFMem }
-                            if !filteredHQ.isEmpty {
-                                let cacheHQ = filteredHQ.first
-                                welf.fetchedHQObject = cacheHQ
-                                welf.setHQlbl(isTosetDayplanHQ: true)
+                            
+                            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
+                            
+                            welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) , istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
                                 
-                                welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
-                                    if dayPlan2 != nil {
-                                        welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
-                                            
+                                let subordinateArr =  DBManager.shared.getSubordinate()
+                                let filteredHQ = subordinateArr.filter {  $0.id == dayPlan1?.SFMem }
+                                if !filteredHQ.isEmpty {
+                                    let cacheHQ = filteredHQ.first
+                                    welf.fetchedHQObject = cacheHQ
+                                    welf.setHQlbl(isTosetDayplanHQ: true)
+                                    
+                                    welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
+                                        if dayPlan2 != nil {
+                                            welf.masterVM?.fetchMasterData(type: .clusters, sfCode: dayPlan2?.SFMem ?? "", istoUpdateDCRlist: false, mapID: dayPlan2?.SFMem ?? "") { _ in
+                                                
+                                                welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
+                                                
+                                                dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
+                                                
+                                                completion(true)
+                                            }
+                                        } else {
                                             welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
                                             
-                                            dump(DBManager.shared.getTerritory(mapID: dayPlan2?.SFMem ?? ""))
+                                            dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
                                             
                                             completion(true)
                                         }
-                                    } else {
-                                        welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
                                         
-                                        dump(DBManager.shared.getTerritory(mapID: dayPlan1?.SFMem ?? ""))
-                                        
-                                        completion(true)
                                     }
                                     
                                 }
                                 
                             }
                             
-                        }
-                        
-                        
-                        
-                    } else {
-                        let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-  
-                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: appdefaultSetup.sfCode ?? "")
                             
-                            welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
+                            
+                        } else {
+                            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
+      
+                                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: appdefaultSetup.sfCode ?? "")
                                 
-                                let subordinateArr =  DBManager.shared.getSubordinate()
-                                let filteredHQ = subordinateArr.first
-                                //.filter {$0.mapId == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)}
-                                // if !filteredHQ.isEmpty {
-                                
-                                let cacheHQ = filteredHQ
-                                welf.fetchedHQObject = cacheHQ
-                                welf.setHQlbl(isTosetDayplanHQ: true)
-                                // }
-                                NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
-                                completion(true)
-                          
-                            return
+                                welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
+                                    
+                                    let subordinateArr =  DBManager.shared.getSubordinate()
+                                    let filteredHQ = subordinateArr.first
+                                    //.filter {$0.mapId == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)}
+                                    // if !filteredHQ.isEmpty {
+                                    
+                                    let cacheHQ = filteredHQ
+                                    welf.fetchedHQObject = cacheHQ
+                                    welf.setHQlbl(isTosetDayplanHQ: true)
+                                    // }
+                                    NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
+                                    completion(true)
+                              
+                                return
+                            }
                         }
+                        
+                    case .failure( _):
+                       // welf.toCreateToast(error.rawValue)
+                        completion(false)
                     }
-                    
-                case .failure( _):
-                   // welf.toCreateToast(error.rawValue)
-                    completion(false)
                 }
             }
+            
+
             
         default:
             
