@@ -93,8 +93,13 @@ extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSourc
               
                 cell.topopulateCell(eventsmodel, nil)
             } else {
-                let callsmodel = callsmodelArr[indexPath.row]
-                cell.topopulateCell(eventsmodel, callsmodel)
+                let callsmodel = callsmodelArr.filter { todayCallsModel in
+                    todayCallsModel.custCode == eventsmodel.custCode
+                }
+                if let callsmodel = callsmodel.first {
+                    cell.topopulateCell(eventsmodel, callsmodel)
+                }
+              
             }
         
             

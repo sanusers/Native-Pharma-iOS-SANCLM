@@ -46,7 +46,7 @@ class DigitalDet: Codable {
         self.rating = container.safeDecodeValue(forKey:.rating)
         self.feedback = container.safeDecodeValue(forKey: .feedback)
         self.userLike = container.safeDecodeValue(forKey: .userLike)
-        self.detSlNo = try container.decodeIfPresent(String.self, forKey: .detSlNo)
+        self.detSlNo = container.safeDecodeValue(forKey: .detSlNo)
         self.startTimeString = container.safeDecodeValue(forKey: .startTimeString)
         self.endTimeString = container.safeDecodeValue(forKey: .endTimeString)
     }
@@ -225,6 +225,7 @@ class EventCaptureResponse: Codable {
     var title: String
     var remarks: String
     var imageData : Data
+    
     enum CodingKeys: String, CodingKey {
         case transactionSerialNumber = "Trans_SlNo"
         case transactionDetailSerialNumber = "Trans_Detail_Slno"
@@ -234,6 +235,18 @@ class EventCaptureResponse: Codable {
         case title
         case remarks
         case imageData
+    }
+    
+    required init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.transactionSerialNumber = container.safeDecodeValue(forKey: .transactionSerialNumber)
+        self.transactionDetailSerialNumber = container.safeDecodeValue(forKey: .transactionDetailSerialNumber)
+        self.imageUrl = container.safeDecodeValue(forKey: .imageUrl)
+        self.divisionCode = container.safeDecodeValue(forKey: .divisionCode)
+        self.sfCode = container.safeDecodeValue(forKey: .sfCode)
+        self.title = container.safeDecodeValue(forKey: .title)
+        self.remarks = container.safeDecodeValue(forKey: .remarks)
+        self.imageData = Data()
     }
 }
 

@@ -323,15 +323,11 @@ class MainVC : UIViewController {
                 welf.refreshUI()
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                welf.toPostDayplan(byDate: welf.selectedToday) {
-                   // if !Shared.instance.isDayplanSet {
+      
                     welf.toSetDayplan(byDate: welf.selectedToday) {
                             welf.refreshUI()
                         }
-                  //  } else {
-                      //  welf.refreshUI()
-                  //  }
-                }
+        
           
         
             }
@@ -349,15 +345,12 @@ class MainVC : UIViewController {
                 welf.refreshUI()
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                welf.toPostDayplan(byDate: welf.selectedToday) {
+             
                    // if !Shared.instance.isDayplanSet {
                     welf.toSetDayplan(byDate: welf.selectedToday) {
                             welf.refreshUI()
                         }
-                  //  } else {
-                      //  welf.refreshUI()
-                  //  }
-                }
+     
           
         
             }
@@ -1225,29 +1218,19 @@ class MainVC : UIViewController {
         rejectionReason.setFont(font: .medium(size: .BODY))
         rejectionReason.textColor = .appTextColor
         rejectionVIew.layer.cornerRadius = 5
-        
-
-        
         segmentType = [.workPlan, .calls, .outbox]
         toLoadSegments()
         worktypeTable.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
-        
-
-        
-        
         btnAddplan.backgroundColor = .appGreyColor
         btnAddplan.layer.borderWidth = 1
         btnAddplan.layer.borderColor = UIColor.appLightTextColor.cgColor
-        
-        
-        
         btnSavePlan.backgroundColor = .appGreyColor
         btnSavePlan.layer.borderWidth = 1
         btnSavePlan.layer.borderColor = UIColor.appLightTextColor.cgColor
         
         btnFinalSubmit.backgroundColor = .appTextColor
         
-        outboxCountVIew.isHidden = true
+        //outboxCountVIew.isHidden = true
         outboxCallsCountLabel.setFont(font: .medium(size: .BODY))
         outboxCallsCountLabel.textColor = .appWhiteColor
         outboxCountVIew.layer.cornerRadius = outboxCountVIew.height / 2
@@ -1317,16 +1300,37 @@ class MainVC : UIViewController {
     }
     
     @objc func dcrcallsAdded() {
+        let totalcalls: Int = obj_sections.reduce(0) { (result, section) -> Int in
+            return result + section.items.count
+        }
+        
+        if totalcalls > 39 {
+            self.showAlertToPushCalls(desc: "NOTE! you have more than 40 calls in your out box")
+        }
+        
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                 // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {}
             }
         } else {
-            self.refreshDashboard() {}
+            refreshUI()
         }
      
     }
+    
+    func showAlertToPushCalls(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("yes action")
+            // self.toDeletePresentation()
+          //  self.setSegment(.outbox, isfromSwipe: true)
+            
+        }
+
+    }
+    
     
     func toLoadDcrCollection() {
         dcrCallsCollectionView.delegate = self
@@ -1374,28 +1378,11 @@ class MainVC : UIViewController {
     }
     
     func toSetDayplan(byDate: Date, completion: @escaping () -> ()) {
-        
-        if !isPlanningNewDCR {
-        
-                masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true) {_ in
-                    self.toConfigureMydayPlan(planDate: byDate)
-                    self.toSetParams(date: byDate, isfromSyncCall: false) {
-                        Shared.instance.isDayplanSet = true
-                        completion()
-                    }
-                }
-        } else {
-            
-            self.toSetParams(date: byDate, isfromSyncCall: false) {
-                self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
-                completion()
-            }
-           
-          
+        self.toSetParams(date: byDate, isfromSyncCall: false) {
+            self.toConfigureMydayPlan(planDate: byDate, isRetrived: true)
+            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
+            completion()
         }
-        
-        
-        
     }
     
     func istoRedirecttoCheckin() -> Bool {
@@ -1731,14 +1718,6 @@ class MainVC : UIViewController {
                 completion()
             }
             
-//            self.toFetchExistingPlan { fetchedEachDayPlan in
-//                if self.outBoxDataArr?.count ?? 0 == 0 && fetchedEachDayPlan.isEmpty {
-//                    self.toConfigureClearCalls(istoEnable: false)
-//                } else {
-//                    self.toConfigureClearCalls(istoEnable: true)
-//                }
-//                completion()
-//            }
             
         }
     }
@@ -1769,8 +1748,10 @@ class MainVC : UIViewController {
    
         
         // Fetch UnsyncedEventCaptureModel data and organize by day
-    //    dispatchGroup.enter()
+        let dispatchGroup = DispatchGroup()
+     
         CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventCaptures in
+            dispatchGroup.enter()
             for eventCapture in unsyncedEventCaptures {
                 if let eventDate = eventCapture.eventcaptureDate {
                     let dayString = dateFormatter.string(from: eventDate)
@@ -1780,24 +1761,22 @@ class MainVC : UIViewController {
                         eventsByDay[dayString]?.append(eventCapture)
                     }
                 }
-           //     dispatchGroup.leave()
+             
             }
-           
+            dispatchGroup.leave()
         }
         
       //  dispatchGroup.enter()
-        
         var dateArr: [Date] = []
-        
         CoreDataManager.shared.fetchEachDayPlan { aDayplans in
             aDayplans.forEach { eachDayPlan in
                 dateArr.append(eachDayPlan.planDate ?? Date())
             }
-          //  dispatchGroup.leave()
+         //   dispatchGroup.leave()
         }
         
      
-        
+      //  dispatchGroup.enter()
         for aDate in dateArr {
             toFetchExistingPlan(byDate: aDate) {existingSessions in
                 for aExistingSessions in existingSessions {
@@ -1811,7 +1790,7 @@ class MainVC : UIViewController {
                     }
                     
                 }
-           
+          //      dispatchGroup.leave()
             }
           
         }
@@ -1819,7 +1798,7 @@ class MainVC : UIViewController {
 
         
         // Wait for all async tasks to complete
-     //   dispatchGroup.notify(queue: .main) {
+        dispatchGroup.notify(queue: .main) {
             // Create sections combining calls and events
             obj_sections.removeAll()
             let allDays = Set(callsByDay.keys).union(Set(eventsByDay.keys)).union(Set(plansByDay.keys))
@@ -1832,7 +1811,7 @@ class MainVC : UIViewController {
                 obj_sections.append(section)
             }
             completion()
-      //  }
+        }
     }
 
 
@@ -3372,6 +3351,17 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 }
             }
             
+            cell.callsRefreshVIew.addTap {
+                let custCode: String = model.first?.custCode ?? ""
+                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                    self.showAlertToPushCalls(desc: "Internet connection is required to sync calls.")
+                    return
+                }
+                self.toretryDCRupload(custCode: custCode, date: date) { _ in
+                  //  self.toLoadOutboxTable()
+                }
+            }
+            
             cell.callsCollapseIV.addTap {
                 cell.eventExpandState  = .eventNotExpanded
                 obj_sections[indexPath.section].isEventEcpanded = false
@@ -3659,8 +3649,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             //290 -  checkin - 50 || work plan - 50 || call detail - 50 || event cpature - 50 || check out - 50
             let callsCount = obj_sections[indexPath.section].items.count
             let eventsCount = obj_sections[indexPath.section].eventCaptures.count
-            var istohideCheckin: Bool = true
-            var istohideCheckout: Bool = true
+            let istohideCheckin: Bool = true
+            let istohideCheckout: Bool = true
             
             var cellHeight : Int = 290
             if istohideCheckin {
@@ -3772,7 +3762,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         }
     }
     
-    func toretryDCRupload( date: String, completion: @escaping (Bool) -> Void) {
+    func toretryDCRupload(date: String, completion: @escaping (Bool) -> Void) {
         var userAddress: String?
     
         Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
@@ -3865,11 +3855,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
                 print("specificDateParams has \(specificDateParams.count) values")
                 if !localParamArr.isEmpty {
-                  
+                    Shared.instance.showLoaderInWindow()
                     welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
                     
                         if isCompleted {
-                          
+                            Shared.instance.removeLoaderInWindow()
                             completion(true)
                         }
                     }
@@ -3896,10 +3886,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     
     
     func toSendParamsToAPISerially(index: Int, items: [JSON], completion: @escaping (Bool) -> Void) {
-        Shared.instance.showLoaderInWindow()
+ 
         guard index < items.count else {
             // All items processed, exit the recursion
-            Shared.instance.removeLoaderInWindow()
+         
             completion(true)
             return
         }
@@ -3913,15 +3903,12 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         toSendData["data"] = jsonDatum
         
         if params.isEmpty {
-            Shared.instance.removeLoaderInWindow()
+       
             completion(true)
             
             return
         }
         
-       //  let diapatchGroup = DispatchGroup()
-       // diapatchGroup.enter()
-       
         self.sendAPIrequest(toSendData, paramData: params) { callstatus in
 
             let nextIndex = index + 1
@@ -3929,9 +3916,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
    
             
         }
-        // Handle the result if needed
-        
-        // Move to the next item
+
         
     }
     
@@ -3941,7 +3926,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
     }
     
     func sendAPIrequest(_ param: [String: Any], paramData: JSON, completion: @escaping (callstatus) -> Void) {
-      //  Shared.instance.showLoaderInWindow()
+  
      
         userststisticsVM?.saveDCRdata(params: param, api: .saveDCR, paramData: paramData) { result in
         
@@ -3964,15 +3949,15 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     self.toRemoveFailedHomeDictResponse(param: paramData)
                     completion(callStatus)
                 }
-                //  Shared.instance.removeLoaderInWindow()
+          
             case .failure(let error):
-                //   self.saveCallsToDB(issussess: false, appsetup: appsetup, cusType: cusType, param: jsonDatum)
+    
                 
                 print(error.localizedDescription)
                 self.view.toCreateToast("Error uploading data try again later.")
                 let callStatus = callstatus(status:  "Waiting to sync", isCallSubmitted: false)
                 completion(callStatus)
-                //   Shared.instance.removeLoaderInWindow()
+          
                 
                 return
             }
@@ -4594,28 +4579,29 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
           
             //Shared.instance.showLoaderInWindow()
             guard let welf = self else {return}
-//            if model == nil {
-//                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
-//                welf.selectedRawDate = date
-//                welf.sessions?.removeAll()
-//                welf.fetchedWorkTypeObject1 = nil
-//                welf.isPlanningNewDCR = true
-//                welf.fetchedClusterObject1 = nil
-//                welf.fetchedHQObject1 = nil
-//                welf.fetchedHQObject2 = nil
-//                welf.fetchedClusterObject2 = nil
-//                welf.fetchedWorkTypeObject2 = nil
-//                welf.toAddnewSession()
-//                welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
-//                welf.setSegment(.workPlan)
-//                welf.tourPlanCalander.reloadData()
-//                welf.toSetParams(date: date, isfromSyncCall: false) {}
-//                let dateFormatter = DateFormatter()
-//                dateFormatter.dateFormat = "MMMM d, yyyy"
-//                welf.lblDate.text = dateFormatter.string(from: date)
-//            }
+            if model == nil {
+                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+                welf.selectedRawDate = date
+                welf.sessions?.removeAll()
+                welf.fetchedWorkTypeObject1 = nil
+                welf.isPlanningNewDCR = true
+                welf.fetchedClusterObject1 = nil
+                welf.fetchedHQObject1 = nil
+                welf.fetchedHQObject2 = nil
+                welf.fetchedClusterObject2 = nil
+                welf.fetchedWorkTypeObject2 = nil
+                welf.toAddnewSession()
+                welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
+               // welf.setSegment(.workPlan)
+               // welf.tourPlanCalander.reloadData()
+                //welf.toSetParams(date: date, isfromSyncCall: false) {}
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MMMM d, yyyy"
+                welf.lblDate.text = dateFormatter.string(from: date)
+            }
+          //  welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
             let selectedDate = date.toString(format: "yyyy-MM-dd")
-            
+        
             /// note:- future date selection action
             if welf.isFurureDate(date: date) {
                 welf.showAlertToFilldates(description: "Day planing for future dates are restricted.")
@@ -4642,9 +4628,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             if model?.editflag != "0" {
                 print("-----> YET TO CALL API <------")
                 welf.selectedToday = date
-                
                 welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
-      
                 return
                 
             } else  {
@@ -4708,9 +4692,18 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                
             }
         } else {
-            self.todayCallsModel = nil
-            self.callsCountLbl.text = "Call Count: \(0)"
-            toConfigureMydayPlan(planDate: date)
+            let dateString = date.toString(format: "yyyy-MM-dd")
+            if dateString != Date().toString(format: "yyyy-MM-dd") {
+                showAlertToPushCalls(desc: "Please connect to internet to sync calls and Day plans.")
+            }
+          selectedToday = Date()
+          celenderToday = Date()
+          let dateFormatter = DateFormatter()
+          dateFormatter.dateFormat = "MMMM d, yyyy"
+          lblDate.text = dateFormatter.string(from: Date())
+          self.todayCallsModel = nil
+          self.callsCountLbl.text = "Call Count: \(0)"
+          toConfigureMydayPlan(planDate: date)
             
         }
     }
@@ -4813,7 +4806,7 @@ extension MainVC : outboxCollapseTVCDelegate {
             self.toretryDCRupload(date: obj_sections[refreshIndex].date) { _ in
                 self.toCreateToast("Sync completed")
                 Shared.instance.showLoaderInWindow()
-                self.toUploadUnsyncedImage() {
+                    self.toUploadUnsyncedImage() {
                     self.toLoadOutboxTable()
                     Shared.instance.removeLoaderInWindow()
                 }

@@ -57,6 +57,7 @@
 		3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */; };
 		3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */; };
 		3825CFD92BA86F4800217D40 /* PrecallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD82BA86F4800217D40 /* PrecallsModel.swift */; };
+		3829304E2C11888C00E71160 /* MainVC+OutboxEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */; };
 		3836A0692C01C14D0034DBCC /* FunEventsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */; };
 		3836A06A2C01C14D0034DBCC /* FunEventsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */; };
 		3837081F2C09A485002A0F3C /* EventCaptureCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3837081D2C09A485002A0F3C /* EventCaptureCVC.swift */; };
@@ -448,6 +449,7 @@
 		3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsDescriptionTVC.swift; sourceTree = "<group>"; };
 		3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsDescriptionTVC.xib; sourceTree = "<group>"; };
 		3825CFD82BA86F4800217D40 /* PrecallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrecallsModel.swift; sourceTree = "<group>"; };
+		3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+OutboxEX.swift"; sourceTree = "<group>"; };
 		3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunEventsTVC.swift; sourceTree = "<group>"; };
 		3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunEventsTVC.xib; sourceTree = "<group>"; };
 		3837081D2C09A485002A0F3C /* EventCaptureCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCVC.swift; sourceTree = "<group>"; };
@@ -945,6 +947,7 @@
 			children = (
 				38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */,
 				38D95FF72BEB8EA300348FB8 /* MainVC + EditCallEX.swift */,
+				3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */,
 			);
 			path = MainVc;
 			sourceTree = "<group>";
@@ -2028,6 +2031,7 @@
 				38DD9E672C0886B9000A9575 /* SlidesInfoCVC.swift in Sources */,
 				38BA668A2B46A3CD008C6D2C /* HomeLineChartView.swift in Sources */,
 				38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */,
+				3829304E2C11888C00E71160 /* MainVC+OutboxEX.swift in Sources */,
 				38CAE5D52AC2F14B00DA554F /* EventCaptureCell.swift in Sources */,
 				38CD60DF2A866CEA006FFB39 /* ProductSampleTableViewCell.swift in Sources */,
 				3845556F2BA9C87F00F6CE1A /* ProductsInfoHeader.swift in Sources */,

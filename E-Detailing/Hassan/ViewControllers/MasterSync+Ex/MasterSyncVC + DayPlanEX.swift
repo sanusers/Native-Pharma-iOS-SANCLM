@@ -713,7 +713,7 @@ extension CoreDataManager {
                     }
                 }
             } else {
-                updateExistingManagedObjects( isSynced: isSynced, with: aDayPlan, for: date) {
+                updateExistingManagedObjects(isSynced: isSynced, with: aDayPlan, for: date) {
                     isUpdated in
                     completion(isUpdated)
                 }
