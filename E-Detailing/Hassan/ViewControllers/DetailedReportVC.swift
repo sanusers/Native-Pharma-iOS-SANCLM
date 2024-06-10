@@ -41,7 +41,7 @@ class DetailedReportVC: BaseViewController {
 
     func toSetParamsAndGetResponse(_ selecteddate : Date) {
         
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if !isConnected {
             self.showAlertToEnableNetwork(desc: "Please connect to network to fetch repots.")
             return
         }

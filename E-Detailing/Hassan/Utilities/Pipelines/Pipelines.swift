@@ -30,15 +30,40 @@ struct Coordinates {
     let longitude: Double?
 }
 
-class Pipelines  {
 
 
-    static let shared = Pipelines()
+class Pipelines : NSObject, CLLocationManagerDelegate {
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            locManager.startUpdatingLocation()
+        case .denied, .restricted:
+            locationCompletion?(nil)
+        default:
+            break
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let currentLocation = locations.last else { return }
+
+        let coordinates = Coordinates(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude)
+        guard let callback = self.locationCompletion else{
+            return
+        }
+        callback(coordinates)
+        locManager.stopUpdatingLocation()
+    }
+
     
+    static let shared = Pipelines()
+    private var locationCompletion: ((Coordinates?) -> Void)?
     let appDelegate =  UIApplication.shared.delegate as! AppDelegate
     let geocoder = GMSGeocoder()
     var downloader = MediaDownloader()
     var window: UIWindow?
+    let locManager = CLLocationManager()
     var isDownloading: Bool?
     func doLogout() {
         window = appDelegate.window
@@ -65,26 +90,51 @@ class Pipelines  {
     }
     
     
-    func requestAuth(completion: @escaping (Coordinates?) -> Void)  {
-
-        let locManager = CLLocationManager()
-        var currentLocation = CLLocation()
-      //  locManager.delegate = self
-
-        locManager.requestWhenInUseAuthorization()
-
-        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
-            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways){
-            currentLocation = locManager.location ?? CLLocation()
-            
-       let coordinates = Coordinates(latitude: (currentLocation.coordinate.latitude), longitude: (currentLocation.coordinate.longitude))
-            completion(coordinates)
-        } else {
-            
+    func requestAuth(completion: @escaping (Coordinates?) -> Void) {
+        if !geoFencingEnabled {
             completion(nil)
-           
+            return
+        }
+
+        locationCompletion = completion
+        locManager.delegate = self
+        locManager.desiredAccuracy = kCLLocationAccuracyBest
+      //  locManager.requestWhenInUseAuthorization()
+
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
+           CLLocationManager.authorizationStatus() == .authorizedAlways {
+            locManager.startUpdatingLocation()
+        } else {
+            completion(nil)
         }
     }
+
+
+    
+//    func requestAuth(completion: @escaping (Coordinates?) -> Void)  {
+//
+//        if !geoFencingEnabled {
+//            completion(nil)
+//            return
+//        }
+//        
+//     
+//        var currentLocation = CLLocation()
+//      //  locManager.delegate = self
+//
+//        locManager.requestWhenInUseAuthorization()
+//
+//        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
+//            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways){
+//            currentLocation = locManager.location ?? CLLocation()
+//            
+//       let coordinates = Coordinates(latitude: (currentLocation.coordinate.latitude), longitude: (currentLocation.coordinate.longitude))
+//            completion(coordinates)
+//        } else {
+//            completion(nil)
+//           
+//        }
+//    }
     
     
     func callCheckinCheckoutAPI(userstrtisticsVM: UserStatisticsVM, model: CheckinInfo, appsetup: AppSetUp, completion : @escaping (Result<[GeneralResponseModal],UserStatisticsError>) -> Void) {
@@ -122,6 +172,7 @@ class Pipelines  {
     
     
     func getAddressString(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
+        
         
         let geocoder = CLGeocoder()
 

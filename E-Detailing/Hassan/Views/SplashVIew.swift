@@ -231,14 +231,13 @@ class SplashView: BaseView{
         Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
             guard let nonNilcoordinates = coordinates else {
-               // welf.toSetupAlert(text: "Location permission reqired to validate timezone.")
                 welf.setupNoGPSalert()
                 return}
             
             let location = CLLocation(latitude: nonNilcoordinates.latitude ?? Double(), longitude: nonNilcoordinates.longitude ?? Double())
           
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isTimeZoneChanged, value: true)
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            if isConnected {
                 CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
                     guard let placemark = placemarks?.first else {
                         print("Error: \(error?.localizedDescription ?? "Unknown error")")

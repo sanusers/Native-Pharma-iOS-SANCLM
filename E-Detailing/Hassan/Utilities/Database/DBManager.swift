@@ -2085,13 +2085,20 @@ class DBManager {
     func getChemist(mapID: String) -> [Chemist]{
         let masterData = self.getMasterData()
         guard let chemistArray = masterData.chemist?.allObjects as? [Chemist] else {
-            return [Chemist]()
+            return []
         }
-
-        let filteredArray = chemistArray.filter { $0.mapId == mapID }
-
+        
+        var uniqueCodes = Set<String>() // To keep track of unique codes
+        var filteredArray = [Chemist]()
+        
+        for chemist in chemistArray {
+            if chemist.mapId == mapID && !uniqueCodes.contains(chemist.code ?? "") {
+                filteredArray.append(chemist)
+                uniqueCodes.insert(chemist.code ?? "")
+            }
+        }
         let sortedArray = filteredArray.sorted { $0.index < $1.index }
-
+        
         return sortedArray
     }
     
@@ -2112,13 +2119,19 @@ class DBManager {
     func getStockist(mapID: String) -> [Stockist]{
         let masterData = self.getMasterData()
         guard let stockiststArray = masterData.stockist?.allObjects as? [Stockist] else {
-            return [Stockist]()
+            return []
         }
-
-        let filteredArray = stockiststArray.filter { $0.mapId == mapID }
-
+        var uniqueCodes = Set<String>() // To keep track of unique codes
+        var filteredArray = [Stockist]()
+        
+        for stockistst in stockiststArray {
+            if stockistst.mapId == mapID && !uniqueCodes.contains(stockistst.code ?? "") {
+                filteredArray.append(stockistst)
+                uniqueCodes.insert(stockistst.code ?? "")
+            }
+        }
         let sortedArray = filteredArray.sorted { $0.index < $1.index }
-
+        
         return sortedArray
     }
     
@@ -2148,13 +2161,20 @@ class DBManager {
     func getUnListedDoctor(mapID: String) -> [UnListedDoctor]{
         let masterData = self.getMasterData()
         guard let unlistedDocArray = masterData.unListedDoc?.allObjects as? [UnListedDoctor] else {
-            return [UnListedDoctor]()
+            return []
         }
 
-        let filteredArray = unlistedDocArray.filter { $0.mapId == mapID }
-
+        var uniqueCodes = Set<String>() // To keep track of unique codes
+        var filteredArray = [UnListedDoctor]()
+        
+        for unlistedDoc in unlistedDocArray {
+            if unlistedDoc.mapId == mapID && !uniqueCodes.contains(unlistedDoc.code ?? "") {
+                filteredArray.append(unlistedDoc)
+                uniqueCodes.insert(unlistedDoc.code ?? "")
+            }
+        }
         let sortedArray = filteredArray.sorted { $0.index < $1.index }
-
+        
         return sortedArray
     }
     

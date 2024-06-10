@@ -22,24 +22,24 @@ class DayPlanEventCell : UICollectionViewCell {
     
     @IBOutlet var vxView: UIVisualEffectView!
     
-    @IBOutlet weak var widthEventLblConstrainst: NSLayoutConstraint! {
-        didSet {
-            widthEventLblConstrainst.isActive = false
-        }
-    }
+//    @IBOutlet weak var widthEventLblConstrainst: NSLayoutConstraint! {
+//        didSet {
+//            widthEventLblConstrainst.isActive = false
+//        }
+//    }
     
     
     
-    var width1: CGFloat? = nil {
-        didSet {
-            guard width1 != nil else {
-                
-                widthEventLblConstrainst.isActive = true
-                widthEventLblConstrainst.constant = width1!
-                return
-            }
-        }
-    }
+//    var width1: CGFloat? = nil {
+//        didSet {
+//            guard width1 != nil else {
+//                
+//                widthEventLblConstrainst.isActive = true
+//                widthEventLblConstrainst.constant = width1!
+//                return
+//            }
+//        }
+//    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

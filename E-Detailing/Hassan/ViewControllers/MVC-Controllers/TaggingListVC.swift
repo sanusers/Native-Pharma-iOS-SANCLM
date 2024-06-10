@@ -251,9 +251,9 @@ extension TaggingListVC: MenuResponseProtocol {
             
             let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
-            if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) || territories.isEmpty  {
+            if  isConnected || territories.isEmpty  {
                 self.resoureHQlbl.text = "Syncing..."
-                //&& LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
+                //&& isConnected
                 let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
                 // Set loading status based on MasterInfo for each element in the array
                 tosyncMasterData.forEach { masterInfo in

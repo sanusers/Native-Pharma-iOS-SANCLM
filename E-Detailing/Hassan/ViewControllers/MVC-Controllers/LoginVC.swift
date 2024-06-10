@@ -381,7 +381,7 @@ class LoginVC : UIViewController {
             return
         }
         
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if !isConnected {
             self.toSetupAlert(text: "Internet connection is required to login user.")
             return
         }

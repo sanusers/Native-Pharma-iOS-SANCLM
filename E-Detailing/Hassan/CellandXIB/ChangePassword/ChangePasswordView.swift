@@ -224,7 +224,7 @@ class ChangePasswordView: UIView {
     func updatePassword() {
         guard let appsetup = self.appsetup else {return}
          
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if !isConnected {
             self.delegate?.showAlert(desc: "Please connect to active network to update Password")
             return
         }

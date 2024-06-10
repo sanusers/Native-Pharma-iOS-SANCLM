@@ -51,7 +51,7 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
                 return "01st - 15th"
             } else {
                 let count = numberOfDaysInMonth(for: date[currentIndex / 2])
-                return "16th - \(count!)th"
+                return "01th - \(count!)th"
                 
             }
 
@@ -80,8 +80,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     var allListArr = [HomeData]()
     var dataSourceArr = [HomeData]()
     
-    var  totalCalls : Int = 0
-    var averageCalls: Int = 0
+    var totalCalls : Int = 0
+    var averageCalls: Float = 0
     var yRangeMax: Int = 0
     var yRangeMin: Int = 0
     var passesAvgCall : Int = 0
@@ -259,7 +259,6 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         }
         
         avgdayNumbersArray.enumerated().forEach { dayNumbersIndex, dayNumbers in
-            var modifiedDayNumbers: [Int] = []
             
             switch dayNumbersIndex {
             case 0:
@@ -271,9 +270,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     
                   
                     avgeacSectorCounrArr[0].insert(contentsOf: daysInRange0to15.sorted(by: <), at: 0)
-                    
-                 
-                    modifiedDayNumbers.append(15)
+
                     
                  
                 } else {
@@ -284,11 +281,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
                 // Filter days in the range 16 to 31
-                var daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                daysInRange16to31 = Array(Set(daysInRange16to31))
-                if !daysInRange16to31.isEmpty {
+                var daysInRange0to31 = dayNumbers.filter { $0 >= 0 && $0 <= 31 }
+                daysInRange0to31 = Array(Set(daysInRange0to31))
+                if !daysInRange0to31.isEmpty {
                  
-                    avgeacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    avgeacSectorCounrArr[1].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
                    
                  
                 } else {
@@ -317,11 +314,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
                 // Filter days in the range 16 to 31
-                var daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                daysInRange16to31 = Array(Set(daysInRange16to31))
-                if !daysInRange16to31.isEmpty {
+                var daysInRange0to31 = dayNumbers.filter { $0 >= 0 && $0 <= 31 }
+                daysInRange0to31 = Array(Set(daysInRange0to31))
+                if !daysInRange0to31.isEmpty {
                 
-                    avgeacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    avgeacSectorCounrArr[3].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
                    
                 } else {
                  
@@ -347,12 +344,12 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
                 // Filter days in the range 16 to 31
-                var daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                daysInRange16to31 = Array(Set(daysInRange16to31))
-                if !daysInRange16to31.isEmpty {
+                var daysInRange0to31 = dayNumbers.filter { $0 >= 0 && $0 <= 31 }
+                daysInRange0to31 = Array(Set(daysInRange0to31))
+                if !daysInRange0to31.isEmpty {
                   
                 
-                    avgeacSectorCounrArr[5].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    avgeacSectorCounrArr[5].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
                     
                 } else {
               
@@ -446,11 +443,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         var addedIndex: Int = 0
         
         for (monthIndex, monthDayNumbers) in dayNumbersArray.enumerated() {
-            if let dayIndex = monthDayNumbers.firstIndex(of: addedDaycomponent) {
+         //   if let dayIndex = monthDayNumbers.firstIndex(of: addedDaycomponent) {
                 // Found the day number in the current month, monthIndex is the month number
                 //print("Day \(dayNumber) found in Month \(monthIndex + 1) at index \(dayIndex)")
                 addedIndex = monthIndex
-            }
+         //   }
         }
         //to take out samples dates
         // Use a Set to keep track of unique month numbers
@@ -574,11 +571,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     }
                     
                     // Filter days in the range 16 to 31
-                    let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                    if !daysInRange16to31.isEmpty {
-                        callsCount[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                        eacSectorCounrArr[1].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                        //  callsCount.append(daysInRange16to31.count)
+                    let daysInRange0to31 = dayNumbers.filter { $0 >= 0 && $0 <= 31 }
+                    if !daysInRange0to31.isEmpty {
+                        callsCount[1].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
+                        eacSectorCounrArr[1].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
+                        //  callsCount.append(daysInRange0to31.count)
                         
                         if date.count == 1 {
                             modifiedDayNumbers.append(26)
@@ -607,7 +604,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                 }
                 
 
-                // callsCount.append(daysInRange0to15.count + daysInRange16to31.count)
+                // callsCount.append(daysInRange0to15.count + daysInRange0to31.count)
             case 1:
               
                 if isMonthAdded && addedIndex == 1 {
@@ -661,11 +658,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     }
                     
                     // Filter days in the range 16 to 31
-                    let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                    if !daysInRange16to31.isEmpty {
-                        //  callsCount.append(daysInRange16to31.count)
-                        callsCount[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                        eacSectorCounrArr[3].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    let daysInRange0to31 = dayNumbers.filter { $0 >= 0 && $0 <= 31 }
+                    if !daysInRange0to31.isEmpty {
+                        //  callsCount.append(daysInRange0to31.count)
+                        callsCount[3].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
+                        eacSectorCounrArr[3].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
                         if date.count == 2 {
                             modifiedDayNumbers.append(55)
                         } else {
@@ -683,7 +680,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     }
                 }
 
-                //  callsCount.append(daysInRange16to31.count + daysInRange0to15.count)
+                //  callsCount.append(daysInRange0to31.count + daysInRange0to15.count)
                 
             case 2:
                 
@@ -712,11 +709,11 @@ class HomeLineChartView: UIView, ChartViewDelegate {
                     }
                     
                     // Filter days in the range 16 to 31
-                    let daysInRange16to31 = dayNumbers.filter { $0 >= 16 && $0 <= 31 }
-                    if !daysInRange16to31.isEmpty {
-                        //callsCount.append(daysInRange16to31.count)
-                        callsCount[dayNumbersIndex].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
-                        eacSectorCounrArr[5].insert(contentsOf: daysInRange16to31.sorted(by: <), at: 0)
+                    let daysInRange0to31 = dayNumbers.filter { $0 >= 0 && $0 <= 31 }
+                    if !daysInRange0to31.isEmpty {
+                        //callsCount.append(daysInRange0to31.count)
+                        callsCount[dayNumbersIndex].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
+                        eacSectorCounrArr[5].insert(contentsOf: daysInRange0to31.sorted(by: <), at: 0)
                         modifiedDayNumbers.append(85)
                     } else {
                         modifiedDayNumbers.append(85)
@@ -867,7 +864,7 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         // Access the y-axis of your line chart view
         let yAxis = lineChartView.leftAxis // You can use `rightAxis` if needed
         
-        let subyRange = yRangeMax
+        _ = yRangeMax
       //  let minimumPercentage: Double = 0.2 // 20% of the range
         
        // let minimumValue = Double(subyRange) * minimumPercentage
@@ -970,7 +967,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         } else {
             self.totalCalls = counts[index]
             //Int(passesAvgCall / Int(highlight.y))
-            self.averageCalls =  counts[index] / avgcounts[index]
+           // self.averageCalls = Float(counts[index]) / Float(avgcounts[index])
+            self.averageCalls =  round((Float(counts[index]) / Float(avgcounts[index])) * 10) / 10
         }
         
         let selectedChartDataEntry = [values[index]]
@@ -1030,6 +1028,8 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             lineChartView.addSubview(customView)
             
             toShoPopup(customView)
+
+            
         }
         
         
@@ -1076,5 +1076,21 @@ class HomeLineChartView: UIView, ChartViewDelegate {
             return range.count
         }
         return nil
+    }
+    
+    func toReturnSuperScriptText(mainString: String, superscriptText: String) -> NSMutableAttributedString {
+ 
+        let superscriptAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 12), // Adjust size as needed
+            .baselineOffset: 6 // Adjust baseline offset as needed
+        ]
+        let superscriptString = NSAttributedString(string: superscriptText, attributes: superscriptAttributes)
+
+        // Create a mutable attributed string to combine the main string and the superscript
+        let attributedString = NSMutableAttributedString(string: mainString)
+        attributedString.append(superscriptString)
+
+        // Set the attributed string to the UILabel
+        return  attributedString
     }
 }

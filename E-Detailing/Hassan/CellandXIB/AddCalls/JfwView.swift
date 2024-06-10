@@ -115,7 +115,17 @@ extension JfwView : UITextViewDelegate {
         
         self.eventCaptureListViewModel?.updateDescription(textView.tag, remark: text)
         
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
     }
 }
 
@@ -129,15 +139,34 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
 
     self.jointWorkSelectedListViewModel?.addJointWorkViewModel(jointWorkValue)
 
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
         self.jointWorkTableView.reloadData()
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
     }
     
     
     @objc func deleteEventCapture(_ sender : UIButton){
         self.eventCaptureListViewModel?.removeAtIndex(sender.tag)
         self.eventCaptureTableView.reloadData()
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
     }
     
     
@@ -492,14 +521,36 @@ class JfwView: UIView {
     
     @IBAction func didTapRemarks(_ sender: UITextField) {
         self.overallRemark = sender.text ?? ""
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
         
     }
     
     @IBAction func didtapPOBtf(_ sender: UITextField) {
         
         self.pobValue = sender.text ?? ""
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? Feedback(), overallRemarks: overallRemark ?? "")
+        
+        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            return
+            
+        }
+        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+        tempFeedback.id = ""
+        tempFeedback.index = Int16()
+        tempFeedback.name = ""
+        
+        
+        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
     }
     
     

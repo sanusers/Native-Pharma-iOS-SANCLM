@@ -89,12 +89,18 @@ class CustomerCheckoutView: UIView {
     func checkOutAction(dcrCall : CallViewModel) {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {return}
-            guard let coordinates = coordinates else {
-                
-                welf.showAlert()
-                
-                return
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlert()
+                    return
+                }
             }
+//            
+//            guard let coordinates = coordinates else {
+//                welf.showAlert()
+//                return
+//            }
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             
@@ -103,13 +109,13 @@ class CustomerCheckoutView: UIView {
             
             let datestr = dateString
 
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            if isConnected {
                 
-                Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
                     guard let welf = self else {return}
                     dcrCall.customerCheckOutAddress = address ?? "No address found"
-                    dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
-                    dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                    dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                    dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
                     dcrCall.dcrCheckOutTime = dateString
                    // welf.checkinDetailsAction(dcrCall : dcrCall)
                     welf.dcrCall = dcrCall
@@ -121,8 +127,8 @@ class CustomerCheckoutView: UIView {
                 }
             } else {
                 dcrCall.customerCheckOutAddress = "No address found"
-                dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
-                dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
                 dcrCall.dcrCheckOutTime = dateString
                // welf.checkinDetailsAction(dcrCall : dcrCall)
                 welf.dcrCall = dcrCall

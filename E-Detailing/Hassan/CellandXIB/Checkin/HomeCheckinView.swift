@@ -148,21 +148,23 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
 
     
     @IBAction func didTapCheckin(_ sender: Any) {
+ 
         
         locManager = CLLocationManager()
         currentLocation = CLLocation()
         
-        
         Pipelines.shared.requestAuth() {[weak self] coordinates in
             guard let welf = self else {return}
-            guard coordinates != nil else {
-                welf.delegate?.showAlert(desc: "Please enable location services in Settings.")
-                return
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.delegate?.showAlert(desc: "Please enable location services in Settings.")
+                    return
+                }
             }
             welf.latitude = coordinates?.latitude
             welf.longitude = coordinates?.longitude
             
-            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            if !isConnected {
 
                     let dateFormatter = DateFormatter()
     
@@ -180,11 +182,11 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
                     
                     LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+                
                     CoreDataManager.shared.removeAllCheckins()
+                
                     welf.saveLogininfoToCoreData() {_ in
-                        
                         welf.delegate?.didUpdate()
-                        
                     }
 
                 
@@ -193,7 +195,6 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
             Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
                 welf.address = address
                 
-            
                     welf.callAPI()
               
               

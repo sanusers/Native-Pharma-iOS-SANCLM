@@ -235,7 +235,7 @@ class MasterSyncVC : UIViewController {
         }else {
             selectedMasterGroupIndex = nil
             LocalStorage.shared.setBool(LocalStorage.LocalValue.hasMasterData, value: false)
-           // if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+           // if isConnected {
                 syncAllAction(self)
           //  } else {
             //  toSetupAlert(desc: "please connect to internet for initial setups", istoNavigate: false, istoNavigatetoSettings: true)
@@ -1019,7 +1019,7 @@ extension MasterSyncVC : tableViewProtocols {
       
 
         
-        self.masterData = [MasterInfo.subordinate, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.docFeedback]
+        self.masterData = [MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.docFeedback]
         //MasterInfo.competitors,
         //MasterInfo.subordinateMGR,
 
@@ -1256,7 +1256,7 @@ extension MasterSyncVC : collectionViewProtocols{
     @objc func groupSyncAll(_ sender : UIButton){
 
         
-//        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+//        if !isConnected {
 //            
 //            self.showMasterSyncError(description: "Please check your internet connectivity!")
 //            

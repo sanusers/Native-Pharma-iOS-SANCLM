@@ -413,7 +413,7 @@ class SlideDownloadVC : UIViewController {
     }
 
     func toCheckNetworkStatus() -> Bool {
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if isConnected {
           return true
         } else {
           return false

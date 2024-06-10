@@ -361,9 +361,11 @@ class MainVC : UIViewController {
     func refreshUI(issynced: Bool? = false) {
         toSeperateDCR(istoAppend: true)
         updateDcr()
-        toIntegrateChartView(self.chartType, self.cacheDCRindex)
+        toIntegrateChartView(chartType, cacheDCRindex)
         toLoadCalenderData()
         toLoadDcrCollection()
+        toConfigureMydayPlan(planDate: selectedToday, isRetrived: true)
+        configureSaveplanBtn(toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
         toLoadOutboxTable(isSynced: issynced ?? false)
         toloadCallsTable()
     }
@@ -413,14 +415,20 @@ class MainVC : UIViewController {
             layout.scrollDirection = .horizontal
             layout.collectionView?.isScrollEnabled = true
         }
-        
-
-        
-        
+ 
         if let layout = self.dcrCallsCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
             layout.collectionView?.isScrollEnabled = true
         }
+        
+        
+        if let layout = self.eventCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .vertical
+            layout.collectionView?.isScrollEnabled = false
+            layout.minimumInteritemSpacing = 10
+        }
+        
+     
         
        // self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .left))
        // self.viewAnalysis.addGestureRecognizer(createSwipeGesture(direction: .right))
@@ -477,19 +485,17 @@ class MainVC : UIViewController {
     func checkoutAction() {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {return}
-            guard let coordinates = coordinates else {
-                // "Please connect to active network to update Password"
-              //   "Please enable location services in Settings."
-                welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
-                
-                return
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
+                    return
+                }
             }
             
-            Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+            Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
                 guard let welf = self else {return}
-                
-                
-                
+  
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 
@@ -506,9 +512,9 @@ class MainVC : UIViewController {
                 let timestr = (timeString)
                 
                 
-                let achckinInfo = CheckinInfo(address: address, checkinDateTime: "" , checkOutDateTime: welf.getCurrentFormattedDateString(), latitude:  coordinates.latitude ?? Double(), longitude:  coordinates.latitude ?? Double(), dateStr: datestr, checkinTime: "", checkOutTime: timestr)
+                let achckinInfo = CheckinInfo(address: address, checkinDateTime: "" , checkOutDateTime: welf.getCurrentFormattedDateString(), latitude:  coordinates?.latitude ?? Double(), longitude:  coordinates?.latitude ?? Double(), dateStr: datestr, checkinTime: "", checkOutTime: timestr)
                 
-                welf.fetchCheckins(checkin: achckinInfo) {[weak self] checkin in
+                 welf.fetchCheckins(checkin: achckinInfo) {[weak self] checkin in
                     
                     guard let welf = self else {return}
                     
@@ -1295,7 +1301,9 @@ class MainVC : UIViewController {
     
     @objc func refreshDayplan() {
         masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: false) {_ in
+
             self.refreshUI()
+     
         }
         
     }
@@ -1309,7 +1317,7 @@ class MainVC : UIViewController {
             self.showAlertToPushCalls(desc: "NOTE! you have more than 40 calls in your out box")
         }
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if isConnected {
             toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                 // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {}
@@ -1342,7 +1350,7 @@ class MainVC : UIViewController {
     
     func toPostDayplan(byDate:Date, completion: @escaping () -> ()) {
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && isConnected {
             
             
             callSavePlanAPI(byDate: byDate) {  [weak self] isUploaded in
@@ -1380,8 +1388,8 @@ class MainVC : UIViewController {
     
     func toSetDayplan(byDate: Date, completion: @escaping () -> ()) {
         self.toSetParams(date: byDate, isfromSyncCall: false) {
-            self.toConfigureMydayPlan(planDate: byDate, isRetrived: true)
-            self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
+           // self.toConfigureMydayPlan(planDate: byDate, isRetrived: true)
+           // self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
             completion()
         }
     }
@@ -1466,19 +1474,19 @@ class MainVC : UIViewController {
     
     
     
-    func requestAuth() {
-        Pipelines.shared.requestAuth() {[weak self] coordinates in
-            guard let welf = self else {return}
-            guard coordinates != nil else {
-                // "Please connect to active network to update Password"
-              //   "Please enable location services in Settings."
-                welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
-                return
-            }
-            welf.latitude = coordinates?.latitude
-            welf.longitude = coordinates?.longitude
-        }
-    }
+//    func requestAuth() {
+//        Pipelines.shared.requestAuth() {[weak self] coordinates in
+//            guard let welf = self else {return}
+//            guard coordinates != nil else {
+//                // "Please connect to active network to update Password"
+//              //   "Please enable location services in Settings."
+//                welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
+//                return
+//            }
+//            welf.latitude = coordinates?.latitude
+//            welf.longitude = coordinates?.longitude
+//        }
+//    }
     
     func cellRegistration() {
         self.quickLinkCollectionView.register(UINib(nibName: "QuickLinkCell", bundle: nil), forCellWithReuseIdentifier: "QuickLinkCell")
@@ -1818,7 +1826,7 @@ class MainVC : UIViewController {
 
     
     func toSetParams(date: Date, isfromSyncCall: Bool, completion: @escaping () -> ()) {
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if !isConnected {
             self.toCreateToast("Please connect to internet")
             completion()
             return
@@ -1972,28 +1980,66 @@ class MainVC : UIViewController {
         // Filter the array based on the current month and year
 
         if appSetups.docNeed == 0 {
-            let unsyncedDoc = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+            var unsyncedDocArr = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
                  aUnsyncedHomeData.custType == "1"
              }
-             
-             let unsyncedDocilteredArray = unsyncedDoc.filter { model in
+            
+            var uniqueUnsyncCustCodes =  Set<String>()
+            
+            // Filter the array to include only the first occurrence of each unique custCode
+            unsyncedDocArr = unsyncedDocArr.filter { aUnsyncedHomeData in
+                if let custCode = aUnsyncedHomeData.custCode, !uniqueUnsyncCustCodes.contains(custCode) {
+                    uniqueUnsyncCustCodes.insert(custCode)
+                    return true
+                } else {
+                    return false
+                }
+            }
+            
+             let unsyncedDocilteredArray = unsyncedDocArr.filter { model in
                  return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
              }
              
              let doctorCount = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
              
              
-             let DoctorfilteredArray = doctorArr.filter { model in
+             var doctorfilteredArray = doctorArr.filter { model in
                  return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
              }
+            
+           var uniqueSyncCustCodes = Set<String>()
+            
+            // Filter the array to include only the first occurrence of each unique custCode
+            doctorfilteredArray = doctorfilteredArray.filter { aUnsyncedHomeData in
+                if let custCode = aUnsyncedHomeData.custCode, !uniqueSyncCustCodes.contains(custCode) {
+                    uniqueSyncCustCodes.insert(custCode)
+                    return true
+                } else {
+                    return false
+                }
+            }
+            
              
-             self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:  DoctorfilteredArray.count + unsyncedDocilteredArray.count))
+             self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:  doctorfilteredArray.count + unsyncedDocilteredArray.count))
         }
 
         if appSetups.chmNeed == 0 {
-            let unsyncedChemist = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+            var unsyncedChemist = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
                  aUnsyncedHomeData.custType == "2"
              }
+            
+            
+            var uniqueUnsyncCustCodes =  Set<String>()
+            
+            // Filter the array to include only the first occurrence of each unique custCode
+            unsyncedChemist = unsyncedChemist.filter { aUnsyncedHomeData in
+                if let custCode = aUnsyncedHomeData.custCode, !uniqueUnsyncCustCodes.contains(custCode) {
+                    uniqueUnsyncCustCodes.insert(custCode)
+                    return true
+                } else {
+                    return false
+                }
+            }
             
             
             let unsyncedChemistilteredArray = unsyncedChemist.filter { model in
@@ -2002,27 +2048,67 @@ class MainVC : UIViewController {
             
             let chemistCount = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
-            let ChemistfilteredArray = chemistArr.filter { model in
+            var chemistfilteredArray = chemistArr.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
             }
             
-            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount:  ChemistfilteredArray.count + unsyncedChemistilteredArray.count))
+            
+            var uniquesyncCustCodes =  Set<String>()
+            
+            // Filter the array to include only the first occurrence of each unique custCode
+            chemistfilteredArray = chemistfilteredArray.filter { aUnsyncedHomeData in
+                if let custCode = aUnsyncedHomeData.custCode, !uniquesyncCustCodes.contains(custCode) {
+                    uniquesyncCustCodes.insert(custCode)
+                    return true
+                } else {
+                    return false
+                }
+            }
+            
+            
+            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount:  chemistfilteredArray.count + unsyncedChemistilteredArray.count))
         }
         
         
         if appSetups.stkNeed == 0 {
-            let unsyncedStockist = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+            var unsyncedStockist = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
                  aUnsyncedHomeData.custType == "3"
              }
+            
+            var uniqueSyncCustCodes = Set<String>()
+             
+             // Filter the array to include only the first occurrence of each unique custCode
+            unsyncedStockist = unsyncedStockist.filter { aUnsyncedHomeData in
+                 if let custCode = aUnsyncedHomeData.custCode, !uniqueSyncCustCodes.contains(custCode) {
+                     uniqueSyncCustCodes.insert(custCode)
+                     return true
+                 } else {
+                     return false
+                 }
+             }
+            
             
             let unsyncedStockistilteredArray = unsyncedStockist.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
             }
             
-            let stockistFilteredArray = stockistArr.filter { model in
+            var stockistFilteredArray = stockistArr.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
             }
              
+            
+            var uniqueUnSyncCustCodes = Set<String>()
+             
+             // Filter the array to include only the first occurrence of each unique custCode
+            stockistFilteredArray = stockistFilteredArray.filter { aUnsyncedHomeData in
+                 if let custCode = aUnsyncedHomeData.custCode, !uniqueUnSyncCustCodes.contains(custCode) {
+                     uniqueUnSyncCustCodes.insert(custCode)
+                     return true
+                 } else {
+                     return false
+                 }
+             }
+            
             
             let stockistCount = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
@@ -2032,16 +2118,43 @@ class MainVC : UIViewController {
         
         if appSetups.unlNeed == 0 {
             
-            let unsyncedunlistedDoc = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
+            var unsyncedunlistedDoc = self.unsyncedhomeDataArr.filter { aUnsyncedHomeData in
                  aUnsyncedHomeData.custType == "4"
              }
+            
+            
+            var uniqueUnsyncCustCodes =  Set<String>()
+            
+            // Filter the array to include only the first occurrence of each unique custCode
+            unsyncedunlistedDoc = unsyncedunlistedDoc.filter { aUnsyncedHomeData in
+                if let custCode = aUnsyncedHomeData.custCode, !uniqueUnsyncCustCodes.contains(custCode) {
+                    uniqueUnsyncCustCodes.insert(custCode)
+                    return true
+                } else {
+                    return false
+                }
+            }
+            
+            
             let unsyncedunlistedDocilteredArray = unsyncedunlistedDoc.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
             }
             
-            let unlistedDocFilteredArray = unlistedDocArr.filter { model in
+            var unlistedDocFilteredArray = unlistedDocArr.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
             }
+            
+            var uniqueUnSyncCustCodes = Set<String>()
+             
+             // Filter the array to include only the first occurrence of each unique custCode
+            unlistedDocFilteredArray = unlistedDocFilteredArray.filter { aUnsyncedHomeData in
+                 if let custCode = aUnsyncedHomeData.custCode, !uniqueUnSyncCustCodes.contains(custCode) {
+                     uniqueUnSyncCustCodes.insert(custCode)
+                     return true
+                 } else {
+                     return false
+                 }
+             }
             
             let unlistedDocCount = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
@@ -2281,7 +2394,7 @@ extension MainVC {
     }
 
     @IBAction func btnCalenderSync(_ sender: Any) {
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if isConnected {
             Shared.instance.showLoaderInWindow()
             masterVM?.tofetchDcrdates() {[weak self] result in
                 guard let welf = self else {return}
@@ -2473,7 +2586,7 @@ extension MainVC {
             }
             
             
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+            if isConnected {
                 yetToSaveSession.indices.forEach { index in
                     yetToSaveSession[index].isRetrived = true
                     yetToSaveSession[index].planDate = self.selectedRawDate
@@ -2491,13 +2604,13 @@ extension MainVC {
             
             
             
-            updateEachDayPlan(isSynced: LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork), planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
+            updateEachDayPlan(isSynced: isConnected, planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
                 guard let welf = self else {return}
                 guard var nonNilSession = welf.sessions else {
                     return
                 }
 
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                if isConnected {
                     welf.callSavePlanAPI(byDate: welf.selectedToday) { isUploaded in
                         if isUploaded {
                             welf.toConfigureMydayPlan(planDate: welf.selectedToday)
@@ -3185,7 +3298,7 @@ extension MainVC : collectionViewProtocols {
             return size
         case self.eventCollectionView:
           //  eventArr[indexPath.row]
-            return CGSize(width:eventArr[indexPath.item].size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]).width + 20, height: collectionView.height / 5.5)
+            return CGSize(width:eventArr[indexPath.item].size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)]).width + 20, height: collectionView.height / 5.5)
             
          //   let width = self.eventCollectionView.bounds.width - Constants.spacing
            // let size = CGSize(width: width, height: self.analysisCollectionView.frame.height / 3)
@@ -3201,8 +3314,11 @@ extension MainVC : collectionViewProtocols {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10.0
+        return 1
     }
+    
+    
+    
 }
 
 
@@ -3362,7 +3478,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
             cell.callsRefreshVIew.addTap {
              
-                guard LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) else {
+                guard isConnected else {
                     self.showAlertToPushCalls(desc: "Internet connection is required to sync calls.")
                     return
                 }
@@ -4693,7 +4809,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     
     func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
        // Shared.instance.showLoaderInWindow()
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if isConnected {
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] result in
                 switch result {
                 case .success(let response):
@@ -5197,22 +5313,22 @@ extension MainVC : addedSubViewsDelegate {
     
     func showAlertToNetworks(desc: String, isToclearacalls: Bool) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "Cancel")
-        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
-            print("yes action")
-            // self.toDeletePresentation()
-            if isToclearacalls {
-                self.clearAction()
-            } else {
-                self.redirectToSettings()
+       
+        if isToclearacalls {
+            commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "Cancel")
+            commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+                print("yes action")
+                    self.clearAction()
+            }
+            commonAlert.addAdditionalCancelAction {
+                print("no action")
+            }
+        } else {
+            commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+                print("yes action")
             }
             
-        }
-        commonAlert.addAdditionalCancelAction {
-            print("no action")
-        
-  
-        
             
         }
     }

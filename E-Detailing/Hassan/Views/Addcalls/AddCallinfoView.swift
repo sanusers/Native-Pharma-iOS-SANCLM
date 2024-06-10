@@ -1201,8 +1201,7 @@ class AddCallinfoView : BaseView {
 
     }
     
-     var productSelectedListViewModel = ProductSelectedListViewModel()
-     var additionalCallListViewModel = AdditionalCallsListViewModel()
+
    enum  SegmentType : String {
         case detailed = "Detailed"
         case products = "Products"
@@ -1286,7 +1285,8 @@ class AddCallinfoView : BaseView {
     @IBOutlet var backGroundVXview: UIView!
     
     @IBOutlet var backgroundView: UIView!
-    
+    var productSelectedListViewModel = ProductSelectedListViewModel()
+    var additionalCallListViewModel = AdditionalCallsListViewModel()
     var selectedSegment: SegmentType = .detailed
     var selectedDoctorIndex = 0
     var searchText: String = ""
@@ -1356,6 +1356,11 @@ class AddCallinfoView : BaseView {
         
         if let userfeedBack = addCallinfoVC.overallFeedback {
             self.overallFeedback = userfeedBack
+        } else {
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "Feedback", in: context) {
+                let aFeedback = Feedback(entity: entityDescription, insertInto: context)
+                self.overallFeedback = aFeedback
+            }
         }
         
         if let pobvalue = addCallinfoVC.pobValue {
@@ -1685,16 +1690,13 @@ class AddCallinfoView : BaseView {
             self.addCallinfoVC.navigationController?.present(vc, animated: false)
         }
         saveView.addTap {
-   
-            self.fetchLocationAndCheckout()
-//            self.addCallinfoVC.toSaveaDCRcall(addedCallID: "1", isDataSent: false) { isSaved in
-//                CoreDataManager.shared.tofetchaSavedCalls(callID: "1") { addedDCRcall in
-//                    
-//                dump(addedDCRcall)
-//                    
-//                    
-//                }
-//            }
+            if customerChekinEnabled {
+                self.fetchLocationAndCheckout()
+            } else {
+                print("Yet to Add call")
+            }
+       
+
         }
         
     }
@@ -1884,18 +1886,20 @@ class AddCallinfoView : BaseView {
     func fetchLocationAndCheckout() {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {return}
-            guard let coordinates = coordinates else {
-                
-                welf.showAlert(desc: "Please enable location services in Settings.")
-                
-                return
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlert(desc: "Please enable location services in Settings.")
+                    return
+                }
             }
-            if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+
+            if isConnected {
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
                     guard let welf = self else {return}
 
-                    welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
-                    welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                    welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                    welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
                     welf.addCallinfoVC.dcrCall.customerCheckOutAddress = address ?? "No address found"
                     let dcrCall = welf.addCallinfoVC.dcrCall
                     welf.checkoutAction(dcrCall: dcrCall)
@@ -1904,8 +1908,8 @@ class AddCallinfoView : BaseView {
                     
                 }
             } else {
-                welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates.latitude ?? Double()
-                welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates.longitude ?? Double()
+                welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
                 welf.addCallinfoVC.dcrCall.customerCheckOutAddress = "No Address found"
                 let dcrCall = welf.addCallinfoVC.dcrCall
                 

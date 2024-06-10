@@ -73,6 +73,22 @@ var imageDownloadURL : String = LocalStorage.shared.getString(key: LocalStorage.
 
 var attachmentURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AttachmentsURL)
 
+var geoFencingEnabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
+
+var customerChekinEnabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
+
+
+var isDoctorFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isDoctorFencingEnabled)
+
+
+var isChemistFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isChemistFencingEnabled)
+
+var isStockistFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isStockistFencingEnabled)
+
+var isUnliatedDoctorFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled)
+
+var isConnected : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
+
 var AppConfigURL: String = "" {
     didSet {
         

@@ -150,7 +150,7 @@ class PopOverVC: UIViewController {
     var selectedIndex = Int()
     var pageType: PageType = .TP
     var totalCalls: Int = 0
-    var avgCalls: Int = 0
+    var avgCalls: Float = 0
     var color : UIColor? = .appWhiteColor
     var visitViewModel : VisitViewModel?
     var startTime: String = ""

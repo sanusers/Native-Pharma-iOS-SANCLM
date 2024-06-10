@@ -59,7 +59,12 @@ class LocalStorage {
         case isConfigAdded
         case isSlidesDownloadPending
         case isTimeZoneChanged
-        
+        case isGeoFencingEnabled
+        case isCustomerChekinNeeded
+        case isDoctorFencingEnabled
+        case isChemistFencingEnabled
+        case isStockistFencingEnabled
+        case isUnlistedDoctorFencingEnabled
     }
     
     enum Offsets: String {

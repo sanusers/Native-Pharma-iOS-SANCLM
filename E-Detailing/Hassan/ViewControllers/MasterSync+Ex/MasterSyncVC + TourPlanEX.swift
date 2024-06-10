@@ -243,7 +243,7 @@ extension MasterSyncVC {
     
     func toPostDataToserver(type : MasterInfo, completion: @escaping (Bool) -> ()) {
 
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+        if !isConnected {
             completion(false)
             return
         }

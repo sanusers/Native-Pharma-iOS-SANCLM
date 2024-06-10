@@ -413,19 +413,22 @@ class CallVC : UIViewController {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
           
             guard let welf = self else {return}
-            guard let coordinates = coordinates else {
-                
-                welf.showAlert(desc: "Please enable location services in Settings.")
-                
-                return
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlert(desc: "Please enable location services in Settings.")
+                    return
+                }
             }
+//            guard let coordinates = coordinates else {
+//                welf.showAlert(desc: "Please enable location services in Settings.")
+//                return
+//            }
             Shared.instance.showLoaderInWindow()
-            Pipelines.shared.getAddressString(latitude: coordinates.latitude ?? Double(), longitude:  coordinates.longitude ?? Double()) { [weak self] address in
+            Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
                 Shared.instance.removeLoaderInWindow()
                 guard let welf = self else {return}
-                
-                
-                
+   
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 
@@ -439,10 +442,10 @@ class CallVC : UIViewController {
                 
                 let timeString = dateFormatter.string(from: currentDate)
                 
-                let timestr = (timeString)
+                _ = (timeString)
                 dcrCall.customerCheckinAddress = address ?? ""
-                dcrCall.checkinlatitude = coordinates.latitude ?? Double()
-                dcrCall.checkinlongitude = coordinates.longitude ?? Double()
+                dcrCall.checkinlatitude = coordinates?.latitude ?? Double()
+                dcrCall.checkinlongitude = coordinates?.longitude ?? Double()
                 dcrCall.dcrCheckinTime = datestr
                 welf.checkinDetailsAction(dcrCall : dcrCall)
                 
@@ -738,7 +741,13 @@ extension CallVC : collectionViewProtocols {
                         self.toCreateToast("Doctor aldready visited today")
                         return
                     } else {
-                        self.checkinAction(dcrCall: adcrCall)
+                        if customerChekinEnabled {
+                            self.checkinAction(dcrCall: adcrCall)
+                        } else  {
+                           
+                            self.navigateToPrecallVC(dcrCall: adcrCall, index: indexPath.item)
+                        }
+                     
                     }
                 }
                 
@@ -785,7 +794,12 @@ extension CallVC : collectionViewProtocols {
                         self.toCreateToast("Chemist aldready visited today")
                         return
                     } else {
-                        self.checkinAction(dcrCall: adcrCall)
+                        if customerChekinEnabled {
+                            self.checkinAction(dcrCall: adcrCall)
+                        } else  {
+                           
+                            self.navigateToPrecallVC(dcrCall: adcrCall, index: indexPath.item)
+                        }
                     }
                 }
                 
@@ -833,7 +847,12 @@ extension CallVC : collectionViewProtocols {
                         self.toCreateToast("Stockist aldready visited today")
                         return
                     } else {
-                        self.checkinAction(dcrCall: adcrCall)
+                        if customerChekinEnabled {
+                            self.checkinAction(dcrCall: adcrCall)
+                        } else  {
+                           
+                            self.navigateToPrecallVC(dcrCall: adcrCall, index: indexPath.item)
+                        }
                     }
                 }
             case .unlistedDoctor:
@@ -877,18 +896,25 @@ extension CallVC : collectionViewProtocols {
                         self.toCreateToast("Doctor aldready visited today")
                         return
                     } else {
-                        self.checkinAction(dcrCall: adcrCall)
+                        if customerChekinEnabled {
+                            self.checkinAction(dcrCall: adcrCall)
+                        } else  {
+                           
+                            self.navigateToPrecallVC(dcrCall: adcrCall, index: indexPath.item)
+                        }
                     }
                 }
             case .cip:
-                let    cipArr =  homeDataArr.filter { aHomeData in
-                       aHomeData.custType == "5"
-                   }
+//                let    cipArr =  homeDataArr.filter { aHomeData in
+//                       aHomeData.custType == "5"
+//                   }
+                print("Yet to")
             case .hospital:
                 // homeDataList.filter{ $0.custCode == }
-                let  hospitalArr   =  homeDataArr.filter { aHomeData in
-                       aHomeData.custType == "6"
-                   }
+//                let  hospitalArr   =  homeDataArr.filter { aHomeData in
+//                       aHomeData.custType == "6"
+//                   }
+                print("Yet to")
             default:
                 print("")
             }

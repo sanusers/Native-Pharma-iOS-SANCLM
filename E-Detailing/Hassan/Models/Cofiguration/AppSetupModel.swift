@@ -811,7 +811,21 @@ class AppSetUp : Codable {
         self.usrDfdUserName = container.safeDecodeValue(forKey: .usrDfdUserName)
         self.visitNeed = container.safeDecodeValue(forKey: .visitNeed)
         self.workAreaName = container.safeDecodeValue(forKey: .workAreaName)
-        self.success = 0
+        self.success = Int()
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isGeoFencingEnabled, value:  self.geoCheck == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isCustomerChekinNeeded, value:  self.custSrtNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorFencingEnabled, value:  self.geoTagNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistFencingEnabled, value:  self.geoTagNeedChe == 1 ? true : false)
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistFencingEnabled, value:  self.geoTagNeedStock == 1 ? true : false)
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled, value:  self.geoTagNeedUnList == 1 ? true : false)
     }
     
     enum CodingKeys: String, CodingKey {
