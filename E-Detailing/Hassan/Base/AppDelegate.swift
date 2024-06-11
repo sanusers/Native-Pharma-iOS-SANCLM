@@ -29,19 +29,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSServices.provideAPIKey(GooglePlacesApiKey)
         IQKeyboardManager.shared.enable = true
-       // addObserverForTimeZoneChange()
+        addObservers()
       //  if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTimeZoneChanged) {
          //   makeSplashView(isFirstTime: true, isTimeZoneChanged: true)
        // } else {
             makeSplashView(isFirstTime: true)
        // }
-       
+     
         return true
     }
     
-//    func addObserverForTimeZoneChange() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
-//    }
+    func addObservers() {
+       // NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+    }
     
 //    func applicationWillEnterForeground(_ application: UIApplication) {
 //     
@@ -105,6 +106,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         }
         
+    }
+    
+    @objc func networkModified(_ notification: NSNotification) {
+        
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary? {
+            if let status = dict["Type"] as? String{
+                DispatchQueue.main.async {
+                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
+                        
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
+                        
+                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
+                        
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                    }
+                }
+            }
+        }
     }
     
     

@@ -34,6 +34,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
     var longitude: Double?
     var address: String?
     var chckinInfo:  CheckinInfo?
+    var isCheckinRegistered: Bool = false
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,6 +47,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
      }
     
     func  callAPI() {
+        isCheckinRegistered = true
         guard let appsetup = self.appsetup else {return}
         
         let dateFormatter = DateFormatter()
@@ -133,7 +135,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
             completion(false)
             
             return}
-        
+        CoreDataManager.shared.removeAllCheckins()
         CoreDataManager.shared.saveCheckinsToCoreData(checkinInfo: chckinInfo) {isCompleted in
             completion(true)
         }
@@ -149,61 +151,60 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
     
     @IBAction func didTapCheckin(_ sender: Any) {
  
-        
         locManager = CLLocationManager()
         currentLocation = CLLocation()
-        
-        Pipelines.shared.requestAuth() {[weak self] coordinates in
-            guard let welf = self else {return}
-            if geoFencingEnabled {
-                guard coordinates != nil else {
-                    welf.delegate?.showAlert(desc: "Please enable location services in Settings.")
-                    return
-                }
-            }
-            welf.latitude = coordinates?.latitude
-            welf.longitude = coordinates?.longitude
+            Pipelines.shared.requestAuth() {[weak self] coordinates in
             
-            if !isConnected {
-
-                    let dateFormatter = DateFormatter()
-    
-                    let currentDate = Date()
-                    
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    
-                    let upDatedDateString = dateFormatter.string(from: currentDate)
-                    
-                    
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: false)
-                    
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
-
-                    LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
-                    
-                    LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
-                
-                    CoreDataManager.shared.removeAllCheckins()
-                
-                    welf.saveLogininfoToCoreData() {_ in
-                        welf.delegate?.didUpdate()
+                guard let welf = self else {return}
+                if geoFencingEnabled {
+                    guard coordinates != nil else {
+                        welf.delegate?.showAlert(desc: "Please enable location services in Settings.")
+                        return
                     }
+                }
+                welf.latitude = coordinates?.latitude
+                welf.longitude = coordinates?.longitude
+                
+                if !isConnected {
 
+                        let dateFormatter = DateFormatter()
+        
+                        let currentDate = Date()
+                        
+                        dateFormatter.dateFormat = "yyyy-MM-dd"
+                        
+                        let upDatedDateString = dateFormatter.string(from: currentDate)
+                        
+                        
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isLoginSynced, value: false)
+                        
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+                        
+                        LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
+                    
+                    
+                        welf.saveLogininfoToCoreData() {_ in
+                            welf.delegate?.didUpdate()
+                        }
+
+                    
+                }
+                
+                Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
+                    welf.address = address
+                    if !welf.isCheckinRegistered {
+                        welf.callAPI()
+                    }
+                       
+                  
+                  
+                }
                 
             }
-            
-            Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
-                welf.address = address
-                
-                    welf.callAPI()
-              
-              
-            }
-            
-        }
         
 
-   
         
     }
     

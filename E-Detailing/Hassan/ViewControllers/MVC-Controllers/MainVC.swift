@@ -294,7 +294,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        CoreDataManager.shared.removeAllDayPlans()
         addObservers()
         updateLinks()
         setupUI()
@@ -1199,7 +1199,7 @@ class MainVC : UIViewController {
     }
     
     func setupUI() {
-        
+      
         cellRegistration()
         initView()
         rejectionVIew.isHidden = true
@@ -1785,8 +1785,9 @@ class MainVC : UIViewController {
         }
         
      
-      //  dispatchGroup.enter()
+       
         for aDate in dateArr {
+            dispatchGroup.enter()
             toFetchExistingPlan(byDate: aDate) {existingSessions in
                 for aExistingSessions in existingSessions {
                     if aExistingSessions.isSynced == false  {
@@ -1799,7 +1800,7 @@ class MainVC : UIViewController {
                     }
                     
                 }
-          //      dispatchGroup.leave()
+                dispatchGroup.leave()
             }
           
         }
@@ -2590,14 +2591,17 @@ extension MainVC {
                 yetToSaveSession.indices.forEach { index in
                     yetToSaveSession[index].isRetrived = true
                     yetToSaveSession[index].planDate = self.selectedRawDate
+                    yetToSaveSession[index].isSynced = true
                 }
             } else {
                 yetToSaveSession.indices.forEach { index in
                     if  yetToSaveSession[index].isRetrived == true {
                         yetToSaveSession[index].planDate =  selectedToday
+                        yetToSaveSession[index].isSynced = false
                     } else {
                         yetToSaveSession[index].isRetrived = true
                         yetToSaveSession[index].planDate =  selectedToday
+                        yetToSaveSession[index].isSynced = false
                     }
                 }
             }
@@ -2655,7 +2659,7 @@ extension MainVC {
                         welf.configureAddplanBtn(true)
                     }
 
-                    
+                
                     welf.toCreateToast("You are not connected to internet")
                 }
                 
@@ -3478,10 +3482,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
             cell.callsRefreshVIew.addTap {
              
-                guard isConnected else {
+               
+                //  obj_sections[section].isLoading = true
+                if !isConnected {
                     self.showAlertToPushCalls(desc: "Internet connection is required to sync calls.")
                     return
                 }
+                
 
                 func syncNextCode() {
                     guard !custCodes.isEmpty else {
@@ -5051,6 +5058,7 @@ extension MainVC: PopOverVCDelegate {
             checkinDetailsView?.setupUI(type: HomeCheckinDetailsView.ViewType.checkout)
         }
         view.addSubview(checkinDetailsView ?? HomeCheckinDetailsView())
+        view.layoutIfNeeded()
     }
     
     
@@ -5398,7 +5406,6 @@ extension MainVC : addedSubViewsDelegate {
     func didUpdate() {
         backgroundView.isHidden = true
         self.view.subviews.forEach { aAddedView in
-            
             switch aAddedView {
             case changePasswordView:
                 aAddedView.removeFromSuperview()
@@ -5406,26 +5413,21 @@ extension MainVC : addedSubViewsDelegate {
                 
                 self.toSetupUpdatePasswordAlert(desc: "Password updated sucessfully, Do you want to log out?")
                 
-               
+            case checkinDetailsView:
+                backgroundView.isHidden = false
+    
                 
             case checkinVIew:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-                
                 checkinDetailsAction()
-                
-                
-            case checkinDetailsView:
-                aAddedView.removeFromSuperview()
-                aAddedView.alpha = 0
+               
                 
             case tpDeviateReasonView:
-                
-                
-                
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 self.setDeviateSwitch(istoON: true)
+                
             default:
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1

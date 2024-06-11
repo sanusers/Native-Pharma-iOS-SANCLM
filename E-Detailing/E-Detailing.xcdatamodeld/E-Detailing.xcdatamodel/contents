@@ -470,7 +470,6 @@
     </entity>
     <entity name="SavedCDPresentation" representedClassName="SavedCDPresentation" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="groupedBrandsSlideModel" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GroupedBrandsSlideCDModel"/>
     </entity>
     <entity name="SavedSlidesCDModel" representedClassName="SavedSlidesCDModel" syncable="YES" codeGenerationType="class">

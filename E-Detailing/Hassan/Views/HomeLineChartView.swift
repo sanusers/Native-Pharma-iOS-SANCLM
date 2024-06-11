@@ -48,10 +48,10 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
         // Find the index of the current value in the entries array
         if let currentIndex = entries.firstIndex(of: value) {
             if currentIndex % 2 == 0 {
-                return "01st - 15th"
+                return "01 st - 15 th"
             } else {
                 let count = numberOfDaysInMonth(for: date[currentIndex / 2])
-                return "01th - \(count!)th"
+                return "01 th - \(count!) th"
                 
             }
 
@@ -206,15 +206,16 @@ class HomeLineChartView: UIView, ChartViewDelegate {
     
     
     func toCalculateAvgDate() {
-        self.allListArr =  self.dataSourceArr.filter { aHomeData in
+        self.allListArr =  self.allListArr.filter { aHomeData in
             aHomeData.fw_Indicator == "F"
             //&&  aHomeData.custType == "0"
         }
-        
+
         var avgdates = [Date]()
         
         self.allListArr.forEach { aHomeData in
-            avgdates.append(aHomeData.dcr_dt?.toConVertStringToDate() ?? Date())
+            avgdates.append(aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd") ?? Date())
+            
         }
         
     
@@ -370,6 +371,50 @@ class HomeLineChartView: UIView, ChartViewDelegate {
         
         dump(avgeacSectorCounrArr)
     }
+    
+    // Function to generate a random date for a given month
+    func generateRandomDate(for month: Int) -> Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = 2024 // You can set any year you want
+        components.month = month
+        
+        // Generate a random day in the given month
+        if let range = calendar.range(of: .day, in: .month, for: calendar.date(from: components)!) {
+            components.day = Int.random(in: range)
+        }
+        
+        // Generate a random hour, minute, and second
+        components.hour = Int.random(in: 0..<24)
+        components.minute = Int.random(in: 0..<60)
+        components.second = Int.random(in: 0..<60)
+        
+        return calendar.date(from: components) ?? Date()
+    }
+    
+    func toReturnMissingInt(range: [Int]) -> [Int: [Date]] {
+        // Convert Set to Array for processing
+        var uniqueMonths = Array(range)
+        
+        // Step 1: Sort the array
+        uniqueMonths.sort()
+        
+        // Step 2: Find the missing integers between the first and last element
+        var fullRange: [Int] = []
+        if let first = uniqueMonths.first, let last = uniqueMonths.last {
+            fullRange = Array(first...last)  // Create an array with the full range of integers
+            uniqueMonths = Array(Set(fullRange).union(uniqueMonths)).sorted()  // Combine and sort
+        }
+        
+        // Step 3: Create the dictionary with empty arrays as values
+        var result: [Int: [Date]] = [:]
+        for month in uniqueMonths {
+            result[month] = []
+        }
+        
+        return result
+    }
+
     
     func toSetDataSource() {
         

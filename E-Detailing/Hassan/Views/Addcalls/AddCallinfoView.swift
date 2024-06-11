@@ -1699,6 +1699,10 @@ class AddCallinfoView : BaseView {
 
         }
         
+        clearView.addTap {
+            self.addCallinfoVC.navigationController?.popViewController(animated: true)
+        }
+        
     }
     
     func cellregistration() {

@@ -149,7 +149,6 @@ class HomeCheckinDetailsView: UIView {
     
     func updateCoreData() {
         CoreDataManager.shared.removeAllCheckins()
-        
         saveLogininfoToCoreData() { _ in
 
         }

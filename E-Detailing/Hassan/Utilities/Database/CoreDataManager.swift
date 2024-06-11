@@ -50,11 +50,11 @@ class CoreDataManager {
     /// - Parameters:
     ///   - id: UUID
     ///   - completion: boolean
-    func toCheckExistance(_ id: UUID, completion: (Bool) -> ()) {
+    func toCheckExistance(_ name: String, completion: (Bool) -> ()) {
         
         do {
             let request = SavedCDPresentation.fetchRequest() as NSFetchRequest
-            let pred = NSPredicate(format: "uuid == '\(id)'")
+            let pred = NSPredicate(format: "name == %@", name)
             //LIKE
             request.predicate = pred
            let films = try context.fetch(request)
@@ -110,33 +110,37 @@ class CoreDataManager {
     ///   - savedPresentation: SavedPresentation object
     ///   - id: UUID
     ///   - completion: boolean
-    func toEditSavedPresentation(savedPresentation: SavedPresentation, id: UUID, completion: @escaping (Bool) -> Void) {
+    func toEditSavedPresentation(savedPresentation: SavedPresentation, name: String, completion: @escaping (Bool) -> Void) {
         do {
             let request = SavedCDPresentation.fetchRequest() as NSFetchRequest
-            let pred = NSPredicate(format: "uuid == '\(id)'")
+            let pred = NSPredicate(format: "name == %@", name)
             request.predicate = pred
             let presentations = try context.fetch(request)
+         
             if let existingEntity = presentations.first {
-                // Convert properties
-                existingEntity.uuid = savedPresentation.uuid
-                existingEntity.name = savedPresentation.name
-
-                // Convert and add groupedBrandsSlideModel
-                convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context) { groupedBrandsSlideModel in
-                    existingEntity.groupedBrandsSlideModel = groupedBrandsSlideModel
-                    
-                    // Save to Core Data
-                    do {
-                        try self.context.save()
-                        completion(true)
-                    } catch {
-                        print("Failed to save to Core Data: \(error)")
-                        completion(false)
-                    }
-                }
+             context.delete(existingEntity)
             } else {
                 completion(false)
             }
+            
+            // Create a new entity
+                   let newEntity = SavedCDPresentation(context: context)
+                   newEntity.name = savedPresentation.name
+                   
+                   // Convert and add groupedBrandsSlideModel
+                   convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context) { groupedBrandsSlideModel in
+                       newEntity.groupedBrandsSlideModel = groupedBrandsSlideModel
+                       
+                       // Save to Core Data
+                       do {
+                           try self.context.save()
+                           completion(true)
+                       } catch {
+                           print("Failed to save to Core Data: \(error)")
+                           completion(false)
+                       }
+                   }
+            
         } catch {
             print("Unable to fetch presentations: \(error)")
             completion(false)
@@ -152,7 +156,7 @@ class CoreDataManager {
     ///   - savedPresentation: SavedPresentation
     ///   - completion: boolean
     func saveToCoreData(savedPresentation: SavedPresentation, completion: @escaping (Bool) -> Void) {
-        toCheckExistance(savedPresentation.uuid) { isExists in
+        toCheckExistance(savedPresentation.name) { isExists in
             var tempcompletion: Bool = false
             let dispatchGroup = DispatchGroup()
             if !isExists {
@@ -164,7 +168,7 @@ class CoreDataManager {
                     let savedCDPresentation = SavedCDPresentation(entity: entityDescription, insertInto: context)
 
                     // Convert properties
-                    savedCDPresentation.uuid = savedPresentation.uuid
+                 
                     savedCDPresentation.name = savedPresentation.name
 
                     // Convert and add groupedBrandsSlideModel
@@ -391,7 +395,7 @@ class CoreDataManager {
         CoreDataManager.shared.fetchPresentations { savedCDPresentationArr in
             savedCDPresentationArr.forEach { aSavedCDPresentation in
                 let aSavedPresentation = SavedPresentation()
-                aSavedPresentation.uuid = aSavedCDPresentation.uuid ?? UUID()
+           
                 aSavedPresentation.name = aSavedCDPresentation.name ?? ""
                 var groupedBrandsSlideModelArr = [GroupedBrandsSlideModel]()
                 

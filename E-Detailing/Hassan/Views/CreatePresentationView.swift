@@ -304,23 +304,23 @@ class CreatePresentationView : BaseView {
     
     
     func retriveEditandSave() {
-        
+    
         if let savedPresentation = self.savedPresentation {
             savedPresentation.name = self.addNameTF.text ?? ""
-            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, id: savedPresentation.uuid) { isEdited in
+            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, name:      savedPresentation.name) { isEdited in
                 if isEdited {
                     self.toCreateToast("Presentation saved successfully.")
+                    self.toExiteVC()
                 } else {
                     self.toCreateToast("Error saving presentation.")
                 }
-                
+               
             }
         } else {
             self.toCreateToast("Error saving presentation.")
-            
         }
         
-        toExiteVC()
+      
     }
     
     func toExiteVC() {

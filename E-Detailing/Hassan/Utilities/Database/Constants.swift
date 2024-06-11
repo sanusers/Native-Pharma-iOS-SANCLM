@@ -87,7 +87,7 @@ var isStockistFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStora
 
 var isUnliatedDoctorFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled)
 
-var isConnected : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork)
+var isConnected : Bool = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
 
 var AppConfigURL: String = "" {
     didSet {
