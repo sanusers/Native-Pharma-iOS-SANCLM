@@ -493,6 +493,7 @@ class MenuView : BaseView{
         case qualification
         case category
         case speciality
+        case theraptic
         case feedback
         case competitors
         case leave
@@ -3571,7 +3572,12 @@ class MenuTCell: UITableViewCell
 let jsonString = "{\"tableName\": \"savetp\",\"TPDatas\": {\"worktype_name\": \"Field Work,\",\"worktype_code\": \"3637\",\"cluster_name\": \"CHAKKARAKKAL,KELAKAM,KUTHUPARAMBA,MATTANNUR,PANOOR,\",\"cluster_code\": \"18758,20218,20221,18759,18761,\",\"DayRmk\": \"planner Remarks\",},\"dayno\": \"9\",\"TPDt\": \"2023-11-9 00:00:00\",\"TPMonth\": \"11\",\"TPYear\": \"2023\"}"
 
 
-extension MenuView : UITextFieldDelegate {
+extension MenuView :UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == searchTF {

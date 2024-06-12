@@ -33,7 +33,12 @@ extension CompetitorsDetailsCell {
 }
 
 
-class CompetitorsDetailsCell: UITableViewCell, UITextFieldDelegate {
+class CompetitorsDetailsCell: UITableViewCell,UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
 
     

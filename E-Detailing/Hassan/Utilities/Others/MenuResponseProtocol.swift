@@ -2,6 +2,14 @@ import Foundation
 import UIKit
 import CoreData
 
+enum AlertTypes: String {
+    case clearSlides
+}
+
+protocol MenuAlertProtocols: AnyObject {
+    func addAlert(_ type: AlertTypes)
+}
+
  protocol MenuResponseProtocol: AnyObject {
     func routeToView(_ view : UIViewController)
     func callPlanAPI()

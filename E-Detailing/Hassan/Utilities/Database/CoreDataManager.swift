@@ -48,7 +48,7 @@ class CoreDataManager {
     
     /// function checks for existing object from core data SavedCDPresentation
     /// - Parameters:
-    ///   - id: UUID
+    ///   - name: name
     ///   - completion: boolean
     func toCheckExistance(_ name: String, completion: (Bool) -> ()) {
         
@@ -57,8 +57,8 @@ class CoreDataManager {
             let pred = NSPredicate(format: "name == %@", name)
             //LIKE
             request.predicate = pred
-           let films = try context.fetch(request)
-            if films.isEmpty {
+           let savedCDPresentations = try context.fetch(request)
+            if savedCDPresentations.isEmpty {
                 completion(false)
             } else {
                 completion(true)
@@ -76,12 +76,12 @@ class CoreDataManager {
     /// - Parameters:
     ///   - id: UUID
     ///   - completion: completion descriptionboolen
-    func toRemovePresentation(_ id: UUID, completion: (Bool) -> ()) {
+    func toRemovePresentation(_ name: String, completion: (Bool) -> ()) {
    
 
         do {
             let request = SavedCDPresentation.fetchRequest() as NSFetchRequest
-            let pred = NSPredicate(format: "uuid == '\(id)'")
+            let pred = NSPredicate(format: "name == %@", name)
             request.predicate = pred
            let presentations = try context.fetch(request)
             if presentations.isEmpty {
@@ -116,12 +116,14 @@ class CoreDataManager {
             let pred = NSPredicate(format: "name == %@", name)
             request.predicate = pred
             let presentations = try context.fetch(request)
-         
-            if let existingEntity = presentations.first {
-             context.delete(existingEntity)
-            } else {
-                completion(false)
+            for presentation in presentations {
+                context.delete(presentation)
             }
+//            if let existingEntity = presentations.first {
+//             
+//            } else {
+//                completion(false)
+//            }
             
             // Create a new entity
                    let newEntity = SavedCDPresentation(context: context)
@@ -770,7 +772,7 @@ extension CoreDataManager {
 //    }
     
     
-    func removeAllSlides() {
+    func removeAllSlides(completion: @escaping(Bool) -> Void) {
         let fetchRequest: NSFetchRequest<SlidesCDModel> = NSFetchRequest(entityName: "SlidesCDModel")
 
         do {
@@ -780,8 +782,10 @@ extension CoreDataManager {
             }
 
             try context.save()
+            completion(true)
         } catch {
             print("Error deleting slide brands: \(error)")
+            completion(false)
         }
     }
     

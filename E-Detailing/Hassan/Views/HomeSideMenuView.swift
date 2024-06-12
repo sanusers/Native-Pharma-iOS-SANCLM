@@ -35,16 +35,22 @@ extension HomeSideMenuView: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         let model = menuItemArr[indexPath.row]
         cell.sideMenuIcon.image = model.menuIcon
+        cell.sideMenuIcon.tintColor = .appTextColor
         cell.sideMenuTitle.text = model.menuName
         
         cell.addTap {
+            
             self.menuVC.dismiss(animated: false, completion: {
                 let _selectedItem = self.menuItemArr[indexPath.row]
-                if let vc = _selectedItem.viewController{
-                        self.menuVC.menuDelegate?.routeToView(vc)
-                }else{
-
+                switch _selectedItem.menuName {
+                case "Clear slides":
+                    self.menuVC.menuAlertDelegate?.addAlert(.clearSlides)
+                default:
+                    if let vc = _selectedItem.viewController{
+                            self.menuVC.menuDelegate?.routeToView(vc)
+                    }
                 }
+        
             })
         }
         return cell
@@ -201,6 +207,11 @@ class HomeSideMenuView : BaseView{
         
         let profiling : MenuItems = MenuItems(menuName: "Profiling", menuIcon: UIImage(named: "SideMenuProfiling") ?? UIImage(), VC: nil)
         menuItemArr.append(profiling)
+        
+        
+        let removeSlide : MenuItems = MenuItems(menuName: "Clear slides", menuIcon: UIImage(systemName: "text.append") ?? UIImage(), VC: nil)
+        menuItemArr.append(removeSlide)
+        
        return menuItemArr
     }
     

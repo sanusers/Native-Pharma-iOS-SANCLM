@@ -25,7 +25,7 @@ extension PresentationHomeView: PopOverVCDelegate {
         if let savePresentationArr = self.savePresentationArr {
             let selectedPresentation = savePresentationArr[index]
             selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
-               var selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                     aSlidesModel.isSelected == true
                 }
               
@@ -249,7 +249,7 @@ class PresentationHomeView : BaseView {
     func toDeletePresentation() {
 
         if let  savePresentationArr =   self.savePresentationArr {
-            CoreDataManager.shared.toRemovePresentation(savePresentationArr[createdPresentationSelectedIndex ?? 0].uuid) { isDeleted in
+            CoreDataManager.shared.toRemovePresentation(savePresentationArr[createdPresentationSelectedIndex ?? 0].name) { isDeleted in
                 if isDeleted {
                     self.toCreateToast("presentation deleted successfully")
                     retriveSavedPresentations()

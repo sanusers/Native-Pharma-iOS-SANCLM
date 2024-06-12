@@ -1396,14 +1396,11 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-//               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-//               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-//               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        
+
         // Assuming you have a storedDateString retrieved from local storage
         let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
         let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
@@ -1411,20 +1408,12 @@ class MainVC : UIViewController {
         if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
            // CoreDataManager.shared.removeAdayPlans(planDate: currentDate)
         }
-     
-        
-    
-
         if appSetups.srtNeed == 1 {
             
             if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
-                // Reset the lastCheckedInDate to an empty string
-               // LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-               // LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
-             
-                
-                self.btnFinalSubmit.setTitle("Final submit", for: .normal)
+                ///Dont change titile it may break underlying chekin details view actions
+                self.btnFinalSubmit.setTitle("Check IN", for: .normal)
                 
                 
                 return true
@@ -1436,7 +1425,7 @@ class MainVC : UIViewController {
             let lastcheckedinDate =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate) //"2024-02-28 14:19:54"
             
             
-            let toDayDate = dateFormatter.string(from: Date())
+            let toDayDate = currentDate.toString(format: "yyyy-MM-dd")
             
             if toDayDate == lastcheckedinDate {
                 
@@ -1458,7 +1447,7 @@ class MainVC : UIViewController {
                     return false
                     
                 } else {
-                    self.btnFinalSubmit.setTitle("Final submit", for: .normal)
+                    self.btnFinalSubmit.setTitle("Check IN", for: .normal)
                     return true
                 }
                 
@@ -1472,21 +1461,6 @@ class MainVC : UIViewController {
         }
     }
     
-    
-    
-//    func requestAuth() {
-//        Pipelines.shared.requestAuth() {[weak self] coordinates in
-//            guard let welf = self else {return}
-//            guard coordinates != nil else {
-//                // "Please connect to active network to update Password"
-//              //   "Please enable location services in Settings."
-//                welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
-//                return
-//            }
-//            welf.latitude = coordinates?.latitude
-//            welf.longitude = coordinates?.longitude
-//        }
-//    }
     
     func cellRegistration() {
         self.quickLinkCollectionView.register(UINib(nibName: "QuickLinkCell", bundle: nil), forCellWithReuseIdentifier: "QuickLinkCell")
@@ -2426,6 +2400,12 @@ extension MainVC {
     }
 
     @IBAction func didTapFinalSubmit(_ sender: Any) {
+        
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
+            checkinAction()
+            return
+        }
+        
         if isDayPlanRemarksadded {
             if appSetups.srtNeed == 1 {
                 checkoutAction()
@@ -2478,28 +2458,33 @@ extension MainVC {
     }
 
     @IBAction func callAction(_ sender: UIButton) {
-        
         if istoRedirecttoCheckin() {
             checkinAction()
-            
-        } else {
+            return
+        }
+        CoreDataManager.shared.fetchEachDayPlan(byDate: self.selectedToday) {[weak self]  myDayPlans in
+            guard let welf = self else {return}
+            if myDayPlans.isEmpty {
+                welf.showAlertToNetworks(desc: "Please shedule your work plan to add call", isToclearacalls: false)
+                welf.setSegment(.workPlan)
+                return
+            }
+
             var selectedTerritories = [Territory]()
             let callVC = UIStoryboard.callVC
-            if let fetchedClusterObject1 = fetchedClusterObject1 {
+            if let fetchedClusterObject1 = welf.fetchedClusterObject1 {
                 selectedTerritories.append(contentsOf: fetchedClusterObject1)
             }
-                
-                if let fetchedClusterObject2 = fetchedClusterObject2 {
-                    selectedTerritories.append(contentsOf:fetchedClusterObject2)
-          }
+            
+            if let fetchedClusterObject2 = welf.fetchedClusterObject2 {
+                selectedTerritories.append(contentsOf:fetchedClusterObject2)
+            }
             callVC.selectedTerritories = selectedTerritories
             
-            self.navigationController?.pushViewController(callVC, animated: true)
+            welf.navigationController?.pushViewController(callVC, animated: true)
+            
+            
         }
-        
-        
-        
-        
     }
 
     @IBAction func todayCallSyncAction(_ sender: UIButton) {
@@ -2554,6 +2539,7 @@ extension MainVC {
         print("Tapped")
         let menuvc =   HomeSideMenuVC.initWithStory(self)
         menuvc.delegate = self
+        menuvc.menuAlertDelegate = self
         self.modalPresentationStyle = .custom
         self.navigationController?.present(menuvc, animated: false)
         
@@ -4818,10 +4804,11 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
        // Shared.instance.showLoaderInWindow()
         if isConnected {
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] result in
+                guard let welf = self else {return}
                 switch result {
                 case .success(let response):
                     Shared.instance.removeLoaderInWindow()
-                    guard let welf = self else {return}
+                 
                     welf.upDateplansToDB(isSynced: true, planDate: date, model: response)
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MMMM d, yyyy"
@@ -4830,7 +4817,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                     welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
                     welf.tourPlanCalander.reloadData()
                 case .failure(let error):
-                    self?.toCreateToast(error.rawValue)
+                  welf.toCreateToast(error.rawValue)
                 }
 
             }
@@ -4855,10 +4842,9 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     }
     
     func upDateplansToDB(isSynced: Bool, planDate: Date, model: [MyDayPlanResponseModel]) {
-        masterVM?.toUpdateDataBase(isSynced: isSynced, planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(isSynced: isSynced, model: model) ?? DayPlan()) {_ in
-            //refreshDayplan
-          //  NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
-            self.toConfigureMydayPlan(planDate: planDate)
+        masterVM?.toUpdateDataBase(isSynced: isSynced, planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(isSynced: isSynced, model: model) ?? DayPlan()) {[weak self] _ in
+            guard let welf = self else {return}
+            welf.toConfigureMydayPlan(planDate: planDate)
         }
     }
     
@@ -5052,7 +5038,7 @@ extension MainVC: PopOverVCDelegate {
         checkinDetailsView?.chckinInfo = checkin
         checkinDetailsView?.userstrtisticsVM = self.userststisticsVM
         checkinDetailsView?.appsetup = self.appSetups
-        if btnFinalSubmit.titleLabel?.text == "Final submit" {
+        if btnFinalSubmit.titleLabel?.text == "Check IN" {
             checkinDetailsView?.setupUI(type: HomeCheckinDetailsView.ViewType.checkin)
         } else {
             checkinDetailsView?.setupUI(type: HomeCheckinDetailsView.ViewType.checkout)
@@ -5554,6 +5540,45 @@ extension MainVC: OutboxDetailsTVCDelegate {
             print("Yet to")
         }
 
+    }
+    
+    
+}
+
+extension MainVC:  MenuAlertProtocols {
+    
+    func clearAllSlideDatas() {
+        
+        CoreDataManager.shared.removeAllSlides{ isRemoved in
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "0")
+            Shared.instance.iscelliterating = false
+            Shared.instance.isSlideDownloading = false
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesRemoved, value: isRemoved)
+            
+        }
+        
+    }
+    
+    func showAlertToClearSlides(desc: String) {
+        let commonAlert = CommonAlert()
+       
+            commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "Cancel")
+            commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+                print("yes action")
+                    self.clearAllSlideDatas()
+            }
+            commonAlert.addAdditionalCancelAction {
+                print("no action")
+            }
+        
+    }
+    
+    func addAlert(_ type: AlertTypes) {
+        switch type {
+        case .clearSlides:
+            self.showAlertToClearSlides(desc: "Are you sure about clearing all saved slides?")
+        }
     }
     
     

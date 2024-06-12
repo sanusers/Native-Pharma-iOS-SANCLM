@@ -116,7 +116,7 @@ class SlideDownloaderCell : UITableViewCell  {
     
     
     func toSetupDownloadingCell(_ istoHide: Bool) {
-        self.btnRetry.isHidden = true
+        self.btnRetry.isHidden = istoHide
         isUserInteractionEnabled = istoHide ? false : true
         progressView.setProgress(1, animated: false)
         progressView.progressTintColor = .systemYellow

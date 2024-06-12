@@ -13,9 +13,11 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     func didEncounterError() {
         isSlideDownloading = false
         retryVIew.isHidden = false
-        downloadingBottomView.isHidden = false
-        self.slideDownloadStatusLbl.isHidden = false
-        self.slideDownloadStatusLbl.text = "Error downloading slides.."
+        //downloadingBottomView.isHidden = false
+        //self.slideDownloadStatusLbl.isHidden = false
+        //self.slideDownloadStatusLbl.text = "Error downloading slides.."
+        let toViewSlides = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped)
+        _ = toCheckExistenceOfNewSlides(didEncountererror: !toViewSlides)
         return
     }
     
@@ -89,18 +91,10 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
 
     
     func didDownloadCompleted() {
-
-//        self.toCreateToast("Please wait while organizing slides data.")
-//
-//        Pipelines.shared.toGroupSlides(mastersyncVM: mastersyncVM ?? MasterSyncVM()) {
-//            BackgroundTaskManager.shared.stopBackgroundTask()
-//            Shared.instance.isSlideDownloading = false
-//            Shared.instance.iscelliterating = false
-//            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
-//        }
-        
-
-        
+        if isFromLaunch {
+            self.moveToHome()
+        }
+     
 
     }
     
@@ -283,7 +277,13 @@ class MasterSyncVC : UIViewController {
         slideDownloadStatusLbl.textColor = .appWhiteColor
         //downloadingBottomView.isHidden = true
         //slideDownloadStatusLbl.isHidden = true
-       _ = toCheckExistenceOfNewSlides()
+        let toViewSlides = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped)
+        if isFromLaunch {
+            self.slideDownloadStatusLbl.text = "slides download inprogress.."
+        } else {
+            _ = toCheckExistenceOfNewSlides(didEncountererror:  !toViewSlides)
+        }
+       
         titleLbl.textColor = .appWhiteColor
         backBtn.setTitle("", for: .normal)
       
@@ -294,14 +294,21 @@ class MasterSyncVC : UIViewController {
         
         slideDownloadStatusLbl.addTap {
           //  if  !self.retryVIew.isHidden {
-            if self.slideDownloadStatusLbl.text == "slides download in progress.." {
+            if self.slideDownloadStatusLbl.text == "slides download inprogress.." || self.isMaterSyncInProgress {
+                self.toCreateToast("Slide download in resume afer master sync.")
                 return
             }
+            
             if  Shared.instance.iscelliterating {
                 return
             }
             
-            self.moveToDownloadSlide(isFromcache: true)
+            if   LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesRemoved) {
+                self.moveToDownloadSlide(isFromcache: true)
+            } else {
+                self.moveToDownloadSlide(isFromcache: false)
+            }
+          
            // } else {
             //    return
            // }
@@ -776,16 +783,6 @@ class MasterSyncVC : UIViewController {
                             let sessionArray = model.filter{$0.SFMem != ""}
                             let leaveArray = model.filter{$0.SFMem == ""}
                             if !leaveArray.isEmpty {
-    //                            leaveArray.enumerated().forEach { index, aMyDayPlanResponseModel in
-    //                                switch index {
-    //                                case 0:
-    //                                    dayPlan1 = aMyDayPlanResponseModel
-    //                                case 1:
-    //                                    dayPlan2 = aMyDayPlanResponseModel
-    //                                default:
-    //                                    print("Yet to implement")
-    //                                }
-    //                            }
                                 let subordinateArr =  DBManager.shared.getSubordinate()
                                 let cacheHQ = subordinateArr.first
                                 welf.fetchedHQObject = cacheHQ
@@ -1019,7 +1016,7 @@ extension MasterSyncVC : tableViewProtocols {
       
 
         
-        self.masterData = [MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.docFeedback]
+        self.masterData = [MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
         //MasterInfo.competitors,
         //MasterInfo.subordinateMGR,
 
@@ -1078,7 +1075,8 @@ extension MasterSyncVC : collectionViewProtocols{
         if self.masterData[indexPath.row].rawValue == "Holidays" || self.masterData[indexPath.row].rawValue == "Weekly Off" || self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
             return CGSize(width: width - 10, height: 0)
         }
-            let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
+          //  let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
+        let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 7)
             return size
     }
     
@@ -1101,144 +1099,151 @@ extension MasterSyncVC : collectionViewProtocols{
         if status == .isLoading {
             cell.stopRotation()
             cell.isRotationEnabled = true
+            cell.loaderImage.tintColor = .appLightPink
             cell.loaderImage.image = UIImage(named: "master_sync_refresh_icon")
             cell.rotateImage()
         }else if status == .error {
             cell.stopRotation()
             cell.isRotationEnabled = false
+            cell.loaderImage.tintColor = .appYellow
             cell.loaderImage.image = UIImage(named: "icon_sync_failed")
         } else if status == .loaded  {
             cell.stopRotation()
             cell.isRotationEnabled = false
-            cell.loaderImage.image = nil
+            cell.loaderImage.tintColor = .appGreen
+            cell.loaderImage.image = UIImage(systemName: "checkmark.circle.fill")
         }
         cell.btnSync.addTarget(self, action: #selector(groupSyncAll(_:)), for: .touchUpInside)
         
         
-        switch MasterInfo(rawValue: self.masterData[indexPath.row].rawValue){
-            
-        case .doctorFencing:
-            cell.lblCount.text = String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-        case .chemists:
-            cell.lblCount.text = String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-        case .stockists:
-            cell.lblCount.text = String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-        case .unlistedDoctors:
-            cell.lblCount.text = String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-        case .clusters:
-            cell.lblCount.text = String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-        case .worktype:
-            cell.lblCount.text = String(DBManager.shared.getWorkType().count)
-        case .subordinate:
-            cell.lblCount.text =  ""
-            //String(DBManager.shared.getSubordinate().count)
-//        case .subordinateMGR:
+//        switch MasterInfo(rawValue: self.masterData[indexPath.row].rawValue){
+//            
+//        case .doctorFencing:
+//            cell.lblCount.text = String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+//        case .chemists:
+//            cell.lblCount.text = String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+//        case .stockists:
+//            cell.lblCount.text = String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+//        case .unlistedDoctors:
+//            cell.lblCount.text = String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+//        case .clusters:
+//            cell.lblCount.text = String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+//        case .worktype:
+//            cell.lblCount.text = String(DBManager.shared.getWorkType().count)
+//        case .subordinate:
 //            cell.lblCount.text =  ""
-            //String(DBManager.shared.getSubordinateMGR().count)
-        case .myDayPlan:
-            cell.lblCount.text =  ""
-//            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
-//                cell.lblCount.text =  "\(dayplans.count)"
-//            }
-        case .jointWork:
-            cell.lblCount.text =  ""
-            //String(DBManager.shared.getJointWork().count)
-        case .products:
-            cell.lblCount.text = String(DBManager.shared.getProduct().count)
-        case .inputs:
-            cell.lblCount.text = String(DBManager.shared.getInput().count)
-        case .brands:
-            cell.lblCount.text = String(DBManager.shared.getBrands().count)
-        case .speciality:
-            cell.lblCount.text = String(DBManager.shared.getSpeciality().count)
-        case .doctorClass:
-            cell.lblCount.text = String(DBManager.shared.getDoctorClass().count)
-        case .category:
-            cell.lblCount.text = String(DBManager.shared.getCategory().count)
-//        case .competitors:
-//            cell.lblCount.text = String(DBManager.shared.getCompetitor().count)
-        case .slideBrand:
-            cell.lblCount.text = String(DBManager.shared.getSlideBrand().count)
-        case .slideSpeciality:
-            cell.lblCount.text = String(DBManager.shared.getSlideSpeciality().count)
-        case .slides:
-            cell.lblCount.text = String(DBManager.shared.getSlide().count)
-        case .qualifications:
-            cell.lblCount.text = String(DBManager.shared.getQualification().count)
-        case .visitControl:
-            cell.lblCount.text =  ""
-            //String(DBManager.shared.getVisitControl().count)
-        case .leaveType:
-            cell.lblCount.text = String(DBManager.shared.getLeaveType().count)
-        case .mappedCompetitors:
-            cell.lblCount.text = String(DBManager.shared.getMapCompDet().count)
-        case .docFeedback:
-            cell.lblCount.text = String(DBManager.shared.getFeedback().count)
-        case .holidays:
-            cell.lblCount.text = String(DBManager.shared.getHolidays().count)
-        case .weeklyOff:
-            cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
-        case .tourPlanSetup:
-            cell.lblCount.text =  ""
-            //String(DBManager.shared.getTableSetUp().count)
-         
-        case .getTP:
-//            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
-            cell.lblCount.text =  ""
-
-        case   .headquartes:
-          //  cell.lblCount.text = DBManager.shared.gethe
-            cell.lblCount.text = ""
-        case   .departments:
-            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
-        case   .docTypes:
-            cell.lblCount.text = ""
-        case   .ratingDetails:
-            cell.lblCount.text = ""
-        case   .ratingFeedbacks:
-            cell.lblCount.text = ""
-        case   .speakerList:
-            cell.lblCount.text = ""
-        case   .participantList:
-            cell.lblCount.text = ""
-        case   .indicationList:
-            cell.lblCount.text = ""
-        case   .setups:
-            cell.lblCount.text = ""
-        case   .doctors:
-            cell.lblCount.text = ""
-        case   .institutions:
-            cell.lblCount.text = ""
-        case   .customSetup:
-            cell.lblCount.text = ""
-        case   .tourPlanStatus:
-            cell.lblCount.text = ""
-        case   .stockBalance:
-            cell.lblCount.text =  ""
-//            let balance = DBManager.shared.getStockBalance()
-//            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
-        case   .empty:
-            cell.lblCount.text = "Yet to"
-        case   .syncAll:
-            cell.lblCount.text = "sync All"
-        case   .apptableSetup:
-            cell.lblCount.text =  ""
-        case   .homeSetup:
-            cell.lblCount.text =  ""
-            //\(DBManager.shared.getHomeData().count)
-        case   .callSync:
-            cell.lblCount.text = "Yet to"
-        case   .dcrDateSync:
-//           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
-//               cell.lblCount.text = "\(dcrDates.count)"
-//            }
-            cell.lblCount.text = ""
-        case .none:
-            cell.lblCount.text = "Yet to"
-
-        case .productcategory:
-            cell.lblCount.text = ""
-        }
+//            //String(DBManager.shared.getSubordinate().count)
+////        case .subordinateMGR:
+////            cell.lblCount.text =  ""
+//            //String(DBManager.shared.getSubordinateMGR().count)
+//        case .myDayPlan:
+//            cell.lblCount.text =  ""
+////            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+////                cell.lblCount.text =  "\(dayplans.count)"
+////            }
+//        case .jointWork:
+//            cell.lblCount.text =  ""
+//            //String(DBManager.shared.getJointWork().count)
+//        case .products:
+//            cell.lblCount.text = String(DBManager.shared.getProduct().count)
+//        case .inputs:
+//            cell.lblCount.text = String(DBManager.shared.getInput().count)
+//        case .brands:
+//            cell.lblCount.text = String(DBManager.shared.getBrands().count)
+//        case .speciality:
+//            cell.lblCount.text = String(DBManager.shared.getSpeciality().count)
+//        case .doctorClass:
+//            cell.lblCount.text = String(DBManager.shared.getDoctorClass().count)
+//        case .category:
+//            cell.lblCount.text = String(DBManager.shared.getCategory().count)
+////        case .competitors:
+////            cell.lblCount.text = String(DBManager.shared.getCompetitor().count)
+//        case .slideBrand:
+//            cell.lblCount.text = String(DBManager.shared.getSlideBrand().count)
+//        case .slideTheraptic:
+//            cell.lblCount.text = String(DBManager.shared.getSlideTheraptic().count)
+//        case .slideSpeciality:
+//            cell.lblCount.text = String(DBManager.shared.getSlideSpeciality().count)
+//        case .slides:
+//            cell.lblCount.text = String(DBManager.shared.getSlide().count)
+//        case .qualifications:
+//            cell.lblCount.text = String(DBManager.shared.getQualification().count)
+//        case .visitControl:
+//            cell.lblCount.text =  ""
+//            //String(DBManager.shared.getVisitControl().count)
+//        case .leaveType:
+//            cell.lblCount.text = String(DBManager.shared.getLeaveType().count)
+//        case .mappedCompetitors:
+//            cell.lblCount.text = String(DBManager.shared.getMapCompDet().count)
+//        case .docFeedback:
+//            cell.lblCount.text = String(DBManager.shared.getFeedback().count)
+//        case .holidays:
+//            cell.lblCount.text = String(DBManager.shared.getHolidays().count)
+//        case .weeklyOff:
+//            cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
+//        case .tourPlanSetup:
+//            cell.lblCount.text =  ""
+//            //String(DBManager.shared.getTableSetUp().count)
+//         
+//        case .getTP:
+////            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
+//            cell.lblCount.text =  ""
+//
+//        case   .headquartes:
+//          //  cell.lblCount.text = DBManager.shared.gethe
+//            cell.lblCount.text = ""
+//        case   .departments:
+//            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
+//        case   .docTypes:
+//            cell.lblCount.text = ""
+//        case   .ratingDetails:
+//            cell.lblCount.text = ""
+//        case   .ratingFeedbacks:
+//            cell.lblCount.text = ""
+//        case   .speakerList:
+//            cell.lblCount.text = ""
+//        case   .participantList:
+//            cell.lblCount.text = ""
+//        case   .indicationList:
+//            cell.lblCount.text = ""
+//        case   .setups:
+//            cell.lblCount.text = ""
+//        case   .doctors:
+//            cell.lblCount.text = ""
+//        case   .institutions:
+//            cell.lblCount.text = ""
+//        case   .customSetup:
+//            cell.lblCount.text = ""
+//        case   .tourPlanStatus:
+//            cell.lblCount.text = ""
+//        case   .stockBalance:
+//            cell.lblCount.text =  ""
+////            let balance = DBManager.shared.getStockBalance()
+////            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
+//        case   .empty:
+//            cell.lblCount.text = "Yet to"
+//        case   .syncAll:
+//            cell.lblCount.text = "sync All"
+//        case   .apptableSetup:
+//            cell.lblCount.text =  ""
+//        case   .homeSetup:
+//            cell.lblCount.text =  ""
+//            //\(DBManager.shared.getHomeData().count)
+//        case   .callSync:
+//            cell.lblCount.text = "Yet to"
+//        case   .dcrDateSync:
+////           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
+////               cell.lblCount.text = "\(dcrDates.count)"
+////            }
+//            cell.lblCount.text = ""
+//        case .none:
+//            cell.lblCount.text = "Yet to"
+//
+//        case .productcategory:
+//            cell.lblCount.text = ""
+// 
+//        }
+        cell.lblCount.text = ""
         
         if MasterInfo.syncAll.rawValue == self.masterData[indexPath.row].rawValue {
             cell.isHidden = false

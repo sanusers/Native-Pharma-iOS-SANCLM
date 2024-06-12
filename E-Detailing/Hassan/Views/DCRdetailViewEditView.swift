@@ -120,7 +120,12 @@ extension DCRdetailViewEditView: MenuResponseProtocol {
     
 }
 
-class DCRdetailViewEditView: BaseView, UITextFieldDelegate {
+class DCRdetailViewEditView: BaseView,UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
     enum Gender {
         case male

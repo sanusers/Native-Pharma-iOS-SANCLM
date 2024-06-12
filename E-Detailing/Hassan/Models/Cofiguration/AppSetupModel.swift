@@ -276,6 +276,7 @@ class AppSetUp : Codable {
     var usrDfdUserName : String?
     var visitNeed : Int?
     var workAreaName : String?
+    var therapticNd : String?
     
     init() {
         successMessage = ""
@@ -542,6 +543,7 @@ class AppSetUp : Codable {
         usrDfdUserName = ""
         visitNeed = 0
         workAreaName = ""
+        therapticNd = ""
     }
     
     required init(from decoder: Decoder) throws {
@@ -811,6 +813,7 @@ class AppSetUp : Codable {
         self.usrDfdUserName = container.safeDecodeValue(forKey: .usrDfdUserName)
         self.visitNeed = container.safeDecodeValue(forKey: .visitNeed)
         self.workAreaName = container.safeDecodeValue(forKey: .workAreaName)
+        self.therapticNd =  container.safeDecodeValue(forKey: .therapticNd)
         self.success = Int()
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isGeoFencingEnabled, value:  self.geoCheck == 0 ? true : false)
@@ -1093,6 +1096,7 @@ class AppSetUp : Codable {
         case usrDfdUserName = "UsrDfd_UserName"
         case visitNeed = "VstNd"
         case workAreaName = "wrk_area_Name"
+        case therapticNd = "TherapticNd"
     }
     
 }

@@ -34,7 +34,21 @@ extension PreviewHomeView: MenuResponseProtocol {
                 setDoctorSpeciality(specialityCode: self.fetchedSpecialityObject?.code ?? "")
                 self.setPreviewType(.speciality)
             }
+            
+        case .theraptic:
+            dump(selectedObject)
+            self.fetchedTherapic = selectedObject as? SlideTheraptic
+            let specialityCode = fetchedTherapic?.code ?? ""
+            // setTherapics(therapicCode:  self.fetchedTherapic?.code ?? "")
+            switch self.previewType[previewTypeIndex] {
+            case .therapist:
 
+                self.setTherapics(therapicCodes: [specialityCode])
+                self.setPreviewType(.therapist)
+            default:
+                print("Implemented")
+            }
+            
             
         case .listedDoctor:
             dump(selectedObject)
@@ -44,7 +58,7 @@ extension PreviewHomeView: MenuResponseProtocol {
             let mapProd = fetchedObject?.mappProducts ?? ""
             let mProd = fetchedObject?.mProd ?? ""
             let specialityCode = fetchedObject?.specialityCode ?? ""
-
+            
             switch self.previewType[previewTypeIndex] {
                 
             case .home:
@@ -58,14 +72,14 @@ extension PreviewHomeView: MenuResponseProtocol {
                     do {
                         let regex = try NSRegularExpression(pattern: "\\b\\d+\\b", options: .caseInsensitive)
                         let matches = regex.matches(in: mapProd, options: [], range: NSRange(location: 0, length: mapProd.utf16.count))
-
-                
+                        
+                        
                         for i in stride(from: 0, to: matches.count, by: 2) {
                             let match = matches[i]
                             let number = (mapProd as NSString).substring(with: match.range)
                             mapProdCodeArr.append(number)
                         }
-
+                        
                         print(mapProdCodeArr)
                     } catch {
                         print("Error creating regular expression: \(error.localizedDescription)")
@@ -75,7 +89,7 @@ extension PreviewHomeView: MenuResponseProtocol {
                 
                 // Split the includedIDs string into an array of individual IDs
                 let includedmProdsIDArray = mProd.components(separatedBy: ",").compactMap { ($0) }
-
+                
                 // Filter out groupedSlide with slideId in includedIDsArray
                 self.brandsMatrixSlideModel?.forEach { brandModel in
                     brandModel.groupedSlide = brandModel.groupedSlide.filter { slide in
@@ -85,19 +99,24 @@ extension PreviewHomeView: MenuResponseProtocol {
                         } else {
                             return mapProdCodeArr.contains("\(slide.code)") || includedmProdsIDArray.contains(cleanedProductDetailCode)
                         }
-                      
+                        
                         
                     }
                 }
+                
+                self.brandsMatrixSlideModel = brandsMatrixSlideModel?.filter({ aGroupedBrandsSlideModel in
+                    return !aGroupedBrandsSlideModel.groupedSlide.isEmpty
+                })
+                
                 self.setPreviewType(.brand)
             case .speciality:
-        
+                
                 self.specialitySlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
                 
                 self.specialitySlideModel?.forEach { brandModel in
                     
-                        brandModel.groupedSlide = brandModel.groupedSlide.filter {
-                            
+                    brandModel.groupedSlide = brandModel.groupedSlide.filter {
+                        
                         let specialityCodes = $0.specialityCode
                         
                         let specialityCodesArray = specialityCodes.components(separatedBy: ",").compactMap { String($0) }
@@ -105,12 +124,18 @@ extension PreviewHomeView: MenuResponseProtocol {
                         return specialityCodesArray.contains(specialityCode)}
                 }
                 dump(specialitySlideModel)
+                self.specialitySlideModel = specialitySlideModel?.filter({ aGroupedBrandsSlideModel in
+                    return !aGroupedBrandsSlideModel.groupedSlide.isEmpty
+                })
+                
                 self.setPreviewType(.speciality)
             case .customPresentation:
                 print("Implemented")
+            case .therapist:
+                print("Implemented therapist")
             }
-                        
-
+            
+            
         default:
             print("Yet to implement")
         }
@@ -133,6 +158,36 @@ extension PreviewHomeView: MenuResponseProtocol {
                         return specialityCodesArray.contains(specialityCode)}
                 }
         dump(self.specialitySlideModel)
+        self.specialitySlideModel = specialitySlideModel?.filter({ aGroupedBrandsSlideModel in
+            return !aGroupedBrandsSlideModel.groupedSlide.isEmpty
+        })
+    }
+    
+    
+    func setTherapics(therapicCodes: [String]) {
+        // Retrieve the slides from Core Data Manager
+        self.therapistSlideModel = CoreDataManager.shared.retriveGeneralGroupedSlides()
+        
+        // Filter the slides based on the array of therapic codes
+        self.therapistSlideModel?.forEach { brandModel in
+            brandModel.groupedSlide = brandModel.groupedSlide.filter { slide in
+                let specialityCodes = slide.categoryCode
+                let specialityCodesArray = specialityCodes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+                
+                // Check if any of the therapic codes are present in the speciality codes
+                return therapicCodes.contains { therapicCode in
+                    specialityCodesArray.contains(therapicCode)
+                }
+            }
+        }
+        
+        // Filter out any brand models that have empty grouped slides
+        self.therapistSlideModel = self.therapistSlideModel?.filter { brandModel in
+            !brandModel.groupedSlide.isEmpty
+        }
+        
+        // Print the filtered therapist slide model for debugging
+        dump(self.therapistSlideModel)
     }
     
     func mapBrandMatrix(selectedObject: NSObject) {
@@ -181,6 +236,10 @@ extension PreviewHomeView: MenuResponseProtocol {
                 
             }
         }
+        
+        self.brandsMatrixSlideModel = brandsMatrixSlideModel?.filter({ aGroupedBrandsSlideModel in
+            return !aGroupedBrandsSlideModel.groupedSlide.isEmpty
+        })
     }
     
     func selectedType(_ type: MenuView.CellType, index: Int) {
@@ -249,9 +308,15 @@ extension PreviewHomeView:  PlayPresentationViewDelegate {
             })
             print(allSlides.count)
         case .customPresentation:
-            print("Yet to ")
             retriveSavedPresentations()
             allSlides = toSetupAllPlayerModel()
+            
+        case .therapist:
+            allSlides.removeAll()
+            self.therapistSlideModel?.forEach({ aGroupedBrandsSlideModel in
+                allSlides.append(contentsOf: aGroupedBrandsSlideModel.groupedSlide)
+            })
+            print(allSlides.count)
             
         }
         
@@ -316,6 +381,9 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
         
                 case .customPresentation:
                     welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
+                case .therapist:
+                 
+                    welf.setPreviewType(welf.previewType[welf.previewTypeIndex])
                 }
                 
               //  welf.presentationCollectionVIew.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
@@ -336,6 +404,9 @@ extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource,
                 cell.toPopulateCell(specialitySlideModel ?? [GroupedBrandsSlideModel](), type: .speciality,  state: self.sortState)
             case .customPresentation:
                 cell.toPopulateCell(model: savePresentationArr ?? [SavedPresentation](), type: .customPresentation,  state: self.sortState)
+            case .therapist:
+
+                cell.toPopulateCell(therapistSlideModel ?? [GroupedBrandsSlideModel](), type: .therapist,  state: self.sortState)
             }
 
             return cell
@@ -395,6 +466,7 @@ class PreviewHomeView : BaseView {
         case brand = "Brand Matrix"
         case speciality = "Speciality"
         case customPresentation = "Custom Presentation"
+        case therapist = "Therapist"
     }
     
     enum PageType {
@@ -440,18 +512,28 @@ class PreviewHomeView : BaseView {
           
             doctorSelectorVIewHeight.constant = 50
            // groupedBrandsSlideModel  = brandsMatrixSlideModel
-            if brandsMatrixSlideModel != nil {
-                brandsMatrixSlideModel =  brandsMatrixSlideModel?.filter{
-                    !$0.groupedSlide.isEmpty
-                }
-               if brandsMatrixSlideModel?.count == 0 {
-                   self.toSetPageType(pageType: .empty)
-               } else {
-                   self.toSetPageType(pageType: .exists)
-               }
+//            if brandsMatrixSlideModel != nil {
+//                brandsMatrixSlideModel =  brandsMatrixSlideModel?.filter{
+//                    !$0.groupedSlide.isEmpty
+//                }
+//               if brandsMatrixSlideModel?.count == 0 {
+//                   self.toSetPageType(pageType: .empty)
+//               } else {
+//                   self.toSetPageType(pageType: .exists)
+//               }
+//            
+//            } else {
+//                self.toSetPageType(pageType: .empty)
+//            }
             
-            } else {
+            guard let brandsMatrixSlideModel = self.brandsMatrixSlideModel else {
                 self.toSetPageType(pageType: .empty)
+                return
+            }
+            if brandsMatrixSlideModel.isEmpty {
+                self.toSetPageType(pageType: .empty)
+            } else {
+                self.toSetPageType(pageType: .exists)
             }
           
           
@@ -483,11 +565,23 @@ class PreviewHomeView : BaseView {
                 self.selectNotifyLbl.text = "No brands preview found for selected doctor"
             }
             doctorSelectorVIewHeight.constant = 50
-            if specialitySlideModel != nil {
-                   self.toSetPageType(pageType: .exists)
-            } else {
+            
+//            if specialitySlideModel != nil {
+//                   self.toSetPageType(pageType: .exists)
+//            } else {
+//                self.toSetPageType(pageType: .empty)
+//            }
+            
+            guard let specialitySlideModel = self.specialitySlideModel else {
                 self.toSetPageType(pageType: .empty)
+                return
             }
+            if specialitySlideModel.isEmpty {
+                self.toSetPageType(pageType: .empty)
+            } else {
+                self.toSetPageType(pageType: .exists)
+            }
+            
           
         case .customPresentation:
             selectSpecialityView.isHidden = true
@@ -496,6 +590,42 @@ class PreviewHomeView : BaseView {
             doctorSelectorVIewHeight.constant = 0
             retriveSavedPresentations()
           
+        case .therapist:
+            infoView.isHidden = false
+            selectSpecialityView.isHidden = false
+            infoLbl.isHidden = false
+            infoSperator.isHidden = false
+          
+            doctorSelectionVIew.isHidden = false
+            if let therapic = self.fetchedTherapic {
+                selectedSpecialityLbl.text = therapic.name
+                
+            } else {
+                selectedSpecialityLbl.text = "All"
+               let cacheTerapics = DBManager.shared.getSlideTheraptic()
+                
+                let terapicCodes = cacheTerapics.compactMap { aSlideTheraptic in
+                    return aSlideTheraptic.code
+                }
+                setTherapics(therapicCodes: terapicCodes)
+             //   self.setPreviewType(.therapist)
+                
+            }
+
+            doctorSelectorVIewHeight.constant = 50
+            guard let therapistSlideModel = self.therapistSlideModel else {
+                self.selectNotifyLbl.text = "No brands preview found for selected therapic"
+                self.toSetPageType(pageType: .empty)
+                return
+            }
+            if therapistSlideModel.isEmpty {
+                self.selectNotifyLbl.text = "No brands preview found for selected therapic"
+                self.toSetPageType(pageType: .empty)
+            } else {
+                self.toSetPageType(pageType: .exists)
+            }
+
+            
         }
     }
     
@@ -506,8 +636,11 @@ class PreviewHomeView : BaseView {
     
     @IBOutlet var selectedSpecialityLbl: UILabel!
     @IBOutlet var selectSpecialityView: UIView!
+    
     @IBOutlet var infoLbl: UILabel!
     @IBOutlet var infoView: UIView!
+    
+    @IBOutlet var infoSperator: UIView!
     @IBOutlet var doctorSelectionVIew: UIView!
     @IBOutlet var previewTypeCollection: UICollectionView!
     
@@ -531,6 +664,7 @@ class PreviewHomeView : BaseView {
     @IBOutlet var viewFinishDetailing: UIView!
     var fetchedObject:  DoctorFencing?
     var fetchedSpecialityObject: Speciality?
+    var fetchedTherapic: SlideTheraptic?
     enum SortState {
         case ascending
         case decending
@@ -542,6 +676,7 @@ class PreviewHomeView : BaseView {
     var groupedBrandsSlideModel : [GroupedBrandsSlideModel]?
     var brandsMatrixSlideModel : [GroupedBrandsSlideModel]?
     var specialitySlideModel : [GroupedBrandsSlideModel]?
+    var therapistSlideModel : [GroupedBrandsSlideModel]?
     var sortState: SortState = .ascending
     var pageType: pageType = .preview
     func setBrandsData() {
@@ -689,11 +824,11 @@ class PreviewHomeView : BaseView {
     
     func initView() {
         
-        self.selectSpecialityView.addTap {
+        self.infoView.addTap {
             [weak self] in
                 guard let welf = self else {return}
 
-                let menuvc = SpecifiedMenuVC.initWithStory(welf, celltype: .speciality)
+            let menuvc = SpecifiedMenuVC.initWithStory(welf, celltype: welf.previewType[welf.previewTypeIndex] == .speciality ? .speciality : .theraptic)
                 menuvc.selectedObject = welf.fetchedSpecialityObject
                 menuvc.previewType = welf.previewType[welf.previewTypeIndex]
                 welf.previewHomeVC.modalPresentationStyle = .custom
@@ -763,6 +898,10 @@ class PreviewHomeView : BaseView {
         selectDoctorsLbl.textColor = .appTextColor
         toSetPageType(pageType: .exists)
         previewType = [.home, .brand, .speciality, .customPresentation]
+         let setups = AppDefaults.shared.getAppSetUp()
+        if setups.therapticNd == "0" {
+            previewType.append(.therapist)
+        }
         setSortVIew()
         cellRegistration()
         toLoadPreviewCollection()

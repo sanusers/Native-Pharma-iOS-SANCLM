@@ -35,8 +35,8 @@ class CallListViewModel {
             
             if let filterscase = filterscase {
                 // Access the properties directly and use optional chaining
-                let categoryCode = filterscase.categoryCode?.code
-                let specialityCode = filterscase.specialityCode?.code
+                _ = filterscase.categoryCode?.code
+                _ = filterscase.specialityCode?.code
                 let territoryCode = filterscase.territoryCode?.code
 
                 // Use filter to find the matching doctors
@@ -63,8 +63,8 @@ class CallListViewModel {
             
             if let filterscase = filterscase {
                 // Access the properties directly and use optional chaining
-                let categoryCode = filterscase.categoryCode?.code
-                let specialityCode = filterscase.specialityCode?.code
+                _ = filterscase.categoryCode?.code
+                _ = filterscase.specialityCode?.code
                 let territoryCode = filterscase.territoryCode?.code
 
                 // Use filter to find the matching doctors
@@ -91,8 +91,8 @@ class CallListViewModel {
             
             if let filterscase = filterscase {
                 // Access the properties directly and use optional chaining
-                let categoryCode = filterscase.categoryCode?.code
-                let specialityCode = filterscase.specialityCode?.code
+                _ = filterscase.categoryCode?.code
+                _ = filterscase.specialityCode?.code
                 let territoryCode = filterscase.territoryCode?.code
 
                 // Use filter to find the matching doctors

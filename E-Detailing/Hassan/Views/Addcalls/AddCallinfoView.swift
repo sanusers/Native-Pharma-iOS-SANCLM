@@ -431,7 +431,12 @@ extension AddCallinfoView {
 }
 
 
-extension AddCallinfoView : UITextFieldDelegate {
+extension AddCallinfoView :UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

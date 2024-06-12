@@ -43,6 +43,7 @@ class LocalStorage {
         case LoadedBrandSlideData
         case SavedPresentations
         case isSlidesLoaded
+        case isSlidesRemoved
         case rsfIDPlan1
         case rsfIDPlan2
         case selectedRSFID

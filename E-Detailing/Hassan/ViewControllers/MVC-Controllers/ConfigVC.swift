@@ -9,10 +9,13 @@ import Foundation
 import UIKit
 
 
-extension ConfigVC: UITextFieldDelegate {
+extension ConfigVC:UITextFieldDelegate {
+    
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        return true
+        textField.resignFirstResponder()
     }
+
 }
 
 class ConfigVC : UIViewController {
@@ -167,11 +170,13 @@ class ConfigVC : UIViewController {
         print("save")
 
         if self.txtWebUrl.text!.isEmpty {
-            self.toCreateToast("Please Enter web URL")
+           // self.toCreateToast("Please Enter web URL")
+            self.toSetupAlert(text: "Please Enter web URL")
             return
         }
         if self.txtLicenceKey.text!.isEmpty {
-            self.toCreateToast("Please enter license key")
+         //   self.toCreateToast("Please enter license key")
+            self.toSetupAlert(text: "Please enter license key")
             return
         }
         toValidateURL()
@@ -203,11 +208,13 @@ class ConfigVC : UIViewController {
 
                 case .failure(let error):
                     Shared.instance.removeLoaderInWindow()
-                    self.toCreateToast(error.rawValue)  
+                    //self.toCreateToast(error.rawValue)
+                    self.toSetupAlert(text: error.rawValue)
                 }
             }
         } else {
             toSetupAlert(text: "Internet connection is required to validate configuration.")
+          
         }
 
     }
@@ -230,7 +237,9 @@ class ConfigVC : UIViewController {
         let config  = response.filter { $0.key.caseInsensitiveCompare(licenseKey) == .orderedSame }
         
         guard let appConfig = config.first else {
-            self.toCreateToast("Invalid license key")
+           // self.toCreateToast("Invalid license key")
+            self.toSetupAlert(text: "Invalid license key")
+            
             return
         }
         
@@ -269,7 +278,7 @@ class ConfigVC : UIViewController {
     }
 
     func navigateToLogin() {
-        self.toCreateToast("\(AppName)" + "configured successfully.")
+        self.toCreateToast("\(AppName)" + " configured successfully.")
         let loginVC = LoginVC.initWithStory()
         self.navigationController?.pushViewController(loginVC, animated: true)
         

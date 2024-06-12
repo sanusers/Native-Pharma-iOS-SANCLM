@@ -104,7 +104,7 @@ enum MasterCellType : Int {
             //MasterInfo.subordinateMGR,
             return [MasterInfo.subordinate,MasterInfo.jointWork,MasterInfo.empty,MasterInfo.syncAll]
         case .slides:
-            return [MasterInfo.slides,MasterInfo.slideBrand,MasterInfo.slideSpeciality,MasterInfo.syncAll]
+            return [MasterInfo.slides, MasterInfo.slideSpeciality, MasterInfo.slideBrand, MasterInfo.slideTheraptic, MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .Product:
             // MasterInfo.competitors,
             return [MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.mappedCompetitors, MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
@@ -144,10 +144,11 @@ enum `MasterInfo` : String, CaseIterable {
     //case competitors = "Competitor Product"
     case mappedCompetitors = "Mapped Competitor Product"
     case inputs = "Inputs"
-    case slideBrand = "Slide Brand"
+    case slideBrand = "Brand slides"
     case products = "Products"
-    case slides = "Slides"
-    case slideSpeciality = "Slide Speciality"
+    case slides = "Product slides"
+    case slideSpeciality = "Speciality Slides"
+    case slideTheraptic = "Theraptic slides"
     case brands = "Brands"
     case departments = "Departments"
     case speciality = "Speciality"
@@ -237,7 +238,7 @@ enum `MasterInfo` : String, CaseIterable {
         case .indicationList:
             return String(format: "%@GET/Indication", mainUrl)
         case .setups,.customSetup:
-            return String(format: "%@table/setups", mainUrl) // crm.saneforce.in/iOSServer/db_ios.php?axn=table/setups table/leave
+            return String(format: "%@table/setups", mainUrl)
         case .doctors:
             return String(format: "%@GET/Doctors", mainUrl)
         case .institutions:
@@ -272,7 +273,7 @@ enum `MasterInfo` : String, CaseIterable {
         case .homeSetup:
             return String(format: "%@home", mainUrl)
             
-        case .slides, .slideBrand, .slideSpeciality:
+        case .slides, .slideBrand, .slideSpeciality, .slideTheraptic:
             return String(format: "%@table/slides", mainUrl)
             
         default :
@@ -385,6 +386,8 @@ enum `MasterInfo` : String, CaseIterable {
             return MasterSyncParams.tourplanSetupParams
         case .productcategory:
             return [String : Any]()
+        case .slideTheraptic:
+            return MasterSyncParams.slideTherapticParams
         }
  
     }
@@ -713,6 +716,27 @@ struct MasterSyncParams {
         param["sfcode"] = appsetup.sfCode ?? ""
         param["division_code"] = appsetup.divisionCode ?? ""
         param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
+    }
+    
+    
+    static var slideTherapticParams : [String : Any] {
+        //{"tableName":"gettheraptic","sfcode":"MR8170","division_code":"70,","Rsf":"MR8170","sf_type":"1","ReqDt":"2024-06-11 12:29:33.3660","Designation":"MR","state_code":"2","subdivision_code":"103,","versionNo":"Test.H.3","mod":"Android-Edet","Device_version":"10","Device_name":"LENOVO - Lenovo TB-X505X","AppName":"SAN ZEN","language":"en"}
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        var param = [String: Any]()
+        param["tableName"] = "gettheraptic"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["ReqDt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         param["sf_type"] = appsetup.sfType ?? ""
         param["Designation"] = appsetup.dsName ?? ""
         param["state_code"] = appsetup.stateCode ?? ""

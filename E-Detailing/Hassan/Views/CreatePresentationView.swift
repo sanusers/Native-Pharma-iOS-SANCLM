@@ -12,11 +12,6 @@ import UIKit
 
 
 
-extension CreatePresentationView: UITextFieldDelegate {
-    
-}
-
-
 
 class CreatePresentationView : BaseView {
     
@@ -69,7 +64,7 @@ class CreatePresentationView : BaseView {
     var selectedBrandsIndex: Int = 0
     var selectedPresentationIndex: Int? = nil
     var isEditing: Bool = false
-    
+    var presentationName: String = ""
     @IBOutlet var editLbl: UILabel!
     
     override func didLoad(baseVC: BaseViewController) {
@@ -88,59 +83,23 @@ class CreatePresentationView : BaseView {
     
     func toRetriveModelsFromCoreData() {
         self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
-        guard  groupedBrandsSlideModel != nil else {return}
+
+        guard  var groupedBrandsSlideModel = self.groupedBrandsSlideModel else {return}
+        groupedBrandsSlideModel = groupedBrandsSlideModel.sorted(by: {
+            $0.priority < $1.priority
+        })
+        
+        // Sort the groupedSlide property within each BrandSlideModel
+        groupedBrandsSlideModel = groupedBrandsSlideModel.map { brandSlideModel in
+            var mutableBrandSlideModel = brandSlideModel
+            mutableBrandSlideModel.groupedSlide = mutableBrandSlideModel.groupedSlide.sorted(by: { $0.priority < $1.priority })
+            return mutableBrandSlideModel
+        }
+        
             self.selectedSlides = [SlidesModel]()
             createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
 
     }
-    
-    
-//    func processSlideModels(completion: @escaping () -> Void) {
-//        guard let groupedBrandsSlideModel = self.groupedBrandsSlideModel else {
-//            // Call the completion handler if there are no slide models to process
-//            completion()
-//            return
-//        }
-//        
-//        // Create a serial DispatchQueue
-//        
-//        // Define a function to process each slide model
-//        func processSlideModel(index: Int, completion: @escaping () -> Void) {
-//            guard index < groupedBrandsSlideModel.count else {
-//                // All models processed, call the completion handler
-//                completion()
-//                return
-//            }
-//            
-//            let aGroupedBrandsSlideModel = groupedBrandsSlideModel[index]
-//            
-//            // Process each grouped slide model in the inner loop
-//            let groupDispatchGroup = DispatchGroup()
-//            
-//            for aSlidesModel in aGroupedBrandsSlideModel.groupedSlide {
-//                groupDispatchGroup.enter()
-//                
-//                let data = aSlidesModel.slideData
-//                let utType = aSlidesModel.utType
-//                
-//                ObjectFormatter.shared.loadImageDataInBackground(utType: utType, data: data) { imageData in
-//                    // Update the model with the retrieved image data
-//                    aSlidesModel.imageData = imageData ?? Data()
-//                    
-//                    groupDispatchGroup.leave()
-//                }
-//            }
-//            
-//            groupDispatchGroup.notify(queue: .main) {
-//                // Move to the next slide model after all inner loop tasks are completed
-//                let nextIndex = index + 1
-//                processSlideModel(index: nextIndex, completion: completion)
-//            }
-//        }
-//        
-//        // Start processing from index 0
-//        processSlideModel(index: 0, completion: completion)
-//    }
     
     func toLoadNewPresentationData() {
         self.editView.isHidden = true
@@ -175,6 +134,7 @@ class CreatePresentationView : BaseView {
             let isToproceed =  welf.sledeCountLbl.text == "0" ||  welf.sledeCountLbl.text == "" ? false : true
             if isToproceed {
                 let vc = PlayPresentationVC.initWithStory(model: welf.toSetupPlayerModel())
+                
                 welf.createPresentationVC.navigationController?.pushViewController(vc, animated: true)
             } else {
                 let commonAlert = CommonAlert()
@@ -183,19 +143,17 @@ class CreatePresentationView : BaseView {
                     print("no action")
                 }
             }
-            
-            
-            
-            
         }
         
-        backHolderView.addTap {
-            self.createPresentationVC.navigationController?.popViewController(animated: true)
+        backHolderView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.createPresentationVC.navigationController?.popViewController(animated: true)
         }
         
         
         saveVIew.addTap { [weak self] in
             guard let welf = self else {return}
+            welf.endEditing(true)
             let isToproceed =  welf.toCheckDataPersistance()
             
             if isToproceed {
@@ -231,26 +189,32 @@ class CreatePresentationView : BaseView {
     }
     
     func toCheckDataPersistance() -> Bool {
-        if self.sledeCountLbl.text == "" {
-            let commonAlert = CommonAlert()
-            commonAlert.setupAlert(alert: AppName, alertDescription: "Add atleast 1 slide to save.", okAction: "Ok")
-            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-                print("no action")
-            }
+        if self.sledeCountLbl.text == "0" || self.sledeCountLbl.text == ""  {
+            self.toSetupAlert(desc: "Add atleast 1 slide to save.")
             return false
         } else if addNameTF.text == "" {
-            let commonAlert = CommonAlert()
-            commonAlert.setupAlert(alert: AppName, alertDescription: "Lets give presentation a name.", okAction: "Ok")
-            commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-                print("no action")
-                self.alertTF()
-            }
+            self.toSetupAlert(desc: "Let's give presentation a unique name.", isToAlertTF: true)
+            return false
+        }   else if !isValidInput(addNameTF.text!) {
+            self.toSetupAlert(desc: "OOPS given presentation name is invalid (name shouldn't start with space or more than one space between strings.)", isToAlertTF: true)
             return false
         } else {
             return true
         }
     }
     
+    
+    func isValidInput(_ input: String) -> Bool {
+        // Regular expression pattern
+        let pattern = "^(?! )[A-Za-z]+( [A-Za-z]+)*$"
+        
+        // Check if input matches the pattern
+        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        let range = NSRange(location: 0, length: input.utf16.count)
+        let match = regex.firstMatch(in: input, options: [], range: range)
+        
+        return match != nil
+    }
     
 //    func toSetupPlayerModel() -> [SlidesModel] {
 //
@@ -307,7 +271,7 @@ class CreatePresentationView : BaseView {
     
         if let savedPresentation = self.savedPresentation {
             savedPresentation.name = self.addNameTF.text ?? ""
-            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, name:      savedPresentation.name) { isEdited in
+            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, name: presentationName) { isEdited in
                 if isEdited {
                     self.toCreateToast("Presentation saved successfully.")
                     self.toExiteVC()
@@ -328,6 +292,18 @@ class CreatePresentationView : BaseView {
         self.createPresentationVC.navigationController?.popViewController(animated: true)
     }
     
+    func toSetupAlert(desc: String, isToAlertTF: Bool? = false) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) { [weak self] in
+            guard let welf = self else {return}
+            print("no action")
+           if isToAlertTF ?? false {
+               welf.alertTF()
+            }
+        }
+    }
+    
     func toSaveNewPresentation() {
         self.endEditing(true)
         let savedPresentation = SavedPresentation()
@@ -339,10 +315,12 @@ class CreatePresentationView : BaseView {
             Shared.instance.removeLoaderInWindow()
             if isObjSaved {
                 self.toCreateToast("Presentation saved Successfully.")
+                self.toExiteVC()
             } else {
-                self.toCreateToast("Presentation might be aldready saved.")
+                
+                self.toSetupAlert(desc: "Presentation might be aldready saved. please do try modifyng name.")
             }
-            self.toExiteVC()
+           
         }
         
         
@@ -432,6 +410,9 @@ class CreatePresentationView : BaseView {
         self.savedPresentation = createPresentationVC.savedPresentation
         self.groupedBrandsSlideModel = self.savedPresentation?.groupedBrandsSlideModel
         self.addNameTF.text = self.savedPresentation?.name
+        if createPresentationVC.isToedit {
+            presentationName = self.savedPresentation?.name ?? ""
+        }
         var slideModel = [SlidesModel]()
         self.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
             
@@ -676,7 +657,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
         // Update the groupedBrandsSlideModel with the modified selectedSlides
         for groupedBrandsSlideModel in self.groupedBrandsSlideModel ?? [] {
             for selectedSlide in selectedSlides! {
-                if var groupedSlide = groupedBrandsSlideModel.groupedSlide.first(where: { $0.uuid == selectedSlide.uuid }) {
+                if let groupedSlide = groupedBrandsSlideModel.groupedSlide.first(where: { $0.uuid == selectedSlide.uuid }) {
                     groupedSlide.index = selectedSlide.index
                 }
             }
@@ -700,3 +681,60 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
 }
 
 
+extension CreatePresentationView: UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
+    
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//       
+//       // let userPassword = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserPassword)
+//        guard let text = textField.text as?  NSString else {return false}
+//      
+//        let updatedText = text.replacingCharacters(in: range, with: string)
+//            //.trimmingCharacters(in: .whitespaces)
+//        print("New text: \(updatedText)")
+//        if updatedText.contains(" ") {
+//            return false
+//        }
+//        return true
+//    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Ensure the current text is non-nil
+        guard let text = textField.text as NSString? else { return false }
+        
+        // Determine the updated text after the replacement
+        let updatedText = text.replacingCharacters(in: range, with: string)
+        
+        // Print the updated text for debugging
+        print("New text: \(updatedText)")
+        
+        // Check if the updated text starts with a space
+        if updatedText.first == " " {
+            return false
+        }
+        
+        // Split the updated text by spaces
+        let components = updatedText.split(separator: " ")
+        
+        // If there are more than one space between words, the split count will be different
+        if updatedText.contains("  ") {
+            return false
+        }
+        
+        // Ensure each component between spaces is non-empty
+        for component in components {
+            if component.isEmpty {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+
+
+}

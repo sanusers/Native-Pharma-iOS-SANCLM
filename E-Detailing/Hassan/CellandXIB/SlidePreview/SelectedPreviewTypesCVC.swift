@@ -25,6 +25,8 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
             return groupedBrandsSlideModel?.count ?? 0
         case .customPresentation:
             return savedPresentationArr?.count ?? 0
+        case .therapist:
+            return groupedBrandsSlideModel?.count ?? 0
         }
         
     }
@@ -67,6 +69,14 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
                 welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
             }
             
+        case .therapist:
+            let model: GroupedBrandsSlideModel = groupedBrandsSlideModel?[indexPath.row] ?? GroupedBrandsSlideModel()
+            cell.toPopulateCell(model)
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+            }
         }
         
 
@@ -124,9 +134,7 @@ class SelectedPreviewTypesCVC: UICollectionViewCell {
     weak var delegate: SelectedPreviewTypesCVCDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        //selectedPreviewTypeCollection.isPagingEnabled = true
-      
+
         cellRegistration()
     }
     

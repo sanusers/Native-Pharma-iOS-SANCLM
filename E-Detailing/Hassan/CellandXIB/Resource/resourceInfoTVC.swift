@@ -124,6 +124,21 @@ class resourceInfoTVC: UITableViewCell {
         
     }
     
+    func populateCell(model: SlideTheraptic) {
+        
+        doctorNameLbl.text = model.name ?? ""
+        
+ //       addressLbl.text = model.tpDCR ?? ""
+//        if let address = model.addr  {
+//            //  addressLbl.text = address == "" ? "Address not yet listed." :  address
+//            btnViewLocation.isHidden = address == ""
+//        }
+ 
+
+        
+        
+    }
+    
     
     func populateCell(model: UnListedDoctor) {
         

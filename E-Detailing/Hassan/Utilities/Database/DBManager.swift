@@ -85,6 +85,8 @@ class DBManager {
             self.saveInputData(values: Values, id: id)
         case .slideBrand:
             self.saveSlideBrandData(values: Values)
+        case .slideTheraptic:
+            self.saveSlideTherapticData(values: Values)
         case .products:
             self.saveProductData(values: Values, id: id)
         case .slides:
@@ -1069,6 +1071,35 @@ class DBManager {
         self.saveContext()
     }
     
+    func saveSlideTherapticData(values : [[String : Any]]) {
+        self.deleteSlideTherapticData()
+        let masterData = self.getMasterData()
+        var slideTherapticArray = [SlideTheraptic]()
+        for (index,brand) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let slideTherapticEntity = NSEntityDescription.entity(forEntityName: "SlideTheraptic", in: contextNew)
+            let slideherapticItem = SlideTheraptic(entity: slideTherapticEntity!, insertInto: contextNew)
+            slideherapticItem.setValues(fromDictionary: brand, context: contextNew)
+            slideherapticItem.index = Int16(index)
+            slideTherapticArray.append(slideherapticItem)
+        }
+        if let list = masterData.theraptic?.allObjects as? [SlideTheraptic]{
+            _ = list.map{masterData.removeFromTheraptic($0)}
+        }
+        slideTherapticArray.forEach { (theraptic) in
+            masterData.addToTheraptic(theraptic)
+        }
+        self.saveContext()
+    }
+    
+    func deleteSlideTherapticData() {
+        let masterData = self.getMasterData()
+        if let PrevList = masterData.theraptic?.allObjects as? [SlideTheraptic]{
+            _ = PrevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
     func deleteSlideBrandData() {
         let masterData = self.getMasterData()
         if let PrevList = masterData.slideBrand?.allObjects as? [SlideBrand]{
@@ -1076,6 +1107,8 @@ class DBManager {
         }
         self.saveContext()
     }
+    
+
     
     func saveSlideSpecialityData(values : [[String : Any]]) {
         self.deleteSlideSpecialityData()
@@ -1990,6 +2023,17 @@ class DBManager {
         let masterData = self.getMasterData()
         guard let slideBrandArray = masterData.slideBrand?.allObjects as? [SlideBrand] else{
             return [SlideBrand]()
+        }
+        let array = slideBrandArray.sorted{ (item1 , item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func getSlideTheraptic() -> [SlideTheraptic]{
+        let masterData = self.getMasterData()
+        guard let slideBrandArray = masterData.theraptic?.allObjects as? [SlideTheraptic] else{
+            return [SlideTheraptic]()
         }
         let array = slideBrandArray.sorted{ (item1 , item2) -> Bool in
             return item1.index < item2.index

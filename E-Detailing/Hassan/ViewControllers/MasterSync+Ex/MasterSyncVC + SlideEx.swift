@@ -69,7 +69,14 @@ extension MasterSyncVC {
         }
     }
     
-    func toCheckExistenceOfNewSlides() -> Bool? {
+    func toCheckExistenceOfNewSlides(didEncountererror: Bool) -> Bool? {
+        if didEncountererror {
+            slideDownloadStatusLbl.isHidden  =  false
+            downloadingBottomView.isHidden =  false
+            retryVIew.isHidden = false
+            slideDownloadStatusLbl.text = "Tap to retry slide download"
+            return false
+        }
         let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse)
         var localParamArr = [[String:  Any]]()
         do {
@@ -123,8 +130,10 @@ extension MasterSyncVC {
         if !LocalStorage.shared.getBool(key: .isSlidesLoaded) ||  !LocalStorage.shared.getBool(key: .isSlidesGrouped) {
         
             if nonExistingSlides.isEmpty {
-                slideDownloadStatusLbl.isHidden  =  true
-                downloadingBottomView.isHidden =  true
+                slideDownloadStatusLbl.isHidden = false
+                retryVIew.isHidden = true
+                downloadingBottomView.isHidden = false
+                slideDownloadStatusLbl.text = "View slides"
                 return false
             } else {
                 slideDownloadStatusLbl.text = "Tap to retry slide download"
@@ -148,9 +157,10 @@ extension MasterSyncVC {
             }
             return !nonExistingSlides.isEmpty
         } else {
-            slideDownloadStatusLbl.isHidden = true
+            slideDownloadStatusLbl.isHidden = false
             retryVIew.isHidden = true
-            downloadingBottomView.isHidden = true
+            downloadingBottomView.isHidden = false
+            slideDownloadStatusLbl.text = "View slides"
         }
        //let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
        

@@ -78,8 +78,10 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             return
         }
         
- 
-     self.tableView.isUserInteractionEnabled = false
+  
+        self.tableView.isUserInteractionEnabled = isForSingleSelection ?  false : true
+        
+   
         //!isDownloading
         //!isDownloading
       guard isDownloadingInProgress  else {
@@ -107,13 +109,19 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                              self.tableView.reloadData()
                            // LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
                             self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
-                            self.isDownloading = false
-                            Shared.instance.iscelliterating = false
-                            Shared.instance.isSlideDownloading = false
-                            self.closeHolderView.isUserInteractionEnabled = true
+                            
                            
                             self.toGroupSlidesBrandWise() { _ in
                             LocalStorage.shared.setSting( LocalStorage.LocalValue.slideDownloadIndex, text: "")
+                                LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
+                                self.isDownloadingInProgress = false
+                                Shared.instance.isSlideDownloading = false
+                                Shared.instance.iscelliterating = false
+                                self.isSlideDownloadCompleted = true
+                                self.isDownloading = false
+                                self.tableView.isUserInteractionEnabled = true
+                                self.tableView.isScrollEnabled = true
+                                self.closeHolderView.isUserInteractionEnabled = true
                             Shared.instance.removeLoaderInWindow()
                               
                             }
@@ -356,6 +364,7 @@ class SlideDownloadVC : UIViewController {
                
             } else {
                 self.dismiss(animated: false) {
+                    self.delegate?.didDownloadCompleted()
                     Pipelines.shared.toStopDownload()
                     Shared.instance.isSlideDownloading = false
                     Shared.instance.iscelliterating = false
@@ -1247,12 +1256,12 @@ extension SlideDownloadVC : tableViewProtocols {
         let model = arrayOfAllSlideObjects[indexPath.row]
         cell.lblName.text = arrayOfAllSlideObjects[indexPath.row].filePath
         if model.isDownloadCompleted  {
-            cell.toSetupDoenloadedCell(true)
+            cell.toSetupDoenloadedCell(false)
             //indexPath.row == 0 ? false : true
         } else if model.isFailed {
             cell.toSetupErrorCell(false)
         } else {
-            cell.toSetupDownloadingCell(false)
+            cell.toSetupDownloadingCell(true)
         }
         
  
@@ -1261,7 +1270,6 @@ extension SlideDownloadVC : tableViewProtocols {
             guard let welf = self else {return}
             if Shared.instance.isSlideDownloading {return}
             welf.isDownloadingInProgress = true
-        
             welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)
          
         }

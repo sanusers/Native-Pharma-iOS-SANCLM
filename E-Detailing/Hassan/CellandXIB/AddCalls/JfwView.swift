@@ -575,6 +575,11 @@ extension JfwView: EventCaptureCellDelegate {
 }
 
 
-extension JfwView: UITextFieldDelegate {
+extension JfwView:UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
 }

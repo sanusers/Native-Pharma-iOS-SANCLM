@@ -361,6 +361,7 @@
         <relationship name="subordinateMgr" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subordinate"/>
         <relationship name="tableSetup" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TableSetup"/>
         <relationship name="territory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Territory"/>
+        <relationship name="theraptic" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SlideTheraptic"/>
         <relationship name="unListedDoc" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UnListedDoctor"/>
         <relationship name="unsyncedHomeData" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UnsyncedHomeData"/>
         <relationship name="visitControl" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="VisitControl"/>
@@ -557,6 +558,11 @@
         <attribute name="subDivisionCode" optional="YES" attributeType="String"/>
         <relationship name="createdDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
         <relationship name="updatedDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Efff"/>
+    </entity>
+    <entity name="SlideTheraptic" representedClassName="SlideTheraptic" syncable="YES" codeGenerationType="class">
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Speciality" representedClassName="Speciality" syncable="YES" codeGenerationType="class">
         <attribute name="code" optional="YES" attributeType="String"/>

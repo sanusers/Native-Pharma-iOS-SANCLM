@@ -11,7 +11,12 @@ import Foundation
 import UIKit
 import CoreData
 
-extension SpecifiedMenuView: UITextFieldDelegate {
+extension SpecifiedMenuView:UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Handle the text change
         if let text = textField.text as NSString? {
@@ -632,6 +637,44 @@ extension SpecifiedMenuView: UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+            case .theraptic:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                    toLOadData()
+                }
+                var filteredWorkType = [SlideTheraptic]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+              therapicArr?.forEach({ workType in
+                    if workType.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(workType)
+                        isMatched = true
+                        
+                    }
+                })
+                
+                if newText.isEmpty {
+                  //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+                    self.noresultsView.isHidden = true
+                    //self.selectAllView.isHidden = true
+                   // self.selectAllHeightConst.constant = 0
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    self.therapicArr = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
+                
             default:
                 print("Yet to implement")
             }
@@ -671,6 +714,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
         case .WorkTypeInfo:
             return self.workTypeArr?.count ?? 0
             
+        case .theraptic:
+            return self.therapicArr?.count ?? 0
         case .chemistInfo:
             return self.chemistArr?.count ?? 0
             
@@ -1179,6 +1224,72 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
           
             return resourcecell
             
+        case .theraptic:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            cell.selectionStyle = .none
+            titleLbl.text = "Select Worktype"
+            let model =  self.therapicArr?[indexPath.row]
+            cell.lblName.text = model?.name
+            cell.lblName.textColor = .appTextColor
+            cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+            
+         //   cell.setupUI(model: model ?? DoctorFencing(), isForspecialty: self.previewType != nil)
+            
+            if self.selectedObject != nil {
+               let doctorObj = self.selectedObject as! WorkType
+                if doctorObj.id == model?.id {
+                   // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                    cell.lblName.textColor = .appGreen
+                }
+            } else {
+                if self.isSearched {
+                    if self.selectedSpecifiedTypeID ==  model?.code {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                      //  cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                } else {
+                    if indexPath.row == self.selectecIndex {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
+                        cell.lblName.textColor = .appGreen
+                    } else {
+                       // cell.menuIcon?.image = UIImage(named: "checkBoxEmpty")
+                        cell.lblName.textColor = .appTextColor
+                    }
+                }
+            }
+            
+
+            
+   
+            
+            cell.addTap { [weak self] in
+                guard let welf = self else {return}
+//                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+//                    if welf.specifiedMenuVC.selectedObject  == model {
+//                        self?.toCreateToast("Two plan works for same day is restricted.")
+//                        return
+//                    }
+//                }
+                welf.selectedObject = model
+                welf.specifiedMenuVC.selectedObject = model
+                if welf.isSearched {
+                    welf.selectedSpecifiedTypeID = model?.code ?? ""
+               
+                } else {
+                    welf.selectecIndex = indexPath.row
+                  
+                }
+               
+              
+              //  welf.specifiedMenuVC.menuDelegate?.selectedType(welf.cellType, selectedObject: model ?? Territory(), selectedObjects: [NSManagedObject]())
+                welf.endEditing(true)
+                welf.hideMenuAndDismiss()
+            }
+            return cell
+            
         case .chemistInfo:
             let resourcecell: resourceInfoTVC = tableView.dequeueReusableCell(withIdentifier: "resourceInfoTVC", for: indexPath) as!  resourceInfoTVC
             resourcecell.selectionStyle = .none
@@ -1464,7 +1575,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return 60 + 10
             
-        case  .clusterInfo, .speciality, .qualification, .category:
+        case  .clusterInfo, .speciality, .qualification, .category, .theraptic:
             
             return 30 + 10
         case .competitors:
@@ -1518,6 +1629,7 @@ class SpecifiedMenuView: BaseView {
     var unlisteedDocArr : [UnListedDoctor]?
     var filteredTerritories: [Territory]?
     var filteredCompetitors: [Competitor]?
+    var filteredTherapic: [SlideTheraptic]?
     var filteredLeave : [LeaveType]?
     var filteredJfw: [JointWork]?
     var inputsArr: [Input]?
@@ -1529,6 +1641,7 @@ class SpecifiedMenuView: BaseView {
     var feedback : [Feedback]?
     var competitorsArr : [Competitor]?
     var leaveArr: [LeaveType]?
+    var therapicArr: [SlideTheraptic]?
     var selectecIndex: Int? = nil
     var isSearched: Bool = false
     var selectedObject: NSManagedObject?
@@ -1537,6 +1650,7 @@ class SpecifiedMenuView: BaseView {
     var previewType: String?
     var selectedClusterID = [String: Bool]()
     var selectedLeaveID = [String: Bool]()
+    var selectedTherapicID = [String: Bool]()
     var selectedJwID = [String: Bool]()
     var selectedCompetitorID = [String: Bool]()
     var isRejected = Bool()
@@ -1731,6 +1845,13 @@ class SpecifiedMenuView: BaseView {
             return selectedCompetitorID[code] == true
         }
         
+        filteredTherapic = therapicArr?.filter { territory in
+            guard let code = territory.code else {
+                return false
+            }
+            return selectedTherapicID[code] == true
+        }
+        
         
        filteredLeave = leaveArr?.filter { leave in
             guard let code = leave.leaveCode else {
@@ -1751,7 +1872,8 @@ class SpecifiedMenuView: BaseView {
                   let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
                   let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context),
                   let selectedCompetitorentity = NSEntityDescription.entity(forEntityName: "Competitor", in: context),
-                    let selectedJointWorkentity = NSEntityDescription.entity(forEntityName: "JointWork", in: context)
+                    let selectedJointWorkentity = NSEntityDescription.entity(forEntityName: "JointWork", in: context),
+                    let selectedTherapicentity = NSEntityDescription.entity(forEntityName: "SlideTheraptic", in: context)
             else {
                 fatalError("Entity not found")
             }
@@ -1762,6 +1884,7 @@ class SpecifiedMenuView: BaseView {
             let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
             let temporaryselectedCompetitorsobj = NSManagedObject(entity: selectedCompetitorentity, insertInto: nil)  as! Competitor
         let temporaryselectedJointWorkobj = NSManagedObject(entity: selectedJointWorkentity, insertInto: nil)  as! JointWork
+        let temporaryselectedTherapticobj = NSManagedObject(entity: selectedTherapicentity, insertInto: nil)  as! SlideTheraptic
    
             switch cellType {
             case .headQuater:
@@ -1784,15 +1907,10 @@ class SpecifiedMenuView: BaseView {
                 
             case .jointCall:
                 
-                
-                filteredJfw = jointWorkArr?.filter { territory in
-                          guard let code = territory.code else {
-                              return false
-                          }
-                        return selectedJwID[code] == true
-                      }
-                
                 specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedJointWorkobj, selectedObjects: filteredJfw ?? [temporaryselectedJointWorkobj])
+                
+            case .theraptic:
+                specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: specifiedMenuVC.selectedObject ?? temporaryselectedJointWorkobj, selectedObjects: filteredTherapic ?? [temporaryselectedTherapticobj])
                 
             default:
                 print("Yet to implement")
@@ -1913,6 +2031,12 @@ class SpecifiedMenuView: BaseView {
            titleLbl.text = "Select leave type"
            bottomHolderHeight.constant = 0
            self.leaveArr = DBManager.shared.getLeaveType()
+           
+       case .theraptic:
+           titleLbl.text = "Select Therapic type"
+           bottomHolderHeight.constant = 0
+           self.therapicArr = DBManager.shared.getSlideTheraptic()
+           
            
        case .competitors:
            bottomHolderHeight.constant = 80

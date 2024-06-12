@@ -38,7 +38,12 @@ protocol EventCaptureCellDelegate: AnyObject {
     func didUpdate(title: String, description: String, index: Int)
 }
 
-class EventCaptureCell: UITableViewCell, UITextFieldDelegate {
+class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
     @IBOutlet var capturedImageHolder: UIView!
     

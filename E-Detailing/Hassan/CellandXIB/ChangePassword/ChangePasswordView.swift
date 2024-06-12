@@ -22,7 +22,12 @@ public protocol addedSubViewsDelegate: AnyObject {
 import Foundation
 import UIKit
 import CoreData
-extension ChangePasswordView: UITextFieldDelegate {
+extension ChangePasswordView:UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
        

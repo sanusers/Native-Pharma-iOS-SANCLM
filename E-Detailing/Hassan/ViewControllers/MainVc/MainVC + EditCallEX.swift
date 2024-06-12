@@ -451,7 +451,7 @@ extension MainVC {
     
     func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, custCode: String, _ completion : @escaping (Result<GeneralResponseModal, UserStatisticsError>) -> Void) {
         
-        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+        _ = ObjectFormatter.shared.convertJson2Data(json: param)
 
         userststisticsVM?.toUploadCapturedImage(params: param, uploadType: .eventCapture, api: .imageUpload, image: [evencaptures.image!], imageName: [evencaptures.eventCapture.imageUrl], paramData: paramData, custCode: custCode) { result in
                 

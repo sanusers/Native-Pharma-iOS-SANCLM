@@ -12,9 +12,11 @@ import Alamofire
 import UIKit
 import CoreData
 
-extension LoginVC: UITextFieldDelegate {
+extension LoginVC:UITextFieldDelegate {
+    
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        return true
+        textField.resignFirstResponder()
     }
     
     
@@ -300,7 +302,8 @@ class LoginVC : UIViewController {
         let cachePassword = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserPassword)
         guard self.txtPassWord.text == cachePassword
         else {
-            self.toCreateToast("Entered password is incorrect.")
+           // self.toCreateToast("Entered password is incorrect.")
+            self.toSetupAlert(text: "Entered password is incorrect.")
             return }
      
         self.toCreateToast("logged in successfully")
@@ -323,7 +326,8 @@ class LoginVC : UIViewController {
                 dump(loginData)
                 if !(loginData.isSuccess ?? false) {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
-                    self.toCreateToast(loginData.successMessage ?? "Failed to login")
+                    //self.toCreateToast(loginData.successMessage ?? "Failed to login")
+                    self.toSetupAlert(text: loginData.successMessage ?? "Failed to login")
                 } else {
                     do {
                       try  AppDefaults.shared.toSaveEncodedData(object: loginData, key: .appSetUp) { isSaved in
@@ -332,7 +336,8 @@ class LoginVC : UIViewController {
                               self.navigate()
                           } else {
                               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
-                              self.toCreateToast(loginData.successMessage ?? "Failed to save user config data")
+                            //  self.toCreateToast(loginData.successMessage ?? "Failed to save user config data")
+                              self.toSetupAlert(text: loginData.successMessage ?? "Failed to save user config data")
                           }
                         }
                     } catch {
@@ -342,7 +347,8 @@ class LoginVC : UIViewController {
             case .failure(let error):
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
                 dump(error)
-                self.toCreateToast(error.rawValue)
+                //self.toCreateToast(error.rawValue)
+                self.toSetupAlert(text: error.rawValue)
             }
         }
     }
@@ -367,19 +373,25 @@ class LoginVC : UIViewController {
     @IBAction func loginAction(_ sender: UIButton) {
         
         if txtUserName.text!.isEmpty {
-            self.toCreateToast("Please Enter user ID")
+          //  self.toCreateToast("Please Enter user ID")
+            self.toSetupAlert(text: "Please Enter user ID")
             return
         }
         
         if txtPassWord.text!.isEmpty {
-            self.toCreateToast("Please enter password")
+           // self.toCreateToast("Please enter password")
+            self.toSetupAlert(text: "Please enter password")
             return
         }
         
-        if isCahcheUser {
-            doOfflineLogin()
-            return
+        if !isConnected {
+            if isCahcheUser {
+                doOfflineLogin()
+                return
+            }
         }
+        
+
         
         if !isConnected {
             self.toSetupAlert(text: "Internet connection is required to login user.")
@@ -392,13 +404,13 @@ class LoginVC : UIViewController {
 
 
         if userId.isEmpty {
-            self.toCreateToast("Please Enter User ID")
-          
+            //self.toCreateToast("Please Enter User ID")
+            self.toSetupAlert(text: "Please Enter User ID")
             return
 
         }else if password.isEmpty {
-            self.toCreateToast("Please Enter Password")
-        
+          //  self.toCreateToast("Please Enter Password")
+            self.toSetupAlert(text: "Please Enter Password")
             return
         }
 

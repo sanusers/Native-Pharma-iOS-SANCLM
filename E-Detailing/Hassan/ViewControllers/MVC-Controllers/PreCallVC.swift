@@ -459,10 +459,10 @@ class PreCallVC : UIViewController {
     
     func toSyncFundays() {
         
-        var weeklyOffDates = [String]()
+      //  _ = [String]()
         var holidays : [Holidays]?
         var holidayDates = [Date]()
-        var weeklyOffRawDates = [Date]()
+     //   _ = [Date]()
         var responseHolidaydates = [String]()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

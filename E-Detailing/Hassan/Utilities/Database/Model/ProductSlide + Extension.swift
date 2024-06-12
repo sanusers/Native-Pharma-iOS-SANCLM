@@ -75,6 +75,18 @@ extension ProductSlides {
     }
 }
 
+extension SlideTheraptic {
+    
+    func setValues(fromDictionary dictionary: [String:Any], context: NSManagedObjectContext)    {
+        if let divisionCodeValue = dictionary["Name"] as? String{
+            name = divisionCodeValue
+        }
+        if let idValue = dictionary["Code"] as? String{
+            code = idValue
+        }
+
+    }
+}
 
 extension SlideBrand {
     

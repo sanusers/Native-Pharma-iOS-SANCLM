@@ -252,7 +252,12 @@ extension DetailedReportView {
 
 }
 
-extension DetailedReportView : UITextFieldDelegate {
+extension DetailedReportView :UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Handle the text change
         if let text = textField.text as NSString? {

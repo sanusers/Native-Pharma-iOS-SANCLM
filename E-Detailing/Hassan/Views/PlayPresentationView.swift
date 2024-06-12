@@ -579,6 +579,9 @@ class  PlayPresentationView: BaseView {
     }
     
     func  setupUI() {
+
+        self.viewShowOptions.isHidden = playPresentationVC.pagetype == .preview ? true : false
+        
         self.previewTypeIndex = playPresentationVC.previewTypeIndex
         viewNopresentation.isHidden = true
         previewCollectionHolderView.isHidden = true

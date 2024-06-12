@@ -14,7 +14,7 @@ import Alamofire
 enum APIEnums : String{
     
     case none = ""
-    case actionLogin = "action/login"
+    case actionLogin = "action/login_edet"
     case tableSetup = "table/setups"
     case saveTP = "savenew/tp"
     case sendToApproval = "save/tp"

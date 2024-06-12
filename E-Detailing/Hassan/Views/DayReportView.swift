@@ -660,7 +660,12 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-extension DayReportView: UITextFieldDelegate {
+extension DayReportView:UITextFieldDelegate {
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Handle the text change
         if let text = textField.text as NSString? {
