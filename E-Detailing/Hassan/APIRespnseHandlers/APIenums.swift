@@ -34,6 +34,7 @@ enum APIEnums : String{
     case saveTag = "geodetails"
     case leaveinfo = "get/leave"
     case toSubmitLeave = "save/leavemodule"
+    case finalSubmit = "save/daysubmit"
 }
 
 

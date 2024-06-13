@@ -52,6 +52,7 @@ class LocalStorage {
         case lastCheckedInDate
         case isLoginSynced
         case userCheckedOut
+        case didUserWindUP
         case istoUploadDayplans
         case slideDownloadIndex
         case isSlidesGrouped

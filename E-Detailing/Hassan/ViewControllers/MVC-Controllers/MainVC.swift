@@ -251,7 +251,7 @@ class MainVC : UIViewController {
     private var currentPage: Date?
     var tableCellheight: CGFloat = 0
     var isDayPlanRemarksadded: Bool = false
- 
+    var dayRemarks: String = ""
 
     
     
@@ -292,6 +292,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         addObservers()
         updateLinks()
         setupUI()
@@ -457,24 +458,25 @@ class MainVC : UIViewController {
     
     func toSetupSubmitAlert() {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Do you want to add remarks for your day paln?", okAction:    appSetups.srtNeed == 1 ? "Just check out" : "Final submit" , cancelAction: "Add remark")
+   //   commonAlert.setupAlert(alert: AppName, alertDescription: "You are trying to complete the day are you sure?", okAction:    appSetups.srtNeed == 1 ? "Just check out" : "Final submit" , cancelAction: "Add remark")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "You are trying to complete the day are you sure?", okAction:    "Ok" , cancelAction: "Cancel")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
-           
-            if  self.appSetups.srtNeed == 1 {
-              self.checkoutAction()
-          } else {
-              
-              print("Yet to implement final submit")
-          }
-          
+//           
+//            if  self.appSetups.srtNeed == 1 {
+//              self.checkoutAction()
+//          } else {
+//              
+//              print("Yet to implement final submit")
+//          }
+//          
+            self.deviateAction(isForremarks: true)
+            
         }
         
         commonAlert.addAdditionalCancelAction {
             print("Yes action")
-            
-            self.deviateAction(isForremarks: true)
-        
+         //   self.deviateAction(isForremarks: true)
         }
     }
     
@@ -1233,6 +1235,11 @@ class MainVC : UIViewController {
     
     func configureAddplanBtn(_ isToEnable: Bool) {
         //self.sessions?.count ?? 0 >= 2 ?  false
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
+            self.btnAddplan.isUserInteractionEnabled = false
+            self.btnAddplan.alpha = 0.5
+            return
+        }
         if isToEnable {
             self.btnAddplan.isUserInteractionEnabled = true
             self.btnAddplan.alpha = 1
@@ -1248,8 +1255,34 @@ class MainVC : UIViewController {
     }
     
     
+
+    
+    func configureFinalsubmit(_ istoEnable : Bool) {
+        if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
+            self.btnFinalSubmit.isUserInteractionEnabled = false
+            self.btnFinalSubmit.alpha = 0.5
+            return
+        }
+    }
+    
+    func configureAddCall(_ istoEnable : Bool) {
+        if istoEnable {
+            self.btnCall.isUserInteractionEnabled = false
+            self.btnCall.alpha = 0.5
+            
+            self.btnActivity.isUserInteractionEnabled = false
+            self.btnActivity.alpha = 0.5
+            return
+        }
+    }
+    
+    
     func configureSaveplanBtn(_ isToEnable: Bool) {
-        
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
+            self.btnSavePlan.isUserInteractionEnabled = false
+            self.btnSavePlan.alpha = 0.5
+            return
+        }
         if !isToEnable {
             self.btnSavePlan.isUserInteractionEnabled = false
             self.btnSavePlan.alpha = 0.5
@@ -1331,12 +1364,12 @@ class MainVC : UIViewController {
         btnCall.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         btnCall.layer.borderWidth = 1
         btnCall.tintColor = .appTextColor
-        btnCall?.layer.cornerRadius = 5
+        btnCall.layer.cornerRadius = 5
         btnCall.backgroundColor = .appGreyColor
         btnActivity.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         btnActivity.layer.borderWidth = 1
         btnActivity.tintColor = .appTextColor
-        btnActivity?.layer.cornerRadius = 5
+        btnActivity.layer.cornerRadius = 5
         btnActivity.backgroundColor = .appGreyColor
         
         self.worktypeTable.contentInsetAdjustmentBehavior = .never
@@ -1502,6 +1535,7 @@ class MainVC : UIViewController {
             if toDayDate == lastcheckedinDate {
                 
                 if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
+                    self.configureAddCall(false)
                     self.btnFinalSubmit.isUserInteractionEnabled = false
                     self.btnFinalSubmit.alpha = 0.5
                   
@@ -1513,6 +1547,8 @@ class MainVC : UIViewController {
             } else {
                 
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+                
+                self.configureAddCall(true)
                 
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
                     self.btnFinalSubmit.setTitle("Final submit / Check OUT", for: .normal)
@@ -1526,9 +1562,12 @@ class MainVC : UIViewController {
                 
             }
             
-            
+          
             
         } else {
+            
+            
+            self.configureAddCall(LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
             return false
         }
     }
@@ -2470,6 +2509,48 @@ extension MainVC {
         }
         
     }
+    
+    func doUserWindup(completion: @escaping(Bool) -> () ) {
+      //  {"tableName":"final_day","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,","day_flag":"1","Appver":"Version.H1","Mod":"Android-Edet","Activity_Dt":"2024-04-22 00:00:00","current_Dt":"2024-05-08 10:12:51","day_remarks":"remark mandatory"}
+        var param : [String: Any] = [:]
+        param["tableName"]  = "final_day"
+        param["sfcode"] = appSetups.sfCode
+        
+        param["division_code"] = appSetups.divisionCode
+        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["sf_type"] = appSetups.sfType
+        param["Designation"] = appSetups.desig
+        param["state_code"] = appSetups.stateCode
+        param["subdivision_code"] = appSetups.subDivisionCode
+        param["day_flag"] = "1"
+        param["Activity_Dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        param["current_Dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        param["day_remarks"] = self.dayRemarks
+        
+        let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
+        var tosendData = [String: Any]()
+        tosendData["data"] = paramData
+        
+        userststisticsVM?.finalSubmit(params: tosendData, api: .finalSubmit, paramData: param) {result in
+            
+            switch result {
+                
+            case .success(let response):
+                if response.isSuccess  ?? false{
+                    self.toCreateToast(response.msg ?? "Day completed successfully...")
+                    LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+                } else {
+                    self.toCreateToast("Failed to complete day please try again later.")
+                    
+                }
+                completion(true)
+            case .failure(let error):
+                self.toCreateToast(error.rawValue)
+                completion(false)
+            }
+          
+        }
+    }
 
     @IBAction func didTapFinalSubmit(_ sender: Any) {
         
@@ -2480,9 +2561,21 @@ extension MainVC {
         
         if isDayPlanRemarksadded {
             if appSetups.srtNeed == 1 {
-                checkoutAction()
+                doUserWindup {[weak self] _ in
+                    guard let welf = self else {return}
+                    welf.checkoutAction()
+                    welf.configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
+                    welf.configureAddCall(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
+                    welf.configureSaveplanBtn(false)
+                    welf.configureAddplanBtn(false)
+                }
+             
             } else {
+                
+                doUserWindup { _ in }
+                
                 print("Yet to implement final submit")
+                
             }
           
         } else {
@@ -5378,6 +5471,7 @@ extension MainVC : SessionInfoTVCDelegate {
         
         dump(remarksStr)
         self.isDayPlanRemarksadded = true
+        self.dayRemarks = remarksStr
         guard var yetToSaveSession = self.sessions else {return}
         
         yetToSaveSession.indices.forEach { index in
@@ -5478,11 +5572,7 @@ extension MainVC : addedSubViewsDelegate {
                 self.btnFinalSubmit.setTitle("Final submit / Check OUT", for: .normal)
                 
                 if checkinDetailsView?.viewType == .checkout {
-                    self.didTapSaveBtn(self)
-                    if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut) {
-                        self.btnFinalSubmit.isUserInteractionEnabled = false
-                        self.btnFinalSubmit.alpha = 0.5
-                    }
+                    configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
                 }
             
                 
