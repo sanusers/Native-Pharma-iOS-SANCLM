@@ -167,7 +167,7 @@ class BasicReportsInfoTVC: UITableViewCell {
             case 0:
                 self.approvalType = .finished
             case 1:
-                self.approvalType = .finished
+                self.approvalType = .approved
             default:
                 print("Yet to set approvalType")
             }
@@ -176,8 +176,8 @@ class BasicReportsInfoTVC: UITableViewCell {
             switch model.typ {
             case 0:
                 self.approvalType = .rejected
-            case 1:
-                self.approvalType = .rejected
+//            case 1:
+//                self.approvalType = .rejected
             default:
                 print("Yet to set approvalType")
             }
@@ -218,17 +218,20 @@ class BasicReportsInfoTVC: UITableViewCell {
         case finished
         case rejected
         case reEntry
+        case approved
 
         var color: UIColor {
             switch self {
             case .draft:
                 return .appGreyColor
             case .finished:
-                return .appGreen
-            case .rejected:
-                return .appLightPink
-            case .reEntry:
                 return .appBlue
+            case .rejected:
+                return .red
+            case .reEntry:
+                return .appLightPink
+            case .approved:
+                return .appGreen
             }
         }
 
@@ -242,6 +245,8 @@ class BasicReportsInfoTVC: UITableViewCell {
                 return "Rejected"
             case .reEntry:
                 return "ReEntry"
+            case .approved:
+                return "Approved"
             }
         }
     }
@@ -417,6 +422,10 @@ class BasicReportsInfoTVC: UITableViewCell {
             blurVXview.backgroundColor = approvalType.color
         case .reEntry:
           //  statisInfoView.backgroundColor = approvalType.color
+            statusInfoLbl.text = approvalType.text
+            statusInfoLbl.textColor = approvalType.color
+            blurVXview.backgroundColor = approvalType.color
+        case .approved:
             statusInfoLbl.text = approvalType.text
             statusInfoLbl.textColor = approvalType.color
             blurVXview.backgroundColor = approvalType.color

@@ -16,8 +16,11 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
         //downloadingBottomView.isHidden = false
         //self.slideDownloadStatusLbl.isHidden = false
         //self.slideDownloadStatusLbl.text = "Error downloading slides.."
-        let toViewSlides = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped)
-        _ = toCheckExistenceOfNewSlides(didEncountererror: !toViewSlides)
+        var  isSuccess = false
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending)  {
+            isSuccess = true
+        }
+        _ = toCheckExistenceOfNewSlides(didEncountererror: !isSuccess)
         return
     }
     
@@ -93,6 +96,8 @@ extension MasterSyncVC:  SlideDownloadVCDelegate {
     func didDownloadCompleted() {
         if isFromLaunch {
             self.moveToHome()
+        } else {
+            _ = toCheckExistenceOfNewSlides(didEncountererror: false)
         }
      
 

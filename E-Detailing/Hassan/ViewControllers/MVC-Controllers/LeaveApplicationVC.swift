@@ -606,7 +606,7 @@ class LeaveApplicationVC: UIViewController {
         
         self.btnSubmit.layer.cornerRadius = 5
 
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             toShowAlert(desc: "Please connect to active network to apply leave.", istoNavigate: false)
             return
         }
@@ -676,7 +676,7 @@ class LeaveApplicationVC: UIViewController {
             return
         }
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             toShowAlert(desc: "Please connect to active network to apply leave.", istoNavigate: false)
             return
         }
@@ -763,7 +763,7 @@ class LeaveApplicationVC: UIViewController {
     private func leaveValidationApi() {
         
      
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             toShowAlert(desc: "Please connect to active network to apply leave.", istoNavigate: false)
             return
         }

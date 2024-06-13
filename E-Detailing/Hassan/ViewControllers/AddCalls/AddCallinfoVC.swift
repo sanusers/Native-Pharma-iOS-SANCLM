@@ -462,7 +462,7 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["sample_validation"] = "0"
         addedDCRCallsParam["input_validation"] = "0"
 
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                     addedDCRCallsParam["address"] =  self.dcrCall.customerCheckOutAddress
                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
                     var toSendData = [String : Any]()

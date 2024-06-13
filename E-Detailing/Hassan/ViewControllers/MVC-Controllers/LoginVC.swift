@@ -384,7 +384,7 @@ class LoginVC : UIViewController {
             return
         }
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             if isCahcheUser {
                 doOfflineLogin()
                 return
@@ -393,7 +393,7 @@ class LoginVC : UIViewController {
         
 
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             self.toSetupAlert(text: "Internet connection is required to login user.")
             return
         }

@@ -237,7 +237,7 @@ class SplashView: BaseView{
             let location = CLLocation(latitude: nonNilcoordinates.latitude ?? Double(), longitude: nonNilcoordinates.longitude ?? Double())
           
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isTimeZoneChanged, value: true)
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
                     guard let placemark = placemarks?.first else {
                         print("Error: \(error?.localizedDescription ?? "Unknown error")")

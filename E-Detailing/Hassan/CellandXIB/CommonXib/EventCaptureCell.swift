@@ -64,7 +64,7 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
     var indexpath: Int? = nil
     var eventCapture : EventCaptureViewModel! {
         didSet {
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 if eventCapture.image == nil {
                     Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
                     Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)

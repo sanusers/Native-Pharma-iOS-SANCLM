@@ -165,7 +165,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                 welf.latitude = coordinates?.latitude
                 welf.longitude = coordinates?.longitude
                 
-                if !isConnected {
+                if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
 
                         let dateFormatter = DateFormatter()
         

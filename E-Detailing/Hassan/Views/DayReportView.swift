@@ -333,7 +333,7 @@ extension DayReportView: VisitsCountTVCDelegate {
         
         if index != 0 {
             
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 self.viewDayReportVC.toSetParamsAndGetResponse(index)
             } else {
                 self.toCreateToast("Please connect to internet.")

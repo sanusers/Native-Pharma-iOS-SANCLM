@@ -687,7 +687,8 @@ class ViewAllInfoTVC: UITableViewCell {
         
         param["sfcode"] = appsetup.sfCode
         param["division_code"] = appsetup.divisionCode
-        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["Rsf"] =  reportModel?.sfCode ?? ""
+        //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         param["sf_type"] = appsetup.sfType
         param["Designation"] = appsetup.desig
         param["state_code"] = appsetup.stateCode

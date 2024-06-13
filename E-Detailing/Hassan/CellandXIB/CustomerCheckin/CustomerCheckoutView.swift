@@ -109,7 +109,7 @@ class CustomerCheckoutView: UIView {
             
             let datestr = dateString
 
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 
                 Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
                     guard let welf = self else {return}

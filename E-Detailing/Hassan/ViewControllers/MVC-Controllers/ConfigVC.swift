@@ -197,7 +197,7 @@ class ConfigVC : UIViewController {
         let licenseKey = self.txtLicenceKey.text ?? ""
         LicenceKey = licenseKey
         let param = [String: Any]()
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             Shared.instance.showLoaderInWindow()
             homeVM?.getConfigData(params: param, api: .none) { result in
                 switch result {

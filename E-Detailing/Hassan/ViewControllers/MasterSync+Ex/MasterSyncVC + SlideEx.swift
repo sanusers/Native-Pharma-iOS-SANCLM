@@ -39,11 +39,7 @@ extension MasterSyncVC {
                 }
             
             } else  if (type == .slides) {
-                
-                   
-                //let isNewSlideExists  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) && !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending)
-                //self.toCheckExistenceOfNewSlides()  ?? false
-              //  _ = toCheckExistenceOfNewSlides()
+
                     if isNewSlideExists {
                         moveToDownloadSlide(isFromcache: true)
                     }
@@ -167,7 +163,7 @@ extension MasterSyncVC {
         return false
     }
     
-    func moveToDownloadSlide(isFromcache: Bool? = false) {
+    func moveToDownloadSlide(isFromcache: Bool? = false, isDownloadPending: Bool? = false) {
         downloadAlertSet = false
         
         let vc = SlideDownloadVC.initWithStory(viewmodel: self.mastersyncVM ?? MasterSyncVM())
@@ -176,6 +172,12 @@ extension MasterSyncVC {
             vc.arrayOfAllSlideObjects = self.arrayOfAllSlideObjects
         }
       
+       else if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
+            vc.arrayOfAllSlideObjects = self.arrayOfAllSlideObjects
+       } else if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesGrouped) {
+           vc.arrayOfAllSlideObjects = self.arrayOfAllSlideObjects
+       }
+        
         vc.delegate = self
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: true)

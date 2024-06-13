@@ -255,7 +255,7 @@ class TagVC : UIViewController {
         dcrCall.dcrCheckinTime = datestr
         
         
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             Shared.instance.showLoaderInWindow()
             let geocoder = GMSGeocoder()
             self.selectedCoordinate = viewMapView.camera.target
@@ -356,7 +356,7 @@ class TagVC : UIViewController {
         toSendParam["data"] = jsonDatum
        
         guard let pickedImage = self.pickedImage else {return}
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             self.toCreateToast("oops you are not connected to network.")
             return
         }
@@ -559,7 +559,7 @@ extension TagVC: GMSMapViewDelegate{
         let latitute = mapView.camera.target.latitude
         let longitude = mapView.camera.target.longitude
         let position = CLLocationCoordinate2DMake(latitute, longitude)
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             geocoder.reverseGeocodeCoordinate(position) { response , error in
                 if error != nil {
                     print("GMSReverseGeocode Error: \(String(describing: error?.localizedDescription))")

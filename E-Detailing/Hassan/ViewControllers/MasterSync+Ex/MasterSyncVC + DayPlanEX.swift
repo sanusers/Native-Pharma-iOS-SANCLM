@@ -45,7 +45,7 @@ extension MasterSyncVC: MenuResponseProtocol {
             
             let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
-            if  isConnected || territories.isEmpty  {
+            if  LocalStorage.shared.getBool(key: .isConnectedToNetwork) || territories.isEmpty  {
                 //&& isConnected
                 let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
                 // Set loading status based on MasterInfo for each element in the array
@@ -992,7 +992,7 @@ extension CoreDataManager {
             
             // Update all matched plans
             for eachDayPlan in matchedPlans {
-                updateEachDayPlan(isSynced, eachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
+                updateEachDayPlan(isSynced, eachDayPlan, planDate, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
             }
 
             // If no matched plans found, create a new one
@@ -1001,7 +1001,7 @@ extension CoreDataManager {
                     fatalError("EachDayPlan entity not found")
                 }
                 let newEachDayPlan = EachDayPlan(entity: eachDayPlanEntity, insertInto: context)
-                updateEachDayPlan(isSynced, newEachDayPlan, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
+                updateEachDayPlan(isSynced, newEachDayPlan, planDate, with: session, temporaryObjects: (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj), context: context)
             }
 
             // Save to Core Data
@@ -1012,10 +1012,10 @@ extension CoreDataManager {
             completion(false)
         }
     }
-    private func updateEachDayPlan(_ isSynced: Bool, _ eachDayPlan: EachDayPlan, with session: [Sessions], temporaryObjects: (NSManagedObject, NSManagedObject, NSManagedObject), context: NSManagedObjectContext) {
+    private func updateEachDayPlan(_ isSynced: Bool, _ eachDayPlan: EachDayPlan, _ planDate: Date, with session: [Sessions], temporaryObjects: (NSManagedObject, NSManagedObject, NSManagedObject), context: NSManagedObjectContext) {
         let (temporaryselectedHqobj, temporaryselectedWTobj, temporaryselectedClusterobj) = temporaryObjects
         
-        eachDayPlan.planDate = Date() // or keep the existing date if needed
+        eachDayPlan.planDate = planDate // or keep the existing date if needed
         eachDayPlan.uuid = UUID()
         eachDayPlan.remarks = session.first?.remarks ?? ""
         eachDayPlan.isRejected = session.first?.isRejected ?? false

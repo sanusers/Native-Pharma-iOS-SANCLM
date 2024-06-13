@@ -105,6 +105,7 @@ class Pipelines : NSObject, CLLocationManagerDelegate {
            CLLocationManager.authorizationStatus() == .authorizedAlways {
             locManager.startUpdatingLocation()
         } else {
+            locManager.requestWhenInUseAuthorization()
             completion(nil)
         }
     }

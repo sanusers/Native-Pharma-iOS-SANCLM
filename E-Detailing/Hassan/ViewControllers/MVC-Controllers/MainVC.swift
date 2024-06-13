@@ -285,16 +285,13 @@ class MainVC : UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-
-        
+ 
     }
     
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        CoreDataManager.shared.removeAllDayPlans()
         addObservers()
         updateLinks()
         setupUI()
@@ -319,7 +316,6 @@ class MainVC : UIViewController {
                 
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                 welf.refreshUI()
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
@@ -489,6 +485,7 @@ class MainVC : UIViewController {
             if geoFencingEnabled {
                 guard coordinates != nil else {
                     welf.showAlertToNetworks(desc: "Please enable location services in Settings.", isToclearacalls: false)
+               
                     return
                 }
             }
@@ -1001,22 +998,97 @@ class MainVC : UIViewController {
         print(notification.userInfo ?? "")
         if let dict = notification.userInfo as NSDictionary? {
             if let status = dict["Type"] as? String{
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let welf = self else {return}
                     if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
                         
-                        self.toCreateToast("Please check your internet connection.")
+                        welf.toCreateToast("Please check your internet connection.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                         //  self.toConfigureMydayPlan()
                         
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
-                        self.toCreateToast("You are now connected.")
+                        welf.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                        welf.syncAllCalls()
+                       
+                        
                     }
                 }
             }
         }
     }
+    
+    func syncAllCalls() {
+        if obj_sections.isEmpty {
+            return
+        }
+        
+        let unSyncedDates : [String] = obj_sections.map { aSection in
+           return aSection.date
+        }
+
+        Shared.instance.showLoaderInWindow()
+        
+        uploadDCRcallsSequentially(dates: unSyncedDates) {  [weak self] in
+            
+            guard let welf = self else {return}
+          
+            welf.toUploadUnsyncedImage() {
+                
+                welf.uploadDayPlansSequentially(dates: unSyncedDates) {
+                    Shared.instance.removeLoaderInWindow()
+                    
+                }
+            welf.toLoadOutboxTable()
+            }
+            
+  
+            
+        }
+
+    }
+    
+    func uploadDayPlansSequentially(dates: [String], index: Int = 0, completion: @escaping() -> ()) {
+        guard index < dates.count else {
+            print("All dates have been processed")
+            completion()
+            return
+        }
+        // Get the current date to process
+        let currentDate = dates[index]
+        
+        self.toPostDayplan(byDate: currentDate.toDate()) { [weak self] in
+            guard let welf = self else {return}
+            // Move to the next date
+            welf.uploadDayPlansSequentially(dates: dates, index: index + 1, completion: completion)
+                
+        }
+        
+    }
+    
+
+    
+    func uploadDCRcallsSequentially(dates: [String], index: Int = 0, completion: @escaping() -> ()) {
+        // Base case: if the index is equal to the count of dates, we are done
+        
+        guard index < dates.count else {
+            print("All dates have been processed")
+            completion()
+            return
+        }
+
+        // Get the current date to process
+        let currentDate = dates[index]
+        
+        // Call the API for the current date
+        self.toretryDCRupload(date: currentDate) {[weak self] success in
+            guard let welf = self else {return}
+            // Move to the next date
+            welf.uploadDCRcallsSequentially(dates: dates, index: index + 1, completion: completion)
+        }
+    }
+    
     
     func toLoadSegments() {
         segmentsCollection.delegate = self
@@ -1317,7 +1389,7 @@ class MainVC : UIViewController {
             self.showAlertToPushCalls(desc: "NOTE! you have more than 40 calls in your out box")
         }
         
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                 // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {}
@@ -1350,7 +1422,7 @@ class MainVC : UIViewController {
     
     func toPostDayplan(byDate:Date, completion: @escaping () -> ()) {
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && isConnected {
+        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             
             
             callSavePlanAPI(byDate: byDate) {  [weak self] isUploaded in
@@ -1396,9 +1468,9 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+//               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+//               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+//               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         let currentDate = Date()
 
         // Assuming you have a storedDateString retrieved from local storage
@@ -1801,7 +1873,7 @@ class MainVC : UIViewController {
 
     
     func toSetParams(date: Date, isfromSyncCall: Bool, completion: @escaping () -> ()) {
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             self.toCreateToast("Please connect to internet")
             completion()
             return
@@ -2369,7 +2441,7 @@ extension MainVC {
     }
 
     @IBAction func btnCalenderSync(_ sender: Any) {
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             Shared.instance.showLoaderInWindow()
             masterVM?.tofetchDcrdates() {[weak self] result in
                 guard let welf = self else {return}
@@ -2462,23 +2534,68 @@ extension MainVC {
             checkinAction()
             return
         }
+      
+        
         CoreDataManager.shared.fetchEachDayPlan(byDate: self.selectedToday) {[weak self]  myDayPlans in
             guard let welf = self else {return}
-            if myDayPlans.isEmpty {
-                welf.showAlertToNetworks(desc: "Please shedule your work plan to add call", isToclearacalls: false)
+            guard let myDayPlan =  myDayPlans.first else {
+                welf.showAlertToNetworks(desc: "Shedule your work plan to add call", isToclearacalls: false)
                 welf.setSegment(.workPlan)
                 return
             }
-
-            var selectedTerritories = [Territory]()
-            let callVC = UIStoryboard.callVC
-            if let fetchedClusterObject1 = welf.fetchedClusterObject1 {
-                selectedTerritories.append(contentsOf: fetchedClusterObject1)
-            }
             
-            if let fetchedClusterObject2 = welf.fetchedClusterObject2 {
-                selectedTerritories.append(contentsOf:fetchedClusterObject2)
-            }
+            var workTypes : [WorkType] = []
+            var selectedTerritories : [Territory] = []
+            
+            myDayPlan.eachPlan?.forEach({ eachPlan in
+                guard let eachPlan = eachPlan as? EachPlan else {return}
+                let wtCode = eachPlan.wortTypeCode ?? ""
+                let workType = DBManager.shared.getWorkType()
+                let filetedworkType = workType.filter{$0.code ==  wtCode}
+                workTypes.append(contentsOf: filetedworkType)
+                
+                guard  !workTypes.isEmpty else { return }
+                let isFieldWork = workTypes.map { aWorkType in
+                    if aWorkType.fwFlg == "F" {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+                
+                guard isFieldWork.contains(true) else   {
+                    welf.showAlertToNetworks(desc: "Field Work plan is mandatory to add call.", isToclearacalls: false)
+                    return
+                }
+                
+                   let townCode = eachPlan.townCodes ?? ""
+                   let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
+                   let territoryCodes =   townCode.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+                
+                if territories.isEmpty {
+
+                } else {
+                    // Filter territories based on codes
+                    let filteredTerritories = territories.filter { territory in
+                        return territoryCodes.contains(territory.code ?? "")
+                    }
+                    // Extract names as a comma-separated string
+                    selectedTerritories.append(contentsOf: filteredTerritories)
+       
+                }
+                
+            })
+
+            
+           
+            let callVC = UIStoryboard.callVC
+//            if let fetchedClusterObject1 = welf.fetchedClusterObject1 {
+//                selectedTerritories.append(contentsOf: fetchedClusterObject1)
+//            }
+//            
+//            if let fetchedClusterObject2 = welf.fetchedClusterObject2 {
+//                selectedTerritories.append(contentsOf:fetchedClusterObject2)
+//            }
             callVC.selectedTerritories = selectedTerritories
             
             welf.navigationController?.pushViewController(callVC, animated: true)
@@ -2573,7 +2690,7 @@ extension MainVC {
             }
             
             
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 yetToSaveSession.indices.forEach { index in
                     yetToSaveSession[index].isRetrived = true
                     yetToSaveSession[index].planDate = self.selectedRawDate
@@ -2594,13 +2711,13 @@ extension MainVC {
             
             
             
-            updateEachDayPlan(isSynced: isConnected, planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
+            updateEachDayPlan(isSynced: LocalStorage.shared.getBool(key: .isConnectedToNetwork), planDate:  selectedToday, yetToSaveSession: yetToSaveSession) { [weak self] _  in
                 guard let welf = self else {return}
                 guard var nonNilSession = welf.sessions else {
                     return
                 }
 
-                if isConnected {
+                if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                     welf.callSavePlanAPI(byDate: welf.selectedToday) { isUploaded in
                         if isUploaded {
                             welf.toConfigureMydayPlan(planDate: welf.selectedToday)
@@ -2625,25 +2742,25 @@ extension MainVC {
                     
                 } else {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: true)
-                    nonNilSession.indices.forEach { index in
-                        nonNilSession[index].isRetrived = true
-                        nonNilSession[index].planDate = welf.selectedToday
-                        
-                    }
-                    
-                    welf.sessions = nonNilSession
+//                    nonNilSession.indices.forEach { index in
+//                        nonNilSession[index].isRetrived = true
+//                        nonNilSession[index].planDate = welf.selectedToday
+//                        
+//                    }
+//                    
+//                    welf.sessions = nonNilSession
                     
                    // welf.setSegment(.workPlan)
                     welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                
                     
-                    welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
-                    
-                    if nonNilSession.count == 2 {
-                        welf.configureAddplanBtn(false)
-                    } else {
-                        welf.configureAddplanBtn(true)
-                    }
+//                    welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
+//                    
+//                    if nonNilSession.count == 2 {
+//                        welf.configureAddplanBtn(false)
+//                    } else {
+//                        welf.configureAddplanBtn(true)
+//                    }
 
                 
                     welf.toCreateToast("You are not connected to internet")
@@ -2926,7 +3043,7 @@ extension MainVC : MasterSyncVCDelegate {
     func isHQModified(hqDidChanged: Bool) {
         
                 if hqDidChanged {
-                    toConfigureMydayPlan(planDate: self.selectedToday)
+                   // toConfigureMydayPlan(planDate: self.selectedToday)
     
                 }
         
@@ -3470,7 +3587,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
              
                
                 //  obj_sections[section].isLoading = true
-                if !isConnected {
+                if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                     self.showAlertToPushCalls(desc: "Internet connection is required to sync calls.")
                     return
                 }
@@ -4802,7 +4919,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
     
     func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
        // Shared.instance.showLoaderInWindow()
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] result in
                 guard let welf = self else {return}
                 switch result {

@@ -11,7 +11,7 @@
 import UIKit
 
 protocol SlideDownloaderCellDelegate: AnyObject {
-    func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, isForSingleSelection: Bool, isfrorBackgroundTask: Bool, istoreturn: Bool, completion: @escaping (Bool) -> Void)
+    func didDownloadCompleted(arrayOfAllSlideObjects : [SlidesModel], index: Int, isForSingleSelection: Bool, isfrorBackgroundTask: Bool, istoreturn: Bool, didEncounterError: Bool, completion: @escaping (Bool) -> Void)
     
 }
 
@@ -25,8 +25,7 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             params.isFailed = false
             lblDataBytes.text = "Download completed"
             btnRetry.isHidden = true
-      //  LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
-           delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
+        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false, didEncounterError: false) {_ in}
         
     }
     
@@ -41,8 +40,8 @@ extension SlideDownloaderCell: MediaDownloaderDelegate {
             lblDataBytes.text = "Error downloading media"
             btnRetry.isHidden = false
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: true)
-       // isSlidesDownloadPending
-        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false) {_ in}
+
+        delegate?.didDownloadCompleted(arrayOfAllSlideObjects: model, index: index, isForSingleSelection: self.isForSingleSelection ?? false, isfrorBackgroundTask: false, istoreturn: false, didEncounterError: true) {_ in}
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
