@@ -23,6 +23,7 @@ class RCPAdetailsDesctiptionCVC: UICollectionViewCell {
     
     @IBOutlet var competitorProductQty: UILabel!
     
+    @IBOutlet var infoView: UIView!
     
     func populateCell(model: RCPAresonseModel) {
         productNameLbl.text = model.opName

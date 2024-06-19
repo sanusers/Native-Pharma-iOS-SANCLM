@@ -37,6 +37,22 @@ extension RcpaAddedListTableViewCell: CompetitorsDetailsCellDelagate {
     
 }
 
+
+extension RcpaAddedListTableViewCell: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+            let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
+            let compSepByCharInSet = string.components(separatedBy: aSet)
+            let numberFiltered = compSepByCharInSet.joined(separator: "")
+            let maxLength = 4
+            let currentString: NSString = textField.text! as NSString
+            let newString: NSString =
+                currentString.replacingCharacters(in: range, with: string) as NSString
+            return string == numberFiltered && newString.length <= maxLength
+
+    }
+}
+
 extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rowcount ?? 0
@@ -47,15 +63,17 @@ extension RcpaAddedListTableViewCell: UITableViewDelegate, UITableViewDataSource
         if let competitors = self.competitors {
             cell.competitor =  competitors[indexPath.row]
         }
+        cell.qtyTF.delegate = self
         //cell.setupUI()
         cell.delegate = self
         cell.index = indexPath.row
-        cell.qtyTF.text =  self.competitorsInfo?[indexPath.row].qty ?? "1"
-        if let quantity = Int(cell.qtyTF.text ?? "1") {
+        
+        cell.qtyTF.text =  self.competitorsInfo?[indexPath.row].qty == "" ? "1" :  self.competitorsInfo?[indexPath.row].qty
+        if let quantity = Float(cell.qtyTF.text ?? "1") {
            // let rate = (Int(competitorRate ?? "0") ?? 0) * quantity
             cell.rateLbl.text = competitorRate
             
-            let value = (Int(competirorValue ?? "0") ?? 0) * quantity
+            let value = (Float(competirorValue ?? "0") ?? 0) * quantity
             cell.valueLbl.text = "\(value)"
             
         } else {

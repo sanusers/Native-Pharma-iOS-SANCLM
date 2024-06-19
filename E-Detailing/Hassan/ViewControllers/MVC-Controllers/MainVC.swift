@@ -292,7 +292,9 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+       // CoreDataManager.shared.removeAllDayPlans()
+
+    
         addObservers()
         updateLinks()
         setupUI()
@@ -1267,12 +1269,21 @@ class MainVC : UIViewController {
     
     func configureAddCall(_ istoEnable : Bool) {
         if istoEnable {
+            self.btnCall.isUserInteractionEnabled = true
+            self.btnCall.alpha = 1
+            
+            self.btnActivity.isUserInteractionEnabled = true
+            self.btnActivity.alpha = 1
+            return
+        } else  {
             self.btnCall.isUserInteractionEnabled = false
             self.btnCall.alpha = 0.5
             
             self.btnActivity.isUserInteractionEnabled = false
             self.btnActivity.alpha = 0.5
             return
+            
+
         }
     }
     
@@ -1501,17 +1512,17 @@ class MainVC : UIViewController {
     
     func istoRedirecttoCheckin() -> Bool {
         
-//               LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
-//               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-//               LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+//        LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
+//        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+//        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         let currentDate = Date()
-
+        
         // Assuming you have a storedDateString retrieved from local storage
         let storedDateString = LocalStorage.shared.getString(key: LocalStorage.LocalValue.lastCheckedInDate)
         let storedDate =  storedDateString.toDate(format: "yyyy-MM-dd")
         //dateFormatter.date(from: storedDateString) ?? Date()
         if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
-           // CoreDataManager.shared.removeAdayPlans(planDate: currentDate)
+            // CoreDataManager.shared.removeAdayPlans(planDate: currentDate)
         }
         if appSetups.srtNeed == 1 {
             
@@ -1538,7 +1549,7 @@ class MainVC : UIViewController {
                     self.configureAddCall(false)
                     self.btnFinalSubmit.isUserInteractionEnabled = false
                     self.btnFinalSubmit.alpha = 0.5
-                  
+                    
                 }
                 
                 
@@ -1562,7 +1573,7 @@ class MainVC : UIViewController {
                 
             }
             
-          
+            
             
         } else {
             
@@ -2539,11 +2550,13 @@ extension MainVC {
                 if response.isSuccess  ?? false{
                     self.toCreateToast(response.msg ?? "Day completed successfully...")
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+                    completion(true)
                 } else {
                     self.toCreateToast("Failed to complete day please try again later.")
+                    completion(true)
                     
                 }
-                completion(true)
+            
             case .failure(let error):
                 self.toCreateToast(error.rawValue)
                 completion(false)
@@ -2565,7 +2578,7 @@ extension MainVC {
                     guard let welf = self else {return}
                     welf.checkoutAction()
                     welf.configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
-                    welf.configureAddCall(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
+                    welf.configureAddCall(LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
                     welf.configureSaveplanBtn(false)
                     welf.configureAddplanBtn(false)
                 }
@@ -2647,19 +2660,7 @@ extension MainVC {
                 let filetedworkType = workType.filter{$0.code ==  wtCode}
                 workTypes.append(contentsOf: filetedworkType)
                 
-                guard  !workTypes.isEmpty else { return }
-                let isFieldWork = workTypes.map { aWorkType in
-                    if aWorkType.fwFlg == "F" {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-                
-                guard isFieldWork.contains(true) else   {
-                    welf.showAlertToNetworks(desc: "Field Work plan is mandatory to add call.", isToclearacalls: false)
-                    return
-                }
+
                 
                    let townCode = eachPlan.townCodes ?? ""
                    let territories =  DBManager.shared.getTerritory(mapID: eachPlan.rsfID ?? "")
@@ -2679,7 +2680,19 @@ extension MainVC {
                 
             })
 
+            guard  !workTypes.isEmpty else { return }
+            let isFieldWork = workTypes.map { aWorkType in
+                if aWorkType.fwFlg == "F" {
+                    return true
+                } else {
+                    return false
+                }
+            }
             
+            guard isFieldWork.contains(true) else   {
+                welf.showAlertToNetworks(desc: "Field work plan is mandatory to add call.", isToclearacalls: false)
+                return
+            }
            
             let callVC = UIStoryboard.callVC
 //            if let fetchedClusterObject1 = welf.fetchedClusterObject1 {
@@ -2835,25 +2848,25 @@ extension MainVC {
                     
                 } else {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: true)
-//                    nonNilSession.indices.forEach { index in
-//                        nonNilSession[index].isRetrived = true
-//                        nonNilSession[index].planDate = welf.selectedToday
-//                        
-//                    }
-//                    
-//                    welf.sessions = nonNilSession
+                    nonNilSession.indices.forEach { index in
+                        nonNilSession[index].isRetrived = true
+                        nonNilSession[index].planDate = welf.selectedToday
+                        
+                    }
                     
-                   // welf.setSegment(.workPlan)
+                    welf.sessions = nonNilSession
+                    
+                    welf.setSegment(.workPlan)
                     welf.toConfigureMydayPlan(planDate: welf.selectedToday)
                
                     
-//                    welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
-//                    
-//                    if nonNilSession.count == 2 {
-//                        welf.configureAddplanBtn(false)
-//                    } else {
-//                        welf.configureAddplanBtn(true)
-//                    }
+                    welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
+                    
+                    if nonNilSession.count == 2 {
+                        welf.configureAddplanBtn(false)
+                    } else {
+                        welf.configureAddplanBtn(true)
+                    }
 
                 
                     welf.toCreateToast("You are not connected to internet")
@@ -5325,7 +5338,7 @@ extension MainVC: PopOverVCDelegate {
     
     func toSetupDeleteAlert(index: Int) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: "Are you sure calls ", okAction: "Yes" , cancelAction: "No")
+        commonAlert.setupAlert(alert: AppName, alertDescription: "Are you sure to delete calls ", okAction: "Yes" , cancelAction: "No")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
             

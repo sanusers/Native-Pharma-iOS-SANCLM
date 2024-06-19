@@ -144,27 +144,23 @@ class CallListViewModel {
         
         if let filterscase = filterscase {
             // Access the properties directly and use optional chaining
-            let categoryCode = filterscase.categoryCode?.code
-            let specialityCode = filterscase.specialityCode?.code
-            let territoryCode = filterscase.territoryCode?.code
+            let categoryCode = filterscase.categoryCode?.name
+            let specialityCode = filterscase.specialityCode?.name
+            let territoryCode = filterscase.territoryCode?.name
 
             // Use filter to find the matching doctors
-            let filteredDoc = doctors.filter {
-                var shouldInclude = true
-                
-                if let categoryCode = categoryCode {
-                    shouldInclude = shouldInclude && ($0.categoryCode == categoryCode)
+          
+            let filteredDoc = doctors.filter { doctor in
+                if let categoryCode = categoryCode, doctor.category != categoryCode {
+                    return false
                 }
-                
-                if let specialityCode = specialityCode {
-                    shouldInclude = shouldInclude && ($0.specialityCode == specialityCode)
+                if let specialityCode = specialityCode, doctor.speciality != specialityCode {
+                    return false
                 }
-                
-                if let territoryCode = territoryCode {
-                    shouldInclude = shouldInclude && ($0.townCode == territoryCode)
+                if let territoryCode = territoryCode, doctor.townName != territoryCode {
+                    return false
                 }
-                
-                return shouldInclude
+                return true
             }
             if !filteredDoc.isEmpty {
                 let docObj = filteredDoc[index]
@@ -207,27 +203,23 @@ class CallListViewModel {
         
         let doctors = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
-        let categoryCode = filterscase.categoryCode?.code
-        let specialityCode = filterscase.specialityCode?.code
-        let territoryCode = filterscase.territoryCode?.code
+        let categoryCode = filterscase.categoryCode?.name
+        let specialityCode = filterscase.specialityCode?.name
+        let territoryCode = filterscase.territoryCode?.name
 
         // Use filter to find the matching doctors
-        return doctors.filter {
-            var shouldInclude = true
-            
-            if let categoryCode = categoryCode {
-                shouldInclude = shouldInclude && ($0.categoryCode == categoryCode)
+        // Use filter to find the matching doctors
+        return doctors.filter { doctor in
+            if let categoryCode = categoryCode, doctor.category != categoryCode {
+                return false
             }
-            
-            if let specialityCode = specialityCode {
-                shouldInclude = shouldInclude && ($0.specialityCode == specialityCode)
+            if let specialityCode = specialityCode, doctor.speciality != specialityCode {
+                return false
             }
-            
-            if let territoryCode = territoryCode {
-                shouldInclude = shouldInclude && ($0.townCode == territoryCode)
+            if let territoryCode = territoryCode, doctor.townName != territoryCode {
+                return false
             }
-            
-            return shouldInclude
+            return true
         }.count
        // return doctors.filter { $0.categoryCode ==  categoryCode ?? "" || $0.specialityCode == specialityCode ?? "" || $0.townCode == territoryCode ?? ""}.count
     }
@@ -306,17 +298,17 @@ public class CallViewModel {
         case .doctor:
             if let doccall = dcrcall as? DoctorFencing {
                 type = .doctor
-               name = doccall.name ?? ""
-              
-               code = doccall.code ?? ""
-               dob = doccall.dob ?? ""
-               dow = doccall.dow ?? ""
-               mobile = doccall.mobile ?? ""
-               email = doccall.docEmail ?? ""
-               address = doccall.addrs ?? ""
-               qualification = doccall.docDesig ?? ""
-               category = doccall.category ?? ""
-               speciality = doccall.speciality ?? ""
+                name = doccall.name ?? ""
+                
+                code = doccall.code ?? ""
+                dob = doccall.dob ?? ""
+                dow = doccall.dow ?? ""
+                mobile = doccall.mobile ?? ""
+                email = doccall.docEmail ?? ""
+                address = doccall.addrs ?? ""
+                qualification = doccall.docDesig ?? ""
+                category = doccall.category ?? ""
+                speciality = doccall.speciality ?? ""
                 townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
@@ -326,15 +318,15 @@ public class CallViewModel {
         case .chemist:
             if let doccall = dcrcall as? Chemist {
                 type = .chemist
-               name = doccall.name ?? ""
-               code = doccall.code ?? ""
-  
-               mobile = doccall.chemistMobile ?? ""
-               email = doccall.chemistEmail ?? ""
-               address = doccall.addr ?? ""
-            
-               category =  ""
-               speciality =  ""
+                name = doccall.name ?? ""
+                code = doccall.code ?? ""
+                
+                mobile = doccall.chemistMobile ?? ""
+                email = doccall.chemistEmail ?? ""
+                address = doccall.addr ?? ""
+                
+                category =  ""
+                speciality =  ""
                 townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
@@ -344,15 +336,15 @@ public class CallViewModel {
         case .stockist:
             if let doccall = dcrcall as? Stockist {
                 type = .stockist
-               name = doccall.name ?? ""
-               code = doccall.code ?? ""
-       
-               mobile = doccall.stkMobile ?? ""
-               email = doccall.stkEmail ?? ""
-               address = doccall.addr ?? ""
-            
-               category =  ""
-               speciality =  ""
+                name = doccall.name ?? ""
+                code = doccall.code ?? ""
+                
+                mobile = doccall.stkMobile ?? ""
+                email = doccall.stkEmail ?? ""
+                address = doccall.addr ?? ""
+                
+                category =  ""
+                speciality =  ""
                 townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
@@ -363,17 +355,17 @@ public class CallViewModel {
         case .unlistedDoctor:
             if let doccall = dcrcall as? UnListedDoctor {
                 type = .unlistedDoctor
-               name = doccall.name ?? ""
-               code = doccall.code ?? ""
-               dob = ""
-               dow = ""
-               mobile = doccall.mobile ?? ""
-               email = doccall.email ?? ""
-               address = doccall.addrs ?? ""
-               qualification =  ""
+                name = doccall.name ?? ""
+                code = doccall.code ?? ""
+                dob = doccall.dob?.date ?? ""
+                dow = doccall.dow?.date ?? ""
+                mobile = doccall.mobile ?? ""
+                email = doccall.email ?? ""
+                address = doccall.addrs ?? ""
+                qualification =  ""
                 townName = doccall.townName ?? ""
-               category = doccall.category ?? ""
-               speciality = doccall.specialtyName ?? ""
+                category = doccall.category ?? ""
+                speciality = doccall.specialtyName ?? ""
                 territory = doccall.townName ?? ""
                 townCode = doccall.townCode ?? ""
                 specialityCode = ""
@@ -389,7 +381,7 @@ public class CallViewModel {
         return self
     }
     
-
+    
 }
 
 

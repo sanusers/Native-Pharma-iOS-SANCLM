@@ -105,9 +105,11 @@ extension CallVC : addedSubViewsDelegate {
     func didUpdateFilters(filteredObjects: [NSManagedObject]) {
         if !filteredObjects.isEmpty {
             addedFiltersCount.isHidden = false
+            filterCountHolderVIew.isHidden = false
             addedFiltersCount.text = "\(filteredObjects.count)"
         } else {
             addedFiltersCount.isHidden = true
+            filterCountHolderVIew.isHidden = true
         }
      
         if filteredObjects.isEmpty {
@@ -257,6 +259,7 @@ class CallVC : UIViewController {
     
     @IBOutlet var addedFiltersCount: UILabel!
     
+    @IBOutlet var filterCountHolderVIew: UIView!
     
     @IBOutlet var  backgroundView : UIView!
 
@@ -321,8 +324,11 @@ class CallVC : UIViewController {
     }
 
     func setupUI() {
+        filterCountHolderVIew.backgroundColor = .appGreen
         addedFiltersCount.isHidden = true
-        addedFiltersCount.layer.cornerRadius = addedFiltersCount.height / 2
+        filterCountHolderVIew.isHidden = true
+        filterCountHolderVIew.layer.cornerRadius =  25 / 2
+        addedFiltersCount.layer.cornerRadius = 25 / 2
         callCollectionView.layer.cornerRadius = 5
         seatchHolderVIew.layer.cornerRadius = 5
         seatchHolderVIew.layer.borderWidth = 1

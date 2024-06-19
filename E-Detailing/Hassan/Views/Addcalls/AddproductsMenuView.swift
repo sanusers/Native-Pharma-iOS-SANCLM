@@ -10,6 +10,19 @@
 import Foundation
 import UIKit
 
+extension AddproductsMenuView: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
+            let compSepByCharInSet = string.components(separatedBy: aSet)
+            let numberFiltered = compSepByCharInSet.joined(separator: "")
+            let maxLength = 4
+            let currentString: NSString = textField.text! as NSString
+            let newString: NSString =
+            currentString.replacingCharacters(in: range, with: string) as NSString
+            return string == numberFiltered && newString.length <= maxLength
+    }
+}
+
 extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
     
     
@@ -109,9 +122,18 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AdditionalCallSampleEntryTableViewCell", for: indexPath) as! AdditionalCallSampleEntryTableViewCell
+        cell.txtSampleStock.delegate = self
+        cell.txtSampleStock.isUserInteractionEnabled = true
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
             cell.product = self.addproductsMenuVC?.additionalCallListViewModel?.fetchProductAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            if   cell.product.mode.lowercased() == "sale" {
+                cell.txtSampleStock.isUserInteractionEnabled = false
+            } else if  cell.product.mode.lowercased() == "sale/sample" {
+                cell.txtSampleStock.isUserInteractionEnabled = true
+            } else if cell.product.mode.lowercased() == "sample" {
+                cell.txtSampleStock.isUserInteractionEnabled = true
+            }
         case .inputs:
             cell.input = self.addproductsMenuVC?.additionalCallListViewModel?.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
         }
@@ -195,14 +217,13 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             self.addproductsMenuVC.present(selectionVC, animated: true)
             
         case .inputs:
-          
-            let inputs = DBManager.shared.getInput()
+        
             
             let selectionVC = UIStoryboard.singleSelectionVC
             selectionVC.isForinputs = true
             selectionVC.titleString = "Select Input"
             self.selectedInputIndex = indexPath
-            selectionVC.selectionData = inputs
+            selectionVC.selectionData = filteredInputs
             if  selectedInputIndexpaths != nil  {
                 // Handle the case whe n selectedProductIndex is nil
                 if selectedInputIndexpaths?.count ?? 0 - 1 > indexPath.row {
@@ -323,6 +344,7 @@ class AddproductsMenuView: BaseView {
     @IBOutlet weak var contentBgView: UIView!
     
 
+    @IBOutlet var closeView: UIView!
     @IBOutlet var btnAddtype: UIButton!
     
     @IBOutlet var clearView: UIView!
@@ -339,19 +361,84 @@ class AddproductsMenuView: BaseView {
     private let animationDampning : CGFloat = 2.0
     private let viewOpacity : CGFloat = 0.3
     
-    
+    var filteredInputs: [Input] = {
+        var inputs = DBManager.shared.getInput()
+        let currentDate = Date()
+
+        var filteredInputs = inputs.filter { input in
+            guard let fromDate = input.effF?.date?.toDate(format: "yyyy-MM-dd HH:mm:ss"),
+                  let toDate = input.effT?.date?.toDate(format: "yyyy-MM-dd HH:mm:ss") else {
+                // If either fromDate or toDate is nil, exclude the input
+                return false
+            }
+
+            // Check if today's date is within the range defined by fromDate and toDate
+            return fromDate <= currentDate && toDate >= currentDate
+        }
+        //        return filteredInputs
+        let removedNoIP = filteredInputs.filter { aInput in
+          aInput.code != "-1"
+       }
+      return removedNoIP
+        
+  //      dump(filteredInputs)
+//        let noInput = inputs.filter { aInput in
+//            aInput.code == "-1"
+//        }
+//
+//        let existingIP = filteredInputs.filter { aInput in
+//            aInput.code == "-1"
+//        }
+//
+//        if existingIP.isEmpty {
+//            filteredInputs.insert(contentsOf: noInput, at: 1)
+//        } else {
+//            return inputs
+//        }
+//
+//        return filteredInputs
+    }()
     
     
     @IBAction func addAdditionalCallSampleInput(_ sender: UIButton) {
       //  toLoadData()
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
+            let additionalCallData =  self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData()
+              
+              let lastIndex = (additionalCallData?.count ?? 0) - 1
+              if additionalCallData?[lastIndex].productSelectedListViewModel.productViewModel.count ?? 0 > 0 {
+                  let productData = additionalCallData?.filter { additionalCallViewModel in
+                      additionalCallViewModel.productSelectedListViewModel.productViewModel.contains { productViewModel in
+                          productViewModel.product.product == nil
+                      }
+                  }
+                  dump(productData)
+                  guard let productData  =  productData, productData.isEmpty else {
+                      self.toCreateToast("update added product first to add new product")
+                      return }
+              }
             self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(isDetailed: false, sampleCount: "0", rxCount: "0", rcpaCount: "0", availableCount: "", totalCount: "0", stockistName: "", stockistCode: "")))
             
             self.selectedInputIndexpaths  = [Input]()
             toLoadData()
        
         case .inputs:
+            let additionalCallData =  self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData()
+              
+              let lastIndex = (additionalCallData?.count ?? 0) - 1
+              if additionalCallData?[lastIndex].inputSelectedListViewModel.inputViewModel.count ?? 0 > 0 {
+                  let productData = additionalCallData?.filter { additionalCallViewModel in
+                      additionalCallViewModel.inputSelectedListViewModel.inputViewModel.contains { productViewModel in
+                          productViewModel.input.input == nil
+                      }
+                  }
+                  dump(productData)
+                  guard let productData  =  productData, productData.isEmpty else {
+                      self.toCreateToast("update added input first to add new input")
+                      return }
+              }
+            
             self.addproductsMenuVC?.additionalCallListViewModel?.addInputAtIndex(self.selectedDoctorIndex, vm: InputViewModel(input: InputData(input: nil, availableCount: "", inputCount: "0")))
             self.selectedProductIndexpaths = [Product]()
             toLoadData()
@@ -444,13 +531,19 @@ class AddproductsMenuView: BaseView {
     }
     
     func initGestures() {
+        closeView.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.addproductsMenuVC.dismiss(animated: false)
+        }
+      //
+        
         clearView.addTap {
             guard let productSelectedListViewModel = self.addproductsMenuVC.productSelectedListViewModel, let additionalCallListViewModel = self.addproductsMenuVC.additionalCallListViewModel else  {return}
             
-            let  inputCount = additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
+            _ = additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
             
             
-            let productCount = additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
+            _ = additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
             
             
 //            if inputCount > productCount {
@@ -462,6 +555,38 @@ class AddproductsMenuView: BaseView {
 //                self.toCreateToast("Please select Input")
 //                return
 //            }
+            let additionalCallData =  self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData()
+            let lastIndex = (additionalCallData?.count ?? 0) - 1
+            if additionalCallData?[lastIndex].productSelectedListViewModel.productViewModel.count ?? 0 > 0 {
+                let productData = additionalCallData?.filter { additionalCallViewModel in
+                    additionalCallViewModel.productSelectedListViewModel.productViewModel.contains { productViewModel in
+                        productViewModel.product.product == nil
+                    }
+                }
+                dump(productData)
+                guard let productData  =  productData, productData.isEmpty else {
+                    self.selectedSegmentsIndex = 0
+                    self.segmentsCollection.reloadData()
+                    self.setSegment(.products)
+                    self.toCreateToast("update added product to save list")
+                    return }
+            }
+
+              if additionalCallData?[lastIndex].inputSelectedListViewModel.inputViewModel.count ?? 0 > 0 {
+                  let productData = additionalCallData?.filter { additionalCallViewModel in
+                      additionalCallViewModel.inputSelectedListViewModel.inputViewModel.contains { productViewModel in
+                          productViewModel.input.input == nil
+                      }
+                  }
+                  dump(productData)
+                  guard let productData  =  productData, productData.isEmpty else {
+                      self.selectedSegmentsIndex = 1
+                      self.segmentsCollection.reloadData()
+                      self.setSegment(.inputs)
+                      self.toCreateToast("update added input first to add new input")
+                      return }
+              }
+            
             
             self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
             self.hideMenuAndDismiss()

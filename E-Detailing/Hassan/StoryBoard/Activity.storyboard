@@ -327,7 +327,7 @@
                                                         </userDefinedRuntimeAttributes>
                                                     </view>
                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r51-x8-Fa7">
-                                                        <rect key="frame" x="586.5" y="10" width="472" height="46"/>
+                                                        <rect key="frame" x="596.5" y="10" width="472" height="46"/>
                                                         <subviews>
                                                             <stackView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="g2P-ky-Y1o">
                                                                 <rect key="frame" x="0.0" y="0.0" width="472" height="46"/>
@@ -370,32 +370,42 @@
                                                                     <action selector="didTapFiltersBtn:" destination="eJo-aZ-huC" eventType="touchUpInside" id="zeg-at-qE4"/>
                                                                 </connections>
                                                             </button>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7A6-5k-0Fc">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zHz-aY-rSL">
                                                                 <rect key="frame" x="54" y="10.5" width="25" height="25"/>
-                                                                <color key="backgroundColor" systemColor="systemGreenColor"/>
+                                                                <subviews>
+                                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7A6-5k-0Fc">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
+                                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="12"/>
+                                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                                <integer key="value" value="15"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                    </label>
+                                                                </subviews>
+                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="width" constant="25" id="F8i-uc-PM4"/>
-                                                                    <constraint firstAttribute="height" constant="25" id="bRC-8p-yG2"/>
+                                                                    <constraint firstAttribute="width" constant="25" id="44l-C2-Alp"/>
+                                                                    <constraint firstItem="7A6-5k-0Fc" firstAttribute="leading" secondItem="zHz-aY-rSL" secondAttribute="leading" id="99r-Pf-xsE"/>
+                                                                    <constraint firstAttribute="height" constant="25" id="DrO-EC-lL8"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="7A6-5k-0Fc" secondAttribute="trailing" id="LMT-8p-1td"/>
+                                                                    <constraint firstItem="7A6-5k-0Fc" firstAttribute="top" secondItem="zHz-aY-rSL" secondAttribute="top" id="RF3-VF-C3m"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="7A6-5k-0Fc" secondAttribute="bottom" id="bT0-La-F5f"/>
                                                                 </constraints>
-                                                                <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="12"/>
-                                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <nil key="highlightedColor"/>
-                                                                <userDefinedRuntimeAttributes>
-                                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                                        <integer key="value" value="15"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
-                                                                </userDefinedRuntimeAttributes>
-                                                            </label>
+                                                            </view>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstItem="cJR-vX-Tg5" firstAttribute="centerX" secondItem="IJy-Br-Tpf" secondAttribute="centerX" id="6TK-GH-gUP"/>
                                                             <constraint firstItem="cJR-vX-Tg5" firstAttribute="height" secondItem="IJy-Br-Tpf" secondAttribute="height" multiplier="0.45" id="6eV-cn-OWm"/>
-                                                            <constraint firstItem="7A6-5k-0Fc" firstAttribute="centerX" secondItem="cJR-vX-Tg5" secondAttribute="centerX" multiplier="1.45" id="HnV-rR-ZHD"/>
+                                                            <constraint firstItem="zHz-aY-rSL" firstAttribute="centerX" secondItem="cJR-vX-Tg5" secondAttribute="centerX" multiplier="1.45" id="IJG-SH-e3v"/>
                                                             <constraint firstItem="cJR-vX-Tg5" firstAttribute="centerY" secondItem="IJy-Br-Tpf" secondAttribute="centerY" id="IgJ-zp-zPb"/>
-                                                            <constraint firstItem="7A6-5k-0Fc" firstAttribute="centerY" secondItem="cJR-vX-Tg5" secondAttribute="centerY" multiplier="0.5" id="aql-1j-y5j"/>
                                                             <constraint firstItem="cJR-vX-Tg5" firstAttribute="width" secondItem="IJy-Br-Tpf" secondAttribute="width" multiplier="0.45" id="oe3-hT-aPs"/>
+                                                            <constraint firstItem="zHz-aY-rSL" firstAttribute="centerY" secondItem="cJR-vX-Tg5" secondAttribute="centerY" multiplier="0.5" id="wCL-rh-x3L"/>
                                                         </constraints>
                                                     </view>
                                                 </subviews>
@@ -405,7 +415,7 @@
                                                     <constraint firstItem="Cjc-Mp-PAb" firstAttribute="leading" secondItem="eCC-Zh-Owt" secondAttribute="leading" constant="15" id="JPl-vo-fmQ"/>
                                                     <constraint firstItem="Cjc-Mp-PAb" firstAttribute="width" secondItem="eCC-Zh-Owt" secondAttribute="width" multiplier="0.35" id="RN7-zW-JMe"/>
                                                     <constraint firstItem="Cjc-Mp-PAb" firstAttribute="height" secondItem="eCC-Zh-Owt" secondAttribute="height" multiplier="0.7" id="VsW-t2-XlA"/>
-                                                    <constraint firstItem="IJy-Br-Tpf" firstAttribute="leading" secondItem="r51-x8-Fa7" secondAttribute="trailing" constant="15" id="XiF-LH-i56"/>
+                                                    <constraint firstItem="IJy-Br-Tpf" firstAttribute="leading" secondItem="r51-x8-Fa7" secondAttribute="trailing" constant="5" id="XiF-LH-i56"/>
                                                     <constraint firstItem="r51-x8-Fa7" firstAttribute="centerY" secondItem="eCC-Zh-Owt" secondAttribute="centerY" id="bDK-nx-7bI"/>
                                                     <constraint firstItem="IJy-Br-Tpf" firstAttribute="height" secondItem="r51-x8-Fa7" secondAttribute="height" multiplier="1.98913" id="cdq-ld-GOj"/>
                                                     <constraint firstItem="r51-x8-Fa7" firstAttribute="width" secondItem="eCC-Zh-Owt" secondAttribute="width" multiplier="0.4" id="cpU-nW-fpj"/>
@@ -518,6 +528,7 @@
                         <outlet property="backGroundVXview" destination="Ntt-M6-hKG" id="vVf-b3-q1u"/>
                         <outlet property="backgroundView" destination="IgL-pH-pjx" id="4pY-5k-b54"/>
                         <outlet property="callCollectionView" destination="bMI-QD-QFF" id="ZHb-wp-DqQ"/>
+                        <outlet property="filterCountHolderVIew" destination="zHz-aY-rSL" id="i6f-Qa-yx4"/>
                         <outlet property="filtersBtn" destination="cJR-vX-Tg5" id="6Dy-Bm-Eng"/>
                         <outlet property="headerCollectionView" destination="o7t-Xz-bOD" id="JO9-Xd-GAG"/>
                         <outlet property="resoureHQlbl" destination="zGV-zQ-sDh" id="21M-Gt-2Sw"/>
@@ -721,20 +732,20 @@ Chennai</string>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cardio" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x39-Xg-PKp">
-                                                <rect key="frame" x="429.5" y="172" width="347" height="17.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x39-Xg-PKp">
+                                                <rect key="frame" x="429.5" y="172" width="347" height="0.0"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Territory" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Ku-Se-qUc">
-                                                <rect key="frame" x="429.5" y="204.5" width="347" height="19"/>
+                                                <rect key="frame" x="429.5" y="187" width="347" height="19"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vIU-4v-DLr">
-                                                <rect key="frame" x="429.5" y="233.5" width="347" height="17.5"/>
+                                                <rect key="frame" x="429.5" y="216" width="347" height="17.5"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -1023,7 +1034,7 @@ Chennai</string>
                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411764705882" alpha="0.25" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="Skip &amp; Submit">
+                                                <state key="normal" title="Skip Detailing">
                                                     <color key="titleColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
                                                 <connections>

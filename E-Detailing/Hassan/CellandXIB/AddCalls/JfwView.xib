@@ -2,7 +2,8 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad12_9rounded" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -601,10 +602,12 @@
                 <outlet property="addJWcurvedView" destination="bNh-gb-994" id="Jrs-Zz-QnA"/>
                 <outlet property="captureBtn" destination="lsb-PS-yyc" id="6Vp-S6-ihx"/>
                 <outlet property="captureCurvedVIew" destination="Pcz-Sa-4ai" id="7Sm-uv-mIv"/>
+                <outlet property="eventCaptureHolderStack" destination="pXp-nC-gAP" id="sFA-Lf-27N"/>
                 <outlet property="eventCaptureTableView" destination="I4N-Ma-0Aj" id="4j8-cr-Bc0"/>
                 <outlet property="eventcaptureCurvedView" destination="hhn-L6-56E" id="0BQ-lF-MxX"/>
                 <outlet property="feedbackLbl" destination="a2d-Xb-Ixe" id="50i-If-edX"/>
                 <outlet property="jointWorkTableView" destination="83e-1z-Ob1" id="Bby-a5-fJV"/>
+                <outlet property="jointworkHolderStack" destination="x5C-1a-Rnj" id="MEt-Gv-THR"/>
                 <outlet property="jwCurvedView" destination="cww-rb-fbX" id="oco-Zn-pf1"/>
                 <outlet property="lblCaptureEvent" destination="cKB-lh-6zP" id="tCu-Ag-K5t"/>
                 <outlet property="lblJointWork" destination="t0f-ot-IcD" id="KS6-sJ-2Bq"/>
@@ -627,14 +630,14 @@
         </view>
     </objects>
     <resources>
-        <image name="Vector" width="128" height="128"/>
+        <image name="Vector" width="16" height="8"/>
         <image name="cameraGreenIcon" width="20" height="20"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tableSeparatorDarkColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>

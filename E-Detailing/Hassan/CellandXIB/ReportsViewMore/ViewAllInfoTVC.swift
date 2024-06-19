@@ -301,6 +301,9 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     let cell: RCPAdetailsDesctiptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "RCPAdetailsDesctiptionCVC", for: indexPath) as! RCPAdetailsDesctiptionCVC
                     let model = rcpaResponseModel[indexPath.row]
                     cell.populateCell(model: model)
+                    cell.infoView.addTap {
+                        self.delegate?.didRCPAinfoTapped(view: cell.infoView, model: model)
+                    }
                     return cell
                 }
             case .hideRCPA:
@@ -357,6 +360,7 @@ protocol ViewAllInfoTVCDelegate: AnyObject {
     func didSlidestapped(isSlidestapped: Bool, index: Int, responsecount: Int)
     func didLessTapped(islessTapped: Bool, index: Int)
     func didDurationInfoTapped(view: UIView, startTime: String, endTime: String)
+    func didRCPAinfoTapped(view: UIView, model: RCPAresonseModel)
     
 }
 

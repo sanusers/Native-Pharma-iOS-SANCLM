@@ -26,23 +26,11 @@ class InputSelectedListViewModel {
             // Check if today's date is within the range defined by fromDate and toDate
             return fromDate <= currentDate && toDate >= currentDate
         }
-        return filteredInputs
-  //      dump(filteredInputs)
-//        let noInput = inputs.filter { aInput in
-//            aInput.code == "-1"
-//        }
-//
-//        let existingIP = filteredInputs.filter { aInput in
-//            aInput.code == "-1"
-//        }
-//
-//        if existingIP.isEmpty {
-//            filteredInputs.insert(contentsOf: noInput, at: 1)
-//        } else {
-//            return inputs
-//        }
-//
-//        return filteredInputs
+
+          let removedNoIP = filteredInputs.filter { aInput in
+            aInput.code != "-1"
+         }
+        return removedNoIP
     }()
     
     func fetchAllInput() -> [Input]? {
@@ -89,6 +77,10 @@ class InputSelectedListViewModel {
     
     func removebyId(_ id : String){
         inputViewModel.removeAll{$0.code == id}
+    }
+    
+    func removeAllInputs(){
+        inputViewModel = [InputViewModel]()
     }
     
     func fetchDataAtIndex(_ index : Int) -> InputViewModel{

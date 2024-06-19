@@ -48,7 +48,7 @@ class  PlayPresentationView: BaseView {
         case home = "All"
         case brand = "Brand Matrix"
         case speciality = "Speciality"
-        case customPresentation = "Custom Presentation"
+        case customPresentation = "Custom/My Presentation"
     }
     
     enum PageState {

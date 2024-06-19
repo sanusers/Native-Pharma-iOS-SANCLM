@@ -351,15 +351,25 @@ extension DayReportView: VisitsCountTVCDelegate {
 }
 
 extension DayReportView : ViewAllInfoTVCDelegate {
+    func didRCPAinfoTapped(view: UIView, model: RCPAresonseModel) {
+        print("Tapped -->")
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 4 , height: self.height / 7.5), on: view,  pagetype: .RCPA)
+
+        vc.color = .appTextColor
+        vc.rcpaInfo = model
+ 
+        self.viewDayReportVC?.navigationController?.present(vc, animated: true)
+    }
+    
     func didDurationInfoTapped(view: UIView, startTime: String, endTime: String) {
         print("Tapped -->")
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 4 , height: self.height / 7.5), on: view,  pagetype: .timeLine)
 
         vc.color = .appTextColor
         vc.startTime = "Start Time : \(startTime)"
-        //self.totalCalls
+     
         vc.endTime = "End Time : \(endTime)"
-        //self.averageCalls
+       
         self.viewDayReportVC?.navigationController?.present(vc, animated: true)
     }
     

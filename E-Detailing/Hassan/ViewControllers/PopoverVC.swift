@@ -23,6 +23,7 @@ class PopOverVC: UIViewController {
         case profile
         case customMarker
         case timeLine
+        case RCPA
     }
     
     
@@ -37,6 +38,7 @@ class PopOverVC: UIViewController {
             graphInfoView.isHidden = true
             userProfileInfoView.isHidden = true
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             toLOadData()
         case .HomeGraph:
             customMarkerView.isHidden = true
@@ -44,6 +46,7 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = true
             graphInfoView.isHidden = false
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             setupUI()
             
         case .calls:
@@ -52,6 +55,7 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             toLOadData()
         case .presentation:
             customMarkerView.isHidden = true
@@ -59,6 +63,7 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             toLOadData()
         case .profile:
             customMarkerView.isHidden = true
@@ -66,10 +71,12 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = true
             graphInfoView.isHidden = true
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             setProfileInfo()
         case .customMarker:
             customMarkerView.isHidden = false
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             print("Yet to implement")
             setCustomerInfo()
             
@@ -79,6 +86,7 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
             timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
             toLOadData()
         case .timeLine:
             customMarkerView.isHidden = true
@@ -86,7 +94,17 @@ class PopOverVC: UIViewController {
             self.contentTable.isHidden = true
             graphInfoView.isHidden = true
             timeInfoView.isHidden = false
+            rcpaInfoView.isHidden = true
             setTimeline()
+        case .RCPA:
+            customMarkerView.isHidden = true
+            userProfileInfoView.isHidden = true
+            self.contentTable.isHidden = true
+            graphInfoView.isHidden = true
+            timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = false
+            guard let modal = self.rcpaInfo else {return}
+            setRCPAinfo(modal: modal)
         }
     }
     
@@ -142,6 +160,25 @@ class PopOverVC: UIViewController {
     @IBOutlet var lblEndTime: UILabel!
     
     
+    @IBOutlet var rcpaInfoView: UIView!
+    
+    @IBOutlet var ourProductQtyLbl: UILabel!
+    
+    @IBOutlet var ourProductRateLbl: UILabel!
+    
+    @IBOutlet var ourProductTotalLbl: UILabel!
+    
+    
+    @IBOutlet var compProductQtyLbl: UILabel!
+    
+    
+    @IBOutlet var compProductRateLbl: UILabel!
+    
+    @IBOutlet var compProductTotalLbl: UILabel!
+    
+    @IBOutlet var grandTotalLbl: UILabel!
+    
+    
     var delegate: PopOverVCDelegate?
     var strArr = [String]()
     var isExist = Bool()
@@ -155,12 +192,34 @@ class PopOverVC: UIViewController {
     var visitViewModel : VisitViewModel?
     var startTime: String = ""
     var endTime: String = ""
-    
+    var rcpaInfo: RCPAresonseModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
        
         toSetPageType(self.pageType)
+    }
+    
+    func setRCPAinfo(modal: RCPAresonseModel) {
+        rcpaInfoView.layer.cornerRadius = 5
+        rcpaInfoView.backgroundColor = .appTextColor
+        
+        ourProductQtyLbl.textColor = .appWhiteColor
+        
+        ourProductQtyLbl.text = "\(modal.opQty)"
+        ourProductRateLbl.text =  "\(modal.opRate)"
+        
+        let productTotal = Double(modal.opQty) * modal.opRate
+        
+        ourProductTotalLbl.text = "\(productTotal)"
+        compProductQtyLbl.text = "\(modal.cpQty)"
+        
+        compProductRateLbl.text = "\(modal.cpRate)"
+        
+        let compTotal = Double(modal.cpQty) * modal.cpRate
+        
+        compProductTotalLbl.text = "\(compTotal)"
+        grandTotalLbl.text = "\(productTotal + compTotal)"
     }
     
     func setTimeline() {
@@ -362,6 +421,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
         case .events:
             return 40
         case .timeLine:
+            return UITableView.automaticDimension
+        case .RCPA:
             return UITableView.automaticDimension
         }
         

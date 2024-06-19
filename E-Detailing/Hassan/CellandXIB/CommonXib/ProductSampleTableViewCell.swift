@@ -10,6 +10,8 @@
 import UIKit
 
 
+
+
 class ProductSampleTableViewCell : UITableViewCell {
     
     
@@ -48,12 +50,20 @@ class ProductSampleTableViewCell : UITableViewCell {
             self.txtRcpaQty.text = productSample.rcpaCount
             self.txtProductCount.text = productSample.availableCount
             self.btnDeviation.isSelected = productSample.isDetailed
+
         }
     }
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+       // txtRxQty.delegate = self
+      //  txtSampleQty.delegate = self
+     //   txtRcpaQty.delegate = self
+        
+        
+        
         txtProductCount.backgroundColor = .appLightTextColor.withAlphaComponent(0.3)
         [txtSampleQty,txtRxQty,txtRcpaQty, txtProductCount].forEach { textfield in
             if textfield != txtProductCount {

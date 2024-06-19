@@ -1729,6 +1729,13 @@ class SpecifiedMenuView: BaseView {
             self.specifiedMenuVC.selectedClusterID = nil
             
             self.selectedClusterID = [String: Bool]()
+            
+            
+            self.specifiedMenuVC.selectedJwID = [String: Bool]()
+            
+          //  self.filteredJfw = nil
+            self.selectedJwID = [String: Bool]()
+            
             self.menuTable.reloadData()
             
             
@@ -1887,6 +1894,10 @@ class SpecifiedMenuView: BaseView {
         let temporaryselectedTherapticobj = NSManagedObject(entity: selectedTherapicentity, insertInto: nil)  as! SlideTheraptic
    
             switch cellType {
+                
+//            case .cluster:
+//                  specifiedMenuVC.menuDelegate?.selectedType(cellType, selectedObject: model ?? Territory(), selectedObjects: [NSManagedObject]())
+                
             case .headQuater:
                 
                 if selectedSpecifiedTypeID == "" &&  selectecIndex  == nil {

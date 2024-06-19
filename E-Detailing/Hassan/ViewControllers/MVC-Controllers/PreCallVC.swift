@@ -763,49 +763,56 @@ class PreCallVC : UIViewController {
            
         case .doctor:
             pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
-            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
-            dobLbl.text =  dcrCall.dob == "" ? "-" :  dcrCall.dob
-            weddingDateLbl.text =  dcrCall.dow == "" ? "-" :  dcrCall.dob
-            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
-            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
-            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
-            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
-            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
-            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+            nameLbl.text = dcrCall.name == "" ? "No Record Found" :  dcrCall.name
+            dobLbl.text =  dcrCall.dob == "" ? "No Record Found" :  dcrCall.dob
+            weddingDateLbl.text =  dcrCall.dow == "" ? "No Record Found" :  dcrCall.dow
+            mobileLbl.text = dcrCall.mobile == "" ? "No Record Found" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "No Record Found" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "No Record Found" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "No Record Found" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "No Record Found" :  dcrCall.category
+            specialityLbl.text = dcrCall.speciality == "" ? "No Record Found" :  dcrCall.speciality
+            territoryLbl.text = dcrCall.territory == "" ? "No Record Found" :  dcrCall.territory
             
         case .chemist:
             pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
-            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
-            dobLbl.text =  dcrCall.dob == "" ? "-" :  dcrCall.dob
-            weddingDateLbl.text = dcrCall.dow == "" ? "-" :  dcrCall.dob
-            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
-            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
-            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
-            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
-            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
-            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+            nameLbl.text = dcrCall.name == "" ? "No Record Found" :  dcrCall.name
+            dobLbl.text =  dcrCall.dob == "" ? "No Record Found" :  dcrCall.dob
+            weddingDateLbl.text = dcrCall.dow == "" ? "No Record Found" :  dcrCall.dow
+            mobileLbl.text = dcrCall.mobile == "" ? "No Record Found" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "No Record Found" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "No Record Found" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "No Record Found" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "No Record Found" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "No Record Found" :  dcrCall.territory
+            specialityLbl.text = dcrCall.speciality == "" ? "No Record Found" :  dcrCall.speciality
+            
         case .stockist:
             pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
-            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
-            dobLbl.text =  dcrCall.dob == "" ? "-" :  dcrCall.dob
-            weddingDateLbl.text = dcrCall.dow == "" ? "-" :  dcrCall.dob
-            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
-            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
-            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
-            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
-            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
-            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+            nameLbl.text = dcrCall.name == "" ? "No Record Found" :  dcrCall.name
+            dobLbl.text =  dcrCall.dob == "" ? "No Record Found" :  dcrCall.dob
+            weddingDateLbl.text = dcrCall.dow == "" ? "No Record Found" :  dcrCall.dow
+            mobileLbl.text = dcrCall.mobile == "" ? "No Record Found" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "No Record Found" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "No Record Found" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "No Record Found" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "No Record Found" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "No Record Found" :  dcrCall.territory
+            specialityLbl.text = dcrCall.speciality == "" ? "No Record Found" :  dcrCall.speciality
+            
         case .unlistedDoctor:
             pagetitle.text = dcrCall.name == "" ? "DCR details" :  dcrCall.name
-            nameLbl.text = dcrCall.name == "" ? "-" :  dcrCall.name
-            dobLbl.text = dcrCall.dob == "" ? "-" :  dcrCall.dob
-            weddingDateLbl.text = dcrCall.dow == "" ? "-" :  dcrCall.dob
-            mobileLbl.text = dcrCall.mobile == "" ? "-" :  dcrCall.mobile
-            emailLbl.text = dcrCall.email == "" ? "-" :  dcrCall.email
-            addressLbl.text = dcrCall.address == "" ? "-" :  dcrCall.address
-            qualificationLBl.text = dcrCall.qualification == "" ? "-" :  dcrCall.qualification
-            categoryLbl.text = dcrCall.category == "" ? "-" :  dcrCall.category
-            territoryLbl.text = dcrCall.territory == "" ? "-" :  dcrCall.territory
+            nameLbl.text = dcrCall.name == "" ? "No Record Found" :  dcrCall.name
+            dobLbl.text = dcrCall.dob == "" ? "No Record Found" :  dcrCall.dob
+            weddingDateLbl.text = dcrCall.dow == "" ? "No Record Found" :  dcrCall.dow
+            mobileLbl.text = dcrCall.mobile == "" ? "No Record Found" :  dcrCall.mobile
+            emailLbl.text = dcrCall.email == "" ? "No Record Found" :  dcrCall.email
+            addressLbl.text = dcrCall.address == "" ? "No Record Found" :  dcrCall.address
+            qualificationLBl.text = dcrCall.qualification == "" ? "No Record Found" :  dcrCall.qualification
+            categoryLbl.text = dcrCall.category == "" ? "No Record Found" :  dcrCall.category
+            territoryLbl.text = dcrCall.territory == "" ? "No Record Found" :  dcrCall.territory
+            specialityLbl.text = dcrCall.speciality == "" ? "No Record Found" :  dcrCall.speciality
+            
         case .hospital:
             print("Yet to implement")
         case .cip:

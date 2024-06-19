@@ -24,6 +24,10 @@ class ProductSelectedListViewModel {
         
     }
     
+    func removeAllProducts() {
+        productViewModel =  [ProductViewModel]()
+    }
+    
     func fetchProductData(_ index : Int , searchText : String , type : DCRType , selectedDoctorCode : String) -> Objects {
         
         if type == DCRType.doctor {

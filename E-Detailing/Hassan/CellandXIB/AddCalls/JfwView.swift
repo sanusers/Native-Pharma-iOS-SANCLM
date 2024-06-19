@@ -32,7 +32,11 @@ extension JfwView: MenuResponseProtocol {
         if let jwObjs = selectedObjects as? [JointWork] {
             self.jointWorkSelectedListViewModel?.jointWorksListViewModel.removeAll()
             
-    
+            if jwObjs.isEmpty {
+                selectedJwID = [String: Bool]()
+               self.jointWorkTableView.reloadData()
+               return
+            }
             
             jwObjs.forEach { aJointWork in
                
@@ -43,6 +47,8 @@ extension JfwView: MenuResponseProtocol {
                 jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
                     selectedJwID[aJointWork.code] = true
                 }
+            } else {
+                selectedJwID = [String: Bool]()
             }
             
             dump(selectedJwID)
@@ -210,6 +216,8 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
             jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
                 selectedJwID[aJointWork.code] = true
             }
+        } else {
+            selectedJwID = [String: Bool]()
         }
         
         self.jointWorkTableView.reloadData()
@@ -335,6 +343,9 @@ class JfwView: UIView {
     
     @IBOutlet var remarksTF: UITextField!
     
+    @IBOutlet var eventCaptureHolderStack: UIStackView!
+    
+    @IBOutlet var jointworkHolderStack: UIStackView!
     var selectedJwID = [String: Bool]()
     var rootVC: UIViewController?
     var pobValue: String?
@@ -430,12 +441,18 @@ class JfwView: UIView {
         
         if self.dcrCall.call is DoctorFencing {
            if appsetup.docPobNeed != 0 {
-               viewPOB.isHidden = true
+               viewPOB.isHidden = false
             }
             
             if appsetup.docJointWrkNeed != 0 {
-                jwCurvedView.isHidden = true
+                jointworkHolderStack.isHidden = true
             }
+            
+            if appsetup.docEventMdNeed != 0 {
+                eventCaptureHolderStack.isHidden = true
+            }
+            
+            
             
             
         }
@@ -581,5 +598,43 @@ extension JfwView:UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
     }
+    
+        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            switch textField {
+            case pobTF:
+                let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
+                let compSepByCharInSet = string.components(separatedBy: aSet)
+                let numberFiltered = compSepByCharInSet.joined(separator: "")
+                let maxLength = 4
+                let currentString: NSString = textField.text! as NSString
+                let newString: NSString =
+                    currentString.replacingCharacters(in: range, with: string) as NSString
+                return string == numberFiltered && newString.length <= maxLength
+            default:
+                print("Default")
+                // Get the current text in the text field
+                 let currentText = textField.text ?? ""
+                 
+                 // Create the new text string by replacing the characters in the range with the new string
+                 guard let stringRange = Range(range, in: currentText) else {
+                     return false
+                 }
+                 let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+                 
+                 // Ensure the new string length is less than or equal to the max length
+                 let maxLength = 50
+                if updatedText.count <= maxLength {
+                    return true
+                } else {
+                    self.endEditing(true)
+                    self.toCreateToast("Exeeced remarks character limit.")
+                    return false
+            
+                }
+            }
+
+
+        }
+    
     
 }

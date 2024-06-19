@@ -49,6 +49,7 @@ class AdditionalCallSampleInputView: UIView {
     var input : Input! {
         didSet {
             lblInput.text = input.name
+            
           
         }
     }
@@ -56,6 +57,7 @@ class AdditionalCallSampleInputView: UIView {
     var inputQty : String! {
         didSet {
             lblInputQty.text = inputQty
+            inputQtyCurvedView.isHidden = inputQty == "" ? true : false
         }
     }
     

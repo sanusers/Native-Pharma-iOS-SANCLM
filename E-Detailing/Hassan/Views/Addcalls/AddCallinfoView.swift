@@ -35,11 +35,11 @@ extension AddCallinfoView: MenuResponseProtocol {
                 self.productObj = selectedObject
                 self.selectedProductRcpa = selectedObject
                 
-                let rateInt: Int = Int(selectedObject.dRate ?? "1") ?? 0
+                let rateInt: Double = Double(selectedObject.dRate ?? "1") ?? 0
                 self.rateInt = rateInt
                 let qtyInt: Int = Int(self.productQty) ?? 0
                 rateLbl.text = "\(rateInt)"
-                valuelbl.text = "\(rateInt * qtyInt)"
+                valuelbl.text = "\(rateInt * Double(qtyInt))"
                 
             }
         case .chemist:
@@ -324,6 +324,7 @@ extension AddCallinfoView {
             }
             self.inputSelectedListViewModel.removebyId(inputValue.Object.code ?? "")
             toloadContentsTable()
+            toloadYettables()
         }else {
             if let cell = self.yetToloadContentsTable.cellForRow(at: indexPath) as? ProductNameTableViewCell {
                 cell.btnSelected.isSelected = true
@@ -332,6 +333,7 @@ extension AddCallinfoView {
             }
             self.inputSelectedListViewModel.addInputViewModel(InputViewModel(input: InputData(input: inputValue.Object as? Input, availableCount: "", inputCount: "1")))
             toloadContentsTable()
+            toloadYettables()
         }
     }
     
@@ -418,6 +420,7 @@ extension AddCallinfoView {
             }
             self.productSelectedListViewModel.removeById(productValue.Object.code ?? "")
             self.toloadContentsTable()
+            toloadYettables()
         }else {
             if let cell = self.yetToloadContentsTable.cellForRow(at: indexPath) as? ProductNameWithSampleTableViewCell{
                 cell.btnSelected.isSelected = true
@@ -426,6 +429,7 @@ extension AddCallinfoView {
            
             self.productSelectedListViewModel.addProductViewModel(ProductViewModel(product: ProductData(product: productValue.Object as? Product, isDetailed: false, sampleCount: "", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")))
             self.toloadContentsTable()
+            toloadYettables()
         }
     }
 }
@@ -463,7 +467,7 @@ extension AddCallinfoView :UITextFieldDelegate {
             let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
             let compSepByCharInSet = string.components(separatedBy: aSet)
             let numberFiltered = compSepByCharInSet.joined(separator: "")
-            let maxLength = 6
+            let maxLength = 4
             let currentString: NSString = textField.text! as NSString
             let newString: NSString =
                 currentString.replacingCharacters(in: range, with: string) as NSString
@@ -486,7 +490,13 @@ extension AddCallinfoView: tableViewProtocols {
         case .products:
             switch tableView {
             case yetToloadContentsTable:
-                return self.productSelectedListViewModel.numberOfProducts(searchText: self.searchText)
+                switch section {
+                case 0:
+                    return 1
+                default:
+                    return self.productSelectedListViewModel.numberOfProducts(searchText: self.searchText)
+                }
+               
             case loadedContentsTable:
                 return  self.productSelectedListViewModel.numberOfRows()
             default:
@@ -497,7 +507,13 @@ extension AddCallinfoView: tableViewProtocols {
         case .inputs:
             switch tableView {
             case yetToloadContentsTable:
-                return self.inputSelectedListViewModel.numberOfInputs(searchText: self.searchText)
+                switch section {
+                case 0:
+                    return 1
+                default:
+                    return self.inputSelectedListViewModel.numberOfInputs(searchText: self.searchText)
+                }
+             
             case loadedContentsTable:
                 return self.inputSelectedListViewModel.numberOfRows()
             default:
@@ -543,16 +559,44 @@ extension AddCallinfoView: tableViewProtocols {
             
             switch tableView {
             case yetToloadContentsTable:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameWithSampleTableViewCell", for: indexPath) as! ProductNameWithSampleTableViewCell
+                switch indexPath.section {
+                case 0:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameWithSampleTableViewCell", for: indexPath) as! ProductNameWithSampleTableViewCell
+                    cell.lblName.text = "No products selected"
+                    cell.samplesView.isHidden = true
+                    
+                    cell.btnSelected.isSelected = false
+                    let selectedInputs = self.productSelectedListViewModel.fetchAllProducts()
+                    if let selectedInputs = selectedInputs {
+                        if selectedInputs.isEmpty {
+                            cell.btnSelected.isSelected = true
+                        } else {
+                            cell.btnSelected.isSelected = false
+                        }
+                    }
+                    cell.lblName.textColor =    cell.btnSelected.isSelected ? .appTextColor : .appLightTextColor
+                    
+                    cell.addTap {
+                        self.productSelectedListViewModel.removeAllProducts()
+                        self.loadedContentsTable.reloadData()
+                        self.yetToloadContentsTable.reloadData()
+                        
+                    }
+                    return cell
+                    
+                default:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameWithSampleTableViewCell", for: indexPath) as! ProductNameWithSampleTableViewCell
 
-                
-                cell.product =  self.productSelectedListViewModel.fetchProductData(indexPath.row, searchText: self.searchText, type: addCallinfoVC.dcrCall.type,selectedDoctorCode: addCallinfoVC.dcrCall.code)
-                cell.selectionStyle = .none
-                cell.btnSelected.isUserInteractionEnabled = false
-                cell.addTap {
-                    self.productSelectionAction(cell.btnSelected)
+                    cell.samplesView.isHidden = false
+                    cell.product =  self.productSelectedListViewModel.fetchProductData(indexPath.row, searchText: self.searchText, type: addCallinfoVC.dcrCall.type,selectedDoctorCode: addCallinfoVC.dcrCall.code)
+                    cell.selectionStyle = .none
+                    cell.btnSelected.isUserInteractionEnabled = false
+                    cell.addTap {
+                        self.productSelectionAction(cell.btnSelected)
+                    }
+                    return cell
                 }
-                return cell
+
                 
                 
             case loadedContentsTable:
@@ -561,14 +605,17 @@ extension AddCallinfoView: tableViewProtocols {
                 cell.selectionStyle = .none
                 let model = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
                 cell.productSample = model
-                
+                cell.txtRcpaQty.delegate = self
+                cell.txtSampleQty.delegate = self
+                cell.txtRxQty.delegate = self
                 
 //                let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
 //                let SaleSampleArr =  productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
 //                let sampleArr = productArray.filter { $0.productMode?.lowercased() == "sample" }
                 
                 /*  SL -> sale -> disable samples SM -> Sample -> Disable RX SM/SL -> Enable both*/
-                
+                cell.txtSampleQty.isUserInteractionEnabled = true
+                cell.txtRxQty.isUserInteractionEnabled = true
                 if model.product.product?.productMode?.lowercased() == "sale" {
                     cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
                     cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
@@ -578,7 +625,8 @@ extension AddCallinfoView: tableViewProtocols {
                     cell.txtRxQty.addTarget(self, action: #selector(updateProductRxQty(_:)), for: .editingChanged)
                     cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
                     cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
-                    
+                    cell.txtSampleQty.isUserInteractionEnabled = true
+                    cell.txtRxQty.isUserInteractionEnabled = true
                 } else if model.product.product?.productMode?.lowercased() == "sample" {
                     cell.txtSampleQty.addTarget(self, action: #selector(updateProductSampleQty(_:)), for: .editingChanged)
                     cell.txtRcpaQty.addTarget(self, action: #selector(updateProductRcpaQty(_:)), for: .editingChanged)
@@ -609,14 +657,37 @@ extension AddCallinfoView: tableViewProtocols {
         case .inputs:
             switch tableView {
             case yetToloadContentsTable:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell", for: indexPath) as! ProductNameTableViewCell
-                cell.selectionStyle = .none
-                cell.input = self.inputSelectedListViewModel.fetchInputData(indexPath.row, searchText: self.searchText)
-                cell.btnSelected.isUserInteractionEnabled = false
-                cell.addTap {
-                    self.inputSelectionAction(cell.btnSelected)
+                switch indexPath.section {
+                case 0:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell", for: indexPath) as! ProductNameTableViewCell
+                    cell.lblName.text = "No Input selected"
+                    cell.btnSelected.isSelected = false
+                    let selectedInputs = self.inputSelectedListViewModel.fetchAllInputData()
+                    if let selectedInputs = selectedInputs {
+                        if selectedInputs.isEmpty {
+                            cell.btnSelected.isSelected = true
+                        } else {
+                            cell.btnSelected.isSelected = false
+                        }
+                    }
+                    cell.lblName.textColor =    cell.btnSelected.isSelected ? .appTextColor : .appLightTextColor
+                    cell.addTap {
+                        self.inputSelectedListViewModel.removeAllInputs()
+                        self.loadedContentsTable.reloadData()
+                        self.yetToloadContentsTable.reloadData()
+                    }
+                    return cell
+                default:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell", for: indexPath) as! ProductNameTableViewCell
+                    cell.selectionStyle = .none
+                    cell.input = self.inputSelectedListViewModel.fetchInputData(indexPath.row, searchText: self.searchText)
+                    cell.btnSelected.isUserInteractionEnabled = false
+                    cell.addTap {
+                        self.inputSelectionAction(cell.btnSelected)
+                    }
+                    return cell
                 }
-                return cell
+
                 
                 
             case loadedContentsTable:
@@ -735,7 +806,12 @@ extension AddCallinfoView: tableViewProtocols {
                 return UITableViewCell()
             case loadedContentsTable:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RcpaAddedListTableViewCell", for: indexPath) as! RcpaAddedListTableViewCell
-            
+                // Ensure indexPath.section is within bounds before accessing the array
+                guard indexPath.section < self.rcpaDetailsModel.count else {
+                    // Handle the error, e.g., by logging or setting a default value
+                    print("Index out of range: section \(indexPath.section) is not valid")
+                    return UITableViewCell()
+                }
                 cell.rcpaProduct = self.rcpaDetailsModel[indexPath.section]
                 let productsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails
                 cell.lblName.text = productsInfo?.addedProduct?[indexPath.row].addedProduct?.name ?? ""
@@ -798,8 +874,8 @@ extension AddCallinfoView: tableViewProtocols {
     }
     
     func summonedTotal(rate: String, quantity: String) -> String {
-    let rateInt: Int = Int(rate) ?? 0
-        let intQuantity: Int = Int(quantity) ?? 0
+    let rateInt: Float = Float(rate) ?? 0
+        let intQuantity: Float = Float(quantity) ?? 0
         
         return "\(rateInt * intQuantity)"
     }
@@ -858,6 +934,13 @@ extension AddCallinfoView: tableViewProtocols {
         case .rcppa:
             return   self.rcpaDetailsModel.count
             //rcpaAddedListViewModel.numberofSections()
+        case .products, .inputs:
+            switch tableView{
+            case yetToloadContentsTable:
+                return 2
+            default:
+                return 1
+            }
         default:
             return 1
         }
@@ -980,8 +1063,8 @@ extension AddCallinfoView: tableViewProtocols {
                 var summonedTotal: Int = 0
     
                 productsInfo?.addedTotal?.forEach({ aProductTotal in
-                    let intTotal = Int(aProductTotal) ?? 0
-                    summonedTotal += intTotal
+                    let intTotal = Float(aProductTotal) ?? 0
+                    summonedTotal += Int(intTotal)
                 })
                 
                 productsInfo?.addedProduct?.forEach({ aProductWithCompetiors in
@@ -1315,7 +1398,7 @@ class AddCallinfoView : BaseView {
     var chemistObj: NSManagedObject?
     var selectedChemistRcpa : AnyObject?
     var productQty: String = "1"
-    var rateInt: Int = 0
+    var rateInt: Double = 0
     var selectedProductIndex: Int = 0
     var selectedProductRcpa : AnyObject?
     var selectedAddcompetitorSection: Int = 0
@@ -1669,8 +1752,8 @@ class AddCallinfoView : BaseView {
         yetTosearchTF.delegate = self
         
         backHolderView.addTap {
-            self.addCallinfoVC.navigationController?.popViewController(animated: true)
-            Shared.instance.detailedSlides = []
+            self.showAlertToEnableLocation(desc: "Are you sure about exiting from selected call?", isToPop: true)
+        
         }
         
         dcrNameCurvedView.addTap {
@@ -1697,7 +1780,9 @@ class AddCallinfoView : BaseView {
         saveView.addTap {
             if customerChekinEnabled {
                 self.fetchLocationAndCheckout()
+            
             } else {
+                self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
                 print("Yet to Add call")
             }
        
@@ -1766,48 +1851,51 @@ class AddCallinfoView : BaseView {
     
     func toLoadSegments() {
         segmentsCollection.isScrollEnabled = false
+        
         if addCallinfoVC.dcrCall.call is DoctorFencing {
-       //     if appsetup.docr == 0 {
+    
             if Shared.instance.detailedSlides.count != 0 {
         
                 segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
             } else {
                 segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
             }
-               
-//            } else {
-//                segmentType = [.products, .inputs, .additionalCalls, .jointWork]
-//            }
-           
+
           
         }
         
         
         if addCallinfoVC.dcrCall.call is Chemist {
-         //   if appsetup.chmRcpaNeed == 0 {
+            
+            if Shared.instance.detailedSlides.count != 0 {
                 segmentType = [.detailed, .products, .inputs, .rcppa, .jointWork]
-//            } else {
-//                segmentType = [.detailed, .products, .inputs, .jointWork]
-//            }
-           
+            } else {
+                segmentType = [.products, .inputs, .rcppa, .jointWork]
+            }
         }
         
         if addCallinfoVC.dcrCall.call is Stockist {
-        //    if appsetup.stk == 0 {
-                segmentType = [.detailed, .products, .inputs, .rcppa, .jointWork]
-//            } else {
-//                segmentType = [.detailed, .products, .inputs, .jointWork]
-//            }
-           
+            
+            if Shared.instance.detailedSlides.count != 0 {
+                segmentType = [.detailed, .products, .inputs, .jointWork]
+            } else {
+                segmentType = [.products, .inputs, .jointWork]
+            }
+
         }
         
         
         if addCallinfoVC.dcrCall.call is UnListedDoctor {
-           // if appsetup.docPobNeed == 0 {
-                segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
-//            } else {
-//                segmentType = [.detailed, .products, .inputs, .jointWork]
-//            }
+            
+            if Shared.instance.detailedSlides.count != 0 {
+                segmentType = [.detailed, .products, .inputs, .additionalCalls, .jointWork]
+            } else {
+                segmentType = [.products, .inputs, .additionalCalls, .jointWork]
+            }
+            
+        
+           
+
            
         }
      
@@ -1881,7 +1969,7 @@ class AddCallinfoView : BaseView {
         
         let qtyInt: Int = Int(self.productQty) ?? 1
         rateLbl.text = "\(rateInt)"
-        valuelbl.text = "\(rateInt * qtyInt)"
+        valuelbl.text = "\(rateInt * Double(qtyInt))"
         
     }
     
@@ -2022,7 +2110,7 @@ extension AddCallinfoView : addedSubViewsDelegate {
     }
     
     func showAlert(desc: String) {
-        showAlertToEnableLocation(desc: desc)
+        showAlertToEnableLocation(desc: desc, isToPop: false)
     }
     
     
@@ -2030,17 +2118,23 @@ extension AddCallinfoView : addedSubViewsDelegate {
         print("Yet to implement")
     }
     
-    func showAlertToEnableLocation(desc: String) {
+    
+    
+    func showAlertToEnableLocation(desc: String, isToPop: Bool) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
-        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
-            print("no action")
-            // self.toDeletePresentation()
-            
-        }
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "cancel")
         commonAlert.addAdditionalCancelAction {
+            print("no action")
+        }
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("yes action")
-            self.redirectToSettings()
+            if isToPop {
+                self.addCallinfoVC.navigationController?.popViewController(animated: true)
+                Shared.instance.detailedSlides = []
+            } else {
+                self.redirectToSettings()
+            }
+           
             
         }
     }

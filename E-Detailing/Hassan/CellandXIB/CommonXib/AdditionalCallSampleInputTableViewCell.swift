@@ -86,9 +86,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     if inputCount != 0 {
                         self.lblInputQty.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).inputCount
                         self.lblInputName.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).name
-                        
+                        inputQtyCorneredView.isHidden = self.lblInputQty.text == "" ? true : false
                         inputs.removeFirst()
                     }else {
+                        inputQtyCorneredView.isHidden = true
                         self.lblInputQty.text = ""
                         self.lblInputName.text = ""
                     }
@@ -96,9 +97,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     if productCount != 0 {
                         self.lblProductName.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).name
                         self.lblProductQty.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
-                        
+                    
                         products.removeFirst()
                     }else {
+                    
                         self.lblInputQty.text = ""
                         self.lblInputName.text = ""
                     }
@@ -168,6 +170,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                                 productView.input = inputs[index]
                                 productView.inputQty = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(index + 1).inputCount
                             } else {
+                                productView.inputQtyCurvedView.isHidden = true
                                 // Handle the case where index is out of range
                                 // For example, provide a default value or handle the error
                                 print("Index is out of range.")
@@ -226,9 +229,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                     self.lblInputQty.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).inputCount
                     self.lblInputName.text = inputs[0].name //additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).name
-                    
+                    inputQtyCorneredView.isHidden = self.lblInputQty.text == "" ? true : false
                     inputs.removeFirst()
                 }else {
+                    inputQtyCorneredView.isHidden = true
                     self.lblInputQty.text = ""
                     self.lblInputName.text = ""
                 }
@@ -236,7 +240,6 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 if productCount != 0 {
                     self.lblProductName.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).name
                     self.lblProductQty.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
-                    
                     products.removeFirst()
                 }else {
                     self.lblInputQty.text = ""
