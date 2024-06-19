@@ -104,7 +104,7 @@ extension DCRfiltersView: collectionViewProtocols {
             case .dcrClass:
                 welf.filtertype = .dcrClass
                // welf.addFiltersTable(type: .dcrClass, view: cell)
-               // self.showMenu(type: .)
+                welf.showMenu(type: .doctorClass)
             }
         }
         return cell

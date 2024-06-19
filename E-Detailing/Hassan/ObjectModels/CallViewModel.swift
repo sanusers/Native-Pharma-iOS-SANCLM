@@ -147,7 +147,7 @@ class CallListViewModel {
             let categoryCode = filterscase.categoryCode?.name
             let specialityCode = filterscase.specialityCode?.name
             let territoryCode = filterscase.territoryCode?.name
-
+            let doctorClassCode = filterscase.classCode?.doctorClassName
             // Use filter to find the matching doctors
           
             let filteredDoc = doctors.filter { doctor in
@@ -160,6 +160,11 @@ class CallListViewModel {
                 if let territoryCode = territoryCode, doctor.townName != territoryCode {
                     return false
                 }
+                
+                if let doctorClassCode = doctorClassCode, doctor.doctorClassName != doctorClassCode {
+                    return false
+                }
+                
                 return true
             }
             if !filteredDoc.isEmpty {
@@ -206,6 +211,7 @@ class CallListViewModel {
         let categoryCode = filterscase.categoryCode?.name
         let specialityCode = filterscase.specialityCode?.name
         let territoryCode = filterscase.territoryCode?.name
+        let doctorClassCode = filterscase.classCode?.doctorClassName
 
         // Use filter to find the matching doctors
         // Use filter to find the matching doctors
@@ -219,6 +225,11 @@ class CallListViewModel {
             if let territoryCode = territoryCode, doctor.townName != territoryCode {
                 return false
             }
+            
+            if let doctorClassCode = doctorClassCode, doctor.doctorClassName != doctorClassCode {
+                return false
+            }
+            
             return true
         }.count
        // return doctors.filter { $0.categoryCode ==  categoryCode ?? "" || $0.specialityCode == specialityCode ?? "" || $0.townCode == territoryCode ?? ""}.count
@@ -263,7 +274,6 @@ public class CallViewModel {
     
     let call : AnyObject
     var type : DCRType
-    
     var dcrCheckinTime: String = ""
     var dcrCheckOutTime: String = ""
     var checkinlatitude: Double = Double()

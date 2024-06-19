@@ -637,6 +637,43 @@ extension SpecifiedMenuView:UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+            case .doctorClass:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                    toLOadData()
+                }
+                var filteredDoctorClass = [DoctorClass]()
+                filteredDoctorClass.removeAll()
+                var isMatched = false
+              doctorClassArr?.forEach({ workType in
+                    if workType.doctorClassName!.lowercased().contains(newText) {
+                        filteredDoctorClass.append(workType)
+                        isMatched = true
+                        
+                    }
+                })
+                
+                if newText.isEmpty {
+                  //  self.sessionDetailsArr.sessionDetails?[self.selectedSession].workType = self.workTypeArr
+                    self.noresultsView.isHidden = true
+                    //self.selectAllView.isHidden = true
+                   // self.selectAllHeightConst.constant = 0
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    self.doctorClassArr = filteredDoctorClass
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
             case .theraptic:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
@@ -745,6 +782,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
         case .leave:
             return self.leaveArr?.count ?? 0
+        case .doctorClass:
+            return self.doctorClassArr?.count ?? 0
         default:
             print("Yet to implement")
         }
@@ -1547,6 +1586,25 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return cell
             
+        case .doctorClass:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+           
+            cell.selectionStyle = .none
+           
+            var yetTosendModel: NSManagedObject?
+            if let modelArr = self.doctorClassArr, !modelArr.isEmpty {
+                 let model: DoctorClass = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+                // cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.doctorClass, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
         default:
             print("Yet to implement")
         }
@@ -1629,6 +1687,7 @@ class SpecifiedMenuView: BaseView {
     var unlisteedDocArr : [UnListedDoctor]?
     var filteredTerritories: [Territory]?
     var filteredCompetitors: [Competitor]?
+    var filteredClass : [DoctorClass]?
     var filteredTherapic: [SlideTheraptic]?
     var filteredLeave : [LeaveType]?
     var filteredJfw: [JointWork]?
@@ -1640,6 +1699,7 @@ class SpecifiedMenuView: BaseView {
     var qualifications: [Qualifications]?
     var feedback : [Feedback]?
     var competitorsArr : [Competitor]?
+    var doctorClassArr : [DoctorClass]?
     var leaveArr: [LeaveType]?
     var therapicArr: [SlideTheraptic]?
     var selectecIndex: Int? = nil
@@ -1650,6 +1710,7 @@ class SpecifiedMenuView: BaseView {
     var previewType: String?
     var selectedClusterID = [String: Bool]()
     var selectedLeaveID = [String: Bool]()
+    var selectedClassID = [String: Bool]()
     var selectedTherapicID = [String: Bool]()
     var selectedJwID = [String: Bool]()
     var selectedCompetitorID = [String: Bool]()
@@ -1867,6 +1928,13 @@ class SpecifiedMenuView: BaseView {
             return selectedLeaveID[code] == true
         }
         
+        filteredClass = doctorClassArr?.filter { leave in
+             guard let code = leave.code else {
+                 return false
+             }
+             return selectedClassID[code] == true
+         }
+        
         filteredJfw = jointWorkArr?.filter { territory in
                   guard let code = territory.code else {
                       return false
@@ -2042,6 +2110,11 @@ class SpecifiedMenuView: BaseView {
            titleLbl.text = "Select leave type"
            bottomHolderHeight.constant = 0
            self.leaveArr = DBManager.shared.getLeaveType()
+           
+       case .doctorClass:
+           titleLbl.text = "Select Class"
+           bottomHolderHeight.constant = 0
+           self.doctorClassArr = DBManager.shared.getDoctorClass()
            
        case .theraptic:
            titleLbl.text = "Select Therapic type"
@@ -2273,6 +2346,10 @@ class SpecifiedMenuTCell: UITableViewCell
       //  itemTypeLbl.text = model.productMode
     }
     
+    func populateCell(model: DoctorClass) {
+        lblName.text = model.doctorClassName
+      //  itemTypeLbl.text = model.productMode
+    }
     
     func populateCell(model: Speciality) {
         lblName.text = model.name

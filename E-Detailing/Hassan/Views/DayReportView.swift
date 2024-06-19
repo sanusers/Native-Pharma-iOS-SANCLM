@@ -353,7 +353,7 @@ extension DayReportView: VisitsCountTVCDelegate {
 extension DayReportView : ViewAllInfoTVCDelegate {
     func didRCPAinfoTapped(view: UIView, model: RCPAresonseModel) {
         print("Tapped -->")
-        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 4 , height: self.height / 7.5), on: view,  pagetype: .RCPA)
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 3, height: self.height / 7), on: view,  pagetype: .RCPA)
 
         vc.color = .appTextColor
         vc.rcpaInfo = model

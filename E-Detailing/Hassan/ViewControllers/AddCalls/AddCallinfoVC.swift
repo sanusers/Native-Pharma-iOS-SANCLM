@@ -29,6 +29,8 @@ class AddCallinfoVC: BaseViewController {
     var detailedSlides = [DetailedSlide]()
     var outBoxDataArr : [TodayCallsModel]?
     var unsyncedhomeDataArr = [UnsyncedHomeData]()
+    var amc: String = ""
+    var isForEdit: Bool = false
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
         let reportsVC : AddCallinfoVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.userStatisticsVM = viewmodel
@@ -440,7 +442,7 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["vstTime"] = date
         addedDCRCallsParam["Remarks"] =  self.addCallinfoView.overallRemarks ?? ""
         //self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
-        addedDCRCallsParam["amc"] = ""
+
         addedDCRCallsParam["hospital_code"] = ""
         addedDCRCallsParam["hospital_name"] = ""
         addedDCRCallsParam["sample_validation"]  = "0"
@@ -448,6 +450,13 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["sign_path"] = ""
         addedDCRCallsParam["SignImageName"] = ""
         addedDCRCallsParam["DCSUPOB"] =  self.addCallinfoView.pobValue
+        addedDCRCallsParam["day_flag"] = "1"
+    //    if isForEdit {
+            addedDCRCallsParam["amc"] = self.amc
+//        } else {
+//            addedDCRCallsParam["amc"] = ""
+//        }
+
        // addedDCRCallsParam["checkout"] = dcrCall.dcrCheckinTime
        // addedDCRCallsParam["checkin"] = date
         //self.txtPob.text ?? ""

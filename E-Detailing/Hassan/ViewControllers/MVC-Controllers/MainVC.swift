@@ -367,6 +367,7 @@ class MainVC : UIViewController {
         configureSaveplanBtn(toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
         toLoadOutboxTable(isSynced: issynced ?? false)
         toloadCallsTable()
+      
     }
     
     func refreshDashboard(completion: @escaping () -> ()) {
@@ -836,7 +837,7 @@ class MainVC : UIViewController {
             self.configureSaveplanBtn(istoEnableSaveBtn)
             self.setupRejectionVIew()
           
-            self.setSegment(.workPlan)
+          //  self.setSegment(.workPlan)
             
             
         }
@@ -1436,10 +1437,13 @@ class MainVC : UIViewController {
         if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                 // self.toLoadOutboxTable(isSynced: true)
-                self.refreshDashboard() {}
+                self.refreshDashboard() {
+                    self.setSegment(.calls)
+                }
             }
         } else {
             refreshUI()
+            self.setSegment(.outbox)
         }
      
     }
@@ -4947,9 +4951,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.fetchedWorkTypeObject2 = nil
                 welf.toAddnewSession()
                 welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
-               // welf.setSegment(.workPlan)
-               // welf.tourPlanCalander.reloadData()
-                //welf.toSetParams(date: date, isfromSyncCall: false) {}
+
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MMMM d, yyyy"
                 welf.lblDate.text = dateFormatter.string(from: date)
@@ -5163,6 +5165,7 @@ extension MainVC : outboxCollapseTVCDelegate {
                 Shared.instance.showLoaderInWindow()
                     self.toUploadUnsyncedImage() {
                     self.toLoadOutboxTable()
+                    self.setSegment(.outbox)
                     Shared.instance.removeLoaderInWindow()
                 }
                 

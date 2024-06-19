@@ -161,3 +161,37 @@ class PaddedLabel: UILabel {
     }
 }
 
+
+class EmptyReusableVIew: UICollectionReusableView {
+
+    let sectionView: UIView = {
+        let label = UIView()
+ 
+        label.backgroundColor = .clear
+   
+        label.clipsToBounds = true
+       
+        return label
+    }()
+
+    
+    
+
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+       // addSubviews()
+       // self.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+      //  self.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+       // addSubviews()
+    }
+    
+
+    override func layoutSubviews()  {
+        sectionView.frame = self.bounds
+    }
+}

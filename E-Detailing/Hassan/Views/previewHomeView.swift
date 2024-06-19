@@ -338,6 +338,17 @@ extension PreviewHomeView:  PlayPresentationViewDelegate {
 }
 
 extension PreviewHomeView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        return CGSize(width: collectionView.frame.width, height: collectionView.height / 20)
+//    }
+    
+
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 80)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case previewTypeCollection:
@@ -795,7 +806,11 @@ class PreviewHomeView : BaseView {
             layout.collectionView?.isScrollEnabled = true
             layout.scrollDirection = .vertical
         }
-     
+
+        
+        presentationCollectionVIew.register(EmptyReusableVIew.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EmptyReusableVIew")
+        
+        presentationCollectionVIew.register(EmptyReusableVIew.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "EmptyReusableVIew")
         
         presentationCollectionVIew.register(UINib(nibName: "SelectedPreviewTypesCVC", bundle: nil), forCellWithReuseIdentifier: "SelectedPreviewTypesCVC")
         

@@ -21,11 +21,17 @@ extension MainVC {
         
     }
     
+    struct FetchedInputInfo {
+        let input: String?
+        let count: String?
+        
+    }
+    
     struct AdditionalInfo {
         var feedback: Feedback?
         var pobValue: String?
         var overallRemarks: String?
-        
+        var amc: String?
     }
     
     func toCallEditAPI(dcrCall: TodayCallsModel) {
@@ -105,11 +111,13 @@ extension MainVC {
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userststisticsVM ?? UserStatisticsVM())
         
         vc.rcpaDetailsModel =  toCreateRCPAdetailsModel(rcpa: model.rcpaHeadArr)
+        
         vc.productSelectedListViewModel = tocreateProductsViewModal(fetchedproducts: model.dcrDetailArr)
+        
+        vc.inputSelectedListViewModel = tocreateInputsViewModal(fetchedinputs: model.dcrDetailArr)
         
         vc.jointWorkSelectedListViewModel = toCreateJointWorksViewmodel(fetchedproducts: model.dcrDetailArr)
         
-    
         vc.detailedSlides = toReturnFetchedDetailedSlides(fetchedDetails: model.digitalHeadArr)
         
        let fetchedAdditionalInfo = toReturnAdditionalAttributes(details: model.dcrDetailArr)
@@ -117,8 +125,8 @@ extension MainVC {
         vc.pobValue = fetchedAdditionalInfo.pobValue
         vc.overallFeedback = fetchedAdditionalInfo.feedback
         vc.overallRemarks = fetchedAdditionalInfo.overallRemarks
-        
-        
+        vc.amc = fetchedAdditionalInfo.amc ?? ""
+        vc.isForEdit = true
         vc.eventCaptureListViewModel = toCreateEventcaptureViewModel(fetchedCaptures: model.eventCaptureArr)
         
         guard let callvm = call as? CallViewModel else {
@@ -150,13 +158,14 @@ extension MainVC {
             }.first
             
             fetchedInfo.feedback = fechedFeedback
+            fetchedInfo.amc =  "\(aDCRDetail.transactionSerialNumber)"
             
         }
         
         return fetchedInfo
     }
     
-    func transformStringToObjects(_ inputString: String) -> [FetchedProductInfo] {
+    func transformStringToProductObjects(_ inputString: String) -> [FetchedProductInfo] {
         var productInfoArray: [FetchedProductInfo] = []
 
         // Split the input string by '#'
@@ -185,6 +194,29 @@ extension MainVC {
 
 
         return productInfoArray
+    }
+    
+    func transformStringToInputObjects(_ inputString: String) -> [FetchedInputInfo] {
+        var inputInfoArray: [FetchedInputInfo] = []
+
+        // Split the input string by '#'
+        let components = inputString.components(separatedBy: "#")
+
+        // Process each component
+        for component in components {
+            let parts = component.components(separatedBy: "~")
+
+            if parts.count >= 2 {
+                let input = parts[0]
+                let count = parts[1]
+
+                // Create a FetchedInputInfo object and append it to the array
+                let inputInfo = FetchedInputInfo(input: input, count: count)
+                inputInfoArray.append(inputInfo)
+            }
+        }
+
+        return inputInfoArray
     }
     
     func toReturnPromotedProductCodes(promotedProductsString: String) -> [String] {
@@ -325,7 +357,7 @@ extension MainVC {
         fetchedproducts.forEach { aDCRDetail in
             let productCode = aDCRDetail.productCode
             
-            fetchedProductInfoArr =  self.transformStringToObjects(productCode)
+            fetchedProductInfoArr =  self.transformStringToProductObjects(productCode)
             
             fetchedProductInfoArr.forEach { aFetchedProductInfo in
                 
@@ -347,6 +379,47 @@ extension MainVC {
             
         }
         return fetchedProductSelectedListViewModel
+        
+    }
+    
+    
+    func tocreateInputsViewModal(fetchedinputs: [DCRDetail]) -> InputSelectedListViewModel {
+        var fetchedInputInfoArr: [FetchedInputInfo] = []
+        
+        let cacheInputs = DBManager.shared.getInput()
+        
+        let fetchedInputSelectedListViewModel = InputSelectedListViewModel()
+        fetchedinputs.forEach { aDCRDetail in
+            //Main gifts
+            let giftCode = aDCRDetail.giftCode
+            let addedInput = cacheInputs.filter { aInput in
+                aInput.code == giftCode
+            }.first
+            let aInputData = InputData(input: addedInput, availableCount: "", inputCount: aDCRDetail.giftQty)
+            let aInputewmodel = InputViewModel(input: aInputData)
+            fetchedInputSelectedListViewModel.addInputViewModel(aInputewmodel)
+            //Additional gifts
+            let additionalinputCode = aDCRDetail.additionalGiftCode
+            fetchedInputInfoArr =  self.transformStringToInputObjects(additionalinputCode)
+            
+            fetchedInputInfoArr.forEach { aFetchedInputInfo in
+                
+             
+                let addedInput = cacheInputs.filter { aInput in
+                    aInput.code == aFetchedInputInfo.input
+                }.first
+                let aInputData = InputData(input: addedInput, availableCount: "", inputCount: aFetchedInputInfo.count ?? "")
+                let aInputewmodel = InputViewModel(input: aInputData)
+                
+                fetchedInputSelectedListViewModel.addInputViewModel(aInputewmodel)
+                
+            }
+            
+        }
+        
+        
+        
+        return fetchedInputSelectedListViewModel
         
     }
     

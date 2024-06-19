@@ -129,6 +129,8 @@
         <attribute name="dob" optional="YES" attributeType="String"/>
         <attribute name="docDesig" optional="YES" attributeType="String"/>
         <attribute name="docEmail" optional="YES" attributeType="String"/>
+        <attribute name="doctorClassCode" optional="YES" attributeType="String"/>
+        <attribute name="doctorClassName" optional="YES" attributeType="String"/>
         <attribute name="dow" optional="YES" attributeType="String"/>
         <attribute name="drSex" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>

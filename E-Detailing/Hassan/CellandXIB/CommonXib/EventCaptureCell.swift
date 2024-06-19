@@ -95,6 +95,7 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        imgView.contentMode = .scaleAspectFill
         capturedImageHolder.layer.cornerRadius = 5
         capturedImageHolder.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         nameTFholder.layer.cornerRadius = 5

@@ -825,7 +825,7 @@
                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cV9-fd-EA4">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="41.5" height="29.5"/>
                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="yU0-I1-8PT">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="42" height="30"/>
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="29.5"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         </view>
                                                                                         <color key="backgroundColor" systemColor="systemGray6Color"/>
@@ -856,7 +856,7 @@
                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.14999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QTq-39-aDR">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="83" height="29.5"/>
                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="SHg-aJ-18f">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="83" height="30"/>
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="83" height="29.5"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         </view>
                                                                                         <color key="backgroundColor" systemColor="systemCyanColor"/>
@@ -5698,32 +5698,13 @@
                                             <constraint firstAttribute="height" constant="1" id="4QP-fM-OvP"/>
                                         </constraints>
                                     </view>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aBG-Xn-LgD">
-                                        <rect key="frame" x="992.5" y="4" width="170" height="57.5"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Finish Detailing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqJ-Cj-rQL">
-                                                <rect key="frame" x="28" y="18.5" width="114" height="20"/>
-                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="170" id="3jC-DR-xHC"/>
-                                            <constraint firstItem="dqJ-Cj-rQL" firstAttribute="centerX" secondItem="aBG-Xn-LgD" secondAttribute="centerX" id="aC0-We-TSN"/>
-                                            <constraint firstItem="dqJ-Cj-rQL" firstAttribute="centerY" secondItem="aBG-Xn-LgD" secondAttribute="centerY" id="yuP-GK-zkn"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="aCq-1Q-Q17" firstAttribute="centerY" secondItem="KC5-NP-Xqi" secondAttribute="centerY" multiplier="1.67" id="6CO-LM-UGr"/>
                                     <constraint firstItem="qRK-Wm-C8E" firstAttribute="height" secondItem="KC5-NP-Xqi" secondAttribute="height" multiplier="0.8" id="MPb-Bb-fzj"/>
-                                    <constraint firstItem="aBG-Xn-LgD" firstAttribute="height" secondItem="KC5-NP-Xqi" secondAttribute="height" multiplier="0.7" id="ZZq-Ge-DjF"/>
                                     <constraint firstItem="aCq-1Q-Q17" firstAttribute="centerX" secondItem="KC5-NP-Xqi" secondAttribute="centerX" id="dN8-ME-dcp"/>
                                     <constraint firstItem="aCq-1Q-Q17" firstAttribute="width" secondItem="qRK-Wm-C8E" secondAttribute="width" id="iki-Zn-je2"/>
-                                    <constraint firstItem="aBG-Xn-LgD" firstAttribute="centerY" secondItem="KC5-NP-Xqi" secondAttribute="centerY" multiplier="0.8" id="q9S-bj-Rxj"/>
                                     <constraint firstItem="qRK-Wm-C8E" firstAttribute="centerX" secondItem="KC5-NP-Xqi" secondAttribute="centerX" id="vJk-Uy-4IB"/>
                                     <constraint firstItem="qRK-Wm-C8E" firstAttribute="centerY" secondItem="KC5-NP-Xqi" secondAttribute="centerY" id="zNA-3i-Yhe"/>
                                 </constraints>
@@ -5931,6 +5912,25 @@
                                             </view>
                                         </subviews>
                                     </stackView>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aBG-Xn-LgD">
+                                        <rect key="frame" x="960" y="552.5" width="170" height="57.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Finish Detailing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dqJ-Cj-rQL">
+                                                <rect key="frame" x="28" y="18.5" width="114" height="20.5"/>
+                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="170" id="3jC-DR-xHC"/>
+                                            <constraint firstItem="dqJ-Cj-rQL" firstAttribute="centerX" secondItem="aBG-Xn-LgD" secondAttribute="centerX" id="aC0-We-TSN"/>
+                                            <constraint firstItem="dqJ-Cj-rQL" firstAttribute="top" secondItem="aBG-Xn-LgD" secondAttribute="top" constant="18.5" id="hMD-do-3IJ"/>
+                                            <constraint firstAttribute="height" constant="57.5" id="wtk-tq-RwQ"/>
+                                            <constraint firstItem="dqJ-Cj-rQL" firstAttribute="centerY" secondItem="aBG-Xn-LgD" secondAttribute="centerY" id="yuP-GK-zkn"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -5940,6 +5940,7 @@
                                     <constraint firstItem="wey-pN-i2m" firstAttribute="centerY" secondItem="Cd0-Wt-NTC" secondAttribute="centerY" id="NmH-0S-Yq0"/>
                                     <constraint firstItem="c2k-8M-wgM" firstAttribute="height" secondItem="pBo-Ll-cKd" secondAttribute="height" id="OBA-N7-w9E"/>
                                     <constraint firstItem="8qo-9G-6U7" firstAttribute="centerX" secondItem="Jr0-9L-b3n" secondAttribute="centerX" id="ONL-nB-rrP"/>
+                                    <constraint firstAttribute="trailing" secondItem="aBG-Xn-LgD" secondAttribute="trailing" constant="15" id="OqJ-rX-YOE"/>
                                     <constraint firstItem="wey-pN-i2m" firstAttribute="height" secondItem="Cd0-Wt-NTC" secondAttribute="height" id="T7G-oU-sXS"/>
                                     <constraint firstItem="Cd0-Wt-NTC" firstAttribute="width" secondItem="Jr0-9L-b3n" secondAttribute="width" multiplier="0.1" id="TqX-5H-Ism"/>
                                     <constraint firstAttribute="trailing" secondItem="Cd0-Wt-NTC" secondAttribute="trailing" constant="15" id="Uee-mX-wh2"/>
@@ -5950,6 +5951,7 @@
                                     <constraint firstItem="E1n-xH-dOe" firstAttribute="centerX" secondItem="Jr0-9L-b3n" secondAttribute="centerX" id="eYd-U3-ytC"/>
                                     <constraint firstItem="8qo-9G-6U7" firstAttribute="top" secondItem="pBo-Ll-cKd" secondAttribute="bottom" constant="5" id="fOw-V6-KlS"/>
                                     <constraint firstItem="Cd0-Wt-NTC" firstAttribute="leading" secondItem="c2k-8M-wgM" secondAttribute="trailing" constant="20" id="fPC-rv-A6j"/>
+                                    <constraint firstAttribute="bottom" secondItem="aBG-Xn-LgD" secondAttribute="bottom" constant="15" id="i1I-6L-Hkn"/>
                                     <constraint firstItem="c2k-8M-wgM" firstAttribute="leading" secondItem="pBo-Ll-cKd" secondAttribute="leading" id="iTU-eo-DVe"/>
                                     <constraint firstItem="E1n-xH-dOe" firstAttribute="centerY" secondItem="Jr0-9L-b3n" secondAttribute="centerY" id="kog-pi-puj"/>
                                     <constraint firstItem="Cd0-Wt-NTC" firstAttribute="height" secondItem="Jr0-9L-b3n" secondAttribute="height" multiplier="0.05" id="ky9-sg-4B2"/>
@@ -5965,7 +5967,6 @@
                             <constraint firstItem="XGr-FW-YfL" firstAttribute="trailing" secondItem="KC5-NP-Xqi" secondAttribute="trailing" id="EO8-0h-fdI"/>
                             <constraint firstItem="Jr0-9L-b3n" firstAttribute="centerX" secondItem="FcU-xj-P9D" secondAttribute="centerX" id="NXy-oB-rjZ"/>
                             <constraint firstItem="qRK-Wm-C8E" firstAttribute="width" secondItem="Jr0-9L-b3n" secondAttribute="width" id="Ppv-BA-IvH"/>
-                            <constraint firstItem="aBG-Xn-LgD" firstAttribute="trailing" secondItem="Jr0-9L-b3n" secondAttribute="trailing" id="U9x-jD-P1n"/>
                             <constraint firstItem="Jr0-9L-b3n" firstAttribute="width" secondItem="FcU-xj-P9D" secondAttribute="width" multiplier="0.97" id="W8Q-Cp-d6n"/>
                             <constraint firstItem="u83-dK-4yw" firstAttribute="width" secondItem="FcU-xj-P9D" secondAttribute="width" id="ZKO-CX-7N7"/>
                             <constraint firstItem="u83-dK-4yw" firstAttribute="centerY" secondItem="FcU-xj-P9D" secondAttribute="centerY" multiplier="0.09" id="dck-yE-MWX"/>
@@ -6551,12 +6552,12 @@
                                                                 <rect key="frame" x="10" y="5" width="328.5" height="39"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-4F-p13">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="26" height="39"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="49" height="39"/>
                                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
                                                                     </imageView>
                                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QYf-HS-1zw">
-                                                                        <rect key="frame" x="26" y="0.0" width="302.5" height="39"/>
+                                                                        <rect key="frame" x="49" y="0.0" width="279.5" height="39"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                         <connections>
@@ -6694,7 +6695,7 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="331" height="73"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IJA-1r-7oe">
-                                                                                                <rect key="frame" x="0.0" y="11" width="331" height="51"/>
+                                                                                                <rect key="frame" x="15.5" y="11" width="300" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meb-Ly-iph">
                                                                                                         <rect key="frame" x="15" y="16.5" width="133.5" height="17.5"/>
@@ -6703,7 +6704,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7lw-l7-meY">
-                                                                                                        <rect key="frame" x="290.5" y="13.5" width="25.5" height="23.5"/>
+                                                                                                        <rect key="frame" x="259.5" y="13.5" width="25.5" height="23.5"/>
                                                                                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                                                                     </imageView>
@@ -11584,52 +11585,52 @@ VmVyc2lvbiA6IDEuMAM
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="secondarySystemBackgroundColor">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="separatorColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemCyanColor">
-            <color red="0.1960784314" green="0.67843137249999996" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.19607843137254902" green="0.67843137254901964" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray2Color">
-            <color red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray3Color">
-            <color red="0.78039215689999997" green="0.78039215689999997" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray4Color">
-            <color red="0.81960784310000001" green="0.81960784310000001" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray6Color">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tableCellBlueTextColor">
-            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tableSeparatorLightColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>

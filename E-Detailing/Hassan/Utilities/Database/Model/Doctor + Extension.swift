@@ -105,8 +105,15 @@ extension DoctorFencing {
         if let taggedImage = dictionary["img_name"] as? String{
             imageName = taggedImage
         }
+     //   doctorClassName
+        if let className = dictionary["Doc_Class_ShortName"] as? String{
+            doctorClassName = className
+        }
         
-        
+        //doctorClassCode
+        if let classCode = dictionary["Doc_ClsCode"] as? String{
+            doctorClassCode = classCode
+        }
         mapId = id
     }
     

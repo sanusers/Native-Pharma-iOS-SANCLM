@@ -135,11 +135,21 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                 cell.txtSampleStock.isUserInteractionEnabled = true
             }
         case .inputs:
-            cell.input = self.addproductsMenuVC?.additionalCallListViewModel?.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+        let addedInput = self.addproductsMenuVC?.additionalCallListViewModel?.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
+            cell.input = addedInput
+            if addedInput?.code != "-1" {
+                cell.txtSampleStock.isUserInteractionEnabled = true
+                cell.txtSampleStock.addTarget(self, action: #selector(updateSampleInputQty(_:)), for: .editingChanged)
+            } else {
+                cell.txtSampleStock.isUserInteractionEnabled = false
+   
+            }
+            
         }
         cell.btnProduct.addTarget(self, action: #selector(additionalCallSampleInputSelection(_:)), for: .touchUpInside)
         cell.btnDelete.addTarget(self, action: #selector(deleteAdditionalCallSampleInput(_:)), for: .touchUpInside)
-        cell.txtSampleStock.addTarget(self, action: #selector(updateSampleInputQty(_:)), for: .editingChanged)
+
+
         return cell
     }
     
@@ -376,10 +386,10 @@ class AddproductsMenuView: BaseView {
             return fromDate <= currentDate && toDate >= currentDate
         }
         //        return filteredInputs
-        let removedNoIP = filteredInputs.filter { aInput in
-          aInput.code != "-1"
-       }
-      return removedNoIP
+//        let removedNoIP = filteredInputs.filter { aInput in
+//          aInput.code != "-1"
+//       }
+      return filteredInputs
         
   //      dump(filteredInputs)
 //        let noInput = inputs.filter { aInput in

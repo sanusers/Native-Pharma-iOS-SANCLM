@@ -562,7 +562,7 @@ extension AddCallinfoView: tableViewProtocols {
                 switch indexPath.section {
                 case 0:
                     let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameWithSampleTableViewCell", for: indexPath) as! ProductNameWithSampleTableViewCell
-                    cell.lblName.text = "No products selected"
+                    cell.lblName.text = "No products"
                     cell.samplesView.isHidden = true
                     
                     cell.btnSelected.isSelected = false
@@ -660,7 +660,7 @@ extension AddCallinfoView: tableViewProtocols {
                 switch indexPath.section {
                 case 0:
                     let cell = tableView.dequeueReusableCell(withIdentifier: "ProductNameTableViewCell", for: indexPath) as! ProductNameTableViewCell
-                    cell.lblName.text = "No Input selected"
+                    cell.lblName.text = "No Inputs"
                     cell.btnSelected.isSelected = false
                     let selectedInputs = self.inputSelectedListViewModel.fetchAllInputData()
                     if let selectedInputs = selectedInputs {
