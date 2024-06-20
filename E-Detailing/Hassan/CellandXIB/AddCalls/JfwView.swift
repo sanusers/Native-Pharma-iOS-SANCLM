@@ -31,27 +31,33 @@ extension JfwView: MenuResponseProtocol {
         
         if let jwObjs = selectedObjects as? [JointWork] {
             self.jointWorkSelectedListViewModel?.jointWorksListViewModel.removeAll()
-            
-            if jwObjs.isEmpty {
-                selectedJwID = [String: Bool]()
-               self.jointWorkTableView.reloadData()
-               return
-            }
-            
-            jwObjs.forEach { aJointWork in
-               
-            jointworkSelectionAction(obj: aJointWork)
-            }
-            
-            if !(jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
-                jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
-                    selectedJwID[aJointWork.code] = true
+            CoreDataManager.shared.toRemoveAllCacheJointWorks()
+            CoreDataManager.shared.toSaveJointworks(jointWorks:  jwObjs) { [weak self] isSaved in
+                guard let welf = self else {return}
+                
+                if jwObjs.isEmpty {
+                    welf.selectedJwID = [String: Bool]()
+                    welf.jointWorkTableView.reloadData()
+                   return
                 }
-            } else {
-                selectedJwID = [String: Bool]()
+                
+                jwObjs.forEach { aJointWork in
+                   
+                    welf.jointworkSelectionAction(obj: aJointWork)
+                }
+                
+                if !(welf.jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
+                    welf.jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
+                        welf.selectedJwID[aJointWork.code] = true
+                    }
+                } else {
+                    welf.selectedJwID = [String: Bool]()
+                }
+                
+                dump(welf.selectedJwID)
+                welf.toFetchCacheJointWorks()
             }
-            
-            dump(selectedJwID)
+
             
         }
         
@@ -206,10 +212,12 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
             return
         }
         
+        
       
         
         self.jointWorkSelectedListViewModel?.removeAtindex(indexPath.row)
-
+      
+        
         
         if !(jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
             self.selectedJwID = [String: Bool]()
@@ -220,7 +228,17 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
             selectedJwID = [String: Bool]()
         }
         
-        self.jointWorkTableView.reloadData()
+        let  updatedJointworks = self.jointWorkSelectedListViewModel?.getJointWorkData().map({ aJointWorkViewModel in
+            return aJointWorkViewModel.jointWork
+        })
+        guard let updatedJointworks = updatedJointworks else {return}
+        CoreDataManager.shared.toRemoveAllCacheJointWorks()
+        CoreDataManager.shared.toSaveJointworks(jointWorks: updatedJointworks) {[weak self] isSaved in
+            guard let welf = self else {return}
+            welf.toFetchCacheJointWorks()
+            
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -440,8 +458,8 @@ class JfwView: UIView {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         if self.dcrCall.call is DoctorFencing {
-           if appsetup.docPobNeed != 0 {
-               viewPOB.isHidden = false
+            if appsetup.docPobNeed != 0 {
+                viewPOB.isHidden = false
             }
             
             if appsetup.docJointWrkNeed != 0 {
@@ -454,43 +472,43 @@ class JfwView: UIView {
         } else if self.dcrCall.call is Chemist {
             if appsetup.chmPobNeed != 0 {
                 viewPOB.isHidden = false
-             }
-             
-             if appsetup.chmJointWrkMdNeed != 0 {
-                 jointworkHolderStack.isHidden = true
-             }
-             
-             if appsetup.chmEventMdNeed != 0 {
-                 eventCaptureHolderStack.isHidden = true
-             }
+            }
+            
+            if appsetup.chmJointWrkMdNeed != 0 {
+                jointworkHolderStack.isHidden = true
+            }
+            
+            if appsetup.chmEventMdNeed != 0 {
+                eventCaptureHolderStack.isHidden = true
+            }
         }  else if self.dcrCall.call is Stockist {
             if appsetup.stkPobNeed != 0 {
                 viewPOB.isHidden = false
-             }
-             
-             if appsetup.stkJointWrkNeed != 0 {
-                 jointworkHolderStack.isHidden = true
-             }
-             
-             if appsetup.stkEventMdNeed != 0 {
-                 eventCaptureHolderStack.isHidden = true
-             }
+            }
+            
+            if appsetup.stkJointWrkNeed != 0 {
+                jointworkHolderStack.isHidden = true
+            }
+            
+            if appsetup.stkEventMdNeed != 0 {
+                eventCaptureHolderStack.isHidden = true
+            }
         } else if self.dcrCall.call is UnListedDoctor {
             if appsetup.ulPobNeed != 0 {
                 viewPOB.isHidden = false
-             }
-             
-             if appsetup.ulJointWrlMdNeed != 0 {
-                 jointworkHolderStack.isHidden = true
-             }
-             
-             if appsetup.ulDocEventMd != 0 {
-                 eventCaptureHolderStack.isHidden = true
-             }
+            }
+            
+            if appsetup.ulJointWrlMdNeed != 0 {
+                jointworkHolderStack.isHidden = true
+            }
+            
+            if appsetup.ulDocEventMd != 0 {
+                eventCaptureHolderStack.isHidden = true
+            }
         }
-      //  viewEventCaptureSegment.isHidden = true
+        //  viewEventCaptureSegment.isHidden = true
         selectedfeedbackLbl.setFont(font: .medium(size: .BODY))
-       // lblEnterRemarks.setFont(font: .medium(size: .BODY))
+        // lblEnterRemarks.setFont(font: .medium(size: .BODY))
         lblPOBValue.setFont(font: .bold(size: .BODY))
         feedbackLbl.setFont(font: .bold(size: .BODY))
         lblOverallRemarks.setFont(font: .bold(size: .BODY))
@@ -557,9 +575,46 @@ class JfwView: UIView {
         if let overallRemark = self.overallRemark {
             remarksTF.text = overallRemark
         }
-       
+        
         toloadEventCapuretable()
-        toloadJWtable()
+        
+        toFetchCacheJointWorks()
+        
+    }
+    
+    func toFetchCacheJointWorks() {
+        CoreDataManager.shared.fetchCacheJointWorks{ [weak self] cacheJointworks in
+            
+            guard let welf = self else {return}
+            welf.selectedJwID = [String: Bool]()
+            guard let cacheJointworks = cacheJointworks else {
+                welf.toloadJWtable()
+                return}
+            
+            if cacheJointworks.isEmpty {
+                welf.selectedJwID = [String: Bool]()
+                welf.jointWorkTableView.reloadData()
+                return
+            }
+            
+            welf.jointWorkSelectedListViewModel?.jointWorksListViewModel.removeAll()
+            
+            cacheJointworks.forEach { aJointWork in
+                welf.jointworkSelectionAction(obj: aJointWork)
+                welf.selectedJwID[aJointWork.code ?? ""] = true
+            }
+            
+            if !(welf.jointWorkSelectedListViewModel?.jointWorksListViewModel.isEmpty ?? true) {
+                welf.jointWorkSelectedListViewModel?.jointWorksListViewModel.forEach { aJointWork in
+                    
+                }
+            } else {
+                welf.selectedJwID = [String: Bool]()
+            }
+            
+            dump(welf.selectedJwID)
+            welf.toloadJWtable()
+        }
     }
     
     func toloadEventCapuretable() {

@@ -37,6 +37,9 @@
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="CacheJointworks" representedClassName="CacheJointworks" syncable="YES" codeGenerationType="class">
+        <relationship name="jointworks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="JointWork"/>
+    </entity>
     <entity name="ChekinInfo" representedClassName="ChekinInfo" syncable="YES" codeGenerationType="class">
         <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="checkinDateTime" optional="YES" attributeType="String"/>

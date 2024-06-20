@@ -131,8 +131,10 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                 cell.txtSampleStock.isUserInteractionEnabled = false
             } else if  cell.product.mode.lowercased() == "sale/sample" {
                 cell.txtSampleStock.isUserInteractionEnabled = true
+                cell.txtSampleStock.addTarget(self, action: #selector(updateSampleInputQty(_:)), for: .editingChanged)
             } else if cell.product.mode.lowercased() == "sample" {
                 cell.txtSampleStock.isUserInteractionEnabled = true
+                cell.txtSampleStock.addTarget(self, action: #selector(updateSampleInputQty(_:)), for: .editingChanged)
             }
         case .inputs:
         let addedInput = self.addproductsMenuVC?.additionalCallListViewModel?.fetchInputAtIndex(self.selectedDoctorIndex, index: indexPath.row)
@@ -151,6 +153,10 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
 
 
         return cell
+    }
+    
+    @objc func didProductSampleChanged() {
+        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

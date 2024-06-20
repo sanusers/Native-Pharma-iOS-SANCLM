@@ -615,8 +615,117 @@ extension CoreDataManager {
 //        }
 //    }
     
+    func toRemoveAllCacheJointWorks() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CacheJointworks.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+            // completion()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+            //  completion()
+        }
+    }
     
+    
+    func removeSpecificJointWork(jointWorkCode: String, completion: @escaping (Bool) -> Void) {
+        do {
+            let cacheJointWorks = try context.fetch(CacheJointworks.fetchRequest())
+            guard let cacheJointWork = cacheJointWorks.first else {
+                completion(false)
+                return
+            }
 
+            if let jointworksSet = cacheJointWork.jointworks as? NSMutableSet {
+                // Find the joint work with the specified code
+                if let jointWorkToRemove = (jointworksSet.filter { ($0 as? JointWork)?.code == jointWorkCode }).first as? JointWork {
+                    jointworksSet.remove(jointWorkToRemove)
+                    
+                    // Save the context to persist changes
+                    try context.save()
+                    completion(true)
+                } else {
+                    completion(false) // Joint work with the specified code not found
+                }
+            } else {
+                completion(false) // Joint works set is nil or of unexpected type
+            }
+        } catch {
+            print("Error removing joint work with code \(jointWorkCode): \(error.localizedDescription)")
+            completion(false)
+        }
+    }
+    
+    func fetchCacheJointWorks(completion: @escaping([JointWork]?)->()) {
+        
+        do {
+           let cacheJointWorks = try  context.fetch(CacheJointworks.fetchRequest())
+            guard let cacheJointWork = cacheJointWorks.first else {
+                completion(nil)
+                return
+            }
+            
+            if let jointworksSet = cacheJointWork.jointworks,
+               let jointworksArray = jointworksSet.allObjects as? [JointWork] {
+                completion(jointworksArray)
+            } else {
+                completion(nil)
+            }
+          
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+        
+    }
+    
+    func toSaveJointworks(jointWorks: [JointWork], completion: @escaping(Bool) -> Void) {
+   
+            let context = self.context
+            // Create a new managed object
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "CacheJointworks", in: context) {
+                let cacheJointworkEntity = CacheJointworks(entity: entityDescription, insertInto: context)
+                let cdJointWorksSets = NSMutableSet()
+                jointWorks.forEach { aJointWork in
+                    
+                    if let entityDescription = NSEntityDescription.entity(forEntityName: "JointWork", in: context) {
+                        let jointWorkEntity = JointWork(entity: entityDescription, insertInto: context)
+                        jointWorkEntity.name =  aJointWork.name
+                        jointWorkEntity.code =  aJointWork.code
+                        jointWorkEntity.actFlg =  aJointWork.actFlg
+                        jointWorkEntity.desig =  aJointWork.desig
+                        jointWorkEntity.divisionCode =  aJointWork.divisionCode
+                        jointWorkEntity.index =  aJointWork.index
+                        jointWorkEntity.mapId =  aJointWork.mapId
+                        jointWorkEntity.ownDiv =  aJointWork.ownDiv
+                        jointWorkEntity.reportingToSF =  aJointWork.reportingToSF
+                        jointWorkEntity.sfName =  aJointWork.sfName
+                        jointWorkEntity.sfName =  aJointWork.sfName
+                        jointWorkEntity.sfStatus =  aJointWork.sfStatus
+                        jointWorkEntity.sfType =  aJointWork.sfType
+                        jointWorkEntity.steps =  aJointWork.steps
+                        jointWorkEntity.usrDfdUserName =  aJointWork.usrDfdUserName
+                        
+                        cdJointWorksSets.add(jointWorkEntity)
+                        
+                    }
+                }
+                
+                cacheJointworkEntity.jointworks = cdJointWorksSets
+                
+                do {
+                    try context.save()
+                    completion(true)
+                } catch {
+                    print("Failed to save to Core Data: \(error)")
+                    completion(false)
+                }
+            }
+            
+  
+    }
     
     
     

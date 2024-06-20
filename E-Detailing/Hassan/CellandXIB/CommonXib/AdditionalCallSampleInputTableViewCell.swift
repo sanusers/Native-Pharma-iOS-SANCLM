@@ -75,10 +75,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     
                  //   var inputs = additionalCall.inputSelectedListViewModel.inputData()
                     
-                    let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
+                    let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProductData()
                     //productData()
                     
-                    let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
+                    let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInputData()
                     //inputData()
                     guard var inputs = optionalinputs else {return}
                     guard var products  = optionalproducts else {return}
@@ -120,10 +120,10 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                             if self.heightViewAdditionalSampleInputList != nil{
                                 self.heightViewAdditionalSampleInputList.isActive = false
                             }
-                            productView.input = input
-                            
-                            if index < productCount  { // || index == productCount
-                                productView.product = products[index] //additionalCall.productSelectedListViewModel.fetchDataAtIndex(index)
+                            productView.input = inputs[index].input
+                            productView.inputQty = inputs[index].inputCount
+                            if index < productCount &&  !products.isEmpty  { // || index == productCount
+                                productView.product = products[index].product //additionalCall.productSelectedListViewModel.fetchDataAtIndex(index)
                             }
                             
                             if index == 0 {
@@ -164,11 +164,16 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                             if self.heightViewAdditionalSampleInputList != nil{
                                 self.heightViewAdditionalSampleInputList.isActive = false
                             }
-                            productView.product = product
-                            productView.productQty = additionalCall.productSelectedListViewModel.fetchDataAtIndex(index + 1).sampleCount
-                            if index < inputs.count {
-                                productView.input = inputs[index]
-                                productView.inputQty = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(index + 1).inputCount
+                            if index < products.count  {
+                                productView.product = products[index].product
+                                productView.productQty =  products[index].sampleCount
+                            } else {
+                                productView.productQtyCurvedVIew.isHidden = true
+                            }
+                     
+                            if index < inputs.count  {
+                                productView.input = inputs[index].input
+                                productView.inputQty = inputs[index].inputCount
                             } else {
                                 productView.inputQtyCurvedView.isHidden = true
                                 // Handle the case where index is out of range
@@ -217,18 +222,18 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                // additionalCall.inputSelectedListViewModel.numberOfRows()
                 
-                let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProducts()
+                let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProductData()
            
                 
-                let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInput()
+                let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInputData()
                 //inputData()
                 guard var inputs = optionalinputs else {return}
                 guard var products  = optionalproducts else {return}
                 
                 if inputCount != 0 {
                 
-                    self.lblInputQty.text = additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).inputCount
-                    self.lblInputName.text = inputs[0].name //additionalCall.inputSelectedListViewModel.fetchDataAtIndex(0).name
+                    self.lblInputQty.text = inputs[0].inputCount
+                    self.lblInputName.text = inputs[0].input?.name
                     inputQtyCorneredView.isHidden = self.lblInputQty.text == "" ? true : false
                     inputs.removeFirst()
                 }else {
@@ -238,8 +243,8 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 }
                 
                 if productCount != 0 {
-                    self.lblProductName.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).name
-                    self.lblProductQty.text = additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
+                    self.lblProductName.text = products[0].product?.name
+                    self.lblProductQty.text = products[0].sampleCount //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
                     products.removeFirst()
                 }else {
                     self.lblInputQty.text = ""
