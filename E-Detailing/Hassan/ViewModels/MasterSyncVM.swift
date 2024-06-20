@@ -229,7 +229,7 @@ class MasterSyncVM {
 
                 print(apiResponse)
                 // Save to Core Data or perform any other actions
-                DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: mapID)
+                //DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: mapID)
 
                 if istoUpdateDCRlist && !welf.isUpdating {
                     welf.updateDCRLists(mapID: mapID) { _ in

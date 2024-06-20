@@ -683,6 +683,7 @@ class MasterSyncVC : UIViewController {
         
         self.masterData.append(MasterInfo.doctorFencing)
         self.masterData.append(MasterInfo.chemists)
+        self.masterData.append(MasterInfo.chemistCategory)
         self.masterData.append(MasterInfo.stockists)
         self.masterData.append(MasterInfo.unlistedDoctors)
         self.masterData.append(MasterInfo.setups)
@@ -1021,7 +1022,7 @@ extension MasterSyncVC : tableViewProtocols {
       
 
         
-        self.masterData = [MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
+        self.masterData = [MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
         //MasterInfo.competitors,
         //MasterInfo.subordinateMGR,
 

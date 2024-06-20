@@ -91,6 +91,7 @@ struct FilteredCase {
     let categoryCode: DoctorCategory?
     let territoryCode: Territory?
     let classCode: DoctorClass?
+    let chemistCategotyCode: ChemistCategory?
 }
 
 extension CallVC : addedSubViewsDelegate {
@@ -121,6 +122,7 @@ extension CallVC : addedSubViewsDelegate {
         
         var specialitycode: Speciality?
         var catcode: DoctorCategory?
+        var chemistCatCode : ChemistCategory?
         var territoryCode: Territory?
         var classCode: DoctorClass?
         filteredObjects.forEach { anObject in
@@ -141,13 +143,15 @@ extension CallVC : addedSubViewsDelegate {
                 
                 classCode = classObj
                 
+            case let chemistCatObj as ChemistCategory:
+                chemistCatCode = chemistCatObj
             default:
                print("object uncategorized")
             }
         }
         
         
-        self.filterscase = FilteredCase(specialityCode: specialitycode, categoryCode: catcode, territoryCode: territoryCode, classCode: classCode)
+        self.filterscase = FilteredCase(specialityCode: specialitycode, categoryCode: catcode, territoryCode: territoryCode, classCode: classCode, chemistCategotyCode: chemistCatCode)
 
         self.callCollectionView.reloadData()
         self.didClose()
@@ -278,7 +282,7 @@ class CallVC : UIViewController {
     var selectedDCRcall: CallViewModel?
     var addedDCRVIewHeight: CGFloat = 60 + 130 + 70
     
-    var type : DCRType!
+    var type : DCRType = .doctor
     var selectedDCRIndex: Int? = nil
     var filterscase: FilteredCase?
     var checkinVIew: CustomerCheckinView?
@@ -351,17 +355,41 @@ class CallVC : UIViewController {
         
       //  addedDCRVIewHeight = 60 + 130 + 70
   
-        if let filterscase = filterscase {
-            if let _ =   filterscase.territoryCode  {
-                addedDCRVIewHeight =  60 + 130 + 60 + 70
-               
-            }
+        switch self.type {
             
-            if let _ =   filterscase.classCode  {
-                addedDCRVIewHeight =  60 + 130 + 60 + 70
-             
+        case .doctor:
+            if let filterscase = filterscase {
+                if let _ =   filterscase.territoryCode  {
+                    addedDCRVIewHeight =  60 + 130 + 60 + 70
+                   
+                }
+                
+                if let _ =   filterscase.classCode  {
+                    addedDCRVIewHeight =  60 + 130 + 60 + 70
+                 
+                }
             }
+        case .chemist:
+            addedDCRVIewHeight =  60 + 80 + 60 + 70
+        case .stockist:
+            addedDCRVIewHeight =  60 + 80 + 60 + 70
+        case .unlistedDoctor:
+            if let filterscase = filterscase {
+                if let _ =   filterscase.territoryCode  {
+                    addedDCRVIewHeight =  60 + 130 + 60 + 70
+                   
+                }
+                if let _ =   filterscase.classCode  {
+                    addedDCRVIewHeight =  60 + 130 + 60 + 70
+                 
+                }
+            }
+        case .hospital:
+            print("Yet to")
+        case .cip:
+            print("Yet to")
         }
+
         
         
         
@@ -547,13 +575,14 @@ class CallVC : UIViewController {
             }
             
         }
-        
+       
         dcrfiltersView = self.loadCustomView(nibname: XIBs.dcrfiltersView) as? DCRfiltersView
         dcrfiltersView?.delegate = self
         dcrfiltersView?.selectedcategoty = self.filterscase?.categoryCode
         dcrfiltersView?.selectedterritory = self.filterscase?.territoryCode
         dcrfiltersView?.selectedspeciality = self.filterscase?.specialityCode
         dcrfiltersView?.selecteddocClass = self.filterscase?.classCode
+        dcrfiltersView?.selectedChemistCategory = self.filterscase?.chemistCategotyCode
         dcrfiltersView?.addedSubviewDelegate = self
         dcrfiltersView?.type = self.type
         dcrfiltersView?.rootVC = self
@@ -643,11 +672,36 @@ extension CallVC : collectionViewProtocols {
         
         switch collectionView {
             case self.callCollectionView:
-            if let filterscase = self.filterscase   {
-                return self.CallListArray.filteredDCRrows(self.type, searchText: searchText, filterscase: filterscase)
-            } else {
-                return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+            switch self.type {
+            case .doctor:
+                if let filterscase = self.filterscase   {
+                    return self.CallListArray.filteredDCRrows(self.type, searchText: searchText, filterscase: filterscase)
+                } else {
+                    return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+                }
+            case .chemist:
+                if let filterscase = self.filterscase   {
+                    return self.CallListArray.filteredChemistRows(self.type, searchText: searchText, filterscase: filterscase)
+                } else {
+                    return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+                }
+            case .stockist:
+                if let filterscase = self.filterscase   {
+                    return self.CallListArray.filteredStockistRows(self.type, searchText: searchText, filterscase: filterscase)
+                } else {
+                    return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+                }
+            case  .unlistedDoctor:
+                if let filterscase = self.filterscase   {
+                    return self.CallListArray.filteredUnlistedDocrows(self.type, searchText: searchText, filterscase: filterscase)
+                } else {
+                    return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
+                }
+                
+            default:
+                return 0
             }
+
               
             case self.headerCollectionView:
                 return self.CallListArray.numberofDcrs()
@@ -662,7 +716,7 @@ extension CallVC : collectionViewProtocols {
             case self.callCollectionView :
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DoctorCallCell", for: indexPath) as! DoctorCallCell
            // cell.selectedTerritories = self.selectedTerritories
-                cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+            cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
             cell.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
             cell.btnTownName.tintColor = .appLightTextColor
             
@@ -911,23 +965,20 @@ extension CallVC : collectionViewProtocols {
                     }
                 }
             case .cip:
-//                let    cipArr =  homeDataArr.filter { aHomeData in
-//                       aHomeData.custType == "5"
-//                   }
+
                 print("Yet to")
             case .hospital:
-                // homeDataList.filter{ $0.custCode == }
-//                let  hospitalArr   =  homeDataArr.filter { aHomeData in
-//                       aHomeData.custType == "6"
-//                   }
+
                 print("Yet to")
-            default:
-                print("")
+  
             }
         
 
             case self.headerCollectionView:
                 self.type = self.CallListArray.fetchAtIndex(indexPath.row).type
+                addedFiltersCount.isHidden = true
+                filterCountHolderVIew.isHidden = true
+                self.filterscase = nil
                 self.headerCollectionView.reloadData()
                 self.callCollectionView.reloadData()
             default:
@@ -941,17 +992,27 @@ extension CallVC : collectionViewProtocols {
         switch collectionView {
             case self.callCollectionView :
                 let width = self.callCollectionView.frame.width / 4
-            
-            let size = CGSize(width: width - 10, height: collectionView.height / 3.5)
+            switch self.type {
+                
+            case .doctor, .unlistedDoctor:
+                let size = CGSize(width: width - 10, height: collectionView.height / 3.5)
                 return size
+            case .chemist:
+                let size = CGSize(width: width - 10, height: collectionView.height / 4)
+                return size
+            case .stockist:
+                let size = CGSize(width: width - 10, height: collectionView.height / 4)
+                return size
+       
+            case .hospital:
+              return  CGSize()
+            case .cip:
+                return CGSize()
+            }
             
-//                if self.dcrSegmentControl.selectedSegmentIndex == 0 {
-//                    let size = CGSize(width: width - 10, height: 190)
-//                    return size
-//                }else {
-//                    let size = CGSize(width: width - 10, height: 130)
-//                    return size
-//                }
+       
+            
+
             case self.headerCollectionView:
             
                 let label = UILabel()

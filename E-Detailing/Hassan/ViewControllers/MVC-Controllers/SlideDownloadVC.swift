@@ -1281,8 +1281,12 @@ extension SlideDownloadVC : tableViewProtocols {
         
  
         cell.btnRetry.addTap { [weak self] in
-            
             guard let welf = self else {return}
+            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                welf.toCreateToast("Please connect to active internet")
+                return
+            }
+           
             if Shared.instance.isSlideDownloading {return}
             welf.isDownloadingInProgress = true
             welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)

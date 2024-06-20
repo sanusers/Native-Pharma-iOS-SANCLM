@@ -1,5 +1,5 @@
 //
-//  Speciality + Extension.swift
+// CoreData Entities Extension.swift
 //  E-Detailing
 //
 //  Created by Hassan
@@ -13,7 +13,7 @@ import CoreData
 
 extension Speciality {
     func setValues(fromDictionary dictionary: [String:Any]){
-        if let codeValue = dictionary["Code"] as? Int{
+        if let codeValue = dictionary["Code"] as? String{
             code = "\(codeValue)"
         }
         if let divisionCodeValue = dictionary["Division_Code"] as? String{
@@ -47,7 +47,7 @@ extension Departs {
 
 extension DoctorClass {
     func setValues(fromDictionary dictionary: [String:Any]){
-        if let codeValue = dictionary["Code"] as? Int{
+        if let codeValue = dictionary["Code"] as? String{
             code = "\(codeValue)"
         }
         if let divisionCodeValue = dictionary["Division_Code"] as? String{
@@ -64,7 +64,7 @@ extension DoctorClass {
 
 extension DoctorCategory {
     func setValues(fromDictionary dictionary: [String:Any]){
-        if let codeValue = dictionary["Code"] as? Int{
+        if let codeValue = dictionary["Code"] as? String{
             code = "\(codeValue)"
         }
         if let divisionCodeValue = dictionary["Division_Code"] as? String{
@@ -76,6 +76,26 @@ extension DoctorCategory {
         if let nameValue = dictionary["Name"] as? String{
             name = nameValue
         }
+    }
+}
+
+
+extension ChemistCategory {
+    func setValues(fromDictionary dictionary: [String:Any]){
+        if let codeValue = dictionary["Code"] as? String{
+            code = "\(codeValue)"
+        }
+        if let divisionCodeValue = dictionary["Division_Code"] as? String{
+            divisionCode = divisionCodeValue
+        }
+        if let doctorCategoryNameValue = dictionary["Chem_Cat_Name"] as? String{
+            categoryName = doctorCategoryNameValue
+        }
+        if let nameValue = dictionary["Name"] as? String{
+            name = nameValue
+        }
+        
+        
     }
 }
 

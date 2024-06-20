@@ -28,13 +28,21 @@ extension DCRfiltersView:  MenuResponseProtocol {
         switch self.filtertype {
             
         case .category:
-            self.selectedcategoty = selectedObject as? DoctorCategory
+            switch self.type {
+            case .chemist:
+                self.selectedChemistCategory = selectedObject as? ChemistCategory
+            default:
+                self.selectedcategoty = selectedObject as? DoctorCategory
+            }
+           
         case .dcrClass:
             self.selecteddocClass = selectedObject as? DoctorClass
         case .speciality:
             self.selectedspeciality = selectedObject as? Speciality
         case .territory:
             self.selectedterritory = selectedObject as? Territory
+            
+
         case .none:
               print("--><--")
         }
@@ -59,29 +67,79 @@ extension DCRfiltersView: collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: addedFiltersCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "addedFiltersCVC", for: indexPath) as! addedFiltersCVC
         
-        switch indexPath.row {
-        case 0:
-   
-            cell.filtersTit.text = self.selectedspeciality != nil ?  self.selectedspeciality?.name : self.addedFilters[indexPath.row].rawValue
+        switch self.type {
             
-            
-        case 1:
-   
-            cell.filtersTit.text = self.selectedcategoty != nil ?  self.selectedcategoty?.name : self.addedFilters[indexPath.row].rawValue
-            
-            
-        case 2:
-   
-            cell.filtersTit.text = self.selectedterritory != nil ?  self.selectedterritory?.name : self.addedFilters[indexPath.row].rawValue
-            
-            
-        case 3:
-   
-            cell.filtersTit.text = self.selecteddocClass != nil ?  self.selecteddocClass?.name : self.addedFilters[indexPath.row].rawValue
-            
-        default:
-            print("Yet to implemeny")
+        case .doctor:
+            switch indexPath.row {
+            case 0:
+       
+                cell.filtersTit.text = self.selectedspeciality != nil ?  self.selectedspeciality?.name : self.addedFilters[indexPath.row].rawValue
+                
+                
+            case 1:
+       
+                cell.filtersTit.text = self.selectedcategoty != nil ?  self.selectedcategoty?.name : self.addedFilters[indexPath.row].rawValue
+                
+                
+            case 2:
+       
+                cell.filtersTit.text = self.selectedterritory != nil ?  self.selectedterritory?.name : self.addedFilters[indexPath.row].rawValue
+                
+                
+            case 3:
+       
+                cell.filtersTit.text = self.selecteddocClass != nil ?  self.selecteddocClass?.name : self.addedFilters[indexPath.row].rawValue
+                
+            default:
+                print("Yet to implemeny")
+            }
+        case .chemist:
+            switch indexPath.row {
+            case 0:
+                cell.filtersTit.text = self.selectedterritory != nil ?  self.selectedterritory?.name : self.addedFilters[indexPath.row].rawValue
+            case 1:
+                cell.filtersTit.text = self.selectedChemistCategory != nil ?  self.selectedChemistCategory?.name : self.addedFilters[indexPath.row].rawValue
+            default:
+                return UICollectionViewCell()
+            }
+        case .stockist:
+            switch indexPath.row {
+            case 0:
+                cell.filtersTit.text = self.selectedterritory != nil ?  self.selectedterritory?.name : self.addedFilters[indexPath.row].rawValue
+            default:
+                return UICollectionViewCell()
+            }
+        case .unlistedDoctor:
+            switch indexPath.row {
+            case 0:
+       
+                cell.filtersTit.text = self.selectedspeciality != nil ?  self.selectedspeciality?.name : self.addedFilters[indexPath.row].rawValue
+                
+                
+            case 1:
+       
+                cell.filtersTit.text = self.selectedcategoty != nil ?  self.selectedcategoty?.name : self.addedFilters[indexPath.row].rawValue
+                
+                
+            case 2:
+       
+                cell.filtersTit.text = self.selectedterritory != nil ?  self.selectedterritory?.name : self.addedFilters[indexPath.row].rawValue
+                
+                
+            case 3:
+       
+                cell.filtersTit.text = self.selecteddocClass != nil ?  self.selecteddocClass?.name : self.addedFilters[indexPath.row].rawValue
+                
+            default:
+                print("Yet to implemeny")
+            }
+        case .hospital:
+            print("Yet to")
+        case .cip:
+            print("Yet to")
         }
+        
+
         
         
         cell.addTap { [weak self] in
@@ -95,6 +153,14 @@ extension DCRfiltersView: collectionViewProtocols {
                 welf.showMenu(type: .speciality)
             case .category:
                 welf.filtertype = .category
+                switch welf.type {
+                  
+                case .chemist:
+                    welf.showMenu(type: .chemistCategory)
+                default:
+                    welf.showMenu(type: .category)
+                }
+               
               //  welf.addFiltersTable(type: .category, view: cell)
                 welf.showMenu(type: .category)
             case .territory:
@@ -135,15 +201,36 @@ extension DCRfiltersView: collectionViewProtocols {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var height: CGFloat = 0
-        
-        switch self.addedIndex {
-        case 1, 2:
+        switch self.type {
+            
+        case .doctor:
+            switch self.addedIndex {
+            case 1, 2:
+                height = 60
+            case 3, 4:
+                height = 130 / 2
+            default:
+                print("Yet to implment")
+            }
+        case .chemist:
             height = 60
-        case 3, 4:
-            height = 130 / 2
-        default:
-            print("Yet to implment")
+        case .stockist:
+            height = 60
+        case .unlistedDoctor:
+            switch self.addedIndex {
+            case 1, 2:
+                height = 60
+            case 3, 4:
+                height = 130 / 2
+            default:
+                print("Yet to implment")
+            }
+        case .hospital:
+            print("Yet to")
+        case .cip:
+            print("Yet to")
         }
+
         
 //        if   self.addedFilters.count % 2 == 0 {
 //            height = collectionView.height  / 2
@@ -270,19 +357,19 @@ class DCRfiltersView: UIView {
     
     weak var delegate: DCRfiltersViewDelegate?
     weak var addedSubviewDelegate :  addedSubViewsDelegate?
-    var addedFilters: [AddedFilters] = [.speciality, .category]
+    var addedFilters: [AddedFilters] = []
     var addedIndex: Int = 2
     var speciality: [Speciality]?
     var categoty: [DoctorCategory]?
     var territory: [Territory]?
     var docClass: [DoctorClass]?
-    
+    var chemistCategory: [ChemistCategory]?
     
     var selectedspeciality: Speciality?
     var selectedcategoty: DoctorCategory?
     var selectedterritory: Territory?
     var selecteddocClass: DoctorClass?
-    
+    var selectedChemistCategory: ChemistCategory?
     var filtertype:  AddedFilters?
     
     var type: DCRType = .doctor
@@ -326,6 +413,7 @@ class DCRfiltersView: UIView {
         
     selectedspeciality = nil
     selectedcategoty = nil
+        selectedChemistCategory = nil
     selectedterritory = nil
     selecteddocClass = nil
     self.toLOadData()
@@ -338,6 +426,10 @@ class DCRfiltersView: UIView {
         var filteedObj = [NSManagedObject]()
         if let selectedcategoty = selectedcategoty {
             filteedObj.append(selectedcategoty)
+        }
+        
+        if let selectedChemistcategoty = selectedChemistCategory {
+            filteedObj.append(selectedChemistcategoty)
         }
         
         if let selectedspeciality = selectedspeciality {
@@ -361,33 +453,9 @@ class DCRfiltersView: UIView {
     
     func setupUI() {
         
-//        if let selectedspeciality = selectedspeciality {
-//            addedFilters.append(.speciality)
-//        }
-//        
-//        if let selectedcategoty = selectedcategoty {
-//            addedFilters.append(.category)
-//        }
-        
-        if let _ = selectedterritory {
-            addedFilters.append(.territory)
-            filtersCollectionHeight.constant = 60 + 60 + 10
-            filtersViewHeight.constant = 130 + 60
-            
-        }
-        
-        if let _ = selecteddocClass {
-            if !addedFilters.contains(.territory) {
-                addedFilters.append(.territory)
-            }
-          
-            addedFilters.append(.dcrClass)
-            filtersCollectionHeight.constant = 60 + 60 + 10
-            filtersViewHeight.constant = 130 + 60
-        }
-        
 
-        
+        initTaps()
+
         cellregistration()
         toLOadData()
         viewAddcontion.layer.borderWidth = 1
@@ -395,7 +463,7 @@ class DCRfiltersView: UIView {
         viewAddcontion.layer.cornerRadius = 5
         removeFiltersIV.setTitle("", for: .normal)
         self.layer.cornerRadius = 5
-        initTaps()
+      
         btnCLear.backgroundColor = .appSelectionColor
         btnCLear.layer.borderColor = UIColor.gray.cgColor
         btnCLear.layer.borderWidth = 1
@@ -407,48 +475,88 @@ class DCRfiltersView: UIView {
     }
     
     func initTaps() {
-        viewAddcontion.addTap {
+        switch self.type {
             
-            switch self.type {
+        case .doctor, .unlistedDoctor:
+            self.addedFilters = [.speciality, .category]
+                    if let _ = selectedterritory {
+                        addedFilters.append(.territory)
+                        filtersCollectionHeight.constant = 60 + 60 + 10
+                        filtersViewHeight.constant = 130 + 60
+                    }
+            
+                    if let _ = selecteddocClass {
+                        if !addedFilters.contains(.territory) {
+                            addedFilters.append(.territory)
+                        }
+            
+                        addedFilters.append(.dcrClass)
+                        filtersCollectionHeight.constant = 60 + 60 + 10
+                        filtersViewHeight.constant = 130 + 60
+                    }
+            
+         
+            viewAddcontion.isHidden = false
+            removeFiltersIV.isHidden = false
+            
+            viewAddcontion.addTap {
                 
-            case .doctor:
-                if self.addedFilters.count == 4 {
-                    return
+                switch self.type {
+                    
+                case .doctor, .unlistedDoctor:
+                    if self.addedFilters.count == 4 {
+                        return
+                    }
+                case .chemist:
+                    if self.addedFilters.count == 2 {
+                        return
+                    }
+                case .stockist:
+                    if self.addedFilters.count == 2 {
+                        return
+                    }
+                case .hospital:
+                    if self.addedFilters.count == 2 {
+                        return
+                    }
+                case .cip:
+                    if self.addedFilters.count == 2 {
+                        return
+                    }
                 }
-            case .chemist:
-                if self.addedFilters.count == 2 {
-                    return
-                }
-            case .stockist:
-                if self.addedFilters.count == 2 {
-                    return
-                }
-            case .unlistedDoctor:
-                if self.addedFilters.count == 2 {
-                    return
-                }
-            case .hospital:
-                if self.addedFilters.count == 2 {
-                    return
-                }
-            case .cip:
-                if self.addedFilters.count == 2 {
-                    return
-                }
-            }
 
-            self.addedIndex = self.addedFilters.count + 1
-            self.toAddorRemoveFilters(istoadd: true, index: self.addedFilters.count + 1)
-        }
-        
-        self.removeFiltersIV.addTap {
-            if self.addedFilters.count == 2 {
-                return
+                self.addedIndex = self.addedFilters.count + 1
+                self.toAddorRemoveFilters(istoadd: true, index: self.addedFilters.count + 1)
             }
-            self.addedIndex = self.addedFilters.count - 1
-            self.toAddorRemoveFilters(istoadd: false, index: self.addedFilters.count - 1)
+            
+            self.removeFiltersIV.addTap {
+                if self.addedFilters.count == 2 {
+                    return
+                }
+                self.addedIndex = self.addedFilters.count - 1
+                self.toAddorRemoveFilters(istoadd: false, index: self.addedFilters.count - 1)
+            }
+            
+        case .chemist:
+            self.addedFilters = [.territory, .category]
+            if let _ = selectedterritory {
+                if !addedFilters.contains(.territory) {
+                    addedFilters.append(.territory)
+                }
+    
+            }
+      
+            viewAddcontion.isHidden = true
+            removeFiltersIV.isHidden = true
+        case .stockist:
+            self.addedFilters = [.territory]
+            viewAddcontion.isHidden = true
+            removeFiltersIV.isHidden = true
+        case .hospital:
+            print("Yet to")
+        case .cip:
+            print("Yet to")
         }
-        
         self.closeIV.addTap {
             self.addedSubviewDelegate?.didClose()
         }

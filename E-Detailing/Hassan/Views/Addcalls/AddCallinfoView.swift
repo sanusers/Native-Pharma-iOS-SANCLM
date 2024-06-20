@@ -1779,6 +1779,7 @@ class AddCallinfoView : BaseView {
         }
         saveView.addTap {
             if customerChekinEnabled {
+    
                 self.fetchLocationAndCheckout()
             
             } else {
@@ -1793,6 +1794,22 @@ class AddCallinfoView : BaseView {
             self.addCallinfoVC.navigationController?.popViewController(animated: true)
         }
         
+    }
+    
+    func checkMandatoryFields() {
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        if addCallinfoVC.dcrCall.call is DoctorFencing {
+            
+         //   if appsetup.pro
+            
+        } else if addCallinfoVC.dcrCall.call is Chemist {
+            
+        } else if addCallinfoVC.dcrCall.call is Stockist {
+            
+        } else if addCallinfoVC.dcrCall.call is UnListedDoctor {
+            
+        }
     }
     
     func cellregistration() {

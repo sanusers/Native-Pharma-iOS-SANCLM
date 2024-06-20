@@ -451,10 +451,42 @@ class JfwView: UIView {
             if appsetup.docEventMdNeed != 0 {
                 eventCaptureHolderStack.isHidden = true
             }
-            
-            
-            
-            
+        } else if self.dcrCall.call is Chemist {
+            if appsetup.chmPobNeed != 0 {
+                viewPOB.isHidden = false
+             }
+             
+             if appsetup.chmJointWrkMdNeed != 0 {
+                 jointworkHolderStack.isHidden = true
+             }
+             
+             if appsetup.chmEventMdNeed != 0 {
+                 eventCaptureHolderStack.isHidden = true
+             }
+        }  else if self.dcrCall.call is Stockist {
+            if appsetup.stkPobNeed != 0 {
+                viewPOB.isHidden = false
+             }
+             
+             if appsetup.stkJointWrkNeed != 0 {
+                 jointworkHolderStack.isHidden = true
+             }
+             
+             if appsetup.stkEventMdNeed != 0 {
+                 eventCaptureHolderStack.isHidden = true
+             }
+        } else if self.dcrCall.call is UnListedDoctor {
+            if appsetup.ulPobNeed != 0 {
+                viewPOB.isHidden = false
+             }
+             
+             if appsetup.ulJointWrlMdNeed != 0 {
+                 jointworkHolderStack.isHidden = true
+             }
+             
+             if appsetup.ulDocEventMd != 0 {
+                 eventCaptureHolderStack.isHidden = true
+             }
         }
       //  viewEventCaptureSegment.isHidden = true
         selectedfeedbackLbl.setFont(font: .medium(size: .BODY))

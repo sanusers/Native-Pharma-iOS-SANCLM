@@ -48,6 +48,7 @@
     </entity>
     <entity name="Chemist" representedClassName="Chemist" syncable="YES" codeGenerationType="class">
         <attribute name="addr" optional="YES" attributeType="String"/>
+        <attribute name="categoryCode" optional="YES" attributeType="String"/>
         <attribute name="chemistContact" optional="YES" attributeType="String"/>
         <attribute name="chemistEmail" optional="YES" attributeType="String"/>
         <attribute name="chemistFax" optional="YES" attributeType="String"/>
@@ -65,6 +66,13 @@
         <attribute name="sfCode" optional="YES" attributeType="String"/>
         <attribute name="townCode" optional="YES" attributeType="String"/>
         <attribute name="townName" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="ChemistCategory" representedClassName="ChemistCategory" syncable="YES" codeGenerationType="class">
+        <attribute name="categoryName" optional="YES" attributeType="String"/>
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="divisionCode" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Competitor" representedClassName="Competitor" syncable="YES" codeGenerationType="class">
         <attribute name="compName" optional="YES" attributeType="String"/>
@@ -339,6 +347,7 @@
         <relationship name="brand" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Brand"/>
         <relationship name="category" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorCategory"/>
         <relationship name="chemist" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Chemist"/>
+        <relationship name="chemistCategory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ChemistCategory"/>
         <relationship name="competitor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Competitor"/>
         <relationship name="departs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Departs"/>
         <relationship name="doctorClass" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorClass"/>
@@ -648,6 +657,8 @@
         <attribute name="code" optional="YES" attributeType="String"/>
         <attribute name="docHospCode" optional="YES" attributeType="String"/>
         <attribute name="docHospName" optional="YES" attributeType="String"/>
+        <attribute name="doctorClassCode" optional="YES" attributeType="String"/>
+        <attribute name="doctorClassName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="geoTagCnt" optional="YES" attributeType="String"/>
         <attribute name="imgName" optional="YES" attributeType="String"/>

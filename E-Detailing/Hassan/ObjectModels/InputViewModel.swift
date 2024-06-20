@@ -11,7 +11,7 @@ import Foundation
 
 class InputSelectedListViewModel {
     var uuid: UUID?
-    var inputViewModel = [InputViewModel]()
+    var inputViewModel : [InputViewModel] = []
     var filteredInputs: [Input] = {
         var inputs = DBManager.shared.getInput()
         let currentDate = Date()

@@ -99,6 +99,8 @@ class DBManager {
             self.saveSpecialityData(values: Values)
         case .category:
             self.saveCategoryData(values: Values)
+        case .chemistCategory:
+            self.saveChemistCategoryData(values: Values)
         case .qualifications:
             self.saveQualificationData(values: Values)
         case .doctorClass:
@@ -1775,6 +1777,46 @@ class DBManager {
     func deleteQualificationData() {
         let masterData = self.getMasterData()
         if let prevList = masterData.qualification?.allObjects as? [Qualifications]{
+            _ = prevList.map{self.managedContext().delete($0)}
+        }
+        self.saveContext()
+    }
+    
+    func getChemistCategory() -> [ChemistCategory] {
+        let masterData = self.getMasterData()
+        guard let categoryArray = masterData.chemistCategory?.allObjects as? [ChemistCategory] else{
+            return [ChemistCategory]()
+        }
+        let array = categoryArray.sorted{(item1,item2) -> Bool in
+            return item1.index < item2.index
+        }
+        return array
+    }
+    
+    func saveChemistCategoryData(values : [[String : Any]]) {
+        self.deleteChemistCategoryData()
+        let masterData = self.getMasterData()
+        var categoryArray = [ChemistCategory]()
+        for (index,category) in values.enumerated(){
+            let contextNew = self.managedContext()
+            let categoryEntity = NSEntityDescription.entity(forEntityName: "ChemistCategory", in: contextNew)
+            let categoryItem = ChemistCategory(entity: categoryEntity!, insertInto: contextNew)
+            categoryItem.setValues(fromDictionary: category)
+            categoryItem.index = Int16(index)
+            categoryArray.append(categoryItem)
+        }
+        if let list = masterData.chemistCategory?.allObjects as? [ChemistCategory]{
+            _ = list.map{masterData.removeFromChemistCategory($0)}
+        }
+        categoryArray.forEach { (category) in
+            masterData.addToChemistCategory(category)
+        }
+        self.saveContext()
+    }
+    
+    func deleteChemistCategoryData() {
+        let masterData = self.getMasterData()
+        if let prevList = masterData.chemistCategory?.allObjects as? [ChemistCategory]{
             _ = prevList.map{self.managedContext().delete($0)}
         }
         self.saveContext()

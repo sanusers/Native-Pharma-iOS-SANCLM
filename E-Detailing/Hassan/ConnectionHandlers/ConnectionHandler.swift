@@ -357,7 +357,7 @@ final class ConnectionHandler : NSObject {
             switch results.result{
                 
             case .success(let anyData):
-                print("Succesfully uploaded")
+                print("Succesfully uploaded ✅")
                 print(results.request?.url as Any)
                 if let err = results.error{
                     responseHandler.handleFailure(value: err.localizedDescription)
@@ -751,7 +751,7 @@ final class ConnectionHandler : NSObject {
                 
                 var json = JSON()
                 
-                json["status_message"] = "An issue occured data will be saved to device"
+                json["status_message"] = "An issue occured ❌"
                
                 responseHandler.handleFailure(value: json.status_message)
                 print("Error in upload: \(error.localizedDescription)")
@@ -759,7 +759,7 @@ final class ConnectionHandler : NSObject {
                 if error._code == 1001 {
                     responseHandler.handleFailure(value: "The request timed out.".localizedCapitalized)
                 } else {
-                    responseHandler.handleFailure(value: error.localizedDescription)
+                    responseHandler.handleFailure(value: "An issue occured ❌")
                 }
             }
         }

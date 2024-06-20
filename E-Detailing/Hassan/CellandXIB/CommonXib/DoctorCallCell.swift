@@ -65,15 +65,6 @@ class DoctorCallCell: UICollectionViewCell {
             self.btnTownName.setTitle(CallDetail.territory, for: .normal)
             
             
-            guard let selectedTerritories = self.selectedTerritories else {return}
-            
-           // tosetTerritoryLbl(selectedTerritories: selectedTerritories)
-            
-            
-
-            
-            
-            
         }
     }
     

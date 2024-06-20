@@ -63,6 +63,11 @@ extension Chemist {
         if let taggedImage = dictionary["img_name"] as? String{
             imgName = taggedImage
         }
+        
+        if let categoryCodeValue = dictionary["Chm_cat"] as? String{
+            categoryCode = categoryCodeValue
+        }
+        
         mapId = id
     }
 }

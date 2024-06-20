@@ -292,16 +292,13 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       // CoreDataManager.shared.removeAllDayPlans()
 
-    
-        addObservers()
         updateLinks()
         setupUI()
+        addObservers()
         if istoRedirecttoCheckin() {
             checkinAction()
         }
-
     }
     
     
@@ -319,12 +316,12 @@ class MainVC : UIViewController {
                 
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                welf.refreshUI()
+                welf.refreshUI(welf.segmentType[welf.selectedSegmentsIndex])
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
       
                     welf.toSetDayplan(byDate: welf.selectedToday) {
-                            welf.refreshUI()
+                        welf.refreshUI(welf.segmentType[welf.selectedSegmentsIndex])
                         }
         
           
@@ -341,13 +338,13 @@ class MainVC : UIViewController {
             case .unavailable, .none:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                 welf.toConfigureMydayPlan(planDate: welf.selectedToday)
-                welf.refreshUI()
+                welf.refreshUI(welf.segmentType[welf.selectedSegmentsIndex])
             case .wifi, .cellular:
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
              
                    // if !Shared.instance.isDayplanSet {
                     welf.toSetDayplan(byDate: welf.selectedToday) {
-                            welf.refreshUI()
+                        welf.refreshUI(welf.segmentType[welf.selectedSegmentsIndex])
                         }
      
           
@@ -357,14 +354,24 @@ class MainVC : UIViewController {
         }
     }
     
-    func refreshUI(issynced: Bool? = false) {
+    func refreshUI(issynced: Bool? = false, _ segmentType: SegmentType) {
+        switch segmentType {
+        case .workPlan:
+            self.setSegment(.workPlan)
+        case .calls:
+            self.setSegment(.calls)
+        case .calender:
+            self.setSegment(.calender)
+        case .outbox:
+            self.setSegment(.outbox)
+        }
+        toConfigureMydayPlan(planDate: selectedToday, isRetrived: true)
+        configureSaveplanBtn(toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
         toSeperateDCR(istoAppend: true)
         updateDcr()
         toIntegrateChartView(chartType, cacheDCRindex)
         toLoadCalenderData()
         toLoadDcrCollection()
-        toConfigureMydayPlan(planDate: selectedToday, isRetrived: true)
-        configureSaveplanBtn(toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
         toLoadOutboxTable(isSynced: issynced ?? false)
         toloadCallsTable()
       
@@ -373,7 +380,7 @@ class MainVC : UIViewController {
     func refreshDashboard(completion: @escaping () -> ()) {
         self.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
             guard let welf = self else {return}
-            welf.refreshUI()
+            welf.refreshUI(welf.segmentType[welf.selectedSegmentsIndex])
             completion()
         }
     }
@@ -836,8 +843,8 @@ class MainVC : UIViewController {
             
             self.configureSaveplanBtn(istoEnableSaveBtn)
             self.setupRejectionVIew()
-          
-          //  self.setSegment(.workPlan)
+            self.toLoadWorktypeTable()
+      //      self.setSegment(.workPlan)
             
             
         }
@@ -1009,7 +1016,7 @@ class MainVC : UIViewController {
                         
                         welf.toCreateToast("Please check your internet connection.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                        //  self.toConfigureMydayPlan()
+                   
                         
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
@@ -1417,9 +1424,9 @@ class MainVC : UIViewController {
     }
     
     @objc func refreshDayplan() {
-        masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: false) {_ in
-
-            self.refreshUI()
+        masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: false) {[weak self] _ in
+            guard let welf = self else {return}
+            welf.refreshUI(welf.segmentType[welf.selectedSegmentsIndex])
      
         }
         
@@ -1438,12 +1445,12 @@ class MainVC : UIViewController {
             toSetParams(date: self.selectedToday, isfromSyncCall: true) {
                 // self.toLoadOutboxTable(isSynced: true)
                 self.refreshDashboard() {
-                    self.setSegment(.calls)
+                  
                 }
             }
         } else {
-            refreshUI()
-            self.setSegment(.outbox)
+            refreshUI(segmentType[selectedSegmentsIndex])
+        
         }
      
     }
@@ -1510,7 +1517,7 @@ class MainVC : UIViewController {
         self.toSetParams(date: byDate, isfromSyncCall: false) {
            // self.toConfigureMydayPlan(planDate: byDate, isRetrived: true)
            // self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
-            completion()
+                        completion()
         }
     }
     
@@ -4396,7 +4403,8 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
         
         
             self.outBoxDataArr = filteredValues
-            self.refreshUI(issynced: true)
+        self.refreshUI(issynced: true, segmentType[selectedSegmentsIndex])
+          
          
  
     }

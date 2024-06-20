@@ -477,6 +477,7 @@ class MenuView : BaseView{
         case jointCall
         case listedDoctor = "Listed Doctor"
         case chemist = "Chemist"
+        case chemistCategory = "Chemist Category"
         case stockist = "Stockist"
         case unlistedDoctor  = "Unlisted Doctor"
         case cip = "CIP"

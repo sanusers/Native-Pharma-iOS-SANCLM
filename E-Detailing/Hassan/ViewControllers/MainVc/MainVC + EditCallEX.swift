@@ -395,9 +395,14 @@ extension MainVC {
             let addedInput = cacheInputs.filter { aInput in
                 aInput.code == giftCode
             }.first
-            let aInputData = InputData(input: addedInput, availableCount: "", inputCount: aDCRDetail.giftQty)
-            let aInputewmodel = InputViewModel(input: aInputData)
-            fetchedInputSelectedListViewModel.addInputViewModel(aInputewmodel)
+         
+            if let addedInput = addedInput {
+                let aInputData = InputData(input: addedInput, availableCount: "", inputCount: aDCRDetail.giftQty)
+                let aInputewmodel = InputViewModel(input: aInputData)
+                fetchedInputSelectedListViewModel.addInputViewModel(aInputewmodel)
+            }
+          
+
             //Additional gifts
             let additionalinputCode = aDCRDetail.additionalGiftCode
             fetchedInputInfoArr =  self.transformStringToInputObjects(additionalinputCode)

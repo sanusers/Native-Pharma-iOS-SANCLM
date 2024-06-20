@@ -600,6 +600,40 @@ extension SpecifiedMenuView:UITextFieldDelegate {
                     self.menuTable.isHidden = true
                 }
                 
+            case .chemistCategory:
+                if newText.isEmpty {
+                    self.toLoadRequiredData()
+                }
+                var filteredWorkType = [ChemistCategory]()
+                filteredWorkType.removeAll()
+                var isMatched = false
+                chemistcategory?.forEach({ visit in
+                    if visit.name!.lowercased().contains(newText) {
+                        filteredWorkType.append(visit)
+                        isMatched = true
+                    }
+                })
+
+                
+                if newText.isEmpty {
+
+                    self.noresultsView.isHidden = true
+                    isSearched = false
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else if isMatched {
+                    chemistcategory = filteredWorkType
+                    isSearched = true
+                    self.noresultsView.isHidden = true
+                    self.menuTable.isHidden = false
+                    self.menuTable.reloadData()
+                } else {
+                    print("Not matched")
+                    self.noresultsView.isHidden = false
+                    isSearched = false
+                    self.menuTable.isHidden = true
+                }
+                
             case .leave:
                 if newText.isEmpty {
                     self.toLoadRequiredData()
@@ -779,7 +813,8 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             return self.speciality?.count ?? 0
         case.category:
             return self.category?.count ?? 0
-            
+        case.chemistCategory:
+            return self.chemistcategory?.count ?? 0
         case .leave:
             return self.leaveArr?.count ?? 0
         case .doctorClass:
@@ -1565,6 +1600,26 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return cell
             
+        case .chemistCategory:
+            let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
+            titleLbl.text = "Category"
+            cell.selectionStyle = .none
+           
+            var yetTosendModel: NSManagedObject?
+             if let modelArr = self.chemistcategory {
+                 let model: ChemistCategory = modelArr[indexPath.row]
+                 yetTosendModel = model
+                 cell.populateCell(model: model)
+                // cell.setupHeight(type: cellType)
+             }
+            
+            cell.addTap {
+                self.specifiedMenuVC.menuDelegate?.selectedType(.chemistCategory, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.hideMenuAndDismiss()
+            }
+            
+            return cell
+            
             
         case .leave:
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
@@ -1580,7 +1635,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
              }
             
             cell.addTap {
-                self.specifiedMenuVC.menuDelegate?.selectedType(.category, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
+                self.specifiedMenuVC.menuDelegate?.selectedType(.leave, selectedObject: yetTosendModel ?? NSManagedObject(), selectedObjects: [NSManagedObject]())
                 self.hideMenuAndDismiss()
             }
             
@@ -1633,7 +1688,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             
             return 60 + 10
             
-        case  .clusterInfo, .speciality, .qualification, .category, .theraptic:
+        case  .clusterInfo, .speciality, .qualification, .category, .theraptic, .chemistCategory:
             
             return 30 + 10
         case .competitors:
@@ -1695,6 +1750,7 @@ class SpecifiedMenuView: BaseView {
     var productArr: [Product]?
     var visitControlArr : [VisitControl]?
     var category: [DoctorCategory]?
+    var chemistcategory: [ChemistCategory]?
     var speciality: [Speciality]?
     var qualifications: [Qualifications]?
     var feedback : [Feedback]?
@@ -2034,6 +2090,11 @@ class SpecifiedMenuView: BaseView {
        case .category:
            bottomHolderHeight.constant = 0
            category = DBManager.shared.getCategory()
+           
+       case .chemistCategory:
+           bottomHolderHeight.constant = 0
+           chemistcategory = DBManager.shared.getChemistCategory()
+           
        case .speciality:
            bottomHolderHeight.constant = 0
           speciality = DBManager.shared.getSpeciality()
@@ -2356,6 +2417,10 @@ class SpecifiedMenuTCell: UITableViewCell
       //  itemTypeLbl.text = model.productMode
     }
     
+    func populateCell(model: ChemistCategory) {
+        lblName.text = model.name
+      //  itemTypeLbl.text = model.productMode
+    }
     
     func populateCell(model: DoctorCategory) {
         lblName.text = model.name

@@ -90,7 +90,7 @@ enum MasterCellType : Int {
             return [MasterInfo.doctorFencing,MasterInfo.speciality,MasterInfo.qualifications, MasterInfo.category,MasterInfo.departments,MasterInfo.doctorClass, MasterInfo.syncAll]
             //MasterInfo.category,
         case .chemist:
-            return [MasterInfo.chemists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
+            return [MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.empty,MasterInfo.syncAll]
         case .stockist:
             return [MasterInfo.stockists,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
         case .unLstDoctor:
@@ -166,6 +166,7 @@ enum `MasterInfo` : String, CaseIterable {
     case clusters = "Clusters"
     case doctors = "Doctors"
     case chemists = "Chemists"
+    case chemistCategory = "Chemists Category"
     case stockists = "Stockists"
     case unlistedDoctors = "Unlisted Doctors"
     case institutions = "Institutions"
@@ -256,7 +257,7 @@ enum `MasterInfo` : String, CaseIterable {
         case .subordinate , .jointWork:
             // .subordinateMGR,
             return String(format: "%@table/subordinates", mainUrl)
-        case .doctorFencing ,.chemists ,.stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.speciality,.departments,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
+        case .doctorFencing ,.chemists , .chemistCategory, .stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.speciality,.departments,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
             return String(format: "%@table/dcrmasterdata", mainUrl)
         case .tourPlanSetup:
             return String(format: "%@table/setups", mainUrl)
@@ -277,7 +278,7 @@ enum `MasterInfo` : String, CaseIterable {
             return String(format: "%@table/slides", mainUrl)
             
         default :
-            return String(format: "%@home", mainUrl) //
+            return String(format: "%@home", mainUrl)
         }
     }
     
@@ -388,6 +389,8 @@ enum `MasterInfo` : String, CaseIterable {
             return [String : Any]()
         case .slideTheraptic:
             return MasterSyncParams.slideTherapticParams
+        case .chemistCategory:
+            return MasterSyncParams.chemistCategoryParams
         }
  
     }
@@ -790,6 +793,26 @@ struct MasterSyncParams {
         param["division_code"] = appsetup.divisionCode ?? ""
         param["Rsf"] = appsetup.sfCode ?? ""
         param["sf_type"] = appsetup.sfType ?? ""
+        param["Designation"] = appsetup.dsName ?? ""
+        param["state_code"] = appsetup.stateCode ?? ""
+        param["subdivision_code"] = appsetup.subDivisionCode ?? ""
+
+        let paramString = ObjectFormatter.shared.convertJson2String(json: param)
+
+        return ["data": paramString ?? ""]
+    }
+    
+    static var chemistCategoryParams : [String : Any] {
+        //{"tableName":"getchem_categorys","sfcode":"MR1651","division_code":"44,","Rsf":"MR1651","sf_type":"1","ReqDt":"2024-06-20 11:02:24.9350","Designation":"MR","state_code":"4","subdivision_code":"170,","versionNo":"Test.H.4","mod":"Android-Edet","Device_version":"10","Device_name":"LENOVO - Lenovo TB-X606V","AppName":"SAN ZEN","language":"en"}
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        
+        var param = [String: Any]()
+        param["tableName"] = "getchem_categorys"
+        param["sfcode"] = appsetup.sfCode ?? ""
+        param["division_code"] = appsetup.divisionCode ?? ""
+        param["Rsf"] = appsetup.sfCode ?? ""
+        param["sf_type"] = appsetup.sfType ?? ""
+        param["ReqDt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         param["Designation"] = appsetup.dsName ?? ""
         param["state_code"] = appsetup.stateCode ?? ""
         param["subdivision_code"] = appsetup.subDivisionCode ?? ""
