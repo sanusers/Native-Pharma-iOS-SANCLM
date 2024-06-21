@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "Vector (10).png",
+      "filename" : "dashboardUnlistedDoctor.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Vector (10)@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Vector (10)@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

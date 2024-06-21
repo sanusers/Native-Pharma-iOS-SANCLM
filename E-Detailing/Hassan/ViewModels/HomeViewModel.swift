@@ -11,7 +11,7 @@ import Foundation
 enum HomeError: String, Error {
     
 case unableConnect = "Request time out"
-case  invalidUrl = "Invalid Url"
+case  invalidUrl = "Invalid Web Url"
 
 }
 

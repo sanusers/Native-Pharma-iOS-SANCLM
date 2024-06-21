@@ -291,7 +291,7 @@ class MainVC : UIViewController {
 
     
     override func viewDidLoad() {
-        CoreDataManager.shared.removeAllDayPlans()
+     //   CoreDataManager.shared.removeAllDayPlans()
         super.viewDidLoad()
 
         updateLinks()
@@ -2130,7 +2130,7 @@ class MainVC : UIViewController {
             }
             
              
-             self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "ListedDoctor") ?? UIImage(), callsCount:  doctorfilteredArray.count + unsyncedDocilteredArray.count))
+             self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "dashboardDoctor") ?? UIImage(), callsCount:  doctorfilteredArray.count + unsyncedDocilteredArray.count))
         }
 
         if appSetups.chmNeed == 0 {
@@ -2176,7 +2176,7 @@ class MainVC : UIViewController {
             }
             
             
-            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "Chemist") ?? UIImage(), callsCount:  chemistfilteredArray.count + unsyncedChemistilteredArray.count))
+            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "dashboardChemist") ?? UIImage(), callsCount:  chemistfilteredArray.count + unsyncedChemistilteredArray.count))
         }
         
         
@@ -2222,7 +2222,7 @@ class MainVC : UIViewController {
             
             let stockistCount = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
-            self.dcrCount.append(DcrCount(name: "Stockist",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "Stockist") ?? UIImage(), callsCount: stockistFilteredArray.count + unsyncedStockistilteredArray.count))
+            self.dcrCount.append(DcrCount(name: "Stockist",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "dashboardStockist") ?? UIImage(), callsCount: stockistFilteredArray.count + unsyncedStockistilteredArray.count))
         }
         
         
@@ -2269,7 +2269,7 @@ class MainVC : UIViewController {
             let unlistedDocCount = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
             
-            self.dcrCount.append(DcrCount(name: "UnListed Doctor",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "Doctor") ?? UIImage(), callsCount: unlistedDocFilteredArray.count + unsyncedunlistedDocilteredArray.count))
+            self.dcrCount.append(DcrCount(name: "UnListed Doctor",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "dashboardUnlistedDoctor") ?? UIImage(), callsCount: unlistedDocFilteredArray.count + unsyncedunlistedDocilteredArray.count))
         }
 
         

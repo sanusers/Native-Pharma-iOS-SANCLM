@@ -57,6 +57,7 @@
 		3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */; };
 		3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */; };
 		3825CFD92BA86F4800217D40 /* PrecallsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFD82BA86F4800217D40 /* PrecallsModel.swift */; };
+		3826EE472C2555BA00439926 /* AddcallinfoVC + Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3826EE462C2555BA00439926 /* AddcallinfoVC + Ex.swift */; };
 		3829304E2C11888C00E71160 /* MainVC+OutboxEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */; };
 		3836A0692C01C14D0034DBCC /* FunEventsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */; };
 		3836A06A2C01C14D0034DBCC /* FunEventsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */; };
@@ -449,6 +450,7 @@
 		3825CFD42BA8665400217D40 /* ProductsDescriptionTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsDescriptionTVC.swift; sourceTree = "<group>"; };
 		3825CFD52BA8665400217D40 /* ProductsDescriptionTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsDescriptionTVC.xib; sourceTree = "<group>"; };
 		3825CFD82BA86F4800217D40 /* PrecallsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrecallsModel.swift; sourceTree = "<group>"; };
+		3826EE462C2555BA00439926 /* AddcallinfoVC + Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddcallinfoVC + Ex.swift"; sourceTree = "<group>"; };
 		3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+OutboxEX.swift"; sourceTree = "<group>"; };
 		3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunEventsTVC.swift; sourceTree = "<group>"; };
 		3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunEventsTVC.xib; sourceTree = "<group>"; };
@@ -1137,6 +1139,7 @@
 			children = (
 				387BDB022BAB1E20002B5E7D /* AddCallinfoVC.swift */,
 				381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */,
+				3826EE462C2555BA00439926 /* AddcallinfoVC + Ex.swift */,
 			);
 			path = AddCalls;
 			sourceTree = "<group>";
@@ -1985,6 +1988,7 @@
 				38DD9E5D2C08587D000A9575 /* RCPAdetailsInfoCVC.swift in Sources */,
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
 				386A61D82BB2AC7000363C6C /* RCPASectionheader.swift in Sources */,
+				3826EE472C2555BA00439926 /* AddcallinfoVC + Ex.swift in Sources */,
 				38C90ADC2A7785F5003CC0C8 /* DCRCallCell.swift in Sources */,
 				38DD9E6B2C088761000A9575 /* SlidesDescriptionCVC.swift in Sources */,
 				38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */,

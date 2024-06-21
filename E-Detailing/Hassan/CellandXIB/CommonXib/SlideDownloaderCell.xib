@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -36,21 +36,21 @@
                                         <rect key="frame" x="0.0" y="0.0" width="380" height="46.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PuO-12-1Q5">
-                                                <rect key="frame" x="0.0" y="12" width="45.5" height="22.5"/>
-                                                <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="18"/>
+                                                <rect key="frame" x="0.0" y="14.5" width="34.5" height="17.5"/>
+                                                <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XUe-Mz-c2t" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
-                                                <rect key="frame" x="315.5" y="3.5" width="64.5" height="39.5"/>
-                                                <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.14999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                <rect key="frame" x="348" y="7" width="32" height="32.5"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="  Retry">
-                                                    <color key="titleColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                                    <imageReference key="image" image="arrow.clockwise" catalog="system" symbolScale="small"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
+                                                <state key="normal">
+                                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <imageReference key="image" image="RetryDownload" symbolScale="small"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="medium" weight="semibold"/>
                                                 </state>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -62,10 +62,10 @@
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstItem="PuO-12-1Q5" firstAttribute="centerY" secondItem="eKJ-vk-NLd" secondAttribute="centerY" id="BGc-Nu-qaS"/>
-                                            <constraint firstItem="XUe-Mz-c2t" firstAttribute="height" secondItem="eKJ-vk-NLd" secondAttribute="height" multiplier="0.85" id="CXN-Eq-pvn"/>
-                                            <constraint firstItem="XUe-Mz-c2t" firstAttribute="width" secondItem="eKJ-vk-NLd" secondAttribute="width" multiplier="0.17" id="Dp1-Ti-5a9"/>
                                             <constraint firstAttribute="trailing" secondItem="XUe-Mz-c2t" secondAttribute="trailing" id="Odg-oF-YCh"/>
                                             <constraint firstItem="XUe-Mz-c2t" firstAttribute="centerY" secondItem="eKJ-vk-NLd" secondAttribute="centerY" id="QCj-yh-hK1"/>
+                                            <constraint firstItem="XUe-Mz-c2t" firstAttribute="width" secondItem="eKJ-vk-NLd" secondAttribute="height" multiplier="0.7" id="WOs-1s-jen"/>
+                                            <constraint firstItem="XUe-Mz-c2t" firstAttribute="height" secondItem="eKJ-vk-NLd" secondAttribute="height" multiplier="0.7" id="nsJ-V3-ntt"/>
                                             <constraint firstItem="PuO-12-1Q5" firstAttribute="leading" secondItem="eKJ-vk-NLd" secondAttribute="leading" id="ueH-Ib-6x2"/>
                                         </constraints>
                                     </view>
@@ -129,7 +129,7 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="arrow.clockwise" catalog="system" width="113" height="128"/>
+        <image name="RetryDownload" width="512" height="512"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

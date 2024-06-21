@@ -194,7 +194,12 @@ class LoginVC : UIViewController {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
-            print("no action")
+          
+            if istoValidate ?? false {
+                self.appDelegate.setupRootViewControllers()
+            } else {
+                print("no action")
+            }
            // self.openSettings()
 
    
@@ -490,7 +495,8 @@ class LoginVC : UIViewController {
             dispatchGroup.notify(queue: .main) {
                 // Hide your loader here
                 Shared.instance.removeLoaderInWindow()
-                appDelegate.setupRootViewControllers()
+                self.toSetupAlert(text: "Data cleared successfully", istoValidate: true)
+               
                 // Call endBackgroundTask when the task completes if it's not already stopped
                 self.endBackgroundTask()
             }

@@ -471,7 +471,6 @@ public class CallViewModel {
             if let doccall = dcrcall as? DoctorFencing {
                 type = .doctor
                 name = doccall.name ?? ""
-                
                 code = doccall.code ?? ""
                 dob = doccall.dob ?? ""
                 dow = doccall.dow ?? ""

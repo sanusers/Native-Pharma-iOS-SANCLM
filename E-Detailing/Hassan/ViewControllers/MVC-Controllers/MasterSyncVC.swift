@@ -293,7 +293,7 @@ class MasterSyncVC : UIViewController {
         backBtn.setTitle("", for: .normal)
       
         retryVIew.layer.cornerRadius = retryVIew.height / 2
-        setHQlbl(isTosetDayplanHQ: true)
+        setHQlbl(isTosetDayplanHQ: false)
         
      
         

@@ -6552,12 +6552,12 @@
                                                                 <rect key="frame" x="10" y="5" width="328.5" height="39"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-4F-p13">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="26" height="39"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="49" height="39"/>
                                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
                                                                     </imageView>
                                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QYf-HS-1zw">
-                                                                        <rect key="frame" x="26" y="0.0" width="302.5" height="39"/>
+                                                                        <rect key="frame" x="49" y="0.0" width="279.5" height="39"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                         <connections>
@@ -6695,7 +6695,7 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="331" height="73"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IJA-1r-7oe">
-                                                                                                <rect key="frame" x="0.0" y="11" width="331" height="51"/>
+                                                                                                <rect key="frame" x="15.5" y="11" width="300" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meb-Ly-iph">
                                                                                                         <rect key="frame" x="15" y="16.5" width="133.5" height="17.5"/>
@@ -6704,7 +6704,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7lw-l7-meY">
-                                                                                                        <rect key="frame" x="290.5" y="13.5" width="25.5" height="23.5"/>
+                                                                                                        <rect key="frame" x="259.5" y="13.5" width="25.5" height="23.5"/>
                                                                                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                                                                     </imageView>
@@ -9308,10 +9308,10 @@
                                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
-                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FqW-Yz-4oC">
+                                                                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FqW-Yz-4oC">
                                                                                         <rect key="frame" x="0.0" y="48.5" width="371.5" height="48.5"/>
                                                                                         <subviews>
-                                                                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jet-ZI-koY">
+                                                                                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="English" placeholder="English" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jet-ZI-koY">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="297" height="48.5"/>
                                                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -9539,7 +9539,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="425" height="49"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7G-nK-uSu">
-                                                                        <rect key="frame" x="0.0" y="15.5" width="48.5" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="16" width="47" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -9570,7 +9570,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="425" height="49"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jo2-V5-9L5">
-                                                                        <rect key="frame" x="0.0" y="16" width="62.5" height="17.5"/>
+                                                                        <rect key="frame" x="0.0" y="16.5" width="62" height="16.5"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -9626,7 +9626,7 @@
                                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="0.15423220200000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                                <state key="normal" title="  Clear Data  " image="rotate-left 1 (1)">
+                                                                <state key="normal" title="  Clear Data  " image="rotateleft">
                                                                     <color key="titleColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="small" weight="light"/>
                                                                 </state>
@@ -9680,7 +9680,7 @@ VmVyc2lvbiA6IDEuMAM
                                                     <constraint firstItem="tlb-Cu-TaU" firstAttribute="width" secondItem="rvZ-2S-Ouf" secondAttribute="width" multiplier="0.530612" id="qwQ-9t-gZZ"/>
                                                 </constraints>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Djo-Pp-U4v">
+                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Djo-Pp-U4v">
                                                 <rect key="frame" x="344.5" y="5.5" width="113.5" height="57.5"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="5ua-ko-Od4">
@@ -11569,7 +11569,7 @@ VmVyc2lvbiA6IDEuMAM
         <image name="profile" width="42.666667938232422" height="42.333332061767578"/>
         <image name="red_refresh" width="16" height="16"/>
         <image name="reportsCalender" width="24" height="24"/>
-        <image name="rotate-left 1 (1)" width="15.5" height="15"/>
+        <image name="rotateleft" width="24" height="24"/>
         <image name="sanLogo" width="1601" height="397"/>
         <image name="scribble.variable" catalog="system" width="128" height="119"/>
         <image name="spe_Arrow_Down" width="14" height="7"/>

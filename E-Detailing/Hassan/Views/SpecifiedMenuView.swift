@@ -2106,6 +2106,7 @@ class SpecifiedMenuView: BaseView {
            feedback =  DBManager.shared.getFeedback()
       
        case .inputs:
+           searchTF.placeholder = "Search Input name"
            bottomHolderHeight.constant = 0
            self.inputsArr = DBManager.shared.getInput()
            inputsArr = inputsArr?.filter {$0.code != "-1"}
@@ -2113,6 +2114,7 @@ class SpecifiedMenuView: BaseView {
            self.inputsArr = self.inputsArr?.sorted(by: { $0.name ?? "" < $1.name ?? "" })
            
        case . product:
+           searchTF.placeholder = "Search Product name"
            bottomHolderHeight.constant = 0
            self.productArr = DBManager.shared.getProduct()
            
@@ -2159,11 +2161,13 @@ class SpecifiedMenuView: BaseView {
 //           }
            
        case .WorkTypeInfo:
+           searchTF.placeholder = "Search Work type name"
            bottomHolderHeight.constant = 0
            self.workTypeArr = DBManager.shared.getWorkType()
            
            self.workTypeArr = self.workTypeArr?.sorted(by: { $0.name ?? "" < $1.name ?? "" })
        case .clusterInfo:
+           searchTF.placeholder = "Search Cluster name"
            bottomHolderHeight.constant = 0
            self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            
@@ -2201,7 +2205,7 @@ class SpecifiedMenuView: BaseView {
     
            self.competitorsArr = mappedCompetitor
        case .cluster:
-               
+           searchTF.placeholder = "Search Cluster name"
            bottomHolderHeight.constant = 80
            self.clusterArr = DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            if specifiedMenuVC.selectedObject != nil {
@@ -2260,6 +2264,7 @@ class SpecifiedMenuView: BaseView {
 
            
        case .listedDoctor, .doctorInfo:
+           searchTF.placeholder = "Search Listed Doctor name"
            if specifiedMenuVC.previewType != nil {
                switch specifiedMenuVC.previewType {
                case .speciality  :
@@ -2290,6 +2295,7 @@ class SpecifiedMenuView: BaseView {
       
            }
        case .chemist, .chemistInfo:
+           searchTF.placeholder = "Search Chemist name"
            bottomHolderHeight.constant = 0
            self.chemistArr = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
            
@@ -2306,9 +2312,11 @@ class SpecifiedMenuView: BaseView {
            }
            
        case .stockist, .stockistInfo:
+           searchTF.placeholder = "Search Stockist name"
            bottomHolderHeight.constant = 0
            self.stockistArr =  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        case .unlistedDoctor, .unlistedDoctorinfo:
+           searchTF.placeholder = "Search Unlisted Doctor name"
            bottomHolderHeight.constant = 0
            self.unlisteedDocArr = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
        default:

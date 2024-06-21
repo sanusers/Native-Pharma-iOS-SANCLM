@@ -35,26 +35,26 @@ extension MainVC {
     }
     
     func toCallEditAPI(dcrCall: TodayCallsModel) {
-        Shared.instance.showLoaderInWindow()
+       
      //   {"headerno":"DP8-681","detno":"DP8-816","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,","cusname":"A JAIN --- [ Doctor ]","custype":"1","pob":"1"}
         var dcrCalls: AnyObject?
         
         switch dcrCall.custType {
         case 1:
-            let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedDocters = DBManager.shared.getDoctor()
            let filteredDoctores = listedDocters.filter { aDoctorFencing in
                 aDoctorFencing.code == dcrCall.custCode
             }
             dcrCalls = filteredDoctores.first
         case 2:
-            let listedChemist = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedChemist = DBManager.shared.getChemist()
            let filteredChemist = listedChemist.filter { aChemist in
                aChemist.code == dcrCall.custCode
             }
             dcrCalls = filteredChemist.first
             
         case 3:
-            let listedStockist = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedStockist = DBManager.shared.getStockist()
            let filteredStockist = listedStockist.filter { aStockist in
                aStockist.code == dcrCall.custCode
             }
@@ -62,7 +62,7 @@ extension MainVC {
             
             
         case 4:
-            let listedCustomers = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedCustomers = DBManager.shared.getUnListedDoctor()
            let filteredCustomers = listedCustomers.filter { aCustomer in
                aCustomer.code == dcrCall.custCode
             }
@@ -73,7 +73,7 @@ extension MainVC {
             print("Yet to")
         }
         guard let nonNilDcrCalls = dcrCalls else{return}
-        
+        Shared.instance.showLoaderInWindow()
         let aCallVM = CallViewModel(call: nonNilDcrCalls , type: DCRType.doctor)
         var param = [String: Any]()
         param["headerno"] = dcrCall.transSlNo 

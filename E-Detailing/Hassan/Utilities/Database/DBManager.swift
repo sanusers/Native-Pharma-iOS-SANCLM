@@ -625,10 +625,14 @@ class DBManager {
                 guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
                     continue
                 }
-                
-                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+                if calendar.component(.weekday, from: date) == (weekoffday == 0 ? 1 : weekoffday) {
                     saturdays.append(date)
                 }
+                
+//                
+//                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+//                    saturdays.append(date)
+//                }
             }
         }
         

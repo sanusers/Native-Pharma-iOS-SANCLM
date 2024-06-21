@@ -332,40 +332,12 @@ class PreCallVC : UIViewController {
             return nil
         }
     }
-    
-//    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
-//        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
-//        let calendar = Calendar.current
-//        
-//        var saturdays: [Date] = []
-//        
-//        for monthOffset in months {
-//            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
-//                continue
-//            }
-//            
-//            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
-//            
-//            for day in monthRange.lowerBound..<monthRange.upperBound {
-//                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
-//                    continue
-//                }
-//                
-//                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
-//                    saturdays.append(date)
-//                }
-//            }
-//        }
-//        
-//        return saturdays
-//    }
-    
     func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [weekoffSections] {
         let currentDate = getFirstDayOfCurrentMonth() ?? Date()
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE" // This will give us the full name of the weekday (e.g., "Saturday")
-        
+        dateFormatter.dateFormat = "EEEE" // Full name of the weekday (e.g., "Sunday")
+
         var weekoffDates: [Date] = []
         
         for monthOffset in months {
@@ -380,7 +352,8 @@ class PreCallVC : UIViewController {
                     continue
                 }
                 
-                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+                // Correct weekday representation: Sunday = 1, Saturday = 7
+                if calendar.component(.weekday, from: date) == (weekoffday == 0 ? 1 : weekoffday) {
                     weekoffDates.append(date)
                 }
             }
@@ -404,6 +377,51 @@ class PreCallVC : UIViewController {
         
         return sections
     }
+    
+//    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [weekoffSections] {
+//        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
+//        let calendar = Calendar.current
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "EEEE" // This will give us the full name of the weekday (e.g., "Saturday")
+//        
+//        var weekoffDates: [Date] = []
+//        
+//        for monthOffset in months {
+//            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
+//                continue
+//            }
+//            
+//            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
+//            
+//            for day in monthRange.lowerBound..<monthRange.upperBound {
+//                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
+//                    continue
+//                }
+//                
+//                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
+//                    weekoffDates.append(date)
+//                }
+//            }
+//        }
+//        
+//        // Group dates by weekday name
+//        var groupedDates: [String: [Date]] = [:]
+//        for date in weekoffDates {
+//            let weekdayName = dateFormatter.string(from: date)
+//            if groupedDates[weekdayName] == nil {
+//                groupedDates[weekdayName] = []
+//            }
+//            groupedDates[weekdayName]?.append(date)
+//        }
+//        
+//        // Create WeekoffSection instances
+//        var sections: [weekoffSections] = []
+//        for (day, dates) in groupedDates {
+//            sections.append(weekoffSections(day: day, dates: dates, collapsed: true))
+//        }
+//        
+//        return sections
+//    }
     
     func cellregistration() {
         productsTable.register(UINib(nibName: "ProductsDescriptionTVC", bundle: nil), forCellReuseIdentifier: "ProductsDescriptionTVC")
@@ -471,7 +489,7 @@ class PreCallVC : UIViewController {
         
         let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
         if !weeklyoffSetupArr.isEmpty {
-            weeklyOff = weeklyoffSetupArr[0]
+            weeklyOff = weeklyoffSetupArr
         }
         
         let holidaysSetupArr = DBManager.shared.getHolidays()
@@ -530,9 +548,17 @@ class PreCallVC : UIViewController {
         
        self.holidaysSections = holidaysSections
         
-       let weekoffIndex = Int(weeklyOff?.holiday_Mode ?? "0") ?? 0
+        var weekoffIndex : [Int] = []
+        
+        weeklyOff?.forEach({ aWeeklyoff in
+            weekoffIndex.append(Int(aWeeklyoff.holiday_Mode ?? "0") ?? 0)
+        })
+        
        let monthIndex =  [0, 1]
-        let weekoffDates = getWeekoffDates(forMonths: monthIndex, weekoffday: weekoffIndex)
+        var weekoffDates : [weekoffSections] = []
+        weekoffIndex.forEach { weeklyoffIndex in
+            weekoffDates.append(contentsOf: getWeekoffDates(forMonths: monthIndex, weekoffday: weeklyoffIndex))
+        }
         dump(weekoffDates)
         self.weeklyoffSections = weekoffDates
         toLoadFunEventsTable()
@@ -556,6 +582,8 @@ class PreCallVC : UIViewController {
     }
     
     func setupUIforFunEvents() {
+        self.overVIewVIew.isHidden = true
+        self.preCallVIew.isHidden = true
         funEventsTable.separatorStyle = .none
         funEventsHolderVIew.layer.cornerRadius = 5
     }
@@ -585,9 +613,12 @@ class PreCallVC : UIViewController {
             }
             
         case .Holidays:
-       
+            self.overVIewVIew.isHidden = true
+            self.preCallVIew.isHidden = true
             toLoadFunEventsTable()
         case .Weeklyoffs:
+            self.overVIewVIew.isHidden = true
+            self.preCallVIew.isHidden = true
             toLoadFunEventsTable()
         }
     }
@@ -745,7 +776,7 @@ class PreCallVC : UIViewController {
     var productStrArr : [SampleProduct] = []
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var  weeklyOff : Weeklyoff?
+    var  weeklyOff : [Weeklyoff]?
     var  holidays : [Holidays]?
     var weeklyoffSections : [weekoffSections] = []
     var holidaysSections : [HolidaysSections] = []
