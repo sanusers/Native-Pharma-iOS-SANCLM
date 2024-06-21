@@ -21,10 +21,10 @@
         </array>
     </customFonts>
     <scenes>
-        <!--Single SelectionVC-->
+        <!--Product Input SelectionVC-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController storyboardIdentifier="SingleSelectionVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="SingleSelectionVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProductInputSelectionVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="ProductInputSelectionVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="580" height="640"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -33,7 +33,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="580" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mdW-93-FRA">
-                                        <rect key="frame" x="15" y="16.5" width="45" height="17.5"/>
+                                        <rect key="frame" x="15" y="16" width="45" height="18"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -62,7 +62,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rpe-YH-sKJ">
-                                <rect key="frame" x="0.0" y="50" width="580" height="530"/>
+                                <rect key="frame" x="0.0" y="50" width="580" height="526"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SingleSelectionCell" id="KiV-ce-kTs" customClass="SingleSelectionCell" customModule="E_Detailing" customModuleProvider="target">
@@ -134,10 +134,10 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ow-oJ-Syj">
-                                <rect key="frame" x="0.0" y="580" width="580" height="60"/>
+                                <rect key="frame" x="0.0" y="576" width="580" height="64"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L5f-To-e8P">
-                                        <rect key="frame" x="405" y="15" width="72.5" height="30"/>
+                                        <rect key="frame" x="381" y="8" width="87" height="48"/>
                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="0.25" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -146,10 +146,11 @@
                                         </state>
                                         <connections>
                                             <action selector="skipDetailingAction:" destination="Upd-gx-jF7" eventType="touchUpInside" id="z30-p5-0TK"/>
+                                            <action selector="userDidCancel:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="C15-ZC-vAw"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MFJ-Hg-Ezx">
-                                        <rect key="frame" x="492.5" y="15" width="72.5" height="30"/>
+                                        <rect key="frame" x="483" y="8" width="87" height="48"/>
                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -158,17 +159,18 @@
                                         </state>
                                         <connections>
                                             <action selector="startDetailingAction:" destination="Upd-gx-jF7" eventType="touchUpInside" id="bso-jc-cdJ"/>
+                                            <action selector="userDidSave:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="ncG-Eg-beI"/>
                                         </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="MFJ-Hg-Ezx" secondAttribute="trailing" constant="15" id="1GH-CT-gRv"/>
-                                    <constraint firstItem="L5f-To-e8P" firstAttribute="height" secondItem="6ow-oJ-Syj" secondAttribute="height" multiplier="0.5" id="8Vc-IB-jeU"/>
+                                    <constraint firstAttribute="trailing" secondItem="MFJ-Hg-Ezx" secondAttribute="trailing" constant="10" id="1GH-CT-gRv"/>
+                                    <constraint firstItem="L5f-To-e8P" firstAttribute="height" secondItem="6ow-oJ-Syj" secondAttribute="height" multiplier="0.75" id="8Vc-IB-jeU"/>
                                     <constraint firstItem="L5f-To-e8P" firstAttribute="centerY" secondItem="6ow-oJ-Syj" secondAttribute="centerY" id="HCf-MZ-ZsR"/>
-                                    <constraint firstItem="L5f-To-e8P" firstAttribute="width" secondItem="6ow-oJ-Syj" secondAttribute="width" multiplier="0.125" id="KQQ-HE-XYO"/>
-                                    <constraint firstItem="MFJ-Hg-Ezx" firstAttribute="height" secondItem="6ow-oJ-Syj" secondAttribute="height" multiplier="0.5" id="O2X-wo-F7E"/>
-                                    <constraint firstItem="MFJ-Hg-Ezx" firstAttribute="width" secondItem="6ow-oJ-Syj" secondAttribute="width" multiplier="0.125" id="aWY-08-RLa"/>
+                                    <constraint firstItem="L5f-To-e8P" firstAttribute="width" secondItem="6ow-oJ-Syj" secondAttribute="width" multiplier="0.15" id="KQQ-HE-XYO"/>
+                                    <constraint firstItem="MFJ-Hg-Ezx" firstAttribute="height" secondItem="6ow-oJ-Syj" secondAttribute="height" multiplier="0.75" id="O2X-wo-F7E"/>
+                                    <constraint firstItem="MFJ-Hg-Ezx" firstAttribute="width" secondItem="6ow-oJ-Syj" secondAttribute="width" multiplier="0.15" id="aWY-08-RLa"/>
                                     <constraint firstItem="MFJ-Hg-Ezx" firstAttribute="centerY" secondItem="6ow-oJ-Syj" secondAttribute="centerY" id="g0f-XK-It9"/>
                                     <constraint firstItem="MFJ-Hg-Ezx" firstAttribute="leading" secondItem="L5f-To-e8P" secondAttribute="trailing" constant="15" id="iFN-1c-h13"/>
                                 </constraints>
@@ -186,11 +188,14 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="BRU-mp-h01" secondAttribute="trailing" id="kK9-KX-CEe"/>
                             <constraint firstItem="rpe-YH-sKJ" firstAttribute="top" secondItem="BRU-mp-h01" secondAttribute="bottom" id="leE-Xo-DE7"/>
                             <constraint firstItem="6ow-oJ-Syj" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="t7q-wp-NQt"/>
+                            <constraint firstItem="6ow-oJ-Syj" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.1" id="vqO-nS-qLL"/>
                             <constraint firstItem="rpe-YH-sKJ" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="xt3-0Q-cYO"/>
                         </constraints>
                     </view>
                     <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="btnCancel" destination="L5f-To-e8P" id="y1y-Fn-dhJ"/>
+                        <outlet property="btnSave" destination="MFJ-Hg-Ezx" id="1ip-Vh-37Y"/>
                         <outlet property="lblName" destination="mdW-93-FRA" id="k7G-Di-IJ4"/>
                         <outlet property="tableView" destination="rpe-YH-sKJ" id="8b4-yD-YIH"/>
                     </connections>
@@ -211,7 +216,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1180" height="82"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Call Selection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jHm-a0-hnI">
-                                        <rect key="frame" x="70.5" y="41" width="86" height="16.5"/>
+                                        <rect key="frame" x="70.5" y="40.5" width="89" height="17.5"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -267,14 +272,14 @@
                                                         </collectionViewFlowLayout>
                                                         <cells>
                                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DCRSelectionTitleCell" id="nl7-fj-mob" customClass="DCRSelectionTitleCell" customModule="E_Detailing" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="0.0" width="100" height="39"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="100" height="40"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="9ep-kt-e56">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="39"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="40"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Doctor" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EDx-Et-6bk">
-                                                                            <rect key="frame" x="10" y="10" width="80" height="19"/>
+                                                                            <rect key="frame" x="10" y="10" width="80" height="20"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="80" id="dMR-et-CCY"/>
                                                                             </constraints>
@@ -283,7 +288,7 @@
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YgI-aM-maj">
-                                                                            <rect key="frame" x="10" y="37" width="80" height="2"/>
+                                                                            <rect key="frame" x="10" y="38" width="80" height="2"/>
                                                                             <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="2" id="fXv-AJ-wbw"/>
@@ -347,7 +352,7 @@
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Highlights selected HQ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zGV-zQ-sDh">
-                                                                <rect key="frame" x="20" y="14.5" width="378" height="16.5"/>
+                                                                <rect key="frame" x="20" y="14" width="378" height="17.5"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
                                                                 <color key="textColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>

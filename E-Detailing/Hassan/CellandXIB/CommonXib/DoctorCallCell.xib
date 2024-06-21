@@ -71,19 +71,19 @@
                                         <rect key="frame" x="0.0" y="123.5" width="219" height="36.5"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VbM-xh-kql">
-                                                <rect key="frame" x="0.0" y="0.0" width="64" height="36.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="24" height="36.5"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Button">
-                                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="0.0"/>
-                                                </buttonConfiguration>
+                                                <buttonConfiguration key="configuration" style="plain"/>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstItem="VbM-xh-kql" firstAttribute="top" secondItem="wgK-Dc-bMp" secondAttribute="top" id="9eL-RB-4Tl"/>
+                                            <constraint firstItem="VbM-xh-kql" firstAttribute="top" secondItem="wgK-Dc-bMp" secondAttribute="top" id="PuR-57-h1n"/>
                                             <constraint firstAttribute="bottom" secondItem="VbM-xh-kql" secondAttribute="bottom" id="eAt-Q2-nCg"/>
                                             <constraint firstItem="VbM-xh-kql" firstAttribute="leading" secondItem="wgK-Dc-bMp" secondAttribute="leading" id="fKA-7T-u03"/>
+                                            <constraint firstAttribute="bottom" secondItem="VbM-xh-kql" secondAttribute="bottom" id="vgU-JT-7ah"/>
                                         </constraints>
                                     </view>
                                 </subviews>

@@ -2586,7 +2586,7 @@ extension MainVC {
         }
         
         if isDayPlanRemarksadded {
-            if appSetups.srtNeed == 1 {
+            if appSetups.srtNeed == 0 {
                 doUserWindup {[weak self] _ in
                     guard let welf = self else {return}
                     welf.checkoutAction()

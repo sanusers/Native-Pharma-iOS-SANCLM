@@ -147,7 +147,7 @@
 		38C4649C2BDA8C6600B7F377 /* DetailedInfoHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C464992BDA8C6600B7F377 /* DetailedInfoHeader.swift */; };
 		38C4649F2BDA8D8C00B7F377 /* DetailedInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C4649E2BDA8D8C00B7F377 /* DetailedInfoTVC.xib */; };
 		38C464A02BDA8D8C00B7F377 /* DetailedInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4649D2BDA8D8C00B7F377 /* DetailedInfoTVC.swift */; };
-		38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */; };
+		38C478B12A4AC5C000E133FA /* ProductInputSelectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C478B02A4AC5C000E133FA /* ProductInputSelectionVC.swift */; };
 		38C482282AD97A4000BDF44C /* StockBalance + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */; };
 		38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 38C485B02A2F45E9005D1533 /* E-Detailing.xcdatamodeld */; };
 		38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C4B7A92A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift */; };
@@ -539,7 +539,7 @@
 		38C4649A2BDA8C6600B7F377 /* DetailedInfoHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailedInfoHeader.xib; sourceTree = "<group>"; };
 		38C4649D2BDA8D8C00B7F377 /* DetailedInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedInfoTVC.swift; sourceTree = "<group>"; };
 		38C4649E2BDA8D8C00B7F377 /* DetailedInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailedInfoTVC.xib; sourceTree = "<group>"; };
-		38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionVC.swift; sourceTree = "<group>"; };
+		38C478B02A4AC5C000E133FA /* ProductInputSelectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputSelectionVC.swift; sourceTree = "<group>"; };
 		38C482272AD97A4000BDF44C /* StockBalance + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StockBalance + Extension.swift"; sourceTree = "<group>"; };
 		38C485B12A2F45E9005D1533 /* E-Detailing.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "E-Detailing.xcdatamodel"; sourceTree = "<group>"; };
 		38C4B7A92A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRCallAnalysisCell.swift; sourceTree = "<group>"; };
@@ -1656,7 +1656,7 @@
 				38BCA67A2A248838002C77F6 /* LoginVC.swift */,
 				38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */,
 				38C0890D2A42FE44001F628C /* SlideDownloadVC.swift */,
-				38C478B02A4AC5C000E133FA /* SingleSelectionVC.swift */,
+				38C478B02A4AC5C000E133FA /* ProductInputSelectionVC.swift */,
 				38F8431F2A5E85E2009018AB /* LeaveApplicationVC.swift */,
 				38E3E5352A80BE7200AE5AF6 /* CallVC.swift */,
 				38E78FCC2A820EE200E3F3F0 /* PreCallVC.swift */,
@@ -2014,7 +2014,7 @@
 				38866E7A2BB2E11800F9E576 /* CompetitorsDetailsHeader.swift in Sources */,
 				38CF07E02A9C80F90051B577 /* TagVC.swift in Sources */,
 				38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */,
-				38C478B12A4AC5C000E133FA /* SingleSelectionVC.swift in Sources */,
+				38C478B12A4AC5C000E133FA /* ProductInputSelectionVC.swift in Sources */,
 				38CD60D92A86139D006FFB39 /* CallViewModel.swift in Sources */,
 				38CA1FF32B612B0500AFCFD2 /* PlayLoadedPresentationCVC.swift in Sources */,
 				38C661452B6CEEB90066EBC8 /* MasterSyncVC + TourPlanEX.swift in Sources */,

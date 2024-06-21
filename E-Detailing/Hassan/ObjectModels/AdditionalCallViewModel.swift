@@ -56,6 +56,10 @@ class AdditionalCallsListViewModel {
         additionalCallListViewModel[section].productSelectedListViewModel.addProductViewModel(vm)
     }
     
+    func addProductAtIndex (_ section : Int, index : Int, vm : ProductViewModel) {
+        additionalCallListViewModel[section].productSelectedListViewModel.addProductViewModel(vm)
+    }
+    
     func updateProductAtSection(_ section : Int, index : Int, product : Product) {
         additionalCallListViewModel[section].productSelectedListViewModel.setProductAtIndex(index, product: product)
     }

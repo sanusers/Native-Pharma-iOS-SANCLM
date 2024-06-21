@@ -245,7 +245,7 @@ extension AddCallinfoView {
         
         self.selectedDoctorIndex = sender.tag
         
-        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, selectedDoctorIndex: selectedDoctorIndex)
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, inputSelectedListViewModel: self.inputSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, dcrCall: self.addCallinfoVC.dcrCall, selectedDoctorIndex: selectedDoctorIndex)
         vc.modalPresentationStyle = .custom
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
     }
@@ -269,7 +269,7 @@ extension AddCallinfoView {
         self.selectedDoctorIndex = sender.tag
         //MARK: - Show menu
         
-        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, selectedDoctorIndex: self.selectedDoctorIndex)
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, inputSelectedListViewModel: self.inputSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, dcrCall: self.addCallinfoVC.dcrCall, selectedDoctorIndex: self.selectedDoctorIndex)
         vc.modalPresentationStyle = .custom
     
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
@@ -1797,7 +1797,7 @@ class AddCallinfoView : BaseView {
     }
     
     func checkMandatoryFields() {
-        let appsetup = AppDefaults.shared.getAppSetUp()
+       // let appsetup = AppDefaults.shared.getAppSetUp()
         
         if addCallinfoVC.dcrCall.call is DoctorFencing {
             

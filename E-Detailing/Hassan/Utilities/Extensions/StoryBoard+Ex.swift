@@ -71,20 +71,6 @@ extension UIStoryboard {
     }
     
 
-    static var singleSelectionVC : SingleSelectionVC {
-        guard let  singleSelectionVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "SingleSelectionVC") as? SingleSelectionVC else{
-            fatalError("SingleSelectionVC couldn't be found in Storyboard file")
-        }
-        return singleSelectionVC
-    }
-    
-//    static var calenderVC : FSCalendarVC {
-//        guard let  calenderVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "FSCalenderVC") as? FSCalendarVC else{
-//            fatalError("FSCalenderVC couldn't be found in Storyboard file")
-//        }
-//        return calenderVC
-//    }
-    
     static var callVC : CallVC {
         guard let  callVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "CallVC") as? CallVC else{
             fatalError("CallVC couldn't be found in Storyboard file")
@@ -100,20 +86,7 @@ extension UIStoryboard {
     }
     
     
-    static var multiSelectionVC : MultiSelectionVC {
-        guard let  multiSelectionVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "MultiSelectionVC") as? MultiSelectionVC else{
-            fatalError("MultiSelectionVC couldn't be found in Storyboard file")
-        }
-        return multiSelectionVC
-    }
-    
-    static var singleSelectionRightVC : SingleSelectionRightVC {
-        guard let  singleSelectionRightVC = UIStoryboard.activity.instantiateViewController(withIdentifier: "SingleSelectionRightVC") as? SingleSelectionRightVC else{
-            fatalError("SingleSelectionRightVC couldn't be found in Storyboard file")
-        }
-        return singleSelectionRightVC
-    }
-    
+
     static var leaveVC : LeaveApplicationVC {
         guard let  leaveVC = UIStoryboard.sideMenu.instantiateViewController(withIdentifier: "LeaveApplicationVC") as? LeaveApplicationVC else{
             fatalError("LeaveApplicationVC couldn't be found in Storyboard file")

@@ -61,7 +61,8 @@ class DoctorCallCell: UICollectionViewCell {
             
          
             self.btnTownName.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-            
+            self.btnTownName.titleLabel?.setFont(font: .medium(size: .BODY))
+            self.btnTownName.titleLabel?.numberOfLines = 1
             self.btnTownName.setTitle(CallDetail.territory, for: .normal)
             
             
