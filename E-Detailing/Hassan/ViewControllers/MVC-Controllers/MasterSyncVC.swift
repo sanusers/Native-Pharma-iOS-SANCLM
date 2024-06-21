@@ -181,7 +181,7 @@ class MasterSyncVC : UIViewController {
         } else if !rsfIDPlan2.isEmpty {
             return rsfIDPlan2
         } else {
-            return "\(appsetup.sfCode!)"
+            return "\(appsetup.sfCode ?? "")"
         }
     }
     
@@ -1081,8 +1081,8 @@ extension MasterSyncVC : collectionViewProtocols{
         if self.masterData[indexPath.row].rawValue == "Holidays" || self.masterData[indexPath.row].rawValue == "Weekly Off" || self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
             return CGSize(width: width - 10, height: 0)
         }
-          //  let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
-        let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 7)
+            let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
+       // let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 7)
             return size
     }
     
@@ -1122,134 +1122,136 @@ extension MasterSyncVC : collectionViewProtocols{
         cell.btnSync.addTarget(self, action: #selector(groupSyncAll(_:)), for: .touchUpInside)
         
         
-//        switch MasterInfo(rawValue: self.masterData[indexPath.row].rawValue){
-//            
-//        case .doctorFencing:
-//            cell.lblCount.text = String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-//        case .chemists:
-//            cell.lblCount.text = String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-//        case .stockists:
-//            cell.lblCount.text = String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-//        case .unlistedDoctors:
-//            cell.lblCount.text = String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-//        case .clusters:
-//            cell.lblCount.text = String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
-//        case .worktype:
-//            cell.lblCount.text = String(DBManager.shared.getWorkType().count)
-//        case .subordinate:
+        switch MasterInfo(rawValue: self.masterData[indexPath.row].rawValue){
+            
+        case .doctorFencing:
+            cell.lblCount.text = String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+        case .chemists:
+            cell.lblCount.text = String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+        case .stockists:
+            cell.lblCount.text = String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+        case .unlistedDoctors:
+            cell.lblCount.text = String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+        case .clusters:
+            cell.lblCount.text = String(DBManager.shared.getTerritory(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)
+        case .worktype:
+            cell.lblCount.text = String(DBManager.shared.getWorkType().count)
+        case .subordinate:
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getSubordinate().count)
+//        case .subordinateMGR:
 //            cell.lblCount.text =  ""
-//            //String(DBManager.shared.getSubordinate().count)
-////        case .subordinateMGR:
-////            cell.lblCount.text =  ""
-//            //String(DBManager.shared.getSubordinateMGR().count)
-//        case .myDayPlan:
-//            cell.lblCount.text =  ""
-////            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
-////                cell.lblCount.text =  "\(dayplans.count)"
-////            }
-//        case .jointWork:
-//            cell.lblCount.text =  ""
-//            //String(DBManager.shared.getJointWork().count)
-//        case .products:
-//            cell.lblCount.text = String(DBManager.shared.getProduct().count)
-//        case .inputs:
-//            cell.lblCount.text = String(DBManager.shared.getInput().count)
-//        case .brands:
-//            cell.lblCount.text = String(DBManager.shared.getBrands().count)
-//        case .speciality:
-//            cell.lblCount.text = String(DBManager.shared.getSpeciality().count)
-//        case .doctorClass:
-//            cell.lblCount.text = String(DBManager.shared.getDoctorClass().count)
-//        case .category:
-//            cell.lblCount.text = String(DBManager.shared.getCategory().count)
-////        case .competitors:
-////            cell.lblCount.text = String(DBManager.shared.getCompetitor().count)
-//        case .slideBrand:
-//            cell.lblCount.text = String(DBManager.shared.getSlideBrand().count)
-//        case .slideTheraptic:
-//            cell.lblCount.text = String(DBManager.shared.getSlideTheraptic().count)
-//        case .slideSpeciality:
-//            cell.lblCount.text = String(DBManager.shared.getSlideSpeciality().count)
-//        case .slides:
-//            cell.lblCount.text = String(DBManager.shared.getSlide().count)
-//        case .qualifications:
-//            cell.lblCount.text = String(DBManager.shared.getQualification().count)
-//        case .visitControl:
-//            cell.lblCount.text =  ""
-//            //String(DBManager.shared.getVisitControl().count)
-//        case .leaveType:
-//            cell.lblCount.text = String(DBManager.shared.getLeaveType().count)
-//        case .mappedCompetitors:
-//            cell.lblCount.text = String(DBManager.shared.getMapCompDet().count)
-//        case .docFeedback:
-//            cell.lblCount.text = String(DBManager.shared.getFeedback().count)
-//        case .holidays:
-//            cell.lblCount.text = String(DBManager.shared.getHolidays().count)
-//        case .weeklyOff:
-//            cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
-//        case .tourPlanSetup:
-//            cell.lblCount.text =  ""
-//            //String(DBManager.shared.getTableSetUp().count)
-//         
-//        case .getTP:
-////            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
-//            cell.lblCount.text =  ""
-//
-//        case   .headquartes:
-//          //  cell.lblCount.text = DBManager.shared.gethe
-//            cell.lblCount.text = ""
-//        case   .departments:
-//            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
-//        case   .docTypes:
-//            cell.lblCount.text = ""
-//        case   .ratingDetails:
-//            cell.lblCount.text = ""
-//        case   .ratingFeedbacks:
-//            cell.lblCount.text = ""
-//        case   .speakerList:
-//            cell.lblCount.text = ""
-//        case   .participantList:
-//            cell.lblCount.text = ""
-//        case   .indicationList:
-//            cell.lblCount.text = ""
-//        case   .setups:
-//            cell.lblCount.text = ""
-//        case   .doctors:
-//            cell.lblCount.text = ""
-//        case   .institutions:
-//            cell.lblCount.text = ""
-//        case   .customSetup:
-//            cell.lblCount.text = ""
-//        case   .tourPlanStatus:
-//            cell.lblCount.text = ""
-//        case   .stockBalance:
-//            cell.lblCount.text =  ""
-////            let balance = DBManager.shared.getStockBalance()
-////            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
-//        case   .empty:
-//            cell.lblCount.text = "Yet to"
-//        case   .syncAll:
-//            cell.lblCount.text = "sync All"
-//        case   .apptableSetup:
-//            cell.lblCount.text =  ""
-//        case   .homeSetup:
-//            cell.lblCount.text =  ""
-//            //\(DBManager.shared.getHomeData().count)
-//        case   .callSync:
-//            cell.lblCount.text = "Yet to"
-//        case   .dcrDateSync:
-////           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
-////               cell.lblCount.text = "\(dcrDates.count)"
-////            }
-//            cell.lblCount.text = ""
-//        case .none:
-//            cell.lblCount.text = "Yet to"
-//
-//        case .productcategory:
-//            cell.lblCount.text = ""
-// 
-//        }
-        cell.lblCount.text = ""
+            //String(DBManager.shared.getSubordinateMGR().count)
+        case .myDayPlan:
+            cell.lblCount.text =  ""
+//            CoreDataManager.shared.retriveSavedDayPlans() { dayplans in
+//                cell.lblCount.text =  "\(dayplans.count)"
+//            }
+        case .jointWork:
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getJointWork().count)
+        case .products:
+            cell.lblCount.text = String(DBManager.shared.getProduct().count)
+        case .inputs:
+            cell.lblCount.text = String(DBManager.shared.getInput().count)
+        case .brands:
+            cell.lblCount.text = String(DBManager.shared.getBrands().count)
+        case .speciality:
+            cell.lblCount.text = String(DBManager.shared.getSpeciality().count)
+        case .doctorClass:
+            cell.lblCount.text = String(DBManager.shared.getDoctorClass().count)
+        case .category:
+            cell.lblCount.text = String(DBManager.shared.getCategory().count)
+//        case .competitors:
+//            cell.lblCount.text = String(DBManager.shared.getCompetitor().count)
+        case .slideBrand:
+            cell.lblCount.text = String(DBManager.shared.getSlideBrand().count)
+        case .slideTheraptic:
+            cell.lblCount.text = String(DBManager.shared.getSlideTheraptic().count)
+        case .slideSpeciality:
+            cell.lblCount.text = String(DBManager.shared.getSlideSpeciality().count)
+        case .slides:
+            cell.lblCount.text = String(DBManager.shared.getSlide().count)
+        case .qualifications:
+            cell.lblCount.text = String(DBManager.shared.getQualification().count)
+        case .visitControl:
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getVisitControl().count)
+        case .leaveType:
+            cell.lblCount.text = String(DBManager.shared.getLeaveType().count)
+        case .mappedCompetitors:
+            cell.lblCount.text = String(DBManager.shared.getMapCompDet().count)
+        case .docFeedback:
+            cell.lblCount.text = String(DBManager.shared.getFeedback().count)
+        case .holidays:
+            cell.lblCount.text = String(DBManager.shared.getHolidays().count)
+        case .weeklyOff:
+            cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
+        case .tourPlanSetup:
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getTableSetUp().count)
+         
+        case .getTP:
+//            cell.lblCount.text = !DBManager.shared.getTP().tourPlanArr.isEmpty ? "\(DBManager.shared.getTP().tourPlanArr[0].arrOfPlan.count)" : "0"
+            cell.lblCount.text =  ""
+
+        case   .headquartes:
+          //  cell.lblCount.text = DBManager.shared.gethe
+            cell.lblCount.text = ""
+        case   .departments:
+            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
+        case   .docTypes:
+            cell.lblCount.text = ""
+        case   .ratingDetails:
+            cell.lblCount.text = ""
+        case   .ratingFeedbacks:
+            cell.lblCount.text = ""
+        case   .speakerList:
+            cell.lblCount.text = ""
+        case   .participantList:
+            cell.lblCount.text = ""
+        case   .indicationList:
+            cell.lblCount.text = ""
+        case   .setups:
+            cell.lblCount.text = ""
+        case   .doctors:
+            cell.lblCount.text = ""
+        case   .institutions:
+            cell.lblCount.text = ""
+        case   .customSetup:
+            cell.lblCount.text = ""
+        case   .tourPlanStatus:
+            cell.lblCount.text = ""
+        case   .stockBalance:
+            cell.lblCount.text =  ""
+//            let balance = DBManager.shared.getStockBalance()
+//            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
+        case   .empty:
+            cell.lblCount.text = "Yet to"
+        case   .syncAll:
+            cell.lblCount.text = "sync All"
+        case   .apptableSetup:
+            cell.lblCount.text =  ""
+        case   .homeSetup:
+            cell.lblCount.text =  ""
+            //\(DBManager.shared.getHomeData().count)
+        case   .callSync:
+            cell.lblCount.text = "Yet to"
+        case   .dcrDateSync:
+//           CoreDataManager.shared.fetchDcrDates(){ dcrDates in
+//               cell.lblCount.text = "\(dcrDates.count)"
+//            }
+            cell.lblCount.text = ""
+        case .none:
+            cell.lblCount.text = "Yet to"
+
+        case .productcategory:
+            cell.lblCount.text = ""
+ 
+        case .chemistCategory:
+            cell.lblCount.text = ""
+        }
+     //   cell.lblCount.text = ""
         
         if MasterInfo.syncAll.rawValue == self.masterData[indexPath.row].rawValue {
             cell.isHidden = false

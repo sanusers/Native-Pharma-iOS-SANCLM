@@ -229,10 +229,10 @@ class MasterSyncVM {
 
                 print(apiResponse)
                 // Save to Core Data or perform any other actions
-                //DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: mapID)
+                DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: mapID)
 
                 if istoUpdateDCRlist && !welf.isUpdating {
-                    welf.updateDCRLists(mapID: mapID) { _ in
+                    welf.updateDCRLists(sfCode: sfCode, mapID: mapID) { _ in
                         completionHandler(response)
                     }
                 } else   {
@@ -247,7 +247,7 @@ class MasterSyncVM {
     }
     
 
-    func updateDCRLists(mapID: String, completion: @escaping (Bool) -> ()) {
+    func updateDCRLists(sfCode: String, mapID: String, completion: @escaping (Bool) -> ()) {
         let dispatchgroup = DispatchGroup()
         isUpdating = true
         let dcrEntries : [MasterInfo] = [.doctorFencing, .chemists, .unlistedDoctors, .stockists]
@@ -255,7 +255,7 @@ class MasterSyncVM {
         
         //Doctor,Chemist,Stokiest,Unlistered,Cip,Hospital,Cluste
      
-        fetchDCR(index: 0, dcrEntries: dcrEntries, mapID: mapID) { _ in
+        fetchDCR(index: 0, dcrEntries: dcrEntries, sfCode: sfCode, mapID: mapID) { _ in
             completion(true)
         }
         
@@ -282,7 +282,7 @@ class MasterSyncVM {
     }
     
     
-    func fetchDCR(index: Int, dcrEntries : [MasterInfo], mapID: String, completion: @escaping (Bool) -> ()) {
+    func fetchDCR(index: Int, dcrEntries : [MasterInfo], sfCode: String, mapID: String, completion: @escaping (Bool) -> ()) {
         if index >= dcrEntries.count {
             self.isUpdating = false
             self.isSyncCompleted = true
@@ -292,9 +292,9 @@ class MasterSyncVM {
         }
         
         let aMasterInfo = dcrEntries[index]
-        fetchMasterData(type: aMasterInfo, sfCode: getRSF ?? "", istoUpdateDCRlist: true, mapID: mapID) { _ in
+        fetchMasterData(type: aMasterInfo, sfCode: sfCode, istoUpdateDCRlist: true, mapID: mapID) { _ in
             print("Syncing \(aMasterInfo.rawValue)")
-            self.fetchDCR(index: index + 1, dcrEntries: dcrEntries, mapID: mapID, completion: completion)
+            self.fetchDCR(index: index + 1, dcrEntries: dcrEntries, sfCode: sfCode, mapID: mapID, completion: completion)
             
         }
         

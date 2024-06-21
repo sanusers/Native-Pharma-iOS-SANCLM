@@ -291,6 +291,7 @@ class MainVC : UIViewController {
 
     
     override func viewDidLoad() {
+        CoreDataManager.shared.removeAllDayPlans()
         super.viewDidLoad()
 
         updateLinks()
@@ -792,7 +793,7 @@ class MainVC : UIViewController {
                         istoEnableAddPlanBtn = false
                         istoEnableSaveBtn = false
                     }
-                    
+     
                 case 1:
                     if aSession.isRetrived == true {
                         isPlan2filled =  true
@@ -844,6 +845,7 @@ class MainVC : UIViewController {
             self.configureSaveplanBtn(istoEnableSaveBtn)
             self.setupRejectionVIew()
             self.toLoadWorktypeTable()
+            
       //      self.setSegment(.workPlan)
             
             
@@ -1535,7 +1537,7 @@ class MainVC : UIViewController {
         if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
             // CoreDataManager.shared.removeAdayPlans(planDate: currentDate)
         }
-        if appSetups.srtNeed == 1 {
+        if appSetups.srtNeed == 0 {
             
             if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
@@ -1589,7 +1591,7 @@ class MainVC : UIViewController {
         } else {
             
             
-            self.configureAddCall(LocalStorage.shared.getBool(key: LocalStorage.LocalValue.userCheckedOut))
+            self.configureAddCall(true)
             return false
         }
     }
@@ -2833,7 +2835,8 @@ extension MainVC {
                 guard var nonNilSession = welf.sessions else {
                     return
                 }
-
+  
+   
                 if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                     welf.callSavePlanAPI(byDate: welf.selectedToday) { isUploaded in
                         if isUploaded {
@@ -2853,6 +2856,9 @@ extension MainVC {
                             
                           //  welf.setSegment(.workPlan)
                             welf.toConfigureMydayPlan(planDate: welf.selectedToday)
+                            if nonNilSession[0].workType?.fwFlg == "F" {
+                                welf.setSegment(.calls)
+                            }
                         }
                         
                     }
@@ -2866,11 +2872,7 @@ extension MainVC {
                     }
                     
                     welf.sessions = nonNilSession
-                    
-                    welf.setSegment(.workPlan)
-                    welf.toConfigureMydayPlan(planDate: welf.selectedToday)
-               
-                    
+  
                     welf.configureSaveplanBtn(welf.toEnableSaveBtn(sessionindex: welf.selectedSessionIndex ?? 0,  istoHandeleAddedSession: false))
                     
                     if nonNilSession.count == 2 {
@@ -2878,8 +2880,12 @@ extension MainVC {
                     } else {
                         welf.configureAddplanBtn(true)
                     }
-
-                
+                    
+                    welf.toConfigureMydayPlan(planDate: welf.selectedToday)
+                    if nonNilSession[0].workType?.fwFlg == "F" || nonNilSession[0].workType?.fwFlg ==  "A" {
+                        welf.setSegment(.calls)
+                    }
+                    
                     welf.toCreateToast("You are not connected to internet")
                 }
                 
@@ -5049,6 +5055,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                     welf.selectedRawDate = date
                     welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
                     welf.tourPlanCalander.reloadData()
+                    welf.setSegment(.workPlan)
                 case .failure(let error):
                   welf.toCreateToast(error.rawValue)
                 }
