@@ -11,10 +11,21 @@ import Foundation
 import UIKit
 import CoreData
 extension AddCallinfoView: MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
         self.productSelectedListViewModel = product
+        self.inputSelectedListViewModel = inputs
         self.additionalCallListViewModel = additioncall
-        self.additionalCallListViewModel.updateInCallSection(index, isView: false)
+        self.addCallinfoVC.additionalCallListViewModel = additioncall
+        
+        
+        
+        //         product.productViewModel.forEach { aProductViewModel in
+        //             self.additionalCallListViewModel.addProductAtIndex(selectedDoctorIndex, vm:  aProductViewModel)
+        //         }
+        
+        //
+        //
+        //        self.additionalCallListViewModel.updateInCallSection(index, isView: false)
         self.loadedContentsTable.reloadData()
     }
     
@@ -245,7 +256,9 @@ extension AddCallinfoView {
         
         self.selectedDoctorIndex = sender.tag
         
-        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, inputSelectedListViewModel: self.inputSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, dcrCall: self.addCallinfoVC.dcrCall, selectedDoctorIndex: selectedDoctorIndex)
+        let productSelectedListViewModel = self.addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel[selectedDoctorIndex].productSelectedListViewModel
+        let inputSelectedListViewModel = self.addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel[selectedDoctorIndex].inputSelectedListViewModel
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: productSelectedListViewModel, inputSelectedListViewModel: inputSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, dcrCall: self.addCallinfoVC.dcrCall, selectedDoctorIndex: selectedDoctorIndex)
         vc.modalPresentationStyle = .custom
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
     }
@@ -269,7 +282,21 @@ extension AddCallinfoView {
         self.selectedDoctorIndex = sender.tag
         //MARK: - Show menu
         
-        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: self.productSelectedListViewModel, inputSelectedListViewModel: self.inputSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, dcrCall: self.addCallinfoVC.dcrCall, selectedDoctorIndex: self.selectedDoctorIndex)
+        var productSelectedListViewModel =  ProductSelectedListViewModel()
+        var  inputSelectedListViewModel = InputSelectedListViewModel()
+        
+       if self.addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel.count > selectedDoctorIndex {
+           productSelectedListViewModel = self.addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel[selectedDoctorIndex].productSelectedListViewModel
+        }
+        
+        if self.addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel.count > selectedDoctorIndex {
+            inputSelectedListViewModel =  self.addCallinfoVC.additionalCallListViewModel.additionalCallListViewModel[selectedDoctorIndex].inputSelectedListViewModel
+        }
+        
+    
+   
+        
+        let vc = AddproductsMenuVC.initWithStory(self, productSelectedListViewModel: productSelectedListViewModel, inputSelectedListViewModel: inputSelectedListViewModel, additionalCallListViewModel: self.additionalCallListViewModel, dcrCall: self.addCallinfoVC.dcrCall, selectedDoctorIndex: self.selectedDoctorIndex)
         vc.modalPresentationStyle = .custom
     
         self.addCallinfoVC.navigationController?.present(vc, animated: false)
@@ -725,7 +752,9 @@ extension AddCallinfoView: tableViewProtocols {
                     if let addedDcrCall =   cell.additionalCall.Object as? DoctorFencing {
                         if let doctorCall = self.addCallinfoVC.dcrCall.call   as? DoctorFencing  {
                             if addedDcrCall.code == doctorCall.code {
-                                self.toCreateToast("OOPS! Addition call is same as selected call")
+                              //  self.toCreateToast("OOPS! Addition call is same as selected call")
+                                self.showAlertToNotifyExistance(desc: "OOPS! Addition call is same as selected call")
+                                
                                 return
                             }
                         }
@@ -770,9 +799,6 @@ extension AddCallinfoView: tableViewProtocols {
                             self.additionalCallSelectionAction(cell.btnSelected)
                         }
                     }
-                    
-                    
-                 
                 }
                 return cell
                 
@@ -781,6 +807,7 @@ extension AddCallinfoView: tableViewProtocols {
                //additionalCallSelectedTableView
                 let cell = tableView.dequeueReusableCell(withIdentifier: "AdditionalCallSampleInputTableViewCell", for: indexPath) as! AdditionalCallSampleInputTableViewCell
                 cell.selectionStyle = .none
+                cell.btnDownArrow.isSelected = false
                 cell.additionalCall = self.additionalCallListViewModel.fetchDataAtIndex(indexPath.row)
                 cell.btnAddProductInput.addTarget(self, action: #selector(addProductInputAction(_:)), for: .touchUpInside)
                 cell.btnDelete.addTarget(self, action: #selector(deleteAdditionalCall(_:)), for: .touchUpInside)
@@ -2136,6 +2163,14 @@ extension AddCallinfoView : addedSubViewsDelegate {
     }
     
     
+    
+    func showAlertToNotifyExistance(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalCancelAction {
+            print("no action")
+        }
+    }
     
     func showAlertToEnableLocation(desc: String, isToPop: Bool) {
         let commonAlert = CommonAlert()

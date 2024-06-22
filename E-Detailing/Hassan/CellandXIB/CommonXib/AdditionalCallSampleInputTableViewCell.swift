@@ -109,7 +109,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     if inputCount > productCount {
                         
                         var previousView : UIView!
-                        for (index,input) in
+                        for (index,_) in
                                 inputs.enumerated(){
                             
                             print("rcpa == \(inputs)")
@@ -123,7 +123,9 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                             productView.input = inputs[index].input
                             productView.inputQty = inputs[index].inputCount
                             if index < productCount &&  !products.isEmpty  { // || index == productCount
-                                productView.product = products[index].product //additionalCall.productSelectedListViewModel.fetchDataAtIndex(index)
+                                productView.product = products[index].product
+                            } else {
+                                productView.productQtyCurvedVIew.isHidden = true
                             }
                             
                             if index == 0 {
@@ -244,9 +246,11 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                 if productCount != 0 {
                     self.lblProductName.text = products[0].product?.name
-                    self.lblProductQty.text = products[0].sampleCount //additionalCall.productSelectedListViewModel.fetchDataAtIndex(0).sampleCount
+                    self.lblProductQty.text = products[0].sampleCount
+                    productqtyCorneredVIew.isHidden = self.lblProductQty.text == "" ? true : false
                     products.removeFirst()
                 }else {
+                    productqtyCorneredVIew.isHidden = true
                     self.lblInputQty.text = ""
                     self.lblInputName.text = ""
                 }

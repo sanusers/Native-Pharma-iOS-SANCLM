@@ -12,9 +12,11 @@ import CoreData
 
 
 extension DCRfiltersView:  MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel,index: Int) {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
         print("Yet to implement")
     }
+    
+
     
     func routeToView(_ view: UIViewController) {
         print("")

@@ -35,6 +35,7 @@ class AdditionalCallSampleInputView: UIView {
     var productQty: String! {
         didSet {
             lblProductQty.text = productQty
+            productQtyCurvedVIew.isHidden = productQty == "" ? true : false
         }
     }
     

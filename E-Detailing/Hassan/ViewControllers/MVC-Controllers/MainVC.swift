@@ -2903,7 +2903,7 @@ extension MainVC {
 }
 
 extension MainVC: MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, additioncall: AdditionalCallsListViewModel,index: Int) {
+    func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
         print("Yet to implement")
     }
     

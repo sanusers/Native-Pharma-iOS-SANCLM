@@ -37,8 +37,6 @@ class AddproductsMenuVC : BaseViewController {
         view.dcrCall = dcrCall
         view.menuDelegate = delegate
 
-
-        
         return view
     }
 }

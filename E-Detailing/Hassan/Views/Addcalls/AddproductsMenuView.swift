@@ -230,10 +230,13 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
             
 
         case .inputs:
+            let index = addproductsMenuVC.selectedDoctorIndex ?? 0
+            
             guard let inputVM = self.addproductsMenuVC.inputSelectedListViewModel, let productVM = self.addproductsMenuVC.productSelectedListViewModel, let dcrCall = self.addproductsMenuVC.dcrCall else {return}
             
             var addedProducts: [Product] = []
             var addedInputs: [Input] = []
+
             if let additionalCallData = self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData() {
                 additionalCallData.forEach { aAdditionalCallViewModel in
                     if let products = aAdditionalCallViewModel.productSelectedListViewModel.fetchAllProductData()?.compactMap({ $0.product }) {
@@ -245,6 +248,7 @@ extension AddproductsMenuView: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             }
+            
             let vc = ProductInputSelectionVC.initWithStory(self, productViewModel: productVM, inputViewModel: inputVM, dcrCall: dcrCall, type: .Input, selectedProducts: addedProducts, selectedInputs: addedInputs)
             self.addproductsMenuVC.present(vc, animated: true)
      
@@ -417,40 +421,30 @@ class AddproductsMenuView: BaseView {
       //  toLoadData()
         switch self.segmentType[self.selectedSegmentsIndex] {
         case .products:
-//            let additionalCallData =  self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData()
-//              
-//              let lastIndex = (additionalCallData?.count ?? 0) - 1
-//              if additionalCallData?[lastIndex].productSelectedListViewModel.productViewModel.count ?? 0 > 0 {
-//                  let productData = additionalCallData?.filter { additionalCallViewModel in
-//                      additionalCallViewModel.productSelectedListViewModel.productViewModel.contains { productViewModel in
-//                          productViewModel.product.product == nil
-//                      }
-//                  }
-//                  dump(productData)
-//                  guard let productData  =  productData, productData.isEmpty else {
-//                      self.toCreateToast("update added product first to add new product")
-//                      return }
-//              }
-//            self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(self.selectedDoctorIndex, vm: ProductViewModel(product: ProductData(isDetailed: false, sampleCount: "0", rxCount: "0", rcpaCount: "0", availableCount: "", totalCount: "0", stockistName: "", stockistCode: "")))
-//            
-//            self.selectedInputIndexpaths  = [Input]()
-//            toLoadData()
-            
               guard let inputVM = self.addproductsMenuVC.inputSelectedListViewModel, let productVM = self.addproductsMenuVC.productSelectedListViewModel, let dcrCall = self.addproductsMenuVC.dcrCall else {return}
               var addedProducts: [Product] = []
               var addedInputs: [Input] = []
 
-              if let additionalCallData = self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData() {
-                  additionalCallData.forEach { aAdditionalCallViewModel in
-                      if let products = aAdditionalCallViewModel.productSelectedListViewModel.fetchAllProductData()?.compactMap({ $0.product }) {
-                          addedProducts.append(contentsOf: products)
-                      }
+            let index = addproductsMenuVC.selectedDoctorIndex ?? 0
+           let productSelectedListViewModel = self.addproductsMenuVC?.additionalCallListViewModel?.additionalCallListViewModel[index].productSelectedListViewModel
+            
+            let inputSelectedListViewModel  = self.addproductsMenuVC?.additionalCallListViewModel?.additionalCallListViewModel[index].inputSelectedListViewModel
+            
+            if let products =  productSelectedListViewModel?.productViewModel.compactMap({ $0.product }) {
+               let mappedProducts = products.compactMap { aProductData in
+                    aProductData.product
+                }
+                addedProducts.append(contentsOf: mappedProducts)
+            }
+            
+            
+            if let inputs =  inputSelectedListViewModel?.inputViewModel.compactMap({ $0.input }) {
+               let mappedInputs = inputs.compactMap { aInputData in
+                   aInputData.input
+                }
+                addedInputs.append(contentsOf: mappedInputs)
+            }
 
-                      if let inputs = aAdditionalCallViewModel.inputSelectedListViewModel.fetchAllInputData()?.compactMap({ $0.input }) {
-                          addedInputs.append(contentsOf: inputs)
-                      }
-                  }
-              }
               
               let vc = ProductInputSelectionVC.initWithStory(self, productViewModel: productVM, inputViewModel: inputVM, dcrCall: dcrCall, type: .Product, selectedProducts: addedProducts, selectedInputs: addedInputs)
               
@@ -458,20 +452,29 @@ class AddproductsMenuView: BaseView {
         case .inputs:
             
             guard let inputVM = self.addproductsMenuVC.inputSelectedListViewModel, let productVM = self.addproductsMenuVC.productSelectedListViewModel, let dcrCall = self.addproductsMenuVC.dcrCall else {return}
-            
             var addedProducts: [Product] = []
             var addedInputs: [Input] = []
-            if let additionalCallData = self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData() {
-                additionalCallData.forEach { aAdditionalCallViewModel in
-                    if let products = aAdditionalCallViewModel.productSelectedListViewModel.fetchAllProductData()?.compactMap({ $0.product }) {
-                        addedProducts.append(contentsOf: products)
-                    }
 
-                    if let inputs = aAdditionalCallViewModel.inputSelectedListViewModel.fetchAllInputData()?.compactMap({ $0.input }) {
-                        addedInputs.append(contentsOf: inputs)
-                    }
-                }
-            }
+          let index = addproductsMenuVC.selectedDoctorIndex ?? 0
+         let productSelectedListViewModel = self.addproductsMenuVC?.additionalCallListViewModel?.additionalCallListViewModel[index].productSelectedListViewModel
+          
+          let inputSelectedListViewModel  = self.addproductsMenuVC?.additionalCallListViewModel?.additionalCallListViewModel[index].inputSelectedListViewModel
+          
+          if let products =  productSelectedListViewModel?.productViewModel.compactMap({ $0.product }) {
+             let mappedProducts = products.compactMap { aProductData in
+                  aProductData.product
+              }
+              addedProducts.append(contentsOf: mappedProducts)
+          }
+          
+          
+          if let inputs =  inputSelectedListViewModel?.inputViewModel.compactMap({ $0.input }) {
+             let mappedInputs = inputs.compactMap { aInputData in
+                 aInputData.input
+              }
+              addedInputs.append(contentsOf: mappedInputs)
+          }
+            
             let vc = ProductInputSelectionVC.initWithStory(self, productViewModel: productVM, inputViewModel: inputVM, dcrCall: dcrCall, type: .Input, selectedProducts: addedProducts, selectedInputs: addedInputs)
             self.addproductsMenuVC.present(vc, animated: true)
 
@@ -572,23 +575,13 @@ class AddproductsMenuView: BaseView {
       //
         
         clearView.addTap {
-            guard let productSelectedListViewModel = self.addproductsMenuVC.productSelectedListViewModel, let additionalCallListViewModel = self.addproductsMenuVC.additionalCallListViewModel else  {return}
+            guard let productSelectedListViewModel = self.addproductsMenuVC.productSelectedListViewModel, let additionalCallListViewModel = self.addproductsMenuVC.additionalCallListViewModel, let inputSelectedListViewModel = self.addproductsMenuVC.inputSelectedListViewModel else  {return}
             
             _ = additionalCallListViewModel.numberOfInputsInSection(self.selectedDoctorIndex)
             
             
             _ = additionalCallListViewModel.numberOfProductsInSection(self.selectedDoctorIndex)
-            
-            
-//            if inputCount > productCount {
-//                self.toCreateToast("Input count is greater then product count")
-//                return
-//            }
-            
-//            if productCount > inputCount {
-//                self.toCreateToast("Please select Input")
-//                return
-//            }
+
             let additionalCallData =  self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData()
             let lastIndex = (additionalCallData?.count ?? 0) - 1
             if additionalCallData?[lastIndex].productSelectedListViewModel.productViewModel.count ?? 0 > 0 {
@@ -622,7 +615,7 @@ class AddproductsMenuView: BaseView {
               }
             
             
-            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
+            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, inputs: inputSelectedListViewModel, additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
             self.hideMenuAndDismiss()
         }
         
@@ -716,6 +709,10 @@ extension AddproductsMenuView: ProductInputSelectionVCDelegate {
     
         case .Input:
             if let inputs =  selectedObj as? [Input] {
+                
+                let additionalCallData = self.addproductsMenuVC?.additionalCallListViewModel?.fetchDataAtIndex(selectedDoctorIndex)
+                  additionalCallData?.inputSelectedListViewModel = InputSelectedListViewModel()
+                  additionalCallData?.inputs = []
                 inputs.forEach { inputObj in
                     // self.selectedProductIndexpaths = [IndexPath]()
                   
@@ -732,7 +729,10 @@ extension AddproductsMenuView: ProductInputSelectionVCDelegate {
                           }
                          
                       }
-                    let aInputData = InputData(input: inputObj, availableCount: "", inputCount: "")
+                    
+                    
+                    
+                    let aInputData = InputData(input: inputObj, availableCount: "", inputCount: "1")
                     let inputVM = InputViewModel(input: aInputData)
                     self.addproductsMenuVC?.additionalCallListViewModel?.addInputAtIndex(selectedDoctorIndex, vm: inputVM)
                     self.additionalCallSampleInputTableView.reloadData()
@@ -740,10 +740,17 @@ extension AddproductsMenuView: ProductInputSelectionVCDelegate {
             }
         case .Product:
             if let products =  selectedObj as? [Product] {
-              let additionalCallData = self.addproductsMenuVC?.additionalCallListViewModel?.getAdditionalCallData()
-                additionalCallData?.forEach({ aAdditionalCallViewModel in
-                    aAdditionalCallViewModel.productSelectedListViewModel.removeAllProducts()
-                })
+              let additionalCallData = self.addproductsMenuVC?.additionalCallListViewModel?.fetchDataAtIndex(selectedDoctorIndex)
+                additionalCallData?.productSelectedListViewModel = ProductSelectedListViewModel()
+                additionalCallData?.products = []
+                
+//                additionalCallData?.forEach({ aAdditionalCallViewModel in
+//                    let products = aAdditionalCallViewModel.productSelectedListViewModel.fetchAllProductData()
+//                    if products?.count ?? 0 > selectedDoctorIndex {
+//                        aAdditionalCallViewModel.productSelectedListViewModel.removeAtIndex(selectedDoctorIndex)
+//                    }
+//          
+//                })
                 products.forEach { productObj in
                   
         
@@ -760,7 +767,23 @@ extension AddproductsMenuView: ProductInputSelectionVCDelegate {
                           }
                         
                       }
-                    let aProductData = ProductData(product: productObj, isDetailed: false, sampleCount: "1", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")
+                    var aProductData = ProductData(product: productObj, isDetailed: false, sampleCount: "1", rxCount: "", rcpaCount: "", availableCount: "", totalCount: "", stockistName: "", stockistCode: "")
+                    let productMode = productObj.productMode ?? ""
+                    
+                    if productMode == "Sale/Sample" {
+
+                        aProductData.sampleCount = "1"
+                        
+                    }else if productMode == "Sample" {
+
+                        aProductData.sampleCount = "1"
+                        
+                    }else if productMode == "Sale" {
+
+                        aProductData.sampleCount = ""
+                    }
+                    
+               
                     let productVM = ProductViewModel(product: aProductData)
 
                     self.addproductsMenuVC?.additionalCallListViewModel?.addProductAtIndex(selectedDoctorIndex, vm: productVM)
@@ -772,60 +795,6 @@ extension AddproductsMenuView: ProductInputSelectionVCDelegate {
             
         }
     }
-    
-//    func didUpdate(selectedObj: AnyObject, index: Int) {
-//        
-//        switch self.segmentType[self.selectedSegmentsIndex] {
-//            
-//        case .inputs:
-//            if let inputObj = selectedObj as? Input {
-//              // self.selectedProductIndexpaths = [IndexPath]()
-//                guard let selectedInputIndex = self.selectedInputIndex else{ return }
-//                // Check if an object with the same code already exists in the array
-//                if let index = selectedInputIndexpaths?.firstIndex(where: { $0.code == inputObj.code }) {
-//                    // If an object with the same code exists, update it with productObj
-//                    selectedInputIndexpaths?[index] = inputObj
-//                } else {
-//                    // If no object with the same code exists, append productObj to the array
-//                    if selectedInputIndexpaths == nil {
-//                        selectedInputIndexpaths = [inputObj]
-//                    } else {
-//                        selectedInputIndexpaths?.append(inputObj)
-//                    }
-//                   
-//                }
-//                self.addproductsMenuVC?.additionalCallListViewModel?.updateInputAtSection(self.selectedDoctorIndex, index: selectedInputIndex.row , input: inputObj)
-//                self.additionalCallSampleInputTableView.reloadData()
-//            }
-//        case .products:
-//
-//            if let productObj = selectedObj as? Product {
-//              // self.selectedProductIndexpaths = [IndexPath]()
-//                guard let selectedProductIndex = self.selectedProductIndex else{ return }
-//                // Check if an object with the same code already exists in the array
-//                if let index = selectedProductIndexpaths?.firstIndex(where: { $0.code == productObj.code }) {
-//                    // If an object with the same code exists, update it with productObj
-//                    selectedProductIndexpaths?[index] = productObj
-//                } else {
-//                    // If no object with the same code exists, append productObj to the array
-//                    if selectedProductIndexpaths == nil {
-//                        selectedProductIndexpaths = [productObj]
-//                    } else {
-//                        selectedProductIndexpaths?.append(productObj)
-//                    }
-//                  
-//                }
-//                self.addproductsMenuVC?.additionalCallListViewModel?.updateProductAtSection(self.selectedDoctorIndex, index: selectedProductIndex.row , product: productObj)
-//                self.additionalCallSampleInputTableView.reloadData()
-//            }
-//    
-//       
-//        }
-//
-//    }
-    
-    
 
-    
     
 }
