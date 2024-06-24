@@ -630,17 +630,14 @@ extension AddCallinfoView: tableViewProtocols {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ProductSampleTableViewCell", for: indexPath) as! ProductSampleTableViewCell
                 cell.selectionStyle = .none
+                cell.call = self.addCallinfoVC.dcrCall.call
                 let model = self.productSelectedListViewModel.fetchDataAtIndex(indexPath.row)
                 cell.productSample = model
                 cell.txtRcpaQty.delegate = self
                 cell.txtSampleQty.delegate = self
                 cell.txtRxQty.delegate = self
                 
-//                let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
-//                let SaleSampleArr =  productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
-//                let sampleArr = productArray.filter { $0.productMode?.lowercased() == "sample" }
-                
-                /*  SL -> sale -> disable samples SM -> Sample -> Disable RX SM/SL -> Enable both*/
+            
                 cell.txtSampleQty.isUserInteractionEnabled = true
                 cell.txtRxQty.isUserInteractionEnabled = true
                 if model.product.product?.productMode?.lowercased() == "sale" {
@@ -753,7 +750,7 @@ extension AddCallinfoView: tableViewProtocols {
                         if let doctorCall = self.addCallinfoVC.dcrCall.call   as? DoctorFencing  {
                             if addedDcrCall.code == doctorCall.code {
                               //  self.toCreateToast("OOPS! Addition call is same as selected call")
-                                self.showAlertToNotifyExistance(desc: "OOPS! Addition call is same as selected call")
+                                self.showAlertToNotifyExistance(desc: "Addition call is same as selected call")
                                 
                                 return
                             }
@@ -775,7 +772,8 @@ extension AddCallinfoView: tableViewProtocols {
                                   return false
                               }
                             if !filteredArray.isEmpty  {
-                                self.toCreateToast("Doctor aldready visited today")
+                                self.showAlertToNotifyExistance(desc: "Doctor already visited today")
+                                //self.toCreateToast("Doctor already visited today")
                                 return
                             }
                         }
@@ -793,7 +791,8 @@ extension AddCallinfoView: tableViewProtocols {
                             return false
                         }
                         if !filteredArray.isEmpty  {
-                            self.toCreateToast("Doctor aldready visited today")
+                           // self.toCreateToast("Doctor aldready visited today")
+                            self.showAlertToNotifyExistance(desc: "Doctor aldready visited today")
                             return
                         } else {
                             self.additionalCallSelectionAction(cell.btnSelected)
@@ -1026,7 +1025,7 @@ extension AddCallinfoView: tableViewProtocols {
                     return UIView()
                 }
 
-
+                headerView.call = self.addCallinfoVC.dcrCall.call
 
                 return headerView
             default:
@@ -1178,36 +1177,61 @@ extension AddCallinfoView : collectionViewProtocols {
         
         
         
-        cell.addTap { [weak self] in
-            guard let welf = self else {return}
-            welf.selectedSegmentsIndex  = indexPath.row
-            
-            welf.segmentsCollection.reloadData()
-            
-            
-            switch welf.segmentType[welf.selectedSegmentsIndex] {
-
-            case .detailed:
-                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-            case .products:
-                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-            case .inputs:
-                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-            case .additionalCalls:
-                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-            case .rcppa:
-                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-            case .jointWork:
-                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-            }
-            
-            
-            
-        }
+//        cell.addTap { [weak self] in
+//            guard let welf = self else {return}
+//            welf.selectedSegmentsIndex  = indexPath.row
+//            
+//            welf.segmentsCollection.reloadData()
+//            
+//            
+//            switch welf.segmentType[welf.selectedSegmentsIndex] {
+//
+//            case .detailed:
+//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+//            case .products:
+//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+//            case .inputs:
+//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+//            case .additionalCalls:
+//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+//            case .rcppa:
+//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+//            case .jointWork:
+//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+//            }
+//            
+//            
+//            
+//        }
         
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedSegmentsIndex  = indexPath.row
+        
+       segmentsCollection.reloadData()
+        
+        
+        switch segmentType[selectedSegmentsIndex] {
+
+        case .detailed:
+            setSegment(segmentType[selectedSegmentsIndex])
+        case .products:
+           setSegment(segmentType[selectedSegmentsIndex])
+        case .inputs:
+            setSegment(segmentType[selectedSegmentsIndex])
+        case .additionalCalls:
+            setSegment(segmentType[selectedSegmentsIndex])
+        case .rcppa:
+            setSegment(segmentType[selectedSegmentsIndex])
+        case .jointWork:
+            setSegment(segmentType[selectedSegmentsIndex])
+        }
+    }
+    
+
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return segmentType.count
@@ -1810,8 +1834,8 @@ class AddCallinfoView : BaseView {
                 self.fetchLocationAndCheckout()
             
             } else {
-                self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
-                print("Yet to Add call")
+                self.checkMandatoryFields()
+       
             }
        
 
@@ -1823,21 +1847,202 @@ class AddCallinfoView : BaseView {
         
     }
     
-    func checkMandatoryFields() {
-       // let appsetup = AppDefaults.shared.getAppSetUp()
+    func checkMandatoryFields()  {
+        let productValue = self.productSelectedListViewModel.numberOfRows()
+        let inputValue = self.inputSelectedListViewModel.numberOfRows()
+        let jointWorkValue = self.jointWorkSelectedListViewModel.numbersOfJointWorks()
+      //  let additionalCallValue = self.additionalCallListViewModel.numberOfSelectedRows()
+        let rcpaValue =  self.rcpaDetailsModel.count
+        let evenetCaptureValue = self.eventCaptureListViewModel.numberOfRows()
         
-        if addCallinfoVC.dcrCall.call is DoctorFencing {
+        switch addCallinfoVC.dcrCall.call {
             
-         //   if appsetup.pro
             
-        } else if addCallinfoVC.dcrCall.call is Chemist {
+        case is DoctorFencing:
             
-        } else if addCallinfoVC.dcrCall.call is Stockist {
+            if isDoctorProductNeddedMandatory {
+                guard productValue != 0 else{
+                    showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
+                    return
+                }
+            }
             
-        } else if addCallinfoVC.dcrCall.call is UnListedDoctor {
+            if isDoctorInputNeededMandatory {
+                guard inputValue != 0 else {
+                    showAlertToFillFields(desc: "Select atleast 1 Input to save call", type: .inputs)
+                    return
+                }
+            }
             
+            
+            if isDoctorRCPAneededMandatory {
+                guard rcpaValue != 0 else {
+                    showAlertToFillFields(desc: "Add RCPA to save call", type: .rcppa)
+                    return
+                }
+            }
+            
+            if isDoctorJointWorkNeededMandatory {
+                guard jointWorkValue != 0 else {
+                    showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                    return
+                }
+            }
+            
+            if isDoctorPOBNeededMandatory {
+                guard let pobValue = self.pobValue, !pobValue.isEmpty else {
+                    showAlertToFillFields(desc: "Add POB work to save call", type: .jointWork)
+                    return
+                }
+            }
+            
+            if isDoctorFeedbackNeededMandatory {
+                guard let feedback = self.overallFeedback, feedback.id != nil else {
+                    showAlertToFillFields(desc: "Add Feedback to save call", type: .jointWork)
+                    return
+                }
+                
+                
+            }
+            
+            if isDoctorRemarksNeededMandatory {
+                guard let remarks = self.overallRemarks, !remarks.isEmpty else {
+                    showAlertToFillFields(desc: "Add Remarks to save call", type: .jointWork)
+                    return
+                }
+            }
+            
+            if isDoctorEventCaptureNeededMandatory {
+                guard evenetCaptureValue != 0 else {
+                    showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                    return
+                }
+            }
+            
+            self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
+        case is Chemist:
+
+
+                    if isChemistRCPAneededMandatory {
+                        guard rcpaValue != 0 else {
+                            showAlertToFillFields(desc: "Add RCPA to save call", type: .rcppa)
+                            return
+                        }
+                    }
+                    
+                    if isChemistJointWorkNeededMandatory {
+                        guard jointWorkValue != 0 else {
+                            showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                            return
+                        }
+                    }
+                    
+                    if isChemistPOBNeededMandatory {
+                        guard let pobValue = self.pobValue, !pobValue.isEmpty else {
+                            showAlertToFillFields(desc: "Add POB work to save call", type: .jointWork)
+                            return
+                        }
+                    }
+
+                    
+                    if isChemistEventCaptureNeededMandatory {
+                        guard evenetCaptureValue != 0 else {
+                            showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                            return
+                        }
+                    }
+            
+            self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
+        case is Stockist:
+
+            
+            if isStockistJointWorkNeededMandatory {
+                guard jointWorkValue != 0 else {
+                    showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                    return
+                }
+            }
+            
+            if isStockistPOBNeededMandatory {
+                guard let pobValue = self.pobValue, !pobValue.isEmpty else {
+                    showAlertToFillFields(desc: "Add POB work to save call", type: .jointWork)
+                    return
+                }
+            }
+
+            
+            if isStockistEventCaptureNeededMandatory {
+                guard evenetCaptureValue != 0 else {
+                    showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                    return
+                }
+            }
+            self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
+        case is UnListedDoctor:
+            if isUnListedDoctorProductNeddedMandatory {
+                guard productValue != 0 else{
+                    showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
+                    return
+                }
+            }
+            
+            if isUnListedDoctorInputNeededMandatory {
+                guard inputValue != 0 else {
+                    showAlertToFillFields(desc: "Select atleast 1 Input to save call", type: .inputs)
+                    return
+                }
+            }
+            
+            
+            if isUnListedDoctorRCPAneededMandatory {
+                guard rcpaValue != 0 else {
+                    showAlertToFillFields(desc: "Add RCPA to save call", type: .rcppa)
+                    return
+                }
+            }
+            
+            if isUnListedDoctorJointWorkNeededMandatory {
+                guard jointWorkValue != 0 else {
+                    showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                    return
+                }
+            }
+            
+            if isUnListedDoctorPOBNeededMandatory {
+                guard let pobValue = self.pobValue, !pobValue.isEmpty else {
+                    showAlertToFillFields(desc: "Add POB work to save call", type: .jointWork)
+                    return
+                }
+            }
+            
+            if isUnListedDoctorFeedbackNeededMandatory {
+                guard let feedback = self.overallFeedback, feedback.id != nil else {
+                    showAlertToFillFields(desc: "Add Feedback to save call", type: .jointWork)
+                    return
+                }
+                
+                
+            }
+            
+            if isUnListedDoctorRemarksNeededMandatory {
+                guard let remarks = self.overallRemarks, !remarks.isEmpty else {
+                    showAlertToFillFields(desc: "Add Remarks to save call", type: .jointWork)
+                    return
+                }
+            }
+            
+            if isUnListedDoctorEventCaptureNeededMandatory {
+                guard evenetCaptureValue != 0 else {
+                    showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                    return
+                }
+            }
+            self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
+        default:
+            print("Yet to")
         }
-    }
+        }
+    
     
     func cellregistration() {
         
@@ -1899,12 +2104,25 @@ class AddCallinfoView : BaseView {
         if addCallinfoVC.dcrCall.call is DoctorFencing {
     
             if Shared.instance.detailedSlides.count != 0 {
-        
-                segmentType = [.detailed, .products, .inputs, .additionalCalls, .rcppa, .jointWork]
+                segmentType.append(.detailed)
             } else {
-                segmentType = [.products, .inputs, .additionalCalls, .rcppa, .jointWork]
+                segmentType = []
             }
-
+            
+            if  isDoctorProductNedded {
+                segmentType.append(.products)
+            }
+            if isDoctorInputNeeded {
+                segmentType.append(.inputs)
+            }
+            if  isDoctorAdditionalCallNeeded {
+                segmentType.append(.additionalCalls)
+            }
+            if  isDoctorRCPAneeded {
+                segmentType.append(.rcppa)
+            }
+            
+            segmentType.append(.jointWork)
           
         }
         
@@ -1912,19 +2130,46 @@ class AddCallinfoView : BaseView {
         if addCallinfoVC.dcrCall.call is Chemist {
             
             if Shared.instance.detailedSlides.count != 0 {
-                segmentType = [.detailed, .products, .inputs, .rcppa, .jointWork]
+                segmentType = [.detailed]
             } else {
-                segmentType = [.products, .inputs, .rcppa, .jointWork]
+                segmentType = []
             }
+            
+            if  isChemistProductNedded {
+                segmentType.append(.products)
+            }
+            if isChemistInputNeeded {
+                segmentType.append(.inputs)
+            }
+            //No additional call for chemist
+            
+            if  isChemistRCPAneeded {
+                segmentType.append(.rcppa)
+            }
+            
+            segmentType.append(.jointWork)
+            
         }
         
         if addCallinfoVC.dcrCall.call is Stockist {
             
             if Shared.instance.detailedSlides.count != 0 {
-                segmentType = [.detailed, .products, .inputs, .jointWork]
+                segmentType = [.detailed]
             } else {
-                segmentType = [.products, .inputs, .jointWork]
+                segmentType = []
             }
+            
+            if  isStockistProductNedded {
+                segmentType.append(.products)
+            }
+            if isStockistInputNeeded {
+                segmentType.append(.inputs)
+            }
+            //No additional call for chemist
+            
+            //No rcpa for stockist
+            
+            segmentType.append(.jointWork)
 
         }
         
@@ -1932,15 +2177,25 @@ class AddCallinfoView : BaseView {
         if addCallinfoVC.dcrCall.call is UnListedDoctor {
             
             if Shared.instance.detailedSlides.count != 0 {
-                segmentType = [.detailed, .products, .inputs, .additionalCalls, .jointWork]
+                segmentType.append(.detailed)
             } else {
-                segmentType = [.products, .inputs, .additionalCalls, .jointWork]
+                segmentType = []
             }
             
-        
-           
-
-           
+            if  isDoctorProductNedded {
+                segmentType.append(.products)
+            }
+            if isDoctorInputNeeded {
+                segmentType.append(.inputs)
+            }
+            if  isDoctorAdditionalCallNeeded {
+                segmentType.append(.additionalCalls)
+            }
+            if  isDoctorRCPAneeded {
+                segmentType.append(.rcppa)
+            }
+            
+            segmentType.append(.jointWork)
         }
      
         self.segmentsCollection.register(UINib(nibName: "PreviewTypeCVC", bundle: nil), forCellWithReuseIdentifier: "PreviewTypeCVC")
@@ -2139,11 +2394,10 @@ extension AddCallinfoView : JfwViewDelegate {
 
 extension AddCallinfoView : addedSubViewsDelegate {
     func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
-//        if let jfwView = self.jfwView {
-//            jfwView.alpha = 0.3
-//        }
+
+        checkMandatoryFields()
         
-        self.addCallinfoVC.setupParam(dcrCall: dcrCall)
+      //  self.addCallinfoVC.setupParam(dcrCall: dcrCall)
 
     
     }
@@ -2187,6 +2441,22 @@ extension AddCallinfoView : addedSubViewsDelegate {
                 self.redirectToSettings()
             }
            
+            
+        }
+    }
+    
+    
+    func showAlertToFillFields(desc: String, type: SegmentType) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            
+            let index = self.segmentType.firstIndex(of: type)
+            
+            
+            guard let index = index else {return}
+            
+            self.collectionView(self.segmentsCollection, didSelectItemAt: IndexPath(item: index, section: 0))
             
         }
     }

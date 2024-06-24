@@ -701,6 +701,7 @@ class PreCallVC : UIViewController {
     
     @IBOutlet var btnStartdetailing: UIButton!
     
+    @IBOutlet var btnStartDetailingWidthConstraint: NSLayoutConstraint!
     
     @IBOutlet var categoryLbl: UILabel!
     
@@ -972,6 +973,24 @@ class PreCallVC : UIViewController {
         btnSkip.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         btnSkip.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         
+        switch self.dcrCall.call {
+        case is  DoctorFencing:
+            btnStartdetailing.isHidden = isDoctorDetailingNeeded ? false : true
+            btnStartDetailingWidthConstraint.constant = isDoctorDetailingNeeded ? 110 : 0
+        case is Chemist:
+            btnStartdetailing.isHidden = isChemistDetailingNeeded ? false : true
+            btnStartDetailingWidthConstraint.constant = isChemistDetailingNeeded ? 110 : 0
+        case is Stockist:
+            btnStartdetailing.isHidden = istockisDetailingNeeded ? false : true
+            btnStartDetailingWidthConstraint.constant = istockisDetailingNeeded ? 110 : 0
+        case is UnListedDoctor:
+            btnStartdetailing.isHidden = isUnListedDoctorDetailingNeeded ? false : true
+            btnStartDetailingWidthConstraint.constant = isUnListedDoctorDetailingNeeded ? 110 : 0
+        default:
+            print("Yet to")
+        }
+        
+      
         
         btnStartdetailing.layer.cornerRadius = 5
         btnStartdetailing.backgroundColor = .appTextColor

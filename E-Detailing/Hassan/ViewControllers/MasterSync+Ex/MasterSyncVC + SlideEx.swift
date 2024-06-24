@@ -10,6 +10,7 @@
 import Foundation
 import MobileCoreServices
 import SSZipArchive
+import CoreData
 
 
 
@@ -39,7 +40,8 @@ extension MasterSyncVC {
                 }
             
             } else  if (type == .slides) {
-
+            _ = toCheckExistenceOfNewSlides(didEncountererror: false)
+                removeNonExistingSlides(from: arrayOfAllSlideObjects)
                     if isNewSlideExists {
                         moveToDownloadSlide(isFromcache: true)
                     }
@@ -90,6 +92,7 @@ extension MasterSyncVC {
         }
 
         let nonExistingSlides = findNonExistingSlides(in: existingCDSlides, from: arrayOfAllSlideObjects)
+       
         let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
 
         isNewSlideExists = !notDownloadedSlides.isEmpty || !nonExistingSlides.isEmpty
@@ -98,6 +101,41 @@ extension MasterSyncVC {
 
         return handleSlideDownloadStatus(nonExistingSlides: nonExistingSlides)
     }
+    
+    
+    func removeNonExistingSlides(from apiFetchedSlides: [SlidesModel]) {
+        CoreDataManager.shared.fetchSlides { savedCDslides in
+            let nonExistingSlides = findNonExistingSlides(in: savedCDslides, from: apiFetchedSlides)
+            
+            
+          //  removeSlides(withId: Int16(2061))
+           //  Assuming CoreDataManager has a deleteSlide method
+            nonExistingSlides.forEach { slide in
+                if let slideToDelete = savedCDslides.first(where: { $0.slideId == slide.slideId }) {
+                    
+                    removeSlides(withId: Int(slideToDelete.slideId))
+                }
+            }
+        }
+    }
+    
+    func removeSlides(withId slideId: Int) {
+         let context = context
+         let fetchRequest: NSFetchRequest<SavedSlidesCDModel> = SavedSlidesCDModel.fetchRequest()
+         fetchRequest.predicate = NSPredicate(format:  "slideId %@", slideId)
+         
+         do {
+             let slidesToDelete = try context.fetch(fetchRequest)
+             for slide in slidesToDelete {
+                 context.delete(slide)
+             }
+             try context.save()
+         } catch {
+             print("Error deleting slides: \(error)")
+         }
+     }
+ 
+    
 
     private func showDownloadRetryUI() {
         slideDownloadStatusLbl.isHidden = false
@@ -131,10 +169,37 @@ extension MasterSyncVC {
         return slideObjects
     }
 
+//    private func findNonExistingSlides(in existingCDSlides: [SlidesModel], from apiFetchedSlides: [SlidesModel]) -> [SlidesModel] {
+//        let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
+//        return apiFetchedSlides.filter { !existingSlideIds.contains($0.slideId) }
+//    }
     private func findNonExistingSlides(in existingCDSlides: [SlidesModel], from apiFetchedSlides: [SlidesModel]) -> [SlidesModel] {
-        let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
-        return apiFetchedSlides.filter { !existingSlideIds.contains($0.slideId) }
+        let apiSlideIds = Set(apiFetchedSlides.map { $0.slideId })
+        
+        // Filter out slides from existingCDSlides whose slideId is not in apiSlideIds
+        let filteredExistingCDSlides = existingCDSlides.filter { apiSlideIds.contains($0.slideId) }
+        
+        // Find the slides in apiFetchedSlides that are not in filteredExistingCDSlides
+        let existingSlideIds = Set(filteredExistingCDSlides.map { $0.slideId })
+        let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains($0.slideId) }
+        
+        return nonExistingSlides
     }
+    
+    
+    private func findNonExistingSlides(in existingCDSlides: [SlidesCDModel], from apiFetchedSlides: [SlidesModel]) -> [SlidesModel] {
+        let apiSlideIds = Set(apiFetchedSlides.map { $0.slideId })
+        
+        // Filter out slides from existingCDSlides whose slideId is not in apiSlideIds
+        let filteredExistingCDSlides = existingCDSlides.filter { apiSlideIds.contains(Int($0.slideId)) }
+        
+        // Find the slides in apiFetchedSlides that are not in filteredExistingCDSlides
+        let existingSlideIds = Set(filteredExistingCDSlides.map { $0.slideId })
+        let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains(Int16($0.slideId)) }
+        
+        return nonExistingSlides
+    }
+    
 
     private func updateSlideObjects(existingSlides: [SlidesModel], nonExistingSlides: [SlidesModel]) {
         arrayOfAllSlideObjects.removeAll()

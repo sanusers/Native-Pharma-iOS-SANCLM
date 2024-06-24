@@ -79,6 +79,9 @@ class AppSetUp : Codable {
     var dcrFirstSelfieNeed : Int?
     var desig : String?
     var detailingChem : Int?
+    var detailingstk : Int?
+    var detailingUdr : Int?
+    
     var detailingType :Int?
     var deviceIdNeed : Int?
     var deviceRegId : String?
@@ -88,9 +91,11 @@ class AppSetUp : Codable {
     var docInputCaption : String?
     var docPobMandatoryNeed : Int?
     var docPobNeed : Int?
+    var  unListedDocPobNeed : Int?
     var docProductCaption :String?
     var docClusterBased : Int?
     var docJointWrkMdNeed :Int?
+    var docAdditionalCallNeed : Int?
     var docJointWrkNeed : Int?
     var docCap : String?
     var docEventMdNeed : Int?
@@ -198,6 +203,7 @@ class AppSetUp : Codable {
     var rcpaQtyNeed : Int?
     var rcpaUnitNeed : Int?
     var rcpaMdNeed :Int?
+    var chmRcpaMd : Int?
     var rcpaMgrMdNeed : Int?
     var rcpaNeed :Int?
     var rcpaCompetitorExtra : Int?
@@ -346,6 +352,8 @@ class AppSetUp : Codable {
         dcrFirstSelfieNeed = 0
         desig = ""
         detailingChem = 0
+        detailingstk = 0
+        detailingUdr = 0
         detailingType = 0
         deviceIdNeed = 0
         deviceRegId = ""
@@ -355,9 +363,11 @@ class AppSetUp : Codable {
         docInputCaption = ""
         docPobMandatoryNeed = 0
         docPobNeed = 0
+        unListedDocPobNeed = 0
         docProductCaption = ""
         docClusterBased = 0
         docJointWrkMdNeed = 0
+        docAdditionalCallNeed = 0
         docJointWrkNeed = 0
         docCap = ""
         docEventMdNeed = 0
@@ -465,6 +475,7 @@ class AppSetUp : Codable {
         rcpaQtyNeed = 0
         rcpaUnitNeed = 0
         rcpaMdNeed = 0
+        chmRcpaMd = 0
         rcpaMgrMdNeed = 0
         rcpaNeed = 0
         rcpaCompetitorExtra = 0
@@ -616,6 +627,10 @@ class AppSetUp : Codable {
         self.dcrFirstSelfieNeed = container.safeDecodeValue(forKey: .dcrFirstSelfieNeed)
         self.desig = container.safeDecodeValue(forKey: .desig)
         self.detailingChem = container.safeDecodeValue(forKey: .detailingChem)
+        
+        self.detailingstk = container.safeDecodeValue(forKey: .detailingstk)
+        self.detailingUdr = container.safeDecodeValue(forKey: .detailingUdr)
+        
         self.detailingType = container.safeDecodeValue(forKey: .detailingType)
         self.deviceIdNeed = container.safeDecodeValue(forKey: .deviceIdNeed)
         self.deviceRegId = container.safeDecodeValue(forKey: .deviceRegId)
@@ -625,9 +640,12 @@ class AppSetUp : Codable {
         self.docInputCaption = container.safeDecodeValue(forKey: .docInputCaption)
         self.docPobMandatoryNeed = container.safeDecodeValue(forKey: .docPobMandatoryNeed)
         self.docPobNeed = container.safeDecodeValue(forKey: .docPobNeed)
+        self.unListedDocPobNeed = container.safeDecodeValue(forKey: .unListedDocPobNeed)
+        
         self.docProductCaption = container.safeDecodeValue(forKey: .docProductCaption)
         self.docClusterBased = container.safeDecodeValue(forKey: .docClusterBased)
         self.docJointWrkMdNeed = container.safeDecodeValue(forKey: .docJointWrkMdNeed)
+        self.docAdditionalCallNeed = container.safeDecodeValue(forKey: .docAdditionalCallNeed)
         self.docJointWrkNeed = container.safeDecodeValue(forKey: .docJointWrkNeed)
         self.docCap = container.safeDecodeValue(forKey: .docCap)
         self.docEventMdNeed = container.safeDecodeValue(forKey: .docEventMdNeed)
@@ -735,6 +753,8 @@ class AppSetUp : Codable {
         self.rcpaQtyNeed = container.safeDecodeValue(forKey: .rcpaQtyNeed)
         self.rcpaUnitNeed = container.safeDecodeValue(forKey: .rcpaUnitNeed)
         self.rcpaMdNeed = container.safeDecodeValue(forKey: .rcpaMdNeed)
+        self.chmRcpaMd = container.safeDecodeValue(forKey: .chmRcpaMd)
+        
         self.rcpaMgrMdNeed = container.safeDecodeValue(forKey: .rcpaMgrMdNeed)
         self.rcpaNeed = container.safeDecodeValue(forKey: .rcpaNeed)
         self.rcpaCompetitorExtra = container.safeDecodeValue(forKey: .rcpaCompetitorExtra)
@@ -816,11 +836,13 @@ class AppSetUp : Codable {
         self.therapticNd =  container.safeDecodeValue(forKey: .therapticNd)
         self.success = Int()
         
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  self.srtNeed == 1 ? true : false)
+        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isGeoFencingEnabled, value:  self.geoCheck == 0 ? true : false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isCustomerChekinNeeded, value:  self.custSrtNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isCustomerChekinNeeded, value:  self.custSrtNeed == 0 ? true : false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorFencingEnabled, value:  self.geoTagNeed == 1 ? true : false)
+
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistFencingEnabled, value:  self.geoTagNeedChe == 1 ? true : false)
         
@@ -829,6 +851,173 @@ class AppSetUp : Codable {
         
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled, value:  self.geoTagNeedUnList == 1 ? true : false)
+        
+        //MARK: - DCR setups
+        ///Listed doctor setups
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorFencingEnabled, value:  self.geoTagNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorProductNedded, value:  self.dpNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorProductSampleNeeded, value:  self.docSampleNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorProductRXneeded, value:  self.docRxNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorInputNeeded, value:  self.diNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorAdditionalCallNeeded, value:  self.docAdditionalCallNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorRCPAneeded, value:  self.rcpaNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorJointWorkNeeded, value:  self.docJointWrkNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorPOBNeeded, value:  self.docPobNeed == 0 ? true : false)
+        
+       
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorFeedbackNeeded, value:  self.dfNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorEventCaptureNeeded, value:  self.deNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorDetailingNeeded, value: true)
+        
+        ///Listed doctor Mandatory
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorProductNeddedMandatory, value:  self.docProductMdNeed == 1 ? true : false)
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorProductSampleNeededMandatory, value:  self.docSampleQMdNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorProductRXneededMandatory, value:  self.docRxQMd == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorInputNeededMandatory, value:  self.docInputMdNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorRCPAneededMandatory, value:  self.rcpaMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorJointWorkNeededMandatory, value:  self.docJointWrkMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorPOBNeededMandatory, value:  self.docPobMandatoryNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorFeedbackNeededMandatory, value:  self.docFeedMdNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorRemarksNeededMandatory, value:  self.tempNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorEventCaptureNeededMandatory, value:  self.docEventMdNeed == 0 ? true : false)
+        
+        
+        
+        ///Chemist setups
+
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistProductNedded, value:  self.cpNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistProductSampleNeeded, value:  self.chmSampleQtyNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistProductRXneeded, value:  self.chmRxQtyNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistInputNeeded, value:  self.ciNeed == 0 ? true : false)
+
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistRCPAneeded, value:  self.rcpaNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistJointWorkNeeded, value:  self.chmJointWrkNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistPOBNeeded, value:  self.chmPobNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistFeedbackNeeded, value:  self.cfNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistEventCaptureNeeded, value:  self.ceNeed == 0 ? true : false)
+
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistDetailingNeeded, value: self.detailingChem == 0 ? true : false)
+        
+        ///Chemist Mandatory
+
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistRCPAneededMandatory, value:  self.chmRcpaMd == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistJointWorkNeededMandatory, value:  self.chmJointWrkMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistPOBNeededMandatory, value:  self.chmPobMandatoryNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistEventCaptureNeededMandatory, value:  self.chmEventMdNeed == 0 ? true : false)
+        
+        
+        ///Stockist setups
+
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistProductNedded, value:  self.spNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistProductSampleNeeded, value: true)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistProductRXneeded, value:  self.stkPobNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistInputNeeded, value:  self.siNeed == 0 ? true : false)
+
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistJointWorkNeeded, value:  self.stkJointWrkNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistPOBNeeded, value:  self.stkPobNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistFeedbackNeeded, value:  self.sfNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistEventCaptureNeeded, value:  self.seNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.istockisDetailingNeeded, value: self.detailingstk == 0 ? true : false)
+        
+        ///Stockist Mandatory
+
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistJointWorkNeededMandatory, value:  self.stkJointWrkMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistPOBNeededMandatory, value:  self.stkPobMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistEventCaptureNeededMandatory, value:  self.stkEventMdNeed == 0 ? true : false)
+        
+        
+        
+        ///UnListed doctor setups
+
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductNedded, value:  self.npNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductSampleNeeded, value:  true)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductRXneeded, value:  self.ulPobNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorInputNeeded, value:  self.niNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorAdditionalCallNeeded, value:  false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRCPAneeded, value:  false)
+        
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorJointWorkNeeded, value:  self.ulJointWrlNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorPOBNeeded, value:  self.unListedDocPobNeed  == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorFeedbackNeeded, value:  self.nfNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorEventCaptureNeeded, value:  self.neNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorDetailingNeeded, value: self.detailingUdr == 0 ? true : false)
+        
+        ///Listed doctor Mandatory
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductNeddedMandatory, value:  self.docProductMdNeed == 1 ? true : false)
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductSampleNeededMandatory, value:  self.docSampleQMdNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductRXneededMandatory, value:  self.docRxQMd == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorInputNeededMandatory, value:  self.docInputMdNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRCPAneededMandatory, value:  self.rcpaMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorJointWorkNeededMandatory, value:  self.docJointWrkMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorPOBNeededMandatory, value:  self.docPobMandatoryNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorFeedbackNeededMandatory, value:  self.docFeedMdNeed == 1 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRemarksNeededMandatory, value:  self.tempNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorEventCaptureNeededMandatory, value:  self.docEventMdNeed == 0 ? true : false)
+      
+        
     }
     
     enum CodingKeys: String, CodingKey {
@@ -900,6 +1089,9 @@ class AppSetUp : Codable {
         case desig = "Desig"
         case detailingChem = "Detailing_chem"
         case detailingType = "Detailing_type"
+        
+        case detailingstk = "Detailing_stk"
+        case detailingUdr = "Detailing_undr"
         case deviceIdNeed = "DeviceId_Need"
         case deviceRegId = "DeviceRegId"
         case disRad = "DisRad"
@@ -908,9 +1100,12 @@ class AppSetUp : Codable {
         case docInputCaption = "Doc_Input_caption"
         case docPobMandatoryNeed = "Doc_Pob_Mandatory_Need"
         case docPobNeed = "Doc_Pob_Need"
+        case unListedDocPobNeed = "Pob_Unlstdr_Nd"
+        
         case docProductCaption = "Doc_Product_caption"
         case docClusterBased = "Doc_cluster_based"
         case docJointWrkMdNeed = "Doc_jointwork_Mandatory_Need"
+        case docAdditionalCallNeed = "Additional_Call"
         case docJointWrkNeed = "Doc_jointwork_Need"
         case docCap = "DrCap"
         case docEventMdNeed = "DrEvent_Md"
@@ -1018,6 +1213,8 @@ class AppSetUp : Codable {
         case rcpaQtyNeed = "RCPAQty_Need"
         case rcpaUnitNeed = "RCPA_unit_nd"
         case rcpaMdNeed = "RcpaMd"
+        case chmRcpaMd = "ChmRcpaMd"
+        
         case rcpaMgrMdNeed = "RcpaMd_Mgr"
         case rcpaNeed = "RcpaNd"
         case rcpaCompetitorExtra = "Rcpa_Competitor_extra"

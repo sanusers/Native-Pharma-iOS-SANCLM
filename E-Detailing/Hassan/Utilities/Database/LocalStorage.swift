@@ -61,12 +61,105 @@ class LocalStorage {
         case isConfigAdded
         case isSlidesDownloadPending
         case isTimeZoneChanged
+        case isDayCheckinEnabled
         case isGeoFencingEnabled
         case isCustomerChekinNeeded
-        case isDoctorFencingEnabled
+     
         case isChemistFencingEnabled
         case isStockistFencingEnabled
         case isUnlistedDoctorFencingEnabled
+        
+        //MARK: - DCR setups
+        ///Listed doctor setups
+        case isDoctorFencingEnabled
+        case isDoctorDetailingNeeded
+        case isDoctorProductNedded
+        case isDoctorProductSampleNeeded
+        case isDoctorProductRXneeded
+        case isDoctorInputNeeded
+        case isDoctorAdditionalCallNeeded
+        case isDoctorRCPAneeded
+        case isDoctorJointWorkNeeded
+        case isDoctorPOBNeeded
+        case isDoctorFeedbackNeeded
+        case isDoctorEventCaptureNeeded
+      
+        ///Listed doctor Mandatory
+        case isDoctorProductNeddedMandatory
+        case isDoctorProductSampleNeededMandatory
+        case isDoctorProductRXneededMandatory
+        case isDoctorInputNeededMandatory
+        case isDoctorRCPAneededMandatory
+        case isDoctorJointWorkNeededMandatory
+        case isDoctorPOBNeededMandatory
+        case isDoctorFeedbackNeededMandatory
+        case isDoctorRemarksNeededMandatory
+        case isDoctorEventCaptureNeededMandatory
+        
+        ///Chemist setups
+        case isChemistProductNedded
+        case isChemistProductSampleNeeded
+        case isChemistProductRXneeded
+        case isChemistInputNeeded
+        case isChemistDetailingNeeded
+       // Additional call not needed
+        case isChemistRCPAneeded
+        case isChemistJointWorkNeeded
+        case isChemistPOBNeeded
+        case isChemistFeedbackNeeded
+        case isChemistEventCaptureNeeded
+        
+        ///Chemist Mandatory
+        case isChemistRCPAneededMandatory
+        case isChemistJointWorkNeededMandatory
+        case isChemistPOBNeededMandatory
+        case isChemistEventCaptureNeededMandatory
+        
+        
+        ///Stockist setups
+        case isStockistProductNedded
+        case isStockistProductSampleNeeded
+        case isStockistProductRXneeded
+        case isStockistInputNeeded
+        case istockisDetailingNeeded
+        //Additional call not needed
+        //RCPA call not needed
+        case isStockistJointWorkNeeded
+        case isStockistPOBNeeded
+        case isStockistFeedbackNeeded
+        case isStockistEventCaptureNeeded
+        
+        ///Stockist Mandatory
+        case isStockistJointWorkNeededMandatory
+        case isStockistPOBNeededMandatory
+        case isStockistEventCaptureNeededMandatory
+        
+        
+        ///UnListed  setups
+        
+        case isUnListedDoctorProductNedded
+        case isUnListedDoctorProductSampleNeeded
+        case isUnListedDoctorProductRXneeded
+        case isUnListedDoctorInputNeeded
+        case isUnListedDoctorAdditionalCallNeeded
+        case isUnListedDoctorRCPAneeded
+        case isUnListedDoctorJointWorkNeeded
+        case isUnListedDoctorPOBNeeded
+        case isUnListedDoctorFeedbackNeeded
+        case isUnListedDoctorEventCaptureNeeded
+        case isUnListedDoctorDetailingNeeded
+        ///Listed doctor Mandatory
+        case isUnListedDoctorProductNeddedMandatory
+        case isUnListedDoctorProductSampleNeededMandatory
+        case isUnListedDoctorProductRXneededMandatory
+        case isUnListedDoctorInputNeededMandatory
+        case isUnListedDoctorRCPAneededMandatory
+        case isUnListedDoctorJointWorkNeededMandatory
+        case isUnListedDoctorPOBNeededMandatory
+        case isUnListedDoctorFeedbackNeededMandatory
+        case isUnListedDoctorRemarksNeededMandatory
+        case isUnListedDoctorEventCaptureNeededMandatory
+        
     }
     
     enum Offsets: String {

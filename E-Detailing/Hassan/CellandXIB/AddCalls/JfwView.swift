@@ -455,56 +455,67 @@ class JfwView: UIView {
     
     func setupUI() {
         
-        let appsetup = AppDefaults.shared.getAppSetUp()
         
         if self.dcrCall.call is DoctorFencing {
-            if appsetup.docPobNeed != 0 {
-                viewPOB.isHidden = false
-            }
             
-            if appsetup.docJointWrkNeed != 0 {
-                jointworkHolderStack.isHidden = true
-            }
+            viewPOB.isHidden = isDoctorPOBNeeded ? false : true
+        
+            jointworkHolderStack.isHidden =  isDoctorJointWorkNeeded ? false : true
             
-            if appsetup.docEventMdNeed != 0 {
-                eventCaptureHolderStack.isHidden = true
-            }
+            jwCurvedView.backgroundColor = isDoctorJointWorkNeeded ? .appWhiteColor : .clear
+
+            eventCaptureHolderStack.isHidden = isDoctorEventCaptureNeeded ? false : true
+            
+            eventcaptureCurvedView.backgroundColor = isDoctorEventCaptureNeeded ? .appWhiteColor : .clear
+    
+            viewOverallFeedback.isHidden =  isDoctorFeedbackNeeded ? false : true
+            
+            
         } else if self.dcrCall.call is Chemist {
-            if appsetup.chmPobNeed != 0 {
-                viewPOB.isHidden = false
-            }
+          
+            viewPOB.isHidden = isChemistPOBNeeded ? false : true
+        
+            jointworkHolderStack.isHidden = isChemistJointWorkNeeded ? false : true
             
-            if appsetup.chmJointWrkMdNeed != 0 {
-                jointworkHolderStack.isHidden = true
-            }
+            jwCurvedView.backgroundColor = isChemistJointWorkNeeded ? .appWhiteColor : .clear
+      
+            eventCaptureHolderStack.isHidden = isChemistEventCaptureNeeded ? false : true
+    
+            eventcaptureCurvedView.backgroundColor = isChemistEventCaptureNeeded ? .appWhiteColor : .clear
             
-            if appsetup.chmEventMdNeed != 0 {
-                eventCaptureHolderStack.isHidden = true
-            }
+            viewOverallFeedback.isHidden =  isChemistFeedbackNeeded ? false : true
+            
         }  else if self.dcrCall.call is Stockist {
-            if appsetup.stkPobNeed != 0 {
-                viewPOB.isHidden = false
-            }
             
-            if appsetup.stkJointWrkNeed != 0 {
-                jointworkHolderStack.isHidden = true
-            }
+    
+            viewPOB.isHidden = isStockistPOBNeeded ? false : true
+         
+            jointworkHolderStack.isHidden = isStockistJointWorkNeeded ? false : true
             
-            if appsetup.stkEventMdNeed != 0 {
-                eventCaptureHolderStack.isHidden = true
-            }
+            jwCurvedView.backgroundColor = isStockistJointWorkNeeded ? .appWhiteColor : .clear
+            
+            eventCaptureHolderStack.isHidden = isStockistEventCaptureNeeded ? false : true
+            
+            eventcaptureCurvedView.backgroundColor = isStockistEventCaptureNeeded ? .appWhiteColor : .clear
+            
+    
+            viewOverallFeedback.isHidden =  isStockistFeedbackNeeded ? false : true
+            
         } else if self.dcrCall.call is UnListedDoctor {
-            if appsetup.ulPobNeed != 0 {
-                viewPOB.isHidden = false
-            }
             
-            if appsetup.ulJointWrlMdNeed != 0 {
-                jointworkHolderStack.isHidden = true
-            }
+          
+            viewPOB.isHidden = isUnListedDoctorPOBNeeded ? false : true
+
+            jointworkHolderStack.isHidden = isUnListedDoctorJointWorkNeeded ? false : true
             
-            if appsetup.ulDocEventMd != 0 {
-                eventCaptureHolderStack.isHidden = true
-            }
+            jwCurvedView.backgroundColor = isUnListedDoctorJointWorkNeeded ? .appWhiteColor : .clear
+      
+            eventCaptureHolderStack.isHidden = isUnListedDoctorEventCaptureNeeded ? false : true
+            
+            eventcaptureCurvedView.backgroundColor = isUnListedDoctorEventCaptureNeeded ? .appWhiteColor : .clear
+    
+            viewOverallFeedback.isHidden =  isUnListedDoctorFeedbackNeeded ? false : true
+            
         }
         //  viewEventCaptureSegment.isHidden = true
         selectedfeedbackLbl.setFont(font: .medium(size: .BODY))

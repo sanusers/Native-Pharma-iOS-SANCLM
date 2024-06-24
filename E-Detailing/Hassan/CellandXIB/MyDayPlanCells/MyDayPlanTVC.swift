@@ -119,7 +119,7 @@ class MyDayPlanTVC: UITableViewCell {
                 
                 if let hqName = wtObj.name {
                      self.selectWTlbl.text = hqName
-                    if wtObj.fwFlg == "F" {
+                    if wtObj.fwFlg == "F" || wtObj.terrslFlg == "Y" {
                         isForFW = true
                
                     } else {

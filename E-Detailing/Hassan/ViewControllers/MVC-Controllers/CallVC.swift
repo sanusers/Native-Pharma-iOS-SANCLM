@@ -164,6 +164,16 @@ extension CallVC : addedSubViewsDelegate {
     
     
     
+    func showAlertForCallExistence(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok" )
+
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("yes action")
+        }
+
+    }
+    
     func showAlertToEnableLocation(desc: String) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel",cancelAction: "Ok")
@@ -780,7 +790,8 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.toCreateToast("Doctor aldready visited today")
+                            self.showAlertForCallExistence(desc: "Doctor already visited today")
+                          //  self.toCreateToast("Doctor aldready visited today")
                             return
                         }
                     }
@@ -798,7 +809,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.toCreateToast("Doctor aldready visited today")
+                        self.showAlertForCallExistence(desc: "Doctor already visited today")
                         return
                     } else {
                         if customerChekinEnabled {
@@ -935,7 +946,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.toCreateToast("Doctor aldready visited today")
+                            self.showAlertForCallExistence(desc: "Doctor already visited today")
                             return
                         }
                     }
@@ -953,7 +964,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.toCreateToast("Doctor aldready visited today")
+                        self.showAlertForCallExistence(desc: "Doctor already visited today")
                         return
                     } else {
                         if customerChekinEnabled {

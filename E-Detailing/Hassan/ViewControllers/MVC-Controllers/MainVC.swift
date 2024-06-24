@@ -469,25 +469,18 @@ class MainVC : UIViewController {
     
     func toSetupSubmitAlert() {
         let commonAlert = CommonAlert()
-   //   commonAlert.setupAlert(alert: AppName, alertDescription: "You are trying to complete the day are you sure?", okAction:    appSetups.srtNeed == 1 ? "Just check out" : "Final submit" , cancelAction: "Add remark")
+
         commonAlert.setupAlert(alert: AppName, alertDescription: "You are trying to complete the day are you sure?", okAction:    "Ok" , cancelAction: "Cancel")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("no action")
-//           
-//            if  self.appSetups.srtNeed == 1 {
-//              self.checkoutAction()
-//          } else {
-//              
-//              print("Yet to implement final submit")
-//          }
-//          
+
             self.deviateAction(isForremarks: true)
             
         }
         
         commonAlert.addAdditionalCancelAction {
             print("Yes action")
-         //   self.deviateAction(isForremarks: true)
+       
         }
     }
     
@@ -1537,7 +1530,7 @@ class MainVC : UIViewController {
         if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
             // CoreDataManager.shared.removeAdayPlans(planDate: currentDate)
         }
-        if appSetups.srtNeed == 0 {
+        if isDayCheckinNeeded {
             
             if !Calendar.current.isDate(currentDate, inSameDayAs: storedDate) {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
@@ -2579,14 +2572,16 @@ extension MainVC {
     }
 
     @IBAction func didTapFinalSubmit(_ sender: Any) {
-        
-        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
-            checkinAction()
-            return
+        if isDayCheckinNeeded {
+            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
+                checkinAction()
+                return
+            }
         }
+
         
         if isDayPlanRemarksadded {
-            if appSetups.srtNeed == 0 {
+            if isDayCheckinNeeded {
                 doUserWindup {[weak self] _ in
                     guard let welf = self else {return}
                     welf.checkoutAction()
@@ -2605,7 +2600,7 @@ extension MainVC {
             }
           
         } else {
-            if appSetups.srtNeed == 1 {
+            if isDayCheckinNeeded {
                 if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUserCheckedin) {
                     self.toSetupSubmitAlert()
                 } else {
@@ -2693,7 +2688,10 @@ extension MainVC {
                 
             })
 
-            guard  !workTypes.isEmpty else { return }
+            guard  !workTypes.isEmpty else { 
+                welf.showAlertToNetworks(desc: "Shedule your work plan to add call", isToclearacalls: false)
+                welf.setSegment(.workPlan)
+                return }
             let isFieldWork = workTypes.map { aWorkType in
                 if aWorkType.fwFlg == "F" {
                     return true

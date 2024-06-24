@@ -568,9 +568,11 @@ class ViewAllInfoTVC: UITableViewCell {
                // Extract words after the "$" sign and flatten the resulting array
                let words = namesWithoutHash.flatMap { $0.components(separatedBy: " ") }
 
-               // Check if any of the extracted words matches the name
-               if words.contains(where: { $0 == name.components(separatedBy: " ").first }) {
+   
+              //  Check if any of the extracted words matches the name
+               if namesWithoutHash[1] == name.trimmingCharacters(in: .whitespaces) {
                    print("The 'promotedProduct' contains '\(name)'")
+                   let promotedCacheProduct = DBManager.shared.getProduct().filter { $0.code ==  words[0]}.first
                    isPromoted = true
                } else {
                    print("The 'promotedProduct' does not contain '\(name)'")
