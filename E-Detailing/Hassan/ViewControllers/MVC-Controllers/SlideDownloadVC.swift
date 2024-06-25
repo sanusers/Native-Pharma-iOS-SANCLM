@@ -261,7 +261,7 @@ class SlideDownloadVC : UIViewController {
     var isSlideDownloadCompleted: Bool = false
     var isDownloading: Bool = false
     var isFromlaunch: Bool = false
-    var isConnected = Bool()
+  //  var isConnected = Bool()
     var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var isBackgroundTaskRunning: Bool = false
     var iscellIterating: Bool = false
@@ -309,16 +309,17 @@ class SlideDownloadVC : UIViewController {
             
              _ = toCheckExistenceOfNewSlides()
             toSetTableVIewDataSource()
-            startDownload(ifForsingleSeclection: false)
+            if isConnected {
+                startDownload(ifForsingleSeclection: false)
+            } else {
+                self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
+            }
+            
         } else if LocalStorage.shared.getBool(key: .isSlidesGrouped) {
             toSetTableVIewDataSource()
         } else {
             toLoadPresentationData(type: .slideBrand)
             toLoadPresentationData(type: .slides)
-//            Shared.instance.showLoaderInWindow()
-//            self.toGroupSlidesBrandWise() {_ in
-//                Shared.instance.removeLoaderInWindow()
-//            }
             
         }
 
@@ -398,14 +399,14 @@ class SlideDownloadVC : UIViewController {
                        if status == "No Connection" {
                         //   self.toSetPageType(.notconnected)
                            self.toCreateToast("Please check your internet connection.")
-                           self.isConnected = false
+                       
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: true)
                           // self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
                            
                            
                        } else if  status == "WiFi" || status ==  "Cellular"   {
-                           self.isConnected = true
+                         
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
                            self.toCreateToast("You are now connected.")
                           // self.startDownload(ifForsingleSeclection: false)
@@ -512,7 +513,12 @@ class SlideDownloadVC : UIViewController {
             if isNewSlideExists {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
                 toSetTableVIewDataSource()
-                self.startDownload(ifForsingleSeclection: false)
+                if isConnected {
+                    self.startDownload(ifForsingleSeclection: false)
+                } else {
+                    self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
+                }
+            
             } else {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
                 self.isSlideDownloadCompleted = true
@@ -531,7 +537,7 @@ class SlideDownloadVC : UIViewController {
 
         // Extract slideId values from each array
         let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
-        let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
+       // let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
         let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 

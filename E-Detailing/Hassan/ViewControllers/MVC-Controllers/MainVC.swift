@@ -1017,7 +1017,7 @@ class MainVC : UIViewController {
                         
                         welf.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                        welf.syncAllCalls()
+                      //  welf.syncAllCalls()
                        
                         
                     }
@@ -5770,8 +5770,8 @@ extension MainVC: OutboxDetailsTVCDelegate {
              guard let nonNilChemist = filteredChemist.first else {
 
              return}
-             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.stockist)
-             editDCRcall(call: aCallVM, type: DCRType.stockist)
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.unlistedDoctor)
+             editDCRcall(call: aCallVM, type: DCRType.unlistedDoctor)
         default:
             print("Yet to")
         }

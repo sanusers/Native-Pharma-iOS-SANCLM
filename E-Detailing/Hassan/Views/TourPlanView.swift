@@ -1951,6 +1951,7 @@ class TourPlanView: BaseView {
     
     
     func moveToMenuVC(_ date: Date, isForWeekOff: Bool?, isforHoliday: Bool?) {
+      
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
         let toCompareDate = dateFormatter.string(from: date )
@@ -1974,23 +1975,36 @@ class TourPlanView: BaseView {
                     print("unable to convert to EachDatePlan")
                 }
             } else {
+                Shared.instance.removeLoaderInWindow()
                 // Fallback to default initialization if unarchiving fails
                 print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
                 AppDefaults.shared.eachDatePlan = EachDatePlan()
             }
         } catch {
+            Shared.instance.removeLoaderInWindow()
             // Handle any errors that occur during reading or unarchiving
             print("Unable to unarchive: \(error)")
             AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
         }
         dump(AppDefaults.shared.eachDatePlan)
-              AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
-                  eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
-                      if sessions.date == toCompareDate {
-                          menuvc.sessionDetailsArr = sessions
-                      }
-                  }
-              }
+  
+//              AppDefaults.shared.eachDatePlan.tourPlanArr?.enumerated().forEach { index, eachDayPlan in
+//                  eachDayPlan.arrOfPlan?.enumerated().forEach { index, sessions in
+//                      if sessions.date == toCompareDate {
+//                          menuvc.sessionDetailsArr = sessions
+//                      }
+//                  }
+//              }
+        if let tourPlanArr = AppDefaults.shared.eachDatePlan.tourPlanArr {
+            for eachDayPlan in tourPlanArr {
+                if let arrOfPlan = eachDayPlan.arrOfPlan {
+                    if let sessions = arrOfPlan.first(where: { $0.date == toCompareDate }) {
+                        menuvc.sessionDetailsArr = sessions
+                        break
+                    }
+                }
+            }
+        }
 
         LocalStorage.shared.sentToApprovalModelArr.forEach({ sentToApprovalmodal in
             if sentToApprovalmodal.date ==  toModifyDateAsMonth(date: self.currentPage ?? Date()) {
@@ -2003,10 +2017,6 @@ class TourPlanView: BaseView {
             
             
         })
-        
-  
-        
-
     self.tourplanVC.navigationController?.present(menuvc, animated: true)
     }
 }

@@ -12,8 +12,8 @@ import Foundation
 
 class CallListViewModel {
     
-    private var callListArray =  [CallViewModel]()
-    private var dcrActivityList = [DcrActivityViewModel]()
+     var callListArray =  [CallViewModel]()
+     var dcrActivityList = [DcrActivityViewModel]()
     
     func fetchDataAtIndex(index : Int, type : DCRType, searchText : String, isFiltered: Bool, filterscase: FilteredCase?) -> CallViewModel {
         

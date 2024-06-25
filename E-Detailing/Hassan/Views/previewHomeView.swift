@@ -486,7 +486,7 @@ class PreviewHomeView : BaseView {
     }
     
     func setPreviewType(_ previewType: PreviewType) {
-    
+        self.selectedPreviewType = previewType
         switch previewType {
            
         case .home:
@@ -681,6 +681,7 @@ class PreviewHomeView : BaseView {
         case decending
     }
     var selectedTypesIndex: Int? = nil
+    var selectedPreviewType : PreviewType = .home
     var  listedDocArr : [DoctorFencing]?
     var savePresentationArr : [SavedPresentation]?
     var selectedSlides: [SlidesModel]?
@@ -719,6 +720,33 @@ class PreviewHomeView : BaseView {
         setupUI()
         initView()
         setPreviewType(.home)
+        initgestures()
+    }
+    
+    func initgestures() {
+        presentationHolderVIew.addAction(for: .swipe_left)  { [weak self] in
+            guard let welf = self else {return}
+            let index = welf.previewType.firstIndex { $0.rawValue == welf.selectedPreviewType.rawValue }
+            let count = welf.previewType.count
+            guard let index = index, index < count - 1 else {
+                return
+            }
+            welf.previewTypeIndex = index + 1
+            welf.setPreviewType(welf.previewType[index + 1])
+            welf.previewTypeCollection.reloadData()
+        }
+        
+        presentationHolderVIew.addAction(for: .swipe_right)  { [weak self] in
+            guard let welf = self else {return}
+            let index = welf.previewType.firstIndex { $0.rawValue == welf.selectedPreviewType.rawValue }
+            let count = welf.previewType.count
+            guard let index = index,  index - 1 >= 0 else {
+                return
+            }
+            welf.previewTypeIndex = index - 1
+            welf.setPreviewType(welf.previewType[index - 1])
+            welf.previewTypeCollection.reloadData()
+        }
     }
     
     func retriveSavedPresentations()  {

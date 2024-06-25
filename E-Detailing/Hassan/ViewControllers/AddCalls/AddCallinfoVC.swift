@@ -976,48 +976,12 @@ class AddCallinfoVC: BaseViewController {
             let existingEntities = try context.fetch(fetchRequest)
             
             if let existingEntity = existingEntities.first {
-                existingEntity.custCode = dcrCall.code
-                existingEntity.custType = cusType
-                existingEntity.fw_Indicator = "F"
-                existingEntity.dcr_dt = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-                existingEntity.month_name = Date().toString(format: "MMMM")
-                existingEntity.mnth = Date().toString(format: "MM")
-                existingEntity.yr =  Date().toString(format: "YYYY")
-                existingEntity.custName = dcrCall.name
-                existingEntity.town_code = dcrCall.townCode
-                existingEntity.town_name = dcrCall.territory
-                existingEntity.dcr_flag = ""
-                existingEntity.sf_Code = appsetup.sfCode
-                existingEntity.trans_SlNo = ""
-                existingEntity.anslNo = ""
-                existingEntity.isDataSentToAPI = issussess == true ?  "1" : "0"
-                existingEntity.rejectionReason = issussess ?   "Call already exists." : "Waiting to sync"
-                //dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
-                existingEntity.checkintime = dcrCall.dcrCheckinTime
-                existingEntity.checkoutTime = dcrCall.dcrCheckOutTime
-                
-                if  self.dcrCall.type == .chemist {
-                    existingEntity.custType = "2"
-                  }
-                  if  self.dcrCall.type == .stockist {
-                      existingEntity.custType = "3"
-                    }
-                  if  self.dcrCall.type == .doctor {
-                      existingEntity.custType = "1"
-                    }
-                  if  self.dcrCall.type == .hospital {
-                      existingEntity.custType = "6"
-                    }
-                  if  self.dcrCall.type == .unlistedDoctor {
-                      existingEntity.custType = "4"
-                    }
-                  if  self.dcrCall.type == .cip
-                  {
-                      existingEntity.custType = "5"
-                    }
-                
-                DBManager.shared.saveContext()
-                return
+                let dcrDate = existingEntity.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
+                let dcrDateString = dcrDate?.toString(format: "MMM d, yyyy")
+                let currentDateStr = Date().toString(format: "MMM d, yyyy")
+                if dcrDateString == currentDateStr {
+                    return
+                }
             }
         } catch {
             // Handle fetch error
@@ -1217,9 +1181,7 @@ class AddCallinfoVC: BaseViewController {
             
             let coreparamDatum = aoutboxCDM.unSyncedParams
             
-            guard let paramData = coreparamDatum else {return
-                
-            }
+            guard let paramData = coreparamDatum else {return}
            
             
             var localParamArr = [String: [[String: Any]]]()
@@ -1247,15 +1209,21 @@ class AddCallinfoVC: BaseViewController {
                     if  let custCode = call["CustCode"] as? String,
                         //   vstTime == param["vstTime"] as? String,
                         custCode == param["CustCode"] as? String {
-                        // Match found, do something with the matching call
-                        matchFound = true
-                        print("Match found for CustCode: \(custCode)")
-                        toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
-                        touUdateOutboxandDefaultParams(param: param) {_ in
-                            completion(true)
+                        let dateSting = param["vstTime"] as! String
+                        let dcrDate = dateSting.toDate(format: "yyyy-MM-dd HH:mm:ss")
+                        let dcrDateString = dcrDate.toString(format: "MMM d, yyyy")
+                        let currentDateStr = Date().toString(format: "MMM d, yyyy")
+                        if dcrDateString == currentDateStr {
+                            // Match found, do something with the matching call
+                            matchFound = true
+                            print("Match found for CustCode: \(custCode)")
+                            toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                            touUdateOutboxandDefaultParams(param: param) {_ in
+                                completion(true)
+                                return
+                            }
                             return
                         }
-                        
                         
                     }
                 }

@@ -1254,11 +1254,10 @@ class AddCallinfoView : BaseView {
     }
     
     func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
-      
+        selectedSegment = segmentType
         switch segmentType {
-            
-          
         case .detailed:
+           
             setupSearchTF()
             segmentsdidClose()
             jfwExceptionView.isHidden = true
@@ -1267,8 +1266,6 @@ class AddCallinfoView : BaseView {
             yetToloadContentsTable.isHidden = true
             yettoaddSectionView.backgroundColor = .clear
             loadedContentsTable.isHidden = true
-            //toloadYettables()
-            //toloadContentsTable()
             detailedInfoAction()
         case .products:
             setupSearchTF()
@@ -1327,10 +1324,7 @@ class AddCallinfoView : BaseView {
                 loadedContentsTable.isHidden = false
                 toloadContentsTable()
             }
-            
-            
-            //toloadYettables()
-            //toloadContentsTable()
+
         case .jointWork:
             setupSearchTF()
             detailedSlideInfoView?.removeFromSuperview()
@@ -1523,10 +1517,27 @@ class AddCallinfoView : BaseView {
         cellregistration()
         toloadYettables()
         initVIews()
-       // toloadContentsTable()
+        initgestures()
     }
     
-    
+    func initgestures() {
+        self.addAction(for: .swipe_left)  { [weak self] in
+         
+            guard let welf = self else {return}
+            let index = welf.segmentType.firstIndex(of: welf.selectedSegment)
+            let count = welf.segmentType.count
+            guard let index = index, index < count - 1 else {return}
+            welf.collectionView(welf.segmentsCollection, didSelectItemAt: IndexPath(item: index + 1, section: 0))
+        }
+        
+        self.addAction(for: .swipe_right)  {
+            [weak self] in
+                guard let welf = self else {return}
+            let index = welf.segmentType.firstIndex(of: welf.selectedSegment)
+            guard let index = index, index - 1 >= 0 else {return}
+            welf.collectionView(welf.segmentsCollection, didSelectItemAt: IndexPath(item: index - 1, section: 0))
+        }
+    }
     
     
     override func didLayoutSubviews(baseVC: BaseViewController) {
@@ -1865,7 +1876,47 @@ class AddCallinfoView : BaseView {
                     showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
                     return
                 }
+                
+                if isDoctorProductSampleNeededMandatory {
+                    
+                    let products = self.productSelectedListViewModel.fetchAllProductData()
+                    
+                    guard let products = products else {
+                        showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
+                        return}
+                    
+                    let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
+                    
+                    var sampleNotFilledProducts = sampleProducts.filter { $0.sampleCount.isEmpty }
+               
+                    guard sampleNotFilledProducts.isEmpty else {
+                        showAlertToFillFields(desc: "Fill in samples for selected sample products to save call", type: .products)
+                        return
+                    }
+                }
+                
+                
+                if isDoctorProductRXneededMandatory {
+                    
+                    let products = self.productSelectedListViewModel.fetchAllProductData()
+                    
+                    guard let products = products else {
+                        showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
+                        return}
+                    
+                    let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
+                    
+                    var rxNotFilledProducts = sampleProducts.filter { $0.rxCount.isEmpty }
+               
+                    guard rxNotFilledProducts.isEmpty else {
+                        showAlertToFillFields(desc: "Fill in Rx Qty for selected sample products to save call", type: .products)
+                        return
+                    }
+                }
+                
             }
+            
+
             
             if isDoctorInputNeededMandatory {
                 guard inputValue != 0 else {
@@ -1884,7 +1935,7 @@ class AddCallinfoView : BaseView {
             
             if isDoctorJointWorkNeededMandatory {
                 guard jointWorkValue != 0 else {
-                    showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                    showAlertToFillFields(desc: "Add Joint work to save call", type: .jointWork)
                     return
                 }
             }
@@ -1914,7 +1965,7 @@ class AddCallinfoView : BaseView {
             
             if isDoctorEventCaptureNeededMandatory {
                 guard evenetCaptureValue != 0 else {
-                    showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                    showAlertToFillFields(desc: "Add Event capture to save call", type: .jointWork)
                     return
                 }
             }
@@ -1932,7 +1983,7 @@ class AddCallinfoView : BaseView {
                     
                     if isChemistJointWorkNeededMandatory {
                         guard jointWorkValue != 0 else {
-                            showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                            showAlertToFillFields(desc: "Add Joint work to save call", type: .jointWork)
                             return
                         }
                     }
@@ -1947,7 +1998,7 @@ class AddCallinfoView : BaseView {
                     
                     if isChemistEventCaptureNeededMandatory {
                         guard evenetCaptureValue != 0 else {
-                            showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                            showAlertToFillFields(desc: "Add Event capture to save call", type: .jointWork)
                             return
                         }
                     }
@@ -1958,7 +2009,7 @@ class AddCallinfoView : BaseView {
             
             if isStockistJointWorkNeededMandatory {
                 guard jointWorkValue != 0 else {
-                    showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                    showAlertToFillFields(desc: "Add Joint work to save call", type: .jointWork)
                     return
                 }
             }
@@ -1973,7 +2024,7 @@ class AddCallinfoView : BaseView {
             
             if isStockistEventCaptureNeededMandatory {
                 guard evenetCaptureValue != 0 else {
-                    showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                    showAlertToFillFields(desc: "Add Event capture to save call", type: .jointWork)
                     return
                 }
             }
@@ -1984,6 +2035,46 @@ class AddCallinfoView : BaseView {
                     showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
                     return
                 }
+                
+                
+                if isUnListedDoctorProductSampleNeededMandatory {
+                    
+                    let products = self.productSelectedListViewModel.fetchAllProductData()
+                    
+                    guard let products = products else {
+                        showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
+                        return}
+                    
+                    let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
+                    
+                    var sampleNotFilledProducts = sampleProducts.filter { $0.sampleCount.isEmpty }
+               
+                    guard sampleNotFilledProducts.isEmpty else {
+                        showAlertToFillFields(desc: "Fill in samples for selected sample products to save call", type: .products)
+                        return
+                    }
+                }
+                
+                
+                if isUnListedDoctorProductRXneededMandatory {
+                    
+                    let products = self.productSelectedListViewModel.fetchAllProductData()
+                    
+                    guard let products = products else {
+                        showAlertToFillFields(desc: "Select atleast 1 Product to save call", type: .products)
+                        return}
+                    
+                    let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
+                    
+                    var rxNotFilledProducts = sampleProducts.filter { $0.rxCount.isEmpty }
+               
+                    guard rxNotFilledProducts.isEmpty else {
+                        showAlertToFillFields(desc: "Fill in Rx Qty for selected sample products to save call", type: .products)
+                        return
+                    }
+                }
+                
+                
             }
             
             if isUnListedDoctorInputNeededMandatory {
@@ -2003,7 +2094,7 @@ class AddCallinfoView : BaseView {
             
             if isUnListedDoctorJointWorkNeededMandatory {
                 guard jointWorkValue != 0 else {
-                    showAlertToFillFields(desc: "Add Joint work to save call", type: .rcppa)
+                    showAlertToFillFields(desc: "Add Joint work to save call", type: .jointWork)
                     return
                 }
             }
@@ -2033,7 +2124,7 @@ class AddCallinfoView : BaseView {
             
             if isUnListedDoctorEventCaptureNeededMandatory {
                 guard evenetCaptureValue != 0 else {
-                    showAlertToFillFields(desc: "Add Event capture to save call", type: .rcppa)
+                    showAlertToFillFields(desc: "Add Event capture to save call", type: .jointWork)
                     return
                 }
             }

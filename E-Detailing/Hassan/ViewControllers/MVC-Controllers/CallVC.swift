@@ -352,6 +352,8 @@ class CallVC : UIViewController {
         self.backgroundView.addTap {
             self.didClose()
         }
+        
+
     }
     
     func toloadCallsCollection() {
@@ -444,13 +446,44 @@ class CallVC : UIViewController {
         
         self.txtSearch.addTarget(self, action: #selector(searchFilterAction(_:)), for: .editingChanged)
         
-      //  updateSegment()
         
         updateDcrList()
-        
+       
         self.type = .doctor
+        
+        initGestures()
     }
     
+    
+    func initGestures() {
+
+        self.callCollectionView.addAction(for: .swipe_left)  {
+            let index =   self.CallListArray.dcrActivityList.firstIndex { $0.type.rawValue ==  self.type.rawValue }
+            let dcrActivityListCount = self.CallListArray.numberofDcrs()
+            guard let index = index, index < dcrActivityListCount - 1 else {
+                return
+            }
+            self.type = self.CallListArray.fetchAtIndex(index + 1).type
+            self.addedFiltersCount.isHidden = true
+            self.filterCountHolderVIew.isHidden = true
+            self.filterscase = nil
+            self.headerCollectionView.reloadData()
+            self.callCollectionView.reloadData()
+        }
+        
+        self.callCollectionView.addAction(for: .swipe_right)  {
+            let index =   self.CallListArray.dcrActivityList.firstIndex { $0.type.rawValue ==  self.type.rawValue }
+            guard let index = index, index - 1 >= 0 else {
+                return
+            }
+            self.type = self.CallListArray.fetchAtIndex(index - 1).type
+            self.addedFiltersCount.isHidden = true
+            self.filterCountHolderVIew.isHidden = true
+            self.filterscase = nil
+            self.headerCollectionView.reloadData()
+            self.callCollectionView.reloadData()
+        }
+    }
     
     func checkinAction(dcrCall : CallViewModel) {
         
@@ -780,9 +813,9 @@ extension CallVC : collectionViewProtocols {
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
                               if aHomeData.custCode == addedDcrCall.code {
-                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
-                                  let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
+                                  let dcrDateString = dcrDate?.toString(format: "MMM d, yyyy")
+                                  let currentDateStr = Date().toString(format: "MMM d, yyyy")
                                   if dcrDateString == currentDateStr {
                                       return true
                                   }

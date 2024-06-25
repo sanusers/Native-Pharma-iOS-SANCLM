@@ -42,7 +42,9 @@ extension PreCallVC : collectionViewProtocols {
                 welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
                 
             case .Holidays:
+                
                 welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
+                
             case .Weeklyoffs:
                 welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
             }
@@ -595,6 +597,7 @@ class PreCallVC : UIViewController {
     }
     
     func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
+        self.selectedSegmentType = segmentType
         switch segmentType {
             
         case .Overview:
@@ -957,13 +960,41 @@ class PreCallVC : UIViewController {
     var segmentType: [SegmentType] = []
     private var segmentControl : UISegmentedControl!
     var selectedSegmentsIndex: Int = 0
+    var selectedSegmentType : SegmentType = .Overview
     var dcrCall : CallViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setPagetype(pageType: self.pagetype)
        //updateSegment()
+        initgestures()
+    }
+    
+    func initgestures() {
+        self.view.addAction(for: .swipe_left)  { [weak self] in
+            guard let welf = self else {return}
 
+                let index = welf.segmentType.firstIndex { $0.rawValue == welf.selectedSegmentType.rawValue }
+                let count = welf.segmentType.count
+                guard let index = index, index < count - 1 else {
+                    return
+                }
+                welf.selectedSegmentsIndex = index + 1
+                welf.setSegment(welf.segmentType[index + 1])
+                welf.segmentsCollection.reloadData()
+        }
+        
+        self.view.addAction(for: .swipe_right)  { [weak self] in
+            guard let welf = self else {return}
+            let index = welf.segmentType.firstIndex { $0.rawValue == welf.selectedSegmentType.rawValue }
+    
+            guard let index = index,  index - 1 >= 0 else {
+                return
+            }
+            welf.selectedSegmentsIndex = index - 1
+            welf.setSegment(welf.segmentType[index - 1])
+            welf.segmentsCollection.reloadData()
+        }
     }
     
     func setupUI() {
