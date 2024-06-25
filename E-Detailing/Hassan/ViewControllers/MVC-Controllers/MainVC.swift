@@ -5741,6 +5741,7 @@ extension MainVC: OutboxDetailsTVCDelegate {
 
              return}
              let aCallVM = CallViewModel(call: nonNilDoctors , type: DCRType.doctor)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
              editDCRcall(call: aCallVM, type: DCRType.doctor)
         case 2:
             let listedChemist = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
@@ -5751,6 +5752,7 @@ extension MainVC: OutboxDetailsTVCDelegate {
 
              return}
              let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.chemist)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
              editDCRcall(call: aCallVM, type: DCRType.chemist)
         case 3:
             let listedChemist = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
@@ -5761,6 +5763,7 @@ extension MainVC: OutboxDetailsTVCDelegate {
 
              return}
              let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.stockist)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
              editDCRcall(call: aCallVM, type: DCRType.stockist)
         case 4:
             let listedChemist = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
@@ -5771,6 +5774,7 @@ extension MainVC: OutboxDetailsTVCDelegate {
 
              return}
              let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.unlistedDoctor)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
              editDCRcall(call: aCallVM, type: DCRType.unlistedDoctor)
         default:
             print("Yet to")

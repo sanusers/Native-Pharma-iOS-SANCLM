@@ -761,12 +761,15 @@ extension CallVC : collectionViewProtocols {
            // cell.selectedTerritories = self.selectedTerritories
             cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
             cell.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-            cell.btnTownName.tintColor = .appLightTextColor
+            cell.btnTownName.tintColor = .appLightTextColor.withAlphaComponent(0.2)
             
             selectedTerritories.forEach { aTerritory in
                 if aTerritory.code ==  cell.CallDetail.townCode {
                     cell.btnTownName.backgroundColor = .appLightPink.withAlphaComponent(0.2)
-                    cell.btnTownName.tintColor = .appLightPink
+                    cell.btnTownName.setTitleColor(.appLightPink, for: .normal)
+                } else {
+                    cell.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+                    cell.btnTownName.setTitleColor(.appTextColor, for: .normal)
                 }
             }
             

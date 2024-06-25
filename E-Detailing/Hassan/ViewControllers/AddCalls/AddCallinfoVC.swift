@@ -741,8 +741,16 @@ class AddCallinfoVC: BaseViewController {
         do {
             let results = try context.fetch(fetchRequest)
             if let existingObject = results.first {
+                let dateSting = existingObject.dcr_dt
+                let dcrDate = dateSting?.toDate(format: "yyyy-MM-dd HH:mm:ss")
+                let dcrDateString = dcrDate?.toString(format: "MMM d, yyyy")
+                let currentDateStr = dcrCall.dcrDate?.toString(format: "MMM d, yyyy")
                 
-                context.delete(existingObject)
+                if dcrDateString == currentDateStr {
+                    context.delete(existingObject)
+                }
+                
+             
 
                 DBManager.shared.saveContext()
             } else {
@@ -784,7 +792,11 @@ class AddCallinfoVC: BaseViewController {
             localParamArr = localParamArr.mapValues { callsArray in
                 return callsArray.filter { call in
                     if let custCode = call["CustCode"] as? String {
-                        if custCode == custCodeToRemove {
+                        let dateSting = call["vstTime"] as! String
+                        let dcrDate = dateSting.toDate(format: "yyyy-MM-dd HH:mm:ss")
+                        let dcrDateString = dcrDate.toString(format: "MMM d, yyyy")
+                        let currentDateStr = dcrCall.dcrDate?.toString(format: "MMM d, yyyy")
+                        if custCode == custCodeToRemove && dcrDateString == currentDateStr {
                             print("Removing element with CustCode: \(custCode)")
                             return false
                         }

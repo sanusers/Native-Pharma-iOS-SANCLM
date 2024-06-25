@@ -459,6 +459,7 @@ public class CallViewModel {
     var specialityCode : String = ""
     var townCode : String = ""
     var townName : String = ""
+    var dcrDate : Date?
     init(call: AnyObject, type: DCRType) {
         self.call = call
         self.type = type

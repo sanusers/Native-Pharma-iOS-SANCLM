@@ -115,8 +115,6 @@ extension CGFloat {
 
 
 enum CustomFont {
-    case head1Bold(size:CGFloat)
-    case head3Bold(size:CGFloat)
     case bold(size:CGFloat)
     case light(size:CGFloat)
     case medium(size:CGFloat)
@@ -124,18 +122,12 @@ enum CustomFont {
     
     var instance:UIFont {
         switch self {
-            
-            
         case .bold(size: let size):
             return UIFont(name: Fonts.SATOSHI_BOLD, size: size)!
         case .light(size: let size):
             return UIFont(name: Fonts.SATOSHI_LIGHT, size: size)!
         case .medium(size: let size):
             return UIFont(name: Fonts.SATOSHI_MEDIUM, size: size)!
-        case .head1Bold(size: let size):
-            return UIFont(name: Fonts.SATOSHI_HEAD_1_BOLD, size: size)!
-        case .head3Bold(size: let size):
-            return UIFont(name: Fonts.SATOSHI_HEAD_3_BOLD, size: size)!
         }
     }
 
@@ -145,15 +137,6 @@ enum CustomFont {
 class Fonts:NSObject{
     static let SATOSHI_BOLD = "Satoshi-Bold"
     static let SATOSHI_LIGHT = "Satoshi-Light"
-    static let SATOSHI_HEAD_1_BOLD = "Satoshi-Head_1_bold"
-    static let SATOSHI_HEAD_3_BOLD = "Satoshi-Head_3_bold"
-    //styleName: Head_1_bold;
-
-
-    
-    
-   // "Head_3_bold"
-   // "Head_1_bold"
     static let SATOSHI_MEDIUM = "Satoshi-Medium"
 }
-//
+

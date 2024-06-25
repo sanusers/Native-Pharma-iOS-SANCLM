@@ -26,7 +26,7 @@ class DoctorCallCell: UICollectionViewCell {
     
     func setupUI() {
         btnTownName.layer.cornerRadius = 3
-        lblName.setFont(font: .bold(size: .SUBHEADER))
+        lblName.setFont(font: .bold(size: .BODY))
         lblName.textColor = .appTextColor
         lblCategory.setFont(font: .medium(size: .BODY))
         lblCategory.textColor = .appLightTextColor
@@ -42,10 +42,10 @@ class DoctorCallCell: UICollectionViewCell {
         selectedTerritories.forEach { aTerritory in
             if aTerritory.code == CallDetail.townCode {
                 self.btnTownName.backgroundColor = .appLightPink.withAlphaComponent(0.2)
-                self.btnTownName.tintColor = .appPink
+               // self.btnTownName.tintColor = .appPink
             } else {
                 self.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-                self.btnTownName.tintColor = .appTextColor
+              //  self.btnTownName.tintColor = .appTextColor
             }
         }
     }
@@ -62,10 +62,18 @@ class DoctorCallCell: UICollectionViewCell {
          
             self.btnTownName.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
             self.btnTownName.titleLabel?.setFont(font: .medium(size: .BODY))
+         
             self.btnTownName.titleLabel?.numberOfLines = 1
-            self.btnTownName.setTitle(CallDetail.territory, for: .normal)
-            
-            
+            self.btnTownName.setTitle(truncateText(CallDetail.territory, maxLength: 18), for: .normal)
+        }
+    }
+    
+    func truncateText(_ text: String, maxLength: Int) -> String {
+        if text.count > maxLength {
+            let endIndex = text.index(text.startIndex, offsetBy: maxLength - 3)
+            return text[text.startIndex..<endIndex] + "..."
+        } else {
+            return text
         }
     }
     
