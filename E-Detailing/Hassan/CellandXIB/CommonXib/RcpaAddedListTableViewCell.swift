@@ -194,13 +194,7 @@ class RcpaAddedListTableViewCell : UITableViewCell {
     var rcpaProduct : RCPAdetailsModal! {
 
         didSet {
-          //  self.lblName.text = self.rcpaProduct.addedProduct?.name ?? ""
-//            self.lblQty.text = self.rcpaProduct.addedQuantity
-//            self.lblRate.text = self.rcpaProduct.addedRate ?? ""
-//            self.lblValue.text = self.rcpaProduct.addedValue ?? ""
-//            self.lblTotal.text = self.rcpaProduct.totalValue ?? ""
-            
-
+              
         }
     }
     

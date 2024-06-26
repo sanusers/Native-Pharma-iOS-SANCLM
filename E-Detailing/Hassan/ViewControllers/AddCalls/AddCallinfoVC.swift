@@ -410,7 +410,12 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["EventCapture"]  = addedDCRCallsParamArr
         
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
-        let date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        var date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+      
+      
+        if let callDate =  self.dcrCall.dcrDate {
+            date = callDate.toString(format: "yyyy-MM-dd HH:mm:ss")
+        }
         
         addedDCRCallsParam["tableName"] = "postDCRdata"
         addedDCRCallsParam["CateCode"] = dcrCall.cateCode
@@ -483,7 +488,7 @@ class AddCallinfoVC: BaseViewController {
             } else {
                 Shared.instance.showLoaderInWindow()
                 addedDCRCallsParam["address"] =  ""
-                toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
+                toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Date() , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
                     guard let welf = self else {return}
                     welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
                         welf.toCacheCapturedEvents() { iscached in
@@ -542,7 +547,7 @@ class AddCallinfoVC: BaseViewController {
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
 
-        toSaveaDCRcall(addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
+        toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Date(), addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
             guard let welf = self else {return}
             welf.callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { isPosted in
                 Shared.instance.removeLoaderInWindow()
@@ -990,7 +995,8 @@ class AddCallinfoVC: BaseViewController {
             if let existingEntity = existingEntities.first {
                 let dcrDate = existingEntity.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                 let dcrDateString = dcrDate?.toString(format: "MMM d, yyyy")
-                let currentDateStr = Date().toString(format: "MMM d, yyyy")
+                let callDate = dcrCall.dcrDate ?? Date()
+                let currentDateStr = callDate.toString(format: "MMM d, yyyy")
                 if dcrDateString == currentDateStr {
                     return
                 }
@@ -998,14 +1004,17 @@ class AddCallinfoVC: BaseViewController {
         } catch {
             // Handle fetch error
         }
+        let addedCallDate = dcrCall.dcrDate ?? Date()
+        let dateStr = addedCallDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         var dbparam = [String: Any]()
         dbparam["CustCode"] = dcrCall.code
         dbparam["CustType"] = cusType
         dbparam["FW_Indicator"] = "F"
-        dbparam["Dcr_dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        dbparam["month_name"] = Date().toString(format: "MMMM")
-        dbparam["Mnth"] = Date().toString(format: "MM")
-        dbparam["Yr"] =  Date().toString(format: "YYYY")
+        dbparam["Dcr_dt"] = dateStr
+        //Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        dbparam["month_name"] = addedCallDate.toString(format: "MMMM")
+        dbparam["Mnth"] = addedCallDate.toString(format: "MM")
+        dbparam["Yr"] =  addedCallDate.toString(format: "YYYY")
         dbparam["CustName"] = dcrCall.name
         dbparam["town_code"] = dcrCall.townCode
         dbparam["town_name"] = dcrCall.territory
@@ -1183,6 +1192,7 @@ class AddCallinfoVC: BaseViewController {
         CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
             guard let aoutboxCDM = outboxCDMs.first else {
                 CoreDataManager.shared.removeAllOutboxParams()
+                
                 toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
                 toSaveaParamData(jsonDatum: jsonDatum) {
                     completion(true)
@@ -1224,12 +1234,13 @@ class AddCallinfoVC: BaseViewController {
                         let dateSting = param["vstTime"] as! String
                         let dcrDate = dateSting.toDate(format: "yyyy-MM-dd HH:mm:ss")
                         let dcrDateString = dcrDate.toString(format: "MMM d, yyyy")
-                        let currentDateStr = Date().toString(format: "MMM d, yyyy")
+                        let selectedEditCallDate = dcrCall.dcrDate ?? Date()
+                        let currentDateStr = selectedEditCallDate.toString(format: "MMM d, yyyy")
                         if dcrDateString == currentDateStr {
                             // Match found, do something with the matching call
                             matchFound = true
                             print("Match found for CustCode: \(custCode)")
-                            toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                           // toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
                             touUdateOutboxandDefaultParams(param: param) {_ in
                                 completion(true)
                                 return
@@ -1286,7 +1297,13 @@ class AddCallinfoVC: BaseViewController {
         do {
             let existingCalls = try context.fetch(fetchRequest)
             for call in existingCalls {
-                context.delete(call)
+                let callDateString = call.callDate?.toString(format: "yyyy-MM-dd")
+                let dcrCallDate = dcrCall.dcrDate ?? Date()
+                let dcrCallDateString = dcrCallDate.toString(format: "yyyy-MM-dd")
+                if callDateString == dcrCallDateString {
+                    context.delete(call)
+                }
+                
             }
 
             try context.save()
@@ -1295,7 +1312,7 @@ class AddCallinfoVC: BaseViewController {
         }
     }
     
-    func toSaveaDCRcall(addedCallID: String, isDataSent: Bool, OutboxParam: Data? = nil , completion: @escaping (Bool) -> Void) {
+    func toSaveaDCRcall(callDate: Date, addedCallID: String, isDataSent: Bool, OutboxParam: Data? = nil , completion: @escaping (Bool) -> Void) {
         
         removeAllAddedCall(id: addedCallID)
         
@@ -1310,7 +1327,7 @@ class AddCallinfoVC: BaseViewController {
         let aDCRCallEntity = AddedDCRCall(entity: entityDescription, insertInto: context)
         aDCRCallEntity.addedCallID = addedCallID
         aDCRCallEntity.isDataSent = isDataSent
-        
+        aDCRCallEntity.callDate = callDate
         let dispatchGroup = DispatchGroup()
         
         var productViewModel: ProductViewModelCDEntity?

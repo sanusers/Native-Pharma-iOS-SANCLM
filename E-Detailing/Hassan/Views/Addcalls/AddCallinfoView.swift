@@ -67,7 +67,7 @@ extension AddCallinfoView: MenuResponseProtocol {
                 }) else {return}
                 var competitorInfoArr = [AdditionalCompetitorsInfo]()
                 for competitor in competitors {
-                    let competitorInfo = AdditionalCompetitorsInfo(competitor: competitor, qty: "", remarks: "", rate: "", value: "")
+                    let competitorInfo = AdditionalCompetitorsInfo(competitor: competitor, qty: "1", remarks: "", rate: "", value: "")
                     competitorInfoArr.append(competitorInfo)
                 }
                 
@@ -94,7 +94,10 @@ extension AddCallinfoView {
     @IBAction func rcpaAddCompetitorAction(_ sender: UIButton) {
         guard let selectedChemist = selectedChemistRcpa as? Chemist,
               let selectedProduct = selectedProductRcpa as? Product,
+              
+                
               let productQuantity = productQtyTF.text, !productQuantity.isEmpty else {
+        
             handleIncompleteSelection()
             return
         }
@@ -113,11 +116,14 @@ extension AddCallinfoView {
     
     func handleIncompleteSelection() {
         if selectedChemistRcpa == nil {
-            toCreateToast("Please select Chemist...")
+            showAlert(desc: "Please select Chemist...")
+           // toCreateToast("Please select Chemist...")
         } else if selectedProductRcpa == nil {
-            toCreateToast("Please select Product...")
+            showAlert(desc: "Please select Product...")
+            //toCreateToast("Please select Product...")
         } else {
-            toCreateToast("Please enter Quantity...")
+            showAlert(desc: "Please enter Quantity...")
+            //toCreateToast("Please enter Quantity...")
         }
     }
 
@@ -474,19 +480,36 @@ extension AddCallinfoView :UITextFieldDelegate {
         switch textField {
         case productQtyTF:
             // Construct the new text after replacement
-            let currentText = textField.text ?? "1"
-            guard let stringRange = Range(range, in: currentText) else {
-                return false
+ 
+         
+            
+            let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
+            let compSepByCharInSet = string.components(separatedBy: aSet)
+            let numberFiltered = compSepByCharInSet.joined(separator: "")
+            let maxLength = 4
+            let currentString: NSString = textField.text! as NSString
+            let newString: NSString =
+                currentString.replacingCharacters(in: range, with: string) as NSString
+            
+            if string == numberFiltered && newString.length <= maxLength {
+                let currentText = textField.text ?? ""
+                guard let stringRange = Range(range, in: currentText) else {
+                    return false
+                }
+                
+                let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+                // Update the text immediately
+                self.productQty = updatedText
+                self.productQtyAction(textField)
+                
+                // Return false to prevent the text from changing again
+                return true
             }
-            let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+
+            return false
+
             
-            // Update the text immediately
-            self.productQty = updatedText
-            self.productQtyAction(textField)
-            
-            // Return false to prevent the text from changing again
-            return true
-            
+       
         case yetTosearchTF:
             self.didTapSearchTF(textField)
             return true
@@ -877,11 +900,14 @@ extension AddCallinfoView: tableViewProtocols {
                 
               //self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitor ?? [Competitor]()
                 //competitor ?? [Competitor]()
-                cell.competitorsInfo = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo
+                cell.competitorsInfo =  self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row].competitorsInfo
                 cell.setupAddedCompetitors(count: selectedComp.count, competitors: selectedComp)
                 cell.delegate = self
                 cell.btnAddCompetitor.isUserInteractionEnabled = false
                 cell.viewAddcompetitor.addTap {
+                    let selectedProduct = self.rcpaDetailsModel[indexPath.section].addedProductDetails?.addedProduct?[indexPath.row]
+                    Shared.instance.selectedProductCode = selectedProduct?.addedProduct?.code ?? ""
+                    Shared.instance.selectedProductName = selectedProduct?.addedProduct?.name ?? ""
                 self.selectedAddcompetitorProductRow =  indexPath.row
                 self.selectedAddcompetitorSection = indexPath.section
                 self.navigatetoSpecifiedMenu(rcpaSection: indexPath.section)
@@ -2304,6 +2330,7 @@ class AddCallinfoView : BaseView {
     
     func setupUI() {
         backgroundView.isHidden = true
+        productQtyTF.delegate = self
         let curvedVIews: [UIView] = [dcrNameCurvedView, productnameCurvedView, productQtyCurvedView, rateCurvedView, valueCurvedVIew]
         
         btnAddRCPA.layer.cornerRadius = 5
@@ -2330,7 +2357,7 @@ class AddCallinfoView : BaseView {
         
         valueCurvedVIew.backgroundColor = .appLightTextColor.withAlphaComponent(0.1)
         productQtyTF.delegate = self
-        productQtyTF.text = "1"
+        //productQtyTF.text = "1"
         loadedContentsTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         contentsSectionVIew.layer.cornerRadius = 5

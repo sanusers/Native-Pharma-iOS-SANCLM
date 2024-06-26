@@ -320,7 +320,7 @@ extension MainVC {
         let updatedCallVM = callvm.toRetriveDCRdata(dcrcall: callvm.call)
         vc.dcrCall = updatedCallVM
         
-        CoreDataManager.shared.tofetchaSavedCalls(callID: updatedCallVM.code) { addedDCRcall in
+        CoreDataManager.shared.tofetchaSavedCalls(editDate: updatedCallVM.dcrDate ?? Date(), callID: updatedCallVM.code) { addedDCRcall in
             
             
             
@@ -328,7 +328,24 @@ extension MainVC {
             
             
             let context = self.context
-            let ftchedDCRcall = addedDCRcall?.first
+         
+            guard let addedDCRcalls = addedDCRcall else {
+                self.toCreateToast("Unable to edit selected call")
+                return
+            }
+            
+            var filteredcalls: [AddedDCRCall] = []
+            
+            addedDCRcalls.forEach { aAddedDCRCall in
+                let dcrCalldate = aAddedDCRCall.callDate
+                let dateStr = dcrCalldate?.toString(format: "yyyy-MM-dd")
+                let editDate = callvm.dcrDate ?? Date()
+                let editDateStr = editDate.toString(format: "yyyy-MM-dd")
+                if dateStr == editDateStr {
+                    filteredcalls.append(aAddedDCRCall)
+                }
+            }
+             let ftchedDCRcall = filteredcalls.first
             guard (ftchedDCRcall != nil) else {return}
             //[AdditionalCallViewModel]
             //Additional call

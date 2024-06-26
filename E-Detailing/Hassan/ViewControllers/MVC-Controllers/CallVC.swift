@@ -871,7 +871,7 @@ extension CallVC : collectionViewProtocols {
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
                               if aHomeData.custCode == addedDcrCall.code {
-                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")
                                   if dcrDateString == currentDateStr {
@@ -924,7 +924,7 @@ extension CallVC : collectionViewProtocols {
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
                               if aHomeData.custCode == addedDcrCall.code {
-                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")
                                   if dcrDateString == currentDateStr {
@@ -972,7 +972,7 @@ extension CallVC : collectionViewProtocols {
                     if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                         let filteredArray = unsyncedArr.filter { aHomeData in
                               if aHomeData.custCode == addedDcrCall.code {
-                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                  let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                   let currentDateStr = Date().toString(format: "yyyy-MM-dd")
                                   if dcrDateString == currentDateStr {

@@ -1882,7 +1882,7 @@ extension CoreDataManager {
 extension CoreDataManager {
     
     
-    func tofetchaSavedCalls(callID: String, completion: @escaping ([AddedDCRCall]?) -> () )  {
+    func tofetchaSavedCalls(editDate: Date, callID: String, completion: @escaping ([AddedDCRCall]?) -> () )  {
         do {
             let request = AddedDCRCall.fetchRequest() as NSFetchRequest
             let pred = NSPredicate(format: "addedCallID == %@", callID)
@@ -1892,6 +1892,16 @@ extension CoreDataManager {
             if calls.isEmpty {
                 completion(nil)
             } else {
+                var filteredcalls: [AddedDCRCall] = []
+                calls.forEach { aAddedDCRCall in
+                    let dcrCalldate = aAddedDCRCall.callDate
+                    let dateStr = dcrCalldate?.toString(format: "yyyy-MM-dd")
+                    let editDateStr = editDate.toString(format: "yyyy-MM-dd")
+                    if dateStr == editDateStr {
+                        filteredcalls.append(aAddedDCRCall)
+                    }
+                }
+                
                 completion(calls)
             }
         } catch {

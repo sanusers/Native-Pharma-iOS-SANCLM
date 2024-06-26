@@ -1816,7 +1816,7 @@ class MainVC : UIViewController {
             self.outBoxDataArr?.append(toDdayCall)
         }
 
-
+        
         
         toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]()) {
             

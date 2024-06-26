@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="AddedDCRCall" representedClassName="AddedDCRCall" syncable="YES" codeGenerationType="class">
         <attribute name="addedCallID" optional="YES" attributeType="String"/>
+        <attribute name="callDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isDataSent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="outBoxParam" optional="YES" attributeType="Binary"/>
         <attribute name="overallRemarks" optional="YES" attributeType="String"/>

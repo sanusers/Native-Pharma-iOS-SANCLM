@@ -1728,10 +1728,20 @@ class SpecifiedMenuView: BaseView {
     @IBOutlet var rejectionReason: UILabel!
     @IBOutlet var rejectionVIew: UIView!
     
+    @IBOutlet var addCompetitorsVIew: UIView!
+    
+    @IBOutlet var addCompetitorsIV: UIImageView!
+    
+    @IBOutlet var searchStackTrailingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet var backgroundView: UIView!
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var selectedSpecifiedTypeID : String = ""
     var cellType : MenuView.CellType = .listedDoctor
     var specifiedMenuVC :  SpecifiedMenuVC!
+    var addCompetitorsSubiew: AddCompetitorsView?
+    
     var workTypeArr : [WorkType]?
     var headQuatersArr : [Subordinate]?
     var clusterArr : [Territory]?
@@ -1807,12 +1817,54 @@ class SpecifiedMenuView: BaseView {
         toLoadRequiredData()
     }
     
-
+    override func didLayoutSubviews(baseVC: BaseViewController) {
+        super.didLayoutSubviews(baseVC: baseVC)
+        
+        let changePasswordViewwidth = self.bounds.width / 2.7
+        let changePasswordViewheight = self.bounds.height / 1.7
+        
+        let changePasswordViewcenterX = self.bounds.midX - (changePasswordViewwidth / 2)
+        let changePasswordViewcenterY = self.bounds.midY - (changePasswordViewheight / 2)
+        
+        self.addCompetitorsSubiew?.frame = CGRect(x: changePasswordViewcenterX, y: changePasswordViewcenterY, width: changePasswordViewwidth, height: changePasswordViewheight)
+        
+    }
+    
+    func addCompetitorsAction() {
+        backgroundView.isHidden = false
+        backgroundView.alpha = 0.3
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case addCompetitorsSubiew:
+                aAddedView.removeFromSuperview()
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+            case backgroundView:
+                aAddedView.isUserInteractionEnabled = true
+            default:
+                
+                print("Yet to implement")
+                aAddedView.isUserInteractionEnabled = false
+                
+                
+            }
+            
+        }
+        
+        addCompetitorsSubiew = self.specifiedMenuVC.loadCustomView(nibname: XIBs.addCompetitorsVIew) as? AddCompetitorsView
+        addCompetitorsSubiew?.delegate = self
+        
+       
+        addCompetitorsSubiew?.setupUI()
+        self.addSubview(addCompetitorsSubiew ?? AddCompetitorsView())
+    }
 
     
     func setupUI() {
-      //  searchTF.textColor = .appTextColor
-     //   titleSeperator.backgroundColor = .appSelectionColor
+        backgroundView.isHidden = true
+        searchStackTrailingConstraint.constant = 5
+        addCompetitorsVIew.isHidden = true
+        addCompetitorsIV.tintColor = .appGreen
         saveLbl.setFont(font: .bold(size: .BODY))
         clearLbl.setFont(font: .bold(size: .BODY))
         saveView.layer.cornerRadius = 5
@@ -1838,6 +1890,15 @@ class SpecifiedMenuView: BaseView {
     }
     
     func initGestures() {
+        
+        backgroundView.addTap {
+            self.didClose()
+        }
+        
+        addCompetitorsVIew.addTap {
+            self.addCompetitorsAction()
+        }
+        
         clearView.addTap {
             
             self.specifiedMenuVC.selectedCompetitorsID = nil
@@ -2188,6 +2249,8 @@ class SpecifiedMenuView: BaseView {
            
            
        case .competitors:
+           searchStackTrailingConstraint.constant = 30
+           addCompetitorsVIew.isHidden = false
            bottomHolderHeight.constant = 80
            var tempCompetitor: [MapCompDet] = []
            var mappedCompetitor = [Competitor]()
@@ -2397,6 +2460,7 @@ class SpecifiedMenuTCell: UITableViewCell
     @IBOutlet var brandMatrisIndicator: UIView!
     
     @IBOutlet var specialityLbl: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         lblNameLeadingConstraint.constant = 15
@@ -2481,5 +2545,84 @@ class SpecifiedMenuTCell: UITableViewCell
        lblNameLeadingConstraint.constant = 15 + 30
        menuIcon.isHidden = false
     }
+    
+}
+
+
+extension SpecifiedMenuView : addedSubViewsDelegate {
+    func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
+        print("Yet to implement")
+    }
+    
+    func didUpdateFilters(filteredObjects: [NSManagedObject]) {
+        print("yes action")
+    }
+    
+    
+
+    
+    func showCustomAlert(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            
+            
+        }
+    }
+    
+
+    
+    func showAlert(desc: String) {
+
+        showCustomAlert(desc: desc)
+    }
+    
+    func didClose() {
+        backgroundView.isHidden = true
+        self.subviews.forEach { aAddedView in
+            
+            switch aAddedView {
+            case addCompetitorsSubiew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
+
+    
+    func didUpdate() {
+        backgroundView.isHidden = true
+        self.subviews.forEach { aAddedView in
+            switch aAddedView {
+            case addCompetitorsSubiew:
+                aAddedView.removeFromSuperview()
+                aAddedView.alpha = 0
+                self.toLoadRequiredData()
+                showCustomAlert(desc: "Competitor Added successfully")
+                
+                
+            default:
+                aAddedView.isUserInteractionEnabled = true
+                aAddedView.alpha = 1
+                print("Yet to implement")
+                
+                // aAddedView.alpha = 1
+                
+            }
+            
+        }
+    }
+    
     
 }

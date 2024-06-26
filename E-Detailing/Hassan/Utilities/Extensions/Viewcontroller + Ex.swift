@@ -24,6 +24,7 @@ enum XIBs: String {
     case addNewTagInfoVIew =  "AddNewTagInfoVIew"
     case customCalenderView = "CustomCalenderView"
     case dayReportsSortView = "DayReportsSortView"
+    case addCompetitorsVIew = "AddCompetitorsView"
     var nib: UINib {
         return UINib(nibName: self.rawValue, bundle: nil)
     }

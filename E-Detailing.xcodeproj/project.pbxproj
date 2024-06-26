@@ -80,6 +80,8 @@
 		385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A424F2AFBABC300C0A58A /* BaseViewController.swift */; };
 		385A42522AFBAC2D00C0A58A /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42512AFBAC2D00C0A58A /* BaseView.swift */; };
 		385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42532AFBB75300C0A58A /* AppSetupModel.swift */; };
+		385BD27F2C2C12EF00036026 /* AddCompetitorsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385BD27E2C2C12EF00036026 /* AddCompetitorsView.xib */; };
+		385BD2812C2C151E00036026 /* AddCompetitorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385BD2802C2C151E00036026 /* AddCompetitorsView.swift */; };
 		3860C8562BF359FB0065862D /* AddNewTagInfoVIew.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */; };
 		3860C8582BF35C500065862D /* AddNewTagInfoVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */; };
 		3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */; };
@@ -473,6 +475,8 @@
 		385A424F2AFBABC300C0A58A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		385A42512AFBAC2D00C0A58A /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		385A42532AFBB75300C0A58A /* AppSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetupModel.swift; sourceTree = "<group>"; };
+		385BD27E2C2C12EF00036026 /* AddCompetitorsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCompetitorsView.xib; sourceTree = "<group>"; };
+		385BD2802C2C151E00036026 /* AddCompetitorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCompetitorsView.swift; sourceTree = "<group>"; };
 		3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddNewTagInfoVIew.xib; sourceTree = "<group>"; };
 		3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewTagInfoVIew.swift; sourceTree = "<group>"; };
 		3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanView.swift; sourceTree = "<group>"; };
@@ -1014,6 +1018,15 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
+		385BD27D2C2C128100036026 /* AddCompetitors */ = {
+			isa = PBXGroup;
+			children = (
+				385BD27E2C2C12EF00036026 /* AddCompetitorsView.xib */,
+				385BD2802C2C151E00036026 /* AddCompetitorsView.swift */,
+			);
+			path = AddCompetitors;
+			sourceTree = "<group>";
+		};
 		3860C8542BF359BE0065862D /* AddTagInfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -1075,6 +1088,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				385BD27D2C2C128100036026 /* AddCompetitors */,
 				3809319A2C04B8A100FC6A20 /* SortView */,
 				38E67B762C00D5CD006E98DE /* FunEvents */,
 				38DB8B1E2BF7708A0041B25C /* CalenderVIew */,
@@ -1794,6 +1808,7 @@
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
 				383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */,
 				B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */,
+				385BD27F2C2C12EF00036026 /* AddCompetitorsView.xib in Resources */,
 				3825CFCF2BA806B600217D40 /* DCRfiltersView.xib in Resources */,
 				B287E68029F2A20F0097974D /* Satoshi-BoldItalic.otf in Resources */,
 				38C598702ADFF0FB00B2659F /* AdditionalCallSampleInputView.xib in Resources */,
@@ -2144,6 +2159,7 @@
 				380566262B983AFD00BB9117 /* DCRdetailViewEditVC.swift in Sources */,
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
+				385BD2812C2C151E00036026 /* AddCompetitorsView.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,
 				386BEA0D2B7381CF0083D61F /* PreviewTypeCVC.swift in Sources */,
 				38E42B222B67D265001E0F07 /* CoreDataManager.swift in Sources */,

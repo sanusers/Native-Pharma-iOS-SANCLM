@@ -3,7 +3,7 @@
     <device id="ipad10_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -54,7 +54,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="281" height="37"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="58d-R5-oxe">
-                                                        <rect key="frame" x="10" y="0.0" width="261" height="37"/>
+                                                        <rect key="frame" x="5" y="0.0" width="271" height="37"/>
                                                         <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
@@ -63,9 +63,9 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstItem="58d-R5-oxe" firstAttribute="centerY" secondItem="EA8-5O-Os8" secondAttribute="centerY" id="5Tb-F4-zni"/>
-                                                    <constraint firstAttribute="trailing" secondItem="58d-R5-oxe" secondAttribute="trailing" constant="10" id="Zb9-Vn-5hL"/>
+                                                    <constraint firstAttribute="trailing" secondItem="58d-R5-oxe" secondAttribute="trailing" constant="5" id="Zb9-Vn-5hL"/>
                                                     <constraint firstItem="58d-R5-oxe" firstAttribute="height" secondItem="EA8-5O-Os8" secondAttribute="height" id="cig-xn-xSV"/>
-                                                    <constraint firstItem="58d-R5-oxe" firstAttribute="leading" secondItem="EA8-5O-Os8" secondAttribute="leading" constant="10" id="mdW-Gz-wzk"/>
+                                                    <constraint firstItem="58d-R5-oxe" firstAttribute="leading" secondItem="EA8-5O-Os8" secondAttribute="leading" constant="5" id="mdW-Gz-wzk"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VEA-IA-aCl">

@@ -20,7 +20,8 @@ class Shared {
     var isFetchingHQ: Bool = false
     var detailedSlides: [DetailedSlide] = []
     var isDetailed: Bool = false
-    
+    var selectedProductCode: String = ""
+    var selectedProductName : String = ""
     func toReset() {
         
     selectedPhoneCode = ""
@@ -30,7 +31,7 @@ class Shared {
     isFetchingHQ = false
     detailedSlides = []
     isDetailed = false
-        
+        selectedProductCode = ""
  
     }
     
