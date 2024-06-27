@@ -148,22 +148,6 @@ class LoginVC : UIViewController {
         
         let data = AppDefaults.shared.getConfig()
 
-
-//        Dispatch.background {
-//            // do stuff
-//            print("Data fetching")
-//            var imageData : Data?
-//            if let data = try? Data(contentsOf: url) {
-//                imageData = data
-//                let imgData : [String : Any] = ["name" : AppDefaults.shared.appConfig!.logoImg , "data" : data]
-//                AppDefaults.shared.save(key: .logoImage, value: imgData)
-//            Dispatch.main {
-//                // update UI
-//                self.imgLogo.image = UIImage(data: imageData ?? Data())
-//            }
-//        }
-//        }
-       // dump(attachmentURL + data.config.logoImg)
         if !isCahcheUser {
             Pipelines.shared.downloadData(mediaURL:  attachmentURL + data.config.logoImg, delegate: self)
         } else {

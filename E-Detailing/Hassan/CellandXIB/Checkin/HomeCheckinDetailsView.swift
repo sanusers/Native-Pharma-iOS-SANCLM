@@ -116,10 +116,6 @@ class HomeCheckinDetailsView: UIView {
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
                 }
                 
-                
-                
-                let dateFormatter = DateFormatter()
-                let currentDate = Date()
 
 
                 self.delegate?.didClose()

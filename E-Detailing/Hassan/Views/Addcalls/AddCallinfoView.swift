@@ -215,7 +215,7 @@ extension AddCallinfoView {
         lblSeclectedDCRName.text = "Select Chemist Name"
         lblSelectedProductName.text = "Select Product Name"
         //self.productQtyTF.placeholder = "Enter Qty"
-        self.productQtyTF.text = "1"
+        self.productQtyTF.text = ""
         self.rateLbl.text = ""
         self.valuelbl.text = ""
  

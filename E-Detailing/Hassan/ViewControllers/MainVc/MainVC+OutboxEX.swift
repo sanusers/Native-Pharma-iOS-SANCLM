@@ -104,7 +104,7 @@ extension MainVC {
                 print("specificDateParams has \(specificDateParams.count) values")
                 if !localParamArr.isEmpty {
                   
-                    welf.toSendParamsToAPISerially(index: 0, items: specificDateParams) { isCompleted in
+                    welf.toSendParamsToAPISerially(refreshDate: date.toDate(), index: 0, items: specificDateParams) { isCompleted in
                     
                         if isCompleted {
                           

@@ -22,6 +22,8 @@ class Shared {
     var isDetailed: Bool = false
     var selectedProductCode: String = ""
     var selectedProductName : String = ""
+    var selectedDate : Date = Date()
+    
     func toReset() {
         
     selectedPhoneCode = ""

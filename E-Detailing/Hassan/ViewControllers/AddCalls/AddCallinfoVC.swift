@@ -410,7 +410,7 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["EventCapture"]  = addedDCRCallsParamArr
         
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
-        var date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        var date = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
       
       
         if let callDate =  self.dcrCall.dcrDate {
@@ -488,7 +488,7 @@ class AddCallinfoVC: BaseViewController {
             } else {
                 Shared.instance.showLoaderInWindow()
                 addedDCRCallsParam["address"] =  ""
-                toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Date() , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
+                toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Shared.instance.selectedDate , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
                     guard let welf = self else {return}
                     welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
                         welf.toCacheCapturedEvents() { iscached in
@@ -547,7 +547,7 @@ class AddCallinfoVC: BaseViewController {
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
 
-        toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Date(), addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
+        toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Shared.instance.selectedDate, addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
             guard let welf = self else {return}
             welf.callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { isPosted in
                 Shared.instance.removeLoaderInWindow()
@@ -1004,7 +1004,7 @@ class AddCallinfoVC: BaseViewController {
         } catch {
             // Handle fetch error
         }
-        let addedCallDate = dcrCall.dcrDate ?? Date()
+        let addedCallDate = dcrCall.dcrDate ?? Shared.instance.selectedDate
         let dateStr = addedCallDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         var dbparam = [String: Any]()
         dbparam["CustCode"] = dcrCall.code
@@ -1234,7 +1234,7 @@ class AddCallinfoVC: BaseViewController {
                         let dateSting = param["vstTime"] as! String
                         let dcrDate = dateSting.toDate(format: "yyyy-MM-dd HH:mm:ss")
                         let dcrDateString = dcrDate.toString(format: "MMM d, yyyy")
-                        let selectedEditCallDate = dcrCall.dcrDate ?? Date()
+                        let selectedEditCallDate = dcrCall.dcrDate ?? Shared.instance.selectedDate
                         let currentDateStr = selectedEditCallDate.toString(format: "MMM d, yyyy")
                         if dcrDateString == currentDateStr {
                             // Match found, do something with the matching call
@@ -1298,7 +1298,7 @@ class AddCallinfoVC: BaseViewController {
             let existingCalls = try context.fetch(fetchRequest)
             for call in existingCalls {
                 let callDateString = call.callDate?.toString(format: "yyyy-MM-dd")
-                let dcrCallDate = dcrCall.dcrDate ?? Date()
+                let dcrCallDate = dcrCall.dcrDate ?? Shared.instance.selectedDate
                 let dcrCallDateString = dcrCallDate.toString(format: "yyyy-MM-dd")
                 if callDateString == dcrCallDateString {
                     context.delete(call)

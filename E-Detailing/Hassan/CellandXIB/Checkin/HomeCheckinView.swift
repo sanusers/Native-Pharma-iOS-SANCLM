@@ -100,7 +100,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                 
                 LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
 
-                self.saveLogininfoToCoreData() {_ in
+                self.saveLogininfoToCoreData() { _ in
                     
                     self.delegate?.didUpdate()
                     

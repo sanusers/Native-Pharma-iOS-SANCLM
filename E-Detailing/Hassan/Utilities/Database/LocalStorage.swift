@@ -52,6 +52,8 @@ class LocalStorage {
         case lastCheckedInDate
         case isLoginSynced
         case userCheckedOut
+        
+        case didUserStartPlan
         case didUserWindUP
         case istoUploadDayplans
         case slideDownloadIndex
@@ -62,6 +64,7 @@ class LocalStorage {
         case isSlidesDownloadPending
         case isTimeZoneChanged
         case isDayCheckinEnabled
+        case isSequentialDCR
         case isGeoFencingEnabled
         case isCustomerChekinNeeded
      

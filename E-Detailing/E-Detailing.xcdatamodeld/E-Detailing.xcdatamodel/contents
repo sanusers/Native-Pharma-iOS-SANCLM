@@ -180,6 +180,16 @@
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="eachPlan" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EachPlan"/>
     </entity>
+    <entity name="EachDayStatus" representedClassName="EachDayStatus" syncable="YES" codeGenerationType="class">
+        <attribute name="didUserWindup" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isCheckinSuccess" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isCheckoutSuccess" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isFinalSubmitSuccess" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isSynced" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="param" optional="YES" attributeType="Binary"/>
+        <attribute name="statusDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="checkinInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChekinInfo"/>
+    </entity>
     <entity name="EachPlan" representedClassName="EachPlan" syncable="YES" codeGenerationType="class">
         <attribute name="isRetrived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="planDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

@@ -235,6 +235,7 @@ class AppSetUp : Codable {
     var secondaryOrderCaption : String?
     var secondaryOrderDiscount : Int?
     var sepRcpaNeed :Int?
+    
     var sequentailDcr : Int?
     var srtNeed : Int?
     var stateCode : Int?
@@ -838,6 +839,10 @@ class AppSetUp : Codable {
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  self.srtNeed == 1 ? true : false)
         
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSequentialDCR, value:  false)
+        //self.sequentailDcr == 0 ? true : false
+        
+        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isGeoFencingEnabled, value:  self.geoCheck == 0 ? true : false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isCustomerChekinNeeded, value:  self.custSrtNeed == 0 ? true : false)
@@ -1246,7 +1251,7 @@ class AppSetUp : Codable {
         case secondaryOrderCaption = "Secondary_order_caption"
         case secondaryOrderDiscount = "secondary_order_discount"
         case sepRcpaNeed = "Sep_RcpaNd"
-        case sequentailDcr = "sequential_dcr"
+        case sequentailDcr = "dcr_sequential"
         case srtNeed = "SrtNd"
         case stateCode = "State_Code"
         case stkCap = "StkCap"

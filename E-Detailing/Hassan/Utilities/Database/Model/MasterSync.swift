@@ -190,8 +190,8 @@ enum `MasterInfo` : String, CaseIterable {
     case weeklyOff = "Weekly Off"
     case apptableSetup = "Table Setup"
     case tourPlanSetup = "Tour plan setup"
-    case homeSetup = "DCR"
-    case callSync = "Call Sync"
+    case homeSetup = "Call Sync"
+    case callSync = "DCR"
     case dcrDateSync = "Date Sync"
    
 

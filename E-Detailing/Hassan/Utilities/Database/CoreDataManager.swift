@@ -1882,6 +1882,33 @@ extension CoreDataManager {
 extension CoreDataManager {
     
     
+    func toGetCallsCountForDate(callDate: Date, completion: @escaping (Int) -> () )  {
+        do {
+            let request = AddedDCRCall.fetchRequest() as NSFetchRequest
+
+            let calls = try context.fetch(request)
+            if calls.isEmpty {
+                completion(0)
+            } else {
+                var filteredcalls: [AddedDCRCall] = []
+                calls.forEach { aAddedDCRCall in
+                    let dcrCalldate = aAddedDCRCall.callDate
+                    let dateStr = dcrCalldate?.toString(format: "yyyy-MM-dd")
+                    let editDateStr = callDate.toString(format: "yyyy-MM-dd")
+                    if dateStr == editDateStr {
+                        filteredcalls.append(aAddedDCRCall)
+                    }
+                }
+                
+                completion(filteredcalls.count)
+            }
+        } catch {
+            print("unable to fetch")
+            completion(0)
+        }
+    }
+    
+    
     func tofetchaSavedCalls(editDate: Date, callID: String, completion: @escaping ([AddedDCRCall]?) -> () )  {
         do {
             let request = AddedDCRCall.fetchRequest() as NSFetchRequest
@@ -2466,6 +2493,120 @@ extension CoreDataManager {
             }
         }
         
+    }
+    
+}
+
+extension CoreDataManager {
+    //Day Status
+    func toFetchAllDayStatus(completion: ([EachDayStatus]) -> () )  {
+        //unSyncedParams
+        do {
+           let savedDayStatus = try  context.fetch(EachDayStatus.fetchRequest())
+            completion(savedDayStatus)
+            
+        } catch {
+            print("unable to fetch movies")
+        }
+       
+    }
+    
+    func saveDayStatusToCoreData(date: Date, didUserWindup: Bool, isSynced: Bool, checkinInfo: CheckinInfo? = nil, params: Data,  completion: @escaping (Bool) -> ()) {
+        
+        removeDayStatus(date: date) { isRemoved in
+            let context = self.context
+            // Create a new managed object for wind ups
+            if let entityDescription = NSEntityDescription.entity(forEntityName: "EachDayStatus", in: context) {
+                let eachDayStatusEntity = EachDayStatus(entity: entityDescription, insertInto: context)
+                eachDayStatusEntity.isSynced = isSynced
+                eachDayStatusEntity.param = params
+                eachDayStatusEntity.statusDate = date
+                eachDayStatusEntity.didUserWindup = didUserWindup
+                
+                if isDayCheckinNeeded {
+                    guard let checkinInfo = checkinInfo else {
+                        do {
+                            try context.save()
+                            completion(true)
+                        } catch {
+                            print("Failed to save to Core Data: \(error)")
+                            completion(false)
+                        }
+                        return
+                    }
+                    
+                    // Create a new managed object for Check ins
+                    if let entityDescription = NSEntityDescription.entity(forEntityName: "ChekinInfo", in: context) {
+                        let savedCDChekinInfo = ChekinInfo(entity: entityDescription, insertInto: context)
+                        
+                        // Convert properties
+                        savedCDChekinInfo.address = checkinInfo.address
+                        savedCDChekinInfo.checkinDateTime = checkinInfo.checkinDateTime
+                        savedCDChekinInfo.checkOutDateTime = checkinInfo.checkOutDateTime
+                        savedCDChekinInfo.latitude = checkinInfo.latitude ?? Double()
+                        savedCDChekinInfo.longitude = checkinInfo.longitude ?? Double()
+                        savedCDChekinInfo.checkinTime = checkinInfo.checkinTime
+                        savedCDChekinInfo.checkOutTime = checkinInfo.checkOutTime
+                      
+                        
+                        eachDayStatusEntity.checkinInfo = savedCDChekinInfo
+                    }
+                }
+
+                do {
+                    try context.save()
+                    completion(true)
+                } catch {
+                    print("Failed to save to Core Data: \(error)")
+                    completion(false)
+                }
+            }
+        }
+      
+
+        
+
+        
+
+        
+        
+    }
+    
+    func removeAllDayStatus() {
+        let fetchRequest: NSFetchRequest<EachDayStatus> = NSFetchRequest(entityName: "EachDayStatus")
+
+        do {
+            let eachDayStatus = try context.fetch(fetchRequest)
+            for status in eachDayStatus {
+                context.delete(status)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    
+    func removeDayStatus(date: Date, competion: @escaping((Bool) -> ())) {
+        let fetchRequest: NSFetchRequest<EachDayStatus> = NSFetchRequest(entityName: "EachDayStatus")
+
+        do {
+            let eachDayStatus = try context.fetch(fetchRequest)
+            for status in eachDayStatus {
+                let savedDateStr = status.statusDate?.toString(format: "MMM dd, yyyy")
+                let toRemoveDateStr = date.toString(format: "MMM dd, yyyy")
+                if savedDateStr == toRemoveDateStr {
+                    context.delete(status)
+                }
+            }
+
+            try context.save()
+            competion(true)
+        } catch {
+            print("Error deleting slide brands: \(error)")
+            competion(false)
+        }
     }
     
 }

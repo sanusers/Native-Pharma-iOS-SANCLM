@@ -837,7 +837,7 @@ extension CallVC : collectionViewProtocols {
                         if aHomeData.custCode == adcrCall.code {
                             let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                             let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                             if dcrDateString == currentDateStr {
                                 return true
                             }
@@ -873,7 +873,7 @@ extension CallVC : collectionViewProtocols {
                               if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                                   if dcrDateString == currentDateStr {
                                       return true
                                   }
@@ -890,7 +890,7 @@ extension CallVC : collectionViewProtocols {
                         if aHomeData.custCode == adcrCall.code {
                             let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                             let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                             if dcrDateString == currentDateStr {
                                 return true
                             }
@@ -926,7 +926,7 @@ extension CallVC : collectionViewProtocols {
                               if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                                   if dcrDateString == currentDateStr {
                                       return true
                                   }
@@ -943,7 +943,7 @@ extension CallVC : collectionViewProtocols {
                         if aHomeData.custCode == adcrCall.code {
                             let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                             let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                             if dcrDateString == currentDateStr {
                                 return true
                             }
@@ -974,7 +974,7 @@ extension CallVC : collectionViewProtocols {
                               if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                                  let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                                  let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                                   if dcrDateString == currentDateStr {
                                       return true
                                   }
@@ -992,7 +992,7 @@ extension CallVC : collectionViewProtocols {
                         if aHomeData.custCode == adcrCall.code {
                             let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
                             let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
-                            let currentDateStr = Date().toString(format: "yyyy-MM-dd")
+                            let currentDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
                             if dcrDateString == currentDateStr {
                                 return true
                             }
