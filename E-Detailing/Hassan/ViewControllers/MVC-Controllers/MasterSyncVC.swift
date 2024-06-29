@@ -961,13 +961,13 @@ extension MasterSyncVC : tableViewProtocols {
         if indexPath.row == selectedMasterGroupIndex {
             cell.contentHolderView.backgroundColor = .appTextColor
             cell.lblName.textColor = .appWhiteColor
-            cell.selectedIV.image = UIImage(named:   "Vector1")
+            cell.selectedIV.image = UIImage(named:   "chevlon.right")
             cell.selectedIV.tintColor = .appWhiteColor
            // cell.btnArrow.ima
         } else {
             cell.contentHolderView.backgroundColor = .appWhiteColor
             cell.lblName.textColor = .appTextColor
-            cell.selectedIV.image = UIImage(named:   "Vector")
+            cell.selectedIV.image = UIImage(named:   "chevlon.down")
            
           
             cell.selectedIV.tintColor = .appTextColor

@@ -4096,7 +4096,9 @@
                                             <imageReference key="image" image="xmark" catalog="system" symbolScale="large"/>
                                             <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="bold"/>
                                         </state>
-                                        <state key="selected" image="cancel"/>
+                                        <state key="selected" image="xmark" catalog="system">
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
+                                        </state>
                                         <connections>
                                             <action selector="sideMenuAction:" destination="5EL-ve-o95" eventType="touchUpInside" id="Fa6-c6-JVi"/>
                                         </connections>
@@ -6584,12 +6586,12 @@
                                                                 <rect key="frame" x="10" y="5" width="328.5" height="39"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-4F-p13">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="49" height="39"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="26" height="39"/>
                                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
                                                                     </imageView>
                                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QYf-HS-1zw">
-                                                                        <rect key="frame" x="49" y="0.0" width="279.5" height="39"/>
+                                                                        <rect key="frame" x="26" y="0.0" width="302.5" height="39"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                         <connections>
@@ -6727,7 +6729,7 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="331" height="73"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IJA-1r-7oe">
-                                                                                                <rect key="frame" x="15.5" y="11" width="300" height="51"/>
+                                                                                                <rect key="frame" x="0.0" y="11" width="331" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meb-Ly-iph">
                                                                                                         <rect key="frame" x="15" y="16.5" width="133.5" height="17.5"/>
@@ -6736,7 +6738,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7lw-l7-meY">
-                                                                                                        <rect key="frame" x="259.5" y="13.5" width="25.5" height="23.5"/>
+                                                                                                        <rect key="frame" x="290.5" y="13.5" width="25.5" height="23.5"/>
                                                                                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                                                                     </imageView>
@@ -9057,9 +9059,12 @@
                                             <constraint firstAttribute="height" constant="50" id="APk-51-hba"/>
                                             <constraint firstAttribute="width" constant="50" id="kmB-Di-1NT"/>
                                         </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="Menu"/>
-                                        <state key="selected" image="cancel"/>
+                                        <state key="selected" image="xmark" catalog="system">
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
+                                        </state>
                                         <connections>
                                             <action selector="sideMenuAction:" destination="5EL-ve-o95" eventType="touchUpInside" id="y84-Rs-fMc"/>
                                         </connections>
@@ -11571,7 +11576,6 @@ VmVyc2lvbiA6IDEuMAM
         <image name="arrow.up" catalog="system" width="118" height="128"/>
         <image name="ascending" width="92" height="96"/>
         <image name="calendar" width="32" height="32"/>
-        <image name="cancel" width="21.333333969116211" height="21.333333969116211"/>
         <image name="checkBoxEmpty" width="32" height="32"/>
         <image name="checkmark.square.fill" catalog="system" width="128" height="114"/>
         <image name="chevron.backward" catalog="system" width="97" height="128"/>

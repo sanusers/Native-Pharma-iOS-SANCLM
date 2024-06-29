@@ -2,7 +2,8 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad10_9rounded" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -23,7 +24,7 @@
         <!--Near MeVC-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController storyboardIdentifier="NearMe" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="NearMeVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NearMe" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="NearMeVC" customModule="SAN_ZEN" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -84,10 +85,10 @@
                                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                         </collectionViewFlowLayout>
                                                         <cells>
-                                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DcrTagTitleCell" id="MD1-8G-IuD" customClass="DcrTagTitleCell" customModule="E_Detailing" customModuleProvider="target">
+                                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DcrTagTitleCell" id="MD1-8G-IuD" customClass="DcrTagTitleCell" customModule="SAN_ZEN" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="z2K-gc-3fi" customClass="ShadowView" customModule="E_Detailing" customModuleProvider="target">
+                                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="z2K-gc-3fi" customClass="ShadowView" customModule="SAN_ZEN" customModuleProvider="target">
                                                                     <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                     <subviews>
@@ -146,7 +147,7 @@
                                                     <constraint firstAttribute="width" constant="1" id="Yxi-A2-wND"/>
                                                 </constraints>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHO-8N-L9c" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHO-8N-L9c" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                 <rect key="frame" x="1045" y="29" width="120" height="40"/>
                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -200,7 +201,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="860" height="742"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     </view>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JLh-u8-guC" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JLh-u8-guC" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                         <rect key="frame" x="797" y="25" width="48" height="48"/>
                                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
@@ -214,7 +215,7 @@
                                                             <action selector="locationSettingAction:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="VOw-r3-3uv"/>
                                                         </connections>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZEP-d5-HBK" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZEP-d5-HBK" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                         <rect key="frame" x="734" y="25" width="48" height="48"/>
                                                         <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
@@ -223,7 +224,7 @@
                                                         </constraints>
                                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                        <state key="normal" image="TagSyncIcon"/>
+                                                        <state key="normal" image="refreshSlide"/>
                                                         <connections>
                                                             <action selector="refreshAction:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="hHB-v8-X17"/>
                                                         </connections>
@@ -249,7 +250,7 @@
                                                             <constraint firstItem="ghP-5D-TPR" firstAttribute="leading" secondItem="pLo-i2-LWQ" secondAttribute="leading" id="qXi-VE-25g"/>
                                                         </constraints>
                                                     </view>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OFu-8l-YLz" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OFu-8l-YLz" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                         <rect key="frame" x="830.5" y="658" width="59" height="59"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
@@ -374,7 +375,7 @@
         <!--Tagging ListVC-->
         <scene sceneID="Dzh-xa-TEr">
             <objects>
-                <viewController storyboardIdentifier="TaggingListVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aDB-cC-WqT" customClass="TaggingListVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TaggingListVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aDB-cC-WqT" customClass="TaggingListVC" customModule="SAN_ZEN" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7Nq-r9-DUh">
                         <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -588,7 +589,7 @@
         <!--TagVC-->
         <scene sceneID="zfB-ti-weT">
             <objects>
-                <viewController storyboardIdentifier="TagVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="r0g-ZL-xcy" customClass="TagVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TagVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="r0g-ZL-xcy" customClass="TagVC" customModule="SAN_ZEN" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kyq-sl-c7u">
                         <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -617,7 +618,7 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gi1-8b-oSk" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gi1-8b-oSk" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                 <rect key="frame" x="1065" y="29" width="100" height="40"/>
                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.32549019610000002" blue="0.43137254899999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -707,7 +708,7 @@
                                                 <rect key="frame" x="0.0" y="66.5" width="1180" height="675.5"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aBL-4z-VPq" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aBL-4z-VPq" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                 <rect key="frame" x="1050" y="86.5" width="50" height="50"/>
                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -716,12 +717,12 @@
                                                 </constraints>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" image="TagSyncIcon"/>
+                                                <state key="normal" image="refreshSlide"/>
                                                 <connections>
                                                     <action selector="refreshAction:" destination="r0g-ZL-xcy" eventType="touchUpInside" id="5Un-A0-sce"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QyA-wN-2k9" customClass="ShadowButton" customModule="E_Detailing" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QyA-wN-2k9" customClass="ShadowButton" customModule="SAN_ZEN" customModuleProvider="target">
                                                 <rect key="frame" x="1115" y="86.5" width="50" height="50"/>
                                                 <color key="backgroundColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -816,7 +817,7 @@
         <!--Tag ViewVC-->
         <scene sceneID="ako-vM-Txg">
             <objects>
-                <viewController storyboardIdentifier="TagViewVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="PK4-z6-ngK" customClass="TagViewVC" customModule="E_Detailing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TagViewVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="PK4-z6-ngK" customClass="TagViewVC" customModule="SAN_ZEN" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OSd-xE-FZs">
                         <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -887,14 +888,14 @@
     </scenes>
     <resources>
         <image name="RightPrimaryArrow" width="16" height="14"/>
-        <image name="TagSyncIcon" width="24" height="24"/>
-        <image name="Vector" width="128" height="128"/>
+        <image name="Vector" width="16" height="8"/>
         <image name="arrow.left" catalog="system" width="128" height="95"/>
         <image name="leftPrimaryArrow" width="16" height="14"/>
-        <image name="left_Arrow_White" width="128" height="128"/>
+        <image name="left_Arrow_White" width="20" height="17"/>
         <image name="location-crosshairs" width="24" height="24"/>
         <image name="locationIcon" width="24" height="24"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
+        <image name="refreshSlide" width="20" height="20"/>
         <image name="tagIcon" width="24" height="24"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
