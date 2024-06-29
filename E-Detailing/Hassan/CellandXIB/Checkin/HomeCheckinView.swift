@@ -53,7 +53,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
-        let currentDate = Date()
+        let currentDate = Shared.instance.selectedDate
         let dateString = dateFormatter.string(from: currentDate)
 
         let datestr = dateString
@@ -134,7 +134,8 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
             
             completion(false)
             
-            return}
+            return
+        }
         CoreDataManager.shared.removeAllCheckins()
         CoreDataManager.shared.saveCheckinsToCoreData(checkinInfo: chckinInfo) {isCompleted in
             completion(true)
@@ -144,7 +145,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
     func getCurrentFormattedDateString() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM yyyy hh:mm a"
-        return dateFormatter.string(from: Date())
+        return dateFormatter.string(from: Shared.instance.selectedDate)
     }
     
 
@@ -169,7 +170,7 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
 
                         let dateFormatter = DateFormatter()
         
-                        let currentDate = Date()
+                       let currentDate = Shared.instance.selectedDate
                         
                         dateFormatter.dateFormat = "yyyy-MM-dd"
                         
@@ -181,15 +182,35 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
 
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+                    
+                        LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: false)
                         
                         LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: upDatedDateString)
                     
+                 
+                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+                  
+                    let dateString = dateFormatter.string(from: currentDate)
+
+                    let datestr = dateString
+                    
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+
+                    ///time
+                    dateFormatter.dateFormat = "HH:mm:ss"
+
+                    let timeString = dateFormatter.string(from: currentDate)
+
+                    let timestr = (timeString)
+                    
+                    welf.chckinInfo = CheckinInfo(address: "", checkinDateTime: welf.getCurrentFormattedDateString(), checkOutDateTime: "", latitude: welf.latitude ?? Double(), longitude: welf.longitude ?? Double(), dateStr: datestr, checkinTime: timestr, checkOutTime: "")
                     
                         welf.saveLogininfoToCoreData() {_ in
                             welf.delegate?.didUpdate()
                         }
 
-                    
+                    return
                 }
                 
                 Pipelines.shared.getAddressString(latitude:   welf.latitude ?? Double(), longitude:   welf.longitude ?? Double()) { address in
@@ -197,9 +218,6 @@ class HomeCheckinView: UIView, CLLocationManagerDelegate {
                     if !welf.isCheckinRegistered {
                         welf.callAPI()
                     }
-                       
-                  
-                  
                 }
                 
             }

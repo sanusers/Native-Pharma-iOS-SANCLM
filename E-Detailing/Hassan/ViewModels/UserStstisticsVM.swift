@@ -11,8 +11,8 @@ import Foundation
 import UIKit
 
 public enum UserStatisticsError: String, Error {
-case unableConnect = "An issue occured data will be saved to device"
-    case failedTocheckin = "Failed to checkin please try again later"
+    case unableConnect = "An issue occured data will be saved to device"
+    case failedToLOG = "Not connected to active network. Data will be saved to device"
     case failedToupdatePassword = "Failed to update password please try again later"
     case failedTouploadImage = "Failed to upload captured events"
 }
@@ -47,7 +47,7 @@ class UserStatisticsVM {
             print(error.description)
             switch api {
             case .checkin:
-                result(.failure(UserStatisticsError.failedTocheckin))
+                result(.failure(UserStatisticsError.failedToLOG))
             default:
                 result(.failure(UserStatisticsError.unableConnect))
             }

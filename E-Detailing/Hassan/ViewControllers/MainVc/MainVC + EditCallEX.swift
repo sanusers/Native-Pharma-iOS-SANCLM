@@ -527,7 +527,7 @@ extension MainVC {
     }
     
     
-    func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, custCode: String, _ completion : @escaping (Result<GeneralResponseModal, UserStatisticsError>) -> Void) {
+    func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, custCode: String, captureDate: Date, _ completion : @escaping (Result<GeneralResponseModal, UserStatisticsError>) -> Void) {
         
         _ = ObjectFormatter.shared.convertJson2Data(json: param)
 
@@ -543,7 +543,7 @@ extension MainVC {
                        print(generalResponse)
                           if generalResponse.isSuccess ?? false {
                               self.toCreateToast("Image upload completed")
-                              CoreDataManager.shared.removeUnsyncedEventCaptures(withCustCode: custCode) { _ in
+                              CoreDataManager.shared.removeUnsyncedEventCaptures(date: captureDate, withCustCode: custCode) { _ in
                                   completion(.success(generalResponse))
                               }
                               

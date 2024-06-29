@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 class HomeCheckinDetailsView: UIView {
     
     enum ViewType {
@@ -32,7 +33,7 @@ class HomeCheckinDetailsView: UIView {
     
     //@IBOutlet var localityDesc2: UILabel!
     
-    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     @IBOutlet var closeBtn: ShadowButton!
     var appsetup : AppSetUp?
     var delegate: addedSubViewsDelegate?
@@ -94,6 +95,11 @@ class HomeCheckinDetailsView: UIView {
         guard let userstrtisticsVM =  userstrtisticsVM else {return}
         guard let chckinInfo = chckinInfo else {return}
         guard let appsetup = appsetup else {return}
+        
+        if !isConnected {
+            
+        }
+        
         Pipelines.shared.callCheckinCheckoutAPI(userstrtisticsVM: userstrtisticsVM, model: chckinInfo, appsetup: appsetup) { result in
             
             switch result {
@@ -121,11 +127,57 @@ class HomeCheckinDetailsView: UIView {
                 self.delegate?.didClose()
                
             case .failure(let error):
-                self.toCreateToast(error.rawValue)
-                              
-
                 
-          
+                self.toCreateToast(error.rawValue)
+                
+                CoreDataManager.shared.toFetchAllDayStatus { eachDayStatus in
+                    for aDayStatus in eachDayStatus {
+                        let cacheDateStr = aDayStatus.statusDate?.toString(format: "MMMM dd, yyyy")
+                        let selectedDateStr = Shared.instance.selectedDate.toString(format: "MMMM dd, yyyy")
+                        
+                        if cacheDateStr == selectedDateStr {
+                            
+                      
+                            
+                            CoreDataManager.shared.fetchCheckininfo { saveCheckins  in
+                                guard let aCheckin = saveCheckins.first else {return}
+                                
+                                let checkinInfo = CheckinInfo(address: aCheckin.address, checkinDateTime: aCheckin.checkinDateTime , checkOutDateTime: aCheckin.checkOutDateTime, latitude:  aCheckin.latitude, longitude:   aCheckin.longitude, dateStr: Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss"), checkinTime: aCheckin.checkinTime, checkOutTime: aCheckin.checkOutTime)
+                                
+                                if let entityDescription = NSEntityDescription.entity(forEntityName: "ChekinInfo", in: self.context) {
+                                    let savedCDChekinInfo = ChekinInfo(entity: entityDescription, insertInto: self.context)
+                                    
+                                    // Convert properties
+                                    savedCDChekinInfo.address = checkinInfo.address
+                                    savedCDChekinInfo.checkinDateTime = checkinInfo.checkinDateTime
+                                    savedCDChekinInfo.checkOutDateTime = checkinInfo.checkOutDateTime
+                                    savedCDChekinInfo.latitude = checkinInfo.latitude ?? Double()
+                                    savedCDChekinInfo.longitude = checkinInfo.longitude ?? Double()
+                                    savedCDChekinInfo.checkinTime = checkinInfo.checkinTime
+                                    savedCDChekinInfo.checkOutTime = checkinInfo.checkOutTime
+                                  
+                                    
+                                    aDayStatus.checkinInfo = savedCDChekinInfo
+                                    
+                                    
+                                    do {
+                                        try self.context.save()
+                                    } catch {
+                                        print("Error saving day ststus")
+                                    }
+                                    
+                                    if self.viewType == .checkout {
+                                        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
+                                    }
+                                    
+                                    self.delegate?.didClose()
+                                }
+
+                            }
+
+                        }
+                    }
+                }
             }
 
         }

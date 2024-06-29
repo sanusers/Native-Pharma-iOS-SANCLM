@@ -818,7 +818,7 @@ extension CallVC : collectionViewProtocols {
                               if aHomeData.custCode == addedDcrCall.code {
                                   let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                   let dcrDateString = dcrDate?.toString(format: "MMM d, yyyy")
-                                  let currentDateStr = Date().toString(format: "MMM d, yyyy")
+                                  let currentDateStr = Shared.instance.selectedDate.toString(format: "MMM d, yyyy")
                                   if dcrDateString == currentDateStr {
                                       return true
                                   }
@@ -826,7 +826,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Doctor already visited today")
+                            self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                           //  self.toCreateToast("Doctor aldready visited today")
                             return
                         }
@@ -845,7 +845,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.showAlertForCallExistence(desc: "Doctor already visited today")
+                        self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                         return
                     } else {
                         if customerChekinEnabled {
@@ -881,7 +881,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.toCreateToast("Chemist aldready visited today")
+                            self.showAlertForCallExistence(desc: "Chemist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                             return
                         }
                     }
@@ -898,7 +898,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.toCreateToast("Chemist aldready visited today")
+                        self.showAlertForCallExistence(desc: "Chemist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                         return
                     } else {
                         if customerChekinEnabled {
@@ -934,7 +934,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.toCreateToast("Stockist aldready visited today")
+                            self.showAlertForCallExistence(desc: "Stockist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                             return
                         }
                     }
@@ -951,7 +951,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.toCreateToast("Stockist aldready visited today")
+                        self.showAlertForCallExistence(desc: "Stockist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                         return
                     } else {
                         if customerChekinEnabled {
@@ -982,7 +982,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Doctor already visited today")
+                            self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                             return
                         }
                     }
@@ -1000,7 +1000,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.showAlertForCallExistence(desc: "Doctor already visited today")
+                        self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                         return
                     } else {
                         if customerChekinEnabled {

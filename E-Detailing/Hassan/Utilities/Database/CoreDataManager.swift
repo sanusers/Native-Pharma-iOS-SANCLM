@@ -1517,14 +1517,19 @@ extension CoreDataManager {
     }
     
     
-    func removeUnsyncedEventCaptures(withCustCode custCode: String, completion: @escaping (Bool) -> ()) {
+    func removeUnsyncedEventCaptures(date: Date, withCustCode custCode: String, completion: @escaping (Bool) -> ()) {
         let fetchRequest: NSFetchRequest<UnsyncedEventCaptures> = UnsyncedEventCaptures.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "custCode == %@", custCode)
         
         do {
             let results = try context.fetch(fetchRequest)
             for object in results {
-                context.delete(object)
+                let objectDateStr = object.eventcaptureDate?.toString(format: "MMMM dd, yyyy")
+                let yettoDeleteDateStr = date.toString(format: "MMMM dd, yyyy")
+                if objectDateStr == yettoDeleteDateStr {
+                    context.delete(object)
+                }
+                
             }
             
             try context.save()
@@ -1880,6 +1885,23 @@ extension CoreDataManager {
 
 
 extension CoreDataManager {
+    
+    func removeAllSanvedCalls() {
+        let fetchRequest: NSFetchRequest<AddedDCRCall> = NSFetchRequest(entityName: "AddedDCRCall")
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            for object in results {
+                context.delete(object)
+            }
+            
+            try context.save()
+            
+        } catch {
+            print("Failed to fetch or delete entities: \(error)")
+            
+        }
+    }
     
     
     func toGetCallsCountForDate(callDate: Date, completion: @escaping (Int) -> () )  {

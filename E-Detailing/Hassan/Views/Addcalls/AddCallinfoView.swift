@@ -116,14 +116,16 @@ extension AddCallinfoView {
     
     func handleIncompleteSelection() {
         if selectedChemistRcpa == nil {
-            showAlert(desc: "Please select Chemist...")
-           // toCreateToast("Please select Chemist...")
+       
+            showAlertToNotifyExistance(desc: "Please select Chemist.")
         } else if selectedProductRcpa == nil {
-            showAlert(desc: "Please select Product...")
-            //toCreateToast("Please select Product...")
+ 
+            showAlertToNotifyExistance(desc: "Please select Product.")
+       
         } else {
-            showAlert(desc: "Please enter Quantity...")
-            //toCreateToast("Please enter Quantity...")
+      
+            showAlertToNotifyExistance(desc: "Please enter Quantity.")
+          
         }
     }
 

@@ -521,7 +521,7 @@ class AddCallinfoVC: BaseViewController {
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
 
         if !addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.isEmpty {
-           cacheUnsyncedEvents(eventcaputreDate: Date(), eventcaptureparam: jsonDatum) { isSaved in
+            cacheUnsyncedEvents(eventcaputreDate: dcrCall.dcrDate ?? Shared.instance.selectedDate, eventcaptureparam: jsonDatum) { isSaved in
                 completion(true)
             }
         } else {
@@ -690,53 +690,12 @@ class AddCallinfoVC: BaseViewController {
             completion(false)
         }
     }
-    
-//    func cacheUnsyncedEvents(eventcaputreDate: Date, eventcaptureparam: Data, completion: @escaping (Bool) -> ()) {
-//        var eventCaptures = [EventCapture]()
-//        let eventCaptureData = self.addCallinfoView.eventCaptureListViewModel.EventCaptureData()
-//        
-//        eventCaptureData.forEach { aEventCaptureViewModel in
-//            eventCaptures.append(aEventCaptureViewModel.eventCapture)
-//        }
-//        
-//        if let eventCapturesNSEntityDescription = NSEntityDescription.entity(forEntityName: "UnsyncedEventCaptures", in: context) {
-//            
-//            let eventCapturesCDM = UnsyncedEventCaptures(entity: eventCapturesNSEntityDescription, insertInto: context)
-//            let dispatchGroup = DispatchGroup()
-//           
-//            eventCapturesCDM.eventcaptureDate  = eventcaputreDate
-//            eventCapturesCDM.custCode = self.dcrCall.code
-//            eventCapturesCDM.eventcaptureParamData = eventcaptureparam
-//            dispatchGroup.enter()
-//            CoreDataManager.shared.toReturnEventcaptureEntity(eventCaptures: eventCaptures) { eventCaptureViewModelCDEntity in
-//                eventCapturesCDM.unsyncedCapturedEvents = eventCaptureViewModelCDEntity
-//                dispatchGroup.leave()
-//            }
-//            
-//     
-//            
-//            dispatchGroup.notify(queue: .main) {
-//                do {
-//                    try self.context.save()
-//                    completion(true)
-//                } catch {
-//                    print("Failed to save to Core Data: \(error)")
-//                    completion(false)
-//                }
-//                
-//                
-//            }
-//        } else {
-//            completion(false)
-//        }
-//        
-//
-//    }
+
     
     func toRemoveEditedCallOnline(param: JSON, completion: @escaping (Bool) -> ()) {
         let identifier = param["CustCode"] as? String // Assuming "identifier" is a unique identifier in HomeData
-        
-        CoreDataManager.shared.removeUnsyncedEventCaptures(withCustCode: identifier ?? "") { _ in}
+        let date = self.dcrCall.dcrDate ?? Shared.instance.selectedDate
+        CoreDataManager.shared.removeUnsyncedEventCaptures(date: date, withCustCode: identifier ?? "") { _ in}
    
         let context = DBManager.shared.managedContext()
 
@@ -995,7 +954,7 @@ class AddCallinfoVC: BaseViewController {
             if let existingEntity = existingEntities.first {
                 let dcrDate = existingEntity.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                 let dcrDateString = dcrDate?.toString(format: "MMM d, yyyy")
-                let callDate = dcrCall.dcrDate ?? Date()
+                let callDate = dcrCall.dcrDate ?? Shared.instance.selectedDate
                 let currentDateStr = callDate.toString(format: "MMM d, yyyy")
                 if dcrDateString == currentDateStr {
                     return
@@ -1240,7 +1199,7 @@ class AddCallinfoVC: BaseViewController {
                             // Match found, do something with the matching call
                             matchFound = true
                             print("Match found for CustCode: \(custCode)")
-                           // toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
+                            toSaveunsyncedHomeData(issussess: false, appsetup: self.appsetup, cusType:  cusType)
                             touUdateOutboxandDefaultParams(param: param) {_ in
                                 completion(true)
                                 return

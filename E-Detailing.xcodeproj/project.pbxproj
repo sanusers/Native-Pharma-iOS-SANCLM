@@ -780,7 +780,7 @@
 		B27ED24C29F6428900B90B61 /* CallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCell.swift; sourceTree = "<group>"; };
 		B27ED24E29F6630000B90B61 /* OutboxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxCell.swift; sourceTree = "<group>"; };
 		B27ED25029F6A24600B90B61 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
-		B287E61F29F29C1B0097974D /* E-Detailing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "E-Detailing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B287E61F29F29C1B0097974D /* SAN ZEN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SAN ZEN.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B287E62229F29C1B0097974D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B287E62B29F29C220097974D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B287E62E29F29C220097974D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -1646,7 +1646,7 @@
 		B287E62029F29C1B0097974D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B287E61F29F29C1B0097974D /* E-Detailing.app */,
+				B287E61F29F29C1B0097974D /* SAN ZEN.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1737,9 +1737,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B287E61E29F29C1A0097974D /* E-Detailing */ = {
+		B287E61E29F29C1A0097974D /* SAN ZEN */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B287E63329F29C220097974D /* Build configuration list for PBXNativeTarget "E-Detailing" */;
+			buildConfigurationList = B287E63329F29C220097974D /* Build configuration list for PBXNativeTarget "SAN ZEN" */;
 			buildPhases = (
 				DD980880852D942AE0BEF7E5 /* [CP] Check Pods Manifest.lock */,
 				B287E61B29F29C1A0097974D /* Sources */,
@@ -1752,9 +1752,9 @@
 			);
 			dependencies = (
 			);
-			name = "E-Detailing";
+			name = "SAN ZEN";
 			productName = "E-Detailing";
-			productReference = B287E61F29F29C1B0097974D /* E-Detailing.app */;
+			productReference = B287E61F29F29C1B0097974D /* SAN ZEN.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1785,7 +1785,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B287E61E29F29C1A0097974D /* E-Detailing */,
+				B287E61E29F29C1A0097974D /* SAN ZEN */,
 			);
 		};
 /* End PBXProject section */
@@ -2476,7 +2476,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B287E63329F29C220097974D /* Build configuration list for PBXNativeTarget "E-Detailing" */ = {
+		B287E63329F29C220097974D /* Build configuration list for PBXNativeTarget "SAN ZEN" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B287E63429F29C220097974D /* Debug */,
