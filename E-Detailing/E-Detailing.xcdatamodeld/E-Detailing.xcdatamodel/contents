@@ -278,6 +278,7 @@
         <attribute name="custCode" optional="YES" attributeType="String"/>
         <attribute name="custName" optional="YES" attributeType="String"/>
         <attribute name="custType" optional="YES" attributeType="String"/>
+        <attribute name="dayStatus" optional="YES" attributeType="String"/>
         <attribute name="dcr_dt" optional="YES" attributeType="String"/>
         <attribute name="dcr_flag" optional="YES" attributeType="String"/>
         <attribute name="editflag" optional="YES" attributeType="String"/>
@@ -706,6 +707,7 @@
         <attribute name="custCode" optional="YES" attributeType="String"/>
         <attribute name="custName" optional="YES" attributeType="String"/>
         <attribute name="custType" optional="YES" attributeType="String"/>
+        <attribute name="dayStatus" optional="YES" attributeType="String"/>
         <attribute name="dcr_dt" optional="YES" attributeType="String"/>
         <attribute name="dcr_flag" optional="YES" attributeType="String"/>
         <attribute name="editflag" optional="YES" attributeType="String"/>

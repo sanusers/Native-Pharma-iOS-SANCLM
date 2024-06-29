@@ -43,89 +43,126 @@ struct Sessions {
 
 extension MainVC {
     
-    func callSavePlanAPI(byDate: Date, completion: @escaping (Bool) -> Void) {
-        var dayEntities : [DayPlan] = []
-        CoreDataManager.shared.retriveSavedDayPlans(byDate: byDate) { dayplan in
-            
-            dayEntities = dayplan
-            
-            let aDayplan = dayEntities.first
-             
-             do {
-                 let encoder = JSONEncoder()
-                 let jsonData = try encoder.encode(aDayplan)
-                 
-
-                 if var jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-                     print("JSON Dictionary: \(jsonObject)")
-                     jsonObject["InsMode"] = "0"
-                     var toSendData = [String: Any]()
-                     
-                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: jsonObject)
-                     
-                     toSendData["data"] = jsonDatum
-                     
-                     
-                     self.userststisticsVM?.saveMyDayPlan(params: toSendData, api: .myDayPlan, paramData: jsonObject, { [ weak self ] result in
-                         guard let welf = self else {return}
-                         switch result {
-                             
-                         case .success(let response):
-                             dump(response)
-                             
-                             LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
-                            
-
-                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: welf.selectedRawDate ?? Date()) {_ in
- 
-                                 completion(true)
-                                 welf.toCreateToast(response.msg ?? "")
-                             }
-                         case .failure(let error):
-                             completion(false)
-                             
-
-                             
-                             welf.toCreateToast(error.rawValue)
-                         }
-                         
-                     })
-                     
-                     
-                     
-                 } else {
-                     print("Failed to convert data to JSON dictionary")
-                 }
-                 
-                 
-                 // jsonData now contains the JSON representation of yourObject
-             } catch {
-                 print("Error encoding object to JSON: \(error)")
-             }
+    
+    func toHighlightAddedCell()  {
+        //        if sessions?.count == 2 {
+        //
+        //            return false
+        //        } else {
+        guard var nonEmptySession = self.sessions else  {
+            return
         }
-         
         
-         
-
+        
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+              let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+              let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+        
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+        
+        let unsavedSessionsWithIndices = nonEmptySession.enumerated().filter { index, session in
+            return !(session.isRetrived ?? false)
+        }
+        
+        let unsavedSessions = unsavedSessionsWithIndices.map { index, session in
+            return session
+        }
+        
+        let indices = unsavedSessionsWithIndices.map { index, _ in
+            return index
+        }
+        
+        
+        
+        if unsavedSessions.isEmpty {
+            
+            var aSession = Sessions()
+            
+            aSession.cluster  = nil
+            aSession.workType = nil
+            aSession.headQuarters = nil
+            aSession.isRetrived = Bool()
+            
+            nonEmptySession.insert(aSession, at: 0)
+            // nonEmptySession.append(aSession)
+            self.sessions = nonEmptySession
+            self.unsavedIndex = indices.first
+            self.isTohightCell = false
+        
+        } else {
+            
+            let unfilledSessionWithIndex = unsavedSessions.enumerated().filter { index, session in
+                return  (session.cluster == nil || session.cluster == [temporaryselectedClusterobj] || session.headQuarters == nil ||  session.headQuarters == temporaryselectedHqobj || session.workType == nil || session.workType == temporaryselectedWTobj)
+            }
+            
+            let  unfilledSessions = unfilledSessionWithIndex.map { index, session in
+                return session
+            }
+            
+            let unfilledindices = unfilledSessionWithIndex.map { index, _ in
+                return index
+            }
+            
+            
+            if unfilledSessions.isEmpty {
+                
+                let unSentSessions = unfilledSessions.filter {($0.isRetrived ?? false)}
+                
+                if !unSentSessions.isEmpty {
+                    var aSession = Sessions()
+                    
+                    aSession.cluster  = nil
+                    aSession.workType = nil
+                    aSession.headQuarters = nil
+                    aSession.isRetrived = Bool()
+                    
+                    nonEmptySession.insert(aSession, at: 0)
+                    //  nonEmptySession.append(aSession)
+                    self.sessions = nonEmptySession
+                } else {
+                    //   self.toCreateToast("please do save session to add plan")
+                    self.unsavedIndex = unfilledindices.first
+                    // self.isTohightCell = true
+                 
+                }
+            } else {
+                self.unsavedIndex = unfilledindices.first
+                //  self.isTohightCell = true
+             
+            }
+            
+            
+        }
+        // }
+        
+        
+    
+        
     }
     
-    func updatePlansToCoreData() {
+    func updateEachDayPlan(isSynced: Bool, planDate: Date, yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
+        // Remove all existing day plans
+     //   CoreDataManager.shared.removeAllDayPlans()
         
-    }
-    
-    //                            CoreDataManager.shared.removeHQ()
-    //
-    //                            CoreDataManager.shared.saveToHQCoreData(hqModel: hqModel) { isSaved in
-    //                                if isSaved {
-    //                                    CoreDataManager.shared.fetchSavedHQ { selectedHQArr in
-    //                                        let aSavedHQ = selectedHQArr.first
-    //                                        selectedheadQuarters = aSavedHQ
-    //                                    }
-    //                                }
-    //                            }
-    
+        // Save sessions as day plans
 
-    
+        
+        CoreDataManager.shared.saveSessionAsEachDayPlan(isSynced: isSynced, planDate: planDate, session: yetToSaveSession) { isCompleted in
+            // [weak self]
+            //   guard let welf = self else { return }
+            if isCompleted {
+                
+                
+                completion(true)
+            }
+        }
+    }
+
     
     func toFetchExistingPlan(byDate: Date, completion: @escaping ([Sessions]) -> ())  {
     
@@ -788,6 +825,246 @@ extension MainVC {
 
             self.navigationController?.pushViewController(vc, animated: true)
         }
+    }
+    
+    func toAddnewSession() {
+        var aSession = Sessions()
+        
+        aSession.cluster  = nil
+        aSession.workType = nil
+        aSession.headQuarters = nil
+        aSession.isRetrived = Bool()
+        aSession.isFirstCell = true
+        aSession.planDate = self.selectedRawDate == nil ? Date() : self.selectedRawDate
+        
+       // setDateLbl(date: aSession.planDate ?? Date())
+        
+        self.sessions?.insert(aSession, at: 0)
+    }
+    
+    func toEnableSaveBtn(sessionindex: Int, istoHandeleAddedSession: Bool) -> Bool {
+        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
+              let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
+              let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+        var index: Int = 0
+        index = sessionindex
+        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
+        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
+        
+        guard let nonNillSession = self.sessions else {return false}
+        
+        switch index {
+        case 0, 1 :
+            
+            
+            let model = nonNillSession[index]
+            
+            if model.workType == nil || model.workType == WorkType() || model.workType == temporaryselectedWTobj {
+                return false
+            }
+            
+            if model.workType?.fwFlg  != nil && model.workType?.fwFlg  != "F"  {
+                return true
+            } else {
+                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+                    
+                    if (model.cluster ==  nil || model.cluster == [temporaryselectedClusterobj]) || model.cluster  == [Territory]() || model.cluster?[0].code == nil || (model.workType == nil ||  model.workType == temporaryselectedWTobj) {
+                        return false
+                    } else {
+                        if nonNillSession[index].isRetrived ?? false {
+                            return false
+                        } else {
+                            return true
+                        }
+                        
+                        
+                    }
+                    
+                } else {
+                    
+                    
+                    
+                    if (model.headQuarters ==  nil || model.headQuarters == temporaryselectedHqobj) || (model.cluster == nil || model.cluster == [temporaryselectedClusterobj]) || model.cluster  == [Territory]() || model.cluster?[0].code == nil || (model.workType == nil ||  model.workType == temporaryselectedWTobj)  {
+                        return false
+                    } else {
+                        if nonNillSession[index].isRetrived ?? false {
+                            if istoHandeleAddedSession {
+                                return true
+                            } else {
+                                return false
+                            }
+                            
+                            
+                        } else {
+                            return true
+                        }
+                    }
+                    
+                    
+                }
+            }
+            
+        default:
+            return false
+        }
+        
+    }
+    
+    func toConfigureMydayPlan(planDate: Date, isRetrived: Bool? = false) {
+        
+        
+        
+        toFetchExistingPlan(byDate: planDate) { existingSessions in
+            self.sessions = existingSessions
+            if !(self.sessions?.isEmpty ?? false) {
+                self.planSubmitted = true
+               // self.setDateLbl(date: self.sessions?[0].planDate ?? Date())
+                
+                self.sessions?.enumerated().forEach { index, aSession in
+                    switch index {
+                    case 0:
+                        dump(aSession.headQuarters?.code)
+                        self.fetchedHQObject1 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                        self.fetchedWorkTypeObject1 = aSession.workType
+                        self.fetchedClusterObject1 = aSession.cluster
+                        
+                    case 1:
+                        dump(aSession.headQuarters?.code)
+                        self.fetchedHQObject2 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
+                        self.fetchedWorkTypeObject2 = aSession.workType
+                        self.fetchedClusterObject2 = aSession.cluster
+                    default:
+                        print("<----->")
+                    }
+                    
+                }
+            } else {
+                self.selectedRawDate =  self.selectedRawDate  == nil ? Date() : self.selectedRawDate
+                self.toAddnewSession()
+            }
+            
+            
+            
+            guard let nonNilSessons = self.sessions else {
+                self.configureAddplanBtn(false)
+                self.configureSaveplanBtn(false)
+                return
+            }
+            var isPlan1filled : Bool = false
+            var isPlan2filled : Bool = false
+            
+            var istoEnableSaveBtn: Bool = false
+            var istoEnableAddPlanBtn: Bool = false
+            
+            nonNilSessons.enumerated().forEach { index, aSession in
+                switch index {
+                case 0:
+                    
+                    if aSession.isRetrived == true {
+                        isPlan1filled =  true
+                        
+                        if nonNilSessons.count == 1 {
+                            istoEnableAddPlanBtn = true
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableAddPlanBtn = false
+                            istoEnableSaveBtn = false
+                        }
+                        
+                    } else {
+                        
+                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index, istoHandeleAddedSession: false)
+                        //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
+                    }
+                    
+                    if isPlan1filled {
+                        
+                        if aSession.isRetrived == true {
+                            
+                            if nonNilSessons.count == 1 {
+                                istoEnableAddPlanBtn = true
+                            } else {
+                                istoEnableAddPlanBtn = false
+                            }
+                            
+                        } else {
+                            istoEnableAddPlanBtn = false
+                        }
+                        
+                        
+                        
+                        if aSession.isRetrived == true {
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableSaveBtn = true
+                        }
+                        
+                    } else {
+                        istoEnableAddPlanBtn = false
+                        istoEnableSaveBtn = false
+                    }
+     
+                case 1:
+                    if aSession.isRetrived == true {
+                        isPlan2filled =  true
+                        
+                        if nonNilSessons.count == 1 {
+                            istoEnableAddPlanBtn = true
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableAddPlanBtn = false
+                            istoEnableSaveBtn = false
+                        }
+                        
+                    } else {
+                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index, istoHandeleAddedSession: false)
+                    }
+                    
+                    if isPlan2filled {
+                        if aSession.isRetrived == true {
+                            
+                            if nonNilSessons.count == 1 {
+                                istoEnableAddPlanBtn = true
+                            } else {
+                                istoEnableAddPlanBtn = false
+                            }
+                            
+                        } else {
+                            istoEnableAddPlanBtn = false
+                        }
+                        if aSession.isRetrived == true {
+                            istoEnableSaveBtn = false
+                        } else {
+                            istoEnableSaveBtn = true
+                        }
+                    } else {
+                        istoEnableAddPlanBtn = false
+                        istoEnableSaveBtn = false
+                    }
+                    
+                default:
+                    isPlan1filled = false
+                    isPlan2filled = false
+                }
+                
+                
+            }
+            
+            self.configureAddplanBtn(istoEnableAddPlanBtn)
+            
+            self.configureSaveplanBtn(istoEnableSaveBtn)
+            self.setupRejectionVIew()
+            self.toLoadWorktypeTable()
+            
+      //      self.setSegment(.workPlan)
+            
+            
+        }
+        
     }
 
 }

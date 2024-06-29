@@ -977,7 +977,7 @@ class AddCallinfoVC: BaseViewController {
         dbparam["CustName"] = dcrCall.name
         dbparam["town_code"] = dcrCall.townCode
         dbparam["town_name"] = dcrCall.territory
-        dbparam["Dcr_flag"] = ""
+        dbparam["Dcr_flag"] = "1"
         dbparam["SF_Code"] = appsetup.sfCode
         dbparam["Trans_SlNo"] = ""
         dbparam["AMSLNo"] = ""
@@ -985,6 +985,8 @@ class AddCallinfoVC: BaseViewController {
         dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
         dbparam["checkinTime"] = dcrCall.dcrCheckinTime
         dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
+        dbparam["dayStatus"] = "1"
+        
         var dbparamArr = [[String: Any]]()
         dbparamArr.append(dbparam)
         let masterData = DBManager.shared.getMasterData()

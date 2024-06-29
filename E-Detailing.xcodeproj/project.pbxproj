@@ -82,6 +82,11 @@
 		385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385A42532AFBB75300C0A58A /* AppSetupModel.swift */; };
 		385BD27F2C2C12EF00036026 /* AddCompetitorsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385BD27E2C2C12EF00036026 /* AddCompetitorsView.xib */; };
 		385BD2812C2C151E00036026 /* AddCompetitorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385BD2802C2C151E00036026 /* AddCompetitorsView.swift */; };
+		385D15C32C300D0100C47B7F /* MainVC+Dates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385D15C22C300D0100C47B7F /* MainVC+Dates.swift */; };
+		385D15C52C300DA800C47B7F /* MainVC+Checkins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385D15C42C300DA800C47B7F /* MainVC+Checkins.swift */; };
+		385D15C72C300E2500C47B7F /* MainVC + CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385D15C62C300E2500C47B7F /* MainVC + CoreData.swift */; };
+		385D15C92C300E6D00C47B7F /* MainVC + APIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385D15C82C300E6D00C47B7F /* MainVC + APIs.swift */; };
+		385D15CB2C3011AB00C47B7F /* MainVC + DashBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385D15CA2C3011AB00C47B7F /* MainVC + DashBoard.swift */; };
 		3860C8562BF359FB0065862D /* AddNewTagInfoVIew.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */; };
 		3860C8582BF35C500065862D /* AddNewTagInfoVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */; };
 		3865F8CC2AFCCE4F009AB984 /* TourPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */; };
@@ -477,6 +482,11 @@
 		385A42532AFBB75300C0A58A /* AppSetupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetupModel.swift; sourceTree = "<group>"; };
 		385BD27E2C2C12EF00036026 /* AddCompetitorsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCompetitorsView.xib; sourceTree = "<group>"; };
 		385BD2802C2C151E00036026 /* AddCompetitorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCompetitorsView.swift; sourceTree = "<group>"; };
+		385D15C22C300D0100C47B7F /* MainVC+Dates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+Dates.swift"; sourceTree = "<group>"; };
+		385D15C42C300DA800C47B7F /* MainVC+Checkins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+Checkins.swift"; sourceTree = "<group>"; };
+		385D15C62C300E2500C47B7F /* MainVC + CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + CoreData.swift"; sourceTree = "<group>"; };
+		385D15C82C300E6D00C47B7F /* MainVC + APIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + APIs.swift"; sourceTree = "<group>"; };
+		385D15CA2C3011AB00C47B7F /* MainVC + DashBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + DashBoard.swift"; sourceTree = "<group>"; };
 		3860C8552BF359FB0065862D /* AddNewTagInfoVIew.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddNewTagInfoVIew.xib; sourceTree = "<group>"; };
 		3860C8572BF35C500065862D /* AddNewTagInfoVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewTagInfoVIew.swift; sourceTree = "<group>"; };
 		3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanView.swift; sourceTree = "<group>"; };
@@ -954,6 +964,11 @@
 				38CA58D22B80AAFB00E28C3D /* MainVC + DayPlanEX.swift */,
 				38D95FF72BEB8EA300348FB8 /* MainVC + EditCallEX.swift */,
 				3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */,
+				385D15C22C300D0100C47B7F /* MainVC+Dates.swift */,
+				385D15C42C300DA800C47B7F /* MainVC+Checkins.swift */,
+				385D15C62C300E2500C47B7F /* MainVC + CoreData.swift */,
+				385D15C82C300E6D00C47B7F /* MainVC + APIs.swift */,
+				385D15CA2C3011AB00C47B7F /* MainVC + DashBoard.swift */,
 			);
 			path = MainVc;
 			sourceTree = "<group>";
@@ -2079,6 +2094,7 @@
 				38F9331F2BE4D5F800D5A195 /* SplashVIew.swift in Sources */,
 				385A424D2AFBAB6400C0A58A /* View+UX.swift in Sources */,
 				38C485B22A2F45E9005D1533 /* E-Detailing.xcdatamodeld in Sources */,
+				385D15C92C300E6D00C47B7F /* MainVC + APIs.swift in Sources */,
 				38D528AC2A9A251300AD3F78 /* TaggingListVC.swift in Sources */,
 				38E659862B33086C00E7BF42 /* ReportsVC.swift in Sources */,
 				38107C622B36FA0400ACEDF3 /* ViewmoreCVC.swift in Sources */,
@@ -2101,6 +2117,7 @@
 				3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */,
 				38C855252A8CC9AB00C34A58 /* ProductViewModel.swift in Sources */,
 				38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */,
+				385D15CB2C3011AB00C47B7F /* MainVC + DashBoard.swift in Sources */,
 				38E6598A2B33193F00E7BF42 /* DetailedReportVC.swift in Sources */,
 				38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */,
 				38EF48972B6A791E004B6600 /* PlayHTMLCVC.swift in Sources */,
@@ -2131,6 +2148,7 @@
 				3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */,
 				38CA58D32B80AAFB00E28C3D /* MainVC + DayPlanEX.swift in Sources */,
 				38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */,
+				385D15C32C300D0100C47B7F /* MainVC+Dates.swift in Sources */,
 				384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */,
 				38E3C3662AF9FB4400623C33 /* plistReader.swift in Sources */,
 				38E3C3602AF9FA7000623C33 /* APIresponseHandler.swift in Sources */,
@@ -2145,6 +2163,7 @@
 				38111E1E2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift in Sources */,
 				38866E722BB2D3D500F9E576 /* CompetitorsFooter.swift in Sources */,
 				38DD9E642C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift in Sources */,
+				385D15C52C300DA800C47B7F /* MainVC+Checkins.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,
 				38DC5EE22BAC3C7D0088386B /* ProductInputsHeader.swift in Sources */,
 				38E189262BB16DF60093C446 /* JfwView.swift in Sources */,
@@ -2173,6 +2192,7 @@
 				381BC2622BAC65D400804B85 /* AddproductsMenuView.swift in Sources */,
 				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				3801D4952B4ECF4800A9740F /* HomeSideMenuVC.swift in Sources */,
+				385D15C72C300E2500C47B7F /* MainVC + CoreData.swift in Sources */,
 				38C25EA02B64D7E300A8E076 /* DeletePHIAlertview.swift in Sources */,
 				3825CFD22BA8650D00217D40 /* productSectiontitleTVC.swift in Sources */,
 				38C537FC2A2201C9007D68C5 /* ConfigVC.swift in Sources */,

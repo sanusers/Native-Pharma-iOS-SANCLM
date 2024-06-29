@@ -46,10 +46,10 @@ extension UnsyncedHomeData {
         if let sfCodeValue = dictionary["month_name"] as? String{
             month_name = sfCodeValue
         }
-        if let tpDCRValue = dictionary["Mnth"] as? Int{
+        if let tpDCRValue = dictionary["Mnth"] as? String{
             mnth = String(tpDCRValue)
         }
-        if let tpDCRValue = dictionary["Yr"] as? Int{
+        if let tpDCRValue = dictionary["Yr"] as? String{
             yr = String(tpDCRValue)
         }
         if let tpDCRValue = dictionary["CustName"] as? String{
@@ -61,7 +61,7 @@ extension UnsyncedHomeData {
         if let tpDCRValue = dictionary["town_name"] as? String{
             town_name = tpDCRValue
         }
-        if let tpDCRValue = dictionary["Dcr_flag"] as? Int{
+        if let tpDCRValue = dictionary["Dcr_flag"] as? String{
             dcr_flag = String(tpDCRValue)
         }
         if let tpDCRValue = dictionary["SF_Code"] as? String{
@@ -87,6 +87,10 @@ extension UnsyncedHomeData {
             checkoutTime = checkout
         }
    
+        if let daystatusValue = dictionary["dayStatus"] as? String {
+            dayStatus = daystatusValue
+        }
+        
     }
 }
 
@@ -140,6 +144,10 @@ extension HomeData {
 
         if let tpDCRValue = dictionary["isDataSentToAPI"] as? String {
             isDataSentToAPI = tpDCRValue
+        }
+        
+        if let daystatusValue = dictionary["day_status"] as? String {
+            dayStatus = daystatusValue
         }
         
     }

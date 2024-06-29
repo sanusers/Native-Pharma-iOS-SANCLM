@@ -837,7 +837,7 @@ class AppSetUp : Codable {
         self.therapticNd =  container.safeDecodeValue(forKey: .therapticNd)
         self.success = Int()
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  self.srtNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isSequentialDCR, value:  false)
         //self.sequentailDcr == 0 ? true : false
