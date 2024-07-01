@@ -379,6 +379,36 @@ extension UIImage {
 
         return gifImageWithData(imageData)
     }
+    
+    
+    // Method to create a UIImage from GIF data with a speed multiplier
+    public class func gifImageWithData(_ data: Data, speedMultiplier: Double = 1.0) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
+            print("Image source could not be created")
+            return nil
+        }
+
+        var images = [UIImage]()
+        let count = CGImageSourceGetCount(source)
+
+        for i in 0..<count {
+            if let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) {
+                let image = UIImage(cgImage: cgImage)
+                images.append(image)
+            }
+        }
+
+        let duration = (Double(count) * 0.1) / speedMultiplier
+        return UIImage.animatedImage(with: images, duration: duration)
+    }
+    
+    // Method to load a GIF from the asset catalog with a speed multiplier
+    public class func gif(asset: String, speedMultiplier: Double = 1.0) -> UIImage? {
+        if let asset = NSDataAsset(name: asset) {
+            return UIImage.gifImageWithData(asset.data, speedMultiplier: speedMultiplier)
+        }
+        return nil
+    }
 
     class func animatedImageWithSource(_ source: CGImageSource) -> UIImage? {
         let count = CGImageSourceGetCount(source)

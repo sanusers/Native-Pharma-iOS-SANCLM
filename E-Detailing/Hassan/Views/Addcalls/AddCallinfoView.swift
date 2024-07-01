@@ -490,16 +490,24 @@ extension AddCallinfoView :UITextFieldDelegate {
             let numberFiltered = compSepByCharInSet.joined(separator: "")
             let maxLength = 4
             let currentString: NSString = textField.text! as NSString
-            let newString: NSString =
-                currentString.replacingCharacters(in: range, with: string) as NSString
-            
+            let newString: NSString = currentString.replacingCharacters(in: range, with: string) as NSString
+
+            // Check if the first character is '0' and the new string length is greater than 1
             if string == numberFiltered && newString.length <= maxLength {
                 let currentText = textField.text ?? ""
                 guard let stringRange = Range(range, in: currentText) else {
                     return false
                 }
-                
+
                 let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+                
+                // Check if the first character is '0'
+                if updatedText.first == "0" {
+                    self.endEditing(true)
+                    self.showAlertToNotifyExistance(desc: "Please enter quantity geater than zero")
+                    return false
+                }
+
                 // Update the text immediately
                 self.productQty = updatedText
                 self.productQtyAction(textField)
@@ -787,7 +795,7 @@ extension AddCallinfoView: tableViewProtocols {
                         if let unsyncedArr = DBManager.shared.geUnsyncedtHomeData() {
                             let filteredArray = unsyncedArr.filter { aHomeData in
                                   if aHomeData.custCode == addedDcrCall.code {
-                                      let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd")
+                                      let dcrDate = aHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
                                       let dcrDateString = dcrDate?.toString(format: "yyyy-MM-dd")
                                       let currentDateStr = Date().toString(format: "yyyy-MM-dd")
                                       if dcrDateString == currentDateStr {
@@ -797,7 +805,7 @@ extension AddCallinfoView: tableViewProtocols {
                                   return false
                               }
                             if !filteredArray.isEmpty  {
-                                self.showAlertToNotifyExistance(desc: "Doctor already visited today")
+                                self.showAlertToNotifyExistance(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                                 //self.toCreateToast("Doctor already visited today")
                                 return
                             }
@@ -817,7 +825,7 @@ extension AddCallinfoView: tableViewProtocols {
                         }
                         if !filteredArray.isEmpty  {
                            // self.toCreateToast("Doctor aldready visited today")
-                            self.showAlertToNotifyExistance(desc: "Doctor aldready visited today")
+                            self.showAlertToNotifyExistance(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
                             return
                         } else {
                             self.additionalCallSelectionAction(cell.btnSelected)

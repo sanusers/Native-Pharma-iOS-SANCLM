@@ -1870,9 +1870,9 @@ class SpecifiedMenuView: BaseView {
         saveView.layer.cornerRadius = 5
         saveView.backgroundColor = .appTextColor
         noresultsView.isHidden = true
-        
+        clearView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         clearView.layer.cornerRadius = 5
-        clearView.layer.borderColor = UIColor.gray.cgColor
+        clearView.layer.borderColor = UIColor.appTextColor.cgColor
         clearView.layer.borderWidth = 1
        
         

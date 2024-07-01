@@ -10,6 +10,7 @@
 
 import Foundation
 import UIKit
+import ImageIO
 
 class SplashVC: BaseViewController{
     
@@ -23,7 +24,6 @@ class SplashVC: BaseViewController{
       //  callCheckVersion()
     }
     
-    
     class func initWithStory() -> SplashVC {
         let splash : SplashVC = UIStoryboard.Hassan.instantiateViewController()
        // splash.accViewModel = AccountViewModel()
@@ -32,13 +32,15 @@ class SplashVC: BaseViewController{
     
     func callStartupActions(){
         
-        self.splashView?.SplashImageHolderView.isHidden = false
-        Shared.instance.showLoader(in: self.splashView.SplashImageHolderView, loaderType: .launch)
+        self.splashView.SplashImageHolderView.isHidden = false
+
+        if let gifImage = UIImage.gif(asset: "launch", speedMultiplier: 4) {
+            self.splashView.launchIV.image = gifImage
+         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             UIView.animate(withDuration: 1, delay: 0, animations: {
-                self.splashView?.SplashImageHolderView.isHidden = true
-                Shared.instance.removeLoader(in: self.splashView.SplashImageHolderView)
+                self.splashView.SplashImageHolderView.isHidden = true
                 AppDelegate.shared.setupRootViewControllers(isFromlaunch: true)
             })
         }

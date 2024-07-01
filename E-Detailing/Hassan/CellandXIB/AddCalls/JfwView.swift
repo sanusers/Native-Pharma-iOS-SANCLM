@@ -26,6 +26,25 @@ extension JfwView: MenuResponseProtocol {
         if let feedbackObj = selectedObject as? Feedback {
             selectedfeedbackLbl.text = feedbackObj.name == "" ? "Select Overall Feedback" :  feedbackObj.name
             self.overallFeedback = feedbackObj
+            
+            guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+                return
+                
+            }
+            
+            let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
+            tempFeedback.id = ""
+            tempFeedback.index = Int16()
+            tempFeedback.name = ""
+            
+            toFetchCacheJointWorks{  [weak self] jointWorkViewmodel in
+                guard let welf = self else { return }
+                    
+                    welf.delegate?.selectedObjects(eventcptureVM: welf.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: jointWorkViewmodel ?? JointWorksListViewModel(), POBValue:   welf.pobValue ?? "", overallFeedback: welf.overallFeedback ?? tempFeedback, overallRemarks: welf.overallRemark ?? "")
+            }
+            
+            
+            return
         }
         
         
@@ -55,24 +74,13 @@ extension JfwView: MenuResponseProtocol {
                 }
                 
                 dump(welf.selectedJwID)
-                welf.toFetchCacheJointWorks()
+                welf.toFetchCacheJointWorks{_ in }
             }
 
-            
-        }
-        
-        guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
             return
-            
         }
         
-        let tempFeedback = Feedback(entity: feedbackEntityDesc, insertInto: AppDelegate.shared.persistentContainer.viewContext)
-        tempFeedback.id = ""
-        tempFeedback.index = Int16()
-        tempFeedback.name = ""
-        
-        self.delegate?.selectedObjects(eventcptureVM: self.eventCaptureListViewModel ?? EventCaptureListViewModel(), jointWorkSelectedListViewModel: self.jointWorkSelectedListViewModel ?? JointWorksListViewModel(), POBValue:   self.pobValue ?? "", overallFeedback: overallFeedback ?? tempFeedback, overallRemarks: overallRemark ?? "")
-        
+
     }
     
      func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
@@ -235,7 +243,7 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
         CoreDataManager.shared.toRemoveAllCacheJointWorks()
         CoreDataManager.shared.toSaveJointworks(jointWorks: updatedJointworks) {[weak self] isSaved in
             guard let welf = self else {return}
-            welf.toFetchCacheJointWorks()
+            welf.toFetchCacheJointWorks{_ in }
             
         }
         
@@ -589,16 +597,19 @@ class JfwView: UIView {
         
         toloadEventCapuretable()
         
-        toFetchCacheJointWorks()
+        toFetchCacheJointWorks{_ in }
         
     }
     
-    func toFetchCacheJointWorks() {
+    func toFetchCacheJointWorks(completion: @escaping (JointWorksListViewModel?) -> ()) {
         CoreDataManager.shared.fetchCacheJointWorks{ [weak self] cacheJointworks in
             
-            guard let welf = self else {return}
+            guard let welf = self else {
+                completion(nil)
+                return}
             welf.selectedJwID = [String: Bool]()
             guard let cacheJointworks = cacheJointworks else {
+                completion(nil)
                 welf.toloadJWtable()
                 return}
             
@@ -625,6 +636,7 @@ class JfwView: UIView {
             
             dump(welf.selectedJwID)
             welf.toloadJWtable()
+            completion(welf.jointWorkSelectedListViewModel)
         }
     }
     

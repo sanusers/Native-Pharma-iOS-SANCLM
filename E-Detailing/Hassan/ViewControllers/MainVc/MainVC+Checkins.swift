@@ -174,8 +174,6 @@ extension MainVC {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
         }
-        self.selectedToday = nil
-        self.selectedDate = nil
         LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: false)
         isDayPlanRemarksadded = false

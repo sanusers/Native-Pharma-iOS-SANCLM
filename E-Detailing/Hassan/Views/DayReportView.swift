@@ -341,6 +341,13 @@ extension DayReportView: VisitsCountTVCDelegate {
             
            
         }
+//        self.filtereddetailedReportsModelArr?.forEach({ detailedReportsModel in
+//            detailedReportsModel.isCellExtended = false
+//        })
+//        self.detailedReportsModelArr?.forEach({ detailedReportsModel in
+//            detailedReportsModel.isCellExtended = false
+//        })
+        
         self.isMatched = false
         self.searchTF.text = ""
         self.searchTF.placeholder = "Search"
@@ -547,6 +554,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                //let model = self.detailedReportsModelArr?[indexPath.row]
                 cell.detailedReportModel = model
                 cell.cellRCPAType = model?.isRCPAExtended ?? false ? .showRCPA : .hideRCPA
+                cell.cellSlidesType = model?.isSlidesExtended ?? false ? .showSlides : .hideSlides
                 cell.reportModel = self.reportsModel
                 cell.toSetDataSourceForProducts()
                 cell.toSetDataSourceForInputs()

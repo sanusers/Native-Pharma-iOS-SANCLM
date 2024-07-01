@@ -68,7 +68,9 @@ class SplashView: BaseView{
     @IBOutlet var lblMenuTitle: UILabel!
     @IBOutlet var imgAppIcon: UIImageView!
     
-    @IBOutlet var launvhLoaderHolderView: UIView!
+    @IBOutlet var launchLoaderHolderView: UIView!
+    
+    @IBOutlet var launchIV: UIImageView!
     @IBOutlet weak var SplashImageHolderView: UIView!
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     override

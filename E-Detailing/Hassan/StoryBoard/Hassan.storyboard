@@ -6586,12 +6586,12 @@
                                                                 <rect key="frame" x="10" y="5" width="328.5" height="39"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-4F-p13">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="26" height="39"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="49" height="39"/>
                                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="semibold"/>
                                                                     </imageView>
                                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QYf-HS-1zw">
-                                                                        <rect key="frame" x="26" y="0.0" width="302.5" height="39"/>
+                                                                        <rect key="frame" x="49" y="0.0" width="279.5" height="39"/>
                                                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                         <connections>
@@ -6729,7 +6729,7 @@
                                                                                         <rect key="frame" x="0.0" y="18" width="331" height="73"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IJA-1r-7oe">
-                                                                                                <rect key="frame" x="0.0" y="11" width="331" height="51"/>
+                                                                                                <rect key="frame" x="15.5" y="11" width="300" height="51"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Product Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meb-Ly-iph">
                                                                                                         <rect key="frame" x="15" y="16.5" width="133.5" height="17.5"/>
@@ -6738,7 +6738,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7lw-l7-meY">
-                                                                                                        <rect key="frame" x="290.5" y="13.5" width="25.5" height="23.5"/>
+                                                                                                        <rect key="frame" x="259.5" y="13.5" width="25.5" height="23.5"/>
                                                                                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                                                                     </imageView>
@@ -10532,7 +10532,25 @@ VmVyc2lvbiA6IDEuMAM
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fGq-ws-1HV">
                                 <rect key="frame" x="0.0" y="2" width="1180" height="820"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="appLaunch" translatesAutoresizingMaskIntoConstraints="NO" id="dL9-3E-xN1">
+                                        <rect key="frame" x="0.0" y="0.0" width="1180" height="820"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="65r-xb-CWJ">
+                                        <rect key="frame" x="162.5" y="143.5" width="855.5" height="533"/>
+                                    </imageView>
+                                </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="65r-xb-CWJ" firstAttribute="centerX" secondItem="fGq-ws-1HV" secondAttribute="centerX" id="9p4-C0-uca"/>
+                                    <constraint firstItem="65r-xb-CWJ" firstAttribute="centerY" secondItem="fGq-ws-1HV" secondAttribute="centerY" id="LcY-MJ-bJw"/>
+                                    <constraint firstItem="dL9-3E-xN1" firstAttribute="width" secondItem="fGq-ws-1HV" secondAttribute="width" id="Mgx-7E-3C6"/>
+                                    <constraint firstItem="65r-xb-CWJ" firstAttribute="height" secondItem="fGq-ws-1HV" secondAttribute="height" multiplier="0.65" id="Xe2-hl-Spu"/>
+                                    <constraint firstItem="dL9-3E-xN1" firstAttribute="centerX" secondItem="fGq-ws-1HV" secondAttribute="centerX" id="ZhX-wt-JSI"/>
+                                    <constraint firstItem="65r-xb-CWJ" firstAttribute="width" secondItem="fGq-ws-1HV" secondAttribute="width" multiplier="0.725" id="aWj-0H-VJO"/>
+                                    <constraint firstItem="dL9-3E-xN1" firstAttribute="height" secondItem="fGq-ws-1HV" secondAttribute="height" id="mfa-Hd-oaj"/>
+                                    <constraint firstItem="dL9-3E-xN1" firstAttribute="centerY" secondItem="fGq-ws-1HV" secondAttribute="centerY" id="sa3-aj-7O3"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Lzy-W2-Cka"/>
@@ -10559,7 +10577,8 @@ VmVyc2lvbiA6IDEuMAM
                             <outlet property="SplashImageHolderView" destination="XBq-ka-Oa3" id="oea-EE-Up7"/>
                             <outlet property="btnLogout" destination="Ruo-l6-lIP" id="cZS-Zw-JRU"/>
                             <outlet property="imgAppIcon" destination="QDa-Cp-qXX" id="ooB-mG-WlI"/>
-                            <outlet property="launvhLoaderHolderView" destination="fGq-ws-1HV" id="IZd-Q6-CHb"/>
+                            <outlet property="launchIV" destination="65r-xb-CWJ" id="aMX-5h-Ezj"/>
+                            <outlet property="launchLoaderHolderView" destination="fGq-ws-1HV" id="8ad-ol-vMb"/>
                             <outlet property="lblMenuTitle" destination="rc2-DZ-ZHy" id="eC4-vr-T46"/>
                         </connections>
                     </view>
@@ -10780,7 +10799,7 @@ VmVyc2lvbiA6IDEuMAM
                                                                                                                                                 <color key="textColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                                                                 <nil key="highlightedColor"/>
                                                                                                                                             </label>
-                                                                                                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Vector" translatesAutoresizingMaskIntoConstraints="NO" id="2UN-Gm-COF">
+                                                                                                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevlon.down" translatesAutoresizingMaskIntoConstraints="NO" id="2UN-Gm-COF">
                                                                                                                                                 <rect key="frame" x="335" y="15.5" width="31" height="30.5"/>
                                                                                                                                                 <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
@@ -11570,6 +11589,7 @@ VmVyc2lvbiA6IDEuMAM
         <image name="Menu" width="26.666666030883789" height="23.666666030883789"/>
         <image name="Vector" width="16" height="8"/>
         <image name="alarm" catalog="system" width="123" height="128"/>
+        <image name="appLaunch" width="1366" height="1024"/>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
         <image name="arrow.clockwise" catalog="system" width="113" height="128"/>
         <image name="arrow.triangle.2.circlepath" catalog="system" width="128" height="104"/>
@@ -11578,6 +11598,7 @@ VmVyc2lvbiA6IDEuMAM
         <image name="calendar" width="32" height="32"/>
         <image name="checkBoxEmpty" width="32" height="32"/>
         <image name="checkmark.square.fill" catalog="system" width="128" height="114"/>
+        <image name="chevlon.down" width="16" height="8"/>
         <image name="chevron.backward" catalog="system" width="97" height="128"/>
         <image name="chevron.down" catalog="system" width="128" height="70"/>
         <image name="chevron.left" catalog="system" width="97" height="128"/>

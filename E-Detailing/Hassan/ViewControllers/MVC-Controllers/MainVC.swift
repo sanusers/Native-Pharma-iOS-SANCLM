@@ -152,7 +152,7 @@ class MainVC : UIViewController {
     var selectedSessionIndex : Int?
     var unsavedIndex : Int?
     var isTohightCell: Bool = false
-    var  celenderToday = Date()
+    var celenderToday = Date()
     var selectedToday : Date?
     var planSubmitted: Bool = false
     var isToRegretCheckin: Bool = false
@@ -457,8 +457,28 @@ class MainVC : UIViewController {
         case .outbox:
             self.setSegment(.outbox)
         }
-        toConfigureMydayPlan(planDate: selectedToday ?? Date(), isRetrived: true)
-        configureSaveplanBtn(toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
+        
+        if let selectedToday = self.selectedToday  {
+            toConfigureMydayPlan(planDate: selectedToday, isRetrived: true)
+            configureSaveplanBtn(toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
+        } else {
+            var sessionArr: [Sessions] = []
+            var aSession = Sessions()
+            aSession.cluster  = nil
+            aSession.workType = nil
+            aSession.headQuarters = nil
+            aSession.isRetrived = Bool()
+            aSession.isFirstCell = true
+            aSession.planDate = nil
+            sessionArr.append(aSession)
+            self.sessions = sessionArr
+            self.configureAddplanBtn(false)
+            self.configureSaveplanBtn(false)
+            self.setupRejectionVIew()
+            self.toLoadWorktypeTable()
+        }
+    
+       
         toSeperateDCR(istoAppend: true)
         updateDcr()
         toIntegrateChartView(chartType, cacheDCRindex)
@@ -826,8 +846,6 @@ class MainVC : UIViewController {
     
     func toSetDayplan(byDate: Date, completion: @escaping () -> ()) {
         self.toSetParams(date: byDate, isfromSyncCall: false) {
-           // self.toConfigureMydayPlan(planDate: byDate, isRetrived: true)
-           // self.configureSaveplanBtn(self.toEnableSaveBtn(sessionindex: 0,  istoHandeleAddedSession: false))
                         completion()
         }
     }
@@ -1265,7 +1283,7 @@ class MainVC : UIViewController {
         
         
         let presentation = QuicKLink(color: presentationColor, name: "Presentaion", image: UIImage(imageLiteralResourceName: "presentationIcon"))
-        let activity = QuicKLink(color: activityColor, name: "Activity", image: UIImage(imageLiteralResourceName: "activity"))
+        let activity = QuicKLink(color: activityColor, name: "Activity", image: UIImage(imageLiteralResourceName: "SideMenuActivity"))
         let reports = QuicKLink(color: reportsColor, name: "Reports", image: UIImage(imageLiteralResourceName: "reportIcon"))
         
         let slidePreview = QuicKLink(color: previewColor, name: "Slide Preview", image: UIImage(imageLiteralResourceName: "slidePreviewIcon"))
@@ -1635,9 +1653,6 @@ class MainVC : UIViewController {
         var dateComponents = DateComponents()
         dateComponents.month = moveUp ? 1 : -1
 
-
-
-        
         
         if moveUp {
             
@@ -1648,7 +1663,6 @@ class MainVC : UIViewController {
                 toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
                 
             }
- 
 
         } else if !moveUp{
 
@@ -1659,9 +1673,6 @@ class MainVC : UIViewController {
                
                 toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
             }
-            
-
-
 
         }
         
@@ -1807,19 +1818,22 @@ extension MainVC {
     }
     
     func handleWindups(isSynced: Bool, didUserWindup: Bool, paramData: Data, completion: @escaping (Bool) -> ()) {
+        
+        guard let selectedToday = self.selectedToday else {return}
+        
         if isDayCheckinNeeded {
             CoreDataManager.shared.fetchCheckininfo() { saveCheckins  in
                 guard let aCheckin = saveCheckins.first else {return}
 
-                let achckinInfo = CheckinInfo(address: aCheckin.address, checkinDateTime: aCheckin.checkinDateTime , checkOutDateTime: aCheckin.checkOutDateTime, latitude:  aCheckin.latitude, longitude:   aCheckin.longitude, dateStr: celenderToday.toString(format: "yyyy-MM-dd HH:mm:ss"), checkinTime: aCheckin.checkinTime, checkOutTime: aCheckin.checkOutTime)
+                let achckinInfo = CheckinInfo(address: aCheckin.address, checkinDateTime: aCheckin.checkinDateTime , checkOutDateTime: aCheckin.checkOutDateTime, latitude:  aCheckin.latitude, longitude:   aCheckin.longitude, dateStr: selectedToday.toString(format: "yyyy-MM-dd HH:mm:ss"), checkinTime: aCheckin.checkinTime, checkOutTime: aCheckin.checkOutTime)
                 
-                toSaveDayStatusToCoreData(date: celenderToday, didUserWindup: didUserWindup, isSynced: isSynced, cacheParam: paramData, checkinInfo: achckinInfo) { isSaved in
+                toSaveDayStatusToCoreData(date: selectedToday, didUserWindup: didUserWindup, isSynced: isSynced, cacheParam: paramData, checkinInfo: achckinInfo) { isSaved in
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: true)
                     completion(isSaved)
                 }
             }
         } else {
-            toSaveDayStatusToCoreData(date: celenderToday, didUserWindup: didUserWindup, isSynced: isSynced, cacheParam: paramData) { isSaved in
+            toSaveDayStatusToCoreData(date: selectedToday, didUserWindup: didUserWindup, isSynced: isSynced, cacheParam: paramData) { isSaved in
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: true)
                 completion(isSaved)
             }
@@ -1848,7 +1862,7 @@ extension MainVC {
 
     @IBAction func didTapFinalSubmit(_ sender: Any) {
         
-        guard selectedToday != nil else {
+        guard let selectedToday = self.selectedToday else {
             showAlertToFilldates(description: "Please select date to submit.")
             return
         }
@@ -1872,7 +1886,7 @@ extension MainVC {
             }
         }
      
-        toFetchExistingPlan(byDate: celenderToday) {existingSessions in
+        toFetchExistingPlan(byDate: selectedToday) {existingSessions in
             
             if existingSessions.isEmpty {
                 self.showAlertToFilldates(description: "Please fill work plan to Final submit")
@@ -1883,7 +1897,8 @@ extension MainVC {
            let fieldWorkSession = existingSessions.filter { $0.workType?.fwFlg == "F" }
             
             if !fieldWorkSession.isEmpty {
-                CoreDataManager.shared.toGetCallsCountForDate(callDate: self.celenderToday) {  callsCount in
+                
+                CoreDataManager.shared.toGetCallsCountForDate(callDate: selectedToday) {  callsCount in
                     if callsCount == 0 {
                         self.showAlertToFilldates(description: "Add call for choosen work plan to Final submit")
                         self.setSegment(.calls)
@@ -1914,9 +1929,12 @@ extension MainVC {
                     guard let welf = self else {return}
                     
                     welf.configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.didUserWindUP))
-          
-                    welf.configureSaveplanBtn(false)
-                    welf.configureAddplanBtn(false)
+                    welf.selectedToday = nil
+                 
+                    welf.selectedDate = ""
+                    welf.selectedRawDate = nil
+                    welf.setDateLbl(date: welf.selectedToday ?? welf.celenderToday)
+                    welf.refreshUI(MainVC.SegmentType.workPlan)
                 }
                 
             
@@ -3237,7 +3255,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
                 if !isSequentialDCRenabled {
                     if welf.selectedToday == nil {
-                        welf.showAlertToFilldates(description: "Please select date to Add Call")
+                        welf.showAlertToFilldates(description: "Please select date to Add Work type")
                         return
                     }
                 }
@@ -3713,12 +3731,6 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         //  let toCompareDate = dateFormatter.string(from: date)
         cell.addedIV.isHidden = false
         
-        if date.toString(format: "MMMM dd, yyyy") == "June 6, 2024" {
-            
-            print("Puduchutaen")
-            
-        }
-        
         let model: HomeData? = toExtractWorkDetails(date: date)
         
         
@@ -3781,7 +3793,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             //Shared.instance.showLoaderInWindow()
             guard let welf = self else {return}
             let selectedDate = date.toString(format: "MMMM dd, yyyy")
-           // let today = welf.celenderToday.toString(format: "MMMM dd, yyyy")
+        
             let isForsequential = false
             //isSequentialDCRenabled
     
@@ -3795,7 +3807,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                               
                                 Shared.instance.selectedDate = notWindedupDays
                                 welf.selectedToday = notWindedupDays
-                                welf.celenderToday = notWindedupDays
+                              //  welf.celenderToday = notWindedupDays
                                 welf.todayCallsModel = nil
                                 welf.callsCountLbl.text = "Call Count: \(0)"
                                 welf.toConfigureMydayPlan(planDate: notWindedupDays)
@@ -3838,8 +3850,8 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 let mergedDate =  welf.toMergeDate(selectedDate: date) ?? Date()
                 welf.lblDate.text = mergedDate.toString(format: "MMMM d, yyyy")
                 Shared.instance.selectedDate  = mergedDate
-                welf.selectedToday = date
-                welf.celenderToday = date
+                welf.selectedToday = mergedDate
+              //  welf.celenderToday = mergedDate
                 welf.todayCallsModel = nil
                 welf.callsCountLbl.text = "Call Count: \(0)"
                 welf.toConfigureMydayPlan(planDate: date)
