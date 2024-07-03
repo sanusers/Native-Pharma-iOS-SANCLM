@@ -17,17 +17,12 @@ extension MainVC {
         tourPlanCalander.scrollEnabled = false
         tourPlanCalander.calendarHeaderView.isHidden = true
         tourPlanCalander.headerHeight = 0 // this makes some extra spacing, but you can try 0 or 1
-        //tourPlanCalander.daysContainer.backgroundColor = UIColor.gray
         tourPlanCalander.rowHeight =  tourPlanCalander.height / 5
         tourPlanCalander.layer.borderColor = UIColor.appSelectionColor.cgColor
-        //  tourPlanCalander.calendarWeekdayView.weekdayLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
         tourPlanCalander.calendarWeekdayView.weekdayLabels.forEach { label in
             label.setFont(font: .medium(size: .BODY))
             label.textColor = .appLightTextColor
         }
-        //  tourPlanCalander.layer.borderWidth = 1
-        //  tourPlanCalander.layer.cornerRadius = 5
-        //  tourPlanCalander.clipsToBounds = true
         tourPlanCalander.placeholderType = .none
         tourPlanCalander.calendarWeekdayView.backgroundColor = .clear
         self.tourPlanCalander.scrollDirection = .horizontal
@@ -35,16 +30,15 @@ extension MainVC {
         tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
         
         self.returnWeeklyoffDates()
-        togetDCRdates() {
-            self.tourPlanCalander.delegate = self
-            self.tourPlanCalander.dataSource = self
-            self.tourPlanCalander.reloadData()
+        
+         self.tourPlanCalander.delegate = self
+         self.tourPlanCalander.dataSource = self
+         self.tourPlanCalander.reloadData()
+        
+        if let currentPage = self.currentPage {
+            self.tourPlanCalander.setCurrentPage(currentPage, animated: true)
         }
-     
-        
-     
-        //   mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
-        
+
     }
     
     func getCurrentFormattedDateString(selecdate: Date) -> String {
@@ -189,21 +183,12 @@ extension MainVC {
     }
     
     func toExtractWorkDetails(date: Date) -> HomeData? {
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        
-        let dateString = dateFormatter.string(from: date)
+
+        let dateString = date.toString(format: "yyyy-MM-dd")
         
         print(dateString)
         
-        
         let filteredDetails =   homeDataArr.filter { $0.dcr_dt ?? "" == dateString}
-        
-      //  let unSyncedFilterDetails = unsyncedhomeDataArr.filter { $0.dcr_dt ?? "" == dateString}
-        
-     //   filteredDetails.append(contentsOf: unSyncedFilterDetails)
         
         if !filteredDetails.isEmpty {
             return filteredDetails.first
@@ -213,7 +198,7 @@ extension MainVC {
         
     }
     
-    func togetDCRdates(completion: @escaping () -> ()) {
+    func togetDCRdates(isToUpdateDate: Bool, completion: @escaping () -> ()) {
         CoreDataManager.shared.fetchDcrDates { savedDcrDates in
             for dcrDate in savedDcrDates {
                 CoreDataManager.shared.context.refresh(dcrDate, mergeChanges: true)
@@ -223,64 +208,85 @@ extension MainVC {
                 print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
             }
             
-        
-            completion()
-        }
-        
-       // dump( self.responseDcrDates)
-        
-        
-        
-        
-        
+         
+            if isToUpdateDate {
+                let planDates = savedDcrDates.filter { $0.flag == "0" && $0.tbname == "dcr" }
+                 
+                 guard !planDates.isEmpty, let currentDate = planDates.first  else {
+                   completion()
+                     return
+                 }
+                 //"2024-06-06 00:00:00"
+                 guard let toDayDate = currentDate.date?.toDate(format: "yyyy-MM-dd") else {
+                     completion()
+                     return
+                 }
+                
+                let mergedDate = self.toMergeDate(selectedDate: toDayDate) ?? Date()
+                Shared.instance.selectedDate = mergedDate
+                self.currentPage = mergedDate
+                self.selectedToday = mergedDate
+                self.setDateLbl(date: mergedDate)
+                self.toCreateNewDayStatus()
+                self.callDayPLanAPI(date: mergedDate, isFromDCRDates: true)
+                self.toLoadCalenderData()
+                 completion()
+            } else {
+                self.toLoadCalenderData()
+                completion()
+            }
 
+        }
         
     }
     
     func toAppendDCRtoHomeData(date: String, flag: String, tbName:String, editFlag: String) {
         
-        let isDayExists: Bool = self.homeDataArr.map { $0.dcr_dt }.contains(date)
+        var isDayExists: Bool = false
+        // = self.homeDataArr.map { $0.dcr_dt  }.contains(date)
+        var existingEntity: HomeData?
+        if let sampleElement = self.homeDataArr.first(where: { $0.dcr_dt == date }) {
+            // Do something with sampleElement
+            existingEntity = sampleElement
+            isDayExists = true
+        } else {
+            // Handle the case where no matching element is found
+            print("No element found for the given date")
+        }
         
+   
         if isDayExists {
             print("<------Day exists----->")
-            self.homeDataArr.removeAll { $0.dcr_dt == date }
+           self.homeDataArr.removeAll { $0.dcr_dt == date }
+        
         }
             if let entityDescription = NSEntityDescription.entity(forEntityName: "HomeData", in: context) {
                 let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
                 
                 
-                entityHomedata.anslNo = ""
-                entityHomedata.custCode =  String()
-                entityHomedata.custName = String()
-                entityHomedata.custType = String()
+                entityHomedata.anslNo = isDayExists ? existingEntity?.anslNo : ""
+                entityHomedata.custCode =  isDayExists ? existingEntity?.custCode : ""
+                entityHomedata.custName = isDayExists ? existingEntity?.custName : ""
+                entityHomedata.custType = isDayExists ? existingEntity?.custType : ""
                 entityHomedata.dcr_dt = date
-                entityHomedata.dcr_flag = String()
-                entityHomedata.editflag = editFlag
-                entityHomedata.fw_Indicator = (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : ""
-                
-                
-             
-                entityHomedata.index = Int16()
-                entityHomedata.isDataSentToAPI = String()
-                entityHomedata.mnth = String()
-                entityHomedata.month_name = String()
-                entityHomedata.rejectionReason = String()
-                entityHomedata.sf_Code = String()
-                entityHomedata.town_code = String()
-                entityHomedata.town_name = String()
-                entityHomedata.trans_SlNo = String()
-                entityHomedata.yr = String()
-                
-              
+                entityHomedata.dcr_flag = isDayExists ? existingEntity?.dcr_flag : ""
+                entityHomedata.editflag = isDayExists ? existingEntity?.editflag : ""
+                entityHomedata.fw_Indicator = isDayExists ? existingEntity?.fw_Indicator :  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : ""
+
+                entityHomedata.isDataSentToAPI = isDayExists ? existingEntity?.isDataSentToAPI : ""
+                entityHomedata.mnth = isDayExists ? existingEntity?.mnth : ""
+                entityHomedata.month_name = isDayExists ? existingEntity?.month_name : ""
+                entityHomedata.rejectionReason = isDayExists ? existingEntity?.rejectionReason : ""
+                entityHomedata.sf_Code = isDayExists ? existingEntity?.sf_Code : ""
+                entityHomedata.town_code = isDayExists ? existingEntity?.town_code : ""
+                entityHomedata.town_name = isDayExists ? existingEntity?.town_name : ""
+                entityHomedata.trans_SlNo = isDayExists ? existingEntity?.trans_SlNo : ""
+                entityHomedata.yr = isDayExists ? existingEntity?.yr : ""
                 
                 self.homeDataArr.append(entityHomedata)
             }
      
-      
 
-            
-            
-        
   
     
     }

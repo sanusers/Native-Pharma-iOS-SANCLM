@@ -67,7 +67,10 @@ extension MainVC {
                     Shared.instance.removeLoaderInWindow()
                     
                 }
-            welf.toLoadOutboxTable()
+         
+                welf.refreshDashboard {
+                    
+                }
             }
             
   
@@ -109,7 +112,7 @@ extension MainVC {
                              LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
                             
 
-                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: welf.selectedRawDate ?? Date()) {_ in
+                             welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: Shared.instance.selectedDate) {_ in
  
                                  completion(true)
                                  welf.toCreateToast(response.msg ?? "")
@@ -303,7 +306,7 @@ extension MainVC {
                     welf.lblDate.text = dateFormatter.string(from: date)
                     welf.selectedRawDate = date
                     welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
-                    welf.tourPlanCalander.reloadData()
+                    welf.toLoadCalenderData()
                     welf.setSegment(.workPlan)
                 case .failure(let error):
                   welf.toCreateToast(error.rawValue)
@@ -313,22 +316,6 @@ extension MainVC {
             self.toSetParams(date: date, isfromSyncCall: true) {
                
             }
-        } else {
-            let dateString = date.toString(format: "yyyy-MM-dd")
-            if dateString != Date().toString(format: "yyyy-MM-dd") {
-                showAlertToPushCalls(desc: "Please connect to internet to sync calls and Day plans.")
-            }
-          selectedToday = Date()
-          celenderToday = Date()
-          let dateFormatter = DateFormatter()
-          dateFormatter.dateFormat = "MMMM d, yyyy"
-          lblDate.text = dateFormatter.string(from: Date())
-          self.todayCallsModel = nil
-          self.callsCountLbl.text = "Call Count: \(0)"
-          toConfigureMydayPlan(planDate: Date())
-          self.setSegment(.workPlan)
-          self.tourPlanCalander.reloadData()
-            
         }
     }
     

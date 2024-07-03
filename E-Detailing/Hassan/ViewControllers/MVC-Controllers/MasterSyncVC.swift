@@ -765,15 +765,38 @@ class MasterSyncVC : UIViewController {
                 case .success(let respnse):
                     
                     self.dcrDates = respnse
-                    CoreDataManager.shared.saveDatestoCoreData(model: respnse)
-                    completion(true)
+                    CoreDataManager.shared.saveDatestoCoreData(model: respnse) {
+                        
+                        CoreDataManager.shared.fetchDcrDates() { savedDcrDates in
+                            dump(savedDcrDates)
+                            
+                            
+                           let planDates = savedDcrDates.filter { $0.flag == "0" && $0.tbname == "dcr" }
+                            
+                            guard !planDates.isEmpty, let currentDate = planDates.first  else {
+                                completion(true)
+                                return
+                            }
+                            //"2024-06-06 00:00:00"
+                            guard let toDayDate = currentDate.date?.toDate(format: "yyyy-MM-dd") else {
+                                completion(true)
+                                return
+                            }
+                            Shared.instance.selectedDate = toDayDate
+                            completion(true)
+                        }
+                        
+                    }
+              
+                    
+                  
                 case .failure(let error):
                     completion(false)
                     print(error.rawValue)
                 }
             }
         case .myDayPlan:
-            mastersyncVM?.callSavePlanAPI(byDate: Date()) {isUploaded in
+            mastersyncVM?.callSavePlanAPI(byDate: Shared.instance.selectedDate) {isUploaded in
                 self.mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
                     guard let welf = self else {return}
                     //  completion(true)
@@ -1022,7 +1045,7 @@ extension MasterSyncVC : tableViewProtocols {
       
 
         
-        self.masterData = [MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
+        self.masterData = [MasterInfo.dcrDateSync, MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup,  MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
         //MasterInfo.competitors,
         //MasterInfo.subordinateMGR,
 

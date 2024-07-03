@@ -56,9 +56,7 @@ class MyDayPlanCalenderView: UIView, FSCalendarDelegate, FSCalendarDataSource ,F
         self.tourPlanCalander.scrollDirection = .horizontal
         self.tourPlanCalander.register(CustomCalendarCell.self, forCellReuseIdentifier: "CustomCalendarCell")
         tourPlanCalander.adjustsBoundingRectWhenChangingMonths = true
-        tourPlanCalander.delegate = self
-        tourPlanCalander.dataSource = self
-        tourPlanCalander.reloadData()
+        toLoadCalenderData()
      //   mainDateLbl.text = toTrimDate(date: tourPlanCalander.currentPage , isForMainLabel: true)
 
     }

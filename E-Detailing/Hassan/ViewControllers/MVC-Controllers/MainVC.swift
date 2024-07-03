@@ -39,6 +39,7 @@ class MainVC : UIViewController {
     @IBOutlet weak var callStackView: UIStackView!
     @IBOutlet weak var slideStackView: UIStackView!
     
+    @IBOutlet var btnSyncDate: ShadowButton!
     // views
     
     @IBOutlet weak var viewDate: UIView!
@@ -164,7 +165,7 @@ class MainVC : UIViewController {
     
     var dcrCount = [DcrCount]()
     var masterVM : MasterSyncVM?
-    
+    var isFieldWorkExists: Bool = false
     let eventArr = ["Weekly off", "Field Work", "Holiday", "Leave", "Missed Released", "Re Entry", "TP Devition Released", "Non-Field Work", "TP Devition", "Leave Approval Pending"]
     let colorArr : [UIColor] =  [.appYellow, .appGreen, .appViolet, .appLightPink, .appLightGrey, .appPink, .appDeepGreen, .appBlue, .appBrown, .appDeepBlue]
     
@@ -193,9 +194,8 @@ class MainVC : UIViewController {
         updateLinks()
         setupUI()
         addObservers()
-        if !isSequentialDCRenabled {
-            configurePastWindups()
-        }
+        btnCalenderSync(self.btnSyncDate!)
+
     }
     
     class func initWithStory(isfromLaunch: Bool, ViewModel: UserStatisticsVM) -> MainVC {
@@ -808,7 +808,7 @@ class MainVC : UIViewController {
     
     func toPostDayplan(byDate:Date, completion: @escaping () -> ()) {
         
-        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.istoUploadDayplans) && LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+        if  LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             
             
             callSavePlanAPI(byDate: byDate) {  [weak self] isUploaded in
@@ -1024,7 +1024,7 @@ class MainVC : UIViewController {
         
         self.outBoxDataArr?.removeAll()
         
-        let outBoxDataArr =  self.unsyncedhomeDataArr
+        let outBoxDataArr =  self.unsyncedhomeDataArr.filter { $0.fw_Indicator != "N" }
         
         if !outBoxDataArr.isEmpty {
             outboxCountVIew.isHidden = false
@@ -1117,7 +1117,10 @@ class MainVC : UIViewController {
       //  dispatchGroup.enter()
         var dateArr: [Date] = []
         CoreDataManager.shared.fetchEachDayPlan { aDayplans in
-            aDayplans.forEach { eachDayPlan in
+            
+           let unSyncedPlans = aDayplans.filter { !$0.isSynced }
+            
+            unSyncedPlans.forEach { eachDayPlan in
                 dateArr.append(eachDayPlan.planDate ?? Date())
             }
          //   dispatchGroup.leave()
@@ -1647,7 +1650,7 @@ class MainVC : UIViewController {
         }
     }
     
-    private func moveCurrentPage(moveUp: Bool) {
+     func moveCurrentPage(moveUp: Bool) {
         
         let calendar = Calendar.current
         var dateComponents = DateComponents()
@@ -1739,13 +1742,14 @@ extension MainVC {
                    
                 case .success(let response):
                  //   Shared.instance.removeLoaderInWindow()
-                    CoreDataManager.shared.saveDatestoCoreData(model: response)
-                    welf.returnWeeklyoffDates()
-                    welf.togetDCRdates() {
-                        welf.tourPlanCalander.delegate = self
-                        welf.tourPlanCalander.dataSource = self
-                        welf.tourPlanCalander.reloadData()
+                    CoreDataManager.shared.saveDatestoCoreData(model: response) {
+                        welf.togetDCRdates(isToUpdateDate: false) {
+                            if !isSequentialDCRenabled {
+                                welf.configurePastWindups()
+                            }
+                        }
                     }
+
                 case .failure(let error):
                   //  Shared.instance.removeLoaderInWindow()
                     welf.toCreateToast("\(error)")
@@ -1755,8 +1759,14 @@ extension MainVC {
 
             
         } else {
-            
-            self.toCreateToast("OOPS! Unable sync dates.")
+         //   self.showAlertToFilldates(description: "Please connect to active internet to sync DCR dates.")
+            togetDCRdates(isToUpdateDate: false) {
+                if !isSequentialDCRenabled {
+                    self.configurePastWindups()
+                }
+                
+            }
+
         }
         
     }
@@ -1774,8 +1784,8 @@ extension MainVC {
         param["state_code"] = appSetups.stateCode
         param["subdivision_code"] = appSetups.subDivisionCode
         param["day_flag"] = "1"
-        param["Activity_Dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
-        param["current_Dt"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        param["Activity_Dt"] = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
+        param["current_Dt"] = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         param["day_remarks"] = self.dayRemarks
         
         let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
@@ -1897,17 +1907,23 @@ extension MainVC {
            let fieldWorkSession = existingSessions.filter { $0.workType?.fwFlg == "F" }
             
             if !fieldWorkSession.isEmpty {
-                
+                self.isFieldWorkExists = true
                 CoreDataManager.shared.toGetCallsCountForDate(callDate: selectedToday) {  callsCount in
                     if callsCount == 0 {
-                        self.showAlertToFilldates(description: "Add call for choosen work plan to Final submit")
-                        self.setSegment(.calls)
-                        return
+                        let cacheCalls = DBManager.shared.getHomeData().filter { $0.dcr_dt == Shared.instance.selectedDate.toString(format: "yyyy-MM-dd") && $0.fw_Indicator == "F" && $0.custType != "0" }
+                        if cacheCalls.isEmpty {
+                            self.showAlertToFilldates(description: "Add call for choosen work plan to Final submit")
+                            self.setSegment(.calls)
+                            return
+                        } else {
+                            self.doUserWindup()
+                        }
                     } else {
                         self.doUserWindup()
                     }
                 }
             } else {
+                self.isFieldWorkExists = false
                 self.doUserWindup()
             }
         }
@@ -1927,18 +1943,31 @@ extension MainVC {
                 
                 doUserWindup { [weak self] _ in
                     guard let welf = self else {return}
+                    if !welf.isFieldWorkExists {
+                        welf.toAppendNonFieldWorks()
+                    }
                     
                     welf.configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.didUserWindUP))
+                    
                     welf.selectedToday = nil
-                 
                     welf.selectedDate = ""
                     welf.selectedRawDate = nil
+                    welf.isFieldWorkExists = false
                     welf.setDateLbl(date: welf.selectedToday ?? welf.celenderToday)
-                    welf.refreshUI(MainVC.SegmentType.workPlan)
+                    welf.sessions?.removeAll()
+                    welf.fetchedWorkTypeObject1 = nil
+                    welf.isPlanningNewDCR = true
+                    welf.fetchedClusterObject1 = nil
+                    welf.fetchedHQObject1 = nil
+                    welf.fetchedHQObject2 = nil
+                    welf.fetchedClusterObject2 = nil
+                    welf.fetchedWorkTypeObject2 = nil
+                    welf.toAddnewSession()
+        
+                    CoreDataManager.shared.removeaDcrDate(date: Shared.instance.selectedDate) {
+                        welf.togetDCRdates(isToUpdateDate: false) {}
+                    }
                 }
-                
-            
-                
             }
           
         } else {
@@ -2285,16 +2314,9 @@ extension MainVC {
                     
                     welf.toCreateToast("You are not connected to internet")
                 }
-                
-                
+
             }
-            
-        
-        
-        
-        
-        
-        
+
     }
     
     func toCreateNewDayStatus() {
@@ -3715,7 +3737,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         print(calendar.currentPage)
         dateInfoLbl.text = toTrimDate(date: calendar.currentPage , isForMainLabel: true)
-        self.selectedDate = ""
+       // self.selectedDate = ""
         //"\(values.month!) \(values.year!)"
         //
     }
@@ -3756,19 +3778,10 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             cell.addedIV.backgroundColor = .appLightGrey
             dump(model)
         }
-        
-        
-        
-        
-        
-        
-        
-        
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
         cell.customLabel.setFont(font: .medium(size: .BODY))
         cell.customLabel.textColor = .appTextColor
-        // cell.customLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         cell.titleLabel.isHidden = true
         cell.shapeLayer.isHidden = true
         
@@ -3776,24 +3789,28 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         cell.layer.borderWidth = 0.5
         
         
-        
-        if selectedDate ==  toTrimDate(date: date, isForMainLabel: false)  {
-            cell.contentHolderView.backgroundColor = .appTextColor
-            cell.customLabel.textColor = .appWhiteColor
-        } else {
+        if let selectedToday = self.selectedToday {
+            if selectedToday.toString(format: "yyyy-MM-dd") ==  date.toString(format: "yyyy-MM-dd")  {
+                cell.contentHolderView.backgroundColor = .appTextColor
+                cell.customLabel.textColor = .appWhiteColor
+            } else {
+                cell.contentHolderView.backgroundColor = .clear
+                cell.customLabel.textColor = .appLightTextColor
+            }
+        }  else {
             cell.contentHolderView.backgroundColor = .clear
             cell.customLabel.textColor = .appLightTextColor
         }
+
         
         
         cell.addTap { [weak self] in
-          
-         
+
             
-            //Shared.instance.showLoaderInWindow()
             guard let welf = self else {return}
-            let selectedDate = date.toString(format: "MMMM dd, yyyy")
         
+            let selectedDate = date.toString(format: "MMMM dd, yyyy")
+
             let isForsequential = false
             //isSequentialDCRenabled
     
@@ -3832,10 +3849,20 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 return
             }
             
-            
-            
-            if model == nil {
-                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+            ///Allow selection only from fetched dates from date Sync API
+            CoreDataManager.shared.fetchDcrDates { savedDcrDates in
+              let yetToModifiedDates =  savedDcrDates.filter { $0.date == date.toString(format: "yyyy-MM-dd") }
+                
+                guard !yetToModifiedDates.isEmpty else {
+                    
+                    welf.showAlertToFilldates(description: "you cant select \(selectedDate)")
+
+                    return
+                    
+                }
+                
+                
+                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: true)
                 welf.selectedRawDate = date
                 welf.sessions?.removeAll()
                 welf.fetchedWorkTypeObject1 = nil
@@ -3851,26 +3878,29 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.lblDate.text = mergedDate.toString(format: "MMMM d, yyyy")
                 Shared.instance.selectedDate  = mergedDate
                 welf.selectedToday = mergedDate
-              //  welf.celenderToday = mergedDate
                 welf.todayCallsModel = nil
                 welf.callsCountLbl.text = "Call Count: \(0)"
                 welf.toConfigureMydayPlan(planDate: date)
                 welf.setSegment(.workPlan)
                 welf.tourPlanCalander.reloadData()
                 welf.validateWindups()
+                
+                if isConnected {
+                  welf.callDayPLanAPI(date: date, isFromDCRDates: true)
+                }
+                
                 return
-            } else {
+            }
+
 //                /// note:- DCR edit flag
 //                if model?.editflag != "0" {
 //                    print("-----> YET TO CALL API <------")
 //                    welf.selectedToday ?? Date() = date
 //                    welf.callDayPLanAPI(date: selectedDate.toDate(format: "yyyy-MM-dd"), isFromDCRDates: true)
 //                    return
-//                } else  {
-                    welf.showAlertToFilldates(description: "you cant select \(selectedDate)")
-//                }
-            }
-          //  welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
+
+
+      
            
         
 

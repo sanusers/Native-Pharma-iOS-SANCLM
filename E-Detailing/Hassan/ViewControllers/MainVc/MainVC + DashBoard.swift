@@ -6,7 +6,47 @@
 //
 
 import Foundation
+import CoreData
 extension MainVC {
+    
+    
+    func toAppendNonFieldWorks() {
+
+        let addedCallDate =  Shared.instance.selectedDate
+        
+        let dateStr = addedCallDate.toString(format: "yyyy-MM-dd")
+        
+        self.homeDataArr.removeAll { $0.dcr_dt == dateStr  }
+        
+        var dbparam = [String: Any]()
+        dbparam["FW_Indicator"] = "N"
+        dbparam["Dcr_dt"] = dateStr
+        //Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        dbparam["month_name"] = addedCallDate.toString(format: "MMMM")
+        dbparam["Mnth"] = addedCallDate.toString(format: "MM")
+        dbparam["Yr"] =  addedCallDate.toString(format: "YYYY")
+        dbparam["Dcr_flag"] = "1"
+        dbparam["Trans_SlNo"] = ""
+        dbparam["AMSLNo"] = ""
+        dbparam["dayStatus"] = "1"
+        var dbparamArr = [[String: Any]]()
+        dbparamArr.append(dbparam)
+        let masterData = DBManager.shared.getMasterData()
+        var HomeDataSetupArray = [UnsyncedHomeData]()
+        for (index,homeData) in dbparamArr.enumerated() {
+                let contextNew = DBManager.shared.managedContext()
+                let HomeDataEntity = NSEntityDescription.entity(forEntityName: "UnsyncedHomeData", in: contextNew)
+                let HomeDataSetupItem = UnsyncedHomeData(entity: HomeDataEntity!, insertInto: contextNew)
+                HomeDataSetupItem.setValues(fromDictionary: homeData)
+                HomeDataSetupItem.index = Int16(index)
+                HomeDataSetupArray.append(HomeDataSetupItem)
+        }
+        HomeDataSetupArray.forEach{ (type) in
+            masterData.addToUnsyncedHomeData(type)
+        }
+        DBManager.shared.saveContext()
+
+    }
     
     func toIntegrateChartView(_ type: ChartType, _ index: Int) {
         
@@ -108,7 +148,7 @@ extension MainVC {
                   homeData.dcr_dt = unSyncedDate?.toString(format: "yyyy-MM-dd")
                   homeData.dcr_flag = unsyncedHomeData.dcr_flag
                   homeData.editflag = unsyncedHomeData.editflag
-                  homeData.fw_Indicator = unsyncedHomeData.fw_Indicator
+                  homeData.fw_Indicator = unsyncedHomeData.fw_Indicator == "" ? "N" : ""
                   homeData.index = unsyncedHomeData.index
                   homeData.isDataSentToAPI = unsyncedHomeData.isDataSentToAPI
                   homeData.mnth = unsyncedHomeData.mnth

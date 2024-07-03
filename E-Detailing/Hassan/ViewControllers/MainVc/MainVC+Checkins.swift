@@ -147,29 +147,41 @@ extension MainVC {
             
         }
     }
+    
     func configurePastWindups() {
         if let notWindedups = toReturnNotWindedupDate() {
             if let notWindedupDate = notWindedups.statusDate {
-                Shared.instance.selectedDate = notWindedupDate
-                selectedDate = toTrimDate(date: notWindedupDate, isForMainLabel: false)
-                selectedToday = notWindedupDate
-                celenderToday = notWindedupDate
+
+                let mergedDate = self.toMergeDate(selectedDate: notWindedupDate) ?? Date()
+                Shared.instance.selectedDate = mergedDate
+                currentPage = mergedDate
+                selectedToday = mergedDate
+                celenderToday = mergedDate
                 todayCallsModel = nil
                 callsCountLbl.text = "Call Count: \(0)"
-                toConfigureMydayPlan(planDate: notWindedupDate)
-                setDateLbl(date: notWindedupDate)
+                toConfigureMydayPlan(planDate: mergedDate)
+                setDateLbl(date: mergedDate)
                 setSegment(.workPlan)
-                tourPlanCalander.reloadData()
+                toLoadCalenderData()
             }
+        } else {
+            togetDCRdates(isToUpdateDate: true) { }
+            
         }
         validateWindups()
     }
     
     func reserCallModule(lastCheckinDate: Date?) {
         if let lastCheckinDate = lastCheckinDate {
-            let lastCheckinDate = lastCheckinDate.toString(format: "yyyy-MM-dd")
-            LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: lastCheckinDate)
+            let lastCheckinDateStr = lastCheckinDate.toString(format: "yyyy-MM-dd")
+            LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: lastCheckinDateStr)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
+            
+            CoreDataManager.shared.removeaDcrDate(date: lastCheckinDate) {
+                
+                togetDCRdates(isToUpdateDate: false) {}
+                
+            }
         } else {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)

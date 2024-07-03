@@ -1373,13 +1373,39 @@ extension CoreDataManager {
         }
     }
     
-    func saveDatestoCoreData(model: [DCRdatesModel]) {
+    
+    func removeaDcrDate(date: Date, completion: () -> ()) {
+        let fetchRequest: NSFetchRequest<DcrDates> = NSFetchRequest(entityName: "DcrDates")
+
+        do {
+            let dcrDates = try context.fetch(fetchRequest)
+            for dcrDate in dcrDates {
+                
+                let cacheDate = dcrDate.date
+                let toRemoveDate = date.toString(format:  "yyyy-MM-dd")
+                
+                if cacheDate == toRemoveDate {
+                    context.delete(dcrDate)
+                }
+                
+                
+             
+            }
+
+            try context.save()
+            completion()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+            completion()
+        }
+    }
+    
+    func saveDatestoCoreData(model: [DCRdatesModel], completion: @escaping () -> ()) {
        // guard let dcrDates = dcrDates else {return}
         CoreDataManager.shared.removeAllDcrDates()
-        CoreDataManager.shared.saveDCRDates(fromDcrModel: model) {
-            CoreDataManager.shared.fetchDcrDates() { savedDcrDates in
-                dump(savedDcrDates)
-            }
+        CoreDataManager.shared.saveDCRDates(fromDcrModel: model) {  
+            
+            completion()
         }
     }
     

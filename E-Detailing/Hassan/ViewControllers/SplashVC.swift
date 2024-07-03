@@ -38,7 +38,7 @@ class SplashVC: BaseViewController{
             self.splashView.launchIV.image = gifImage
          }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             UIView.animate(withDuration: 1, delay: 0, animations: {
                 self.splashView.SplashImageHolderView.isHidden = true
                 AppDelegate.shared.setupRootViewControllers(isFromlaunch: true)
