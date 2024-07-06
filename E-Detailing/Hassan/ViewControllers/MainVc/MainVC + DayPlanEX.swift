@@ -914,7 +914,7 @@ extension MainVC {
         
     }
     
-    func toConfigureMydayPlan(planDate: Date, isRetrived: Bool? = false) {
+    func toConfigureMydayPlan(planDate: Date, isRetrived: Bool? = false, completion: @escaping () -> ()) {
         
         
         
@@ -950,6 +950,7 @@ extension MainVC {
             
             
             guard let nonNilSessons = self.sessions else {
+                
                 self.configureAddplanBtn(false)
                 self.configureSaveplanBtn(false)
                 return
@@ -963,7 +964,7 @@ extension MainVC {
             nonNilSessons.enumerated().forEach { index, aSession in
                 switch index {
                 case 0:
-                    
+
                     if aSession.isRetrived == true {
                         isPlan1filled =  true
                         
@@ -1009,6 +1010,7 @@ extension MainVC {
                     }
      
                 case 1:
+                    
                     if aSession.isRetrived == true {
                         isPlan2filled =  true
                         
@@ -1053,15 +1055,11 @@ extension MainVC {
                 
                 
             }
-            
             self.configureAddplanBtn(istoEnableAddPlanBtn)
-            
             self.configureSaveplanBtn(istoEnableSaveBtn)
-            self.setupRejectionVIew()
+       //    self.setupRejectionVIew()
             self.toLoadWorktypeTable()
-            
-      //      self.setSegment(.workPlan)
-            
+            completion()
             
         }
         

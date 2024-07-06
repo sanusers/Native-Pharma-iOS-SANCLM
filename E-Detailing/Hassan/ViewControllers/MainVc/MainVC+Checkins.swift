@@ -12,7 +12,7 @@ extension MainVC {
         
 
         var currentDate : Date?
-        if !isSequentialDCRenabled {
+      //  if !isSequentialDCRenabled {
             if self.selectedToday == nil {
                 return false
             } else {
@@ -28,7 +28,7 @@ extension MainVC {
                 
               return false
             }
-        }
+      //  }
         guard let currentDate = currentDate else {return false}
         
         // Assuming you have a storedDateString retrieved from local storage
@@ -142,64 +142,92 @@ extension MainVC {
                 
                 
             }
-            
-            
-            
         }
     }
     
-    func configurePastWindups() {
+    func toSetCacheDate(date: Date? = nil) {
+        Shared.instance.selectedDate = date ?? Date()
+        currentPage = date
+        selectedToday = date
+        celenderToday = date ?? Date()
+        setDateLbl(date: date ?? Date())
+    }
+    
+    func toReturnReason() {
+        
+    }
+    
+    func configurePastWindups(completion: @escaping () -> ()) {
         if let notWindedups = toReturnNotWindedupDate() {
             if let notWindedupDate = notWindedups.statusDate {
-
                 let mergedDate = self.toMergeDate(selectedDate: notWindedupDate) ?? Date()
-                Shared.instance.selectedDate = mergedDate
-                currentPage = mergedDate
-                selectedToday = mergedDate
-                celenderToday = mergedDate
-                todayCallsModel = nil
-                callsCountLbl.text = "Call Count: \(0)"
-                toConfigureMydayPlan(planDate: mergedDate)
-                setDateLbl(date: mergedDate)
-                setSegment(.workPlan)
-                toLoadCalenderData()
+                self.callDayPLanAPI(date: mergedDate, isFromDCRDates: true) { [weak self] in
+                    guard let welf = self else {return}
+                    welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
+                        welf.toConfigureMydayPlan(planDate: mergedDate) {
+                            welf.validateWindups() {
+                                welf.refreshUI(date: mergedDate, MainVC.SegmentType.workPlan) {
+                                    completion()
+                                }
+                            }
+                        }
+                        
+                    }
+                    
+                }
             }
         } else {
-            togetDCRdates(isToUpdateDate: true) { }
+            togetDCRdates(isToUpdateDate: true) { [weak self] in
+                guard let welf = self else {return}
+                welf.validateWindups() {
+                    completion()
+                }
+                
+            }
             
         }
-        validateWindups()
+        
     }
     
-    func reserCallModule(lastCheckinDate: Date?) {
+    func reserCallModule(lastCheckinDate: Date?, completion: @escaping () -> ()) {
         if let lastCheckinDate = lastCheckinDate {
             let lastCheckinDateStr = lastCheckinDate.toString(format: "yyyy-MM-dd")
             LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: lastCheckinDateStr)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
             
-            CoreDataManager.shared.removeaDcrDate(date: lastCheckinDate) {
-                
-                togetDCRdates(isToUpdateDate: false) {}
-                
-            }
+//            CoreDataManager.shared.removeaDcrDate(date: lastCheckinDate) {
+//                
+//                togetDCRdates(isToUpdateDate: false) {}
+//                
+//            }
         } else {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
         }
+        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: false)
         isDayPlanRemarksadded = false
         configureFinalsubmit(true)
         configureAddCall(true)
-        if isDayCheckinNeeded {
-            if istoRedirecttoCheckin() {
-                checkinAction()
+        
+        if isSequentialDCRenabled {
+            doSequentialFlow() {
+                completion()
             }
+        } else {
+            doNonSequentialFlow()
+            if isDayCheckinNeeded {
+                if istoRedirecttoCheckin() {
+                    checkinAction()
+                  
+                }
+            }
+            completion()
         }
-
     }
     
-    func validateWindups() {
+    func validateWindups(completion: @escaping () -> ()) {
         var isDateWindup: Bool = false
         let selectedDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")
         var lastCheckinDate : Date?
@@ -222,12 +250,14 @@ extension MainVC {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: true)
-           
             configureFinalsubmit(false)
             configureAddCall(false)
             configureAddplanBtn(false)
+            completion()
         } else {
-            reserCallModule(lastCheckinDate:  lastCheckinDate)
+            reserCallModule(lastCheckinDate:  lastCheckinDate) {
+            completion()
+            }
         }
     }
     

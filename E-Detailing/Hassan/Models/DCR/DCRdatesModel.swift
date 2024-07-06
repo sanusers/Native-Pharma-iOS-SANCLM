@@ -10,16 +10,25 @@
 import Foundation
 
 class DCRdatesModel: Codable {
-    let sfCode: String
-    let dt: Dt
-    let flg: Int
-    let tbname: String
-    let editFlag : String
-
+    var sfCode: String
+    var dt: Dt
+    var flg: Int
+    var tbname: String
+    var editFlag : String
+    var reason : String
+    init() {
+    sfCode = String()
+    dt =  Dt()
+    flg = Int()
+    tbname = String()
+    editFlag = String()
+        reason = String()
+    }
     enum CodingKeys: String, CodingKey {
         case sfCode = "Sf_Code"
-        case dt, flg, tbname
+        case dt, flg, tbname, reason
         case editFlag = "edit_flag"
+        
     }
     
     required init(from decoder: Decoder) throws {
@@ -29,15 +38,23 @@ class DCRdatesModel: Codable {
         self.flg = container.safeDecodeValue(forKey: .flg)
         self.tbname = container.safeDecodeValue(forKey: .tbname)
         self.editFlag = container.safeDecodeValue(forKey: .editFlag)
+        self.reason = container.safeDecodeValue(forKey: .reason)
     }
 }
 
 // MARK: - Dt
 class Dt: Codable {
-    let date: String
-    let timezoneType: Int
-    let timezone: String
+    var date: String
+    var timezoneType: Int
+    var timezone: String
 
+    init() {
+        
+    date = String()
+    timezoneType = Int()
+    timezone = String()
+    }
+    
     enum CodingKeys: String, CodingKey {
         case date
         case timezoneType = "timezone_type"

@@ -20,8 +20,7 @@ extension MainVC {
         
         var dbparam = [String: Any]()
         dbparam["FW_Indicator"] = "N"
-        dbparam["Dcr_dt"] = dateStr
-        //Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        dbparam["Dcr_dt"] =  addedCallDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         dbparam["month_name"] = addedCallDate.toString(format: "MMMM")
         dbparam["Mnth"] = addedCallDate.toString(format: "MM")
         dbparam["Yr"] =  addedCallDate.toString(format: "YYYY")
@@ -137,6 +136,7 @@ extension MainVC {
     }
     
     func mergeCalls() {
+
         for unsyncedHomeData in unsyncedhomeDataArr {
             let homeData = HomeData(context: self.context)
                   homeData.anslNo = unsyncedHomeData.anslNo
@@ -145,10 +145,15 @@ extension MainVC {
                   homeData.custType = unsyncedHomeData.custType
                   let unSyncedDate = unsyncedHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
             
+            
+            if unSyncedDate?.toString(format: "yyyy-MM-dd") == "2024-06-04" {
+               print("Puduchutaen")
+                
+            }
                   homeData.dcr_dt = unSyncedDate?.toString(format: "yyyy-MM-dd")
                   homeData.dcr_flag = unsyncedHomeData.dcr_flag
                   homeData.editflag = unsyncedHomeData.editflag
-                  homeData.fw_Indicator = unsyncedHomeData.fw_Indicator == "" ? "N" : ""
+                  homeData.fw_Indicator = unsyncedHomeData.fw_Indicator
                   homeData.index = unsyncedHomeData.index
                   homeData.isDataSentToAPI = unsyncedHomeData.isDataSentToAPI
                   homeData.mnth = unsyncedHomeData.mnth
@@ -159,7 +164,7 @@ extension MainVC {
                   homeData.town_name = unsyncedHomeData.town_name
                   homeData.trans_SlNo = unsyncedHomeData.trans_SlNo
                   homeData.yr = unsyncedHomeData.yr
-                 homeData.dayStatus = unsyncedHomeData.dayStatus
+                  homeData.dayStatus = unsyncedHomeData.dayStatus
             
                   // Append the created HomeData object to homeDataArr
                   homeDataArr.append(homeData)

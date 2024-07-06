@@ -650,7 +650,7 @@ class ViewAllInfoTVC: UITableViewCell {
         param["dcrdetail_cd"] = detailedReportModel?.transDetailSlno
         param["sfcode"] = appsetup.sfCode
         param["division_code"] = appsetup.divisionCode
-        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["Rsf"] = reportModel?.sfCode ?? ""
         param["sf_type"] = appsetup.sfType
         param["Designation"] = appsetup.desig
         param["subdivision_code"] = appsetup.subDivisionCode
@@ -737,7 +737,7 @@ class ViewAllInfoTVC: UITableViewCell {
         
         param["sfcode"] = appsetup.sfCode
         param["division_code"] = appsetup.divisionCode
-        param["Rsf"] = LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        param["Rsf"] = reportModel?.sfCode ?? ""
         param["sf_type"] = appsetup.sfType
         param["Designation"] = appsetup.desig
         param["state_code"] = appsetup.stateCode

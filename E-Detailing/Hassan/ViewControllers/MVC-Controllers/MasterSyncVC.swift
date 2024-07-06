@@ -558,6 +558,8 @@ class MasterSyncVC : UIViewController {
         guard index < tosyncMasterData.count else {
             print("DCR list sync completed")
             
+            
+            
             UIApplication.shared.endBackgroundTask(backgroundTask)
             
             DispatchQueue.main.async {
@@ -583,13 +585,15 @@ class MasterSyncVC : UIViewController {
                 
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.hasMasterData, value: true)
                 
+                NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
+                
                 if istoNavigate  {
                     self.setLoader(pageType: .navigate, type: .slides)
                     self.backBtn.isHidden = false
                 }
 
             }
-          
+
            return
         }
 
@@ -797,7 +801,7 @@ class MasterSyncVC : UIViewController {
             }
         case .myDayPlan:
             mastersyncVM?.callSavePlanAPI(byDate: Shared.instance.selectedDate) {isUploaded in
-                self.mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false) { [weak self] (result) in
+                self.mastersyncVM?.toGetMyDayPlan(type: type, isToloadDB: false, date: Shared.instance.selectedDate) { [weak self] (result) in
                     guard let welf = self else {return}
                     //  completion(true)
                     switch result {

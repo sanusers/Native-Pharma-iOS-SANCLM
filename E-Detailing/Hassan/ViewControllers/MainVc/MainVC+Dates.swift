@@ -188,7 +188,7 @@ extension MainVC {
         
         print(dateString)
         
-        let filteredDetails =   homeDataArr.filter { $0.dcr_dt ?? "" == dateString}
+        let filteredDetails =  homeDataArr.filter { $0.dcr_dt ?? "" == dateString}
         
         if !filteredDetails.isEmpty {
             return filteredDetails.first
@@ -199,12 +199,17 @@ extension MainVC {
     }
     
     func togetDCRdates(isToUpdateDate: Bool, completion: @escaping () -> ()) {
-        CoreDataManager.shared.fetchDcrDates { savedDcrDates in
-            for dcrDate in savedDcrDates {
+        CoreDataManager.shared.fetchDcrDates { [weak self]  savedDcrDates in
+            guard let welf = self else {return}
+            let notAddedDates = savedDcrDates.filter { $0.isDateAdded == false && $0.flag == "0" || $0.flag == "2" || $0.flag == "3" }
+            for dcrDate in notAddedDates {
                 CoreDataManager.shared.context.refresh(dcrDate, mergeChanges: true)
                 // Now, the data is loaded for all properties
-                self.responseDcrDates.append(dcrDate)
-                self.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "", editFlag: dcrDate.editFlag ?? "")
+                welf.responseDcrDates.append(dcrDate)
+                if dcrDate.isDateAdded {
+                    return
+                }
+                welf.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "", editFlag: dcrDate.editFlag ?? "")
                 print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
             }
             
@@ -213,26 +218,50 @@ extension MainVC {
                 let planDates = savedDcrDates.filter { $0.flag == "0" && $0.tbname == "dcr" }
                  
                  guard !planDates.isEmpty, let currentDate = planDates.first  else {
+                     
+                     if isSequentialDCRenabled {
+                         welf.setDCRdates {[weak self] sequenceDate  in
+                             guard let welf = self else {return}
+                             if let sequenceDate = sequenceDate {
+                                 let mergedDate = welf.toMergeDate(selectedDate: sequenceDate.rejectedDate) ?? Date()
+                                     welf.toCreateNewDayStatus()
+                                 welf.callDayPLanAPI(date: mergedDate, isFromDCRDates: true) {
+                                     welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
+                                         welf.refreshUI(date: mergedDate, rejectionReason: sequenceDate.rejectionReason.isEmpty ? nil : sequenceDate.rejectionReason,  SegmentType.workPlan) {
+                                             completion()
+                                         }
+                                     }
+                                 }
+                             }
+                         }
+                     } else {
+
+                         welf.refreshUI(date: welf.selectedToday, welf.segmentType[welf.selectedSegmentsIndex]) {}
+                     }
+
                    completion()
                      return
                  }
-                 //"2024-06-06 00:00:00"
+                
                  guard let toDayDate = currentDate.date?.toDate(format: "yyyy-MM-dd") else {
+                     
                      completion()
                      return
                  }
                 
-                let mergedDate = self.toMergeDate(selectedDate: toDayDate) ?? Date()
-                Shared.instance.selectedDate = mergedDate
-                self.currentPage = mergedDate
-                self.selectedToday = mergedDate
-                self.setDateLbl(date: mergedDate)
-                self.toCreateNewDayStatus()
-                self.callDayPLanAPI(date: mergedDate, isFromDCRDates: true)
-                self.toLoadCalenderData()
-                 completion()
+                
+                
+                let mergedDate = welf.toMergeDate(selectedDate: toDayDate) ?? Date()
+                welf.toCreateNewDayStatus()
+                welf.callDayPLanAPI(date: mergedDate, isFromDCRDates: true) {
+                    welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
+                        welf.refreshUI(date: mergedDate, SegmentType.workPlan) {
+                            completion()
+                        }
+                    }
+                }
+          
             } else {
-                self.toLoadCalenderData()
                 completion()
             }
 
@@ -240,55 +269,22 @@ extension MainVC {
         
     }
     
+    
+    
     func toAppendDCRtoHomeData(date: String, flag: String, tbName:String, editFlag: String) {
         
-        var isDayExists: Bool = false
-        // = self.homeDataArr.map { $0.dcr_dt  }.contains(date)
-        var existingEntity: HomeData?
-        if let sampleElement = self.homeDataArr.first(where: { $0.dcr_dt == date }) {
-            // Do something with sampleElement
-            existingEntity = sampleElement
-            isDayExists = true
-        } else {
-            // Handle the case where no matching element is found
-            print("No element found for the given date")
-        }
-        
-   
-        if isDayExists {
             print("<------Day exists----->")
            self.homeDataArr.removeAll { $0.dcr_dt == date }
         
-        }
+
             if let entityDescription = NSEntityDescription.entity(forEntityName: "HomeData", in: context) {
                 let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
-                
-                
-                entityHomedata.anslNo = isDayExists ? existingEntity?.anslNo : ""
-                entityHomedata.custCode =  isDayExists ? existingEntity?.custCode : ""
-                entityHomedata.custName = isDayExists ? existingEntity?.custName : ""
-                entityHomedata.custType = isDayExists ? existingEntity?.custType : ""
-                entityHomedata.dcr_dt = date
-                entityHomedata.dcr_flag = isDayExists ? existingEntity?.dcr_flag : ""
-                entityHomedata.editflag = isDayExists ? existingEntity?.editflag : ""
-                entityHomedata.fw_Indicator = isDayExists ? existingEntity?.fw_Indicator :  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : ""
 
-                entityHomedata.isDataSentToAPI = isDayExists ? existingEntity?.isDataSentToAPI : ""
-                entityHomedata.mnth = isDayExists ? existingEntity?.mnth : ""
-                entityHomedata.month_name = isDayExists ? existingEntity?.month_name : ""
-                entityHomedata.rejectionReason = isDayExists ? existingEntity?.rejectionReason : ""
-                entityHomedata.sf_Code = isDayExists ? existingEntity?.sf_Code : ""
-                entityHomedata.town_code = isDayExists ? existingEntity?.town_code : ""
-                entityHomedata.town_name = isDayExists ? existingEntity?.town_name : ""
-                entityHomedata.trans_SlNo = isDayExists ? existingEntity?.trans_SlNo : ""
-                entityHomedata.yr = isDayExists ? existingEntity?.yr : ""
+                entityHomedata.dcr_dt = date
+                entityHomedata.fw_Indicator =  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : (flag == "2"  &&  tbName == "dcr") ? "R" : ""
                 
                 self.homeDataArr.append(entityHomedata)
             }
-     
-
-  
-    
     }
     
     func returnWeeklyoffDates() {

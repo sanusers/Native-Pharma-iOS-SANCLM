@@ -75,7 +75,8 @@ var attachmentURL : String = LocalStorage.shared.getString(key: LocalStorage.Loc
 
 var isDayCheckinNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isDayCheckinEnabled)
 
-var isSequentialDCRenabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSequentialDCR)
+var isSequentialDCRenabled : Bool = true
+//LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSequentialDCR)
 
 var geoFencingEnabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
 

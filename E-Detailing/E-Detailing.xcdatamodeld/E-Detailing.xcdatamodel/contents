@@ -91,6 +91,8 @@
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="editFlag" optional="YES" attributeType="String"/>
         <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="isDateAdded" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="reason" optional="YES" attributeType="String"/>
         <attribute name="sfcode" optional="YES" attributeType="String"/>
         <attribute name="tbname" optional="YES" attributeType="String"/>
         <attribute name="timeZone" optional="YES" attributeType="String"/>

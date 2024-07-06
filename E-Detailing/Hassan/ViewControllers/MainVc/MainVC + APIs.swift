@@ -68,7 +68,7 @@ extension MainVC {
                     
                 }
          
-                welf.refreshDashboard {
+                welf.refreshDashboard(date: Shared.instance.selectedDate) {
                     
                 }
             }
@@ -291,31 +291,22 @@ extension MainVC {
       }
     }
     
-    func callDayPLanAPI(date: Date, isFromDCRDates: Bool) {
+    func callDayPLanAPI(date: Date, isFromDCRDates: Bool, completion: @escaping () -> ()) {
        // Shared.instance.showLoaderInWindow()
         if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] result in
                 guard let welf = self else {return}
                 switch result {
                 case .success(let response):
-                    Shared.instance.removeLoaderInWindow()
-                 
-                    welf.upDateplansToDB(isSynced: true, planDate: date, model: response)
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "MMMM d, yyyy"
-                    welf.lblDate.text = dateFormatter.string(from: date)
-                    welf.selectedRawDate = date
-                    welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: false)
-                    welf.toLoadCalenderData()
-                    welf.setSegment(.workPlan)
+                        completion()
                 case .failure(let error):
                   welf.toCreateToast(error.rawValue)
+                    completion()
                 }
-
+              
             }
-            self.toSetParams(date: date, isfromSyncCall: true) {
-               
-            }
+        } else {
+            completion()
         }
     }
     

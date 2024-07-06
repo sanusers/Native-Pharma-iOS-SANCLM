@@ -41,6 +41,9 @@ class Themes: NSObject {
 
 static let appLightGrey = UIColor.init(red: 118, green: 139, blue: 160)
     
+    static let appDeepBrown = UIColor.init(red: 149, green: 40, blue: 6) //Activity. TP deviation
+    
+    
 }
 
 
@@ -54,7 +57,6 @@ extension UIColor {
     static var appLightPink = Themes.appLightPink
     static var calenderMarkerColor = Themes.calenderMarkerColor
     static var appGreen = Themes.appGreen
-
     static var appBrown = Themes.appBrown
     static var appBlue = Themes.appBlue
     static var appYellow = Themes.appYellow
@@ -63,11 +65,8 @@ extension UIColor {
     static var appDeepGreen = Themes.appDeepGreen
     static var appDeepBlue = Themes.appDeepBlue
     static var appLightGrey = Themes.appLightGrey
-    
-    
-    
+    static var appDeepBrown = Themes.appDeepBrown
 
-    //static var blurredAppBrown = Themes.blurredAppBrown
 }
 
 extension UIColor {

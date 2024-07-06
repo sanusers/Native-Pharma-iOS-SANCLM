@@ -442,7 +442,7 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["FWFlg"] = "F"
         addedDCRCallsParam["town_code"] = dcrCall.townCode
         addedDCRCallsParam["town_name"] = dcrCall.townName
-        addedDCRCallsParam["ModTime"] = date
+        addedDCRCallsParam["ModTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         addedDCRCallsParam["ReqDt"] = date
         addedDCRCallsParam["vstTime"] = date
         addedDCRCallsParam["Remarks"] =  self.addCallinfoView.overallRemarks ?? ""

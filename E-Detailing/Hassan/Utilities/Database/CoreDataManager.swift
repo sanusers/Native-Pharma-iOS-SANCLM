@@ -40,11 +40,16 @@ class CoreDataManager {
     }
     
 
-    
-    
-    
-
-    
+    // Method to save changes to the context
+    func saveContext() {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                print("Failed to save context: \(error)")
+            }
+        }
+    }
     
     /// function checks for existing object from core data SavedCDPresentation
     /// - Parameters:
@@ -1376,22 +1381,16 @@ extension CoreDataManager {
     
     func removeaDcrDate(date: Date, completion: () -> ()) {
         let fetchRequest: NSFetchRequest<DcrDates> = NSFetchRequest(entityName: "DcrDates")
-
         do {
             let dcrDates = try context.fetch(fetchRequest)
             for dcrDate in dcrDates {
-                
                 let cacheDate = dcrDate.date
                 let toRemoveDate = date.toString(format:  "yyyy-MM-dd")
                 
                 if cacheDate == toRemoveDate {
-                    context.delete(dcrDate)
+                    dcrDate.isDateAdded = true
                 }
-                
-                
-             
             }
-
             try context.save()
             completion()
         } catch {
@@ -1403,12 +1402,73 @@ extension CoreDataManager {
     func saveDatestoCoreData(model: [DCRdatesModel], completion: @escaping () -> ()) {
        // guard let dcrDates = dcrDates else {return}
         CoreDataManager.shared.removeAllDcrDates()
-        CoreDataManager.shared.saveDCRDates(fromDcrModel: model) {  
+        CoreDataManager.shared.saveDCRDates(fromDcrModel: model) { [weak self] in
+
+            guard let welf = self else {return}
+            welf.tpAppendToday() {
+                completion()
+            }
             
-            completion()
         }
     }
     
+    func tpAppendToday(completion : @escaping () -> ()) {
+
+            let todaySyncedDate = DBManager.shared.getHomeData().filter { $0.dcr_dt == Date().toString(format: "yyyy-MM-dd") && $0.dayStatus == "1" }
+            let todayUnSyncedDate  = DBManager.shared.geUnsyncedtHomeData()
+            var isUnsyncedIsEmpty: Bool = false
+            if let todayUnSyncedDate = todayUnSyncedDate {
+                
+                isUnsyncedIsEmpty =  todayUnSyncedDate.filter { $0.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "yyyy-MM-dd") == Date().toString(format: "yyyy-MM-dd") && $0.dayStatus == "1" }.count == 0 ? true : false
+                
+            }
+            if todaySyncedDate.isEmpty && isUnsyncedIsEmpty {
+                let toDayDCR : DCRdatesModel =  DCRdatesModel()
+                let dt: Dt = Dt()
+                dt.date = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+                dt.timezone = "Asia/Kolkata"
+                dt.timezoneType = 3
+                toDayDCR.dt = dt
+                toDayDCR.editFlag = String()
+                toDayDCR.flg = Int()
+                toDayDCR.sfCode = String()
+                toDayDCR.tbname = String()
+                
+                self.saveDCRDates(model: toDayDCR) {
+                    completion()
+                }
+                
+            } else {
+                
+                CoreDataManager.shared.fetchDcrDates { dcrDates in
+                    let toDayDates = dcrDates.filter {
+                        if $0.date?.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "yyyy-MM-dd") ==  Date().toString(format: "yyyy-MM-dd") {
+                            return true
+                        }
+                        return false
+                    }
+                    
+                    CoreDataManager.shared.toFetchAllDayStatus { eachDayStatus in
+                        let toDayWndupDates =  eachDayStatus.filter { $0.statusDate?.toString(format: "yyyy-MM-dd") ==  Date().toString(format: "yyyy-MM-dd") && $0.didUserWindup  }
+                        
+                       if toDayWndupDates.isEmpty {
+                            toDayDates.forEach { $0.isDateAdded = false }
+                        }
+                        CoreDataManager.shared.saveContext()
+                    }
+                    
+                  
+                   
+                    
+                }
+                
+                completion()
+            }
+            
+            
+        
+        
+    }
     
     func saveDCRDates(fromDcrModel: [DCRdatesModel], completion: @escaping () -> Void) {
        
@@ -1437,13 +1497,16 @@ extension CoreDataManager {
             return
         }
 
+        
+        
         let dcrDates = DcrDates(entity: entityDescription, insertInto: context)
 
         dcrDates.sfcode = dcrModel.sfCode
-    
+        dcrDates.isDateAdded = false
         dcrDates.tbname = dcrModel.tbname
         dcrDates.flag = "\(dcrModel.flg)"
         dcrDates.editFlag = "\(dcrModel.editFlag)"
+        dcrDates.reason = dcrModel.reason
         let dateString = dcrModel.dt.date
 
         let dateFormatter = DateFormatter()
@@ -1464,6 +1527,19 @@ extension CoreDataManager {
         
 
         do {
+            self.toFetchAllDayStatus { eachDayStatus in
+                for aDayStatus in eachDayStatus {
+                    let statusDate = aDayStatus.statusDate
+                    let statusDateStr = statusDate?.toString(format: "yyyy-MM-dd")
+                    
+                    if statusDateStr ==  dcrDates.date  {
+                        aDayStatus.didUserWindup = false
+                        aDayStatus.isFinalSubmitSuccess = false
+                        aDayStatus.isSynced = false
+                    }
+                }
+            }
+            
             try context.save()
             completion()
         } catch {

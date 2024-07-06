@@ -43,10 +43,13 @@ extension MainVC {
 
     }
     
-    func upDateplansToDB(isSynced: Bool, planDate: Date, model: [MyDayPlanResponseModel]) {
+    func upDateplansToDB(isSynced: Bool, planDate: Date, model: [MyDayPlanResponseModel], completion: @escaping () -> ()) {
         masterVM?.toUpdateDataBase(isSynced: isSynced, planDate: planDate, aDayplan: masterVM?.toConvertResponseToDayPlan(isSynced: isSynced, model: model) ?? DayPlan()) {[weak self] _ in
             guard let welf = self else {return}
-            welf.toConfigureMydayPlan(planDate: planDate)
+           // welf.toConfigureMydayPlan(planDate: planDate) {
+                completion()
+           // }
+           
         }
     }
     

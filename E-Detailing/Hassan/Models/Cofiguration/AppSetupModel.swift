@@ -839,8 +839,8 @@ class AppSetUp : Codable {
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSequentialDCR, value:  false)
-        //self.sequentailDcr == 0 ? true : false
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSequentialDCR, value:  self.sequentailDcr == 0 ? true : false)
+        //
         
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isGeoFencingEnabled, value:  self.geoCheck == 0 ? true : false)
