@@ -201,16 +201,15 @@ extension MainVC {
     func togetDCRdates(isToUpdateDate: Bool, completion: @escaping () -> ()) {
         CoreDataManager.shared.fetchDcrDates { [weak self]  savedDcrDates in
             guard let welf = self else {return}
-            let notAddedDates = savedDcrDates.filter { $0.isDateAdded == false && $0.flag == "0" || $0.flag == "2" || $0.flag == "3" }
+            let notAddedDates = savedDcrDates.filter { $0.isDateAdded == false }
             for dcrDate in notAddedDates {
                 CoreDataManager.shared.context.refresh(dcrDate, mergeChanges: true)
                 // Now, the data is loaded for all properties
                 welf.responseDcrDates.append(dcrDate)
-                if dcrDate.isDateAdded {
-                    return
+                if !dcrDate.isDateAdded {
+                    welf.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "", editFlag: dcrDate.editFlag ?? "")
+                    print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
                 }
-                welf.toAppendDCRtoHomeData(date: dcrDate.date ?? "", flag: dcrDate.flag ?? "", tbName: dcrDate.tbname ?? "", editFlag: dcrDate.editFlag ?? "")
-                print("Sf_Code: \(dcrDate.sfcode ?? ""), Date: \(dcrDate.date ?? ""), Flag: \(dcrDate.flag ?? ""), Tbname: \(dcrDate.tbname ?? "")")
             }
             
          
@@ -224,10 +223,10 @@ extension MainVC {
                              guard let welf = self else {return}
                              if let sequenceDate = sequenceDate {
                                  let mergedDate = welf.toMergeDate(selectedDate: sequenceDate.rejectedDate) ?? Date()
-                                     welf.toCreateNewDayStatus()
                                  welf.callDayPLanAPI(date: mergedDate, isFromDCRDates: true) {
                                      welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
                                          welf.refreshUI(date: mergedDate, rejectionReason: sequenceDate.rejectionReason.isEmpty ? nil : sequenceDate.rejectionReason,  SegmentType.workPlan) {
+                                             welf.toCreateNewDayStatus()
                                              completion()
                                          }
                                      }
@@ -281,7 +280,7 @@ extension MainVC {
                 let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
 
                 entityHomedata.dcr_dt = date
-                entityHomedata.fw_Indicator =  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "2"  &&  tbName == "leave") ? "LAP" : (flag == "2"  &&  tbName == "dcr") ? "R" : ""
+                entityHomedata.fw_Indicator =  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "1"  &&  tbName == "leave") ? "LAP" : (flag == "2"  &&  tbName == "dcr") ? "R" : ""
                 
                 self.homeDataArr.append(entityHomedata)
             }

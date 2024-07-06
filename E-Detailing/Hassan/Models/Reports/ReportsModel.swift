@@ -154,6 +154,7 @@ class DetailedReportsModel: Codable {
     var promotedProducts: String
     var rcpaCount: Int
     var slidesCount: Int
+    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = container.safeDecodeValue(forKey: .name)

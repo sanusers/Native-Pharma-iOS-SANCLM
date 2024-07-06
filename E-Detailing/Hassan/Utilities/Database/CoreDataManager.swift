@@ -1402,7 +1402,12 @@ extension CoreDataManager {
     func saveDatestoCoreData(model: [DCRdatesModel], completion: @escaping () -> ()) {
        // guard let dcrDates = dcrDates else {return}
         CoreDataManager.shared.removeAllDcrDates()
-        CoreDataManager.shared.saveDCRDates(fromDcrModel: model) { [weak self] in
+        
+        
+        let filteredArr = model.filter { $0.flg == 0 || $0.flg == 2 || $0.flg == 3 }
+    
+        
+        CoreDataManager.shared.saveDCRDates(fromDcrModel: filteredArr) { [weak self] in
 
             guard let welf = self else {return}
             welf.tpAppendToday() {

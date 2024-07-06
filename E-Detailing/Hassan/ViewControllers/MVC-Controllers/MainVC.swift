@@ -173,6 +173,10 @@ class MainVC : UIViewController {
     
     
     var todayCallsModel: [TodayCallsModel]?
+    var isNextMonth = false
+    var isPrevMonth = false
+    var isCurrentMonth = false
+    var istwoMonthsAgo = false
     
     enum ChartType {
         case doctor
@@ -335,7 +339,7 @@ class MainVC : UIViewController {
         cellRegistration()
         initView()
         rejectionVIew.isHidden = true
-        toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+        //toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
         toHideDeviateView(isTohide: true)
         backgroundView.isHidden = true
         backGroundVXview.alpha = 0
@@ -460,7 +464,8 @@ class MainVC : UIViewController {
         if let selectedToday = self.selectedToday  {
             toConfigureMydayPlan(planDate: selectedToday, isRetrived: true) { [weak self] in
                 guard let welf = self else {return}
-                welf.toSetDashboardDataSource(issynced: issynced)
+                welf.toSetDashboardDataSource(issynced: issynced,  reasonOfRejection: rejectionReason)
+                completion()
             }
         } else {
             var sessionArr: [Sessions] = []
@@ -475,8 +480,8 @@ class MainVC : UIViewController {
             self.sessions = sessionArr
             self.configureAddplanBtn(false)
             self.configureSaveplanBtn(false)
-            toSetDashboardDataSource(issynced: issynced, reasonOfRejection: rejectionReason)
-   
+            toSetDashboardDataSource(issynced: issynced)
+            completion()
         }
     }
     
@@ -1649,39 +1654,70 @@ class MainVC : UIViewController {
         }
     }
     
-     func moveCurrentPage(moveUp: Bool) {
-        
+    private func moveCurrentPage(moveUp: Bool) {
+     
         let calendar = Calendar.current
         var dateComponents = DateComponents()
         dateComponents.month = moveUp ? 1 : -1
 
-        
+      //  self.currentPage = calendar.date(byAdding: dateComponents, to: self.currentPage ?? self.today)
+
+      
         if moveUp {
-            
-            if let nextMonth = calendar.date(byAdding: .month, value: 0 , to: self.celenderToday) {
-                print("Next Month:", nextMonth)
-                self.currentPage = nextMonth
-
-                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
-                
+            var isToMoveindex: Int? = nil
+            self.isNextMonth = true
+            if isPrevMonth {
+                self.isCurrentMonth = true
             }
-
-        } else if !moveUp{
-
             
-            if let previousMonth = calendar.date(byAdding: .month, value: -1 , to: self.celenderToday) {
-                print("Previous Month:", previousMonth)
-                self.currentPage = previousMonth
-               
+            if isNextMonth && isCurrentMonth {
+                isToMoveindex = 0
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+                isCurrentMonth = false
+            } else {
+                isToMoveindex = 1
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+            }
+            
+            if let nextMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.celenderToday) {
+                  print("Next Month:", nextMonth)
+                self.currentPage = nextMonth
+                self.isPrevMonth = false
+              }
+        } else if !moveUp{
+            // Calculate the previous month
+            var isToMoveindex: Int? = nil
+            self.isPrevMonth = true
+            if isNextMonth {
+                self.isCurrentMonth = true
+            }
+            
+            if isPrevMonth && isCurrentMonth {
+                isToMoveindex = 0
+                isCurrentMonth = false
+                toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
+            } else {
+                isToMoveindex = -1
                 toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
             }
-
+            if let previousMonth = calendar.date(byAdding: .month, value: isToMoveindex ?? 0, to: self.celenderToday) {
+                print("Previous Month:", previousMonth)
+                self.currentPage = previousMonth
+                self.isNextMonth = false
+               
+            }
+        } else {
+            if let currentMonth = calendar.date(byAdding: .month, value: 0, to: self.celenderToday) {
+                print("Previous Month:", currentMonth)
+                self.currentPage = currentMonth
+               
+            }
         }
-        
+
         self.tourPlanCalander.setCurrentPage(self.currentPage!, animated: true)
-        //  monthWiseSeperationofSessions(self.currentPage ?? Date())
+  
     }
-    
+   
     func toDisableNextPrevBtn(enableprevBtn: Bool, enablenextBtn: Bool) {
         
         if enableprevBtn && enablenextBtn {
@@ -1910,6 +1946,7 @@ extension MainVC {
            let fieldWorkSession = existingSessions.filter { $0.workType?.fwFlg == "F" }
             
             if !fieldWorkSession.isEmpty {
+                welf.isFieldWorkExists = true
                 CoreDataManager.shared.toGetCallsCountForDate(callDate: selectedToday) {  callsCount in
                     if callsCount == 0 {
                         let cacheCalls = DBManager.shared.getHomeData().filter { $0.dcr_dt == Shared.instance.selectedDate.toString(format: "yyyy-MM-dd") && $0.fw_Indicator == "F" && $0.custType != "0" }
@@ -1932,16 +1969,20 @@ extension MainVC {
     }
     
     func doRemoveActions() {
-        isDayPlanRemarksadded = false
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: false)
-        
         let filteredDetails =  homeDataArr.filter { $0.dcr_dt ?? "" == Shared.instance.selectedDate.toString(format: "yyyy-MM-dd") }
         
         filteredDetails.indices.forEach { index in
             filteredDetails[index].fw_Indicator = isFieldWorkExists ? "F" : "N"
         }
+        self.isFieldWorkExists = false
+        self.todayCallsModel = nil
+        self.callsCountLbl.text = ""
+        isDayPlanRemarksadded = false
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: false)
+        
+
 
         CoreDataManager.shared.removeaDcrDate(date: Shared.instance.selectedDate) {
             self.btnCalenderSync(self.btnSyncDate!)
@@ -1975,7 +2016,7 @@ extension MainVC {
     
     
     func doNonSequentialFlow() {
-      // configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.didUserWindUP))
+    
        refreshUI(SegmentType.workPlan) {}
     }
     
@@ -3931,6 +3972,15 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                     return
                     
                 }
+                
+               let isExists = yetToModifiedDates.contains { aDcrDates in
+                   aDcrDates.date == date.toString(format: "yyyy-MM-dd") &&  !aDcrDates.isDateAdded
+                }
+                
+                if !isExists {
+                    welf.showAlertToFilldates(description: "you cant select \(selectedDate)")
+                    return
+                }
 
 //                welf.selectedDate = welf.toTrimDate(date: date, isForMainLabel: true)
 //                welf.selectedRawDate = date
@@ -3956,7 +4006,10 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.validateWindups() {
                     welf.callDayPLanAPI(date: date, isFromDCRDates: true) {
                         welf.toSetParams(date: date, isfromSyncCall: true) {
-                            welf.refreshUI(date: mergedDate, SegmentType.workPlan) {}
+                            welf.refreshUI(date: mergedDate, SegmentType.workPlan) {
+                  
+                               // welf.toCreateNewDayStatus()
+                            }
                         }
                     }
                     
@@ -4479,7 +4532,7 @@ extension MainVC : addedSubViewsDelegate {
                     doUserWindup {[weak self] _ in
                         guard let welf = self else {return}
                        
-                        welf.configureFinalsubmit(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.didUserWindUP))
+                        welf.configureFinalsubmit(true)
                         welf.configureAddCall(!LocalStorage.shared.getBool(key: LocalStorage.LocalValue.didUserWindUP))
                         welf.configureSaveplanBtn(false)
                         welf.configureAddplanBtn(false)

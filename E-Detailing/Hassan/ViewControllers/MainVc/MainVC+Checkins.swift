@@ -250,8 +250,8 @@ extension MainVC {
             LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: true)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: true)
-            configureFinalsubmit(false)
-            configureAddCall(false)
+            configureFinalsubmit(true)
+            configureAddCall(true)
             configureAddplanBtn(false)
             completion()
         } else {
