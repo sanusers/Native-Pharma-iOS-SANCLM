@@ -268,47 +268,113 @@ class ObjectFormatter {
     }
     
 
-    
-    
-    func displayThumbnail(for videoData: Data) -> UIImage {
-        guard let videoURL = saveVideoDataToTemporaryFile(data: videoData) else {
-            return UIImage()
-        }
-        
-        let asset = AVAsset(url: videoURL)
-        let generator = AVAssetImageGenerator(asset: asset)
+    func displayThumbnail(for videoData: Data) -> UIImage? {
+        // Create a temporary file URL to write the video data
+        let tempFileURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString).appendingPathExtension("mov")
         
         do {
-            let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
-            let thumbnailImage = UIImage(cgImage: cgImage)
-          //  deleteTemporaryFile(at: videoURL)
-           return thumbnailImage
-          //  self.contentMode = .scaleAspectFill
-      
+            // Write video data to temporary file
+            try videoData.write(to: tempFileURL)
+            
+            // Create an AVAsset from the file URL
+            let asset = AVAsset(url: tempFileURL)
+            let assetImageGenerator = AVAssetImageGenerator(asset: asset)
+            assetImageGenerator.appliesPreferredTrackTransform = true
+            
+            // Generate the thumbnail at time = 0
+            let time = CMTime(seconds: 0, preferredTimescale: 600)
+            let cgImage = try assetImageGenerator.copyCGImage(at: time, actualTime: nil)
+            
+            // Convert CGImage to UIImage
+            let thumbnail = UIImage(cgImage: cgImage)
+            
+            // Delete the temporary file
+            try FileManager.default.removeItem(at: tempFileURL)
+            
+            return thumbnail
         } catch {
             print("Error generating thumbnail: \(error.localizedDescription)")
+            return nil
         }
-        return UIImage()
     }
     
-    func generateThumbnailData(for videoData: Data) -> Data {
-        guard let videoURL = saveVideoDataToTemporaryFile(data: videoData) else {
-            return Data()
-        }
-        
-        let asset = AVAsset(url: videoURL)
-        let generator = AVAssetImageGenerator(asset: asset)
+    
+//    func displayThumbnail(for videoData: Data) -> UIImage {
+//        guard let videoURL = saveVideoDataToTemporaryFile(data: videoData) else {
+//            return UIImage()
+//        }
+//        
+//        let asset = AVAsset(url: videoURL)
+//        let generator = AVAssetImageGenerator(asset: asset)
+//        
+//        do {
+//            let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
+//            let thumbnailImage = UIImage(cgImage: cgImage)
+//          //  deleteTemporaryFile(at: videoURL)
+//           return thumbnailImage
+//          //  self.contentMode = .scaleAspectFill
+//      
+//        } catch {
+//            print("Error generating thumbnail: \(error.localizedDescription)")
+//        }
+//        return UIImage()
+//    }
+    
+    
+    func generateThumbnailData(for videoData: Data) -> Data? {
+        // Create a temporary file URL to write the video data
+        let tempFileURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString).appendingPathExtension("mov")
         
         do {
-            let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
-            let thumbnailImage = UIImage(cgImage: cgImage)
-          //  deleteTemporaryFile(at: videoURL)
-            return thumbnailImage.pngData() ?? Data() // Convert UIImage to data
+            // Write video data to temporary file
+            try videoData.write(to: tempFileURL)
+            
+            // Create an AVAsset from the file URL
+            let asset = AVAsset(url: tempFileURL)
+            let assetImageGenerator = AVAssetImageGenerator(asset: asset)
+            assetImageGenerator.appliesPreferredTrackTransform = true
+            
+            // Generate the thumbnail at time = 0
+            let time = CMTime(seconds: 0, preferredTimescale: 10)
+            let cgImage = try assetImageGenerator.copyCGImage(at: time, actualTime: nil)
+            
+            // Convert CGImage to UIImage
+            let thumbnail = UIImage(cgImage: cgImage)
+            
+            // Convert UIImage to Data
+            if let imageData = thumbnail.jpegData(compressionQuality: 1.0) {
+                // Delete the temporary file
+                try FileManager.default.removeItem(at: tempFileURL)
+                return imageData
+            } else {
+                // Delete the temporary file in case of conversion failure
+                try FileManager.default.removeItem(at: tempFileURL)
+                return nil
+            }
         } catch {
             print("Error generating thumbnail: \(error.localizedDescription)")
-            return Data()
+            return nil
         }
     }
+    
+//    func generateThumbnailData(for videoData: Data) -> Data {
+//        guard let videoURL = saveVideoDataToTemporaryFile(data: videoData) else {
+//            return Data()
+//        }
+//        
+//        let asset = AVAsset(url: videoURL)
+//        let generator = AVAssetImageGenerator(asset: asset)
+//        
+//        do {
+//            let cgImage = try generator.copyCGImage(at: CMTimeMake(value: 1, timescale: 2), actualTime: nil)
+//            let thumbnailImage = UIImage(cgImage: cgImage)
+//          //  deleteTemporaryFile(at: videoURL)
+//            return thumbnailImage.pngData() ?? Data() // Convert UIImage to data
+//        } catch {
+//            print("Error generating thumbnail: \(error.localizedDescription)")
+//            return Data()
+//        }
+//    }
     
     func saveVideoDataToTemporaryFile(data: Data) -> URL? {
         do {
@@ -323,13 +389,5 @@ class ObjectFormatter {
         
     }
     
-    func deleteTemporaryFile(at url: URL) {
-        do {
-            try FileManager.default.removeItem(at: url)
-            print("Temporary file deleted successfully.")
-        } catch {
-            print("Error deleting temporary file: \(error.localizedDescription)")
-        }
-    }
 
 }

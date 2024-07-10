@@ -102,40 +102,41 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
             self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
             let element = arrayOfAllSlideObjects[index]
             Shared.instance.showLoaderInWindow()
-            CoreDataManager.shared.updateSlidesInCoreData(savedSlides: element) { isUpdated in
+            CoreDataManager.shared.updateSlidesInCoreData(savedSlides: element) {  [weak self] isUpdated in
+                guard let welf = self else {return}
                 if isUpdated {
                   //  DispatchQueue.global().async {
 
                         DispatchQueue.main.async {
                             // Update UI on the main queue after background tasks are completed
-                             self.tableView.reloadData()
+                            welf.tableView.reloadData()
                            // LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(self.loadingIndex)")
-                            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
+                            welf.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: welf.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: false)
                             
                             if didEncounterError {
-                                self.isDownloadingInProgress = false
+                                welf.isDownloadingInProgress = false
                                 Shared.instance.isSlideDownloading = false
                                 Shared.instance.iscelliterating = false
-                                self.isSlideDownloadCompleted = true
-                                self.isDownloading = false
-                                self.tableView.isUserInteractionEnabled = true
-                                self.tableView.isScrollEnabled = true
-                                self.closeHolderView.isUserInteractionEnabled = true
+                                welf.isSlideDownloadCompleted = true
+                                welf.isDownloading = false
+                                welf.tableView.isUserInteractionEnabled = true
+                                welf.tableView.isScrollEnabled = true
+                                welf.closeHolderView.isUserInteractionEnabled = true
                                 Shared.instance.removeLoaderInWindow()
                                 return
                             }
                             
-                            self.toGroupSlidesBrandWise() { _ in
+                            welf.toGroupSlidesBrandWise() { _ in
                             LocalStorage.shared.setSting( LocalStorage.LocalValue.slideDownloadIndex, text: "")
                               
-                                self.isDownloadingInProgress = false
+                                welf.isDownloadingInProgress = false
                                 Shared.instance.isSlideDownloading = false
                                 Shared.instance.iscelliterating = false
-                                self.isSlideDownloadCompleted = true
-                                self.isDownloading = false
-                                self.tableView.isUserInteractionEnabled = true
-                                self.tableView.isScrollEnabled = true
-                                self.closeHolderView.isUserInteractionEnabled = true
+                                welf.isSlideDownloadCompleted = true
+                                welf.isDownloading = false
+                                welf.tableView.isUserInteractionEnabled = true
+                                welf.tableView.isScrollEnabled = true
+                                welf.closeHolderView.isUserInteractionEnabled = true
                                Shared.instance.removeLoaderInWindow()
                               
                             }
@@ -299,29 +300,45 @@ class SlideDownloadVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupuUI()
-        initVIew()
-        let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
-        if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
-            BackgroundTaskManager.shared.stopBackgroundTask()
-            self.isDownloadingInProgress = false
-            
-             _ = toCheckExistenceOfNewSlides()
-            toSetTableVIewDataSource()
-            if isConnected {
-                startDownload(ifForsingleSeclection: false)
-            } else {
-                self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
+        self.checkifSyncIsCompleted(self.isFromlaunch) {
+        
+                self.tableView.reloadData()
+                self.tableView.isScrollEnabled = true
+                self.tableView.isUserInteractionEnabled = true
+                Shared.instance.iscelliterating = false
+                Shared.instance.isSlideDownloading = false
+                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
+                  
+                    self.toSetupAlert(text: "Slides downloading completed", isEncounteredError: false)
+                } else {
+                    self.toSetupAlert(text: "Slides download pending please do retry later.", isEncounteredError: true)
+                   
+                }
+              
             }
-            
-        } else if LocalStorage.shared.getBool(key: .isSlidesGrouped) {
-            toSetTableVIewDataSource()
-        } else {
-            toLoadPresentationData(type: .slideBrand)
-            toLoadPresentationData(type: .slides)
-            
-        }
+    
+//        setupuUI()
+//        initVIew()
+//        let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
+//        if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
+//            BackgroundTaskManager.shared.stopBackgroundTask()
+//            self.isDownloadingInProgress = false
+//            
+//             _ = toCheckExistenceOfNewSlides()
+//            toSetTableVIewDataSource()
+//            if isConnected {
+//                startDownload(ifForsingleSeclection: false)
+//            } else {
+//                self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
+//            }
+//            
+//        } else if LocalStorage.shared.getBool(key: .isSlidesGrouped) {
+//            toSetTableVIewDataSource()
+//        } else {
+//            toLoadPresentationData(type: .slideBrand)
+//            toLoadPresentationData(type: .slides)
+//            
+//        }
 
 
     }
@@ -1068,103 +1085,6 @@ class SlideDownloadVC : UIViewController {
     }
 
     
-//    func unarchiveAndGetData(from zipData: Data) -> UnzippedDataInfo {
-//
-//        //, completion: (UnzippedDataInfo?) -> ()
-//        // Create a unique temporary directory URL
-//        let temporaryDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-//
-//        // Ensure the temporary directory exists
-//        do {
-//            try FileManager.default.createDirectory(at: temporaryDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-//        } catch {
-//            print("Error creating temporary directory: \(error.localizedDescription)")
-//        }
-//
-//        // Path to the ZIP file data
-//        // let zipData: Data // Replace with your actual zip data
-//        let zipFilePath = temporaryDirectoryURL.appendingPathComponent("temp.zip")
-//
-//        // Save the zip data to a temporary file
-//        do {
-//            try zipData.write(to: zipFilePath)
-//        } catch {
-//            print("Error saving zip data to temporary file: \(error.localizedDescription)")
-//        }
-//
-//        // Unzip the file
-//        do {
-//            // Get the app's Documents directory
-//            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-//                // Append a subdirectory for your extracted content
-//                let extractedFolderName = "ExtractedContent"
-//                let extractedFolderPath = documentsDirectory.appendingPathComponent(extractedFolderName)
-//
-//                // Ensure the directory exists, create it if needed
-//                do {
-//                    try FileManager.default.createDirectory(at: extractedFolderPath, withIntermediateDirectories: true, attributes: nil)
-//                } catch {
-//                    print("Error creating directory: \(error.localizedDescription)")
-//                }
-//
-//
-//                // Unzip the file from the temporary directory to the Documents directory
-//
-//                SSZipArchive.unzipFile(atPath: zipFilePath.path, toDestination: extractedFolderPath.path)
-//                print("File unzipped successfully.")
-//                var unzippedDataInfo = UnzippedDataInfo()
-//                var aHTMLinfoArr = [HTMLinfo]()
-//                var dataArray: Data = Data()
-//
-//                // Get the contents of the extracted folder
-//                if let contents = try? FileManager.default.contentsOfDirectory(at: extractedFolderPath, includingPropertiesForKeys: nil, options: []) {
-//                    // Enumerate through the contents
-//                    for fileURL in contents {
-//                        var aHTMLinfo = HTMLinfo()
-//                        print("File URL: \(fileURL)")
-//                        print("File Name: \(fileURL.lastPathComponent)")
-//                        let fileNameWithoutExtension = fileURL.deletingPathExtension().lastPathComponent
-//                        print("File Name (without extension): \(fileNameWithoutExtension)")
-//
-//                        // Create a valid file URL
-//                        let validFileURL = URL(fileURLWithPath: fileURL.path)
-//                        let result: (htmlString: String?, htmlFileURL: URL?) = readHTMLFile(inDirectory: validFileURL.path)
-//                        guard result.htmlFileURL != nil, result.htmlString != nil else {
-//
-//                            let unzippedFolderURL = URL(fileURLWithPath: extractedFolderPath.absoluteString)
-//                            let unzippedDataInfo = extractUnzippedDataInfo(from: unzippedFolderURL)
-//
-//                             return unzippedDataInfo
-//                        }
-//                        extractedFileName = fileNameWithoutExtension
-//                        dataArray = findImageData(inDirectory: validFileURL) ?? Data()
-//                        aHTMLinfo.fileData = dataArray
-//                        let fileName = "index.html"
-//                        aHTMLinfo.htmlFileURL = extractedFolderPath.appendingPathComponent(fileNameWithoutExtension).appendingPathComponent(fileName)
-//                        //validFileURL
-//                        aHTMLinfo.htmlString = result.htmlString
-//                        aHTMLinfo.fileName = extractedFileName
-//                        aHTMLinfoArr.append(aHTMLinfo)
-//                        unzippedDataInfo.htmlfiles.append(contentsOf: aHTMLinfoArr)
-//                        return unzippedDataInfo
-//                    }
-//                } else {
-//                    print("Error getting contents of the extracted folder.")
-//                }
-//
-//            }
-//
-//                do {
-//                    try FileManager.default.removeItem(at: temporaryDirectoryURL)
-//                } catch {
-//                    print("Error removing temporary directory: \(error.localizedDescription)")
-//                }
-//
-//        }
-//        return UnzippedDataInfo()
-//    }
-    
-
     func extractUnzippedDataInfo(from folderURL: URL) -> UnzippedDataInfo {
         var unzippedDataInfo = UnzippedDataInfo()
 
@@ -1289,7 +1209,7 @@ extension SlideDownloadVC : tableViewProtocols {
         cell.btnRetry.addTap { [weak self] in
             guard let welf = self else {return}
             if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
-                welf.toCreateToast("Please connect to active internet")
+                welf.toCreateToast("Check your Internet Connection")
                 return
             }
            

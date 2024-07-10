@@ -788,7 +788,7 @@ extension AppDelegate {
     
     func onWishListCloseAnimation(_ holderView:UIView,
                           win: UIWindow) {
-        UIView.animate(withDuration: 2,
+        UIView.animate(withDuration: 3,
                        delay: 3.5,
                        options: .curveEaseInOut,
                        animations: { () -> Void in

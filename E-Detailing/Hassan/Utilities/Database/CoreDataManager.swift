@@ -109,6 +109,26 @@ class CoreDataManager {
 
     }
     
+    func removeAllPresentations() {
+        do {
+            let request = SavedCDPresentation.fetchRequest() as NSFetchRequest<SavedCDPresentation>
+            let presentations = try context.fetch(request)
+            for presentation in presentations {
+                context.delete(presentation)
+            }
+            
+            do {
+                try context.save()
+             
+            } catch {
+                
+            }
+        } catch {
+            print("Unable to fetch")
+           
+        }
+    }
+    
     
     ///  function to edit a existing presentation
     /// - Parameters:
@@ -124,12 +144,7 @@ class CoreDataManager {
             for presentation in presentations {
                 context.delete(presentation)
             }
-//            if let existingEntity = presentations.first {
-//             
-//            } else {
-//                completion(false)
-//            }
-            
+
             // Create a new entity
                    let newEntity = SavedCDPresentation(context: context)
                    newEntity.name = savedPresentation.name
@@ -1404,7 +1419,7 @@ extension CoreDataManager {
         CoreDataManager.shared.removeAllDcrDates()
         
         
-        let filteredArr = model.filter { $0.flg == 0 || $0.flg == 2 || $0.flg == 3 }
+        let filteredArr = model.filter { $0.flg == 0 || ($0.flg == 1 && $0.tbname != "leave") ||  $0.flg == 2 || $0.flg == 3 }
     
         
         CoreDataManager.shared.saveDCRDates(fromDcrModel: filteredArr) { [weak self] in

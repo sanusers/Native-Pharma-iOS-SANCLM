@@ -147,7 +147,7 @@ extension MainVC {
     
     func toSetCacheDate(date: Date? = nil) {
         Shared.instance.selectedDate = date ?? Date()
-        currentPage = date
+        currentPage = date ?? Date()
         selectedToday = date
         celenderToday = date ?? Date()
         setDateLbl(date: date ?? Date())
@@ -194,12 +194,6 @@ extension MainVC {
             let lastCheckinDateStr = lastCheckinDate.toString(format: "yyyy-MM-dd")
             LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: lastCheckinDateStr)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: true)
-            
-//            CoreDataManager.shared.removeaDcrDate(date: lastCheckinDate) {
-//                
-//                togetDCRdates(isToUpdateDate: false) {}
-//                
-//            }
         } else {
             LocalStorage.shared.setSting(LocalStorage.LocalValue.lastCheckedInDate, text: "")
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)

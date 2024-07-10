@@ -141,7 +141,7 @@ class LoginVC : UIViewController {
               txtUserName.text = cacheName
           } else {
               checkReachability()
-              addObserverConnectionChanged()
+          
               txtUserName.isUserInteractionEnabled = true
           }
         setupui()
@@ -159,11 +159,6 @@ class LoginVC : UIViewController {
 
     }
     
-    
-    func addObserverConnectionChanged() {
-        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
-
-    }
     
     func setEyeimage() {
         
@@ -191,30 +186,57 @@ class LoginVC : UIViewController {
     }
     
     
+    
+    
+    func isPlanExists(completion: @escaping (Bool) -> ())  {
+     if  let tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData(){
+         if !tempUnsyncedArr.isEmpty {
+             completion(true)
+         } else {
+             CoreDataManager.shared.fetchEachDayPlan { eachDayPlans in
+                 let isAllsynced = eachDayPlans.filter { $0.isSynced }.isEmpty
+                 completion(isAllsynced)
+             }
+         }
+     } else {
+         CoreDataManager.shared.fetchEachDayPlan { eachDayPlans in
+             let isAllsynced = eachDayPlans.filter { $0.isSynced }.isEmpty
+             completion(isAllsynced)
+         }
+     }
+    }
+    
     func toSetupClearCacheAlert(text: String) {
-        
-        guard  let tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData() else{ return }
-        if !tempUnsyncedArr.isEmpty {
-            let commonAlert = CommonAlert()
-            commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok", cancelAction: "Cancel")
-            commonAlert.addAdditionalOkAction(isForSingleOption: false) {
-                print("no action")
+        isPlanExists { isAllsynced in
+            if !isAllsynced {
+                let commonAlert = CommonAlert()
+                commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok", cancelAction: "Cancel")
+                commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+                    print("no action")
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                        self.startBackgroundTaskWithLoader(delegate: appDelegate)
+                    }
+
+                }
+                commonAlert.addAdditionalCancelAction {
+                    print("Yes action")
+                }
+            
+            } else {
                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                     self.startBackgroundTaskWithLoader(delegate: appDelegate)
                 }
-
-            }
-            commonAlert.addAdditionalCancelAction {
-                print("Yes action")
-            }
-        
-        } else {
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                self.startBackgroundTaskWithLoader(delegate: appDelegate)
             }
         }
+
         
 
+        
+
+    }
+    
+    func toShowAlert() {
+        
     }
     
     func checkReachability() {
@@ -264,27 +286,10 @@ class LoginVC : UIViewController {
     @IBAction func resetConfiguration(_ sender: UIButton) {
         
         
-        toSetupClearCacheAlert(text: "This action will clear all of unsynced outbox calls and other cached datas. Are you sure you want to proceed?")
+        toSetupClearCacheAlert(text: "This action will clear all of unsynced outbox calls, Day plans and other cached datas. Are you sure you want to proceed?")
 
     }
     
-    @objc func networkModified(_ notification: NSNotification) {
-        
-        print(notification.userInfo ?? "")
-        if let dict = notification.userInfo as NSDictionary? {
-            if let status = dict["Type"] as? String{
-                DispatchQueue.main.async {
-                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue {
-                        
-                      //  self.toCreateToast("Please check your internet connection.")
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                    }
-                }
-            }
-        }
-    }
 
     
     func doOfflineLogin() {
@@ -292,7 +297,7 @@ class LoginVC : UIViewController {
         guard self.txtPassWord.text == cachePassword
         else {
            // self.toCreateToast("Entered password is incorrect.")
-            self.toSetupAlert(text: "Entered password is incorrect.")
+            self.toSetupAlert(text: "Check User Id and Password.")
             return }
      
         self.toCreateToast("logged in successfully")
@@ -323,6 +328,7 @@ class LoginVC : UIViewController {
                           if isSaved {
                               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: true)
                               self.navigate()
+                              self.toCreateToast("logged in successfully")
                           } else {
                               LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserLoggedIn, value: false)
                             //  self.toCreateToast(loginData.successMessage ?? "Failed to save user config data")

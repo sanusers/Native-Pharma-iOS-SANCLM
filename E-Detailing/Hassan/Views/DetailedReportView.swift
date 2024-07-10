@@ -73,7 +73,7 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
         let modal =  isMatched ? filteredreportsModel?[indexPath.row] ?? ReportsModel() : reportsModel?[indexPath.row] ?? ReportsModel()
         cell.populateCell(modal)
         cell.nextActionVIew.addTap {
-            let vc = ViewDayReportVC.initWithStory(model: modal, dcrDate: modal.rptdate)
+            let vc = ViewDayReportVC.initWithStory(model: modal, dcrDate: self.fromDate?.toString(format: "dd MMM yyyy") ?? "")
             if isTohideCheckin(modal) && isTohideCheckout(modal) {
                 vc.isToReduceLocationHeight = true
             }

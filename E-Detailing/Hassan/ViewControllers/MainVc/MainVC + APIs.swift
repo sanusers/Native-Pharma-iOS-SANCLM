@@ -64,19 +64,77 @@ extension MainVC {
             welf.toUploadUnsyncedImage() {
                 
                 welf.uploadDayPlansSequentially(dates: unSyncedDates) {
-                    Shared.instance.removeLoaderInWindow()
                     
+                    welf.toUploadWindups() {_ in 
+                      
+                        welf.refreshDashboard(date: Shared.instance.selectedDate) {
+                            Shared.instance.removeLoaderInWindow()
+                        }
+                    }
                 }
          
-                welf.refreshDashboard(date: Shared.instance.selectedDate) {
-                    
-                }
+   
             }
             
   
             
         }
 
+    }
+    
+    func toUploadWindups(date : Date? = nil, completion: @escaping (Bool) -> ()) {
+        let dispatchGroup = DispatchGroup()
+        
+        CoreDataManager.shared.toFetchAllDayStatus { fetchedeachDayStatus in
+            var eachDayStatus : [EachDayStatus] = fetchedeachDayStatus.filter { $0.didUserWindup == true }
+            if let date = date {
+                eachDayStatus = eachDayStatus.filter { $0.statusDate?.toString(format: "yyyy-MM-dd") == date.toString(format: "yyyy-MM-dd") }
+            }
+            
+            
+            for aEachDayStatus in eachDayStatus {
+                dispatchGroup.enter()
+                
+                var tosendData = [String: Any]()
+                tosendData["data"] = aEachDayStatus.param
+                let param = ObjectFormatter.shared.convertDataToJson(data: aEachDayStatus.param ?? Data())
+                
+                userststisticsVM?.finalSubmit(params: tosendData, api: .finalSubmit, paramData: param ?? JSON()) { [weak self] result in
+                    guard let welf = self else {
+                        dispatchGroup.leave()
+                        return
+                    }
+                    
+                    switch result {
+                    case .success(let response):
+                        if response.isSuccess ?? false {
+                            welf.toCreateToast(response.msg ?? "Day completed successfully...")
+                            
+                            welf.handleWindups(isSynced: true, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
+                                welf.toCreateToast("Saved log offline")
+                                dispatchGroup.leave()
+                            }
+                        } else {
+                            welf.handleWindups(isSynced: false, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
+                                welf.toCreateToast("Saved log offline")
+                                dispatchGroup.leave()
+                            }
+                        }
+                        
+                    case .failure(let error):
+                        welf.toCreateToast(error.rawValue)
+                        
+                        welf.handleWindups(isSynced: false, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
+                            dispatchGroup.leave()
+                        }
+                    }
+                }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                completion(true)
+            }
+        }
     }
     
     func callSavePlanAPI(byDate: Date, completion: @escaping (Bool) -> Void) {
@@ -240,12 +298,11 @@ extension MainVC {
                 if !localParamArr.isEmpty {
                     Shared.instance.showLoaderInWindow()
                     let refreshDate = date.toDate(format: "yyyy-MM-dd")
-                    welf.toSendParamsToAPISerially(refreshDate: refreshDate, index: 0, items: specificDateParams) { isCompleted in
-                    
-                        if isCompleted {
+                    welf.toSendParamsToAPISerially(refreshDate: refreshDate, index: 0, items: specificDateParams) { _ in
+
                             Shared.instance.removeLoaderInWindow()
                             completion(true)
-                        }
+                       
                     }
                 } else {
                     Shared.instance.removeLoaderInWindow()
@@ -274,12 +331,19 @@ extension MainVC {
       }
 
       let currentItem = items[index]
-
+       dump(currentItem)
+        
+        if currentItem.isEmpty {
+            let nextIndex = index + 1
+            self.toSendParamsToAPISerially(refreshDate: refreshDate, index: nextIndex, items: items, completion: completion)
+        }
       // Attempt to convert JSON to Data
-      guard let jsonData = try? JSONSerialization.data(withJSONObject: currentItem, options: []) else {
-        completion(false) // Error converting JSON, signal failure
-        return
-      }
+//      guard let jsonData = try? JSONSerialization.data(withJSONObject: currentItem, options: []) else {
+//        completion(false) // Error converting JSON, signal failure
+//        return
+//      }
+        
+        let jsonData = ObjectFormatter.shared.convertJson2Data(json: currentItem)
 
       // Prepare data for API request
       let toSendData = ["data": jsonData]
@@ -297,7 +361,7 @@ extension MainVC {
             masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: date, isFromDCR: isFromDCRDates) {[weak self] result in
                 guard let welf = self else {return}
                 switch result {
-                case .success(let response):
+                case .success(_):
                         completion()
                 case .failure(let error):
                   welf.toCreateToast(error.rawValue)

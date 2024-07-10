@@ -1546,7 +1546,7 @@ class AddCallinfoView : BaseView {
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
-        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+     
         initDataSource()
         setupUI()
         toLoadSegments()
@@ -1613,27 +1613,6 @@ class AddCallinfoView : BaseView {
         
     }
     
-    @objc func networkModified(_ notification: NSNotification) {
-        
-        print(notification.userInfo ?? "")
-        if let dict = notification.userInfo as NSDictionary? {
-            if let status = dict["Type"] as? String{
-                DispatchQueue.main.async {
-                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
-                        
-                        self.toCreateToast("Please check your internet connection.")
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                        //  self.toConfigureMydayPlan()
-                        
-                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
-                        
-                        self.toCreateToast("You are now connected.")
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                    }
-                }
-            }
-        }
-    }
     
     func checkoutAction(dcrCall: CallViewModel? = nil) {
         backgroundView.isHidden = false
@@ -1865,6 +1844,12 @@ class AddCallinfoView : BaseView {
         }
         
         productnameCurvedView.addTap {
+            
+            guard let chemist = self.chemistObj else {
+                self.showAlertToNotifyExistance(desc: "Please select Chemist.")
+                return
+            }
+            
             let vc = SpecifiedMenuVC.initWithStory(self, celltype: .product)
             vc.isFromfilter = true
             
@@ -1889,7 +1874,8 @@ class AddCallinfoView : BaseView {
         }
         
         clearView.addTap {
-            self.addCallinfoVC.navigationController?.popViewController(animated: true)
+            self.showAlertToEnableLocation(desc: "Are you sure about exiting from selected call?", isToPop: true)
+          //  self.addCallinfoVC.navigationController?.popViewController(animated: true)
         }
         
     }

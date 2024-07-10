@@ -157,11 +157,27 @@ class CreatePresentationView : BaseView {
             let isToproceed =  welf.toCheckDataPersistance()
             
             if isToproceed {
-                if welf.createPresentationVC.isToedit {
-                    welf.retriveEditandSave()
-                } else {
-                    welf.toSaveNewPresentation()
+                
+                CoreDataManager.shared.retriveSavedPresentations{ [weak self] savedPresentationArr in
+                    guard let welf = self else {return}
+                    let filteredPresentations = savedPresentationArr.filter { $0.name == welf.addNameTF.text }
+         
+                        if welf.createPresentationVC.isToedit {
+                            welf.retriveEditandSave()
+                        } else {
+                            
+                            if filteredPresentations.isEmpty {
+                                welf.toSaveNewPresentation()
+                            } else {
+                                welf.toSetupAlert(desc: "Presentation with given name might persist already. please do try modifyng name.")
+                            }
+                            
+                          
+                        }
+                 
                 }
+                
+  
             }
             
             
@@ -196,7 +212,7 @@ class CreatePresentationView : BaseView {
             self.toSetupAlert(desc: "Let's give presentation a unique name.", isToAlertTF: true)
             return false
         }   else if !isValidInput(addNameTF.text!) {
-            self.toSetupAlert(desc: "OOPS given presentation name is invalid (name shouldn't start with space or more than one space between strings.)", isToAlertTF: true)
+            self.toSetupAlert(desc: "Given presentation name is invalid (name shouldn't start with space or more than one space between words.)", isToAlertTF: true)
             return false
         } else {
             return true
@@ -205,8 +221,8 @@ class CreatePresentationView : BaseView {
     
     
     func isValidInput(_ input: String) -> Bool {
-        // Regular expression pattern
-        let pattern = "^(?! )[A-Za-z]+( [A-Za-z]+)*$"
+        // Regular expression pattern to allow letters and integers, but not starting with a space
+        let pattern = "^(?! )[A-Za-z0-9]+( [A-Za-z0-9]+)*$"
         
         // Check if input matches the pattern
         let regex = try! NSRegularExpression(pattern: pattern, options: [])
@@ -215,6 +231,7 @@ class CreatePresentationView : BaseView {
         
         return match != nil
     }
+
     
 //    func toSetupPlayerModel() -> [SlidesModel] {
 //
@@ -271,12 +288,13 @@ class CreatePresentationView : BaseView {
     
         if let savedPresentation = self.savedPresentation {
             savedPresentation.name = self.addNameTF.text ?? ""
-            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, name: presentationName) { isEdited in
+            CoreDataManager.shared.toEditSavedPresentation(savedPresentation: savedPresentation, name: presentationName) {[weak self] isEdited in
+                guard let welf = self else {return}
                 if isEdited {
-                    self.toCreateToast("Presentation saved successfully.")
-                    self.toExiteVC()
+                    welf.toCreateToast("Presentation saved successfully.")
+                    welf.toExiteVC()
                 } else {
-                    self.toCreateToast("Error saving presentation.")
+                    welf.toSetupAlert(desc: "Presentation with given name might persist already. please do try modifyng name.")
                 }
                
             }

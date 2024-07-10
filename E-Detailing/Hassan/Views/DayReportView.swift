@@ -407,6 +407,12 @@ extension DayReportView : ViewAllInfoTVCDelegate {
        // let modifiedUrlString = prefixURL.replacingOccurrences(of: "photos/", with: "")
 
         guard let eventsResponse = self.eventsResponse else {return}
+        self.detailedReportsModelArr?[index].isRCPAExtended = false
+        self.detailedReportsModelArr?[index].isEventsExtended = false
+        self.detailedReportsModelArr?[index].isSlidesExtended = false
+        
+        self.toLoadData()
+        
         self.viewImageAction(events: eventsResponse)
 
 

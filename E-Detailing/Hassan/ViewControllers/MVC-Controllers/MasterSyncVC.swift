@@ -186,30 +186,7 @@ class MasterSyncVC : UIViewController {
     }
     
     
-    @objc func networkModified(_ notification: NSNotification) {
-        
-        print(notification.userInfo ?? "")
-        if let dict = notification.userInfo as NSDictionary? {
-            if let status = dict["Type"] as? String{
-                DispatchQueue.main.async {
-                    if status == ReachabilityManager.ReachabilityStatus.notConnected.rawValue  {
-                        
-                        self.toCreateToast("Please check your internet connection.")
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
-                        //  self.toConfigureMydayPlan()
-                        
-                    } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
-                        
-                        self.toCreateToast("You are now connected.")
-                        LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-            
-                        
-                        
-                    }
-                }
-            }
-        }
-    }
+
     
     
     
@@ -348,8 +325,7 @@ class MasterSyncVC : UIViewController {
 
         
         NotificationCenter.default.addObserver(self, selector: #selector(dcrCallAdded) , name: NSNotification.Name("callsAdded"), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+
     }
     
     
@@ -498,13 +474,15 @@ class MasterSyncVC : UIViewController {
     @IBAction func headquarterAction(_ sender: UIButton) {
       //  let headquarter = DBManager.shared.getSubordinate()
 
-        if   Shared.instance.isFetchingHQ {
-            self.toCreateToast("Syncing please wait")
-            return
-        }
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR)  {
             return
         }
+        
+        if  Shared.instance.isFetchingHQ {
+            self.toCreateToast("Syncing please wait")
+            return
+        }
+
         
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
         
@@ -553,6 +531,8 @@ class MasterSyncVC : UIViewController {
     
     func fetchMasterDataRecursively(index: Int, isfromSyncall: Bool? = false) {
        
+        
+        
         let tosyncMasterData : [MasterInfo] = cacheMasterData
 
         guard index < tosyncMasterData.count else {
@@ -1038,6 +1018,12 @@ extension MasterSyncVC : tableViewProtocols {
     }
     
     @objc func syncAllAction (_ sender : Any) {
+        
+        
+        if !isConnected {
+                self.toSetupAlert(desc: "Check your Internet Connection", istoNavigate: false)
+                return
+        }
 
         if Shared.instance.isSlideDownloading {
             return
@@ -1146,6 +1132,7 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.loaderImage.tintColor = .appGreen
             cell.loaderImage.image = UIImage(systemName: "checkmark.circle.fill")
         }
+
         cell.btnSync.addTarget(self, action: #selector(groupSyncAll(_:)), for: .touchUpInside)
         
         
@@ -1296,12 +1283,12 @@ extension MasterSyncVC : collectionViewProtocols{
     @objc func groupSyncAll(_ sender : UIButton){
 
         
-//        if !isConnected {
-//            
-//            self.showMasterSyncError(description: "Please check your internet connectivity!")
-//            
-//            return
-//        }
+        if !isConnected {
+            
+            self.toSetupAlert(desc: "Check your Internet Connection", istoNavigate: false)
+            
+            return
+        }
         
        
         
@@ -1347,6 +1334,14 @@ extension MasterSyncVC : collectionViewProtocols{
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if !isConnected {
+           
+                self.toSetupAlert(desc: "Check your Internet Connection", istoNavigate: false)
+                return
+            
+        }
+        
         let selectedMasterInfo = masterData[indexPath.row]
 
            // Set loading status based on MasterInfo

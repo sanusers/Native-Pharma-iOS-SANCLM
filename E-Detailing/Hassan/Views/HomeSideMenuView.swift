@@ -177,7 +177,7 @@ class HomeSideMenuView : BaseView{
         menuItemArr.append(myResource)
         
         let leaveVC = LeaveApplicationVC.initWithStory()
-        let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "application") ?? UIImage(), VC: leaveVC)
+        let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "leaveApplication") ?? UIImage(), VC: leaveVC)
         menuItemArr.append(leaveApplication)
         
         let reportsVC = ReportsVC.initWithStory(pageType: .reports)

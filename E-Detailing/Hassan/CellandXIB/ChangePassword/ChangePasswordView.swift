@@ -66,7 +66,7 @@ extension ChangePasswordView:UITextFieldDelegate {
             
             if updatedText.count < 3 {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = "Password must be 3 digits or more"
+                passwordValidationLbl.text = "Password must be atleast 3 characters or more"
                 //"Password should be alphanumeric, special character, min 8 char, combination upper case."
                 isNewPasswordVerified = false
                 checkButtonStatus()
@@ -81,7 +81,7 @@ extension ChangePasswordView:UITextFieldDelegate {
                 checkButtonStatus()
             } else {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = "Entered passsword is same as old password"
+                passwordValidationLbl.text = "Entered passsword cannot be same as old password"
                 //"Password should be alphanumeric, special character, min 8 char, combination upper case."
                 isNewPasswordVerified = false
                 checkButtonStatus()
@@ -94,7 +94,7 @@ extension ChangePasswordView:UITextFieldDelegate {
                 checkButtonStatus()
             } else {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = isNewPasswordVerified ? "Repeated password is incorrect" : "Entered passsword is same as old password"
+                passwordValidationLbl.text = isNewPasswordVerified ? "Repeated password is incorrect" : "Entered passsword cannot be same as old password"
                 isRepeatPasswordVerified = false
                 checkButtonStatus()
             }

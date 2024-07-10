@@ -45,8 +45,8 @@ extension MasterSyncVC: MenuResponseProtocol {
             
             let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
-            if  LocalStorage.shared.getBool(key: .isConnectedToNetwork) || territories.isEmpty  {
-                //&& isConnected
+            if isConnected || territories.isEmpty  {
+           
                 let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
                 // Set loading status based on MasterInfo for each element in the array
                 tosyncMasterData.forEach { masterInfo in

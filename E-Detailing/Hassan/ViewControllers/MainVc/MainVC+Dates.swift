@@ -35,9 +35,9 @@ extension MainVC {
          self.tourPlanCalander.dataSource = self
          self.tourPlanCalander.reloadData()
         
-        if let currentPage = self.currentPage {
+      
             self.tourPlanCalander.setCurrentPage(currentPage, animated: true)
-        }
+        
 
     }
     
@@ -250,11 +250,12 @@ extension MainVC {
                 
                 
                 
-                let mergedDate = welf.toMergeDate(selectedDate: toDayDate) ?? Date()
-                welf.toCreateNewDayStatus()
+            let mergedDate = welf.toMergeDate(selectedDate: toDayDate) ?? Date()
+                
                 welf.callDayPLanAPI(date: mergedDate, isFromDCRDates: true) {
                     welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
                         welf.refreshUI(date: mergedDate, SegmentType.workPlan) {
+                            welf.toCreateNewDayStatus()
                             completion()
                         }
                     }
