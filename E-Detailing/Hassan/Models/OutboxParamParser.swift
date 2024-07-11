@@ -1,10 +1,8 @@
 //
-//  MainVC + DayPlanEX.swift
-//  E-Detailing
+//  OutboxParamParser.swift
+//  SAN ZEN
 //
-//  Created by Hassan
-//
-//  Copyright © 2024 san eforce. All rights reserved. 17/02/24.
+//  Created by San eforce on 11/07/24.
 //
 
 import Foundation
@@ -12,351 +10,437 @@ import CoreData
 import UIKit
 
 
-class DayPlanSessions {
-    var worktype: WorkType
-    var headQuarters: SelectedHQ
-    var cluster: [Territory]
-    var isSavedSession: Bool
-    
+struct OutboxModel {
 
-    init() {
-        worktype = WorkType()
-        headQuarters = SelectedHQ()
-        cluster = [Territory]()
-        isSavedSession = false
+    var rcpaDetailsModel =  [RCPAdetailsModal]()
+    var eventCaptureListViewModel = EventCaptureListViewModel()
+    var jointWorkSelectedListViewModel = JointWorksListViewModel()
+    var productSelectedListViewModel = ProductSelectedListViewModel()
+    var additionalCallListViewModel = AdditionalCallsListViewModel()
+    var inputSelectedListViewModel = InputSelectedListViewModel()
+    var detailedSlides = [DetailedSlide]()
+    var pobValue: String?
+    var overallRemarks: String?
+    var overallFeedback: Feedback?
+    var amc: String?
+}
+
+
+
+
+class DCRCallObjectParser {
+    
+    static let instance = DCRCallObjectParser()
+    var dcrCall: CallViewModel?
+    private init(){}
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let appdelegate = UIApplication.shared.delegate as! AppDelegate
+    let appsetup = AppDefaults.shared.getAppSetUp()
+    
+    func toSetDCRParam(outboxModel: OutboxModel, competion: @escaping (JSON) -> ()) {
+        guard let dcrCall = self.dcrCall?.toRetriveDCRdata(dcrcall: dcrCall) else {return}
+
+        let persistentContainer = appdelegate.persistentContainer
+        let managedObjectContext = persistentContainer.viewContext
+        var savedPath : String = ""
+        if let persistentStore = managedObjectContext.persistentStoreCoordinator?.persistentStores.first {
+            if let storeURL = persistentStore.url {
+                print("Core Data SQLite file path: \(storeURL)")
+                savedPath = "\(storeURL)"
+            }
+        }
+        var cusType : String = ""
+
+        switch dcrCall.type {
+            case .doctor:
+                cusType = "1"
+            case .chemist:
+                cusType = "2"
+            case .stockist:
+                cusType = "3"
+            case .hospital:
+                cusType = "6"
+            case .cip:
+                cusType = "5"
+            case .unlistedDoctor:
+                cusType = "4"
+        }
+        
+
+        let productValue = outboxModel.productSelectedListViewModel.productData()
+        let inputValue = outboxModel.inputSelectedListViewModel.inputData()
+        let jointWorkValue = outboxModel.jointWorkSelectedListViewModel.getJointWorkData()
+        let additionalCallValue = outboxModel.additionalCallListViewModel.getAdditionalCallData()
+        let rcpaValue =  outboxModel.rcpaDetailsModel
+        let evenetCaptureValue = outboxModel.eventCaptureListViewModel
+        
        
-    }
-}
+        
+        var addedDCRCallsParam: [String: Any] = [:]
+        
+        //Joint works
+        var addedJointworks = [[String: Any]]()
+        addedJointworks.removeAll()
 
-struct Sessions {
-    var cluster : [Territory]?
-    var workType: WorkType?
-    var headQuarters: SelectedDayPlanHQ?
-    var isRetrived : Bool?
-    var  remarks : String?
-    var isRejected: Bool?
-    var rejectionReason: String?
-    var isFirstCell : Bool?
-    var planDate: Date?
-    var isSynced: Bool?
-}
-
-extension MainVC {
-    
-    
-    func toHighlightAddedCell()  {
-        //        if sessions?.count == 2 {
-        //
-        //            return false
-        //        } else {
-        guard var nonEmptySession = self.sessions else  {
-            return
+        for jointWork in jointWorkValue{
+            
+            var aJointwork = [String: Any]()
+            aJointwork["Code"] = jointWork.code
+            aJointwork["Name"] = jointWork.name
+            
+            addedJointworks.append(aJointwork)
         }
         
+        addedDCRCallsParam["JointWork"] = addedJointworks
         
-        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
-              let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
-              let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
-        else {
-            fatalError("Entity not found")
-        }
         
-        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
-        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
-        
-        let unsavedSessionsWithIndices = nonEmptySession.enumerated().filter { index, session in
-            return !(session.isRetrived ?? false)
-        }
-        
-        let unsavedSessions = unsavedSessionsWithIndices.map { index, session in
-            return session
-        }
-        
-        let indices = unsavedSessionsWithIndices.map { index, _ in
-            return index
+        //Inputs
+        var addedInput = [[String: Any]]()
+        for input in inputValue{
+            var aInput = [String: Any]()
+            aInput["Code"] = input.code
+            aInput["Name"] = input.name
+            aInput["IQty"] = input.inputCount
+            addedInput.append(aInput)
         }
         
         
         
-        if unsavedSessions.isEmpty {
-            
-            var aSession = Sessions()
-            
-            aSession.cluster  = nil
-            aSession.workType = nil
-            aSession.headQuarters = nil
-            aSession.isRetrived = Bool()
-            
-            nonEmptySession.insert(aSession, at: 0)
-            // nonEmptySession.append(aSession)
-            self.sessions = nonEmptySession
-            self.unsavedIndex = indices.first
-            self.isTohightCell = false
         
-        } else {
-            
-            let unfilledSessionWithIndex = unsavedSessions.enumerated().filter { index, session in
-                return  (session.cluster == nil || session.cluster == [temporaryselectedClusterobj] || session.headQuarters == nil ||  session.headQuarters == temporaryselectedHqobj || session.workType == nil || session.workType == temporaryselectedWTobj)
-            }
-            
-            let  unfilledSessions = unfilledSessionWithIndex.map { index, session in
-                return session
-            }
-            
-            let unfilledindices = unfilledSessionWithIndex.map { index, _ in
-                return index
-            }
-            
-            
-            if unfilledSessions.isEmpty {
-                
-                let unSentSessions = unfilledSessions.filter {($0.isRetrived ?? false)}
-                
-                if !unSentSessions.isEmpty {
-                    var aSession = Sessions()
-                    
-                    aSession.cluster  = nil
-                    aSession.workType = nil
-                    aSession.headQuarters = nil
-                    aSession.isRetrived = Bool()
-                    
-                    nonEmptySession.insert(aSession, at: 0)
-                    //  nonEmptySession.append(aSession)
-                    self.sessions = nonEmptySession
-                } else {
-                    //   self.toCreateToast("please do save session to add plan")
-                    self.unsavedIndex = unfilledindices.first
-                    // self.isTohightCell = true
-                 
-                }
-            } else {
-                self.unsavedIndex = unfilledindices.first
-                //  self.isTohightCell = true
-             
-            }
-            
-            
-        }
-        // }
-        
-        
-    
-        
-    }
-    
-    func updateEachDayPlan(isSynced: Bool, planDate: Date, yetToSaveSession: [Sessions], completion: @escaping (Bool) -> ()) {
-        // Remove all existing day plans
-     //   CoreDataManager.shared.removeAllDayPlans()
-        
-        // Save sessions as day plans
+        addedDCRCallsParam["Inputs"] = addedInput
 
-        
-        CoreDataManager.shared.saveSessionAsEachDayPlan(isSynced: isSynced, planDate: planDate, session: yetToSaveSession) { isCompleted in
-            // [weak self]
-            //   guard let welf = self else { return }
-            if isCompleted {
-                
-                
-                completion(true)
-            }
-        }
-    }
+        let mappedArray =  Shared.instance.detailedSlides
 
-    
-    func toFetchExistingPlan(byDate: Date, completion: @escaping ([Sessions]) -> ())  {
-    
-        var todayPlans : [DayPlan] = []
-        CoreDataManager.shared.retriveSavedDayPlans(byDate: byDate) {dayplan in
-            todayPlans = dayplan
+            var addedDetailedProducts = [[String: Any]]()
+            addedDetailedProducts.removeAll()
             
-            var aDaysessions : [Sessions] = []
-            if !todayPlans.isEmpty {
-                if let eachDayPlan = todayPlans.first {
-                    
-                
-                
-                    let headQuatersArr =  DBManager.shared.getSubordinate()
-                    let workTypeArr = DBManager.shared.getWorkType()
-                    
-                    
-                    guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: self.context),
-                          let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: self.context)
-                         // let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
-                    else {
-                        fatalError("Entity not found")
-                    }
-                    
-                    let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
-                    let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-                  //  let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
-                    
-                    
-                    if eachDayPlan.fwFlg != "" || eachDayPlan.wtCode != "" || eachDayPlan.townCode != "" || eachDayPlan.location != ""  {
-                        
-                        
-                        let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
-                   
-                        var selectedheadQuarters : SelectedDayPlanHQ?
-                        var selectedWorkTypes: WorkType?
-                        let codes = eachDayPlan.townCode
-                        let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-                        
-                        let filteredTerritories = clusterArr.filter { aTerritory in
-                            // Check if any code in codesArray is contained in aTerritory
-                            return codesArray.contains { code in
-                                return aTerritory.code?.contains(code) ?? false
-                            }
-                        }
-                   
+            dump(mappedArray)
 
-                        workTypeArr.forEach { aWorkType in
-                            if aWorkType.code == eachDayPlan.wtCode  {
-                                selectedWorkTypes = aWorkType
-                            }
-                        }
-                        
-                        headQuatersArr.forEach { aheadQuater in
-                            if aheadQuater.id == eachDayPlan.rsf  {
-                                
-                                let hqModel =   HQModel()
-                                hqModel.code = aheadQuater.id ?? ""
-                                hqModel.name = aheadQuater.name ?? ""
-                                hqModel.reportingToSF = aheadQuater.reportingToSF ?? ""
-                                hqModel.steps = aheadQuater.steps ?? ""
-                                hqModel.sfHQ = aheadQuater.sfHq ?? ""
-                                hqModel.mapId = aheadQuater.mapId ?? ""
-                                
+            
+            mappedArray.forEach { detailedSlideArr in
+                let groupSlides: [SlidesModel] = detailedSlideArr.groupedSlides ?? []
 
-                                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: self.context)
-                                        
-                                else {
-                                    fatalError("Entity not found")
-                                }
-                                
-                                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
-                                
-                                temporaryselectedHqobj.code                  = hqModel.code
-                                temporaryselectedHqobj.name                 = hqModel.name
-                                temporaryselectedHqobj.reportingToSF       = hqModel.reportingToSF
-                                temporaryselectedHqobj.steps                 = hqModel.steps
-                                temporaryselectedHqobj.sfHq                   = hqModel.sfHQ
-                                temporaryselectedHqobj.mapId                  = hqModel.mapId
-                                
-                                selectedheadQuarters   = temporaryselectedHqobj
-                                
-                                
-                            }
-                            
-                        }
-                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived, isRejected: eachDayPlan.isRejected, isFirstCell: true, planDate: eachDayPlan.tpDt.toDate(), isSynced: eachDayPlan.isSynced)
-                        aDaysessions.append(tempSession)
-                        
+                    var aproduct : [String : Any] = [:]
+                    // groupedSlides.forEach
+                    aproduct["Code"] =  detailedSlideArr.brandCode
+                    //aDetailedSlide.brandCode
+                    aproduct["Group"] = "1"
+                    aproduct["ProdFeedbk"] = detailedSlideArr.remarks
+                    aproduct["Rating"] = detailedSlideArr.remarksValue
+                    aproduct["Appver"] = "Test.S.1.0"
+                    aproduct["Mod"] = "iOS-Edet"
+                    aproduct["Type"] = cusType
+                    var timesLine = [String: Any]()
+                    timesLine["sTm"] = detailedSlideArr.startTime ?? ""
+                    timesLine["eTm"] = detailedSlideArr.endTime ?? ""
+                    aproduct["Timesline"] = timesLine
+                    
+                    aproduct["Slides"] = [[String: Any]]()
+                    var aslideParamArr = [[String: Any]]()
+                    groupSlides.enumerated().forEach {index, aSlide in
 
                         
-                    }
-                    
-                    if eachDayPlan.fwFlg2 != "" || eachDayPlan.wtCode2 != "" || eachDayPlan.townCode2 != "" || eachDayPlan.location2 != ""  {
-                        let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf2)
-                    
-                        var selectedheadQuarters : SelectedDayPlanHQ?
-                        var selectedWorkTypes: WorkType?
-                        let codes = eachDayPlan.townCode2
-                        let codesArray = codes.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-                        
-                        let filteredTerritories = clusterArr.filter { aTerritory in
-                            // Check if any code in codesArray is contained in aTerritory
-                            return codesArray.contains { code in
-                                return aTerritory.code?.contains(code) ?? false
-                            }
-                        }
-
-                        workTypeArr.forEach { aWorkType in
-                            if aWorkType.code == eachDayPlan.wtCode2  {
-                                selectedWorkTypes = aWorkType
-                            }
-                        }
-                        
-                        headQuatersArr.forEach { aheadQuater in
-                            if aheadQuater.id == eachDayPlan.rsf2  {
-                                
-                             let hqModel =   HQModel()
-                                hqModel.code = aheadQuater.id ?? ""
-                                hqModel.name = aheadQuater.name ?? ""
-                                hqModel.reportingToSF = aheadQuater.reportingToSF ?? ""
-                                hqModel.steps = aheadQuater.steps ?? ""
-                                hqModel.sfHQ = aheadQuater.sfHq ?? ""
-                                hqModel.mapId = aheadQuater.mapId ?? ""
-                                
-                                
-                                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedDayPlanHQ", in: self.context)
-                           
-                                else {
-                                    fatalError("Entity not found")
-                                }
-
-                                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedDayPlanHQ
-                       
-                                temporaryselectedHqobj.code                  = hqModel.code
-                                temporaryselectedHqobj.name                 = hqModel.name
-                                temporaryselectedHqobj.reportingToSF       = hqModel.reportingToSF
-                                temporaryselectedHqobj.steps                 = hqModel.steps
-                                temporaryselectedHqobj.sfHq                   = hqModel.sfHQ
-                                temporaryselectedHqobj.mapId                  = hqModel.mapId
-                            
-                                selectedheadQuarters   = temporaryselectedHqobj
-                                
-
-                            }
-                            
-                        }
-                        
-                        
-                        let tempSession = Sessions(cluster: filteredTerritories , workType: selectedWorkTypes ?? temporaryselectedWTobj, headQuarters: selectedheadQuarters ?? temporaryselectedHqobj, isRetrived: eachDayPlan.isRetrived2, isRejected: eachDayPlan.isRejected, isFirstCell: false, planDate: eachDayPlan.tpDt.toDate(), isSynced: eachDayPlan.isSynced)
+                        aproduct["Name"] = aSlide.name
+                        var aSlideParam: [String :Any] = [:]
+                        aSlideParam["Slide"] = aSlide.name
+                        aSlideParam["SlidePath"] = savedPath
+                        aSlideParam["Scribbles"] = ""
+                        aSlideParam["SlideRemarks"] = detailedSlideArr.remarks
+                        aSlideParam["SlideType"] =  aSlide.fileType
+                        aSlideParam["SlideRating"] = detailedSlideArr.remarksValue
+                        aSlideParam["Times"] = [[String: Any]]()
+                        var previewTimeArr:  [[String : Any]] = [[:]]
+                        previewTimeArr.removeAll()
+                        var previewTime : [String: Any] = [:]
+                        previewTime.removeAll()
+                        previewTime["sTm"] = detailedSlideArr.startTime
+                        previewTime["eTm"] = detailedSlideArr.endTime
+                        previewTimeArr.append(previewTime)
+                        aSlideParam["Times"] = previewTimeArr
+                        aslideParamArr.append(aSlideParam)
                       
-                        aDaysessions.append(tempSession)
                     }
-                    
-        
-                }
+                    aproduct["Slides"] = aslideParamArr
+                    addedDetailedProducts.append(aproduct)
                 
-               // completion(aDaysessions)
+            }
+            dump(addedDetailedProducts)
+        
+        //Products not Detailed
+        var addedProducts = [[String: Any]]()
+        addedProducts.removeAll()
+      //  let slides : [String : Any] = ["Slide" : "", "SlidePath" : "", "SlideRemarks" : "", "SlideType" : "", "SlideRating" : "", "Times" : "times"]
+        
+        
+        for product in productValue {
+            var aproduct : [String : Any] = [:]
+            aproduct["Code"] = product.code
+            aproduct["Name"] =  product.name
+            aproduct["Group"] = "0"
+            aproduct["ProdFeedbk"] = ""
+            aproduct["Rating"] = ""
+            var timesLine = [String: Any]()
+            timesLine["sTm"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+            timesLine["eTm"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+            aproduct["Timesline"] = timesLine
+            aproduct["Appver"] = "Test.S.1.0"
+            aproduct["Mod"] = "iOS-Edet"
+            aproduct["SmpQty"] = product.sampleCount
+            aproduct["RcpaQty"] = product.rcpaCount
+            aproduct["RxQty"] = product.rxCount
+            aproduct["Promoted"] = product.isDetailed ? "0" : "1"
+            aproduct["Type"] = cusType
+            aproduct["StockistName"] = product.stockistName
+            aproduct["StockistCode"] = product.stockistCode
+            aproduct["Slides"] = [[String: Any]]()
+            addedProducts.append(aproduct)
+        }
+        
+        addedDCRCallsParam["Products"] = addedProducts + addedDetailedProducts
+        
+        //Additional Customers
+        var additionalCustomerParams = [[String: Any]]()
+        additionalCustomerParams.removeAll()
+        additionalCallValue.enumerated().forEach { index, call in
+            var aAdditioanlcall : [String : Any] = [:]
+            aAdditioanlcall["Code"] = call.docCode
+            aAdditioanlcall["Name"] = call.docName
+            aAdditioanlcall["town_code"] = call.docTownCode
+            aAdditioanlcall["town_name"] = call.docTownName
+          
+            //Additional call products
+            if let productValue = call.productSelectedListViewModel.fetchAllProductData() {
+                var products: [[String: Any]] = [[:]]
+                products.removeAll()
+                for product in productValue {
+                    var aproduct : [String : Any] = [:]
+                    aproduct["Code"] = product.product?.code
+                    aproduct["Name"] =  product.product?.name
+                    aproduct["SmpQty"] = product.sampleCount
+                    products.append(aproduct)
+                }
+                aAdditioanlcall["Products"] = products
+            }
+
+            
+            //Additional call Inputs
+            if  let inputValue = call.inputSelectedListViewModel.fetchAllInputData() {
+                var addedInput = [[String: Any]]()
+                for input in inputValue{
+                    var aInput = [String: Any]()
+                    aInput["Code"] = input.input?.code
+                    aInput["Name"] = input.input?.name
+                    aInput["InpQty"] = input.inputCount
+                    addedInput.append(aInput)
+                }
+                aAdditioanlcall["Inputs"] = addedInput
+            }
+
+            additionalCustomerParams.append(aAdditioanlcall)
+        }
+        
+        addedDCRCallsParam["AdCuss"] = additionalCustomerParams
+        
+
+        
+        
+        var rcpaEntry = [[String: Any]]()
+
+        for rcpa in rcpaValue {
+            guard let addedChemist = rcpa.addedChemist,
+                  let addedProductDetails = rcpa.addedProductDetails,
+                  let addedProducts = addedProductDetails.addedProduct,
+                  let addedQuantities = addedProductDetails.addedQuantity,
+                  let addedRates = addedProductDetails.addedRate,
+                  let addedValues = addedProductDetails.addedValue,
+                  let addedTotals = addedProductDetails.addedTotal else {
+                continue
             }
             
-            completion(aDaysessions)
-        }
-
-     
-        
-    }
-    
-    func removeAllAddedCalls() {
-        let fetchRequest: NSFetchRequest<AddedDCRCall> = NSFetchRequest(entityName: "AddedDCRCall")
-
-        do {
-            let slideBrands = try context.fetch(fetchRequest)
-            for brand in slideBrands {
-                context.delete(brand)
+            for (index, productWithCompetitors) in addedProducts.enumerated() {
+                var entryRCPAparam = [String: Any]()
+                
+                // Chemist information
+                var chemistArr = [[String: Any]]()
+                var rcpaChemist = [String: Any]()
+                rcpaChemist["Name"] = addedChemist.name
+                rcpaChemist["Code"] = addedChemist.code
+                chemistArr.append(rcpaChemist)
+                entryRCPAparam["Chemists"] = chemistArr
+                
+                // Product information
+                if let addedProduct = productWithCompetitors.addedProduct {
+                    entryRCPAparam["OPCode"] = addedProduct.code ?? ""
+                    entryRCPAparam["OPName"] = addedProduct.name ?? ""
+                }
+                entryRCPAparam["OPQty"] = addedQuantities[index]
+                entryRCPAparam["OPRate"] = addedRates[index]
+                entryRCPAparam["OPValue"] = addedValues[index]
+                entryRCPAparam["OPTotal"] = addedTotals[index]
+                
+                // Competitors information
+                var competitorArr = [[String: Any]]()
+                if let competitorsInfo = productWithCompetitors.competitorsInfo {
+                    for competitorInfo in competitorsInfo {
+                        var competitorEntry = [String: Any]()
+                        competitorEntry["CPQty"] = competitorInfo.qty ?? ""
+                        competitorEntry["CPRate"] = competitorInfo.rate ?? ""
+                        competitorEntry["CPValue"] = competitorInfo.value ?? ""
+                        competitorEntry["CompCode"] = competitorInfo.competitor?.compSlNo ?? ""
+                        competitorEntry["CompName"] = competitorInfo.competitor?.compName ?? ""
+                        competitorEntry["CompPCode"] = competitorInfo.competitor?.compProductSlNo ?? ""
+                        competitorEntry["CompPName"] = competitorInfo.competitor?.compProductName ?? ""
+                        competitorEntry["Chemname"] = addedChemist.name
+                        competitorEntry["Chemcode"] = addedChemist.code
+                        competitorEntry["CPRemarks"] = competitorInfo.remarks ?? ""
+                        competitorArr.append(competitorEntry)
+                    }
+                }
+                entryRCPAparam["Competitors"] = competitorArr
+                
+                rcpaEntry.append(entryRCPAparam)
             }
-
-            try context.save()
-        } catch {
-            print("Error deleting addedcalls: \(error)")
         }
+        
+        
+    //    if isCompetitorExist {
+            addedDCRCallsParam["RCPAEntry"] = rcpaEntry
+    //    }
+       
+        
+        
+//Joint works
+
+        var addedJointWorks  : [[String: Any]] = [[:]]
+     
+       
+        let selectedJWs =  outboxModel.jointWorkSelectedListViewModel.getJointWorkData()
+        for aJointWork in selectedJWs {
+            var ajointWorkParam: [String: Any] = [:]
+            ajointWorkParam["Code"] = aJointWork.code
+            ajointWorkParam["Name"] = aJointWork.name
+            addedJointWorks.append(ajointWorkParam)
+        }
+        addedDCRCallsParam["JWWrk"] = addedJointWorks
+        
+        addedDCRCallsParam["EventCapture"] = [[String: Any]]()
+        var addedDCRCallsParamArr : [[String: Any]] = [[:]]
+        addedDCRCallsParamArr.removeAll()
+        let aEventDatum = evenetCaptureValue.EventCaptureData()
+        aEventDatum.forEach { eventCaptureViewModel in
+            var aCapturedEvent: [String: Any] = [:]
+
+            // Mark EventCapture as "True"
+            aCapturedEvent["EventCapture"] = "True"
+
+
+
+            // Combine the components of the EventImageName
+            let code = self.appsetup.sfCode ?? ""
+            let uuid = eventCaptureViewModel.eventCapture.imageUrl.replacingOccurrences(of: "-", with: "")
+            let eventImageName = code + "_" + dcrCall.code + uuid + ".jpeg"
+
+            // Assign the EventImageName to aCapturedEvent
+            aCapturedEvent["EventImageName"] = eventImageName
+
+            // Set EventImageTitle and EventImageDescription
+            aCapturedEvent["EventImageTitle"] = eventCaptureViewModel.title
+            aCapturedEvent["EventImageDescription"] = eventCaptureViewModel.description
+
+            // Set Eventfilepath
+            aCapturedEvent["Eventfilepath"] = savedPath
+
+            // Append aCapturedEvent to addedDCRCallsParamArr
+            addedDCRCallsParamArr.append(aCapturedEvent)
+        }
+        addedDCRCallsParam["EventCapture"]  = addedDCRCallsParamArr
+        
+        let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
+        var date = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
+      
+      
+        if let callDate =  dcrCall.dcrDate {
+            date = callDate.toString(format: "yyyy-MM-dd HH:mm:ss")
+        }
+        
+        addedDCRCallsParam["tableName"] = "postDCRdata"
+        addedDCRCallsParam["CateCode"] = dcrCall.cateCode
+        addedDCRCallsParam["CusType"] = cusType
+        addedDCRCallsParam["CustCode"] = dcrCall.code
+        addedDCRCallsParam["CustName"] = dcrCall.name
+     
+        addedDCRCallsParam["sfcode"] = appsetup.sfCode ?? ""
+        addedDCRCallsParam["Rsf"] =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        addedDCRCallsParam["sf_type"] = "\(appsetup.sfType ?? 0)"
+        addedDCRCallsParam["Designation"] = appsetup.dsName ?? ""
+        addedDCRCallsParam["state_code"] = appsetup.stateCode ?? ""
+        addedDCRCallsParam["subdivision_code"] = appsetup.subDivisionCode ?? ""
+        addedDCRCallsParam["division_code"] = divisionCode
+        addedDCRCallsParam["AppUserSF"] = appsetup.sfCode ?? ""
+        addedDCRCallsParam["SFName"] = appsetup.sfName ?? ""
+        addedDCRCallsParam["SpecCode"] = dcrCall.specialityCode
+        addedDCRCallsParam["mappedProds"] = ""
+        addedDCRCallsParam["mode"]  = "0"
+        addedDCRCallsParam["Appver"] = "iEdet.1.1"
+        addedDCRCallsParam["Mod"] = "ios-Edet-New"
+        addedDCRCallsParam["WT_code"] = "2748"
+        addedDCRCallsParam["WTName"] = "Field Work"
+        addedDCRCallsParam["FWFlg"] = "F"
+        addedDCRCallsParam["town_code"] = dcrCall.townCode
+        addedDCRCallsParam["town_name"] = dcrCall.townName
+        addedDCRCallsParam["ModTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
+        addedDCRCallsParam["ReqDt"] = date
+        addedDCRCallsParam["vstTime"] = date
+        addedDCRCallsParam["Remarks"] =  outboxModel.overallRemarks ?? ""
+        //self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
+
+        addedDCRCallsParam["hospital_code"] = ""
+        addedDCRCallsParam["hospital_name"] = ""
+        addedDCRCallsParam["sample_validation"]  = "0"
+        addedDCRCallsParam["input_validation"]  = "0"
+        addedDCRCallsParam["sign_path"] = ""
+        addedDCRCallsParam["SignImageName"] = ""
+        addedDCRCallsParam["DCSUPOB"] =  outboxModel.pobValue
+        addedDCRCallsParam["day_flag"] = "1"
+    //    if isForEdit {
+            addedDCRCallsParam["amc"] = outboxModel.amc
+//        } else {
+//            addedDCRCallsParam["amc"] = ""
+//        }
+
+       // addedDCRCallsParam["checkout"] = dcrCall.dcrCheckinTime
+       // addedDCRCallsParam["checkin"] = date
+        //self.txtPob.text ?? ""
+        if let overallFeedback = outboxModel.overallFeedback {
+            
+            if let id = overallFeedback.id   {
+                addedDCRCallsParam["Drcallfeedbackcode"] = id
+                addedDCRCallsParam["Drcallfeedbackname"] = overallFeedback.name ?? ""
+            }
+     
+        }
+        addedDCRCallsParam["sample_validation"] = "0"
+        addedDCRCallsParam["input_validation"] = "0"
+
+        addedDCRCallsParam["address"] =  dcrCall.customerCheckOutAddress
+//        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+//        var toSendData = [String : Any]()
+//        toSendData["data"] = jsonDatum
+        competion(addedDCRCallsParam)
     }
     
     
-    func editDCRcall(call: AnyObject, type: DCRType) {
-       // removeAllAddedCalls()
-        let vc = AddCallinfoVC.initWithStory(viewmodel: self.userststisticsVM ?? UserStatisticsVM())
-      
+    func toReturnModelobjects(call: AnyObject, type: DCRType, completion: @escaping (OutboxModel) -> ()) {
+        
         guard let callvm = call as? CallViewModel else {
           
           return
         }
+       
         let updatedCallVM = callvm.toRetriveDCRdata(dcrcall: callvm.call)
-        vc.dcrCall = updatedCallVM
-        
+      //  vc.dcrCall = updatedCallVM
+        var outboxModel = OutboxModel()
+        self.dcrCall = updatedCallVM
         CoreDataManager.shared.tofetchaSavedCalls(editDate: updatedCallVM.dcrDate ?? Date(), callID: updatedCallVM.code) { addedDCRcall in
             
             
@@ -367,7 +451,7 @@ extension MainVC {
             let context = self.context
          
             guard let addedDCRcalls = addedDCRcall else {
-                self.toCreateToast("Unable to edit selected call")
+               // self.toCreateToast("Unable to edit selected call")
                 return
             }
             
@@ -399,6 +483,8 @@ extension MainVC {
                             aEventCapture.time = aEventCaptureCDM.time ?? ""
                             aEventCapture.timeStamp = aEventCaptureCDM.timeStamp ?? ""
                             aEventCapture.title = aEventCaptureCDM.title ?? ""
+                            
+                            
                             let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
                             eventCaptureListViewModel.addEventCapture(aEventCaptureViewModel)
                         }
@@ -406,7 +492,7 @@ extension MainVC {
                         
                     }
                 
-                vc.eventCaptureListViewModel = eventCaptureListViewModel
+            outboxModel.eventCaptureListViewModel = eventCaptureListViewModel
                 
             
             
@@ -470,7 +556,7 @@ extension MainVC {
                         
                   
                     })
-                    vc.detailedSlides = detailedSlides
+                    outboxModel.detailedSlides = detailedSlides
                 }
  
                 
@@ -613,7 +699,7 @@ extension MainVC {
                     }
                 }
 
-                vc.additionalCallListViewModel = aAdditionalcallVM
+                outboxModel.additionalCallListViewModel = aAdditionalcallVM
                 
             }
             
@@ -624,17 +710,17 @@ extension MainVC {
                     aFeedback.name = userfeedback.name
                     aFeedback.id = userfeedback.id
                     aFeedback.index = userfeedback.index
-                    vc.overallFeedback = aFeedback
+                    outboxModel.overallFeedback = aFeedback
                 }
             }
 
             //remarks || pob
             if let rematksValue  =  ftchedDCRcall?.overallRemarks {
-                vc.overallRemarks = rematksValue
+                outboxModel.overallRemarks = rematksValue
             }
             
             if let pobValue  =  ftchedDCRcall?.pobValue {
-                vc.pobValue = pobValue
+                outboxModel.pobValue = pobValue
             }
             
             
@@ -662,7 +748,7 @@ extension MainVC {
                     }
                 }
                 inputSelectedListViewModel.inputViewModel = inputViewModelArr
-                vc.inputSelectedListViewModel = inputSelectedListViewModel
+                outboxModel.inputSelectedListViewModel = inputSelectedListViewModel
             }
             
             //Product
@@ -699,7 +785,7 @@ extension MainVC {
                     }
                 }
                 productSelectedListViewModel.productViewModel = productViewModelArr
-                vc.productSelectedListViewModel = productSelectedListViewModel
+                outboxModel.productSelectedListViewModel = productSelectedListViewModel
             }
             
             
@@ -732,7 +818,7 @@ extension MainVC {
                   
                 }
                // productSelectedListViewModel.productViewModel = productViewModelArr
-                vc.jointWorkSelectedListViewModel = jwSelectedListViewModel
+                outboxModel.jointWorkSelectedListViewModel = jwSelectedListViewModel
             }
             
             //RCPA
@@ -817,252 +903,15 @@ extension MainVC {
                     
                 }
                  dump(rcpaDetailsModelArr)
-                vc.rcpaDetailsModel = rcpaDetailsModelArr
+                outboxModel.rcpaDetailsModel = rcpaDetailsModelArr
                
             }
 
-            self.navigationController?.pushViewController(vc, animated: true)
+            completion(outboxModel)
         }
     }
     
-    func toAddnewSession() {
-        var aSession = Sessions()
-        
-        aSession.cluster  = nil
-        aSession.workType = nil
-        aSession.headQuarters = nil
-        aSession.isRetrived = Bool()
-        aSession.isFirstCell = true
-        aSession.planDate = self.selectedRawDate == nil ? Date() : self.selectedRawDate
-        
-       // setDateLbl(date: aSession.planDate ?? Date())
-        
-        self.sessions?.insert(aSession, at: 0)
-    }
-    
-    func toEnableSaveBtn(sessionindex: Int, istoHandeleAddedSession: Bool) -> Bool {
-        guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: context),
-              let selectedWTentity = NSEntityDescription.entity(forEntityName: "WorkType", in: context),
-              let selectedClusterentity = NSEntityDescription.entity(forEntityName: "Territory", in: context)
-        else {
-            fatalError("Entity not found")
-        }
-        var index: Int = 0
-        index = sessionindex
-        let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
-        let temporaryselectedWTobj = NSManagedObject(entity: selectedWTentity, insertInto: nil)  as! WorkType
-        let temporaryselectedClusterobj = NSManagedObject(entity: selectedClusterentity, insertInto: nil)  as! Territory
-        
-        guard let nonNillSession = self.sessions else {return false}
-        
-        switch index {
-        case 0, 1 :
-            
-            
-            let model = nonNillSession[index]
-            
-            if model.workType == nil || model.workType == WorkType() || model.workType == temporaryselectedWTobj {
-                return false
-            }
-            
-            if model.workType?.fwFlg  != nil && model.workType?.fwFlg  != "F"  {
-                return true
-            } else {
-                if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
-                    
-                    if (model.cluster ==  nil || model.cluster == [temporaryselectedClusterobj]) || model.cluster  == [Territory]() || model.cluster?[0].code == nil || (model.workType == nil ||  model.workType == temporaryselectedWTobj) {
-                        return false
-                    } else {
-                        if nonNillSession[index].isRetrived ?? false {
-                            return false
-                        } else {
-                            return true
-                        }
-                        
-                        
-                    }
-                    
-                } else {
-                    
-                    
-                    
-                    if (model.headQuarters ==  nil || model.headQuarters == temporaryselectedHqobj) || (model.cluster == nil || model.cluster == [temporaryselectedClusterobj]) || model.cluster  == [Territory]() || model.cluster?[0].code == nil || (model.workType == nil ||  model.workType == temporaryselectedWTobj)  {
-                        return false
-                    } else {
-                        if nonNillSession[index].isRetrived ?? false {
-                            if istoHandeleAddedSession {
-                                return true
-                            } else {
-                                return false
-                            }
-                            
-                            
-                        } else {
-                            return true
-                        }
-                    }
-                    
-                    
-                }
-            }
-            
-        default:
-            return false
-        }
-        
-    }
-    
-    func toConfigureMydayPlan(planDate: Date, isRetrived: Bool? = false, completion: @escaping () -> ()) {
-        
-        
-        
-        toFetchExistingPlan(byDate: planDate) { existingSessions in
-            self.sessions = existingSessions
-            if !(self.sessions?.isEmpty ?? false) {
-                self.planSubmitted = true
-               // self.setDateLbl(date: self.sessions?[0].planDate ?? Date())
-                
-                self.sessions?.enumerated().forEach { index, aSession in
-                    switch index {
-                    case 0:
-                        dump(aSession.headQuarters?.code)
-                        self.fetchedHQObject1 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
-                        self.fetchedWorkTypeObject1 = aSession.workType
-                        self.fetchedClusterObject1 = aSession.cluster
-                        
-                    case 1:
-                        dump(aSession.headQuarters?.code)
-                        self.fetchedHQObject2 =  self.getSubordinate(hqCode: aSession.headQuarters?.code ?? "")
-                        self.fetchedWorkTypeObject2 = aSession.workType
-                        self.fetchedClusterObject2 = aSession.cluster
-                    default:
-                        print("<----->")
-                    }
-                    
-                }
-            } else {
-                self.selectedRawDate =  self.selectedRawDate  == nil ? Date() : self.selectedRawDate
-                self.toAddnewSession()
-            }
-            
-            
-            
-            guard let nonNilSessons = self.sessions else {
-                
-                self.configureAddplanBtn(false)
-                self.configureSaveplanBtn(false)
-                return
-            }
-            var isPlan1filled : Bool = false
-            var isPlan2filled : Bool = false
-            
-            var istoEnableSaveBtn: Bool = false
-            var istoEnableAddPlanBtn: Bool = false
-            
-            nonNilSessons.enumerated().forEach { index, aSession in
-                switch index {
-                case 0:
-
-                    if aSession.isRetrived == true {
-                        isPlan1filled =  true
-                        
-                        if nonNilSessons.count == 1 {
-                            istoEnableAddPlanBtn = true
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableAddPlanBtn = false
-                            istoEnableSaveBtn = false
-                        }
-                        
-                    } else {
-                        
-                        isPlan1filled = self.toEnableSaveBtn(sessionindex: index, istoHandeleAddedSession: false)
-                        //(aSession.cluster != nil || aSession.cluster != [] || aSession.workType != nil  || aSession.workType != WorkType() || aSession.headQuarters != nil || aSession.headQuarters != SelectedHQ())
-                    }
-                    
-                    if isPlan1filled {
-                        
-                        if aSession.isRetrived == true {
-                            
-                            if nonNilSessons.count == 1 {
-                                istoEnableAddPlanBtn = true
-                            } else {
-                                istoEnableAddPlanBtn = false
-                            }
-                            
-                        } else {
-                            istoEnableAddPlanBtn = false
-                        }
-                        
-                        
-                        
-                        if aSession.isRetrived == true {
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableSaveBtn = true
-                        }
-                        
-                    } else {
-                        istoEnableAddPlanBtn = false
-                        istoEnableSaveBtn = false
-                    }
-     
-                case 1:
-                    
-                    if aSession.isRetrived == true {
-                        isPlan2filled =  true
-                        
-                        if nonNilSessons.count == 1 {
-                            istoEnableAddPlanBtn = true
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableAddPlanBtn = false
-                            istoEnableSaveBtn = false
-                        }
-                        
-                    } else {
-                        isPlan2filled = self.toEnableSaveBtn(sessionindex: index, istoHandeleAddedSession: false)
-                    }
-                    
-                    if isPlan2filled {
-                        if aSession.isRetrived == true {
-                            
-                            if nonNilSessons.count == 1 {
-                                istoEnableAddPlanBtn = true
-                            } else {
-                                istoEnableAddPlanBtn = false
-                            }
-                            
-                        } else {
-                            istoEnableAddPlanBtn = false
-                        }
-                        if aSession.isRetrived == true {
-                            istoEnableSaveBtn = false
-                        } else {
-                            istoEnableSaveBtn = true
-                        }
-                    } else {
-                        istoEnableAddPlanBtn = false
-                        istoEnableSaveBtn = false
-                    }
-                    
-                default:
-                    isPlan1filled = false
-                    isPlan2filled = false
-                }
-                
-                
-            }
-            self.configureAddplanBtn(istoEnableAddPlanBtn)
-            self.configureSaveplanBtn(istoEnableSaveBtn)
-       //    self.setupRejectionVIew()
-            self.toLoadWorktypeTable()
-            completion()
-            
-        }
-        
-    }
-
 }
+
 
 

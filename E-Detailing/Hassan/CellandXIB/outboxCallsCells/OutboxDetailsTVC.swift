@@ -12,6 +12,7 @@ import UIKit
 protocol OutboxDetailsTVCDelegate: AnyObject {
     func didTapoutboxEdit(dcrCall: TodayCallsModel)
     func didTapOutboxDelete(dcrCall: TodayCallsModel)
+    func didTapOutboxSync(dcrCall: TodayCallsModel)
     func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel)
 }
 
@@ -38,8 +39,12 @@ extension OutboxDetailsTVC: PopOverVCDelegate {
             }
      
         }
-        
         else if index == 1 {
+            let model = self.todayCallsModel[SelectedArrIndex]
+            self.delegate?.didTapOutboxSync(dcrCall: model)
+            print("Yet to sync")
+        }
+        else if index == 2 {
             let model = self.todayCallsModel[SelectedArrIndex]
             self.delegate?.didTapOutboxDelete(dcrCall: model)
         }
@@ -74,7 +79,7 @@ extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSourc
             cell.optionsIV.addTap {
                 print("Tapped -->")
                 self.isForCallEdit = true
-                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 90), on: cell.optionsIV, pagetype: .calls)
+                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 120), on: cell.optionsIV, pagetype: .outbox)
                  vc.delegate = self
                  vc.selectedIndex = indexPath.row
                 self.viewController?.navigationController?.present(vc, animated: true)

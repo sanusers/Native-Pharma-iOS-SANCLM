@@ -110,7 +110,7 @@ class MasterSyncVC : UIViewController {
     var downloadAlertSet: Bool = false
     var isNewSlideExists: Bool = false
     var isSlideDownloading : Bool = false
- 
+    var isAlertShown: Bool = false
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     static let shared = MasterSyncVC()
     var delegate : MasterSyncVCDelegate?

@@ -16,7 +16,7 @@ extension MainVC {
         
         let dateStr = addedCallDate.toString(format: "yyyy-MM-dd")
         
-        self.homeDataArr.removeAll { $0.dcr_dt == dateStr  }
+      //  self.homeDataArr.removeAll { $0.dcr_dt == dateStr  }
         
         var dbparam = [String: Any]()
         dbparam["FW_Indicator"] = "N"
@@ -145,11 +145,6 @@ extension MainVC {
                   homeData.custType = unsyncedHomeData.custType
                   let unSyncedDate = unsyncedHomeData.dcr_dt?.toDate(format: "yyyy-MM-dd HH:mm:ss")
             
-            
-            if unSyncedDate?.toString(format: "yyyy-MM-dd") == "2024-06-04" {
-               print("Puduchutaen")
-                
-            }
                   homeData.dcr_dt = unSyncedDate?.toString(format: "yyyy-MM-dd")
                   homeData.dcr_flag = unsyncedHomeData.dcr_flag
                   homeData.editflag = unsyncedHomeData.editflag
@@ -167,6 +162,7 @@ extension MainVC {
                   homeData.dayStatus = unsyncedHomeData.dayStatus
             
                   // Append the created HomeData object to homeDataArr
+            
                   homeDataArr.append(homeData)
         }
     }

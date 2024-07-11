@@ -18,6 +18,7 @@ class PopOverVC: UIViewController {
         case TP
         case HomeGraph
         case calls
+        case outbox
         case events
         case presentation
         case profile
@@ -49,7 +50,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             setupUI()
             
-        case .calls:
+        case .calls, .outbox:
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
@@ -331,7 +332,7 @@ class PopOverVC: UIViewController {
     }
     
     func toLOadData() {
-        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete", "Sync"] : pageType == .events ? ["Delete"] : ["Play", "Edit", "Delete"]
+        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete"] : pageType == .outbox ? ["Edit", "Sync", "Delete"] : pageType == .events ? ["Delete"] : ["Play", "Edit", "Delete"]
         contentTable.delegate = self
         contentTable.dataSource = self
         contentTable.reloadData()
@@ -410,7 +411,7 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
             return 40
         case .HomeGraph:
             return UITableView.automaticDimension
-        case .calls:
+        case .calls, .outbox:
             return 40
         case .presentation:
             return 40

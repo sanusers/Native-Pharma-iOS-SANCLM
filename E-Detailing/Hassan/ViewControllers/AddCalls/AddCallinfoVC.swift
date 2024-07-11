@@ -985,7 +985,7 @@ class AddCallinfoVC: BaseViewController {
         dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
         dbparam["checkinTime"] = dcrCall.dcrCheckinTime
         dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
-        dbparam["dayStatus"] = "1"
+        dbparam["dayStatus"] = "0"
         
         var dbparamArr = [[String: Any]]()
         dbparamArr.append(dbparam)

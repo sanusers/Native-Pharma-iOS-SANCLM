@@ -422,13 +422,15 @@ class LeaveApplicationVC: UIViewController {
         self.fromDate = nil
         self.toDate = nil
         self.selectedLeveType = nil
+        self.totalDays = []
         self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
         
         txtFromDate.text = fromDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
 
         txtToDate.text = toDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
     
-        
+        self.toLoadTable()
+     
     }
     
     func configureTextField(textView: UITextView) {

@@ -178,6 +178,7 @@
 		38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C855262A8CD9E000C34A58 /* InputViewModel.swift */; };
 		38C8C02E2AA5BD810068F0C0 /* RcpaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C8C02D2AA5BD810068F0C0 /* RcpaTableViewCell.swift */; };
 		38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C8C02F2AA5BD8A0068F0C0 /* RcpaTableViewCell.xib */; };
+		38C8F85D2C40112A00D83B14 /* OutboxParamParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C8F85C2C40112A00D83B14 /* OutboxParamParser.swift */; };
 		38C90ADC2A7785F5003CC0C8 /* DCRCallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C90ADB2A7785F5003CC0C8 /* DCRCallCell.swift */; };
 		38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C90ADD2A7785FE003CC0C8 /* DCRCallCell.xib */; };
 		38C90AE02A77E6D0003CC0C8 /* DayPlanEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C90ADF2A77E6D0003CC0C8 /* DayPlanEventCell.swift */; };
@@ -577,6 +578,7 @@
 		38C855262A8CD9E000C34A58 /* InputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewModel.swift; sourceTree = "<group>"; };
 		38C8C02D2AA5BD810068F0C0 /* RcpaTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaTableViewCell.swift; sourceTree = "<group>"; };
 		38C8C02F2AA5BD8A0068F0C0 /* RcpaTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RcpaTableViewCell.xib; sourceTree = "<group>"; };
+		38C8F85C2C40112A00D83B14 /* OutboxParamParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxParamParser.swift; sourceTree = "<group>"; };
 		38C90ADB2A7785F5003CC0C8 /* DCRCallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRCallCell.swift; sourceTree = "<group>"; };
 		38C90ADD2A7785FE003CC0C8 /* DCRCallCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRCallCell.xib; sourceTree = "<group>"; };
 		38C90ADF2A77E6D0003CC0C8 /* DayPlanEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPlanEventCell.swift; sourceTree = "<group>"; };
@@ -1298,6 +1300,7 @@
 				38D1F1F12B3429A600CE8F86 /* Reports */,
 				38E220702B032DAE00FBF6B0 /* TourPlan */,
 				38E3C3672AFA032400623C33 /* Cofiguration */,
+				38C8F85C2C40112A00D83B14 /* OutboxParamParser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2201,6 +2204,7 @@
 				38B18B772BD93BC1001FC958 /* InputDescriptionCVC.swift in Sources */,
 				3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */,
 				3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */,
+				38C8F85D2C40112A00D83B14 /* OutboxParamParser.swift in Sources */,
 				381E75102C0758710003B892 /* RCPASectionHeader.swift in Sources */,
 				38F843202A5E85E2009018AB /* LeaveApplicationVC.swift in Sources */,
 				38D569022B3564FD007CB86D /* DayReportView.swift in Sources */,

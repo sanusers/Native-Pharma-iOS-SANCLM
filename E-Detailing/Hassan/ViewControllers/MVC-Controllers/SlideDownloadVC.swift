@@ -246,6 +246,7 @@ class SlideDownloadVC : UIViewController {
     @IBOutlet var closeHolderView: UIView!
     @IBOutlet var lblStatus: UILabel!
     @IBOutlet var titleLbl: UILabel!
+    var isAlertShown: Bool = false
     weak var delegate: SlideDownloadVCDelegate?
     var mastersyncvm: MasterSyncVM?
     class func initWithStory(viewmodel: MasterSyncVM) -> SlideDownloadVC {
@@ -300,45 +301,47 @@ class SlideDownloadVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.checkifSyncIsCompleted(self.isFromlaunch) {
-        
-                self.tableView.reloadData()
-                self.tableView.isScrollEnabled = true
-                self.tableView.isUserInteractionEnabled = true
-                Shared.instance.iscelliterating = false
-                Shared.instance.isSlideDownloading = false
-                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
-                  
-                    self.toSetupAlert(text: "Slides downloading completed", isEncounteredError: false)
-                } else {
-                    self.toSetupAlert(text: "Slides download pending please do retry later.", isEncounteredError: true)
-                   
-                }
-              
-            }
-    
-//        setupuUI()
-//        initVIew()
-//        let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
-//        if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
-//            BackgroundTaskManager.shared.stopBackgroundTask()
-//            self.isDownloadingInProgress = false
-//            
-//             _ = toCheckExistenceOfNewSlides()
-//            toSetTableVIewDataSource()
-//            if isConnected {
-//                startDownload(ifForsingleSeclection: false)
-//            } else {
-//                self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
+//        self.checkifSyncIsCompleted(self.isFromlaunch) {
+//        
+//                self.tableView.reloadData()
+//                self.tableView.isScrollEnabled = true
+//                self.tableView.isUserInteractionEnabled = true
+//                Shared.instance.iscelliterating = false
+//                Shared.instance.isSlideDownloading = false
+//                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesDownloadPending) {
+//                  
+//                    self.toSetupAlert(text: "Slides downloading completed", isEncounteredError: false)
+//                } else {
+//                    self.toSetupAlert(text: "Slides download pending please do retry later.", isEncounteredError: true)
+//                   
+//                }
+//              
 //            }
-//            
-//        } else if LocalStorage.shared.getBool(key: .isSlidesGrouped) {
-//            toSetTableVIewDataSource()
-//        } else {
-//            toLoadPresentationData(type: .slideBrand)
-//            toLoadPresentationData(type: .slides)
-//            
-//        }
+        
+        
+    
+        setupuUI()
+        initVIew()
+        let cacheIndexStr = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
+        if !cacheIndexStr.isEmpty  && !self.arrayOfAllSlideObjects.isEmpty {
+            BackgroundTaskManager.shared.stopBackgroundTask()
+            self.isDownloadingInProgress = false
+            
+             _ = toCheckExistenceOfNewSlides()
+            toSetTableVIewDataSource()
+            if isConnected {
+                startDownload(ifForsingleSeclection: false)
+            } else {
+                self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
+            }
+            
+        } else if LocalStorage.shared.getBool(key: .isSlidesGrouped) {
+            toSetTableVIewDataSource()
+        } else {
+            toLoadPresentationData(type: .slideBrand)
+            toLoadPresentationData(type: .slides)
+            
+        }
 
 
     }
@@ -386,6 +389,7 @@ class SlideDownloadVC : UIViewController {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            self.isAlertShown = false
             print("no action")
             if isEncounteredError  {
                 self.dismiss(animated: false) {
@@ -420,7 +424,7 @@ class SlideDownloadVC : UIViewController {
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: true)
                           // self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
-                           
+                           self.checkAndShowAlertIfNeeded()
                            
                        } else if  status == "WiFi" || status ==  "Cellular"   {
                          
@@ -431,6 +435,20 @@ class SlideDownloadVC : UIViewController {
                    }
                }
            }
+    }
+    
+    // Your function or method where you need to show the alert
+    func checkAndShowAlertIfNeeded() {
+        // Check if the alert has already been shown
+        if !self.isAlertShown {
+            // Set the flag to true to prevent the alert from being shown again
+            self.isAlertShown = true
+            // Show the alert with the specified message
+            self.toSetupAlert(text: "Internet connection is required to Download slides.", isEncounteredError: true)
+            // Return to ensure the function exits after showing the alert
+            return
+        }
+
     }
     
     func toSetupRetryAction(index: Int, items : [SlidesModel], isConnected: Bool) {

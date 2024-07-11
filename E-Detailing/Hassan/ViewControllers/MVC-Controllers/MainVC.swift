@@ -194,6 +194,7 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       // toModifyDayStatus(dcrDate: Shared.instance.selectedDate.toString(format: "yyyy-MM-dd"))
         updateLinks()
         setupUI()
         addObservers()
@@ -445,8 +446,9 @@ class MainVC : UIViewController {
     
     func toSetDashboardDataSource(issynced: Bool? = false, reasonOfRejection: String? = nil) {
         toSeperateDCR(istoAppend: true)
-        togetDCRdates(isToUpdateDate: false) { }
         updateDcr()
+        togetDCRdates(isToUpdateDate: false) { }
+       
         toIntegrateChartView(chartType, cacheDCRindex)
         if let reasonOfRejection = reasonOfRejection {
             setupRejectionVIew(isRejected: true, reason: reasonOfRejection)
@@ -620,7 +622,7 @@ class MainVC : UIViewController {
                         
                         welf.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                        welf.syncAllCalls()
+                    //    welf.syncAllCalls()
                        
                         
                     }
@@ -718,17 +720,14 @@ class MainVC : UIViewController {
     
     @objc func refreshDayplan() {
         
-
+      //  btnCalenderSync(btnSyncDate!)
         refreshUI(date: Shared.instance.selectedDate, segmentType[selectedSegmentsIndex]) {}
-     
-
-        
     }
     
     @objc func dcrcallsAdded() {
-        let totalcalls: Int = obj_sections.reduce(0) { (result, section) -> Int in
-            return result + section.items.count
-        }
+//        let totalcalls: Int = obj_sections.reduce(0) { (result, section) -> Int in
+//            return result + section.items.count
+//        }
         
         let totalDays: Int = obj_sections.count
         
@@ -1332,9 +1331,10 @@ class MainVC : UIViewController {
                     return false
                 }
             }
-            
+          let uniqueCalls = uniqueUnsyncCustCodes.union(uniqueSyncCustCodes)
              
-             self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "dashboardDoctor") ?? UIImage(), callsCount:  doctorfilteredArray.count + unsyncedDocilteredArray.count))
+            self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "dashboardDoctor") ?? UIImage(), callsCount: uniqueCalls.count))
+            // doctorfilteredArray.count + unsyncedDocilteredArray.count
         }
 
         if appSetups.chmNeed == 0 {
@@ -1378,9 +1378,10 @@ class MainVC : UIViewController {
                     return false
                 }
             }
+            let uniqueCalls = uniqueUnsyncCustCodes.union(uniquesyncCustCodes)
             
-            
-            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "dashboardChemist") ?? UIImage(), callsCount:  chemistfilteredArray.count + unsyncedChemistilteredArray.count))
+            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "dashboardChemist") ?? UIImage(), callsCount:  uniqueCalls.count))
+            //chemistfilteredArray.count + unsyncedChemistilteredArray.count
         }
         
         
@@ -1426,7 +1427,10 @@ class MainVC : UIViewController {
             
             let stockistCount = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
-            self.dcrCount.append(DcrCount(name: "Stockist",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "dashboardStockist") ?? UIImage(), callsCount: stockistFilteredArray.count + unsyncedStockistilteredArray.count))
+            let uniqueCalls = uniqueSyncCustCodes.union(uniqueUnSyncCustCodes)
+            
+            self.dcrCount.append(DcrCount(name: "Stockist",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "dashboardStockist") ?? UIImage(), callsCount: uniqueCalls.count))
+            //stockistFilteredArray.count + unsyncedStockistilteredArray.count
         }
         
         
@@ -1472,8 +1476,10 @@ class MainVC : UIViewController {
             
             let unlistedDocCount = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
+            let uniqueCalls = uniqueUnsyncCustCodes.union(uniqueUnSyncCustCodes)
             
-            self.dcrCount.append(DcrCount(name: "UnListed Doctor",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "dashboardUnlistedDoctor") ?? UIImage(), callsCount: unlistedDocFilteredArray.count + unsyncedunlistedDocilteredArray.count))
+            self.dcrCount.append(DcrCount(name: "UnListed Doctor",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "dashboardUnlistedDoctor") ?? UIImage(), callsCount: uniqueCalls.count))
+            //unlistedDocFilteredArray.count + unsyncedunlistedDocilteredArray.count
         }
 
         
@@ -4082,13 +4088,13 @@ extension MainVC : outboxCollapseTVCDelegate {
         let isConnected = LocalStorage.shared.getBool(key: .isConnectedToNetwork)
         //  obj_sections[section].isLoading = true
         if isConnected {
-           
+            guard obj_sections.count > refreshIndex else {return}
             self.toretryDCRupload(date: obj_sections[refreshIndex].date) { [weak self] _ in
                 guard let welf = self else {return}
                 Shared.instance.showLoaderInWindow()
                 welf.toUploadUnsyncedImage() {
 
-                        let dateStr = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
+                    let dateStr = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
                     welf.toPostDayplan(byDate: dateStr) {
                         welf.toUploadWindups(date: dateStr) { _ in
                             welf.toLoadOutboxTable()
@@ -4257,12 +4263,12 @@ extension MainVC: PopOverVCDelegate {
          
             toSetupDeleteAlert(index: SelectedArrIndex)
 
-        } else   if index == 0 {
+        } else  if index == 0 {
             let aCall = self.todayCallsModel?[SelectedArrIndex] ?? TodayCallsModel()
            // didTapoutboxEdit(dcrCall: aCall)
             toCallEditAPI(dcrCall: aCall)
         } else {
-            syncAllCalls()
+         //   syncAllCalls()
         }
     }
     
@@ -4630,12 +4636,161 @@ extension MainVC :  HomeSideMenuVCDelegate {
 
 
 extension MainVC: OutboxDetailsTVCDelegate {
+    func didTapOutboxSync(dcrCall: TodayCallsModel) {
+        print("Yet to sync")
+        
+        
+        
+        if !isConnected {
+           showAlert(desc: "Internet connection is required to sync calls.")
+            return
+        }
+        
+        var call: AnyObject?
+        var type: DCRType?
+        
+        switch dcrCall.custType {
+        case 1:
+            let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredDoctores = listedDocters.filter { aDoctorFencing in
+                 aDoctorFencing.code == dcrCall.custCode
+             }
+             guard let nonNilDoctors = filteredDoctores.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilDoctors , type: DCRType.doctor)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
+             call = aCallVM
+             type = DCRType.doctor
+        case 2:
+            let listedChemist = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredChemist = listedChemist.filter { chemist  in
+                chemist.code == dcrCall.custCode
+             }
+             guard let nonNilChemist = filteredChemist.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.chemist)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
+            call = aCallVM
+            type = DCRType.doctor
+        case 3:
+            let listedChemist = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredChemist = listedChemist.filter { chemist  in
+                chemist.code == dcrCall.custCode
+             }
+             guard let nonNilChemist = filteredChemist.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.stockist)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
+            call = aCallVM
+            type = DCRType.doctor
+        case 4:
+            let listedChemist = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let filteredChemist = listedChemist.filter { chemist  in
+                chemist.code == dcrCall.custCode
+             }
+             guard let nonNilChemist = filteredChemist.first else {
+
+             return}
+             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.unlistedDoctor)
+             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
+            call = aCallVM
+            type = DCRType.doctor
+        default:
+            print("Yet to")
+        }
+        
+        guard let call = call, let type = type else {return}
+        DCRCallObjectParser.instance.toReturnModelobjects(call: call, type: type) { outboxModel in
+            
+            DCRCallObjectParser.instance.toSetDCRParam(outboxModel: outboxModel) { json in
+                var param: [String: Any] = [:]
+                param["CustCode"] = dcrCall.custCode
+                let callDate = dcrCall.vstTime.toDate()
+                
+                            Shared.instance.showLoaderInWindow()
+                            self.toSendParamsToAPISerially(refreshDate: callDate, index: 0, items: [json]) { _ in
+                                Shared.instance.removeLoaderInWindow()
+                            }
+            }
+            
+        }
+
+        
+        var param: [String: Any] = [:]
+        param["CustCode"] = dcrCall.custCode
+        let callDate = dcrCall.vstTime.toDate()
+        
+        toFetchYettoSyncParam(refreshDate: callDate, param: param) {  yetToSyncParam in
+            dump(yetToSyncParam)
+            guard let yetToSyncParam = yetToSyncParam else {return}
+            Shared.instance.showLoaderInWindow()
+            self.toSendParamsToAPISerially(refreshDate: callDate, index: 0, items: yetToSyncParam) { _ in
+                Shared.instance.removeLoaderInWindow()
+            }
+        }
+    }
+    
+    
     func didTapOutboxDelete(dcrCall: TodayCallsModel) {
 
         self.showAlertToClearCall(dcrCall: dcrCall)
 
         
     }
+    
+    func toFetchYettoSyncParam(refreshDate: Date, param: JSON, completion: @escaping ([JSON]?) -> ()) {
+        
+        
+//        CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+//            guard let aoutboxCDM = outboxCDMs.first else {
+//                completion(nil)
+//                return
+//            }
+//            
+//            let coreparamDatum = aoutboxCDM.unSyncedParams
+//            
+//            guard let paramData = coreparamDatum else {
+//                completion(nil)
+//                return
+//            }
+//            
+//            var localParamArr = [String: [[String: Any]]]()
+//            do {
+//                localParamArr = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+//                dump(localParamArr)
+//            } catch {
+//                self.toCreateToast("Unable to retrieve")
+//                completion(nil)
+//                return
+//            }
+//            
+//            let custCodeToRemove = param["CustCode"] as! String
+//            var removedParams = [[String: Any]]()
+//            
+//            // Iterate through the dictionary and filter out elements with the specified CustCode
+//            localParamArr = localParamArr.mapValues { callsArray in
+//                return callsArray.filter { call in
+//                    if let custCode = call["CustCode"] as? String {
+//                        let dateSting = call["vstTime"] as! String
+//                        let dcrDate = dateSting.toDate(format: "yyyy-MM-dd HH:mm:ss")
+//                        let dcrDateString = dcrDate.toString(format: "MMM d, yyyy")
+//                        let currentDateStr = refreshDate.toString(format: "MMM d, yyyy")
+//                        if custCode == custCodeToRemove && dcrDateString == currentDateStr {
+//                            print("Found element with CustCode: \(custCode)")
+//                            removedParams.append(call)
+//                            return true
+//                        }
+//                    }
+//                    return false
+//                }
+//            }
+//            completion(removedParams)
+//            }
+        }
+    
     
     
     func showAlertToClearCall(dcrCall: TodayCallsModel) {

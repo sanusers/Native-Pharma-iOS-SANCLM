@@ -482,7 +482,12 @@ extension AddCallinfoView :UITextFieldDelegate {
         switch textField {
         case productQtyTF:
             // Construct the new text after replacement
- 
+            guard let selectedChemist = selectedChemistRcpa as? Chemist else {
+                showAlertToNotifyExistance(desc: "Please select Chemist.")
+                return false}
+            guard let selectedProduct = selectedProductRcpa as? Product else {
+                showAlertToNotifyExistance(desc: "Please select Product.")
+                return false}
          
             
             let aSet = NSCharacterSet(charactersIn:"0123456789").inverted
