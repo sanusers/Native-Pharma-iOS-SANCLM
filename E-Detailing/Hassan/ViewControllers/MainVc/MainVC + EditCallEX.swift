@@ -158,7 +158,7 @@ extension MainVC {
             }.first
             
             fetchedInfo.feedback = fechedFeedback
-            fetchedInfo.amc =  "\(aDCRDetail.transactionSerialNumber)"
+            fetchedInfo.amc =  "\(aDCRDetail.transactionDetailSerialNumber)"
             
         }
         

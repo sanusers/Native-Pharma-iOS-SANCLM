@@ -27,7 +27,6 @@ extension MainVC {
         dbparam["Dcr_flag"] = "1"
         dbparam["Trans_SlNo"] = ""
         dbparam["AMSLNo"] = ""
-        dbparam["dayStatus"] = "1"
         var dbparamArr = [[String: Any]]()
         dbparamArr.append(dbparam)
         let masterData = DBManager.shared.getMasterData()

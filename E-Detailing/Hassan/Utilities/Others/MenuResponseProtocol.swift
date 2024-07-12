@@ -14,7 +14,7 @@ protocol MenuAlertProtocols: AnyObject {
     func routeToView(_ view : UIViewController)
     func callPlanAPI()
     func selectedType(_ type: MenuView.CellType, selectedObject: NSManagedObject, selectedObjects: [NSManagedObject])
-     func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int)
+     func passProductsAndInputs(additioncall: AdditionalCallsListViewModel, index: Int)
 
 }
 extension MenuResponseProtocol where Self : UIViewController{

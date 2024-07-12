@@ -28,6 +28,7 @@ class LocalStorage {
         case ImageUploadURL
         case ImageDownloadURL
         case AttachmentsURL
+        case licenceKey
         case UserName
         case UserPassword
         case AppIcon

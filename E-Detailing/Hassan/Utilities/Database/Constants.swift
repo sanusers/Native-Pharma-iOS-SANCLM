@@ -77,7 +77,8 @@ var isDayCheckinNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.Lo
 
 var isSequentialDCRenabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSequentialDCR)
 
-var geoFencingEnabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
+var geoFencingEnabled = true
+//Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
 
 var customerChekinEnabled : Bool =  false
 //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isCustomerChekinNeeded)

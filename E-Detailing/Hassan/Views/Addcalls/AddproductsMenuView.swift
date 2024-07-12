@@ -389,31 +389,12 @@ class AddproductsMenuView: BaseView {
                 return false
             }
 
-            // Check if today's date is within the range defined by fromDate and toDate
             return fromDate <= currentDate && toDate >= currentDate
         }
-        //        return filteredInputs
-//        let removedNoIP = filteredInputs.filter { aInput in
-//          aInput.code != "-1"
-//       }
+
       return filteredInputs
         
-  //      dump(filteredInputs)
-//        let noInput = inputs.filter { aInput in
-//            aInput.code == "-1"
-//        }
-//
-//        let existingIP = filteredInputs.filter { aInput in
-//            aInput.code == "-1"
-//        }
-//
-//        if existingIP.isEmpty {
-//            filteredInputs.insert(contentsOf: noInput, at: 1)
-//        } else {
-//            return inputs
-//        }
-//
-//        return filteredInputs
+
     }()
     
     
@@ -615,53 +596,11 @@ class AddproductsMenuView: BaseView {
               }
             
             
-            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(product: productSelectedListViewModel, inputs: inputSelectedListViewModel, additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
+            self.addproductsMenuVC.menuDelegate?.passProductsAndInputs(additioncall: additionalCallListViewModel, index: self.selectedDoctorIndex)
             self.hideMenuAndDismiss()
         }
         
-//        clearView.addTap {
-//            self.specifiedMenuVC.selectedClusterID = nil
-//            self.selectedClusterID = [String: Bool]()
-//            self.menuTable.reloadData()
-//        }
-//        
-//        saveView.addTap { [weak self] in
-//            guard let welf = self else {return}
-//            welf.filteredTerritories = welf.clusterArr?.filter { territory in
-//                guard let code = territory.code else {
-//                    return false
-//                }
-//                return welf.selectedClusterID[code] == true
-//            }
-//            
-//
-//            
-//    
-//            
-//            welf.hideMenuAndDismiss()
-//        }
-//        
-//        clearTFView.addTap { [weak self] in
-//            guard let welf = self else {return}
-//            welf.selectedObject = nil
-//            welf.selectecIndex = nil
-//            welf.searchTF.text = ""
-//            welf.isSearched = false
-//            welf.endEditing(true)
-//            welf.toLoadRequiredData(isfromTF: true)
-//            welf.toLOadData()
-//        }
-//        
-//        closeTapView.addTap { [weak self] in
-//            guard let welf = self else {return}
-//            welf.filteredTerritories = welf.clusterArr?.filter { territory in
-//                guard let code = territory.code else {
-//                    return false
-//                }
-//                return welf.selectedClusterID[code] == true
-//            }
-//            welf.hideMenuAndDismiss()
-//        }
+
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handleMenuPan(_:)))
         self.sideMenuHolderView.addGestureRecognizer(panGesture)

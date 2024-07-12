@@ -18,7 +18,7 @@ protocol PreviewHomeViewDelegate: AnyObject {
 }
 
 extension PreviewHomeView: MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
+    func passProductsAndInputs( additioncall: AdditionalCallsListViewModel, index: Int) {
         print("Yet to implement")
     }
     

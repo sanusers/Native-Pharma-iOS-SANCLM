@@ -11,9 +11,9 @@ import Foundation
 import UIKit
 import CoreData
 extension AddCallinfoView: MenuResponseProtocol {
-    func passProductsAndInputs(product: ProductSelectedListViewModel, inputs: InputSelectedListViewModel, additioncall: AdditionalCallsListViewModel, index: Int) {
-        self.productSelectedListViewModel = product
-        self.inputSelectedListViewModel = inputs
+    func passProductsAndInputs(additioncall: AdditionalCallsListViewModel, index: Int) {
+      //  self.productSelectedListViewModel = product
+      //  self.inputSelectedListViewModel = inputs
         self.additionalCallListViewModel = additioncall
         self.addCallinfoVC.additionalCallListViewModel = additioncall
         
@@ -96,9 +96,10 @@ extension AddCallinfoView {
               let selectedProduct = selectedProductRcpa as? Product,
               
                 
-              let productQuantity = productQtyTF.text, !productQuantity.isEmpty else {
+            let productQuantity = productQtyTF.text, !productQuantity.isEmpty else {
         
             handleIncompleteSelection()
+            
             return
         }
         
@@ -484,9 +485,11 @@ extension AddCallinfoView :UITextFieldDelegate {
             // Construct the new text after replacement
             guard let selectedChemist = selectedChemistRcpa as? Chemist else {
                 showAlertToNotifyExistance(desc: "Please select Chemist.")
+                productQtyTF.resignFirstResponder()
                 return false}
             guard let selectedProduct = selectedProductRcpa as? Product else {
                 showAlertToNotifyExistance(desc: "Please select Product.")
+                productQtyTF.resignFirstResponder()
                 return false}
          
             
@@ -1850,7 +1853,7 @@ class AddCallinfoView : BaseView {
         
         productnameCurvedView.addTap {
             
-            guard let chemist = self.chemistObj else {
+            guard (self.chemistObj != nil) else {
                 self.showAlertToNotifyExistance(desc: "Please select Chemist.")
                 return
             }
@@ -1914,7 +1917,7 @@ class AddCallinfoView : BaseView {
                     
                     let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
                     
-                    var sampleNotFilledProducts = sampleProducts.filter { $0.sampleCount.isEmpty }
+                    let sampleNotFilledProducts = sampleProducts.filter { $0.sampleCount.isEmpty }
                
                     guard sampleNotFilledProducts.isEmpty else {
                         showAlertToFillFields(desc: "Fill in samples for selected sample products to save call", type: .products)
@@ -1933,7 +1936,7 @@ class AddCallinfoView : BaseView {
                     
                     let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
                     
-                    var rxNotFilledProducts = sampleProducts.filter { $0.rxCount.isEmpty }
+                    let rxNotFilledProducts = sampleProducts.filter { $0.rxCount.isEmpty }
                
                     guard rxNotFilledProducts.isEmpty else {
                         showAlertToFillFields(desc: "Fill in Rx Qty for selected sample products to save call", type: .products)
@@ -2074,7 +2077,7 @@ class AddCallinfoView : BaseView {
                     
                     let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
                     
-                    var sampleNotFilledProducts = sampleProducts.filter { $0.sampleCount.isEmpty }
+                    let sampleNotFilledProducts = sampleProducts.filter { $0.sampleCount.isEmpty }
                
                     guard sampleNotFilledProducts.isEmpty else {
                         showAlertToFillFields(desc: "Fill in samples for selected sample products to save call", type: .products)
@@ -2093,7 +2096,7 @@ class AddCallinfoView : BaseView {
                     
                     let sampleProducts = products.filter { $0.product?.productMode?.lowercased() != "sale" }
                     
-                    var rxNotFilledProducts = sampleProducts.filter { $0.rxCount.isEmpty }
+                    let rxNotFilledProducts = sampleProducts.filter { $0.rxCount.isEmpty }
                
                     guard rxNotFilledProducts.isEmpty else {
                         showAlertToFillFields(desc: "Fill in Rx Qty for selected sample products to save call", type: .products)

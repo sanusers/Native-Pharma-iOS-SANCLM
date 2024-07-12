@@ -203,119 +203,172 @@ extension MainVC {
 
     }
     
-    func toretryDCRupload(date: String, completion: @escaping (Bool) -> Void) {
+    func toretryDCRupload(dcrCall: [TodayCallsModel]? = nil,  date: String, completion: @escaping (Bool) -> Void) {
         var userAddress: String?
     
-        Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
-            guard let welf = self else{return}
-            userAddress = address
-            
-            
-            CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
-                guard let aoutboxCDM = outboxCDMs.first else {
-                    completion(false)
-                    return}
+        if !isConnected {
+            showAlert(desc: "Internet connection is required to sync calls.")
+            return
+        }
+        
+        
+        if let dcrCall = dcrCall {
+            Shared.instance.showLoaderInWindow()
+            Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
+                guard let welf = self else{return}
+                userAddress = address
                 
-                let coreparamDatum = aoutboxCDM.unSyncedParams
-                
-                guard let paramData = coreparamDatum else {
-                    completion(false)
-                    return}
-                
-                
-                var localParamArr = [String: [[String: Any]]]()
-                do {
-                    localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-                    dump(localParamArr)
-                } catch {
-                    //  self.toCreateToast("unable to retrive")
-                    completion(false)
-                }
-                
-                var specificDateParams : [[String: Any]] = [[:]]
-                
-                
-                if date.isEmpty {
-                    localParamArr.forEach { key, value in
-                        
-                        specificDateParams = value
-                        
-                        
-                        for index in 0..<specificDateParams.count {
-                            var paramData = specificDateParams[index]
-                            
-                            // Check if "Entry_location" key exists
-                            if let _ = paramData["Entry_location"] as? String {
-                                // Update the value of "Entry_location" key
-                                paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-                            }
-                            
-                            // Check if "address" key exists
-                            if let _ = paramData["address"] as? String {
-                                // Update the value of "address" key
-                                paramData["address"] = userAddress ?? ""
-                            }
-                            
-                            // Update the dictionary in specificDateParams array
-                            specificDateParams[index] = paramData
-                        }
-                        
-                        
-                    }
-                } else {
-                    if localParamArr.isEmpty {
-                        completion(true)
-                    }
-                    localParamArr.forEach { key, value in
-                        if key == date {
-                            dump(value)
-                            specificDateParams = value
+                let dispatchGroup = DispatchGroup()
 
-                            for index in 0..<specificDateParams.count {
-                                var paramData = specificDateParams[index]
-                                
-                                // Check if "Entry_location" key exists
-                                if paramData["Entry_location"] is String {
-                                    // Update the value of "Entry_location" key
-                                    paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-                                }
-                                
-                                // Check if "address" key exists
-                                if paramData["address"] is String {
-                                    // Update the value of "address" key
-                                    paramData["address"] = userAddress ?? ""
-                                }
-                                
-                                // Update the dictionary in specificDateParams array
-                                specificDateParams[index] = paramData
-                            }
+                dcrCall.forEach { todayCallsModel in
+                    let callType = welf.toReturnCallType(dcrCall: todayCallsModel)
+                    var call: AnyObject? = callType?.call
+                    var type: DCRType? = callType?.type
+                    
+                    guard let call = call, let type = type else { return }
+                    
+                    dispatchGroup.enter()
+                    welf.dcrCallObjectParser.toReturnModelobjects(call: call, type: type) { [weak self] outboxModel in
+                        guard let welf = self else {
+                            dispatchGroup.leave()
+                            return
+                        }
+                        welf.dcrCallObjectParser.toSetDCRParam(outboxModel: outboxModel) { json in
+                            var param: [String: Any] = json
+                            param["CustCode"] = todayCallsModel.custCode
+                            let callDate = todayCallsModel.vstTime.toDate()
                             
+                          //  Shared.instance.showLoaderInWindow()
+                            
+                            param["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+                            param["address"] = userAddress ?? ""
+                            
+                            welf.toSendParamsToAPISerially(refreshDate: callDate, index: 0, items: [param]) { _ in
+                             //   Shared.instance.removeLoaderInWindow()
+                                dispatchGroup.leave()
+                            }
                         }
                     }
                 }
-                
-                print("specificDateParams has \(specificDateParams.count) values")
-                if !localParamArr.isEmpty {
-                    Shared.instance.showLoaderInWindow()
-                    let refreshDate = date.toDate(format: "yyyy-MM-dd")
-                    welf.toSendParamsToAPISerially(refreshDate: refreshDate, index: 0, items: specificDateParams) { _ in
-
-                            Shared.instance.removeLoaderInWindow()
-                            completion(true)
-                       
-                    }
-                } else {
-                    Shared.instance.removeLoaderInWindow()
-                    completion(true)
-                }
-                
             }
-            
-
-           // let paramData = LocalStorage.shared.getData(key: .outboxParams)
-
-            
+            dispatchGroup.notify(queue: .main) {
+                // All tasks are complete, perform any final operations here
+                Shared.instance.removeLoaderInWindow()
             }
+        }
+        
+        
+//        Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
+//            guard let welf = self else{return}
+//            userAddress = address
+//            
+//            
+//            
+//            CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
+//                guard let aoutboxCDM = outboxCDMs.first else {
+//                    completion(false)
+//                    return}
+//                
+//                let coreparamDatum = aoutboxCDM.unSyncedParams
+//                
+//                guard let paramData = coreparamDatum else {
+//                    completion(false)
+//                    return}
+//                
+//                
+//                var localParamArr = [String: [[String: Any]]]()
+//                do {
+//                    localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
+//                    dump(localParamArr)
+//                } catch {
+//                    //  self.toCreateToast("unable to retrive")
+//                    completion(false)
+//                }
+//                
+//                var specificDateParams : [[String: Any]] = [[:]]
+//                
+//                
+//                if date.isEmpty {
+//                    localParamArr.forEach { key, value in
+//                        
+//                        specificDateParams = value
+//                        
+//                        
+//                        for index in 0..<specificDateParams.count {
+//                            var paramData = specificDateParams[index]
+//                            
+//                            // Check if "Entry_location" key exists
+//                            if let _ = paramData["Entry_location"] as? String {
+//                                // Update the value of "Entry_location" key
+//                                paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+//                            }
+//                            
+//                            // Check if "address" key exists
+//                            if let _ = paramData["address"] as? String {
+//                                // Update the value of "address" key
+//                                paramData["address"] = userAddress ?? ""
+//                            }
+//                            
+//                            // Update the dictionary in specificDateParams array
+//                            specificDateParams[index] = paramData
+//                        }
+//                        
+//                        
+//                    }
+//                } else {
+//                    if localParamArr.isEmpty {
+//                        completion(true)
+//                    }
+//                    localParamArr.forEach { key, value in
+//                        if key == date {
+//                            dump(value)
+//                            specificDateParams = value
+//
+//                            for index in 0..<specificDateParams.count {
+//                                var paramData = specificDateParams[index]
+//                                
+//                                // Check if "Entry_location" key exists
+//                                if paramData["Entry_location"] is String {
+//                                    // Update the value of "Entry_location" key
+//                                    paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
+//                                }
+//                                
+//                                // Check if "address" key exists
+//                                if paramData["address"] is String {
+//                                    // Update the value of "address" key
+//                                    paramData["address"] = userAddress ?? ""
+//                                }
+//                                
+//                                // Update the dictionary in specificDateParams array
+//                                specificDateParams[index] = paramData
+//                            }
+//                            
+//                        }
+//                    }
+//                }
+//                
+//                print("specificDateParams has \(specificDateParams.count) values")
+//                if !localParamArr.isEmpty {
+//                    Shared.instance.showLoaderInWindow()
+//                    let refreshDate = date.toDate(format: "yyyy-MM-dd")
+//                    welf.toSendParamsToAPISerially(refreshDate: refreshDate, index: 0, items: specificDateParams) { _ in
+//
+//                            Shared.instance.removeLoaderInWindow()
+//                            completion(true)
+//                       
+//                    }
+//                } else {
+//                    Shared.instance.removeLoaderInWindow()
+//                    completion(true)
+//                }
+//                
+//            }
+//            
+//
+//           // let paramData = LocalStorage.shared.getData(key: .outboxParams)
+//
+//            
+//            }
         
         
         

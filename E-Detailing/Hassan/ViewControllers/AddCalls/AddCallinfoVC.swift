@@ -31,6 +31,7 @@ class AddCallinfoVC: BaseViewController {
     var unsyncedhomeDataArr = [UnsyncedHomeData]()
     var amc: String = ""
     var isForEdit: Bool = false
+    let dcrCallObjectParser = DCRCallObjectParser.instance
     class func initWithStory(viewmodel: UserStatisticsVM) -> AddCallinfoVC {
         let reportsVC : AddCallinfoVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.userStatisticsVM = viewmodel
@@ -39,7 +40,13 @@ class AddCallinfoVC: BaseViewController {
     }
     
     
+    
+    
     func setupParam(dcrCall: CallViewModel) {
+        
+
+
+        
         let dcrCall = dcrCall.toRetriveDCRdata(dcrcall: dcrCall)
         
         let persistentContainer = appdelegate.persistentContainer
@@ -73,7 +80,6 @@ class AddCallinfoVC: BaseViewController {
         let inputValue = self.addCallinfoView.inputSelectedListViewModel.inputData()
         let jointWorkValue = self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
         let additionalCallValue = self.addCallinfoView.additionalCallListViewModel.getAdditionalCallData()
-        
         let rcpaValue =  self.addCallinfoView.rcpaDetailsModel
         let evenetCaptureValue = self.addCallinfoView.eventCaptureListViewModel
         
@@ -106,48 +112,8 @@ class AddCallinfoVC: BaseViewController {
             aInput["IQty"] = input.inputCount
             addedInput.append(aInput)
         }
-        
-        
-        
-        
-        addedDCRCallsParam["Inputs"] = addedInput
 
-//        var detailedSlides = Shared.instance.detailedSlides
-//
-//            // Create a dictionary to group slides by brandCode
-//            var groupedSlides: [Int: [SlidesModel]] = [:]
-//
-//            // Group slides by brandCode
-//            for slide in detailedSlides {
-//                if let brandCode = slide.brandCode {
-//                    if groupedSlides[brandCode] == nil {
-//                        groupedSlides[brandCode] = []
-//                    }
-//                    if let slides = slide.groupedSlides {
-//                        groupedSlides[brandCode]?.append(contentsOf: slides)
-//                    }
-//                }
-//            }
-//
-//            // Iterate through the detailedSlides array and update each DetailedSlide object
-//            for (index, detailedSlide) in detailedSlides.enumerated() {
-//                if let groupedSlidesForBrand = groupedSlides[detailedSlide.brandCode ?? Int()] {
-//                    detailedSlides[index].groupedSlides = groupedSlidesForBrand
-//                }
-//            }
-//
-//            // Create a dictionary to group DetailedSlides by brandCode
-//            var groupedDetailedSlides: [Int: [DetailedSlide]] = [:]
-//
-//            // Group DetailedSlides by brandCode
-//            for slide in detailedSlides {
-//                if let brandCode = slide.brandCode {
-//                    if groupedDetailedSlides[brandCode] == nil {
-//                        groupedDetailedSlides[brandCode] = []
-//                    }
-//                    groupedDetailedSlides[brandCode]?.append(slide)
-//                }
-//            }
+        addedDCRCallsParam["Inputs"] = addedInput
 
             // Convert the groupedSlides dictionary into an array of arrays
         let mappedArray =  Shared.instance.detailedSlides
@@ -160,20 +126,9 @@ class AddCallinfoVC: BaseViewController {
             addedDetailedProducts.removeAll()
             
             dump(mappedArray)
-    //        mappedArray.forEach { DetailedSlide in
-    //
-    //        }
-            
+
             mappedArray.forEach { detailedSlideArr in
                 let groupSlides: [SlidesModel] = detailedSlideArr.groupedSlides ?? []
-//                detailedSlideArr.forEach { aDetailedSlide in
-//                    if let aSlideModel = aDetailedSlide.slidesModel {
-//                        groupSlides.append(aSlideModel)
-//                    }
-//                }
-    
-                //detailedSlideArr.first
-               
                     var aproduct : [String : Any] = [:]
                     // groupedSlides.forEach
                     aproduct["Code"] =  detailedSlideArr.brandCode
@@ -366,8 +321,7 @@ class AddCallinfoVC: BaseViewController {
 //Joint works
 
         var addedJointWorks  : [[String: Any]] = [[:]]
-     
-       
+
         let selectedJWs =  self.addCallinfoView.jointWorkSelectedListViewModel.getJointWorkData()
         for aJointWork in selectedJWs {
             var ajointWorkParam: [String: Any] = [:]
@@ -411,18 +365,17 @@ class AddCallinfoVC: BaseViewController {
         
         let divisionCode = appsetup.divisionCode!.replacingOccurrences(of: ",", with: "")
         var date = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
-      
+        
       
         if let callDate =  self.dcrCall.dcrDate {
             date = callDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         }
-        
-        addedDCRCallsParam["tableName"] = "postDCRdata"
+
+        //addedDCRCallsParam["tableName"] = "postDCRdata"
         addedDCRCallsParam["CateCode"] = dcrCall.cateCode
         addedDCRCallsParam["CusType"] = cusType
         addedDCRCallsParam["CustCode"] = dcrCall.code
         addedDCRCallsParam["CustName"] = dcrCall.name
-     
         addedDCRCallsParam["sfcode"] = appsetup.sfCode ?? ""
         addedDCRCallsParam["Rsf"] =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
         addedDCRCallsParam["sf_type"] = "\(appsetup.sfType ?? 0)"
@@ -437,9 +390,6 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["mode"]  = "0"
         addedDCRCallsParam["Appver"] = "iEdet.1.1"
         addedDCRCallsParam["Mod"] = "ios-Edet-New"
-        addedDCRCallsParam["WT_code"] = "2748"
-        addedDCRCallsParam["WTName"] = "Field Work"
-        addedDCRCallsParam["FWFlg"] = "F"
         addedDCRCallsParam["town_code"] = dcrCall.townCode
         addedDCRCallsParam["town_name"] = dcrCall.townName
         addedDCRCallsParam["ModTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -455,16 +405,15 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["sign_path"] = ""
         addedDCRCallsParam["SignImageName"] = ""
         addedDCRCallsParam["DCSUPOB"] =  self.addCallinfoView.pobValue
-        addedDCRCallsParam["day_flag"] = "1"
-    //    if isForEdit {
-            addedDCRCallsParam["amc"] = self.amc
-//        } else {
-//            addedDCRCallsParam["amc"] = ""
-//        }
+        addedDCRCallsParam["day_flag"] = "0"
 
-       // addedDCRCallsParam["checkout"] = dcrCall.dcrCheckinTime
-       // addedDCRCallsParam["checkin"] = date
-        //self.txtPob.text ?? ""
+        addedDCRCallsParam["amc"] = self.amc
+        
+        
+
+        
+
+
         if let overallFeedback = self.addCallinfoView.overallFeedback {
             
             if let id = overallFeedback.id   {
@@ -475,35 +424,112 @@ class AddCallinfoVC: BaseViewController {
         }
         addedDCRCallsParam["sample_validation"] = "0"
         addedDCRCallsParam["input_validation"] = "0"
-
-            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                    addedDCRCallsParam["address"] =  self.dcrCall.customerCheckOutAddress
-                    let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-                    var toSendData = [String : Any]()
-                    toSendData["data"] = jsonDatum
-                    postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
-                        NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                        self.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+        
+        if geoFencingEnabled {
+            fetchLocations() {[weak self] locationInfo in
+                guard let welf = self  else {return}
+                addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
+                addedDCRCallsParam["address"] = locationInfo.address
+                welf.toRetriveFieldWorks(date: date) {  workTypeinfo in
+                  
+                    if let workTypeinfo = workTypeinfo {
+                        addedDCRCallsParam["WT_code"] = workTypeinfo.code
+                        addedDCRCallsParam["WTName"] = workTypeinfo.name
+                        addedDCRCallsParam["FWFlg"] = "F"
                     }
-            } else {
-                Shared.instance.showLoaderInWindow()
-                addedDCRCallsParam["address"] =  ""
-                toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Shared.instance.selectedDate , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
-                    guard let welf = self else {return}
-                    welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
-                        welf.toCacheCapturedEvents() { iscached in
-                            Shared.instance.removeLoaderInWindow()
-                            NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-                        }
                     
+                    if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                            addedDCRCallsParam["address"] =  welf.dcrCall.customerCheckOutAddress
+                            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                            var toSendData = [String : Any]()
+                            toSendData["data"] = jsonDatum
+                        welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
+                                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                                welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+                            }
+                    } else {
+                        Shared.instance.showLoaderInWindow()
+                        addedDCRCallsParam["address"] =  ""
+                        welf.toSaveaDCRcall(callDate: welf.dcrCall.dcrDate ?? Shared.instance.selectedDate , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
+                            guard let welf = self else {return}
+                            welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
+                                welf.toCacheCapturedEvents() { iscached in
+                                    Shared.instance.removeLoaderInWindow()
+                                    NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                                    welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+                                }
+                            
+                            }
+                       
+                        }
+                      
                     }
                
                 }
-              
             }
+        }
+        
+
     }
     
+    struct LocationInfo {
+        let latitude: Double
+        let longitude: Double
+        let address: String
+    }
+    
+    func fetchLocations(completion: @escaping(LocationInfo) -> ()) {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {return}
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.addCallinfoView.showAlert(desc: "Please enable location services in Settings.")
+                    return
+                }
+            }
+
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
+                    guard let welf = self else {return}
+
+                    welf.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                    welf.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
+                    welf.dcrCall.customerCheckOutAddress = address ?? "No address found"
+                    
+                    completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address: address ?? "No address found"))
+                }
+            } else {
+                
+              
+                welf.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                welf.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
+                welf.dcrCall.customerCheckOutAddress = "No Address found"
+                
+                completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address:  "No address found"))
+            }
+            
+        }
+    }
+    
+    
+    struct wortTypeInfo {
+        let code: String
+        let name: String
+    }
+    
+    func toRetriveFieldWorks(date: String, completion: @escaping (wortTypeInfo?) -> () ) {
+        CoreDataManager.shared.retriveSavedDayPlans(byDate: date.toDate(format: "yyyy-MM-dd HH:mm:ss")) {dayplan in
+            let filteredfieldWorks =  dayplan.filter { $0.fwFlg == "F" }.first
+            guard let fieldWorks = filteredfieldWorks else {
+                completion(nil)
+                return }
+            completion(wortTypeInfo(code:   fieldWorks.wtCode, name: fieldWorks.wtName))
+          
+            
+            
+        }
+    }
     
     func toCacheCapturedEvents(completion: @escaping (Bool)->()) {
         var param = [String: Any]()
@@ -985,7 +1011,6 @@ class AddCallinfoVC: BaseViewController {
         dbparam["successMessage"] = issussess ? "call Aldready Exists" : "Waiting to sync"
         dbparam["checkinTime"] = dcrCall.dcrCheckinTime
         dbparam["checkOutTime"] = dcrCall.dcrCheckOutTime
-        dbparam["dayStatus"] = "0"
         
         var dbparamArr = [[String: Any]]()
         dbparamArr.append(dbparam)

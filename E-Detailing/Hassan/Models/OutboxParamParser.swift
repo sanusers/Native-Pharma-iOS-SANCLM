@@ -402,15 +402,8 @@ class DCRCallObjectParser {
         addedDCRCallsParam["SignImageName"] = ""
         addedDCRCallsParam["DCSUPOB"] =  outboxModel.pobValue
         addedDCRCallsParam["day_flag"] = "1"
-    //    if isForEdit {
-            addedDCRCallsParam["amc"] = outboxModel.amc
-//        } else {
-//            addedDCRCallsParam["amc"] = ""
-//        }
+        addedDCRCallsParam["amc"] = outboxModel.amc
 
-       // addedDCRCallsParam["checkout"] = dcrCall.dcrCheckinTime
-       // addedDCRCallsParam["checkin"] = date
-        //self.txtPob.text ?? ""
         if let overallFeedback = outboxModel.overallFeedback {
             
             if let id = overallFeedback.id   {
@@ -423,9 +416,7 @@ class DCRCallObjectParser {
         addedDCRCallsParam["input_validation"] = "0"
 
         addedDCRCallsParam["address"] =  dcrCall.customerCheckOutAddress
-//        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-//        var toSendData = [String : Any]()
-//        toSendData["data"] = jsonDatum
+
         competion(addedDCRCallsParam)
     }
     
