@@ -650,6 +650,7 @@ class JfwView: UIView {
         self.overallRemark = sender.text ?? ""
         
         guard let feedbackEntityDesc = NSEntityDescription.entity(forEntityName: "Feedback", in: AppDelegate.shared.persistentContainer.viewContext) else {
+            
             return
             
         }
@@ -719,7 +720,11 @@ extension JfwView:UITextFieldDelegate {
                 let currentString: NSString = textField.text! as NSString
                 let newString: NSString =
                     currentString.replacingCharacters(in: range, with: string) as NSString
-                return string == numberFiltered && newString.length <= maxLength
+                if string == numberFiltered && newString.length <= maxLength {
+                    didtapPOBtf(pobTF)
+                    return true
+                }
+               return false
             default:
                 print("Default")
                 // Get the current text in the text field
@@ -734,6 +739,7 @@ extension JfwView:UITextFieldDelegate {
                  // Ensure the new string length is less than or equal to the max length
                  let maxLength = 50
                 if updatedText.count <= maxLength {
+                    self.didTapRemarks(remarksTF)
                     return true
                 } else {
                     self.endEditing(true)

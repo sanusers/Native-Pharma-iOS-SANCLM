@@ -36,10 +36,50 @@ extension MainVC {
     func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel) {
         guard let custCode = event.custCode, let date = event.eventcaptureDate  else {return}
 
-        CoreDataManager.shared.removeUnsyncedEventCaptures(date: date, withCustCode: custCode) {_  in
+        CoreDataManager.shared.removeUnsyncedEventCaptures(date: date, withCustCode: custCode) {[weak self] _  in
+            guard let welf = self else {return}
+            welf.toLoadOutboxTable()
             
-            self.toLoadOutboxTable()
+            
+            CoreDataManager.shared.tofetchaSavedCalls(editDate: date, callID: custCode) { addedDCRcall in
+                
+                let context = welf.context
+             
+                guard let addedDCRcalls = addedDCRcall else {
+                    welf.toCreateToast("Unable to delete selected event")
+                    return
+                }
+                
+                var filteredcalls: [AddedDCRCall] = []
+                
+                addedDCRcalls.forEach { aAddedDCRCall in
+                    let dcrCalldate = aAddedDCRCall.callDate
+                    let dateStr = dcrCalldate?.toString(format: "yyyy-MM-dd")
+                    let editDate = date
+                    let editDateStr = editDate.toString(format: "yyyy-MM-dd")
+                    if dateStr == editDateStr {
+                        filteredcalls.append(aAddedDCRCall)
+                    }
+                }
+                
+                let ftchedDCRcall = filteredcalls.first
+               guard (ftchedDCRcall != nil) else {return}
+                
+                ftchedDCRcall?.capturedEvents = nil
+                do {
+                    welf.showAlertToFilldates(description: "captured Events deleted sucessfully")
+                    try context.save()
+                    
+                } catch {
+                    
+                    print("unable to delete")
+                }
+             
+            }
+            
         }
+        
+
 
     }
     

@@ -48,14 +48,16 @@ class CustomValueFormatter:  IndexAxisValueFormatter {
         // Find the index of the current value in the entries array
         if let currentIndex = entries.firstIndex(of: value) {
             if currentIndex % 2 == 0 {
-                return "01 st - 15 th"
+                return "01ˢᵗ - 15ᵗʰ"
             } else {
                 let count = numberOfDaysInMonth(for: date[currentIndex / 2])
-                return "01 th - \(count!) th"
+                return "01ˢᵗ - \(count == 31 ? "31ˢᵗ" : "\(count!)ᵗʰ" )"
                 
             }
 
         }
+        
+        //"", "ˢᵗ", "ᵗʰ"
       return ""
 
         }

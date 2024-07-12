@@ -383,9 +383,6 @@ class DCRCallObjectParser {
         addedDCRCallsParam["mode"]  = "0"
         addedDCRCallsParam["Appver"] = "iEdet.1.1"
         addedDCRCallsParam["Mod"] = "ios-Edet-New"
-        addedDCRCallsParam["WT_code"] = "2748"
-        addedDCRCallsParam["WTName"] = "Field Work"
-        addedDCRCallsParam["FWFlg"] = "F"
         addedDCRCallsParam["town_code"] = dcrCall.townCode
         addedDCRCallsParam["town_name"] = dcrCall.townName
         addedDCRCallsParam["ModTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
@@ -401,7 +398,7 @@ class DCRCallObjectParser {
         addedDCRCallsParam["sign_path"] = ""
         addedDCRCallsParam["SignImageName"] = ""
         addedDCRCallsParam["DCSUPOB"] =  outboxModel.pobValue
-        addedDCRCallsParam["day_flag"] = "1"
+        addedDCRCallsParam["day_flag"] = "0"
         addedDCRCallsParam["amc"] = outboxModel.amc
 
         if let overallFeedback = outboxModel.overallFeedback {
@@ -416,8 +413,38 @@ class DCRCallObjectParser {
         addedDCRCallsParam["input_validation"] = "0"
 
         addedDCRCallsParam["address"] =  dcrCall.customerCheckOutAddress
+        
+        
+        toRetriveFieldWorks(date: date) { [weak self] workTypeinfo in
+            guard let welf = self  else {return}
+            if let workTypeinfo = workTypeinfo {
+                addedDCRCallsParam["WT_code"] = workTypeinfo.code
+                addedDCRCallsParam["WTName"] = workTypeinfo.name
+                addedDCRCallsParam["FWFlg"] = "F"
+            }
+            if geoFencingEnabled {
+                welf.fetchLocations() {[weak self] locationInfo in
+                    guard let welf = self  else {return}
+                    guard let locationInfo = locationInfo else {
+                    
+                        return
+                    }
+                    addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
+                    addedDCRCallsParam["address"] = locationInfo.address
+                    
 
-        competion(addedDCRCallsParam)
+                }
+            } else {
+                competion(addedDCRCallsParam)
+            }
+            
+        }
+        
+
+        
+
+
+      
     }
     
     
@@ -899,6 +926,57 @@ class DCRCallObjectParser {
             }
 
             completion(outboxModel)
+        }
+    }
+    
+    struct LocationInfo {
+        let latitude: Double
+        let longitude: Double
+        let address: String
+    }
+    
+    func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {return}
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    
+                    completion(nil)
+                    return
+                }
+            }
+
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
+                    guard let welf = self else {return}
+
+                    
+                    completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address: address ?? "No address found"))
+                }
+            } else {
+                
+                completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address:  "No address found"))
+            }
+            
+        }
+    }
+    
+    struct wortTypeInfo {
+        let code: String
+        let name: String
+    }
+    
+    func toRetriveFieldWorks(date: String, completion: @escaping (wortTypeInfo?) -> () ) {
+        CoreDataManager.shared.retriveSavedDayPlans(byDate: date.toDate(format: "yyyy-MM-dd HH:mm:ss")) {dayplan in
+            let filteredfieldWorks =  dayplan.filter { $0.fwFlg == "F" }.first
+            guard let fieldWorks = filteredfieldWorks else {
+                completion(nil)
+                return }
+            completion(wortTypeInfo(code:   fieldWorks.wtCode, name: fieldWorks.wtName))
+          
+            
+            
         }
     }
     

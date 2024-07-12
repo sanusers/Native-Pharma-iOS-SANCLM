@@ -152,14 +152,14 @@ extension MainVC {
         // Save sessions as day plans
 
         
-        CoreDataManager.shared.saveSessionAsEachDayPlan(isSynced: isSynced, planDate: planDate, session: yetToSaveSession) { isCompleted in
+        CoreDataManager.shared.saveSessionAsEachDayPlan(isSynced: isSynced, planDate: planDate, session: yetToSaveSession) { _ in
             // [weak self]
             //   guard let welf = self else { return }
-            if isCompleted {
+           
                 
                 
                 completion(true)
-            }
+            
         }
     }
 

@@ -14,6 +14,7 @@ protocol OutboxDetailsTVCDelegate: AnyObject {
     func didTapOutboxDelete(dcrCall: TodayCallsModel)
     func didTapOutboxSync(dcrCall: TodayCallsModel)
     func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel)
+    func didTapEventcaptureSync(event: UnsyncedEventCaptureModel)
 }
 
 
@@ -35,14 +36,20 @@ extension OutboxDetailsTVC: PopOverVCDelegate {
                 self.delegate?.didTapoutboxEdit(dcrCall: model)
             } else {
                 let model = self.eventCaptureModel[SelectedArrIndex]
-                self.delegate?.didTapEventcaptureDelete(event: model)
+             
+                self.delegate?.didTapEventcaptureSync(event: model)
             }
      
         }
         else if index == 1 {
-            let model = self.todayCallsModel[SelectedArrIndex]
-            self.delegate?.didTapOutboxSync(dcrCall: model)
-            print("Yet to sync")
+            if isForCallEdit {
+                let model = self.todayCallsModel[SelectedArrIndex]
+                self.delegate?.didTapOutboxSync(dcrCall: model)
+                print("Yet to sync")
+            } else {
+                let model = self.eventCaptureModel[SelectedArrIndex]
+                self.delegate?.didTapEventcaptureDelete(event: model)
+            }
         }
         else if index == 2 {
             let model = self.todayCallsModel[SelectedArrIndex]

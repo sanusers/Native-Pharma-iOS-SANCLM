@@ -153,6 +153,7 @@ extension MainVC {
                  if var jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
                      print("JSON Dictionary: \(jsonObject)")
                      jsonObject["InsMode"] = "0"
+                     jsonObject["day_flag"] = "0"
                      var toSendData = [String: Any]()
                      
                      let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: jsonObject)
@@ -177,9 +178,6 @@ extension MainVC {
                              }
                          case .failure(let error):
                              completion(false)
-                             
-
-                             
                              welf.toCreateToast(error.rawValue)
                          }
                          
@@ -253,6 +251,7 @@ extension MainVC {
             }
             dispatchGroup.notify(queue: .main) {
                 // All tasks are complete, perform any final operations here
+                completion(true)
                 Shared.instance.removeLoaderInWindow()
             }
         }

@@ -476,7 +476,7 @@ class PreviewHomeView : BaseView {
         case home = "Home"
         case brand = "Brand Matrix"
         case speciality = "Speciality"
-        case customPresentation = "Custom Presentation"
+        case customPresentation = "My Presentation"
         case therapist = "Therapist"
     }
     

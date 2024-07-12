@@ -826,7 +826,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                            self.showAlertForCallExistence(desc: "Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
                           //  self.toCreateToast("Doctor aldready visited today")
                             return
                         }
@@ -881,7 +881,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Chemist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                            self.showAlertForCallExistence(desc: "Chemist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
                             return
                         }
                     }
@@ -934,7 +934,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Stockist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                            self.showAlertForCallExistence(desc: "Stockist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
                             return
                         }
                     }
@@ -982,7 +982,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                            self.showAlertForCallExistence(desc: "Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
                             return
                         }
                     }

@@ -424,7 +424,7 @@ class SlideDownloadVC : UIViewController {
                            LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: false)
                            self.delegate?.isBackgroundSyncInprogress(isCompleted: false, cacheObject: self.arrayOfAllSlideObjects, isToshowAlert: false, didEncountererror: true)
                           // self.toSetupRetryAction(index: self.loadingIndex, items: self.arrayOfAllSlideObjects, isConnected: self.isConnected)
-                           self.checkAndShowAlertIfNeeded()
+                         //  self.checkAndShowAlertIfNeeded()
                            
                        } else if  status == "WiFi" || status ==  "Cellular"   {
                          

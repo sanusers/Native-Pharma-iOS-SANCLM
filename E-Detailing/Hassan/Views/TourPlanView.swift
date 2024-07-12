@@ -1658,23 +1658,23 @@ class TourPlanView: BaseView {
         }
         
        // self.offsets = LocalStorage.shared.getOffset(key: LocalStorage.LocalValue.offsets)
-        let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
-        self.weeklyOff = weeklyoffSetupArr[0]
+   //     let weeklyoffSetupArr = DBManager.shared.getWeeklyOff()
+    //    self.weeklyOff = weeklyoffSetupArr[0]
 //        let weekoffIndex = Int(self.weeklyOff?.holiday_Mode ?? "0")
 //        let weekoffDates = getDatesForDayIndex(weekoffIndex ?? 0, numberOfMonths: 3)
         
-        let holidaysSetupArr = DBManager.shared.getHolidays()
-        self.holidays = holidaysSetupArr
+      //  let holidaysSetupArr = DBManager.shared.getHolidays()
+       // self.holidays = holidaysSetupArr
        
-        responseHolidaydates.removeAll()
+      //  responseHolidaydates.removeAll()
         
 
-        self.holidays?.forEach({ aholiday in
-            responseHolidaydates.append(aholiday.holiday_Date ?? "")
+     //   self.holidays?.forEach({ aholiday in
+        //    responseHolidaydates.append(aholiday.holiday_Date ?? "")
            
-        })
+      //  })
 
-        let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
+      //  let isAlldatesAppended  = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.TPalldatesAppended)
 
 //        if isAlldatesAppended {
 //            

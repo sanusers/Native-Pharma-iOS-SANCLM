@@ -238,7 +238,7 @@ class BasicReportsInfoTVC: UITableViewCell {
         var text: String {
             switch self {
             case .draft:
-                return "Pending"
+                return "draft"
             case .finished:
                 return "Finished"
             case .rejected:

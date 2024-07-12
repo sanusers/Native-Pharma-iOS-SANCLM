@@ -370,8 +370,8 @@ class AddCallinfoVC: BaseViewController {
         if let callDate =  self.dcrCall.dcrDate {
             date = callDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         }
-
-        //addedDCRCallsParam["tableName"] = "postDCRdata"
+        
+        addedDCRCallsParam["tableName"] = "postDCRdata"
         addedDCRCallsParam["CateCode"] = dcrCall.cateCode
         addedDCRCallsParam["CusType"] = cusType
         addedDCRCallsParam["CustCode"] = dcrCall.code
@@ -388,16 +388,14 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["SpecCode"] = dcrCall.specialityCode
         addedDCRCallsParam["mappedProds"] = ""
         addedDCRCallsParam["mode"]  = "0"
-        addedDCRCallsParam["Appver"] = "iEdet.1.1"
-        addedDCRCallsParam["Mod"] = "ios-Edet-New"
+        addedDCRCallsParam["Appver"] = ""
+        addedDCRCallsParam["Mod"] = ""
         addedDCRCallsParam["town_code"] = dcrCall.townCode
         addedDCRCallsParam["town_name"] = dcrCall.townName
         addedDCRCallsParam["ModTime"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss")
         addedDCRCallsParam["ReqDt"] = date
         addedDCRCallsParam["vstTime"] = date
         addedDCRCallsParam["Remarks"] =  self.addCallinfoView.overallRemarks ?? ""
-        //self.txtRemarks.textColor == .lightGray ? "" : self.txtRemarks.text ?? ""
-
         addedDCRCallsParam["hospital_code"] = ""
         addedDCRCallsParam["hospital_name"] = ""
         addedDCRCallsParam["sample_validation"]  = "0"
@@ -406,7 +404,6 @@ class AddCallinfoVC: BaseViewController {
         addedDCRCallsParam["SignImageName"] = ""
         addedDCRCallsParam["DCSUPOB"] =  self.addCallinfoView.pobValue
         addedDCRCallsParam["day_flag"] = "0"
-
         addedDCRCallsParam["amc"] = self.amc
         
         
@@ -422,34 +419,35 @@ class AddCallinfoVC: BaseViewController {
             }
      
         }
-        addedDCRCallsParam["sample_validation"] = "0"
-        addedDCRCallsParam["input_validation"] = "0"
         
-        if geoFencingEnabled {
-            fetchLocations() {[weak self] locationInfo in
+        toRetriveFieldWorks(date: date) { [weak self] workTypeinfo in
                 guard let welf = self  else {return}
-                addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
-                addedDCRCallsParam["address"] = locationInfo.address
-                welf.toRetriveFieldWorks(date: date) {  workTypeinfo in
-                  
-                    if let workTypeinfo = workTypeinfo {
-                        addedDCRCallsParam["WT_code"] = workTypeinfo.code
-                        addedDCRCallsParam["WTName"] = workTypeinfo.name
-                        addedDCRCallsParam["FWFlg"] = "F"
+              
+                if let workTypeinfo = workTypeinfo {
+                    addedDCRCallsParam["WT_code"] = workTypeinfo.code
+                    addedDCRCallsParam["WTName"] = workTypeinfo.name
+                    addedDCRCallsParam["FWFlg"] = "F"
+                }
+            if geoFencingEnabled {
+                welf.fetchLocations() {[weak self] locationInfo in
+                    guard let welf = self  else {return}
+                    guard let locationInfo = locationInfo else {
+                        welf.addCallinfoView.showAlert(desc: "Please enable location services in Settings.")
+                        return
                     }
-                    
+                    addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
+                    addedDCRCallsParam["address"] = locationInfo.address
                     if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                            addedDCRCallsParam["address"] =  welf.dcrCall.customerCheckOutAddress
-                            let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-                            var toSendData = [String : Any]()
-                            toSendData["data"] = jsonDatum
+                        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                        var toSendData = [String : Any]()
+                        toSendData["data"] = jsonDatum
                         welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
                                 NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
                                 welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                             }
                     } else {
                         Shared.instance.showLoaderInWindow()
-                        addedDCRCallsParam["address"] =  ""
+                    
                         welf.toSaveaDCRcall(callDate: welf.dcrCall.dcrDate ?? Shared.instance.selectedDate , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
                             guard let welf = self else {return}
                             welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
@@ -464,11 +462,38 @@ class AddCallinfoVC: BaseViewController {
                         }
                       
                     }
-               
+                }
+            } else {
+                if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                    let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
+                    var toSendData = [String : Any]()
+                    toSendData["data"] = jsonDatum
+                    welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
+                            NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                            welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+                        }
+                } else {
+                    Shared.instance.showLoaderInWindow()
+                
+                    welf.toSaveaDCRcall(callDate: welf.dcrCall.dcrDate ?? Shared.instance.selectedDate , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
+                        guard let welf = self else {return}
+                        welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
+                            welf.toCacheCapturedEvents() { iscached in
+                                Shared.instance.removeLoaderInWindow()
+                                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                                welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
+                            }
+                        
+                        }
+                   
+                    }
+                  
                 }
             }
-        }
-        
+                
+
+           
+            }
 
     }
     
@@ -478,13 +503,14 @@ class AddCallinfoVC: BaseViewController {
         let address: String
     }
     
-    func fetchLocations(completion: @escaping(LocationInfo) -> ()) {
+    func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {return}
             
             if geoFencingEnabled {
                 guard coordinates != nil else {
                     welf.addCallinfoView.showAlert(desc: "Please enable location services in Settings.")
+                    completion(nil)
                     return
                 }
             }

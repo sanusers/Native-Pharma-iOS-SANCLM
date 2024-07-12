@@ -221,8 +221,8 @@ class MainVC : UIViewController {
      
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        CoreDataManager.shared.removeAllDayPlans()
-//        self.toConfigureMydayPlan(planDate: Shared.instance.selectedDate) {}
+      // CoreDataManager.shared.removeAllDayPlans()
+      //  self.toConfigureMydayPlan(planDate: Shared.instance.selectedDate) {}
     }
     
     func initView() {
@@ -722,8 +722,8 @@ class MainVC : UIViewController {
     
     @objc func refreshDayplan() {
         
-      //  btnCalenderSync(btnSyncDate!)
-        refreshUI(date: Shared.instance.selectedDate, segmentType[selectedSegmentsIndex]) {}
+        btnCalenderSync(btnSyncDate!)
+       // refreshUI(date: Shared.instance.selectedDate, segmentType[selectedSegmentsIndex]) {}
     }
     
     @objc func dcrcallsAdded() {
@@ -782,27 +782,25 @@ class MainVC : UIViewController {
             callSavePlanAPI(byDate: byDate) {  [weak self] isUploaded in
                 guard let welf = self else {return}
                 
-                guard var nonNilSession = welf.sessions else {
-                    return
-                }
-                
-                if isUploaded {
-                    welf.toConfigureMydayPlan(planDate: byDate, isRetrived: true) {}
-                } else {
-                    
-          
-                    nonNilSession.indices.forEach { index in
-                        nonNilSession[index].isRetrived = false
+                if isUploaded  {
+                    welf.toConfigureMydayPlan(planDate: byDate, isRetrived: true) {
+                        completion()
                     }
                     
-                    welf.sessions = nonNilSession
+                } else {
                     
-                    welf.setSegment(.workPlan)
+                    welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: byDate) {_ in
+
+                        welf.toConfigureMydayPlan(planDate: byDate, isRetrived: true) {
+                            completion()
+                        }
+                     
+                    }
                 }
                 
                 
                 
-                completion()
+             
             }
             
         } else {
@@ -3276,7 +3274,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
               
                 let dateString = date
                 let rawDate = dateString.toDate(format: "yyyy-MM-dd")
+                Shared.instance.showLoaderInWindow()
                 self.toPostDayplan(byDate: rawDate) {
+                    self.toLoadOutboxTable()
+                    Shared.instance.removeLoaderInWindow()
                 }
             }
             
@@ -3286,10 +3287,11 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                     self.showAlertToFilldates(description: "Internet connection is required to sync calls.")
                     return
                 }
-                
+                Shared.instance.showLoaderInWindow()
                 let dcrCalls = obj_sections[indexPath.section].items
                 let date = obj_sections[indexPath.section].date
                 self.toretryDCRupload(dcrCall: dcrCalls, date: date) {_ in 
+                    Shared.instance.removeLoaderInWindow()
                     self.showAlertToFilldates(description: "Sync completed")
                 }
 
@@ -4100,7 +4102,7 @@ extension MainVC : outboxCollapseTVCDelegate {
     }
     
     
-    func toUploadUnsyncedImage(completion: @escaping () -> ()) {
+    func toUploadUnsyncedImage(custCode: String? = nil, completion: @escaping () -> ()) {
       
         CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventsArr in
             
@@ -4108,7 +4110,13 @@ extension MainVC : outboxCollapseTVCDelegate {
             // Create a dispatch group to wait for all uploads to complete
             let dispatchGroup = DispatchGroup()
             
-            unsyncedEventsArr.forEach { unsyncedEvent in
+            var filteredunsyncedEventsArr = unsyncedEventsArr
+            
+            if let custCode = custCode {
+                filteredunsyncedEventsArr =  unsyncedEventsArr.filter { $0.custCode == custCode }
+            }
+            
+            filteredunsyncedEventsArr.forEach { unsyncedEvent in
                 var eventCaptureVMs = [EventCaptureViewModel]()
                 let yattoPostData = unsyncedEvent.eventCaptureParamData
                 let eventCaptures = unsyncedEvent.capturedEvents
@@ -4623,6 +4631,17 @@ extension MainVC :  HomeSideMenuVCDelegate {
 
 
 extension MainVC: OutboxDetailsTVCDelegate {
+    func didTapEventcaptureSync(event: UnsyncedEventCaptureModel) {
+        guard let custCode = event.custCode else {return}
+        Shared.instance.showLoaderInWindow()
+        
+        toUploadUnsyncedImage(custCode: custCode) { [weak self] in
+            guard let welf = self else {return}
+            Shared.instance.removeLoaderInWindow()
+            welf.showAlertToFilldates(description: "captured Events synced sucessfully")
+            
+        }
+    }
     
     struct callType {
         var call: AnyObject?
