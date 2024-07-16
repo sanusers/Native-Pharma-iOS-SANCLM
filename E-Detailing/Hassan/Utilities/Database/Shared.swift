@@ -114,7 +114,7 @@ extension Shared{
         view.frame = parentFrame
         let imageView = UIImageView(image: jeremyGif)
         imageView.tintColor = .appTextColor
-        imageView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        imageView.frame = CGRect(x: 0, y: 0, width:  loaderType == .mastersync ? 35 : 50, height: loaderType == .mastersync ? 15 : 50)
         imageView.center = view.center
         view.addSubview(imageView)
         view.tag = 2596

@@ -195,184 +195,72 @@ extension MainVC {
                  print("Error encoding object to JSON: \(error)")
              }
         }
-         
-        
-         
-
     }
     
     func toretryDCRupload(dcrCall: [TodayCallsModel]? = nil,  date: String, completion: @escaping (Bool) -> Void) {
-        var userAddress: String?
+ 
     
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
             showAlert(desc: "Internet connection is required to sync calls.")
             return
         }
-        
-        
-        if let dcrCall = dcrCall {
-            Shared.instance.showLoaderInWindow()
-            Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
-                guard let welf = self else{return}
-                userAddress = address
-                
-                let dispatchGroup = DispatchGroup()
-
-                dcrCall.forEach { todayCallsModel in
-                    let callType = welf.toReturnCallType(dcrCall: todayCallsModel)
-                    var call: AnyObject? = callType?.call
-                    var type: DCRType? = callType?.type
-                    
-                    guard let call = call, let type = type else { return }
-                    
-                    dispatchGroup.enter()
-                    welf.dcrCallObjectParser.toReturnModelobjects(call: call, type: type) { [weak self] outboxModel in
-                        guard let welf = self else {
-                            dispatchGroup.leave()
-                            return
-                        }
-                        welf.dcrCallObjectParser.toSetDCRParam(outboxModel: outboxModel) { json in
-                            var param: [String: Any] = json
-                            param["CustCode"] = todayCallsModel.custCode
-                            let callDate = todayCallsModel.vstTime.toDate()
-                            
-                          //  Shared.instance.showLoaderInWindow()
-                            
-                            param["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-                            param["address"] = userAddress ?? ""
-                            
-                            welf.toSendParamsToAPISerially(refreshDate: callDate, index: 0, items: [param]) { _ in
-                             //   Shared.instance.removeLoaderInWindow()
-                                dispatchGroup.leave()
-                            }
-                        }
-                    }
-                }
-            }
-            dispatchGroup.notify(queue: .main) {
-                // All tasks are complete, perform any final operations here
+        guard let dcrCall = dcrCall else {
+            completion(false)
+            return
+        }
+        toReturnOutboxParam(dcrCall: dcrCall) { [weak self] jsonArr in
+            guard let welf = self else {return}
+            welf.toSendParamsToAPISerially(refreshDate: date.toDate(format: "yyyy-MM-dd"), index: 0, items: jsonArr) { _ in
                 completion(true)
                 Shared.instance.removeLoaderInWindow()
             }
         }
-        
-        
-//        Pipelines.shared.getAddressString(latitude: self.latitude ?? Double(), longitude: self.longitude ?? Double()) { [weak self] address in
-//            guard let welf = self else{return}
-//            userAddress = address
-//            
-//            
-//            
-//            CoreDataManager.shared.toFetchAllOutboxParams { outboxCDMs in
-//                guard let aoutboxCDM = outboxCDMs.first else {
-//                    completion(false)
-//                    return}
-//                
-//                let coreparamDatum = aoutboxCDM.unSyncedParams
-//                
-//                guard let paramData = coreparamDatum else {
-//                    completion(false)
-//                    return}
-//                
-//                
-//                var localParamArr = [String: [[String: Any]]]()
-//                do {
-//                    localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as? [String: [[String: Any]]] ?? [String: [[String: Any]]]()
-//                    dump(localParamArr)
-//                } catch {
-//                    //  self.toCreateToast("unable to retrive")
-//                    completion(false)
-//                }
-//                
-//                var specificDateParams : [[String: Any]] = [[:]]
-//                
-//                
-//                if date.isEmpty {
-//                    localParamArr.forEach { key, value in
-//                        
-//                        specificDateParams = value
-//                        
-//                        
-//                        for index in 0..<specificDateParams.count {
-//                            var paramData = specificDateParams[index]
-//                            
-//                            // Check if "Entry_location" key exists
-//                            if let _ = paramData["Entry_location"] as? String {
-//                                // Update the value of "Entry_location" key
-//                                paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-//                            }
-//                            
-//                            // Check if "address" key exists
-//                            if let _ = paramData["address"] as? String {
-//                                // Update the value of "address" key
-//                                paramData["address"] = userAddress ?? ""
-//                            }
-//                            
-//                            // Update the dictionary in specificDateParams array
-//                            specificDateParams[index] = paramData
-//                        }
-//                        
-//                        
-//                    }
-//                } else {
-//                    if localParamArr.isEmpty {
-//                        completion(true)
-//                    }
-//                    localParamArr.forEach { key, value in
-//                        if key == date {
-//                            dump(value)
-//                            specificDateParams = value
-//
-//                            for index in 0..<specificDateParams.count {
-//                                var paramData = specificDateParams[index]
-//                                
-//                                // Check if "Entry_location" key exists
-//                                if paramData["Entry_location"] is String {
-//                                    // Update the value of "Entry_location" key
-//                                    paramData["Entry_location"] = "\(welf.latitude ?? Double()):\(welf.longitude ?? Double())"
-//                                }
-//                                
-//                                // Check if "address" key exists
-//                                if paramData["address"] is String {
-//                                    // Update the value of "address" key
-//                                    paramData["address"] = userAddress ?? ""
-//                                }
-//                                
-//                                // Update the dictionary in specificDateParams array
-//                                specificDateParams[index] = paramData
-//                            }
-//                            
-//                        }
-//                    }
-//                }
-//                
-//                print("specificDateParams has \(specificDateParams.count) values")
-//                if !localParamArr.isEmpty {
-//                    Shared.instance.showLoaderInWindow()
-//                    let refreshDate = date.toDate(format: "yyyy-MM-dd")
-//                    welf.toSendParamsToAPISerially(refreshDate: refreshDate, index: 0, items: specificDateParams) { _ in
-//
-//                            Shared.instance.removeLoaderInWindow()
-//                            completion(true)
-//                       
-//                    }
-//                } else {
-//                    Shared.instance.removeLoaderInWindow()
-//                    completion(true)
-//                }
-//                
-//            }
-//            
-//
-//           // let paramData = LocalStorage.shared.getData(key: .outboxParams)
-//
-//            
-//            }
-        
-        
-        
-        
 
+
+        }
+        
+    func toReturnOutboxParam(dcrCall: [TodayCallsModel], completion: @escaping ([JSON]) -> Void) {
+        let dispatchGroup = DispatchGroup()
+        var addcallParams = [JSON]()
+        
+        dcrCall.forEach { todayCallsModel in
+            let callType = toReturnCallType(dcrCall: todayCallsModel)
+            guard let call = callType?.call, let type = callType?.type else {
+                print("Error: Invalid call type for \(todayCallsModel)")
+                return
+            }
+            
+            dispatchGroup.enter()
+            dcrCallObjectParser.toReturnModelobjects(call: call, type: type) { [weak self] outboxModel in
+                guard let welf = self else {
+                    print("Error: Self is nil")
+                    dispatchGroup.leave()
+                    return
+                }
+                welf.dcrCallObjectParser.toSetDCRParam(outboxModel: outboxModel) { json in
+                    guard let json = json else {
+                        print("Error: JSON is nil for outboxModel: \(outboxModel)")
+                        dispatchGroup.leave()
+                        return
+                    }
+                    
+                    var param: [String: Any] = json
+                    param["CustCode"] = todayCallsModel.custCode
+                    param["Entry_location"] = "\(welf.latitude ?? 0.0):\(welf.longitude ?? 0.0)"
+                    
+                    addcallParams.append(param)
+                    dispatchGroup.leave()
+                }
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion(addcallParams)
+        }
+    }
+    
+    func toReturnEachParam(dcrCall: [TodayCallsModel], completion: @escaping (Bool) -> () ) {
+        
         
     }
     

@@ -110,6 +110,8 @@ extension MainVC {
      
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userststisticsVM ?? UserStatisticsVM())
         
+        vc.isForEdit = true
+        
         vc.rcpaDetailsModel =  toCreateRCPAdetailsModel(rcpa: model.rcpaHeadArr)
         
         vc.productSelectedListViewModel = tocreateProductsViewModal(fetchedproducts: model.dcrDetailArr)
@@ -256,6 +258,15 @@ extension MainVC {
         
         return jwCodes
     }
+    
+    func isURL(_ string: String) -> Bool {
+        // Check if the string can be converted to a URL
+        if let url = URL(string: string) {
+            // Check if the URL has a valid scheme and host
+            return url.scheme != nil && url.host != nil
+        }
+        return false
+    }
 
     func toCreateEventcaptureViewModel(fetchedCaptures: [EventCaptureResponse]) -> EventCaptureListViewModel {
         let fetchedEventCaptureListViewModel = EventCaptureListViewModel()
@@ -263,7 +274,11 @@ extension MainVC {
             var aEventCapture = EventCapture()
             //https://sanffa.info/photos/MR5940_16793999AEB87DE4A764ECC915623D2040B2B71.jpeg
             let prefixURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
-            let imageURLstr = String(prefixURL + aEventCaptureResponse.imageUrl)
+            var imageURLstr = aEventCaptureResponse.imageUrl
+            if  !isURL(aEventCaptureResponse.imageUrl) {
+                 imageURLstr = String(prefixURL + aEventCaptureResponse.imageUrl)
+            }
+            
             aEventCapture.image = nil
             //UIImage(systemName: "arrow.down.circle.dotted")
             aEventCapture.title = aEventCaptureResponse.title

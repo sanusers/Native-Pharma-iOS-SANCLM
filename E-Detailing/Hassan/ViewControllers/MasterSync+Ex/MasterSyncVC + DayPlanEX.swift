@@ -45,7 +45,8 @@ extension MasterSyncVC: MenuResponseProtocol {
             
             let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
             LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: selectedObject.id ?? "")
-            if isConnected || territories.isEmpty  {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork)  {
+                //|| territories.isEmpty
            
                 let tosyncMasterData : [MasterInfo]  = [.clusters, .doctorFencing, .chemists, .unlistedDoctors, .stockists]
                 // Set loading status based on MasterInfo for each element in the array
@@ -55,6 +56,7 @@ extension MasterSyncVC: MenuResponseProtocol {
                 self.collectionView.reloadData()
             
                 masterVM?.fetchMasterData(type: .clusters, sfCode: selectedObject.id ?? "", istoUpdateDCRlist: true, mapID: selectedObject.id ?? "") { response in
+                    Shared.instance.isFetchingHQ = false
                     switch response.result {
                     case .success(_):
                         tosyncMasterData.forEach { masterType in

@@ -51,6 +51,7 @@ extension PresentationHomeView: PopOverVCDelegate {
         case 1:
             //EDIT
             let model = self.savePresentationArr?[createdPresentationSelectedIndex ?? 0] ?? SavedPresentation()
+            model.groupedBrandsSlideModel = model.groupedBrandsSlideModel.sorted { $0.priority < $1.priority }
             toEditPresentation(model: model)
         case 2:
             //DELETE

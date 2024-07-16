@@ -473,7 +473,7 @@ class PreviewHomeView : BaseView {
     }
     
     enum PreviewType: String {
-        case home = "Home"
+        case home = "All Brands"
         case brand = "Brand Matrix"
         case speciality = "Speciality"
         case customPresentation = "My Presentation"
@@ -679,6 +679,7 @@ class PreviewHomeView : BaseView {
     enum SortState {
         case ascending
         case decending
+        case none
     }
     var selectedTypesIndex: Int? = nil
     var selectedPreviewType : PreviewType = .home
@@ -689,7 +690,7 @@ class PreviewHomeView : BaseView {
     var brandsMatrixSlideModel : [GroupedBrandsSlideModel]?
     var specialitySlideModel : [GroupedBrandsSlideModel]?
     var therapistSlideModel : [GroupedBrandsSlideModel]?
-    var sortState: SortState = .ascending
+    var sortState: SortState = .none
     var pageType: pageType = .preview
     func setBrandsData() {
         self.listedDocArr = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
@@ -739,7 +740,7 @@ class PreviewHomeView : BaseView {
         presentationHolderVIew.addAction(for: .swipe_right)  { [weak self] in
             guard let welf = self else {return}
             let index = welf.previewType.firstIndex { $0.rawValue == welf.selectedPreviewType.rawValue }
-            let count = welf.previewType.count
+         //   let count = welf.previewType.count
             guard let index = index,  index - 1 >= 0 else {
                 return
             }
@@ -859,6 +860,11 @@ class PreviewHomeView : BaseView {
             z2aView.backgroundColor =  .appTextColor
             ascendingIV.tintColor = .appTextColor
             decendingIV.tintColor = .appWhiteColor
+        case .none:
+            a2zView.backgroundColor =  .appWhiteColor
+            z2aView.backgroundColor =  .appWhiteColor
+            ascendingIV.tintColor = .appTextColor
+            decendingIV.tintColor = .appTextColor
         }
     
         
@@ -942,7 +948,7 @@ class PreviewHomeView : BaseView {
         toSetPageType(pageType: .exists)
         previewType = [.home, .brand, .speciality, .customPresentation]
          let setups = AppDefaults.shared.getAppSetUp()
-        if setups.therapticNd == "0" {
+        if setups.therapticNd == "1" {
             previewType.append(.therapist)
         }
         setSortVIew()

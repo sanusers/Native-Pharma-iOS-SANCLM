@@ -83,19 +83,6 @@ class CreatePresentationView : BaseView {
     
     func toRetriveModelsFromCoreData() {
         self.groupedBrandsSlideModel =  CoreDataManager.shared.retriveGeneralGroupedSlides()
-
-        guard  var groupedBrandsSlideModel = self.groupedBrandsSlideModel else {return}
-        groupedBrandsSlideModel = groupedBrandsSlideModel.sorted(by: {
-            $0.priority < $1.priority
-        })
-        
-        // Sort the groupedSlide property within each BrandSlideModel
-        groupedBrandsSlideModel = groupedBrandsSlideModel.map { brandSlideModel in
-            var mutableBrandSlideModel = brandSlideModel
-            mutableBrandSlideModel.groupedSlide = mutableBrandSlideModel.groupedSlide.sorted(by: { $0.priority < $1.priority })
-            return mutableBrandSlideModel
-        }
-        
             self.selectedSlides = [SlidesModel]()
             createPresentationVC.isToedit ? toEditPresentationData() :  toLoadNewPresentationData()
 
@@ -147,7 +134,8 @@ class CreatePresentationView : BaseView {
         
         backHolderView.addTap { [weak self] in
             guard let welf = self else {return}
-            welf.createPresentationVC.navigationController?.popViewController(animated: true)
+            welf.toExiteVC()
+           // welf.createPresentationVC.navigationController?.popViewController(animated: true)
         }
         
         
@@ -185,16 +173,12 @@ class CreatePresentationView : BaseView {
         
         calcelView.addTap {
             [weak self] in
-               guard let welf = self else {return}
+            guard let welf = self else {return}
             welf.groupedBrandsSlideModel?.forEach({ aGroupedBrandsSlideModel in
                 aGroupedBrandsSlideModel.groupedSlide.forEach { aSlidesModel in
                     aSlidesModel.isSelected = false
                 }
             })
-//            welf.selectedSlides?.forEach({ aSlidesModel in
-//                aSlidesModel.isSelected = false
-//            })
-            
             welf.selectedSlides =  [SlidesModel]()
             welf.toLoadBrandsTable()
             welf.toLoadselectedSlidesTable()

@@ -12,7 +12,7 @@ import UIKit
 protocol OutboxDetailsTVCDelegate: AnyObject {
     func didTapoutboxEdit(dcrCall: TodayCallsModel)
     func didTapOutboxDelete(dcrCall: TodayCallsModel)
-    func didTapOutboxSync(dcrCall: TodayCallsModel)
+    func didTapOutboxSync(dcrCall: TodayCallsModel, syncCode: String?)
     func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel)
     func didTapEventcaptureSync(event: UnsyncedEventCaptureModel)
 }
@@ -20,6 +20,17 @@ protocol OutboxDetailsTVCDelegate: AnyObject {
 
 
 extension OutboxDetailsTVC: PopOverVCDelegate {
+    
+    
+    func showAlert(description: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: "\(description)", okAction: "Close")
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+    }
     
     func logoutAction() {
         print("Log out")
@@ -35,16 +46,24 @@ extension OutboxDetailsTVC: PopOverVCDelegate {
                 let model = self.todayCallsModel[SelectedArrIndex]
                 self.delegate?.didTapoutboxEdit(dcrCall: model)
             } else {
-                let model = self.eventCaptureModel[SelectedArrIndex]
+                guard  self.todayCallsModel.count >  SelectedArrIndex else {
+                   // showAlert(description: "Call data not found.")
+                    let eventsModel = self.eventCaptureModel[SelectedArrIndex]
+                    self.delegate?.didTapOutboxSync(dcrCall: TodayCallsModel(), syncCode: eventsModel.custCode ?? "")
+                    
+                    return }
+                let model = self.todayCallsModel[SelectedArrIndex]
              
-                self.delegate?.didTapEventcaptureSync(event: model)
+             
+              //  self.delegate?.didTapEventcaptureSync(event: model)
+                self.delegate?.didTapOutboxSync(dcrCall: model, syncCode: nil)
             }
      
         }
         else if index == 1 {
             if isForCallEdit {
                 let model = self.todayCallsModel[SelectedArrIndex]
-                self.delegate?.didTapOutboxSync(dcrCall: model)
+                self.delegate?.didTapOutboxSync(dcrCall: model, syncCode: model.custCode)
                 print("Yet to sync")
             } else {
                 let model = self.eventCaptureModel[SelectedArrIndex]
@@ -118,7 +137,7 @@ extension OutboxDetailsTVC : UICollectionViewDelegate, UICollectionViewDataSourc
             cell.eventOptionIV.addTap {
                 print("Tapped -->")
                 self.isForCallEdit = false
-                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 50), on: cell.optionsIV, pagetype: .events)
+                let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: cell.width / 3, height: 100), on: cell.optionsIV, pagetype: .events)
                  vc.delegate = self
                  vc.selectedIndex = indexPath.row
                 self.viewController?.navigationController?.present(vc, animated: true)

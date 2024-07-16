@@ -195,18 +195,25 @@ class CoreDataManager {
 
                     // Convert and add groupedBrandsSlideModel
                     convertToCDGroupedBrandsSlideModel(savedPresentation.groupedBrandsSlideModel, context: context) { groupedBrandsSlideModel in
-                        savedCDPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel
+                       
                         
-                        // Save to Core Data
-                        do {
-                            try context.save()
-                            tempcompletion = true
-                            dispatchGroup.leave()
-                        } catch {
-                            print("Failed to save to Core Data: \(error)")
-                            tempcompletion = false
-                            dispatchGroup.leave()
+                        self.orderBrandsPrioritywise(groupedBrandsSlideModel, context: self.context) { orderedBrandSlides in
+                            
+                            savedCDPresentation.groupedBrandsSlideModel = groupedBrandsSlideModel
+                            
+                            do {
+                                try context.save()
+                                tempcompletion = true
+                                dispatchGroup.leave()
+                            } catch {
+                                print("Failed to save to Core Data: \(error)")
+                                tempcompletion = false
+                                dispatchGroup.leave()
+                            }
+                            
                         }
+                        // Save to Core Data
+          
                     }
                 }
             } else {
@@ -218,6 +225,24 @@ class CoreDataManager {
             }
         }
     }
+    
+    func orderBrandsPrioritywise(_ groupedBrandsSlideModel: NSSet, context: NSManagedObjectContext, completion: @escaping (NSSet) -> Void) {
+        // Assuming groupedBrandsSlideModel is a set of SlidesModel
+        if let slidesModels = groupedBrandsSlideModel.allObjects as? [SlidesModel] {
+            // Sort the array based on priority
+            let sortedSlidesModels = slidesModels.sorted { $0.priority < $1.priority }
+            
+            // Convert the sorted array back to NSSet
+            let sortedGroupedBrandsSlideModel = NSSet(array: sortedSlidesModels)
+            
+            // Call the completion handler with the sorted NSSet
+            completion(sortedGroupedBrandsSlideModel)
+        } else {
+            // If conversion fails, pass the original NSSet to completion
+            completion(groupedBrandsSlideModel)
+        }
+    }
+
     
     
     /// function used to convert codable class objet array to NSset. sincc core data saves object of type NSset
@@ -239,15 +264,17 @@ class CoreDataManager {
                 let cdGroupedBrandsSlideModel = GroupedBrandsSlideCDModel(entity: entityDescription, insertInto: context)
 
                 // Convert properties of GroupedBrandsSlideModel
+                cdGroupedBrandsSlideModel.divisionCode = Int16(groupedBrandsSlideModel.divisionCode)
+                cdGroupedBrandsSlideModel.id = Int16(groupedBrandsSlideModel.id)
                 cdGroupedBrandsSlideModel.priority = Int16(groupedBrandsSlideModel.priority)
-                //cdGroupedBrandsSlideModel.updatedDate = groupedBrandsSlideModel.updatedDate
-                // Convert other properties...
-
+                cdGroupedBrandsSlideModel.productBrdCode = Int16(groupedBrandsSlideModel.productBrdCode)
+                cdGroupedBrandsSlideModel.subdivisionCode = Int16(groupedBrandsSlideModel.subdivisionCode)
+                cdGroupedBrandsSlideModel.uuid = groupedBrandsSlideModel.uuid
+               
                 // Convert and add groupedSlide
                 let tempSlide =  groupedBrandsSlideModel.groupedSlide.sorted { $0.index < $1.index }
                 convertToSavedSlidesCDModel(tempSlide, context: context) { groupedSlide in
                     cdGroupedBrandsSlideModel.groupedSlide = groupedSlide
-                    
                     // Leave the dispatch group after converting and adding groupedSlide
                     dispatchGroup.leave()
                 }
@@ -430,6 +457,7 @@ class CoreDataManager {
                         groupedBrandsSlideModel.subdivisionCode = Int(aGroupedBrandsSlideCDModel.subdivisionCode)
                         groupedBrandsSlideModel.productBrdCode = Int(aGroupedBrandsSlideCDModel.productBrdCode)
                         groupedBrandsSlideModel.divisionCode = Int(aGroupedBrandsSlideCDModel.divisionCode)
+                        groupedBrandsSlideModel.priority = Int(aGroupedBrandsSlideCDModel.priority)
                         
                         var groupedSlideArr = [SlidesModel]()
                         if let  groupedSlideModelSet = aGroupedBrandsSlideCDModel.groupedSlide as? Set<SavedSlidesCDModel>  {
@@ -458,13 +486,14 @@ class CoreDataManager {
                                 agroupedSlide.imageData = slidesCDModel.imageData ?? Data()
                                 groupedSlideArr.append(agroupedSlide)
                             }
-                            
+                            groupedSlideArr = groupedSlideArr.sorted { $0.priority < $1.priority }
                             groupedBrandsSlideModel.groupedSlide = groupedSlideArr
                             
                         }
                         groupedBrandsSlideModelArr.append(groupedBrandsSlideModel)
                     }
                    }
+                groupedBrandsSlideModelArr = groupedBrandsSlideModelArr.sorted {$0.priority < $1.priority }
                 aSavedPresentation.groupedBrandsSlideModel = groupedBrandsSlideModelArr
                 savePresentationArr.append(aSavedPresentation)
             }
@@ -1340,15 +1369,15 @@ extension CoreDataManager {
                         agroupedSlide.imageData = slidesCDModel.imageData ?? Data()
                         groupedSlideArr.append(agroupedSlide)
                     }
-                    
+                    groupedSlideArr = groupedSlideArr.sorted { $0.priority < $1.priority }
                     aGroupedBrandsSlideModel.groupedSlide = groupedSlideArr
                     
                 }
-                
+              
                 savePresentationArr.append(aGroupedBrandsSlideModel)
             }
         }
-        
+        savePresentationArr = savePresentationArr.sorted { $0.priority <  $1.priority }
         return savePresentationArr
     }
     

@@ -96,7 +96,7 @@ class HomeCheckinDetailsView: UIView {
         guard let chckinInfo = chckinInfo else {return}
         guard let appsetup = appsetup else {return}
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             
         }
         

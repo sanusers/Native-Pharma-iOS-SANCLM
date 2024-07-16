@@ -688,12 +688,14 @@ class JfwView: UIView {
 
 
 extension JfwView: EventCaptureCellDelegate {
-    func didUpdate(title: String, description: String, index: Int) {
+    func didUpdate(title: String, description: String, index: Int, image: UIImage) {
         let eventCapture = self.eventCaptureListViewModel?.fetchAtIndex(index)
         
         eventCapture?.eventCapture.title = title
         
         eventCapture?.eventCapture.description = description
+        
+        eventCapture?.eventCapture.image = image
         
     }
     

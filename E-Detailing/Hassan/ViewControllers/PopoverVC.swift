@@ -332,7 +332,7 @@ class PopOverVC: UIViewController {
     }
     
     func toLOadData() {
-        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete"] : pageType == .outbox ? ["Edit", "Sync", "Delete"] : pageType == .events ? ["Sync, Delete"] : ["Play", "Edit", "Delete"]
+        strArr = pageType == .TP ? ["Edit"] : pageType == .calls ? ["Edit", "Delete"] : pageType == .outbox ? ["Edit", "Sync", "Delete"] : pageType == .events ? ["Sync", "Delete"] : ["Play", "Edit", "Delete"]
         contentTable.delegate = self
         contentTable.dataSource = self
         contentTable.reloadData()

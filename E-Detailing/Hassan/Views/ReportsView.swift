@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -151,7 +152,7 @@ class ReportsView : BaseView {
     var reportInfoArr : [ReportInfo]?
     var pagetype: ReportsVC.PageType = .reports
     lazy var contentDict : Array<JSON> = [JSON]()
-   
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.reporsVC = baseVC as? ReportsVC
@@ -172,7 +173,51 @@ class ReportsView : BaseView {
         backHolderView.addTap {
             self.reporsVC.navigationController?.popViewController(animated: true)
         }
+        resouceHQholderVIew.addTap {
+          //  self.headquarterAction()
+        }
     }
+    
+//    func headquarterAction() {
+//      //  let headquarter = DBManager.shared.getSubordinate()
+//
+//        if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR)  {
+//            return
+//        }
+//        
+//        if  Shared.instance.isFetchingHQ {
+//            self.toCreateToast("Syncing please wait")
+//            return
+//        }
+//
+//        
+//        let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
+//        
+//        vc.menuDelegate = self
+//        
+//
+//            CoreDataManager.shared.fetchSavedHQ{ [weak self] hqArr in
+//                guard let welf = self else {return}
+//                let savedEntity = hqArr.first
+//                guard let selectedHqentity = NSEntityDescription.entity(forEntityName: "SelectedHQ", in: welf.context)
+//         
+//                else {
+//                    fatalError("Entity not found")
+//                }
+//                let temporaryselectedHqobj = NSManagedObject(entity: selectedHqentity, insertInto: nil)  as! SelectedHQ
+//                
+//                welf.fetchedHQObject = CoreDataManager.shared.convertHeadQuartersToSubordinate(savedEntity ?? temporaryselectedHqobj, context: welf.context)
+//            }
+//        
+//        
+//        
+//
+//        vc.selectedObject = self.fetchedHQObject
+//        
+//        self.modalPresentationStyle = .custom
+//        self.navigationController?.present(vc, animated: false)
+//
+//    }
     
     func setPagetype(pagetype: ReportsVC.PageType) {
         switch pagetype {
@@ -252,11 +297,6 @@ class ReportsView : BaseView {
         resouceHQholderVIew.layer.cornerRadius = 5
         resouceHQholderVIew.backgroundColor = .appWhiteColor
         setPagetype(pagetype: reporsVC.pageType)
-
-        
-        
-        
-       
     }
     
     func generateModel(contentDict: [[String: String]]) -> [ReportInfo] {

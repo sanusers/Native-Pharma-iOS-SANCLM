@@ -299,7 +299,7 @@ extension MainVC {
             weekoffIndex.append(Int(aWeeklyoff.holiday_Mode ?? "0") ?? 0)
         })
         var weekoffDates : [Date] = []
-        let monthIndex : [Int] = [-1, 0]
+        let monthIndex : [Int] = [-2 , -1, 0]
         weekoffIndex.forEach { weeklyoffIndex in
             weekoffDates.append(contentsOf: getWeekoffDates(forMonths: monthIndex, weekoffday: weeklyoffIndex))
         }

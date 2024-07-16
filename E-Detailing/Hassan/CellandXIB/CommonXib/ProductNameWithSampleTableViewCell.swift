@@ -47,6 +47,10 @@ class ProductNameWithSampleTableViewCell : UITableViewCell {
                 lblSample.text = " SL "
                 lblSample.textColor = .appBlue
                 samplesVXview.backgroundColor = .appBlue
+            } else if productMode == "" {
+                lblSample.text = ""
+                lblSample.textColor = .clear
+                samplesVXview.backgroundColor = .clear
             }
             
             if product.priority != "" {

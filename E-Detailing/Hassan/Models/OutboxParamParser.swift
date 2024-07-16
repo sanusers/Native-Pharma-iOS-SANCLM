@@ -37,8 +37,10 @@ class DCRCallObjectParser {
     let appdelegate = UIApplication.shared.delegate as! AppDelegate
     let appsetup = AppDefaults.shared.getAppSetUp()
     
-    func toSetDCRParam(outboxModel: OutboxModel, competion: @escaping (JSON) -> ()) {
-        guard let dcrCall = self.dcrCall?.toRetriveDCRdata(dcrcall: dcrCall) else {return}
+    func toSetDCRParam(outboxModel: OutboxModel, competion: @escaping (JSON?) -> ()) {
+        guard let dcrCall = self.dcrCall?.toRetriveDCRdata(dcrcall: dcrCall) else {
+            competion(nil)
+            return }
 
         let persistentContainer = appdelegate.persistentContainer
         let managedObjectContext = persistentContainer.viewContext
@@ -426,12 +428,12 @@ class DCRCallObjectParser {
                 welf.fetchLocations() {[weak self] locationInfo in
                     guard let welf = self  else {return}
                     guard let locationInfo = locationInfo else {
-                    
+                    competion(nil)
                         return
                     }
                     addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
                     addedDCRCallsParam["address"] = locationInfo.address
-                    
+                    competion(addedDCRCallsParam)
 
                 }
             } else {

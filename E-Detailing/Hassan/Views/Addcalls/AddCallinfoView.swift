@@ -1290,109 +1290,9 @@ extension AddCallinfoView : collectionViewProtocols {
 }
 
 class AddCallinfoView : BaseView {
-    
-    func setupSearchTF() {
-        self.searchText = ""
-        self.yetTosearchTF.text = ""
-        self.yetTosearchTF.placeholder = "Search"
-    }
-    
-    func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
-        selectedSegment = segmentType
-        switch segmentType {
-        case .detailed:
-           
-            setupSearchTF()
-            segmentsdidClose()
-            jfwExceptionView.isHidden = true
-            viewnoRCPA.isHidden = true
-            rcpaEntryView.isHidden = true
-            yetToloadContentsTable.isHidden = true
-            yettoaddSectionView.backgroundColor = .clear
-            loadedContentsTable.isHidden = true
-            detailedInfoAction()
-        case .products:
-            setupSearchTF()
-            segmentsdidClose()
-            detailedSlideInfoView?.removeFromSuperview()
-           
-            jfwExceptionView.isHidden = false
-            viewnoRCPA.isHidden = true
-            rcpaEntryView.isHidden = true
-            yetToloadContentsTable.isHidden = false
-            yettoaddSectionView.backgroundColor = .clear
-            loadedContentsTable.isHidden = false
-            self.detailedSlideInfoView?.removeFromSuperview()
-            toloadYettables()
-            toloadContentsTable()
-        case .inputs:
-            setupSearchTF()
-            segmentsdidClose()
-            detailedSlideInfoView?.removeFromSuperview()
-            
-            jfwExceptionView.isHidden = false
-            rcpaEntryView.isHidden = true
-            yetToloadContentsTable.isHidden = false
-            yettoaddSectionView.backgroundColor = .clear
-            viewnoRCPA.isHidden = true
-            loadedContentsTable.isHidden = false
-            toloadYettables()
-            toloadContentsTable()
-        case .additionalCalls:
-            setupSearchTF()
-            segmentsdidClose()
-            detailedSlideInfoView?.removeFromSuperview()
-            jfwExceptionView.isHidden = false
-            rcpaEntryView.isHidden = true
-            yetToloadContentsTable.isHidden = false
-            yettoaddSectionView.backgroundColor = .clear
-            viewnoRCPA.isHidden = true
-            loadedContentsTable.isHidden = false
-            toloadYettables()
-            toloadContentsTable()
-        case .rcppa:
-            setupSearchTF()
-            segmentsdidClose()
-            detailedSlideInfoView?.removeFromSuperview()
-            detailedSlideInfoView?.alpha = 0
-            jfwExceptionView.isHidden = false
-            rcpaEntryView.isHidden = false
-            yetToloadContentsTable.isHidden = true
-            yettoaddSectionView.backgroundColor = .appWhiteColor
-            
-            if rcpaDetailsModel.count == 0 {
-                viewnoRCPA.isHidden = false
-                loadedContentsTable.isHidden = true
-            } else {
-                viewnoRCPA.isHidden = true
-                loadedContentsTable.isHidden = false
-                toloadContentsTable()
-            }
+  
 
-        case .jointWork:
-            setupSearchTF()
-            detailedSlideInfoView?.removeFromSuperview()
-            jfwExceptionView.isHidden = true
-            jfwAction()
-        }
 
-    }
-    
-
-   enum  SegmentType : String {
-        case detailed = "Detailed"
-        case products = "Products"
-       case inputs = "Inputs"
-       case additionalCalls = "Additional Calls"
-       case rcppa = "RCPA"
-       case jointWork = "JFW / Others"
-
-    }
-
-    @IBAction func didTapSearchTF(_ sender: UITextField) {
-        self.searchText = sender.text ?? ""
-        self.yetToloadContentsTable.reloadData()
-    }
     
     
     @IBOutlet var yetTosearchTF: UITextField!
@@ -1497,6 +1397,109 @@ class AddCallinfoView : BaseView {
     var selectedCompetitor: Competitor?
     var additionalCompetitorsInfo: AdditionalCompetitorsInfo?
    
+    @IBAction func didTapSearchTF(_ sender: UITextField) {
+        self.searchText = sender.text ?? ""
+        self.yetToloadContentsTable.reloadData()
+    }
+    
+    func setupSearchTF() {
+        self.searchText = ""
+        self.yetTosearchTF.text = ""
+        self.yetTosearchTF.placeholder = "Search"
+    }
+    
+    func setSegment(_ segmentType: SegmentType, isfromSwipe: Bool? = false) {
+        selectedSegment = segmentType
+        switch segmentType {
+        case .detailed:
+           
+            setupSearchTF()
+            segmentsdidClose()
+            jfwExceptionView.isHidden = true
+            viewnoRCPA.isHidden = true
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = true
+            yettoaddSectionView.backgroundColor = .clear
+            loadedContentsTable.isHidden = true
+            detailedInfoAction()
+        case .products:
+            setupSearchTF()
+            segmentsdidClose()
+            detailedSlideInfoView?.removeFromSuperview()
+           
+            jfwExceptionView.isHidden = false
+            viewnoRCPA.isHidden = true
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
+            loadedContentsTable.isHidden = false
+            self.detailedSlideInfoView?.removeFromSuperview()
+            toloadYettables()
+            toloadContentsTable()
+        case .inputs:
+            setupSearchTF()
+            segmentsdidClose()
+            detailedSlideInfoView?.removeFromSuperview()
+            
+            jfwExceptionView.isHidden = false
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
+            viewnoRCPA.isHidden = true
+            loadedContentsTable.isHidden = false
+            toloadYettables()
+            toloadContentsTable()
+        case .additionalCalls:
+            setupSearchTF()
+            segmentsdidClose()
+            detailedSlideInfoView?.removeFromSuperview()
+            jfwExceptionView.isHidden = false
+            rcpaEntryView.isHidden = true
+            yetToloadContentsTable.isHidden = false
+            yettoaddSectionView.backgroundColor = .clear
+            viewnoRCPA.isHidden = true
+            loadedContentsTable.isHidden = false
+            toloadYettables()
+            toloadContentsTable()
+        case .rcppa:
+            setupSearchTF()
+            segmentsdidClose()
+            detailedSlideInfoView?.removeFromSuperview()
+            detailedSlideInfoView?.alpha = 0
+            jfwExceptionView.isHidden = false
+            rcpaEntryView.isHidden = false
+            yetToloadContentsTable.isHidden = true
+            yettoaddSectionView.backgroundColor = .appWhiteColor
+            
+            if rcpaDetailsModel.count == 0 {
+                viewnoRCPA.isHidden = false
+                loadedContentsTable.isHidden = true
+            } else {
+                viewnoRCPA.isHidden = true
+                loadedContentsTable.isHidden = false
+                toloadContentsTable()
+            }
+
+        case .jointWork:
+            setupSearchTF()
+            detailedSlideInfoView?.removeFromSuperview()
+            jfwExceptionView.isHidden = true
+            jfwAction()
+        }
+
+    }
+    
+
+   enum  SegmentType : String {
+        case detailed = "Detailed"
+        case products = "Products"
+       case inputs = "Inputs"
+       case additionalCalls = "Additional Calls"
+       case rcppa = "RCPA"
+       case jointWork = "JFW / Others"
+
+    }
+    
     func initDataSource() {
         
         if !addCallinfoVC.eventCaptureListViewModel.eventCaptureViewModel.isEmpty {
@@ -1555,6 +1558,7 @@ class AddCallinfoView : BaseView {
         super.didLoad(baseVC: baseVC)
         self.addCallinfoVC = baseVC as? AddCallinfoVC
      
+
         initDataSource()
         setupUI()
         toLoadSegments()
@@ -1868,15 +1872,25 @@ class AddCallinfoView : BaseView {
             self.addCallinfoVC.modalPresentationStyle = .custom
             self.addCallinfoVC.navigationController?.present(vc, animated: false)
         }
-        saveView.addTap {
-            if customerChekinEnabled {
-    
-                self.fetchLocationAndCheckout()
+        
+        
+        saveView.addTap { [weak self]  in
+            guard let welf = self else {return}
             
+            if geoFencingEnabled && !welf.addCallinfoVC.isForEdit {
+          
+                if welf.addCallinfoVC.locationInfo == nil {
+                        welf.addCallinfoVC.fetchLocations() {  fetchedLocation in
+                            welf.addCallinfoVC.locationInfo  = fetchedLocation
+                    }
+                } else {
+                    welf.saveAction()
+                }
             } else {
-                self.checkMandatoryFields()
-       
+                welf.saveAction()
             }
+            
+ 
        
 
         }
@@ -1888,6 +1902,18 @@ class AddCallinfoView : BaseView {
         
     }
     
+    func saveAction() {
+        
+        if customerChekinEnabled {
+
+            fetchLocationAndCheckout()
+        
+        } else {
+            checkMandatoryFields()
+   
+        }
+        
+    }
     func checkMandatoryFields()  {
         let productValue = self.productSelectedListViewModel.numberOfRows()
         let inputValue = self.inputSelectedListViewModel.numberOfRows()
@@ -2410,21 +2436,26 @@ class AddCallinfoView : BaseView {
                     welf.showAlert(desc: "Please enable location services in Settings.")
                     return
                 }
+                
+                
+                
             }
 
             if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
-                    guard let welf = self else {return}
-
-                    welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
-                    welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
-                    welf.addCallinfoVC.dcrCall.customerCheckOutAddress = address ?? "No address found"
+                if geoFencingEnabled {
+                    Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
+                        guard let welf = self else {return}
+                        welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
+                        welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
+                        welf.addCallinfoVC.dcrCall.customerCheckOutAddress = address ?? "No address found"
+                        let dcrCall = welf.addCallinfoVC.dcrCall
+                        welf.checkoutAction(dcrCall: dcrCall)
+                    }
+                } else {
                     let dcrCall = welf.addCallinfoVC.dcrCall
                     welf.checkoutAction(dcrCall: dcrCall)
-                    
-                    
-                    
                 }
+
             } else {
                 welf.addCallinfoVC.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
                 welf.addCallinfoVC.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
@@ -2549,9 +2580,11 @@ extension AddCallinfoView : addedSubViewsDelegate {
     }
     
     func showAlertToEnableLocation(desc: String, isToPop: Bool) {
+        addCallinfoVC.isAlertShown = true
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "cancel")
         commonAlert.addAdditionalCancelAction {
+            
             print("no action")
         }
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {

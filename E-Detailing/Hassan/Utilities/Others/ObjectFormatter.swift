@@ -28,6 +28,20 @@ class ObjectFormatter {
     }
     
     
+    func convertDataToJsonArr(data: Data) -> [JSON]? {
+        do {
+            if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [JSON] {
+                return jsonObject
+            } else {
+                print("Failed to convert data to JSON object")
+                return nil
+            }
+        } catch {
+            print("Error converting data to JSON: \(error)")
+            return nil
+        }
+    }
+    
     func convertDataToJson(data: Data) -> JSON? {
         do {
             if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? JSON {

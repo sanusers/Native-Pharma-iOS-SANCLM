@@ -434,7 +434,7 @@ class MasterSyncVC : UIViewController {
                 
                 if !asubordinate.isEmpty {
                     self.fetchedHQObject = asubordinate.first
-                   // LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
+                    LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  asubordinate.first?.id ?? "")
                 }
             
               
@@ -905,11 +905,18 @@ class MasterSyncVC : UIViewController {
                 switch response.result {
                     
                 case .success(_):
-                    do {
-                        let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
-                        print(apiResponse)
-                        if let jsonObjectresponse = apiResponse as? [[String : Any]] {
-                            DBManager.shared.saveMasterData(type: type, Values: jsonObjectresponse,id: welf.getRSF ?? "")
+                  
+                        guard let data = response.data else {
+                            completion(false)
+                            return }
+                        let apiResponse = ObjectFormatter.shared.convertDataToJsonArr(data: data)
+                        //let apiResponse = try JSONSerialization.jsonObject(with: response.data! ,options: JSONSerialization.ReadingOptions.allowFragments)
+                        print(apiResponse ?? "Its not proper response")
+                    guard let apiResponse = apiResponse else {
+                        completion(false)
+                        return}
+                       
+                            DBManager.shared.saveMasterData(type: type, Values: apiResponse,id: welf.getRSF ?? "")
                             if type == MasterInfo.slides || type == MasterInfo.slideBrand {
                                 welf.loadedSlideInfo.append(type)
                                 switch type {
@@ -917,7 +924,7 @@ class MasterSyncVC : UIViewController {
                                     
                                     var slides = AppDefaults.shared.getSlides()
                                     slides.removeAll()
-                                    slides.append(contentsOf: jsonObjectresponse)
+                                    slides.append(contentsOf: apiResponse)
                                     
                                     LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
                                     
@@ -932,10 +939,8 @@ class MasterSyncVC : UIViewController {
                                 }
                                 
                             }
-                        }
-                    }catch {
-                        print(error)
-                    }
+                        
+                    
                     AppDefaults.shared.save(key: .syncTime, value: Date())
                     let date = Date().toString(format: "dd MMM yyyy hh:mm a")
                     welf.lblSyncStatus.text = "Last Sync: " + date
@@ -1020,7 +1025,7 @@ extension MasterSyncVC : tableViewProtocols {
     @objc func syncAllAction (_ sender : Any) {
         
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 self.toSetupAlert(desc: "Check your Internet Connection", istoNavigate: false)
                 return
         }
@@ -1283,7 +1288,7 @@ extension MasterSyncVC : collectionViewProtocols{
     @objc func groupSyncAll(_ sender : UIButton){
 
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             
             self.toSetupAlert(desc: "Check your Internet Connection", istoNavigate: false)
             
@@ -1335,7 +1340,7 @@ extension MasterSyncVC : collectionViewProtocols{
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
            
                 self.toSetupAlert(desc: "Check your Internet Connection", istoNavigate: false)
                 return

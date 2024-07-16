@@ -1614,12 +1614,14 @@ class DBManager {
         let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
         let saleSampleArr = productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
         let sampleArr = productArray.filter { $0.productMode?.lowercased() == "sample" }
+        let allArr = productArray.filter { $0.productMode == "" }
         
         productArray.removeAll()
+        productArray.append(contentsOf: allArr)
         productArray.append(contentsOf: saleArr)
         productArray.append(contentsOf: saleSampleArr)
         productArray.append(contentsOf: sampleArr)
-        
+    
         // Reorder indices starting from 0
         for (index, product) in productArray.enumerated() {
             product.index = Int16(index) // Assuming index is an Int16 property in Product entity

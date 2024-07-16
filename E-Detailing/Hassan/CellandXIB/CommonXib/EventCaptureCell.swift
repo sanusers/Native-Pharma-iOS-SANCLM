@@ -21,8 +21,10 @@ extension EventCaptureCell : MediaDownloaderDelegate {
         print("Yet to")
         Shared.instance.removeLoader(in: self.imgView)
         guard let data = data else {return}
-        DispatchQueue.main.async {
-            self.imgView.image = UIImage(data: data)
+        DispatchQueue.main.async { [weak self ] in
+            guard let welf = self else {return}
+            welf.imgView.image = UIImage(data: data)
+            welf.delegate?.didUpdate(title: welf.title ?? "", description: welf.txtDescription.text ?? "", index: welf.indexpath ?? 0, image: welf.imgView.image ?? UIImage())
         }
     
     }
@@ -35,7 +37,7 @@ extension EventCaptureCell : MediaDownloaderDelegate {
 }
 
 protocol EventCaptureCellDelegate: AnyObject {
-    func didUpdate(title: String, description: String, index: Int)
+    func didUpdate(title: String, description: String, index: Int, image: UIImage)
 }
 
 class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
@@ -64,24 +66,17 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
     var indexpath: Int? = nil
     var eventCapture : EventCaptureViewModel! {
         didSet {
-            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                if eventCapture.image == nil {
-                    Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
-                    Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)
-                } else {
-                    self.imgView.image = eventCapture.image
-                }
- 
-            } else {
-                self.imgView.image = eventCapture.image
-            }
+
 //            if eventCapture.image == nil {
 //                Shared.instance.showLoader(in: self.imgView, loaderType: .mastersync)
 //                Pipelines.shared.downloadData(mediaURL: eventCapture.imageURL, delegate: self)
 //            } else {
 //                self.imgView.image = eventCapture.image
 //            }
-            
+            if let eventcapture = eventCapture.image {
+                imgView.image = eventcapture
+            }
+         
           
             self.txtName.text = eventCapture.title
             self.txtDescription.text = eventCapture.description
@@ -109,6 +104,22 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
         
         configureTextField()
         txtName.delegate = self
+        
+        self.capturedImageHolder.addTap { [weak self] in
+            guard let welf = self else {return}
+            welf.imgView.image = nil
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                if welf.eventCapture.image == nil {
+                    Shared.instance.showLoader(in: welf.imgView, loaderType: .mastersync)
+                    Pipelines.shared.downloadData(mediaURL: welf.eventCapture.imageURL, delegate: welf)
+                } else {
+                    welf.imgView.image = welf.eventCapture.image
+                }
+ 
+            } else {
+                welf.imgView.image = welf.eventCapture.image
+            }
+        }
     }
     
     
@@ -136,7 +147,7 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
             
             // Update the text immediately
             title = currentText
-            self.delegate?.didUpdate(title: title ?? "", description: txtDescription.text ?? "", index: indexpath ?? 0)
+            self.delegate?.didUpdate(title: title ?? "", description: txtDescription.text ?? "", index: indexpath ?? 0, image: self.imgView.image ?? UIImage())
    
             return true
         default:
@@ -164,7 +175,7 @@ extension EventCaptureCell: UITextViewDelegate {
         }
         self.remarks = textView.text == "Description" ? "" : textView.text
        // delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: 0)
-        delegate?.didUpdate(title: title ?? "", description: textView.text, index: indexpath ?? 0)
+        delegate?.didUpdate(title: title ?? "", description: textView.text, index: indexpath ?? 0, image: self.imgView.image ?? UIImage())
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

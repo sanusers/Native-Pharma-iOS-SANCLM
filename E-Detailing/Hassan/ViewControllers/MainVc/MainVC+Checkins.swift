@@ -157,7 +157,7 @@ extension MainVC {
         
     }
     
-    func configurePastWindups(completion: @escaping () -> ()) {
+    func configurePastWindups(pageType:  MainVC.SegmentType?, completion: @escaping () -> ()) {
         if let notWindedups = toReturnNotWindedupDate() {
             if let notWindedupDate = notWindedups.statusDate {
                 let mergedDate = self.toMergeDate(selectedDate: notWindedupDate) ?? Date()
@@ -166,7 +166,7 @@ extension MainVC {
                     welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
                         welf.toConfigureMydayPlan(planDate: mergedDate) {
                             welf.validateWindups() {
-                                welf.refreshUI(date: mergedDate, MainVC.SegmentType.workPlan) {
+                                welf.refreshUI(date: mergedDate, pageType ?? .workPlan) {
                                     completion()
                                 }
                             }
@@ -180,7 +180,7 @@ extension MainVC {
             togetDCRdates(isToUpdateDate: true) { [weak self] in
                 guard let welf = self else {return}
                 welf.validateWindups() {
-                    completion()
+              
                 }
                 
             }
@@ -247,7 +247,10 @@ extension MainVC {
             configureFinalsubmit(true)
             configureAddCall(true)
             configureAddplanBtn(false)
-            completion()
+            refreshUI(.workPlan) {
+                completion()
+            }
+          
         } else {
             reserCallModule(lastCheckinDate:  lastCheckinDate) {
             completion()

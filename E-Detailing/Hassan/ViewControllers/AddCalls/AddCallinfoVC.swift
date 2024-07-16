@@ -13,6 +13,7 @@ import CoreData
 class AddCallinfoVC: BaseViewController {
     
     @IBOutlet var addCallinfoView: AddCallinfoView!
+    var functionCalled = false
     let appsetup = AppDefaults.shared.getAppSetUp()
     var dcrCall : CallViewModel!
     var userStatisticsVM: UserStatisticsVM?
@@ -38,14 +39,16 @@ class AddCallinfoVC: BaseViewController {
        // reportsVC.pageType = pageType
         return reportsVC
     }
-    
-    
-    
+    var locationInfo: LocationInfo? {
+        didSet {
+            guard !functionCalled,  locationInfo != nil else { return }
+            functionCalled = true
+            self.addCallinfoView.saveAction()
+        }
+    }
+    var isAlertShown = false
     
     func setupParam(dcrCall: CallViewModel) {
-        
-
-
         
         let dcrCall = dcrCall.toRetriveDCRdata(dcrcall: dcrCall)
         
@@ -428,42 +431,11 @@ class AddCallinfoVC: BaseViewController {
                     addedDCRCallsParam["WTName"] = workTypeinfo.name
                     addedDCRCallsParam["FWFlg"] = "F"
                 }
-            if geoFencingEnabled {
-                welf.fetchLocations() {[weak self] locationInfo in
-                    guard let welf = self  else {return}
-                    guard let locationInfo = locationInfo else {
-                        welf.addCallinfoView.showAlert(desc: "Please enable location services in Settings.")
-                        return
-                    }
-                    addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
-                    addedDCRCallsParam["address"] = locationInfo.address
-                    if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
-                        var toSendData = [String : Any]()
-                        toSendData["data"] = jsonDatum
-                        welf.postDCRData(toSendData: toSendData, addedDCRCallsParam: addedDCRCallsParam, cusType: cusType, outboxParam: jsonDatum) { completion in
-                                NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                                welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-                            }
-                    } else {
-                        Shared.instance.showLoaderInWindow()
-                    
-                        welf.toSaveaDCRcall(callDate: welf.dcrCall.dcrDate ?? Shared.instance.selectedDate , addedCallID: dcrCall.code, isDataSent: false) {[weak self] isSaved in
-                            guard let welf = self else {return}
-                            welf.saveCallsToDB(issussess: false, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
-                                welf.toCacheCapturedEvents() { iscached in
-                                    Shared.instance.removeLoaderInWindow()
-                                    NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
-                                    welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
-                                }
-                            
-                            }
-                       
-                        }
-                      
-                    }
-                }
-            } else {
+            if let locationInfo = welf.locationInfo {
+                addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
+                addedDCRCallsParam["address"] = locationInfo.address
+            }
+   
                 if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                     let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: addedDCRCallsParam)
                     var toSendData = [String : Any]()
@@ -489,7 +461,7 @@ class AddCallinfoVC: BaseViewController {
                     }
                   
                 }
-            }
+            
                 
 
            
@@ -505,7 +477,9 @@ class AddCallinfoVC: BaseViewController {
     
     func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
-            guard let welf = self else {return}
+            guard let welf = self else {
+                completion(nil)
+                return}
             
             if geoFencingEnabled {
                 guard coordinates != nil else {
@@ -517,7 +491,9 @@ class AddCallinfoVC: BaseViewController {
 
             if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) { [weak self] address in
-                    guard let welf = self else {return}
+                    guard let welf = self else {
+                        completion(nil)
+                        return}
 
                     welf.dcrCall.checkOutlatitude = coordinates?.latitude ?? Double()
                     welf.dcrCall.checkOutlongitude = coordinates?.longitude ?? Double()
@@ -534,7 +510,6 @@ class AddCallinfoVC: BaseViewController {
                 
                 completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address:  "No address found"))
             }
-            
         }
     }
     
@@ -584,9 +559,6 @@ class AddCallinfoVC: BaseViewController {
     
     func postDCRData(toSendData: JSON, addedDCRCallsParam: JSON, cusType: String, isConnectedToNW: Bool? = true, outboxParam: Data? = nil, completion: @escaping (Bool) -> ()) {
         Shared.instance.showLoaderInWindow()
-        
-        
-        
         var param = [String: Any]()
         param["tableName"] = "uploadphoto"
         param["sfcode"] = appsetup.sfCode
@@ -599,20 +571,26 @@ class AddCallinfoVC: BaseViewController {
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
 
-        toSaveaDCRcall(callDate: self.dcrCall.dcrDate ?? Shared.instance.selectedDate, addedCallID: dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
-            guard let welf = self else {return}
-            welf.callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { isPosted in
+            callDCRScaeapi(toSendData: toSendData, params: addedDCRCallsParam, cusType: cusType) { [weak self]  isPosted in
+                guard let welf = self else {return}
                 Shared.instance.removeLoaderInWindow()
                 if !isPosted {
-                    welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
-                        welf.toCacheCapturedEvents() { isCached in
-                            completion(true)
+                    welf.toSaveaDCRcall(callDate: welf.dcrCall.dcrDate ?? Shared.instance.selectedDate, addedCallID: welf.dcrCall.code, isDataSent: false, OutboxParam: outboxParam ?? Data()) {[weak self] isSaved in
+                        guard let welf = self else {return}
+                        welf.saveCallsToDB(issussess: isPosted, appsetup: welf.appsetup, cusType: cusType, param: addedDCRCallsParam) {
+                            welf.toCacheCapturedEvents() { isCached in
+                                completion(true)
+                            }
                         }
                     }
                 } else {
                     let dispatchGroup = DispatchGroup()
                     welf.addCallinfoView.eventCaptureListViewModel.eventCaptureViewModel.forEach { aEventCaptureViewModel in
                         dispatchGroup.enter()
+                        guard (aEventCaptureViewModel.image != nil) else {
+                            dispatchGroup.leave()
+                            return
+                        }
                         welf.callSaveimageAPI(param: param, paramData: jsonDatum, evencaptures: aEventCaptureViewModel) { result in
                             dispatchGroup.leave()
                         }
@@ -629,11 +607,12 @@ class AddCallinfoVC: BaseViewController {
              
                 
             }
-        }
+        
     }
   
     
     func callSaveimageAPI(param: JSON, paramData: Data, evencaptures: EventCaptureViewModel, _ completion : @escaping (Result<GeneralResponseModal, UserStatisticsError>) -> Void) {
+        
         
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
 
@@ -944,15 +923,10 @@ class AddCallinfoVC: BaseViewController {
             postDCTdata(toSendData, paramData: params) { result in
                 switch result {
                 case .success(let model):
-                   
-                      
-                        completion(model.isSuccess ?? false )
-                
-             
+                completion(model.isSuccess ?? false )
+                    
                 case .failure(let error):
-                  
                     self.toCreateToast("\(error)")
-                    print(error)
                     completion(false)
             
                 }

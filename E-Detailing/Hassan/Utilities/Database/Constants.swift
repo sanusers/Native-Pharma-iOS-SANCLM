@@ -77,8 +77,7 @@ var isDayCheckinNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.Lo
 
 var isSequentialDCRenabled : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSequentialDCR)
 
-var geoFencingEnabled : Bool =  false
-//LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
+var geoFencingEnabled : Bool =  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
 
 var customerChekinEnabled : Bool =  false
 //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isCustomerChekinNeeded)
@@ -93,11 +92,11 @@ var isStockistFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStora
 
 var isUnliatedDoctorFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled)
 
-var isConnected: Bool {
-    get {
-        return LocalStorage.shared.getBool(key: .isConnectedToNetwork)
-    }
-}
+//var isConnected: Bool {
+//    get {
+//        return LocalStorage.shared.getBool(key: .isConnectedToNetwork)
+//    }
+//}
 
 //MARK: - DCR setups
 //Listed doctor setups

@@ -350,6 +350,8 @@ extension MainVC {
        // removeAllAddedCalls()
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userststisticsVM ?? UserStatisticsVM())
       
+        vc.isForEdit = true
+        
         guard let callvm = call as? CallViewModel else {
           
           return

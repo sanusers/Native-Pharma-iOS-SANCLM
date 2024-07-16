@@ -165,6 +165,9 @@ class SelectedPreviewTypesCVC: UICollectionViewCell {
                 
                 return firstName.localizedCaseInsensitiveCompare(secondName) == .orderedDescending
             }
+        case .none:
+            print("No state order based on priority")
+            
         }
 
         
@@ -191,6 +194,8 @@ class SelectedPreviewTypesCVC: UICollectionViewCell {
                 
                 return firstName.localizedCaseInsensitiveCompare(secondName) == .orderedDescending
             }
+        case .none:
+            print("No state order based on priority")
         }
         
         self.previewType = type

@@ -173,7 +173,7 @@ class Pipelines : NSObject, CLLocationManagerDelegate {
     
     
     func getAddressString(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
-        
+
         
         let geocoder = CLGeocoder()
 

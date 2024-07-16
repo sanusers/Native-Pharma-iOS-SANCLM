@@ -329,7 +329,7 @@ class SlideDownloadVC : UIViewController {
             
              _ = toCheckExistenceOfNewSlides()
             toSetTableVIewDataSource()
-            if isConnected {
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                 startDownload(ifForsingleSeclection: false)
             } else {
                 self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)
@@ -473,7 +473,7 @@ class SlideDownloadVC : UIViewController {
     }
 
     func toCheckNetworkStatus() -> Bool {
-        if isConnected {
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
           return true
         } else {
           return false
@@ -548,7 +548,7 @@ class SlideDownloadVC : UIViewController {
             if isNewSlideExists {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
                 toSetTableVIewDataSource()
-                if isConnected {
+                if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
                     self.startDownload(ifForsingleSeclection: false)
                 } else {
                     self.toSetupAlert(text: "Connect to active network to Download slides", isEncounteredError: true)

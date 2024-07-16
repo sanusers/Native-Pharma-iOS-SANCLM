@@ -905,6 +905,10 @@ class PreCallVC : UIViewController {
             weddingInfoVIew.isHidden = true
             weddingInfoHeightConst.constant = 0
             
+            specialityLbl.isHidden = true
+            specialityTit.isHidden = true
+            specialityInfoVIew.isHidden = true
+            specialityInfoVIewHeightConst.constant = 0
             
             dobLbl.isHidden = true
             dobTit.isHidden = true

@@ -1309,9 +1309,9 @@ class MainVC : UIViewController {
                 }
             }
             
-             let unsyncedDocilteredArray = unsyncedDocArr.filter { model in
-                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
-             }
+//             let unsyncedDocilteredArray = unsyncedDocArr.filter { model in
+//                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+//             }
              
              let doctorCount = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
              
@@ -1356,9 +1356,9 @@ class MainVC : UIViewController {
             }
             
             
-            let unsyncedChemistilteredArray = unsyncedChemist.filter { model in
-                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
-            }
+//            let unsyncedChemistilteredArray = unsyncedChemist.filter { model in
+//                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+//            }
             
             let chemistCount = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count
             
@@ -1403,9 +1403,9 @@ class MainVC : UIViewController {
              }
             
             
-            let unsyncedStockistilteredArray = unsyncedStockist.filter { model in
-                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
-            }
+//            let unsyncedStockistilteredArray = unsyncedStockist.filter { model in
+//                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+//            }
             
             var stockistFilteredArray = stockistArr.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
@@ -1454,9 +1454,9 @@ class MainVC : UIViewController {
             }
             
             
-            let unsyncedunlistedDocilteredArray = unsyncedunlistedDoc.filter { model in
-                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
-            }
+//            let unsyncedunlistedDocilteredArray = unsyncedunlistedDoc.filter { model in
+//                return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate, iftosyncOutbox: true)
+//            }
             
             var unlistedDocFilteredArray = unlistedDocArr.filter { model in
                 return isDateInCurrentMonthAndYear(model.dcr_dt, currentDate: currentDate)
@@ -1782,7 +1782,7 @@ extension MainVC {
                         guard let welf = self else {return}
                         welf.togetDCRdates(isToUpdateDate: false) {
                          //   if !isSequentialDCRenabled {
-                            welf.configurePastWindups() {}
+                            welf.configurePastWindups(pageType: .calender) {}
                           //  }
                         }
                     }
@@ -1799,7 +1799,7 @@ extension MainVC {
             
             togetDCRdates(isToUpdateDate: false) {
                // if !isSequentialDCRenabled {
-                self.configurePastWindups() {}
+                self.configurePastWindups(pageType: .calender) {}
                // }
                 
             }
@@ -1919,7 +1919,7 @@ extension MainVC {
             
 
             
-            guard let nonNillsessions = self.sessions  else {
+            guard let nonNillsessions = self.sessions, !nonNillsessions.isEmpty  else {
                 if !LocalStorage.shared.getBool(key: .isUserCheckedin) {
                     checkinAction()
             
@@ -2172,8 +2172,59 @@ extension MainVC {
         }
     }
 
+    func toCheckDataExistanceinOutbox(completion: @escaping (Bool) -> () ) {
+        guard obj_sections.isEmpty else {
+            completion(true)
+            return }
+        completion(false)
+//        //Day plans
+//        
+//        CoreDataManager.shared.fetchEachDayPlan { dayplans in
+//            let isAllPlansSynced = dayplans.filter { $0.isSynced == false }.isEmpty
+//            
+//            guard !isAllPlansSynced else {
+//                
+//                //Calls
+//                
+//                guard let unsyncedCalls =  DBManager.shared.geUnsyncedtHomeData(), unsyncedCalls.count > 0 else{
+//                    
+//                    //Day submissions
+//                    
+//                    CoreDataManager.shared.toFetchAllDayStatus { eachDayStatus in
+//                        let isAllDaysSubmitted = eachDayStatus.filter { $0.isSynced == false }.isEmpty
+//                        guard isAllDaysSubmitted else {
+//                            
+//                            //Day Not submitted Yet
+//                            completion(false)
+//                            return
+//                        }
+//                    }
+//                    completion(true)
+//                    return
+//                }
+//                
+//                //Calls Exists
+//                
+//                completion(true)
+//                return
+//            }
+//            
+//            //Dayplan Exists
+//            
+//            completion(true)
+//            return
+//            
+//        }
+
+    }
+    
     @IBAction func didTapClearCalls() {
-        showAlertToNetworks(desc: "This action will clear all of unsynced outbox calls. Are you sure you want to proceed?", isToclearacalls: true)
+        toCheckDataExistanceinOutbox() { ifExists in
+          guard ifExists else { return }
+            self.showAlertToNetworks(desc: "This action will clear all of unsynced outbox calls. Are you sure you want to proceed?", isToclearacalls: true)
+            
+        }
+  
         
     }
 
@@ -4080,8 +4131,19 @@ extension MainVC : outboxCollapseTVCDelegate {
             self.toretryDCRupload(dcrCall: obj_sections[refreshIndex].items, date: obj_sections[refreshIndex].date) { [weak self] _ in
                 guard let welf = self else {return}
                 Shared.instance.showLoaderInWindow()
-                welf.toUploadUnsyncedImage() {
-
+                if !obj_sections[refreshIndex].eventCaptures.isEmpty {
+                    welf.toUploadUnsyncedImage() {
+                        let dateStr = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
+                        welf.toPostDayplan(byDate: dateStr) {
+                            welf.toUploadWindups(date: dateStr) { _ in
+                                welf.toLoadOutboxTable()
+                                welf.setSegment(.outbox)
+                                Shared.instance.removeLoaderInWindow()
+                                welf.showAlertToFilldates(description: "Sync completed")
+                                }
+                            }
+                    }
+                } else {
                     let dateStr = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
                     welf.toPostDayplan(byDate: dateStr) {
                         welf.toUploadWindups(date: dateStr) { _ in
@@ -4091,8 +4153,8 @@ extension MainVC : outboxCollapseTVCDelegate {
                             welf.showAlertToFilldates(description: "Sync completed")
                             }
                         }
-                 
                 }
+
                 
             }
         } else {
@@ -4654,31 +4716,35 @@ extension MainVC: OutboxDetailsTVCDelegate {
         
         switch dcrCall.custType {
         case 1:
-            let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedDocters = DBManager.shared.getDoctor()
+            //mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
             let filteredDoctores = listedDocters.filter { aDoctorFencing in
                 aDoctorFencing.code == dcrCall.custCode
             }
             guard let nonNilDoctors = filteredDoctores.first else {
-                
-                return nil}
+                showAlertToFilldates(description: "Please try syncing Doctor list in mastersync")
+                return nil
+            }
             let aCallVM = CallViewModel(call: nonNilDoctors , type: DCRType.doctor)
             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
             call = aCallVM
             type = DCRType.doctor
         case 2:
-            let listedChemist = DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedChemist = DBManager.shared.getChemist()
+            //mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
             let filteredChemist = listedChemist.filter { chemist  in
                 chemist.code == dcrCall.custCode
             }
             guard let nonNilChemist = filteredChemist.first else {
-                
+                showAlertToFilldates(description: "Please try syncing Chemist list in mastersync")
                 return nil}
             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.chemist)
             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
             call = aCallVM
             type = DCRType.doctor
         case 3:
-            let listedChemist = DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedChemist = DBManager.shared.getStockist()
+            //mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
             let filteredChemist = listedChemist.filter { chemist  in
                 chemist.code == dcrCall.custCode
             }
@@ -4690,12 +4756,13 @@ extension MainVC: OutboxDetailsTVCDelegate {
             call = aCallVM
             type = DCRType.doctor
         case 4:
-            let listedChemist = DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
+            let listedChemist = DBManager.shared.getUnListedDoctor()
+            //mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
             let filteredChemist = listedChemist.filter { chemist  in
                 chemist.code == dcrCall.custCode
             }
             guard let nonNilChemist = filteredChemist.first else {
-                
+                showAlertToFilldates(description: "Please try syncing Unlisted doctor list in mastersync")
                 return nil}
             let aCallVM = CallViewModel(call: nonNilChemist , type: DCRType.unlistedDoctor)
             aCallVM.dcrDate = dcrCall.submissionDate.toDate(format: "yyyy-MM-dd HH:mm:ss")
@@ -4707,29 +4774,43 @@ extension MainVC: OutboxDetailsTVCDelegate {
         return callType(call: call, type: type)
     }
     
-    func didTapOutboxSync(dcrCall: TodayCallsModel) {
+    func didTapOutboxSync(dcrCall: TodayCallsModel,  syncCode: String?) {
         print("Yet to sync")
         
-        if !isConnected {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             showAlert(desc: "Internet connection is required to sync calls.")
             return
         }
 
        let callType = toReturnCallType(dcrCall: dcrCall)
         
-        var call: AnyObject? = callType?.call
-        var type: DCRType? = callType?.type
+        let call: AnyObject? = callType?.call
+        let type: DCRType? = callType?.type
         
-        guard let call = call, let type = type else {return}
+        guard let call = call, let type = type else {
+            Shared.instance.showLoaderInWindow()
+            toUploadUnsyncedImage(custCode: syncCode ?? dcrCall.custCode) {
+             
+                self.toSetupOutBoxDataSource(isSynced: true) {
+                    Shared.instance.removeLoaderInWindow()
+                }
+            }
+            return}
         dcrCallObjectParser.toReturnModelobjects(call: call, type: type) {[weak self]  outboxModel in
             guard let welf = self else {return}
+            welf.dcrCallObjectParser.dcrCall = call as? CallViewModel
             welf.dcrCallObjectParser.toSetDCRParam(outboxModel: outboxModel) { json in
+                guard let json = json else {
+                    return }
                 var param: [String: Any] = [:]
                 param["CustCode"] = dcrCall.custCode
                 let callDate = dcrCall.vstTime.toDate()
                 Shared.instance.showLoaderInWindow()
                 welf.toSendParamsToAPISerially(refreshDate: callDate, index: 0, items: [json]) { _ in
-                    Shared.instance.removeLoaderInWindow()
+                    welf.toUploadUnsyncedImage(custCode: syncCode ?? dcrCall.custCode) {
+                        Shared.instance.removeLoaderInWindow()
+                    }
+                    
                 }
             }
             
