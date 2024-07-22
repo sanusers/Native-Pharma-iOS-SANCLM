@@ -18,6 +18,10 @@
 		380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */; };
 		3809319C2C04BE1400FC6A20 /* DayReportsSortView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3809319B2C04BE1400FC6A20 /* DayReportsSortView.xib */; };
 		3809319E2C04BF4400FC6A20 /* DayReportsSortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3809319D2C04BF4400FC6A20 /* DayReportsSortView.swift */; };
+		3809E0672C4E7D13002B345A /* DCRapprovalinfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3809E0662C4E7D13002B345A /* DCRapprovalinfoVC.swift */; };
+		3809E0692C4E7D40002B345A /* DCRapprovalinfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3809E0682C4E7D40002B345A /* DCRapprovalinfoView.swift */; };
+		3809E06D2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3809E06C2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.xib */; };
+		3809E06E2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3809E06B2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift */; };
 		380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */; };
 		380DCDB42BFB4BE600F455C9 /* LeaveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
@@ -122,6 +126,18 @@
 		38866E772BB2DBC800F9E576 /* CompetitorsDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38866E752BB2DBC800F9E576 /* CompetitorsDetailsCell.xib */; };
 		38866E7A2BB2E11800F9E576 /* CompetitorsDetailsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38866E782BB2E11800F9E576 /* CompetitorsDetailsHeader.swift */; };
 		38866E7B2BB2E11800F9E576 /* CompetitorsDetailsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38866E792BB2E11800F9E576 /* CompetitorsDetailsHeader.xib */; };
+		388ABCFE2C4E306100965C12 /* DCRapprovalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABCFD2C4E306100965C12 /* DCRapprovalVC.swift */; };
+		388ABD002C4E30A500965C12 /* DCRapprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABCFF2C4E30A500965C12 /* DCRapprovalView.swift */; };
+		388ABD042C4E35B700965C12 /* DCRApprovalsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABD022C4E35B700965C12 /* DCRApprovalsTVC.swift */; };
+		388ABD052C4E35B700965C12 /* DCRApprovalsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 388ABD032C4E35B700965C12 /* DCRApprovalsTVC.xib */; };
+		388ABD082C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABD062C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.swift */; };
+		388ABD092C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 388ABD072C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.xib */; };
+		388ABD0C2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABD0A2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.swift */; };
+		388ABD0D2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 388ABD0B2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.xib */; };
+		388ABD142C4E76F200965C12 /* DCRApprovalsInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABD122C4E76F200965C12 /* DCRApprovalsInfoTVC.swift */; };
+		388ABD152C4E76F200965C12 /* DCRApprovalsInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 388ABD132C4E76F200965C12 /* DCRApprovalsInfoTVC.xib */; };
+		388ABD182C4E7A5B00965C12 /* DCRAllApprovalsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388ABD162C4E7A5B00965C12 /* DCRAllApprovalsTVC.swift */; };
+		388ABD192C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 388ABD172C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib */; };
 		38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */; };
 		38B18B712BD93AD7001FC958 /* InputSectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B18B6E2BD93AD7001FC958 /* InputSectionReusableView.swift */; };
 		38B18B722BD93AD7001FC958 /* ProductSectionTitleCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B18B6F2BD93AD7001FC958 /* ProductSectionTitleCVC.swift */; };
@@ -419,6 +435,10 @@
 		380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRdetailViewEditView.swift; sourceTree = "<group>"; };
 		3809319B2C04BE1400FC6A20 /* DayReportsSortView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DayReportsSortView.xib; sourceTree = "<group>"; };
 		3809319D2C04BF4400FC6A20 /* DayReportsSortView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayReportsSortView.swift; sourceTree = "<group>"; };
+		3809E0662C4E7D13002B345A /* DCRapprovalinfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRapprovalinfoVC.swift; sourceTree = "<group>"; };
+		3809E0682C4E7D40002B345A /* DCRapprovalinfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRapprovalinfoView.swift; sourceTree = "<group>"; };
+		3809E06B2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecificDCRgeneralinfoCVC.swift; sourceTree = "<group>"; };
+		3809E06C2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpecificDCRgeneralinfoCVC.xib; sourceTree = "<group>"; };
 		380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveModels.swift; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
@@ -523,6 +543,18 @@
 		38866E752BB2DBC800F9E576 /* CompetitorsDetailsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CompetitorsDetailsCell.xib; sourceTree = "<group>"; };
 		38866E782BB2E11800F9E576 /* CompetitorsDetailsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompetitorsDetailsHeader.swift; sourceTree = "<group>"; };
 		38866E792BB2E11800F9E576 /* CompetitorsDetailsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CompetitorsDetailsHeader.xib; sourceTree = "<group>"; };
+		388ABCFD2C4E306100965C12 /* DCRapprovalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRapprovalVC.swift; sourceTree = "<group>"; };
+		388ABCFF2C4E30A500965C12 /* DCRapprovalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRapprovalView.swift; sourceTree = "<group>"; };
+		388ABD022C4E35B700965C12 /* DCRApprovalsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRApprovalsTVC.swift; sourceTree = "<group>"; };
+		388ABD032C4E35B700965C12 /* DCRApprovalsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRApprovalsTVC.xib; sourceTree = "<group>"; };
+		388ABD062C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRApprovalsWorkTypeTVC.swift; sourceTree = "<group>"; };
+		388ABD072C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRApprovalsWorkTypeTVC.xib; sourceTree = "<group>"; };
+		388ABD0A2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRApprovalsWorkSheetsCVC.swift; sourceTree = "<group>"; };
+		388ABD0B2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRApprovalsWorkSheetsCVC.xib; sourceTree = "<group>"; };
+		388ABD122C4E76F200965C12 /* DCRApprovalsInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRApprovalsInfoTVC.swift; sourceTree = "<group>"; };
+		388ABD132C4E76F200965C12 /* DCRApprovalsInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRApprovalsInfoTVC.xib; sourceTree = "<group>"; };
+		388ABD162C4E7A5B00965C12 /* DCRAllApprovalsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRAllApprovalsTVC.swift; sourceTree = "<group>"; };
+		388ABD172C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCRAllApprovalsTVC.xib; sourceTree = "<group>"; };
 		38A2C2092ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		38B18B6E2BD93AD7001FC958 /* InputSectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSectionReusableView.swift; sourceTree = "<group>"; };
 		38B18B6F2BD93AD7001FC958 /* ProductSectionTitleCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSectionTitleCVC.swift; sourceTree = "<group>"; };
@@ -833,6 +865,15 @@
 			path = SortView;
 			sourceTree = "<group>";
 		};
+		3809E06A2C4E8CA7002B345A /* SpecificDCRApprovalInfo */ = {
+			isa = PBXGroup;
+			children = (
+				3809E06B2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift */,
+				3809E06C2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.xib */,
+			);
+			path = SpecificDCRApprovalInfo;
+			sourceTree = "<group>";
+		};
 		380DCDB22BFB4BCF00F455C9 /* LeaveApplication */ = {
 			isa = PBXGroup;
 			children = (
@@ -1074,6 +1115,8 @@
 				38EF4C682B74D78900F78F2E /* SpecifiedTypeMenuVC.swift */,
 				380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */,
 				38F933202BE4D61200D5A195 /* SplashVC.swift */,
+				388ABCFD2C4E306100965C12 /* DCRapprovalVC.swift */,
+				3809E0662C4E7D13002B345A /* DCRapprovalinfoVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1098,6 +1141,8 @@
 				38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */,
 				380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */,
 				38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */,
+				388ABCFF2C4E30A500965C12 /* DCRapprovalView.swift */,
+				3809E0682C4E7D40002B345A /* DCRapprovalinfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1105,6 +1150,8 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				3809E06A2C4E8CA7002B345A /* SpecificDCRApprovalInfo */,
+				388ABD012C4E357300965C12 /* DCRapprovals */,
 				385BD27D2C2C128100036026 /* AddCompetitors */,
 				3809319A2C04B8A100FC6A20 /* SortView */,
 				38E67B762C00D5CD006E98DE /* FunEvents */,
@@ -1216,6 +1263,23 @@
 				38EF48952B6A791E004B6600 /* PlayHTMLCVC.swift */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		388ABD012C4E357300965C12 /* DCRapprovals */ = {
+			isa = PBXGroup;
+			children = (
+				388ABD022C4E35B700965C12 /* DCRApprovalsTVC.swift */,
+				388ABD032C4E35B700965C12 /* DCRApprovalsTVC.xib */,
+				388ABD062C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.swift */,
+				388ABD072C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.xib */,
+				388ABD0A2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.swift */,
+				388ABD0B2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.xib */,
+				388ABD122C4E76F200965C12 /* DCRApprovalsInfoTVC.swift */,
+				388ABD132C4E76F200965C12 /* DCRApprovalsInfoTVC.xib */,
+				388ABD162C4E7A5B00965C12 /* DCRAllApprovalsTVC.swift */,
+				388ABD172C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib */,
+			);
+			path = DCRapprovals;
 			sourceTree = "<group>";
 		};
 		38B52CE32B29D13900CF30D9 /* StoryBoard */ = {
@@ -1815,6 +1879,7 @@
 			files = (
 				38E659842B33075200E7BF42 /* ReportTypesCVC.xib in Resources */,
 				3825CFCD2BA806B600217D40 /* addedFiltersCVC.xib in Resources */,
+				388ABD052C4E35B700965C12 /* DCRApprovalsTVC.xib in Resources */,
 				38D568FE2B3560C6007CB86D /* VisitsCountCVC.xib in Resources */,
 				38CA1FF02B611CBF00AFCFD2 /* PlayPresentationCVC.xib in Resources */,
 				38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */,
@@ -1878,6 +1943,7 @@
 				38DAADEE2B59505C00966B33 /* CalldetailsCVC.xib in Resources */,
 				38107C682B37056600ACEDF3 /* ProductsDescriptionCVC.xib in Resources */,
 				38E3DF732B8F633D0093DF4B /* HomeCheckinDetailsView.xib in Resources */,
+				388ABD092C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.xib in Resources */,
 				38CCA2B72A656B92008D5B12 /* LeaveAvailablityCell.xib in Resources */,
 				38FA7EE82BAD465800BB2593 /* AdditionalCallSampleEntryTableViewCell.xib in Resources */,
 				38866E732BB2D3D500F9E576 /* CompetitorsFooter.xib in Resources */,
@@ -1913,6 +1979,7 @@
 				38D6E88B2B34081B003CC4D8 /* BasicReportsInfoTVC.xib in Resources */,
 				38CBA4D42A9F80C0001992C4 /* TagViewCell.xib in Resources */,
 				38CD60E12A866CFC006FFB39 /* ProductSampleTableViewCell.xib in Resources */,
+				388ABD0D2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.xib in Resources */,
 				38FADFAB2B3BE11400632C2F /* WorkTypeCell.xib in Resources */,
 				381330472BFDEEAB007A2342 /* UnsyncedEventsCVC.xib in Resources */,
 				38D5690A2B35AF5D007CB86D /* SortView.xib in Resources */,
@@ -1920,13 +1987,16 @@
 				3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
+				388ABD192C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib in Resources */,
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
 				38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */,
 				38CA1FF42B612B0500AFCFD2 /* PlayLoadedPresentationCVC.xib in Resources */,
+				3809E06D2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.xib in Resources */,
 				38D569062B3570E3007CB86D /* ListedWorkTypesTVC.xib in Resources */,
 				388546402B5FC765005FC9FC /* HomeWorktypeTVC.xib in Resources */,
 				3860C8562BF359FB0065862D /* AddNewTagInfoVIew.xib in Resources */,
 				38D528B02A9A2BA600AD3F78 /* DCRTaggingCell.xib in Resources */,
+				388ABD152C4E76F200965C12 /* DCRApprovalsInfoTVC.xib in Resources */,
 				38D5690E2B35AFE3007CB86D /* RadioSelectionTVC.xib in Resources */,
 				3825CFD72BA8665400217D40 /* ProductsDescriptionTVC.xib in Resources */,
 				38CC72B52A75348D00BFDAF5 /* SideMenuCell.xib in Resources */,
@@ -2018,6 +2088,7 @@
 				38EF4C692B74D78900F78F2E /* SpecifiedTypeMenuVC.swift in Sources */,
 				38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */,
 				381BC25F2BAC617800804B85 /* AdditionalCallsHeader.swift in Sources */,
+				388ABD002C4E30A500965C12 /* DCRapprovalView.swift in Sources */,
 				38DD9E5D2C08587D000A9575 /* RCPAdetailsInfoCVC.swift in Sources */,
 				38E040A32AA215E8007B757E /* TagViewVC.swift in Sources */,
 				386A61D82BB2AC7000363C6C /* RCPASectionheader.swift in Sources */,
@@ -2029,6 +2100,7 @@
 				38E3C36B2AFA047400623C33 /* Codable.swift in Sources */,
 				38CC72B32A75347E00BFDAF5 /* SideMenuCell.swift in Sources */,
 				38D569052B3570E3007CB86D /* ListedWorkTypesTVC.swift in Sources */,
+				3809E0692C4E7D40002B345A /* DCRapprovalinfoView.swift in Sources */,
 				38CA1FE02B60EDF400AFCFD2 /* SelectedSlidesTVC.swift in Sources */,
 				3865F8D52AFCE3BF009AB984 /* worksPlanTVC.swift in Sources */,
 				38FAA15D2B7F229200714AA2 /* UserStstisticsVM.swift in Sources */,
@@ -2054,12 +2126,14 @@
 				38CA1FEC2B61169300AFCFD2 /* PlayPresentationVC.swift in Sources */,
 				38DAADE92B5916AC00966B33 /* OutboxDetailsTVC.swift in Sources */,
 				38145ECA2B345C6400DD7B4E /* VisitInfoTVC.swift in Sources */,
+				388ABD142C4E76F200965C12 /* DCRApprovalsInfoTVC.swift in Sources */,
 				38E659832B33075200E7BF42 /* ReportTypesCVC.swift in Sources */,
 				B287E6C229F2BC9C0097974D /* TableCell.swift in Sources */,
 				3801D4972B4ECFB700A9740F /* HomeSideMenuView.swift in Sources */,
 				38FAA15B2B7F229200714AA2 /* TourPlanVM.swift in Sources */,
 				38E3DF6F2B8F23F70093DF4B /* HomeCheckinView.swift in Sources */,
 				38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */,
+				388ABCFE2C4E306100965C12 /* DCRapprovalVC.swift in Sources */,
 				38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */,
 				38D528AE2A9A2B9B00AD3F78 /* DCRTaggingCell.swift in Sources */,
 				38D7E1E42B677FD500085293 /* PlayPDFCVC.swift in Sources */,
@@ -2076,6 +2150,7 @@
 				38E3E5362A80BE7200AE5AF6 /* CallVC.swift in Sources */,
 				38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */,
 				38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */,
+				388ABD182C4E7A5B00965C12 /* DCRAllApprovalsTVC.swift in Sources */,
 				38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */,
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				38FAA16D2B7F255600714AA2 /* CommonStructs.swift in Sources */,
@@ -2105,6 +2180,7 @@
 				38C4B7AA2A6E7B3E001C2FD5 /* DCRCallAnalysisCell.swift in Sources */,
 				38FDD4152B99881500566A04 /* CommonResouceInfoTVC.swift in Sources */,
 				387BDB032BAB1E20002B5E7D /* AddCallinfoVC.swift in Sources */,
+				388ABD0C2C4E5B7200965C12 /* DCRApprovalsWorkSheetsCVC.swift in Sources */,
 				38C464982BDA8B7F00B7F377 /* DetailedSlideInfoView.swift in Sources */,
 				38107C592B36F86C00ACEDF3 /* rcpaCVC.swift in Sources */,
 				3803E1012A46FF790066AF15 /* Chemist + Extension.swift in Sources */,
@@ -2114,6 +2190,7 @@
 				38C4D33C2A7BD9BB0029AC12 /* MainViewModel.swift in Sources */,
 				38D7F6E22B21D8830091B2CF /* LocalStorage.swift in Sources */,
 				38E0409F2AA1FEAA007B757E /* TagDetailsView.swift in Sources */,
+				3809E06E2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift in Sources */,
 				38111E212BB44F7600C46358 /* RCPAdetailsModal.swift in Sources */,
 				380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */,
 				3809319E2C04BF4400FC6A20 /* DayReportsSortView.swift in Sources */,
@@ -2202,6 +2279,7 @@
 				38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */,
 				38E6598C2B33195C00E7BF42 /* DetailedReportView.swift in Sources */,
 				38B18B772BD93BC1001FC958 /* InputDescriptionCVC.swift in Sources */,
+				388ABD082C4E549D00965C12 /* DCRApprovalsWorkTypeTVC.swift in Sources */,
 				3803E1052A471E5D0066AF15 /* UnListedDoctor + Extension.swift in Sources */,
 				3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */,
 				38C8F85D2C40112A00D83B14 /* OutboxParamParser.swift in Sources */,
@@ -2234,6 +2312,7 @@
 				38F5558F2B57B7BE000D9294 /* TodayCallsModel.swift in Sources */,
 				38CAE4C22A57E3040071AD9C /* Subordinate + Extension.swift in Sources */,
 				38D70F0C2B905D400033ED9C /* Pipelines.swift in Sources */,
+				3809E0672C4E7D13002B345A /* DCRapprovalinfoVC.swift in Sources */,
 				385A42542AFBB75300C0A58A /* AppSetupModel.swift in Sources */,
 				388546422B5FDB90005FC9FC /* PresentationHomeVC.swift in Sources */,
 				38DB6CB62AC45B0B00F3F930 /* SingleSelectionRightVC.swift in Sources */,
@@ -2255,6 +2334,7 @@
 				38D95FF82BEB8EA300348FB8 /* MainVC + EditCallEX.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
+				388ABD042C4E35B700965C12 /* DCRApprovalsTVC.swift in Sources */,
 				38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */,
 				38DD14B72B4FEEF60036384F /* HomeSideMenuTVC.swift in Sources */,
 				38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */,

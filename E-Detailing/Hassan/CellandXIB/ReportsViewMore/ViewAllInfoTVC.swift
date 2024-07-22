@@ -379,27 +379,25 @@ struct SampleInput {
     let noOfSamples : String
 }
 
-class ViewAllInfoTVC: UITableViewCell {
-    
-    enum CellRCPAType {
-        case showRCPA
-        case hideRCPA
+enum CellRCPAType {
+    case showRCPA
+    case hideRCPA
 
-    }
+}
+
+enum cellEventsType {
+    case showEvents
+    case hideEvents
+}
+
+enum CellSlidesType {
     
-    enum cellEventsType {
-        case showEvents
-        case hideEvents
-    }
-    
-    enum CellSlidesType {
-        
-             case showSlides
-             case hideSlides
-    }
-    
-    
-    
+         case showSlides
+         case hideSlides
+}
+
+class ViewAllInfoTVC: UITableViewCell {
+
     
     @IBOutlet var extendedInfoCollection: UICollectionView!
     weak var delegate: ViewAllInfoTVCDelegate?

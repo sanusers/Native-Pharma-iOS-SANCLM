@@ -4373,7 +4373,7 @@ extension MainVC : outboxCollapseTVCDelegate {
             let refreshDate = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
             
             Shared.instance.showLoaderInWindow()
-            toPostDayplan(byDate: refreshDate, istoupdateUI: self.selectedDate != nil) { [weak self] in
+            toPostDayplan(byDate: refreshDate, istoupdateUI: false) { [weak self] in
                 guard let welf = self else {return}
                 welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _  in
                     welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {

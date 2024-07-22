@@ -173,11 +173,11 @@ extension MainVC {
                              
                              LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
                             
-                             if !istoupdateUI {
-                                 completion(true)
-                                 welf.toCreateToast(response.msg ?? "")
-                                 return
-                             }
+//                             if !istoupdateUI {
+//                                 completion(true)
+//                                 welf.toCreateToast(response.msg ?? "")
+//                                 return
+//                             }
                              welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: Shared.instance.selectedDate) {_ in
  
                                  completion(true)

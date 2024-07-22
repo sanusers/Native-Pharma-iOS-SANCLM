@@ -562,7 +562,7 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
                 cell.contentsHolderView.layer.borderWidth = 0.5
                 cell.contentsHolderView.layer.borderColor = UIColor.appTextColor.cgColor
                 cell.contentsHolderView.elevate(1)
-                cell.accessoryIV.image = UIImage(systemName: "chevron.right")
+                cell.accessoryIV.image = UIImage(systemName: "chevlon.right")
             
        
             }
