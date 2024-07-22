@@ -37,7 +37,7 @@ extension MainVC {
         // Get the current date to process
         let currentDate = dates[index]
         
-        self.toPostDayplan(byDate: currentDate.toDate(format: "yyyy-MM-dd" )) { [weak self] in
+        self.toPostDayplan(byDate: currentDate.toDate(format: "yyyy-MM-dd" ), istoupdateUI: self.selectedDate != nil) { [weak self] in
             guard let welf = self else {return}
             // Move to the next date
             welf.uploadDayPlansSequentially(dates: dates, index: index + 1, completion: completion)
@@ -110,12 +110,12 @@ extension MainVC {
                         if response.isSuccess ?? false {
                             welf.toCreateToast(response.msg ?? "Day completed successfully...")
                             
-                            welf.handleWindups(isSynced: true, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
-                                welf.toCreateToast("Saved log offline")
+                            welf.handleWindups(date: date, isSynced: true, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
+                               // welf.toCreateToast("Saved log offline")
                                 dispatchGroup.leave()
                             }
                         } else {
-                            welf.handleWindups(isSynced: false, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
+                            welf.handleWindups(date: date, isSynced: false, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
                                 welf.toCreateToast("Saved log offline")
                                 dispatchGroup.leave()
                             }
@@ -124,7 +124,7 @@ extension MainVC {
                     case .failure(let error):
                         welf.toCreateToast(error.rawValue)
                         
-                        welf.handleWindups(isSynced: false, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
+                        welf.handleWindups(date: date, isSynced: false, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
                             dispatchGroup.leave()
                         }
                     }
@@ -137,14 +137,17 @@ extension MainVC {
         }
     }
     
-    func callSavePlanAPI(byDate: Date, completion: @escaping (Bool) -> Void) {
+    func callSavePlanAPI(byDate: Date, istoupdateUI: Bool, completion: @escaping (Bool) -> Void) {
         var dayEntities : [DayPlan] = []
         CoreDataManager.shared.retriveSavedDayPlans(byDate: byDate) { dayplan in
             
             dayEntities = dayplan
             
             let aDayplan = dayEntities.first
-             
+            guard let  aDayplan = aDayplan,  !aDayplan.isSynced else  {
+                completion(true)
+                return
+            }
              do {
                  let encoder = JSONEncoder()
                  let jsonData = try encoder.encode(aDayplan)
@@ -170,7 +173,11 @@ extension MainVC {
                              
                              LocalStorage.shared.setBool(LocalStorage.LocalValue.istoUploadDayplans, value: false)
                             
-
+                             if !istoupdateUI {
+                                 completion(true)
+                                 welf.toCreateToast(response.msg ?? "")
+                                 return
+                             }
                              welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: Shared.instance.selectedDate) {_ in
  
                                  completion(true)
@@ -212,7 +219,6 @@ extension MainVC {
             guard let welf = self else {return}
             welf.toSendParamsToAPISerially(refreshDate: date.toDate(format: "yyyy-MM-dd"), index: 0, items: jsonArr) { _ in
                 completion(true)
-                Shared.instance.removeLoaderInWindow()
             }
         }
 
@@ -232,11 +238,7 @@ extension MainVC {
             
             dispatchGroup.enter()
             dcrCallObjectParser.toReturnModelobjects(call: call, type: type) { [weak self] outboxModel in
-                guard let welf = self else {
-                    print("Error: Self is nil")
-                    dispatchGroup.leave()
-                    return
-                }
+                guard let welf = self else { return }
                 welf.dcrCallObjectParser.toSetDCRParam(outboxModel: outboxModel) { json in
                     guard let json = json else {
                         print("Error: JSON is nil for outboxModel: \(outboxModel)")
@@ -246,8 +248,6 @@ extension MainVC {
                     
                     var param: [String: Any] = json
                     param["CustCode"] = todayCallsModel.custCode
-                    param["Entry_location"] = "\(welf.latitude ?? 0.0):\(welf.longitude ?? 0.0)"
-                    
                     addcallParams.append(param)
                     dispatchGroup.leave()
                 }

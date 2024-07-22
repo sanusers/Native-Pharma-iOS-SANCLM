@@ -469,11 +469,7 @@ class AddCallinfoVC: BaseViewController {
 
     }
     
-    struct LocationInfo {
-        let latitude: Double
-        let longitude: Double
-        let address: String
-    }
+
     
     func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in

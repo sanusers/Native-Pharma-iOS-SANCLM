@@ -1057,7 +1057,6 @@ extension MainVC {
             }
             self.configureAddplanBtn(istoEnableAddPlanBtn)
             self.configureSaveplanBtn(istoEnableSaveBtn)
-       //    self.setupRejectionVIew()
             self.toLoadWorktypeTable()
             completion()
             

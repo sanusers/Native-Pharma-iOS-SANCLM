@@ -170,7 +170,6 @@ class MainVC : UIViewController {
     let colorArr : [UIColor] =  [.appYellow, .appGreen, .appViolet, .appLightPink, .appLightGrey, .appDeepBrown, .appPink, .appDeepGreen, .appBlue, .appBrown, .appDeepBlue]
     
     let menuList = ["Refresh","Tour Plan","Create Presentation","Leave Application","Reports","Activiy","Near Me","Quiz","Survey","Forms","Profiling"]
-    private var isWindupAPIcallInProgress = false
     
     var todayCallsModel: [TodayCallsModel]?
     var isNextMonth = false
@@ -195,12 +194,143 @@ class MainVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
        // toModifyDayStatus(dcrDate: Shared.instance.selectedDate.toString(format: "yyyy-MM-dd"))
-        
         updateLinks()
         setupUI()
         addObservers()
-        btnCalenderSync(self.btnSyncDate!)
-
+        toPostAlldayPlan() {[weak self] in
+            guard let welf = self else {return}
+            welf.btnCalenderSync(welf.btnSyncDate!)
+        }
+        
+//makeAPIcallUsingURLSession()
+        
+       // btnCalenderSync(btnSyncDate!)
+    }
+    
+    
+//    func makeAPIcallUsingURLSession() {
+//  //      - "http://sanffa.info/iOSServer/db_api.php?axn=table/products"
+//    //    {"tableName":"getproducts","subdivision_code":"103,","Rsf":"MR7362","state_code":12,"sfcode":"MR7362","division_code":"70,","Designation":"SBE","sf_type":1}
+//        
+//        let endPointurl = URL(string: "http://sanffa.info/iOSServer/db_api.php?axn=table/products")
+//        let param = MasterSyncParams.productParams
+//        
+//        var request = URLRequest(url: endPointurl!)
+//        request.httpMethod = "POST"
+//     
+//        let boundary = UUID().uuidString
+//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+//        var data = Data()
+//        for(key, value) in param{
+//              
+//                data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+//                data.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+//                data.append("\(value)".data(using: .utf8)!)
+//            }
+//        
+//        URLSession.shared.uploadTask(with: request, from: data) { data, response, error in
+//            let apiResponse = ObjectFormatter.shared.convertDataToJsonArr(data: data ?? Data())
+//            
+//            dump(apiResponse)
+//            
+//        }.resume()
+//    }
+    
+    func toPostAlldayPlan(completion: @escaping () -> ()) {
+        
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+            completion()
+            return
+        }
+      
+        toSetupOutBoxDataSource(isSynced: false) { [weak self] in
+            guard let welf = self else { return }
+            
+            guard !obj_sections.isEmpty else {
+                completion()
+                return
+            }
+            
+          //  Shared.instance.showLoaderInWindow()
+            let operationQueue = OperationQueue()
+            let completionOperation = BlockOperation {
+                DispatchQueue.main.async {
+                    Shared.instance.removeLoaderInWindow()
+                    welf.showAlertToFilldates(description: "Sync completed")
+                    completion()
+                }
+            }
+            
+          //  Shared.instance.showLoaderInWindow()
+          
+            obj_sections.forEach { section in
+           
+                    let refreshDateStr = section.date
+                    let callitems = section.items
+                    let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
+                    
+                    let postDayPlanOperation = BlockOperation {
+                        let dispatchGroup = DispatchGroup()
+                        dispatchGroup.enter()
+                        welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {
+                            dispatchGroup.leave()
+                        }
+                        dispatchGroup.wait()
+                    }
+                    
+                    let retryDCROperation = BlockOperation {
+                        let dispatchGroup = DispatchGroup()
+                        dispatchGroup.enter()
+                        welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in
+                            dispatchGroup.leave()
+                        }
+                        dispatchGroup.wait()
+                    }
+                    retryDCROperation.addDependency(postDayPlanOperation)
+                    
+                    let uploadImageOperation = BlockOperation {
+                        let dispatchGroup = DispatchGroup()
+                        dispatchGroup.enter()
+                        welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
+                            dispatchGroup.leave()
+                        }
+                        dispatchGroup.wait()
+                    }
+                    uploadImageOperation.addDependency(retryDCROperation)
+                    
+                    let uploadWindupsOperation = BlockOperation {
+                        let dispatchGroup = DispatchGroup()
+                        dispatchGroup.enter()
+                        welf.toUploadWindups(date: refreshDate) { _ in
+                            welf.toLoadOutboxTable()
+                            welf.setSegment(.calls)
+                            dispatchGroup.leave()
+                        }
+                        dispatchGroup.wait()
+                    }
+                    uploadWindupsOperation.addDependency(uploadImageOperation)
+                    
+                let homeDataSyncOperation = BlockOperation {
+                    let dispatchGroup = DispatchGroup()
+                    dispatchGroup.enter()
+                    welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
+                        dispatchGroup.leave()
+                    }
+                    dispatchGroup.wait()
+                }
+                
+                homeDataSyncOperation.addDependency(uploadWindupsOperation)
+                    // Add the final operation to the queue
+                    completionOperation.addDependency(homeDataSyncOperation)
+                    
+                    // Add operations to the queue
+                    operationQueue.addOperations([postDayPlanOperation, retryDCROperation, uploadImageOperation, uploadWindupsOperation, homeDataSyncOperation], waitUntilFinished: false)
+                
+            }
+            
+            // Add the completion operation
+            operationQueue.addOperation(completionOperation)
+        }
     }
     
     class func initWithStory(isfromLaunch: Bool, ViewModel: UserStatisticsVM) -> MainVC {
@@ -214,7 +344,6 @@ class MainVC : UIViewController {
     func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(refreshDayplan) , name: NSNotification.Name("daplanRefreshed"), object: nil)
         
     }
@@ -331,8 +460,6 @@ class MainVC : UIViewController {
         btnSavePlan.layer.borderColor = UIColor.appLightTextColor.cgColor
         
         btnFinalSubmit.backgroundColor = .appTextColor
-        
-        
         outboxCallsCountLabel.setFont(font: .medium(size: .BODY))
         outboxCallsCountLabel.textColor = .appWhiteColor
         outboxCountVIew.layer.cornerRadius = outboxCountVIew.height / 2
@@ -369,7 +496,13 @@ class MainVC : UIViewController {
         callsCountLbl.setFont(font: .medium(size: .BODY))
         callsCountLbl.textColor = .appTextColor
         homeTitleLbl.setFont(font: .bold(size: .SUBHEADER))
-        homeTitleLbl.text = "SAN Media Pvt Ltd.,"
+        
+        btnNotification.isHidden = geoFencingEnabled ? false : true
+        
+      //  btnNotification.
+        
+        
+        homeTitleLbl.text = AppDefaults.shared.getAppSetUp().divisionName
         homeTitleLbl.textColor = .appWhiteColor
 
         quickLinkTitle.setFont(font: .bold(size: .SUBHEADER))
@@ -393,6 +526,8 @@ class MainVC : UIViewController {
         month3Lbl.setFont(font: .bold(size: .BODY))
 
     }
+    
+    
     
     func toSetChartType(chartType: ChartType) {
         switch chartType {
@@ -624,9 +759,9 @@ class MainVC : UIViewController {
                         
                         welf.toCreateToast("You are now connected.")
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
-                    //    welf.syncAllCalls()
-                       
-                        
+//                        welf.toPostAlldayPlan() {
+//                            welf.btnCalenderSync(welf.btnSyncDate!)
+//                        }
                     }
                 }
             }
@@ -774,33 +909,35 @@ class MainVC : UIViewController {
     }
     
     
-    func toPostDayplan(byDate:Date, completion: @escaping () -> ()) {
+    func toPostDayplan(byDate:Date, istoupdateUI: Bool, completion: @escaping () -> ()) {
         
         if  LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             
             
-            callSavePlanAPI(byDate: byDate) {  [weak self] isUploaded in
+            callSavePlanAPI(byDate: byDate, istoupdateUI: istoupdateUI) {  [weak self] isUploaded in
                 guard let welf = self else {return}
                 
-                if isUploaded  {
+                if isUploaded  && istoupdateUI {
                     welf.toConfigureMydayPlan(planDate: byDate, isRetrived: true) {
                         completion()
                     }
                     
                 } else {
+                    if !istoupdateUI {
+                        completion()
+                        return
+                    }
                     
                     welf.masterVM?.toGetMyDayPlan(type: .myDayPlan, isToloadDB: true, date: byDate) {_ in
-
+                        
                         welf.toConfigureMydayPlan(planDate: byDate, isRetrived: true) {
                             completion()
                         }
-                     
+                        
                     }
+                    
+                    
                 }
-                
-                
-                
-             
             }
             
         } else {
@@ -871,10 +1008,7 @@ class MainVC : UIViewController {
         
         return returnDate
     }
-    
 
-    
-    
     func cellRegistration() {
         self.quickLinkCollectionView.register(UINib(nibName: "QuickLinkCell", bundle: nil), forCellWithReuseIdentifier: "QuickLinkCell")
         
@@ -987,6 +1121,8 @@ class MainVC : UIViewController {
     func toSetupOutBoxDataSource(isSynced: Bool, completion: @escaping() -> ()) {
         
        // toSeperateDCR(istoAppend: isSynced)
+        guard  let tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData() else{ return }
+        self.unsyncedhomeDataArr =  tempUnsyncedArr
         
         self.outBoxDataArr?.removeAll()
         
@@ -1025,16 +1161,6 @@ class MainVC : UIViewController {
         
         
         toSeperateOutboxSections(outboxArr: self.outBoxDataArr ?? [TodayCallsModel]()) {
-            
-//            CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventCaptures in
-//                if self.outBoxDataArr?.count ?? 0 == 0 && unsyncedEventCaptures.isEmpty {
-//                    self.toConfigureClearCalls(istoEnable: false)
-//                } else {
-//                    self.toConfigureClearCalls(istoEnable: true)
-//                }
-//                completion()
-//            }
-            
             self.toConfigureClearCalls(istoEnable: true)
             completion()
         }
@@ -1045,6 +1171,7 @@ class MainVC : UIViewController {
         var callsByDay: [String: [TodayCallsModel]] = [:]
         var eventsByDay: [String: [UnsyncedEventCaptureModel]] = [:]
         var plansByDay : [String: [Sessions]] = [:]
+        var statusByDay : [String: [EachDayStatus]] = [:]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
@@ -1114,19 +1241,37 @@ class MainVC : UIViewController {
           
         }
         
+        CoreDataManager.shared.toFetchAllDayStatus { eachDayStatus in
+            dispatchGroup.enter()
+            let filteredDayStatus = eachDayStatus.filter { $0.didUserWindup && !$0.isSynced }
+            
+            for aEachDayStatus in filteredDayStatus {
+                if let statusDate = aEachDayStatus.statusDate {
+                    let dayString = dateFormatter.string(from: statusDate)
+                    if statusByDay[dayString] == nil {
+                        statusByDay[dayString] = [aEachDayStatus]
+                    } else {
+                        statusByDay[dayString]?.append(aEachDayStatus)
+                    }
+                }
+            }
+            dispatchGroup.leave()
+        }
+        
 
         
         // Wait for all async tasks to complete
         dispatchGroup.notify(queue: .main) {
-            // Create sections combining calls and events
+            // Create sections combining callsByDay, eventsByDay, plansByDay and statusByDay
             obj_sections.removeAll()
-            let allDays = Set(callsByDay.keys).union(Set(eventsByDay.keys)).union(Set(plansByDay.keys))
-     
+            let allDays = Set(callsByDay.keys).union(Set(eventsByDay.keys)).union(Set(plansByDay.keys)).union(Set(statusByDay.keys))
+    
             for day in allDays {
                 let calls = callsByDay[day] ?? []
                 let events = eventsByDay[day] ?? []
                 let dayPlans = plansByDay[day] ?? []
-                let section = Section(items: calls, eventCaptures: events, date: day, sessions: dayPlans)
+                let dayStaus = statusByDay[day] ?? []
+                let section = Section(items: calls, eventCaptures: events, date: day, sessions: dayPlans, eachDayStatus: dayStaus)
                 
                 obj_sections.append(section)
                 obj_sections =  obj_sections.sorted { $0.date.toDate(format: "yyyy-MM-dd") < $1.date.toDate(format: "yyyy-MM-dd") }
@@ -1809,6 +1954,8 @@ extension MainVC {
     }
     
     func doUserWindupAPIcall(completion: @escaping(Bool) -> () ) {
+        
+
       //  {"tableName":"final_day","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,","day_flag":"1","Appver":"Version.H1","Mod":"Android-Edet","Activity_Dt":"2024-04-22 00:00:00","current_Dt":"2024-05-08 10:12:51","day_remarks":"remark mandatory"}
         var param : [String: Any] = [:]
         param["tableName"]  = "final_day"
@@ -1829,23 +1976,31 @@ extension MainVC {
         var tosendData = [String: Any]()
         tosendData["data"] = paramData
         
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+            self.handleWindups(date: selectedToday, isSynced: false, didUserWindup: true, paramData: paramData) { isSaved in
+                completion(isSaved)
+                return
+            }
+            return
+        }
+        
         userststisticsVM?.finalSubmit(params: tosendData, api: .finalSubmit, paramData: param) {[weak self]  result in
             guard let welf = self else {return}
             switch result {
                 
             case .success(let response):
-                if response.isSuccess  ?? false{
+                if response.isSuccess  ?? false {
                     welf.toCreateToast(response.msg ?? "Day completed successfully...")
                     
-                    welf.handleWindups(isSynced: true, didUserWindup: true, paramData: paramData) { isSaved in
-                        welf.toCreateToast("Saved log offline")
+                    welf.handleWindups(date: welf.selectedToday, isSynced: true, didUserWindup: true, paramData: paramData) { isSaved in
+                      //  welf.toCreateToast("Saved log offline")
                         completion(isSaved)
                     }
                     
                 } else {
                     
-                    welf.handleWindups(isSynced: false, didUserWindup: true, paramData: paramData) { isSaved in
-                        welf.toCreateToast("Saved log offline")
+                    welf.handleWindups(date: welf.selectedToday, isSynced: false, didUserWindup: true, paramData: paramData) { isSaved in
+                     //   welf.toCreateToast("Saved log offline")
                         completion(isSaved)
                     }
                     
@@ -1854,7 +2009,7 @@ extension MainVC {
             case .failure(let error):
                 welf.toCreateToast(error.rawValue)
 
-                welf.handleWindups(isSynced: false, didUserWindup: true, paramData: paramData) { isSaved in
+                welf.handleWindups(date: welf.selectedToday, isSynced: false, didUserWindup: true, paramData: paramData) { isSaved in
                 
                     completion(isSaved)
                 }
@@ -1864,9 +2019,11 @@ extension MainVC {
         }
     }
     
-    func handleWindups(isSynced: Bool, didUserWindup: Bool, paramData: Data, completion: @escaping (Bool) -> ()) {
-        
-        guard let selectedToday = self.selectedToday else {return}
+    func handleWindups(date: Date?, isSynced: Bool, didUserWindup: Bool, paramData: Data, completion: @escaping (Bool) -> ()) {
+
+        guard let selectedToday = date else {
+            completion(true)
+            return}
         
         if isDayCheckinNeeded {
             CoreDataManager.shared.fetchCheckininfo() { saveCheckins  in
@@ -1988,7 +2145,7 @@ extension MainVC {
         }
     }
     
-    func doRemoveActions() {
+    func doRemoveActions(completion: @escaping () -> ()) {
         let filteredDetails =  homeDataArr.filter { $0.dcr_dt ?? "" == Shared.instance.selectedDate.toString(format: "yyyy-MM-dd") }
         
       let filteredData =  DBManager.shared.getHomeData().filter { $0.dcr_dt ?? "" == Shared.instance.selectedDate.toString(format: "yyyy-MM-dd") }
@@ -2012,8 +2169,10 @@ extension MainVC {
         
 
 
-        CoreDataManager.shared.removeaDcrDate(date: Shared.instance.selectedDate) {
-            self.btnCalenderSync(self.btnSyncDate!)
+        CoreDataManager.shared.removeDcrDate(date: Shared.instance.selectedDate) {
+            completion()
+          //  guard let welf = self else {return}
+          //  welf.btnCalenderSync(welf.btnSyncDate!)
         }
     }
     
@@ -2057,31 +2216,23 @@ extension MainVC {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: true)
                 checkoutAction()
             } else {
-                guard !isWindupAPIcallInProgress else {
-                              print("Windup API call is already in progress.")
-                              return
-                }
-                
-                isWindupAPIcallInProgress = true
                 
                 doUserWindupAPIcall { [weak self] _ in
-                    
                     guard let welf = self else {return}
-                    
-                    defer { welf.isWindupAPIcallInProgress = false }
-                    
                     if isSequentialDCRenabled {
-                        welf.doRemoveActions()
-                        welf.doSequentialFlow() {
-                        welf.showAlertToFilldates(description: "Date submission done.")
-                        return
+                        welf.doRemoveActions {
+                            welf.doSequentialFlow() {
+                            welf.showAlertToFilldates(description: "Final submission done.")
+                            return
+                            }
                         }
                     } else {
-                        
-                        welf.doRemoveActions()
-                        welf.doNonSequentialFlow()
-                        welf.showAlertToFilldates(description: "Date submission done.")
-                        return
+                        welf.doRemoveActions() {
+                            welf.doNonSequentialFlow()
+                            welf.showAlertToFilldates(description: "Final submission done.")
+                            return
+                        }
+           
                     }
                 }
             }
@@ -2155,7 +2306,7 @@ extension MainVC {
         LocalStorage.shared.setBool(LocalStorage.LocalValue.userCheckedOut, value: false)
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUserCheckedin, value: false)
         LocalStorage.shared.setBool(LocalStorage.LocalValue.didUserWindUP, value: false)
-        CoreDataManager.shared.removeAllDayPlans()
+        CoreDataManager.shared.removeUnsyncedDayPlans()
         CoreDataManager.shared.removeAllDayStatus()
         CoreDataManager.shared.removeUnsyncedHomeData()
         CoreDataManager.shared.removeAllOutboxParams()
@@ -2350,8 +2501,39 @@ extension MainVC {
         
         // checkinAction()
         
+        fetchLocations { locationInfo in
+            guard let locationInfo = locationInfo else {return}
+            self.toCreateToast(locationInfo.address == "No address found" || locationInfo.address == ""  ? "Latitude: \(locationInfo.latitude), Longitude: \(locationInfo.longitude)" : locationInfo.address)
+        }
     }
 
+    func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {
+                completion(nil)
+                return}
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlert(desc: "Please enable location services in Settings.")
+                    completion(nil)
+                    return
+                }
+            }
+
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) {  address in
+                    completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address: address ?? "No address found"))
+                    return
+                }
+            } else {
+                
+                completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address:  "No address found"))
+                return
+            }
+        }
+    }
+    
 
     @IBAction func masterSyncAction(_ sender: UIButton) {
         
@@ -2471,7 +2653,7 @@ extension MainVC {
   
    
                 if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                    welf.callSavePlanAPI(byDate: welf.selectedToday ?? Date()) { isUploaded in
+                    welf.callSavePlanAPI(byDate: welf.selectedToday ?? Date(), istoupdateUI: true) { isUploaded in
                         if isUploaded {
                             welf.toConfigureMydayPlan(planDate: welf.selectedToday ?? Date()) {}
                             
@@ -2537,7 +2719,12 @@ extension MainVC {
     }
     
     func toCreateNewDayStatus() {
-        CoreDataManager.shared.saveDayStatusToCoreData(date: selectedToday ?? Date(), didUserWindup: false, isSynced: false, params: Data()) { _ in }
+        CoreDataManager.shared.removeDayStatus(date: selectedToday ?? Date()) {[weak self] isRemoved in
+            guard let welf = self else {return}
+            CoreDataManager.shared.saveDayStatusToCoreData(date: welf.selectedToday ?? Date(), didUserWindup: false, isSynced: false, params: Data()) { _ in }
+        }
+        
+    
     }
 
 }
@@ -3269,6 +3456,12 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let eventModel = obj_sections[indexPath.section].eventCaptures
             let plansModel = obj_sections[indexPath.section].myDayplans
             let date = obj_sections[indexPath.section].date
+            let dayStatusCount = obj_sections[indexPath.section].dayStatus.count
+            
+           
+           cell.isTohideDaySubmission = dayStatusCount == 0 ? true : false
+           
+            
          //   var custCodes: [String] = model.map { $0.custCode }
             cell.delegate = self
             cell.viewController = self
@@ -3321,34 +3514,68 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
             }
             
-            cell.workPlanRefreshView.addTap {
+            cell.workPlanRefreshView.addTap {[weak self] in
+                guard let welf = self else {return}
               
                 let dateString = date
                 let rawDate = dateString.toDate(format: "yyyy-MM-dd")
                 Shared.instance.showLoaderInWindow()
-                self.toPostDayplan(byDate: rawDate) {
-                    self.toLoadOutboxTable()
+                welf.toPostDayplan(byDate: rawDate, istoupdateUI: welf.selectedDate != nil) {
+                    welf.toLoadOutboxTable()
                     Shared.instance.removeLoaderInWindow()
                 }
             }
             
-            cell.callsRefreshVIew.addTap {
-
+            cell.callsRefreshVIew.addTap { [weak self] in
+                guard let welf = self else {return}
                 if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-                    self.showAlertToFilldates(description: "Internet connection is required to sync calls.")
+                    welf.showAlertToFilldates(description: "Internet connection is required to sync calls.")
                     return
                 }
                 Shared.instance.showLoaderInWindow()
                 let dcrCalls = obj_sections[indexPath.section].items
                 let date = obj_sections[indexPath.section].date
-                self.toretryDCRupload(dcrCall: dcrCalls, date: date) {_ in 
-                    Shared.instance.removeLoaderInWindow()
-                    self.showAlertToFilldates(description: "Sync completed")
+                welf.toretryDCRupload(dcrCall: dcrCalls, date: date) {_ in
+                    welf.toUploadUnsyncedImageByDate(date: date) {
+                        Shared.instance.removeLoaderInWindow()
+                        welf.showAlertToFilldates(description: "Sync completed")
+                    }
                 }
-
             }
             
-            cell.callsCollapseIV.addTap {
+            cell.eventRefreshView.addTap { [weak self] in
+                guard let welf = self else {return}
+                
+                if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                    welf.showAlertToFilldates(description: "Internet connection is required to sync calls.")
+                    return
+                }
+                Shared.instance.showLoaderInWindow()
+                welf.toUploadUnsyncedImageByDate(date: date) {
+                    welf.toLoadOutboxTable()
+                    Shared.instance.removeLoaderInWindow()
+                    welf.showAlertToFilldates(description: "Sync completed")
+                    
+                }
+            }
+            
+            cell.daySubmitRefreshView.addTap { [weak self] in
+                guard let welf = self else {return}
+                if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                    welf.showAlertToFilldates(description: "Internet connection is required to sync calls.")
+                    return
+                }
+                Shared.instance.showLoaderInWindow()
+                welf.toUploadWindups(date: date.toDate(format: "yyyy-MM-dd")) { _ in
+                    welf.toLoadOutboxTable()
+                    Shared.instance.removeLoaderInWindow()
+                    welf.showAlertToFilldates(description: "Sync completed")
+                    
+                }
+            }
+            
+            cell.callsCollapseIV.addTap { [weak self] in
+                guard let welf = self else {return}
                 cell.eventExpandState  = .eventNotExpanded
                 obj_sections[indexPath.section].isEventEcpanded = false
                 cell.callsExpandState =  cell.callsExpandState == .callsNotExpanded ?  .callsExpanded : .callsNotExpanded
@@ -3361,13 +3588,14 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 }
                 cell.toSetCallsCellHeight(callsExpandState:  cell.callsExpandState)
                 cell.toSetEventsCellheight(callsExpandState: .eventNotExpanded)
-                self.outboxTableView.reloadData()
+                welf.outboxTableView.reloadData()
             }
             
             
             
             
-            cell.eventCollapseIV.addTap {
+            cell.eventCollapseIV.addTap { [weak self] in
+                guard let welf = self else {return}
                 cell.callsExpandState = .callsNotExpanded
                 obj_sections[indexPath.section].isCallExpanded = false
                 cell.eventExpandState =  cell.eventExpandState != .eventNotExpanded ? .eventNotExpanded  : .eventExpanded
@@ -3383,7 +3611,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 }
                 cell.toSetEventsCellheight(callsExpandState:  cell.eventExpandState)
                 cell.toSetCallsCellHeight(callsExpandState:  .callsNotExpanded)
-                self.outboxTableView.reloadData()
+                welf.outboxTableView.reloadData()
             }
             
             
@@ -3643,12 +3871,13 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             //290 -  checkin - 50 || work plan - 50 || call detail - 50 || event cpature - 50 || check out - 50
             let callsCount = obj_sections[indexPath.section].items.count
             let eventsCount = obj_sections[indexPath.section].eventCaptures.count
-            let plansModel = obj_sections[indexPath.section].myDayplans
+            let plansCount = obj_sections[indexPath.section].myDayplans.count
+            let dayStatusCount = obj_sections[indexPath.section].dayStatus.count
             
             let istohideCheckin: Bool = true
             let istohideCheckout: Bool = true
             
-            var cellHeight : Int = 290
+            var cellHeight : Int = 350
             if istohideCheckin {
                 cellHeight = cellHeight - 50
             }
@@ -3657,9 +3886,14 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 cellHeight = cellHeight - 50
             }
              
-            if plansModel.isEmpty {
+            if plansCount == 0 {
                 cellHeight = cellHeight - 50
             }
+            
+            if dayStatusCount == 0 {
+                cellHeight = cellHeight - 50
+            }
+        
             
             switch indexPath.section {
 
@@ -3725,6 +3959,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "outboxCollapseTVC") as? outboxCollapseTVC
             header?.delegate = self
             header?.section = section
+            guard obj_sections.count > section else {return nil}
             if obj_sections[section].collapsed {
                 header?.collapseIV.image = UIImage(named: "chevlon.expand")
             } else {
@@ -4029,6 +4264,10 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
             //isSequentialDCRenabled
             
             if welf.isFurureDate(date: date) {
+                CoreDataManager.shared.fetchDcrDates { dcrDates in
+                dump(dcrDates)
+                }
+                
                 welf.showAlertToFilldates(description: "Day planing for future dates are restricted.")
                 welf.setSegment(.workPlan)
                 return
@@ -4128,41 +4367,88 @@ extension MainVC : outboxCollapseTVCDelegate {
         //  obj_sections[section].isLoading = true
         if isConnected {
             guard obj_sections.count > refreshIndex else {return}
-            self.toretryDCRupload(dcrCall: obj_sections[refreshIndex].items, date: obj_sections[refreshIndex].date) { [weak self] _ in
+            
+            let refreshDateStr = obj_sections[refreshIndex].date
+            let callitems = obj_sections[refreshIndex].items
+            let refreshDate = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
+            
+            Shared.instance.showLoaderInWindow()
+            toPostDayplan(byDate: refreshDate, istoupdateUI: self.selectedDate != nil) { [weak self] in
                 guard let welf = self else {return}
-                Shared.instance.showLoaderInWindow()
-                if !obj_sections[refreshIndex].eventCaptures.isEmpty {
-                    welf.toUploadUnsyncedImage() {
-                        let dateStr = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
-                        welf.toPostDayplan(byDate: dateStr) {
-                            welf.toUploadWindups(date: dateStr) { _ in
-                                welf.toLoadOutboxTable()
-                                welf.setSegment(.outbox)
+                welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _  in
+                    welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
+                        welf.toUploadWindups(date: refreshDate) { _ in
+                            welf.toLoadOutboxTable()
+                            welf.setSegment(.calls)
+                            welf.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) {  _ in
+                                welf.btnCalenderSync(welf.btnSyncDate!)
                                 Shared.instance.removeLoaderInWindow()
                                 welf.showAlertToFilldates(description: "Sync completed")
-                                }
+                            }
                             }
                     }
-                } else {
-                    let dateStr = obj_sections[refreshIndex].date.toDate(format: "yyyy-MM-dd")
-                    welf.toPostDayplan(byDate: dateStr) {
-                        welf.toUploadWindups(date: dateStr) { _ in
-                            welf.toLoadOutboxTable()
-                            welf.setSegment(.outbox)
-                            Shared.instance.removeLoaderInWindow()
-                            welf.showAlertToFilldates(description: "Sync completed")
-                            }
-                        }
                 }
-
                 
             }
+
         } else {
             showAlertToFilldates(description: "Internet connection is required to sync calls.")
         }
 
     }
     
+    func toUploadUnsyncedImageByDate(date: String,  custCode: String? = nil, completion: @escaping () -> ()) {
+      
+        CoreDataManager.shared.toRetriveEventcaptureCDM { unsyncedEventsArr in
+            
+            
+            // Create a dispatch group to wait for all uploads to complete
+            let dispatchGroup = DispatchGroup()
+            
+            var filteredunsyncedEventsArr = unsyncedEventsArr
+            
+            if let custCode = custCode {
+                filteredunsyncedEventsArr =  unsyncedEventsArr.filter { $0.custCode == custCode }
+            }
+            
+            filteredunsyncedEventsArr.forEach { unsyncedEvent in
+                let captureDate = unsyncedEvent.eventcaptureDate
+                if date == captureDate?.toString(format: "yyyy-MM-dd") {
+                    var eventCaptureVMs = [EventCaptureViewModel]()
+                    let yattoPostData = unsyncedEvent.eventCaptureParamData
+                    let eventCaptures = unsyncedEvent.capturedEvents
+                    let optionalParam = ObjectFormatter.shared.convertDataToJson(data: yattoPostData ?? Data())
+                   
+            
+                    eventCaptures?.forEach { aEventCapture in
+                        let aEventCaptureViewModel = EventCaptureViewModel(eventCapture: aEventCapture)
+                        eventCaptureVMs.append(aEventCaptureViewModel)
+                    }
+                    
+                    // Process each eventCaptureViewModel synchronously
+                    eventCaptureVMs.forEach { aEventCaptureViewModel in
+                        dispatchGroup.enter()
+                        var custCode: String = ""
+                        if  let patamcustcode = optionalParam?["custCode"] {
+                            custCode = patamcustcode as! String
+                        }
+                      
+                        self.callSaveimageAPI(param: optionalParam ?? JSON(), paramData: yattoPostData ?? Data(), evencaptures: aEventCaptureViewModel, custCode: custCode, captureDate: captureDate ?? Date()) { result in
+                                dispatchGroup.leave()
+                            }
+
+                    }
+                }
+
+            }
+            
+            // Notify the completion handler when all uploads are done
+            dispatchGroup.notify(queue: .main) {
+                
+                completion()
+            }
+        }
+    }
     
     func toUploadUnsyncedImage(custCode: String? = nil, completion: @escaping () -> ()) {
       
@@ -4700,6 +4986,7 @@ extension MainVC: OutboxDetailsTVCDelegate {
         toUploadUnsyncedImage(custCode: custCode) { [weak self] in
             guard let welf = self else {return}
             Shared.instance.removeLoaderInWindow()
+            welf.toLoadOutboxTable()
             welf.showAlertToFilldates(description: "captured Events synced sucessfully")
             
         }

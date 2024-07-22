@@ -11,6 +11,14 @@ import Foundation
 import UIKit
 import CoreLocation
 
+extension CustomerCheckinView : EventCaptureCVCDelegate {
+    func didDownloadCompletedatindex(index: Int, image: Data) {
+        guard let capturedEvents = capturedEvents, capturedEvents.count > index  else {return }
+        capturedEvents[index].imageData = image
+        self.eventsCollection.reloadData()
+    }
+}
+
 extension CustomerCheckinView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let capturedEvents = capturedEvents else {return 0}
@@ -21,8 +29,13 @@ extension CustomerCheckinView: UICollectionViewDelegate, UICollectionViewDataSou
         guard let capturedEvents = capturedEvents else {return UICollectionViewCell()}
         let model = capturedEvents[indexPath.row]
         let cell:  EventCaptureCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "EventCaptureCVC", for: indexPath) as! EventCaptureCVC
-        cell.toDownloadimage(model: model)
-
+        cell.index = indexPath.row
+        cell.delegate = self
+        cell.eventsIMage.image = UIImage(data: model.imageData)
+        if model.imageData.isEmpty {
+            cell.toDownloadimage(model: model)
+        }
+        
         return cell
     
     }

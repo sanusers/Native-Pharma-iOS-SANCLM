@@ -477,15 +477,15 @@
                                                 <rect key="frame" x="457" y="11" width="708" height="51.5"/>
                                                 <subviews>
                                                     <stackView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="66a-jT-8uk">
-                                                        <rect key="frame" x="0.0" y="0.0" width="708" height="51.5"/>
+                                                        <rect key="frame" x="10" y="0.0" width="688" height="51.5"/>
                                                         <subviews>
                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="magnifyingglass" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="6fy-CL-dAK">
-                                                                <rect key="frame" x="0.0" y="0.0" width="28.5" height="51.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="27.5" height="51.5"/>
                                                                 <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="medium"/>
                                                             </imageView>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="BDb-36-bjc">
-                                                                <rect key="frame" x="33.5" y="0.0" width="674.5" height="51.5"/>
+                                                                <rect key="frame" x="32.5" y="0.0" width="655.5" height="51.5"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" name="Satoshi-Medium" family="Satoshi" pointSize="14"/>
@@ -501,8 +501,8 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstItem="66a-jT-8uk" firstAttribute="top" secondItem="FqK-7U-Ai3" secondAttribute="top" id="Phd-lK-ypN"/>
-                                                    <constraint firstItem="66a-jT-8uk" firstAttribute="leading" secondItem="FqK-7U-Ai3" secondAttribute="leading" id="VC9-l9-onk"/>
-                                                    <constraint firstAttribute="trailing" secondItem="66a-jT-8uk" secondAttribute="trailing" id="nGn-Cw-kpv"/>
+                                                    <constraint firstItem="66a-jT-8uk" firstAttribute="leading" secondItem="FqK-7U-Ai3" secondAttribute="leading" constant="10" id="VC9-l9-onk"/>
+                                                    <constraint firstAttribute="trailing" secondItem="66a-jT-8uk" secondAttribute="trailing" constant="10" id="nGn-Cw-kpv"/>
                                                     <constraint firstAttribute="bottom" secondItem="66a-jT-8uk" secondAttribute="bottom" id="vxA-lM-FOC"/>
                                                 </constraints>
                                             </view>

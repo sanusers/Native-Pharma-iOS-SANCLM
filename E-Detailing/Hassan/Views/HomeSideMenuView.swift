@@ -43,6 +43,9 @@ extension HomeSideMenuView: UITableViewDelegate, UITableViewDataSource {
             self.menuVC.dismiss(animated: false, completion: {
                 let _selectedItem = self.menuItemArr[indexPath.row]
                 switch _selectedItem.menuName {
+                case "Refresh Location":
+                    self.menuVC.delegate?.didLocationUpdated()
+                    
                 case "Clear slides":
                     self.menuVC.menuAlertDelegate?.addAlert(.clearSlides)
                 default:
@@ -84,12 +87,67 @@ class HomeSideMenuView : BaseView{
     @IBOutlet var syncBtn: UIButton!
     @IBOutlet var locationBtn: UIButton!
  
-   // @IBOutlet var topContainerView: UIView!
+    @IBOutlet var pageTitle: UILabel!
+    // @IBOutlet var topContainerView: UIView!
     @IBOutlet var closeBtn: UIButton!
    // @IBOutlet var titleLbl: UILabel!
     @IBOutlet var sidemenuTable: UITableView!
     
     @IBOutlet weak var sideMenuHolderView : UIView!
+    
+    
+    //Setups
+    
+    @IBOutlet var geocheckViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var sequentialViewWidthConstraint: NSLayoutConstraint!
+    
+    @IBOutlet var sequentialView: UIView!
+    
+    @IBOutlet var sequentialVXview: UIVisualEffectView!
+    
+    @IBOutlet var geoCheckVXview: UIVisualEffectView!
+    
+    @IBOutlet var geoCheckView: UIView!
+    
+    
+    @IBOutlet var geoCheckLbl: UILabel!
+    
+    
+    
+    @IBOutlet var doctorFencingView: UIView!
+    
+    @IBOutlet var doctorFencingVXview: UIVisualEffectView!
+    
+    @IBOutlet var doctorFencingLbl: UILabel!
+    
+    
+    
+    @IBOutlet var chemistFencingView: UIView!
+    
+    @IBOutlet var chemistFencingVXview: UIVisualEffectView!
+    
+    @IBOutlet var chemistLbl: UILabel!
+    
+    
+    @IBOutlet var stockistFencingView: UIView!
+    
+    @IBOutlet var stockistFencingVXview: UIVisualEffectView!
+    
+    @IBOutlet var stockistLbl: UILabel!
+    
+    
+    @IBOutlet var unlistedDoctorFencingView: UIView!
+    
+    @IBOutlet var unlistedDoctorVXview: UIVisualEffectView!
+    
+    @IBOutlet var unlistedDoctorLbl: UILabel!
+    
+    @IBOutlet var unlistedDoctorFencingViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var stockistFencingViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var chemistFencingViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var doctorFencingViewWidthConstraint: NSLayoutConstraint!
+    
+    
     //MARK: UDF, gestures  and animations
     var menuItemArr: [MenuItems] = []
     private var animationDuration : Double = 1.0
@@ -141,6 +199,60 @@ class HomeSideMenuView : BaseView{
         //   titleLbl.text = "SAN Media Pvt Ltd.,"
         //  titleLbl.textColor = .appWhiteColor
         self.menuItemArr = self.toAppendMenuItems()
+        geocheckViewWidthConstraint.constant = 0
+        doctorFencingViewWidthConstraint.constant = 0
+        chemistFencingViewWidthConstraint.constant = 0
+        stockistFencingViewWidthConstraint.constant = 0
+        unlistedDoctorFencingViewWidthConstraint.constant = 0
+        
+        pageTitle.text = AppDefaults.shared.getAppSetUp().divisionName
+        
+        locationBtn.isHidden = geoFencingEnabled ? false : true
+        
+        if isSequentialDCRenabled {
+            unlistedDoctorFencingViewWidthConstraint.constant = 35
+            sequentialVXview.backgroundColor = .appDeepBrown
+            sequentialView.layer.cornerRadius = 25 / 2
+          
+        }
+         
+        if geoFencingEnabled {
+            geoCheckVXview.backgroundColor = .appYellow
+            geoCheckView.layer.cornerRadius = 25 / 2
+            geoCheckLbl.textColor = .appWhiteColor
+            geocheckViewWidthConstraint.constant = 35
+        }
+
+
+        if isDoctorFencingNeeded {
+            doctorFencingVXview.backgroundColor = .appGreen
+            doctorFencingView.layer.cornerRadius = 25 / 2
+            doctorFencingLbl.textColor = .appWhiteColor
+            doctorFencingViewWidthConstraint.constant = 35
+        }
+        
+
+        if isChemistFencingNeeded {
+            chemistFencingVXview.backgroundColor = .appBlue
+            chemistFencingView.layer.cornerRadius = 25 / 2
+            chemistLbl.textColor = .appWhiteColor
+            chemistFencingViewWidthConstraint.constant = 35
+        }
+ 
+        if isStockistFencingNeeded {
+            stockistFencingVXview.backgroundColor = .appLightPink
+            stockistFencingView.layer.cornerRadius = 25 / 2
+            stockistLbl.textColor = .appWhiteColor
+            stockistFencingViewWidthConstraint.constant = 35
+        }
+
+        
+        if isUnliatedDoctorFencingNeeded {
+            unlistedDoctorVXview.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+            unlistedDoctorFencingView.layer.cornerRadius = 25 / 2
+            unlistedDoctorLbl.textColor = .appWhiteColor
+            unlistedDoctorFencingViewWidthConstraint.constant = 35
+        }
     }
     
     func initVIews() {
@@ -164,13 +276,13 @@ class HomeSideMenuView : BaseView{
     
     func toAppendMenuItems() -> [MenuItems]{
       //  let vc = SlideDownloadVC.initWithStory()
-        let refreshItem : MenuItems = MenuItems(menuName: "Refresh", menuIcon: UIImage(named: "refreshSlide") ?? UIImage(), VC: nil)
+        let refreshItem : MenuItems = MenuItems(menuName: "Refresh Location", menuIcon: UIImage(named: "refreshSlide") ?? UIImage(), VC: nil)
         menuItemArr.append(refreshItem)
         
         
-        let tourplanVC = TourPlanVC.initWithStory()
-        let tourPlan : MenuItems = MenuItems(menuName: "Tour Plan", menuIcon: UIImage(named: "tourplan") ?? UIImage(), VC: tourplanVC)
-        menuItemArr.append(tourPlan)
+//        let tourplanVC = TourPlanVC.initWithStory()
+//        let tourPlan : MenuItems = MenuItems(menuName: "Tour Plan", menuIcon: UIImage(named: "tourplan") ?? UIImage(), VC: tourplanVC)
+//        menuItemArr.append(tourPlan)
         
         let resourceVC = ReportsVC.initWithStory(pageType: .myResource)
         let myResource : MenuItems = MenuItems(menuName: "My Resource", menuIcon: UIImage(named: "SideMenuMyResource") ?? UIImage(), VC: resourceVC)
@@ -180,33 +292,33 @@ class HomeSideMenuView : BaseView{
         let leaveApplication : MenuItems = MenuItems(menuName: "Leave application", menuIcon: UIImage(named: "leaveApplication") ?? UIImage(), VC: leaveVC)
         menuItemArr.append(leaveApplication)
         
-        let reportsVC = ReportsVC.initWithStory(pageType: .reports)
-        let report : MenuItems = MenuItems(menuName: "Report", menuIcon: UIImage(named: "report_black") ?? UIImage(), VC: reportsVC)
-        menuItemArr.append(report)
+//        let reportsVC = ReportsVC.initWithStory(pageType: .reports)
+//        let report : MenuItems = MenuItems(menuName: "Report", menuIcon: UIImage(named: "report_black") ?? UIImage(), VC: reportsVC)
+//        menuItemArr.append(report)
         
         
-        let activity : MenuItems = MenuItems(menuName: "Activity", menuIcon: UIImage(named: "SideMenuActivity") ?? UIImage(), VC: nil)
-        menuItemArr.append(activity)
+//        let activity : MenuItems = MenuItems(menuName: "Activity", menuIcon: UIImage(named: "SideMenuActivity") ?? UIImage(), VC: nil)
+//        menuItemArr.append(activity)
         
         let nearMeVC = UIStoryboard.nearMeVC
         let nearMe : MenuItems = MenuItems(menuName: "Near Me", menuIcon: UIImage(named: "SideMenuNearMe") ?? UIImage(), VC: nearMeVC)
         menuItemArr.append(nearMe)
         
         
-        let quiz : MenuItems = MenuItems(menuName: "Quiz", menuIcon: UIImage(named: "SideMenuQuiz") ?? UIImage(), VC: nil)
-        menuItemArr.append(quiz)
+//        let quiz : MenuItems = MenuItems(menuName: "Quiz", menuIcon: UIImage(named: "SideMenuQuiz") ?? UIImage(), VC: nil)
+//        menuItemArr.append(quiz)
         
         
-        let survey : MenuItems = MenuItems(menuName: "Survey", menuIcon: UIImage(named: "SideMenuSurvey") ?? UIImage() , VC: nil)
-        menuItemArr.append(survey)
+//        let survey : MenuItems = MenuItems(menuName: "Survey", menuIcon: UIImage(named: "SideMenuSurvey") ?? UIImage() , VC: nil)
+//        menuItemArr.append(survey)
         
         
-        let forms : MenuItems = MenuItems(menuName: "Forms", menuIcon: UIImage(named: "SideMenuForms") ?? UIImage(), VC: nil)
-        menuItemArr.append(forms)
+//        let forms : MenuItems = MenuItems(menuName: "Forms", menuIcon: UIImage(named: "SideMenuForms") ?? UIImage(), VC: nil)
+//        menuItemArr.append(forms)
         
         
-        let profiling : MenuItems = MenuItems(menuName: "Profiling", menuIcon: UIImage(named: "SideMenuProfiling") ?? UIImage(), VC: nil)
-        menuItemArr.append(profiling)
+//        let profiling : MenuItems = MenuItems(menuName: "Profiling", menuIcon: UIImage(named: "SideMenuProfiling") ?? UIImage(), VC: nil)
+//        menuItemArr.append(profiling)
         
         
         let removeSlide : MenuItems = MenuItems(menuName: "Clear slides", menuIcon: UIImage(systemName: "text.append") ?? UIImage(), VC: nil)

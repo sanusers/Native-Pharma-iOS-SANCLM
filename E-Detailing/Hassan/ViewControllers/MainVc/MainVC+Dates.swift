@@ -214,7 +214,7 @@ extension MainVC {
             
          
             if isToUpdateDate {
-                let planDates = savedDcrDates.filter { $0.flag == "0" && $0.tbname == "dcr" }
+                let planDates = savedDcrDates.filter { $0.flag == "0" && $0.tbname == "dcr" && !$0.isDateAdded }
                  
                  guard !planDates.isEmpty, let currentDate = planDates.first  else {
                      

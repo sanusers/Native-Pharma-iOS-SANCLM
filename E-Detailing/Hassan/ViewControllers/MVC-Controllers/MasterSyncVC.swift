@@ -821,11 +821,7 @@ class MasterSyncVC : UIViewController {
                                     print("Yet to implement")
                                 }
                             }
-                            // let aDayArr = model.filter{$0.SFMem != ""}.first
-                            
-                            
-                            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: dayPlan1?.SFMem ?? appdefaultSetup.sfCode!)
+
                             
                             welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) , istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
                                 
@@ -863,9 +859,6 @@ class MasterSyncVC : UIViewController {
                             
                             
                         } else {
-                            let appdefaultSetup = AppDefaults.shared.getAppSetUp()
-      
-                                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: appdefaultSetup.sfCode ?? "")
                                 
                                 welf.mastersyncVM?.fetchMasterData(type: .subordinate, sfCode:   LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { _ in
                                     

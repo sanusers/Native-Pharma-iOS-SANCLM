@@ -10,6 +10,13 @@
 import Foundation
 import UIKit
 
+
+struct LocationInfo {
+    let latitude: Double
+    let longitude: Double
+    let address: String
+}
+
 struct QuicKLink {
     
     var color : UIColor
@@ -33,12 +40,13 @@ struct Section {
     var items: [TodayCallsModel]
     var eventCaptures: [UnsyncedEventCaptureModel]
     var myDayplans: [Sessions]
+    var dayStatus: [EachDayStatus]
     var isCallExpanded: Bool
     var isEventEcpanded: Bool
     var collapsed: Bool
     var isLoading = Bool()
     
-    init(items: [TodayCallsModel] , eventCaptures: [UnsyncedEventCaptureModel], collapsed: Bool = true, isCallExpanded: Bool = false, isEventEcpanded: Bool = false, date: String, sessions: [Sessions]) {
+    init(items: [TodayCallsModel] , eventCaptures: [UnsyncedEventCaptureModel], collapsed: Bool = true, isCallExpanded: Bool = false, isEventEcpanded: Bool = false, date: String, sessions: [Sessions], eachDayStatus: [EachDayStatus]) {
     self.items = items
     self.collapsed = collapsed
     self.isCallExpanded = isCallExpanded
@@ -46,6 +54,7 @@ struct Section {
     self.eventCaptures = eventCaptures
     self.isEventEcpanded = isEventEcpanded
     self.myDayplans = sessions
+        self.dayStatus = eachDayStatus
   }
 }
     

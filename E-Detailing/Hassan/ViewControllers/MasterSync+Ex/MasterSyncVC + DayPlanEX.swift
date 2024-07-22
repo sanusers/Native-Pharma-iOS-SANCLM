@@ -921,7 +921,26 @@ extension CoreDataManager {
     }
     
     
+    func removeUnsyncedDayPlans() {
+        let fetchRequest: NSFetchRequest<EachDayPlan> = NSFetchRequest(entityName: "EachDayPlan")
 
+        do {
+            let eachDayPlans = try context.fetch(fetchRequest)
+            for eachDayPlan in eachDayPlans {
+                if let unsyncedPlan = eachDayPlan.eachPlan as? Set<EachPlan> {
+                    let plansToDelete = unsyncedPlan.filter { !$0.isRetrived }
+                    for plan in plansToDelete {
+                        context.delete(plan)
+                    }
+                }
+                context.delete(eachDayPlan)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
     
     func removeAllDayPlans() {
         let fetchRequest: NSFetchRequest<EachDayPlan> = NSFetchRequest(entityName: "EachDayPlan")

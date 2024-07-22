@@ -176,8 +176,8 @@ class MasterSyncVM {
                 aDayPlan.isRetrived  =  true
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf = aMyDayPlanResponseModel.SFMem
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: aMyDayPlanResponseModel.SFMem)
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aMyDayPlanResponseModel.SFMem)
+             //   LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan1, text: aMyDayPlanResponseModel.SFMem)
+              //  LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aMyDayPlanResponseModel.SFMem)
                 aDayPlan.wtCode = aMyDayPlanResponseModel.WT
                 aDayPlan.wtName = aMyDayPlanResponseModel.WTNm
                 aDayPlan.fwFlg = aMyDayPlanResponseModel.FWFlg
@@ -188,8 +188,8 @@ class MasterSyncVM {
                 aDayPlan.isRetrived2  =  true
                 aDayPlan.sfcode = aMyDayPlanResponseModel.SFCode
                 aDayPlan.rsf2 = aMyDayPlanResponseModel.SFMem
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan2, text: aMyDayPlanResponseModel.SFMem)
-                LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aMyDayPlanResponseModel.SFMem)
+              //  LocalStorage.shared.setSting(LocalStorage.LocalValue.rsfIDPlan2, text: aMyDayPlanResponseModel.SFMem)
+              //  LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text: aMyDayPlanResponseModel.SFMem)
                 aDayPlan.wtCode2 = aMyDayPlanResponseModel.WT
                 aDayPlan.wtName2 = aMyDayPlanResponseModel.WTNm
                 aDayPlan.fwFlg2 = aMyDayPlanResponseModel.FWFlg

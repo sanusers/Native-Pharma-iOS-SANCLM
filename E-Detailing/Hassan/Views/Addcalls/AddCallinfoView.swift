@@ -792,7 +792,7 @@ extension AddCallinfoView: tableViewProtocols {
                             if addedDcrCall.code == doctorCall.code {
                               //  self.toCreateToast("OOPS! Addition call is same as selected call")
                                 self.showAlertToNotifyExistance(desc: "Addition call is same as selected call")
-                                
+                                self.endEditing(true)
                                 return
                             }
                         }
@@ -814,6 +814,7 @@ extension AddCallinfoView: tableViewProtocols {
                               }
                             if !filteredArray.isEmpty  {
                                 self.showAlertToNotifyExistance(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                                self.endEditing(true)
                                 //self.toCreateToast("Doctor already visited today")
                                 return
                             }
@@ -834,6 +835,7 @@ extension AddCallinfoView: tableViewProtocols {
                         if !filteredArray.isEmpty  {
                            // self.toCreateToast("Doctor aldready visited today")
                             self.showAlertToNotifyExistance(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                            self.endEditing(true)
                             return
                         } else {
                             self.additionalCallSelectionAction(cell.btnSelected)
@@ -2352,7 +2354,10 @@ class AddCallinfoView : BaseView {
         if Shared.instance.detailedSlides.count != 0 {
             self.setSegment(.detailed)
         } else {
-            self.setSegment(.products)
+       
+            self.setSegment(segmentType.first ?? .jointWork)
+            
+            
         }
        
     }

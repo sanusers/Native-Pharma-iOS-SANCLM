@@ -51,7 +51,7 @@ extension ChangePasswordView:UITextFieldDelegate {
                 checkButtonStatus()
             } else {
                 passwordValidationLbl.isHidden = false
-                passwordValidationLbl.text = "Entered Password is incorrect"
+                passwordValidationLbl.text = "Entered old Password is incorrect"
                 isOldePasswordVerified = false
                 newPasswordTF.isUserInteractionEnabled = false
                 repeatPasswordTF.isUserInteractionEnabled = false

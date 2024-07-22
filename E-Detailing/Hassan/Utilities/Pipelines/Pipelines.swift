@@ -211,8 +211,10 @@ class Pipelines : NSObject, CLLocationManagerDelegate {
                 }
 
                 completion(addressString)
+                return
             } else {
                 completion(nil)
+                return
             }
         }
     }

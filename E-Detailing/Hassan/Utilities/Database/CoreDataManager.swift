@@ -1423,23 +1423,50 @@ extension CoreDataManager {
     }
     
     
-    func removeaDcrDate(date: Date, completion: () -> ()) {
-        let fetchRequest: NSFetchRequest<DcrDates> = NSFetchRequest(entityName: "DcrDates")
-        do {
-            let dcrDates = try context.fetch(fetchRequest)
-            for dcrDate in dcrDates {
-                let cacheDate = dcrDate.date
-                let toRemoveDate = date.toString(format:  "yyyy-MM-dd")
-                
-                if cacheDate == toRemoveDate {
-                    dcrDate.isDateAdded = true
+//    func removeaDcrDate(date: Date, completion: () -> ()) {
+//        let fetchRequest: NSFetchRequest<DcrDates> = NSFetchRequest(entityName: "DcrDates")
+//        do {
+//            let dcrDates = try context.fetch(fetchRequest)
+//            for dcrDate in dcrDates {
+//                let cacheDate = dcrDate.date
+//                let toRemoveDate = date.toString(format:  "yyyy-MM-dd")
+//                
+//                if cacheDate == toRemoveDate {
+//                    dcrDate.isDateAdded = true
+//                }
+//            }
+//            try context.save()
+//            completion()
+//        } catch {
+//            print("Error deleting dcr Date: \(error)")
+//            completion()
+//        }
+//    }
+    
+    func removeDcrDate(date: Date, completion: @escaping () -> ()) {
+        let fetchRequest: NSFetchRequest<DcrDates> = DcrDates.fetchRequest()
+        
+        context.perform {
+            self.context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            
+            do {
+                let dcrDates = try self.context.fetch(fetchRequest)
+               
+                for dcrDate in dcrDates {
+                    let cacheDate = dcrDate.date
+                    let toRemoveDate = date.toString(format:  "yyyy-MM-dd")
+                    
+                    if cacheDate == toRemoveDate {
+                        dcrDate.isDateAdded = true
+                    }
                 }
+                
+                try self.context.save()
+                completion()
+            } catch {
+                print("Error deleting dcr Date: \(error)")
+                completion()
             }
-            try context.save()
-            completion()
-        } catch {
-            print("Error deleting slide brands: \(error)")
-            completion()
         }
     }
     
@@ -1490,6 +1517,9 @@ extension CoreDataManager {
             } else {
                 
                 CoreDataManager.shared.fetchDcrDates { dcrDates in
+                    if dcrDates.isEmpty {
+                        completion()
+                    }
                     let toDayDates = dcrDates.filter {
                         if $0.date?.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "yyyy-MM-dd") ==  Date().toString(format: "yyyy-MM-dd") {
                             return true

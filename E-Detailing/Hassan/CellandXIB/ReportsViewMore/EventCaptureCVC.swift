@@ -7,12 +7,18 @@
 
 import UIKit
 
+protocol EventCaptureCVCDelegate: AnyObject {
+    func didDownloadCompletedatindex(index: Int, image: Data)
+}
+
 class EventCaptureCVC: UICollectionViewCell {
 
     @IBOutlet var titleLbl: UILabel!
     @IBOutlet var eventsIMage: UIImageView!
     
     @IBOutlet var descriptionLbl: UILabel!
+    weak var delegate : EventCaptureCVCDelegate?
+    var index: Int?
     override func awakeFromNib() {
         super.awakeFromNib()
         eventsIMage.layer.cornerRadius = 5
@@ -21,8 +27,8 @@ class EventCaptureCVC: UICollectionViewCell {
     
     func toDownloadimage(model: EventResponse) {
         Shared.instance.showLoaderInWindow()
-        titleLbl.text = model.title
-        descriptionLbl.text = model.remarks
+        titleLbl.text = "Title: \(model.title.isEmpty ? "" : model.title)"
+        descriptionLbl.text = "Description: \(model.remarks.isEmpty ? "" : model.title)"
         let prefixURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
         let modifiedUrlString = prefixURL.replacingOccurrences(of: "photos/", with: "")
         let remoteURL = modifiedUrlString + model.eventImg
@@ -44,13 +50,13 @@ extension EventCaptureCVC: MediaDownloaderDelegate {
        
         guard let data = data else {
             self.toCreateToast("No tagged image found")
+            
             return}
         DispatchQueue.main.async {
-            self.eventsIMage.image = UIImage(data: data)
+            guard let nonNilindex = self.index else {return}
+            self.delegate?.didDownloadCompletedatindex(index: nonNilindex, image: data)
+        
         }
-   
- 
- 
     }
     
     func mediaDownloader(_ downloader: MediaDownloader, didEncounterError error: any Error) {

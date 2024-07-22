@@ -287,6 +287,15 @@ class OutboxDetailsTVC: UITableViewCell {
     @IBOutlet var eventCollapseIV: UIImageView!
     
     
+    //Day submit
+    
+    @IBOutlet var viewDaySubmit: UIView!
+    
+    @IBOutlet var daySubmitLbl: UILabel!
+    
+    @IBOutlet var daySubmitRefreshView: UIView!
+    
+    @IBOutlet var daySubmitHeightConstraint: NSLayoutConstraint!
     //Checkout
     
     @IBOutlet var checkoutHeightConst: NSLayoutConstraint!
@@ -298,6 +307,7 @@ class OutboxDetailsTVC: UITableViewCell {
     var isTohideWorkPlan: Bool = false
     var istohideCheckin: Bool = true
     var istohideCheckout: Bool = true
+    var isTohideDaySubmission: Bool = true
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -320,7 +330,7 @@ class OutboxDetailsTVC: UITableViewCell {
         let count = self.todayCallsModel.count
         let eventsCount = self.eventCaptureModel.count
 
-        var cellHeight : Int = 290
+        var cellHeight : Int = 350
         if istohideCheckin {
             cellHeight = cellHeight - 50
             checkinRefreshVIew.isHidden = true
@@ -345,6 +355,20 @@ class OutboxDetailsTVC: UITableViewCell {
             workPlanRefreshView.isHidden = false
             workPlanTitLbl.isHidden = false
         }
+        
+        if isTohideDaySubmission {
+            cellHeight = cellHeight - 50
+            daySubmitHeightConstraint.constant = 0
+            daySubmitLbl.isHidden = true
+            daySubmitRefreshView.isHidden = true
+            
+        } else {
+            daySubmitHeightConstraint.constant = 50 // 0
+            daySubmitLbl.isHidden = false
+            daySubmitRefreshView.isHidden = false
+        }
+        
+
         
         switch callsExpandState {
         case .eventExpanded:
@@ -379,7 +403,7 @@ class OutboxDetailsTVC: UITableViewCell {
     func toSetCallsCellHeight(callsExpandState: cellState) {
      
 
-        var cellHeight : Int = 290
+        var cellHeight : Int = 350
         if istohideCheckin {
             cellHeight = cellHeight - 50
             checkinRefreshVIew.isHidden = true
@@ -405,6 +429,20 @@ class OutboxDetailsTVC: UITableViewCell {
             workPlanRefreshView.isHidden = false
             workPlanTitLbl.isHidden = false
         }
+        
+        if isTohideDaySubmission {
+            cellHeight = cellHeight - 50
+            daySubmitHeightConstraint.constant = 0
+            daySubmitLbl.isHidden = true
+            daySubmitRefreshView.isHidden = true
+            
+        } else {
+            daySubmitHeightConstraint.constant = 50 // 0
+            daySubmitLbl.isHidden = false
+            daySubmitRefreshView.isHidden = false
+        }
+        
+ 
         
         let count = self.todayCallsModel.count
         let eventsCount = self.eventCaptureModel.count
@@ -446,20 +484,20 @@ class OutboxDetailsTVC: UITableViewCell {
     
     func setupUI() {
      //   setupHeight(.callsNotExpanded)
-        let titLbls : [UILabel] = [checkinLbl, workPlanTitLbl, callsTitLbl, eventTitLbl, checkoutinfoLbl]
+        let titLbls : [UILabel] = [checkinLbl, workPlanTitLbl, callsTitLbl, eventTitLbl, checkoutinfoLbl, daySubmitLbl]
         
         titLbls.forEach { lbl in
             lbl.setFont(font: .bold(size: .BODY))
             lbl.textColor = .appTextColor
         }
         
-        let refreshViews : [UIView] = [checkinRefreshVIew, checkoutRefreshView, checkoutRefreshView, workPlanRefreshView, callsRefreshVIew]
+        let refreshViews : [UIView] = [checkinRefreshVIew, checkoutRefreshView, checkoutRefreshView, workPlanRefreshView, callsRefreshVIew, eventRefreshView, daySubmitRefreshView]
         
         refreshViews.forEach { view in
             view.layer.cornerRadius = 3
         }
         
-        let elevateViews: [UIView] = [checkinVIew, workPlanView, callDetailView, eventCaptureVIew, checkoutVIew]
+        let elevateViews: [UIView] = [checkinVIew, workPlanView, callDetailView, eventCaptureVIew, checkoutVIew, viewDaySubmit]
         
         elevateViews.forEach { view in
             view.backgroundColor = .appGreyColor

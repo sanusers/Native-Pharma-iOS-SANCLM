@@ -826,7 +826,8 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Selected Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.view.endEditing(true)
                           //  self.toCreateToast("Doctor aldready visited today")
                             return
                         }
@@ -846,6 +847,7 @@ extension CallVC : collectionViewProtocols {
                     }
                     if !filteredArray.isEmpty  {
                         self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.view.endEditing(true)
                         return
                     } else {
                         if customerChekinEnabled {
@@ -881,7 +883,8 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Chemist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Selected Chemist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.view.endEditing(true)
                             return
                         }
                     }
@@ -899,6 +902,7 @@ extension CallVC : collectionViewProtocols {
                     }
                     if !filteredArray.isEmpty  {
                         self.showAlertForCallExistence(desc: "Chemist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.view.endEditing(true)
                         return
                     } else {
                         if customerChekinEnabled {
@@ -934,7 +938,8 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Stockist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Selected Stockist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.view.endEditing(true)
                             return
                         }
                     }
@@ -952,6 +957,7 @@ extension CallVC : collectionViewProtocols {
                     }
                     if !filteredArray.isEmpty  {
                         self.showAlertForCallExistence(desc: "Stockist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.view.endEditing(true)
                         return
                     } else {
                         if customerChekinEnabled {
@@ -982,7 +988,8 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Selected Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.view.endEditing(true)
                             return
                         }
                     }
@@ -1001,6 +1008,7 @@ extension CallVC : collectionViewProtocols {
                     }
                     if !filteredArray.isEmpty  {
                         self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.view.endEditing(true)
                         return
                     } else {
                         if customerChekinEnabled {

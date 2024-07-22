@@ -557,7 +557,7 @@ extension MainVC {
                         let generalResponse = try JSONDecoder().decode(GeneralResponseModal.self, from: jsonData)
                        print(generalResponse)
                           if generalResponse.isSuccess ?? false {
-                              self.toCreateToast("Image upload completed")
+                             // self.toCreateToast("Image upload completed")
                               CoreDataManager.shared.removeUnsyncedEventCaptures(date: captureDate, withCustCode: custCode) { _ in
                                   completion(.success(generalResponse))
                               }
@@ -565,7 +565,7 @@ extension MainVC {
                             
                           } else {
                        
-                              self.toCreateToast("Image upload failed try again")
+                            //  self.toCreateToast("Image upload failed try again")
                               completion(.failure(UserStatisticsError.failedTouploadImage))
                           }
                     } catch {

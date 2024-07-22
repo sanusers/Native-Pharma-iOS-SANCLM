@@ -23,6 +23,9 @@ struct OutboxModel {
     var overallRemarks: String?
     var overallFeedback: Feedback?
     var amc: String?
+    var latitude: String?
+    var longitude: String?
+    var address: String?
 }
 
 
@@ -424,21 +427,24 @@ class DCRCallObjectParser {
                 addedDCRCallsParam["WTName"] = workTypeinfo.name
                 addedDCRCallsParam["FWFlg"] = "F"
             }
-            if geoFencingEnabled {
-                welf.fetchLocations() {[weak self] locationInfo in
-                    guard let welf = self  else {return}
-                    guard let locationInfo = locationInfo else {
-                    competion(nil)
-                        return
-                    }
-                    addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
-                    addedDCRCallsParam["address"] = locationInfo.address
-                    competion(addedDCRCallsParam)
-
-                }
-            } else {
+            addedDCRCallsParam["address"] = outboxModel.address ?? "No address found"
+            addedDCRCallsParam["Entry_location"] = "\(outboxModel.latitude ?? ""):\(outboxModel.longitude ?? "")"
+            
+//            if geoFencingEnabled {
+//                welf.fetchLocations() {[weak self] locationInfo in
+//                    guard let welf = self  else {return}
+//                    guard let locationInfo = locationInfo else {
+//                    competion(nil)
+//                        return
+//                    }
+//                    addedDCRCallsParam["Entry_location"] = "\(locationInfo.latitude):\(locationInfo.longitude)"
+//                    addedDCRCallsParam["address"] = locationInfo.address
+//                    competion(addedDCRCallsParam)
+//
+//                }
+//            } else {
                 competion(addedDCRCallsParam)
-            }
+           // }
             
         }
         
@@ -487,7 +493,9 @@ class DCRCallObjectParser {
                 }
             }
              let ftchedDCRcall = filteredcalls.first
-            guard (ftchedDCRcall != nil) else {return}
+            guard (ftchedDCRcall != nil) else {
+                completion(outboxModel)
+                return}
             //[AdditionalCallViewModel]
             //Additional call
             

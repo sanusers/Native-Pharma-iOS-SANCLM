@@ -87,6 +87,7 @@ class AppSetUp : Codable {
     var deviceRegId : String?
     var disRad : String?
     var divisionCode : String?
+    var divisionName :String?
     var dlyCtrl : Int?
     var docInputCaption : String?
     var docPobMandatoryNeed : Int?
@@ -360,6 +361,7 @@ class AppSetUp : Codable {
         deviceRegId = ""
         disRad = ""
         divisionCode = ""
+        divisionName = ""
         dlyCtrl = 0
         docInputCaption = ""
         docPobMandatoryNeed = 0
@@ -803,6 +805,7 @@ class AppSetUp : Codable {
         self.stkJointWrkNeed = container.safeDecodeValue(forKey: .stkJointWrkNeed)
         self.surveyNeed = container.safeDecodeValue(forKey: .surveyNeed)
       //  self.success = container.safeDecodeValue(forKey: .success)
+        self.divisionName = container.safeDecodeValue(forKey: .divisionName)
         self.subDivisionCode = container.safeDecodeValue(forKey: .subDivisionCode)
         self.tBase = container.safeDecodeValue(forKey: .tBase)
         self.tpdcrDeviation = container.safeDecodeValue(forKey: .tpdcrDeviation)
@@ -1101,6 +1104,7 @@ class AppSetUp : Codable {
         case deviceRegId = "DeviceRegId"
         case disRad = "DisRad"
         case divisionCode = "Division_Code"
+        case divisionName = "Division_name"
         case dlyCtrl = "DlyCtrl"
         case docInputCaption = "Doc_Input_caption"
         case docPobMandatoryNeed = "Doc_Pob_Mandatory_Need"
