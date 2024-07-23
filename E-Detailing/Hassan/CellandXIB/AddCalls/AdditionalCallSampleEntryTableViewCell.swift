@@ -53,7 +53,7 @@ class AdditionalCallSampleEntryTableViewCell : UITableViewCell {
 //        txtSampleStock.layer.borderWidth = 1
         
         txtAvailableStock.layer.cornerRadius = 5
-//        txtAvailableStock.layer.borderColor = UIColor.appLightTextColor.cgColor
+//        txtAvailableStock.layer.borderColor = UIColor.appTextColor.cgColor
 //        txtAvailableStock.layer.borderWidth = 1
         
         viewProduct.layer.cornerRadius = 5

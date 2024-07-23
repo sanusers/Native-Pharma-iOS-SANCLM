@@ -205,6 +205,29 @@ class UserStatisticsVM {
     }
     
     
+    func getArrovalCounts(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<ApprovalsCountModel,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: ApprovalsCountModel.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
+    
+    func getArrovalList(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[ApprovalsListModel],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [ApprovalsListModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
 }
 
 

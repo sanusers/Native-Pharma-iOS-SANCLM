@@ -346,7 +346,7 @@ class CallVC : UIViewController {
         callCollectionView.layer.cornerRadius = 5
         seatchHolderVIew.layer.cornerRadius = 5
         seatchHolderVIew.layer.borderWidth = 1
-        seatchHolderVIew.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        seatchHolderVIew.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         backgroundView.isHidden = true
         setHQlbl()
         self.backgroundView.addTap {

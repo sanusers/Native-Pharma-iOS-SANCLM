@@ -100,7 +100,7 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
         
        // descriptionHolder.layer.cornerRadius = 5
        // descriptionHolder.layer.borderWidth = 1
-       // descriptionHolder.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.1).cgColor
+       // descriptionHolder.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.1).cgColor
         
         configureTextField()
         txtName.delegate = self

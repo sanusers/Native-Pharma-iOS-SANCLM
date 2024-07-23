@@ -454,10 +454,10 @@ class MainVC : UIViewController {
         worktypeTable.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         btnAddplan.backgroundColor = .appGreyColor
         btnAddplan.layer.borderWidth = 1
-        btnAddplan.layer.borderColor = UIColor.appLightTextColor.cgColor
+        btnAddplan.layer.borderColor = UIColor.appTextColor.cgColor
         btnSavePlan.backgroundColor = .appGreyColor
         btnSavePlan.layer.borderWidth = 1
-        btnSavePlan.layer.borderColor = UIColor.appLightTextColor.cgColor
+        btnSavePlan.layer.borderColor = UIColor.appTextColor.cgColor
         
         btnFinalSubmit.backgroundColor = .appTextColor
         outboxCallsCountLabel.setFont(font: .medium(size: .BODY))

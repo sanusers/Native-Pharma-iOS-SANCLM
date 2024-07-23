@@ -29,6 +29,7 @@ final class ConnectionHandler : NSObject {
         case  getRCPA = "getdcr_rcpa"
         case  getEvents = "getevent_rpt"
         case  getSlides = "getslidedet"
+        case approvalList = "getvwdcr"
     }
     
     static let shared = ConnectionHandler()
@@ -366,7 +367,7 @@ final class ConnectionHandler : NSObject {
                 }
             
                 
-                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
                     var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
@@ -379,6 +380,36 @@ final class ConnectionHandler : NSObject {
                     var encodedRcpaResponse : [RCPAresonseModel]?
                     var encodedEventsResponse : [EventResponse]?
                     var encodedSlidesResponse : [SlideDetailsResponse]?
+                    var encodedApprovalListResponse : [ApprovalsListModel]?
+                    
+                    if data["tableName"] as! String == TableName.approvalList.rawValue {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ApprovalsListModel].self) { result in
+                           // decodecObj
+                            switch result {
+                            case .success(let decodecObj):
+                                
+                                encodedApprovalListResponse = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedApprovalListResponse)
+    
+                                    // Convert Swift object to JSON string
+    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedApprovalListResponse) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+           
+                        }
+                    }
+                    
                     if data["tableName"] as! String == TableName.reports.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ReportsModel].self) { result in
                            // decodecObj
@@ -719,7 +750,7 @@ final class ConnectionHandler : NSObject {
                     if let data = anyData,
                        let json = JSON(data){
                         
-                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag {
+                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag || api == .approvals {
                            
                             if json.isEmpty {
                                 responseHandler.handleFailure(value: json.status_message)

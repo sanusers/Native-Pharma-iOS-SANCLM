@@ -36,9 +36,11 @@ class ReportTypesCVC: UICollectionViewCell {
             reportTypeIV.isHidden = false
             reportTypeIV.image = UIImage(named: modal.image)
             reportTypeLbl.text = modal.name
-            
         case .approvals:
-            print("Yet to implement")
+            titleLbl.isHidden = false
+            reportTypeIV.isHidden = true
+            titleLbl.text = modal.name
+            reportTypeLbl.text = modal.image
         case .myResource:
             titleLbl.isHidden = false
             reportTypeIV.isHidden = true

@@ -233,7 +233,7 @@ class RcpaAddedListTableViewCell : UITableViewCell {
         viewAddcompetitor.layer.borderColor = UIColor.appGreen.cgColor
         curvedView.layer.cornerRadius = 5
         curvedView.layer.borderWidth = 1
-        curvedView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        curvedView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         
     }
     

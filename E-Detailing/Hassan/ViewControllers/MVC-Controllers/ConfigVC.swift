@@ -130,7 +130,7 @@ class ConfigVC : UIViewController {
             }
     
             [txtWebUrl,txtLicenceKey,txtDeviceId,txtLanguage].forEach { textfield in
-                textfield?.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+                textfield?.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
                 textfield?.layer.borderWidth = 1
                 textfield?.layer.cornerRadius = 5
                 textfield?.font = UIFont(name: "Satoshi-Medium", size: 14)

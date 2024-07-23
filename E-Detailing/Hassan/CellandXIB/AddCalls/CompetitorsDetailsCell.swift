@@ -108,7 +108,7 @@ class CompetitorsDetailsCell: UITableViewCell,UITextFieldDelegate {
         
         qtyHolde.layer.borderWidth = 1
         qtyHolde.layer.cornerRadius = 3
-        qtyHolde.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        qtyHolde.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         
     }
 

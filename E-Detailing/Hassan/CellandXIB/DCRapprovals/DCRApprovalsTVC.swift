@@ -29,4 +29,9 @@ class DCRApprovalsTVC: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func populateCell(_ model: ApprovalsListModel) {
+        self.mrNameLbl.text = model.sfName
+        self.approcalDateLbl.text = model.activityDate.toDate(format: "yyyy/MM/dd").toString(format: "d MMM yyyy")
+    }
+    
 }

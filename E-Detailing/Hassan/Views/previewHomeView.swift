@@ -928,7 +928,7 @@ class PreviewHomeView : BaseView {
         presentationCollectionVIew.isPagingEnabled = false
         sortSwitchStack.layer.cornerRadius = 3
         sortSwitchStack.layer.borderWidth = 1
-        sortSwitchStack.layer.borderColor = UIColor.appLightTextColor.cgColor
+        sortSwitchStack.layer.borderColor = UIColor.appTextColor.cgColor
         infoLbl.setFont(font: .bold(size: .BODY))
         infoLbl.textColor = .appLightTextColor
         titleLbl.setFont(font: .bold(size: .SUBHEADER))
@@ -942,7 +942,7 @@ class PreviewHomeView : BaseView {
         doctorSelectionVIew.layer.borderWidth = 1
         doctorSelectionVIew.layer.cornerRadius = 5
         viewFinishDetailing.layer.cornerRadius = 5
-        doctorSelectionVIew.layer.borderColor = UIColor.appLightTextColor.cgColor
+        doctorSelectionVIew.layer.borderColor = UIColor.appTextColor.cgColor
         selectDoctorsLbl.setFont(font: .medium(size: .BODY))
         selectDoctorsLbl.textColor = .appTextColor
         toSetPageType(pageType: .exists)

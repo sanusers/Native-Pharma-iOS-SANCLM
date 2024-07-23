@@ -12,7 +12,8 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case approvalTable :
-            return 10
+            guard let approvalList = approvalList else { return 0}
+            return approvalList.count
         default:
             return 3
         }
@@ -58,6 +59,13 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
             cell.accessoryIV.tintColor = .appTextColor
             cell.dateHolderView.layer.cornerRadius = 5
             cell.dateHolderView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+            
+            guard let approvalList = approvalList  else {
+                return UITableViewCell()
+            }
+            let model = approvalList[indexPath.row]
+            cell.populateCell(model)
+            
             
             if selectedBrandsIndex == indexPath.row {
                 cell.contentHolderView.backgroundColor = .appTextColor
@@ -142,7 +150,7 @@ class DCRapprovalView : BaseView {
     @IBOutlet var approveView: UIView!
     
     
-    
+    var approvalList: [ApprovalsListModel]?
     var dcrApprovalVC : DCRapprovalVC!
     var selectedBrandsIndex: Int = 0
     var selectedType: CellType = .Doctor
@@ -152,8 +160,19 @@ class DCRapprovalView : BaseView {
         initTaps()
         setupUI()
         cellregistration()
-        loadApprovalTable()
+        callAPI()
       
+    }
+    
+    func callAPI() {
+       // Shared.instance.showLoaderInWindow()
+        dcrApprovalVC.fetchApprovalList(vm: UserStatisticsVM()) {[weak self] approvalist in
+          //  Shared.instance.removeLoaderInWindow()
+            guard let welf = self, let approvalist = approvalist else {return}
+            welf.approvalList = approvalist
+            welf.loadApprovalTable()
+            
+        }
     }
     
     func setupUI() {

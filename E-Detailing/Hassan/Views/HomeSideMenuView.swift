@@ -305,8 +305,8 @@ class HomeSideMenuView : BaseView{
         menuItemArr.append(nearMe)
         
         
-        let approvalsVC = DCRapprovalVC.initWithStory()
-        let approvals : MenuItems = MenuItems(menuName: "Approvals", menuIcon: UIImage(named: "SideMenuNearMe") ?? UIImage(), VC: approvalsVC)
+        let approvalsVC = ReportsVC.initWithStory(pageType: .approvals)
+        let approvals : MenuItems = MenuItems(menuName: "Approvals", menuIcon: UIImage(named: "approval") ?? UIImage(), VC: approvalsVC)
         menuItemArr.append(approvals)
         
 //        let quiz : MenuItems = MenuItems(menuName: "Quiz", menuIcon: UIImage(named: "SideMenuQuiz") ?? UIImage(), VC: nil)

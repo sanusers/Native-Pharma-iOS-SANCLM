@@ -306,7 +306,7 @@ class DCRdetailViewEditView: BaseView,UITextFieldDelegate {
         submitLbl.textColor = .appWhiteColor
         titleLbl.textColor = .appWhiteColor
         clearVIew.layer.cornerRadius = 5
-        clearVIew.layer.borderColor = UIColor.appLightTextColor.cgColor
+        clearVIew.layer.borderColor = UIColor.appTextColor.cgColor
         clearVIew.layer.borderWidth = 1
         clearVIew.layer.cornerRadius = 5
         

@@ -1885,7 +1885,7 @@ class SpecifiedMenuView: BaseView {
         self.searchTF.text = ""
         self.searchTF.placeholder = "Search"
         searchHolderVIew.layer.borderWidth = 1
-        searchHolderVIew.layer.borderColor = UIColor.appLightTextColor.cgColor
+        searchHolderVIew.layer.borderColor = UIColor.appTextColor.cgColor
         searchHolderVIew.layer.cornerRadius = 5
     }
     

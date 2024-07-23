@@ -34,7 +34,7 @@ class SelectPresentationCVC: UICollectionViewCell {
         // Initialization code
         presentationIV.contentMode = .scaleAspectFill
         contentsHolderView.layer.cornerRadius = 5
-        contentsHolderView.layer.borderColor = UIColor.appLightTextColor.cgColor
+        contentsHolderView.layer.borderColor = UIColor.appTextColor.cgColor
         contentsHolderView.layer.borderWidth = 1
         selectionView.layer.cornerRadius = selectionView.height / 2
         selectionView.backgroundColor = .appWhiteColor

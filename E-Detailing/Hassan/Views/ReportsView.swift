@@ -34,7 +34,13 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
                     welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
                 }
             case .approvals:
-                print("Yet to implement")
+                switch welf.reportInfoArr?[indexPath.row].name {
+                case "DCR Approvals":
+                    let vc = DCRapprovalVC.initWithStory()
+                    welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
+                default:
+                    print("Yet to")
+                }
             case .myResource:
                 
                 if let modal = welf.reportInfoArr?[indexPath.row]  {
@@ -128,6 +134,12 @@ class ReportsView : BaseView {
         let image: String
     }
     
+    struct ApprovalInfo {
+        let name: String
+        let count: String
+    }
+    
+    
     enum cellType {
         
     }
@@ -150,6 +162,7 @@ class ReportsView : BaseView {
     @IBOutlet var resourceHQlbl: UILabel!
     var reporsVC : ReportsVC!
     var reportInfoArr : [ReportInfo]?
+    var approvalInfoArr: [ApprovalInfo]?
     var pagetype: ReportsVC.PageType = .reports
     lazy var contentDict : Array<JSON> = [JSON]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -235,16 +248,26 @@ class ReportsView : BaseView {
             
            
         case .approvals:
-            resouceHQholderVIew.isHidden = true
-            self.reportTitle.text = "Approvals"
-            contentDict = Array<JSON>()
-            
+            Shared.instance.showLoaderInWindow()
+            reporsVC.fetchApprovals(vm: UserStatisticsVM()) {[weak self] approvalsCount in
+                Shared.instance.removeLoaderInWindow()
+                guard let welf = self, let approvalsCount = approvalsCount, !approvalsCount.apprCount.isEmpty else {return}
+                let dcrApprovalCount = approvalsCount.apprCount[0].dcrapprCount ?? 0
+                let leaveApprovalCount = approvalsCount.apprCount[0].leaveapprCount ?? 0
+                
+                welf.resouceHQholderVIew.isHidden = true
+                welf.reportTitle.text = "Approvals"
+                welf.contentDict = [["Leave Approvals" : "\(leaveApprovalCount)"],  ["DCR Approvals" : "\(dcrApprovalCount)"]]
+                welf.reportInfoArr = welf.generateModel(contentDict: welf.contentDict as! [[String: String]])
+                welf.toLoadData()
+            }
+            return
         case .myResource:
             resouceHQholderVIew.isHidden = false
             setHQlbl()
             self.reportTitle.text = "My Resource"
             contentDict = Array<JSON>()
-            self.reportInfoArr = generateModel(contentDict: toSetupResources())
+            reportInfoArr = generateModel(contentDict: toSetupResources())
         }
         toLoadData()
     }

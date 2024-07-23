@@ -187,11 +187,11 @@ class AddCompetitorsView: UIView {
         
         productTFholderVIew.layer.cornerRadius = 5
         productTFholderVIew.layer.borderWidth = 1
-        productTFholderVIew.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        productTFholderVIew.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         
         companyTFholderView.layer.cornerRadius = 5
         companyTFholderView.layer.borderWidth = 1
-        companyTFholderView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        companyTFholderView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         
         titleLbl.setFont(font: .bold(size: .BODY))
         

@@ -2400,7 +2400,7 @@ class AddCallinfoView : BaseView {
         yettoaddSectionView.layer.cornerRadius = 5
         searchView.layer.cornerRadius = 5
        // searchView.layer.borderWidth = 1
-       // searchView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+       // searchView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         saveView.layer.cornerRadius = 5
         saveView.backgroundColor = .appTextColor
         

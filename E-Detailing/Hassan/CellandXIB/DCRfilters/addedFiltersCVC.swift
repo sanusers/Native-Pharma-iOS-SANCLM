@@ -22,7 +22,7 @@ class addedFiltersCVC: UICollectionViewCell {
         // Initialization code
         hilderVIew.layer.borderWidth = 1
         hilderVIew.layer.cornerRadius = 5
-        hilderVIew.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+        hilderVIew.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         
     }
 

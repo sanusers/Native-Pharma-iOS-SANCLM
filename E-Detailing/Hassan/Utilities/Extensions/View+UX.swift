@@ -755,7 +755,7 @@ extension AppDelegate {
            // lblMessage.backgroundColor = .systemBackground
             lblMessage.font = UIFont(name: "Satoshi-Medium", size: 14)
             backgroundHolderView.layer.cornerRadius = backgroundHolderView.height / 2
-            backgroundHolderView.layer.borderColor = UIColor.appLightTextColor.withAlphaComponent(0.2).cgColor
+            backgroundHolderView.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
             backgroundHolderView.layer.borderWidth = 0.5
             backgroundHolderView.layer.backgroundColor = UIColor.appWhiteColor.withAlphaComponent(0.2).cgColor
            // backgroundHolderView.layer.cornerRadius =  backgroundHolderView.height / 6
