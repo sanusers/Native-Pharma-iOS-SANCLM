@@ -5185,7 +5185,35 @@ extension MainVC: OutboxDetailsTVCDelegate {
     
     func didTapoutboxEdit(dcrCall: TodayCallsModel) {
         print("Tapped")
-      
+        
+        var filteredSection: Section?
+        var diduserWindup : Bool = false
+        for section in obj_sections {
+            // Filter items within the section
+            let filteredItems = section.items.filter { $0.custCode == dcrCall.custCode && $0.vstTime == dcrCall.vstTime }
+
+            // Check if there are any matching items
+            if !filteredItems.isEmpty {
+                filteredSection = section
+                break
+            }
+        }
+        
+        
+        
+    guard let filteredSection = filteredSection else {return}
+       for dayStatus in filteredSection.dayStatus{
+            if dayStatus.didUserWindup {
+                diduserWindup = true
+                break
+            }
+        }
+        
+        guard !diduserWindup else {
+            
+            self.showAlertToFilldates(description: "You cannot edit calls for submitted day")
+            return }
+        
         switch dcrCall.custType {
         case 1:
             let listedDocters = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))

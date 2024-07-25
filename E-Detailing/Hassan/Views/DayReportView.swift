@@ -326,7 +326,7 @@ class DayReportView: BaseView {
 
 extension DayReportView: VisitsCountTVCDelegate {
     func typeChanged(index: Int, type: CellType) {
-        
+        Shared.instance.selectedDCRtype = type
         guard self.selectedType != type else {
             return
         }
@@ -602,10 +602,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                return  240
             }
             else if  model?.isCellExtended == true {
-               //25 elevation padding, 60 header height (product)
-                
-                
-               // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA header - 60 , Each RCPA cell - 40, Remarks - 75, show options - 50, 20 - cache)
+
                 
                 var timeinfoHeight = CGFloat()
                  if self.viewDayReportVC.isToReduceLocationHeight {
@@ -615,17 +612,99 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                  }
                 
                 var rcpaSectionHeight : CGFloat = 0
-                if model?.isRCPAExtended ?? false  {
-                    rcpaSectionHeight = CGFloat((model?.rcpaCount ?? 0) * 40)
+                var rcpaHeaderHeight: CGFloat = 0
+                switch Shared.instance.selectedDCRtype {
+                case .Doctor:
+                    if isDoctorRCPAneeded {
+                        rcpaHeaderHeight = 60
+                        if model?.isRCPAExtended ?? false  {
+                            rcpaSectionHeight = CGFloat((model?.rcpaCount ?? 0) * 40)
+                        }
+                    }
+                case .Chemist:
+                    if isChemistRCPAneeded {
+                        rcpaHeaderHeight = 60
+                        if model?.isRCPAExtended ?? false  {
+                            rcpaSectionHeight = CGFloat((model?.rcpaCount ?? 0) * 40)
+                        }
+                    }
+                case .UnlistedDoctor:
+                    if isUnListedDoctorRCPAneeded {
+                        rcpaHeaderHeight = 60
+                        if model?.isRCPAExtended ?? false  {
+                            rcpaSectionHeight = CGFloat((model?.rcpaCount ?? 0) * 40)
+                        }
+                    }
+                default:
+                    rcpaSectionHeight = 0
                 }
+
                 var slidesSectionHeight: CGFloat = 0
-                if model?.isSlidesExtended ?? false  {
-                    slidesSectionHeight = CGFloat((model?.slidesCount ?? 0) * 40)
+                var slideHeaderHeight: CGFloat = 0
+                switch Shared.instance.selectedDCRtype {
+                case .Doctor:
+                    if isDoctorDetailingNeeded {
+                        slideHeaderHeight = 60
+                        if model?.isSlidesExtended ?? false  {
+                            slidesSectionHeight = CGFloat((model?.slidesCount ?? 0) * 40)
+                        }
+                    }
+                case .Chemist:
+                    if isChemistDetailingNeeded{
+                        slideHeaderHeight = 60
+                        if model?.isSlidesExtended ?? false  {
+                            slidesSectionHeight = CGFloat((model?.slidesCount ?? 0) * 40)
+                        }
+                    }
+    
+                case .UnlistedDoctor:
+                    if isUnListedDoctorDetailingNeeded {
+                        slideHeaderHeight = 60
+                        if model?.isSlidesExtended ?? false  {
+                            slidesSectionHeight = CGFloat((model?.slidesCount ?? 0) * 40)
+                        }
+                    }
+                default:
+                    slideHeaderHeight = 0
+                    rcpaSectionHeight = 0
                 }
                 
+                var eventsHeaderHeight: CGFloat = 0
+                switch Shared.instance.selectedDCRtype {
+                case .Doctor:
+                    if isDoctorEventCaptureNeeded {
+                        eventsHeaderHeight = 60
+                   
+                    }
+                case .Chemist:
+                    if isChemistEventCaptureNeeded{
+                        eventsHeaderHeight = 60
+                       
+                    }
+                case .Stockist:
+                    if isStockistEventCaptureNeeded {
+                        eventsHeaderHeight = 60
+                    }
+                case .UnlistedDoctor:
+                    if isUnListedDoctorEventCaptureNeeded {
+                        eventsHeaderHeight = 60
+                 
+                    }
+                default:
+                    eventsHeaderHeight = 0
+                }
+                
+                
+//                if model?.isSlidesExtended ?? false  {
+//                    slidesSectionHeight = CGFloat((model?.slidesCount ?? 0) * 40)
+//                }
+                //25 elevation padding, 60 header height (product)
+                 
+                 
+                // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA header - 60 , Each RCPA cell - 40, Remarks - 75, show options - 50, 20 - cache)
                let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
                 let inputCellHeight = toCalculateInputHeight(index: indexPath.row)
-                return 170 + timeinfoHeight + 40 + productCellHeight + 40 + inputCellHeight + 60 + rcpaSectionHeight + 60 + slidesSectionHeight + 60 + 75 + 50 + 20
+                return 170 + timeinfoHeight + 40 + productCellHeight + 40 + inputCellHeight + rcpaHeaderHeight + rcpaSectionHeight + slideHeaderHeight + slidesSectionHeight + eventsHeaderHeight + 75 + 50 + 20
      
             }  else {
                 return CGFloat()

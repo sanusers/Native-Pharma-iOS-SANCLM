@@ -119,6 +119,12 @@
                 <constraint firstItem="gcw-YQ-dT6" firstAttribute="height" secondItem="LBQ-fg-YRm" secondAttribute="height" id="tcL-dn-D7Z"/>
             </constraints>
             <size key="customSize" width="772" height="263"/>
+            <connections>
+                <outlet property="feedbackDescLbl" destination="UlO-p0-0l5" id="w8o-AB-704"/>
+                <outlet property="feedbackTitle" destination="A8L-rc-NDz" id="VNT-Fl-PaB"/>
+                <outlet property="remarksTitle" destination="5Oc-bE-g2a" id="xiE-AN-itg"/>
+                <outlet property="remarlsDescLbl" destination="1fL-mt-QKX" id="PfJ-u1-AUL"/>
+            </connections>
             <point key="canvasLocation" x="341.98473282442745" y="251.7605633802817"/>
         </collectionViewCell>
     </objects>

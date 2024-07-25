@@ -204,6 +204,12 @@ class HomeSideMenuView : BaseView{
         chemistFencingViewWidthConstraint.constant = 0
         stockistFencingViewWidthConstraint.constant = 0
         unlistedDoctorFencingViewWidthConstraint.constant = 0
+        sequentialView.isHidden = true
+        doctorFencingView.isHidden = true
+        geoCheckView.isHidden = true
+        chemistFencingView.isHidden = true
+        stockistFencingView.isHidden = true
+        unlistedDoctorFencingView.isHidden = true
         
         pageTitle.text = AppDefaults.shared.getAppSetUp().divisionName
         
@@ -213,7 +219,7 @@ class HomeSideMenuView : BaseView{
             unlistedDoctorFencingViewWidthConstraint.constant = 35
             sequentialVXview.backgroundColor = .appDeepBrown
             sequentialView.layer.cornerRadius = 25 / 2
-          
+            sequentialView.isHidden = false
         }
          
         if geoFencingEnabled {
@@ -221,6 +227,7 @@ class HomeSideMenuView : BaseView{
             geoCheckView.layer.cornerRadius = 25 / 2
             geoCheckLbl.textColor = .appWhiteColor
             geocheckViewWidthConstraint.constant = 35
+            geoCheckView.isHidden = false
         }
 
 
@@ -229,6 +236,7 @@ class HomeSideMenuView : BaseView{
             doctorFencingView.layer.cornerRadius = 25 / 2
             doctorFencingLbl.textColor = .appWhiteColor
             doctorFencingViewWidthConstraint.constant = 35
+            doctorFencingView.isHidden = false
         }
         
 
@@ -237,6 +245,7 @@ class HomeSideMenuView : BaseView{
             chemistFencingView.layer.cornerRadius = 25 / 2
             chemistLbl.textColor = .appWhiteColor
             chemistFencingViewWidthConstraint.constant = 35
+            chemistFencingView.isHidden = false
         }
  
         if isStockistFencingNeeded {
@@ -244,14 +253,16 @@ class HomeSideMenuView : BaseView{
             stockistFencingView.layer.cornerRadius = 25 / 2
             stockistLbl.textColor = .appWhiteColor
             stockistFencingViewWidthConstraint.constant = 35
+            stockistFencingView.isHidden = false
         }
 
         
         if isUnliatedDoctorFencingNeeded {
-            unlistedDoctorVXview.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+            unlistedDoctorVXview.backgroundColor = .appLightGrey
             unlistedDoctorFencingView.layer.cornerRadius = 25 / 2
             unlistedDoctorLbl.textColor = .appWhiteColor
             unlistedDoctorFencingViewWidthConstraint.constant = 35
+            unlistedDoctorFencingView.isHidden = false
         }
     }
     

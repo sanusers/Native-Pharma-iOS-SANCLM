@@ -117,7 +117,7 @@ enum CustomFont {
     case bold(size:CGFloat)
     case light(size:CGFloat)
     case medium(size:CGFloat)
- 
+    case regular(size:CGFloat)
     
     var instance:UIFont {
         switch self {
@@ -127,6 +127,8 @@ enum CustomFont {
             return UIFont(name: Fonts.SATOSHI_LIGHT, size: size)!
         case .medium(size: let size):
             return UIFont(name: Fonts.SATOSHI_MEDIUM, size: size)!
+        case .regular(size: let size):
+            return UIFont(name: Fonts.SATOSHI_REGULAR, size: size)!
         }
     }
 
@@ -137,5 +139,7 @@ class Fonts:NSObject{
     static let SATOSHI_BOLD = "Satoshi-Bold"
     static let SATOSHI_LIGHT = "Satoshi-Light"
     static let SATOSHI_MEDIUM = "Satoshi-Medium"
+    static let SATOSHI_REGULAR = "Satoshi-Regular"
+    
 }
 

@@ -31,11 +31,31 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
                 
             case 0:
                 //top - 10 || MR name - 60 ||Date info - 60 || work type info 2 *  90 (Max) || bottom 15
-                return 290 + 15
+                return 10 + 60 + 60 + 90 + 15
             case 1:
                 return 60
             case 2:
-                return 70 * 4
+                guard let approvalDetails = approvalDetails else {return CGFloat()}
+                switch selectedType {
+                    
+                case .All:
+                    return CGFloat(70 * approvalDetails.count)
+                case .Doctor:
+                    return CGFloat(70 * approvalDetails.filter { $0.type == "DOCTOR" }.count)
+                case .Chemist:
+                    return CGFloat(70 * approvalDetails.filter { $0.type == "CHEMIST" }.count)
+                case .Stockist:
+                    return CGFloat(70 * approvalDetails.filter { $0.type == "STOCKIST" }.count)
+                case .UnlistedDoctor:
+                    return CGFloat(70 * approvalDetails.filter { $0.type == "ULDOCTOR" }.count)
+                case .Hospital:
+                    print("YET TO")
+                case .CIP:
+                    print("YET TO")
+                }
+                
+                
+                return CGFloat(70 * approvalDetails.count)
             default:
                 return 0
                 
@@ -79,7 +99,16 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
                 welf.selectedBrandsIndex = indexPath.row
                 welf.approvalTable.reloadData()
               //  welf.approvalCollection.reloadData()
-                welf.loadApprovalDetailTable()
+              //  welf.loadApprovalDetailTable()
+                Shared.instance.showLoaderInWindow()
+                welf.dcrApprovalVC.fetchApprovalDetail(transNumber: model.transSlNo, vm: UserStatisticsVM()) { approvalDetailModel in
+                    Shared.instance.removeLoaderInWindow()
+                    guard let approvalDetailModel = approvalDetailModel else {return}
+                    //dump(approvalDetailModel)
+                    welf.selectedType = .All
+                    welf.approvalDetails = approvalDetailModel
+                    welf.loadApprovalDetailTable()
+                }
             }
             
      return cell
@@ -88,26 +117,50 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 let cell: DCRApprovalsWorkTypeTVC = approvalDetailsTable.dequeueReusableCell(withIdentifier: "DCRApprovalsWorkTypeTVC") as! DCRApprovalsWorkTypeTVC
                 cell.selectionStyle = .none
-                cell.toloadData()
+                guard let approvalDetails = self.approvalDetails, let approvalList = approvalList?[selectedBrandsIndex ?? 0] else {return UITableViewCell()}
+               
+                cell.toPopulatecell(detailsmodel: approvalDetails, listModel: approvalList)
                 return cell
                 
             case 1:
                 let cell: VisitsCountTVC = tableView.dequeueReusableCell(withIdentifier: "VisitsCountTVC", for: indexPath) as! VisitsCountTVC
-                cell.delegate = self
-                cell.toloadData()
+            
+               
            //     cell.wtModel = self.reportsModel
-                cell.topopulateCell(model: ReportsModel())
+                guard  let approvalDetailModel =  approvalDetails else {return UITableViewCell() }
                 cell.selectionStyle = .none
+                cell.delegate = self
+                cell.toPopulateCell(model: approvalDetailModel)
+                cell.toloadData()
                 return cell
             case 2:
                 
                 let cell: DCRAllApprovalsTVC = tableView.dequeueReusableCell(withIdentifier: "DCRAllApprovalsTVC", for: indexPath) as! DCRAllApprovalsTVC
+                
+                guard  let approvalDetailModel =  approvalDetails else {return UITableViewCell() }
+                
+                
+                switch selectedType {
+                    
+                case .All:
+                    cell.populateCell(model: approvalDetailModel)
+                case .Doctor:
+                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "DOCTOR" })
+                case .Chemist:
+                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "CHEMIST" })
+                case .Stockist:
+                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "STOCKIST" })
+                case .UnlistedDoctor:
+                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "ULDOCTOR" })
+                case .Hospital:
+                    print("YET TO")
+                case .CIP:
+                    print("YET TO")
+                }
+                
+
                 cell.rootController = self.dcrApprovalVC
-              //  cell.populateDCRArroval()
-             //   cell.delegate = self
-             //   cell.toloadData()
-           //     cell.wtModel = self.reportsModel
-            //    cell.topopulateCell(model: ReportsModel())
+                cell.selectedapproval = approvalList?[selectedBrandsIndex ?? 0]
                 cell.selectionStyle = .none
                 return cell
                 
@@ -148,12 +201,11 @@ class DCRapprovalView : BaseView {
     @IBOutlet var rejectView: UIView!
     
     @IBOutlet var approveView: UIView!
-    
-    
+    var approvalDetails: [ApprovalDetailsModel]?
     var approvalList: [ApprovalsListModel]?
     var dcrApprovalVC : DCRapprovalVC!
-    var selectedBrandsIndex: Int = 0
-    var selectedType: CellType = .Doctor
+    var selectedBrandsIndex: Int?
+    var selectedType: CellType = .All
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.dcrApprovalVC = baseVC as? DCRapprovalVC
@@ -165,12 +217,13 @@ class DCRapprovalView : BaseView {
     }
     
     func callAPI() {
-       // Shared.instance.showLoaderInWindow()
+        Shared.instance.showLoaderInWindow()
         dcrApprovalVC.fetchApprovalList(vm: UserStatisticsVM()) {[weak self] approvalist in
-          //  Shared.instance.removeLoaderInWindow()
+            Shared.instance.removeLoaderInWindow()
             guard let welf = self, let approvalist = approvalist else {return}
             welf.approvalList = approvalist
             welf.loadApprovalTable()
+            welf.dcrApprovalVC.fetchFirstIndex()
             
         }
     }
@@ -223,19 +276,9 @@ extension DCRapprovalView: VisitsCountTVCDelegate {
         guard self.selectedType != type else {
             return
         }
-        
-        if index != 0 {
-            
-            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-             //   self.viewDayReportVC.toSetParamsAndGetResponse(index)
-            } else {
-                self.toCreateToast("Please connect to internet.")
-            }
-            
-           
-        }
 
         self.selectedType = type
+        self.loadApprovalDetailTable()
     }
     
     

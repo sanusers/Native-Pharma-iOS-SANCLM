@@ -30,6 +30,7 @@ final class ConnectionHandler : NSObject {
         case  getEvents = "getevent_rpt"
         case  getSlides = "getslidedet"
         case approvalList = "getvwdcr"
+        case approvalDetail = "getvwdcrone"
     }
     
     static let shared = ConnectionHandler()
@@ -367,7 +368,7 @@ final class ConnectionHandler : NSObject {
                 }
             
                 
-                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.approvalDetail.rawValue) {
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
                     var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
@@ -381,6 +382,36 @@ final class ConnectionHandler : NSObject {
                     var encodedEventsResponse : [EventResponse]?
                     var encodedSlidesResponse : [SlideDetailsResponse]?
                     var encodedApprovalListResponse : [ApprovalsListModel]?
+                    var encodedApprovalDetailResponse : [ApprovalDetailsModel]?
+                    
+                    if data["tableName"] as! String == TableName.approvalDetail.rawValue {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ApprovalDetailsModel].self) { result in
+                           // decodecObj
+                            switch result {
+                            case .success(let decodecObj):
+                                
+                                encodedApprovalDetailResponse = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedApprovalDetailResponse)
+    
+                                    // Convert Swift object to JSON string
+    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedApprovalDetailResponse) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+           
+                        }
+                    }
+                    
                     
                     if data["tableName"] as! String == TableName.approvalList.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ApprovalsListModel].self) { result in

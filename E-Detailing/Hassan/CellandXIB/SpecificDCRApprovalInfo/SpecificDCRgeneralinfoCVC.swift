@@ -48,22 +48,38 @@ class SpecificDCRgeneralinfoCVC: UICollectionViewCell {
         setupUI()
     }
     
-    func toPopulateCell(model: DetailedReportsModel) {
+    func toPopulateCell(model: ApprovalDetailsModel) {
         // self.userTypeIV.image = UIImage(named: "")
-         self.typeName.text = model.name
+         self.typeName.text = model.transDetailName
          self.visitTimeDesc.text = model.visitTime == "" ? "-" :  model.visitTime
-
-        
-        
          self.modifiedTimeDesc.text = model.modTime == "" ? "-" :  model.modTime
    
         
-         self.clusterDesc.text = model.territory == "" ? "-" : model.territory
+         self.clusterDesc.text = model.sdpName == "" ? "-" : model.sdpName
 
-         self.pobDesc.text = model.pobValue == 0 ? "-" : "\(model.pobValue)"
+         self.pobDesc.text = model.pob == 0 ? "-" : "\(model.pob)"
         
-         self.jointWorkDesc.text = model.wWith == "" ? "-" : model.wWith
-       
+         self.jointWorkDesc.text = model.jointwrk == "" ? "-" : model.jointwrk
+        switch model.type {
+        case "DOCTOR":
+            
+            typeIV.image = UIImage(named: "ListedDoctor")
+            
+        case "CHEMIST":
+            
+            typeIV.image = UIImage(named: "Chemist")
+        case "STOCKIST":
+            
+            typeIV.image = UIImage(named: "Stockist")
+            
+        case "ULDOCTOR":
+            
+            typeIV.image = UIImage(named: "Doctor")
+            
+        default:
+            print("Yet to")
+            
+        }
         
     }
 

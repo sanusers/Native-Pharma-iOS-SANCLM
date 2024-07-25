@@ -23,36 +23,63 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
         case 0:
             return 1
         case 1:
-            return  1
-            //slidesResponseModel.count
+            return slidesResponseModel.count
         case 2:
-            return   1
-            //productStrArr.count
+            return  productStrArr.count
             
         case 3:
-            return 1
-            //inputStrArr.count
+            return inputStrArr.count
             
         case 4:
-            return 1
+            return 0
            
             
         case 5:
             
-            switch self.cellRCPAType {
-            case .showRCPA:
-                return  2
-                //rcpaResponseModel.count
-            case .hideRCPA:
+            switch dcrApprovalinfoVC.approvalDetail?.type {
+                
+            case "DOCTOR":
+                if isDoctorRCPAneeded {
+                    switch self.cellRCPAType {
+                    case .showRCPA:
+                        return  rcpaResponseModel.count
+                    case .hideRCPA:
+                        return 0
+                    }
+                } else {
+                    return 0
+                }
+                
+            case "CHEMIST" :
+                if isChemistRCPAneeded {
+                    switch self.cellRCPAType {
+                    case .showRCPA:
+                        return  rcpaResponseModel.count
+                    case .hideRCPA:
+                        return 0
+                    }
+                } else {
+                    return 0
+                }
+            case "ULDOCTOR" :
+                if isUnListedDoctorRCPAneeded {
+                    switch self.cellRCPAType {
+                    case .showRCPA:
+                        return  rcpaResponseModel.count
+                    case .hideRCPA:
+                        return 0
+                    }
+                } else {
+                    return 0
+                }
+            default:
                 return 0
             }
-
             
         case 6:
             switch self.cellEventsType {
             case .showEvents:
-                return 2
-                //eventsResponseModel.count
+                return eventsResponseModel.count
             case .hideEvents:
                 return 0
             }
@@ -81,7 +108,7 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
             return CGSize(width: collectionView.width, height: 40)
             
         case 4:
-            return CGSize(width: collectionView.width, height: 40)
+            return CGSize(width: collectionView.width, height: 0)
             
         case 5:
             return CGSize(width: collectionView.width, height: 40)
@@ -139,7 +166,23 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                 headerView.backgroundColor = .clear
                 guard let typedHeaderView = headerView as? ProductSectionReusableView else { return headerView
                 }
-
+                switch dcrApprovalinfoVC.approvalDetail?.type {
+                case "DOCTOR":
+                    if isDoctorRCPAneeded {
+                        typedHeaderView.isRCPAneeded = true
+                    }
+                case "CHEMIST" :
+                    if isChemistRCPAneeded {
+                        typedHeaderView.isRCPAneeded = true
+                    }
+                case "ULDOCTOR":
+                    if isUnListedDoctorRCPAneeded {
+                        typedHeaderView.isRCPAneeded = true
+                    }
+                default:
+                    typedHeaderView.isRCPAneeded = false
+                }
+                typedHeaderView.layoutSubviews() 
                 return typedHeaderView
             default:
                 print("No header")
@@ -203,22 +246,19 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                             self.approvalDetailsCollection.reloadData()
                             return
                         }
-                       // self.cellEventsType =  .hideEvents
-                        self.cellRCPAType =  self.cellRCPAType == .showRCPA ?  .hideRCPA :  .showRCPA
-                        self.delegate?.didRCPAtapped(isrcpaTapped: self.cellRCPAType == .showRCPA ? true :  false, index: self.selectedIndex ?? 0, responsecount: 1)
-                        self.approvalDetailsCollection.reloadData()
+   
                         
-//                        self.makeRcpaApiCall()  {response in
-//                            if response.isEmpty {
-//                                self.toCreateToast("No RCPA found!")
-//                                return
-//                            }
-//                            self.cellSlidesType =  .hideSlides
-//                            self.cellRCPAType =  self.cellRCPAType == .showRCPA ?  .hideRCPA :  .showRCPA
-//                            self.delegate?.didRCPAtapped(isrcpaTapped: self.cellRCPAType == .showRCPA ? true :  false, index: self.selectedIndex ?? 0, responsecount: response.count)
-//                            self.extendedInfoCollection.reloadData()
-//                         
-//                        }
+                        self.dcrApprovalinfoVC.makeRcpaApiCall()  {response in
+                            if response.isEmpty {
+                                self.toCreateToast("No RCPA found!")
+                                return
+                            }
+                            // self.cellEventsType =  .hideEvents
+                             self.cellRCPAType =  self.cellRCPAType == .showRCPA ?  .hideRCPA :  .showRCPA
+                             self.delegate?.didRCPAtapped(isrcpaTapped: self.cellRCPAType == .showRCPA ? true :  false, index: self.selectedIndex ?? 0, responsecount: 1)
+                             self.approvalDetailsCollection.reloadData()
+                         
+                        }
                     }
                 case 6:
                     typedHeaderView.sectionImage.image =  self.cellEventsType == .hideEvents ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.up")
@@ -232,23 +272,18 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                             self.approvalDetailsCollection.reloadData()
                             return
                         }
-                        
-                        self.cellEventsType =  .showEvents
-                       // self.cellRCPAType = .hideRCPA
-                        self.delegate?.didEventstapped(isEventstapped: true, index: self.selectedIndex ?? 0, response: [EventResponse()])
-                        self.approvalDetailsCollection.reloadData()
-                        
-//                        self.makeSlidesInfoApiCall()  { response in
-//                            if response.isEmpty {
-//                                self.toCreateToast("No slide info found!")
-//                                return
-//                            }
-//                            self.cellEventsType =  .showEvents
-//                            self.cellRCPAType = .hideRCPA
-//                            self.delegate?.didEventstapped(isEventstapped: true, index: self.selectedIndex ?? 0, response: [EventResponse()])
-//                            self.approvalDetailsCollection.reloadData()
-//                         
-//                        }
+
+                        self.dcrApprovalinfoVC.makeEventsInfoApiCall()  { response in
+                            if response.isEmpty {
+                                self.toCreateToast("No Events info found!")
+                                return
+                            }
+                            self.cellEventsType =  .showEvents
+                           // self.cellRCPAType = .hideRCPA
+                            self.delegate?.didEventstapped(isEventstapped: true, index: self.selectedIndex ?? 0, response: [EventResponse()])
+                            self.approvalDetailsCollection.reloadData()
+                         
+                        }
                     }
                 default:
                     print("No header")
@@ -271,7 +306,78 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         // Return the size of your header
-        if section == 1  || section == 2 || section == 3 || section == 4  || section == 5 || section == 6   {
+        
+        if section == 1 {
+            switch dcrApprovalinfoVC.approvalDetail?.type {
+                
+            case "DOCTOR":
+                if isDoctorDetailingNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case "CHEMIST" :
+                if isChemistDetailingNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                } else {
+                    return CGSize()
+                }
+   
+            case "ULDOCTOR":
+                if isUnListedDoctorDetailingNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            default:
+                return CGSize()
+            }
+         
+        }
+        
+        if section == 5 {
+            switch dcrApprovalinfoVC.approvalDetail?.type {
+                
+            case "DOCTOR":
+                if isDoctorRCPAneeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+                
+            case "CHEMIST" :
+                if isChemistRCPAneeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case "ULDOCTOR" :
+                if isUnListedDoctorRCPAneeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            default:
+                return CGSize()
+            }
+        }
+        if section == 6 {
+            switch dcrApprovalinfoVC.approvalDetail?.type {
+                
+            case "DOCTOR":
+                if isDoctorEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case "CHEMIST" :
+                if isChemistEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case "STOCKIST":
+                if isStockistEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case "ULDOCTOR":
+                if isUnListedDoctorEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            default:
+                return CGSize()
+            }
+         
+        }
+        
+        
+        if section == 2  || section == 3    {
             return CGSize(width: collectionView.frame.width, height: 60)
         } else {
             return CGSize()
@@ -284,27 +390,41 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
         
         switch indexPath.section {
         case 0:
+            guard let model = dcrApprovalinfoVC.approvalDetail else {return UICollectionViewCell()}
             let cell: SpecificDCRgeneralinfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SpecificDCRgeneralinfoCVC", for: indexPath) as! SpecificDCRgeneralinfoCVC
-            //cell.typeIV.image = self.typeImage ?? UIImage()
-            //cell.toPopulateCell(model: self.detailedReportModel ?? DetailedReportsModel())
+            cell.toPopulateCell(model: model)
             return cell
             //Yet to remove
         case 1:
             let cell: SpecificDCRslideinfoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SpecificDCRslideinfoCVC", for: indexPath) as! SpecificDCRslideinfoCVC
-          // let model = self.slidesResponseModel[indexPath.row]
-          //  cell.setupUI(currentRating: model.rating, selectedIndex: 0)
-          //  cell.populateCell(model: model)
-//            cell.infoView.addTap {
-//              //  self.delegate?.didDurationInfoTapped(view: cell.infoView, startTime: model.startTime, endTime: model.endTime)
-//            }
+
             return cell
         case 2:
             
 
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-               // let modelStr = self.productStrArr[indexPath.row]
+                let modelStr = self.productStrArr[indexPath.row]
 
-              //  cell.topopulateCell(modelStr: modelStr)
+            
+            switch dcrApprovalinfoVC.approvalDetail?.type {
+                
+            case "DOCTOR":
+                if isDoctorRCPAneeded {
+                    cell.isRCPAneeded = true
+                }
+            case "CHEMIST" :
+                if isChemistRCPAneeded {
+                    cell.isRCPAneeded = true
+                }
+    
+            case "ULDOCTOR":
+                if isUnListedDoctorRCPAneeded {
+                    cell.isRCPAneeded = true
+                }
+            default:
+                cell.isRCPAneeded = false
+            }
+                cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
             
@@ -312,17 +432,17 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
             
 
                 let cell: InputDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "InputDescriptionCVC", for: indexPath) as! InputDescriptionCVC
-              //  let modelStr = self.inputStrArr[indexPath.row]
+                let modelStr = self.inputStrArr[indexPath.row]
 
-             //   cell.topopulateCell(modelStr: modelStr)
+                cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
        
         case 4:
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
-             //   let modelStr = self.productStrArr[indexPath.row]
-
-             //   cell.topopulateCell(modelStr: modelStr)
+//                let modelStr = self.productStrArr[indexPath.row]
+//
+//                cell.topopulateCell(modelStr: modelStr)
                 
                 return cell
             
@@ -335,10 +455,10 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                     return cell
                 default:
                     let cell: RCPAdetailsDesctiptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "RCPAdetailsDesctiptionCVC", for: indexPath) as! RCPAdetailsDesctiptionCVC
-                  //  let model = rcpaResponseModel[indexPath.row]
-                  //  cell.populateCell(model: model)
+                    let model = rcpaResponseModel[indexPath.row]
+                    cell.populateCell(model: model)
                     cell.infoView.addTap {
-                   //     self.delegate?.didRCPAinfoTapped(view: cell.infoView, model: model)
+                        self.didRCPAinfoTapped(view: cell.infoView, model: model)
                     }
                     return cell
                 }
@@ -366,8 +486,10 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                 return UICollectionViewCell()
             }
         case 7:
+            guard let model = self.dcrApprovalinfoVC.approvalDetail else {return UICollectionViewCell()}
             let cell: SpecificDCRremarksCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "SpecificDCRremarksCVC", for: indexPath) as! SpecificDCRremarksCVC
-           // cell.remarksDesc.text = detailedReportModel?.remarks
+            cell.feedbackDescLbl.text = model.callFeedback
+            cell.remarlsDescLbl.text = model.remarks
             return cell
             
         default:
@@ -406,9 +528,6 @@ class DCRapprovalinfoView : BaseView {
     //@IBOutlet var approveView: UIView!
     var typeImage : UIImage?
     weak var delegate: ViewAllInfoTVCDelegate?
-    var reportModel: ReportsModel?
-    var reportsVM: ReportsVM?
-    var detailedReportModel: DetailedReportsModel?
     var selectedIndex : Int? = nil
     var cellEventsType: cellEventsType = .hideEvents
     var cellSlidesType: CellSlidesType = .hideSlides
@@ -422,16 +541,21 @@ class DCRapprovalinfoView : BaseView {
     var productStrArr : [SampleProduct] = []
     
     var inputStrArr: [SampleInput] = []
-    var selectedBrandsIndex: Int = 0
+    var selectedBrandsIndex: Int?
     var selectedType: CellType = .Doctor
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
         self.dcrApprovalinfoVC = baseVC as? DCRapprovalinfoVC
         initTaps()
         setupUI()
+        toSetDataSourceForInputs()
+        toSetDataSourceForProducts()
         cellregistration()
         loadApprovalTable()
-      
+        loadApprovalDetailCollection()
+        dcrApprovalinfoVC.makeSlidesInfoApiCall { model in
+            self.loadApprovalDetailCollection()
+        }
     }
     
     func setupUI() {
@@ -443,6 +567,7 @@ class DCRapprovalinfoView : BaseView {
         dismissVIew.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
         dismissVIew.layer.borderWidth = 1
         dismissVIew.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
+        dcrApprovalinfoVC.reportsVM = ReportsVM()
     }
     
     func loadApprovalTable() {
@@ -455,6 +580,16 @@ class DCRapprovalinfoView : BaseView {
         approvalDetailsCollection.delegate = self
         approvalDetailsCollection.dataSource = self
         approvalDetailsCollection.reloadData()
+    }
+    
+    func didRCPAinfoTapped(view: UIView, model: RCPAresonseModel) {
+        print("Tapped -->")
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 3, height: self.height / 7), on: view,  pagetype: .RCPA)
+
+        vc.color = .appTextColor
+        vc.rcpaInfo = model
+ 
+        self.dcrApprovalinfoVC?.navigationController?.present(vc, animated: true)
     }
     
     func cellregistration() {
@@ -522,12 +657,167 @@ class DCRapprovalinfoView : BaseView {
         }
     }
     
+    func toSetDataSourceForInputs()   {
+        guard let approvadetail = self.dcrApprovalinfoVC.approvalDetail else {return}
+        inputStrArr.removeAll()
+        //detailedReportModel?.gifts
+        if approvadetail.gifts != "" {
+            var inputArr = [String]()
+            
+            inputArr = approvadetail.gifts.components(separatedBy: ",")
+            inputArr.removeLast()
+            if inputArr.count == 0 {
+                inputArr.append(approvadetail.gifts)
+            }
+          
+            
+            let filteredComponents = inputArr.map { anElement -> String in
+                var modifiedElement = anElement
+                if modifiedElement.first == " " {
+                    modifiedElement.removeFirst()
+                }
+                return modifiedElement
+            }
+            filteredComponents.forEach { prod in
+                var prodString : [String] = []
+                prodString.append(contentsOf: prod.components(separatedBy: "("))
+                prodString = prodString.map({ aprod in
+                    aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+                })
+                var name: String = ""
+            
+                var noOfsamples: String = ""
+
+                prodString.enumerated().forEach {prodindex, prod in
+              
+                   // let sampleProduct: SampleProduct
+                    switch prodindex {
+                    case 0 :
+                        name = prod
+                    case 1:
+                        noOfsamples = prod
+                    default:
+                        print("default")
+                    }
+                }
+                
+         
+                
+                
+                let aInput = SampleInput(prodName: name, noOfSamples: noOfsamples)
+
+                self.inputStrArr.append(aInput)
+            }
+
+        } else {
+            inputStrArr.append(SampleInput(prodName: "No inputs", noOfSamples: ""))
+        }
+            
+            
+    }
+    
+    func toSetDataSourceForProducts() {
+        guard let approvadetail = self.dcrApprovalinfoVC.approvalDetail else {return}
+        productStrArr.removeAll()
+     //   productStrArr.append(SampleProduct(prodName: "", isPromoted: false, noOfSamples: "", rxQTY: "", rcpa: "", isDemoProductCell: true))
+        
+       if approvadetail.products != "" {
+           var prodArr =  approvadetail.products.components(separatedBy: ",")
+     
+           prodArr.removeLast()
+      
+           
+           let filteredComponents = prodArr.map { anElement -> String in
+               var modifiedElement = anElement
+               if modifiedElement.first == " " {
+                   modifiedElement.removeFirst()
+               }
+               return modifiedElement
+           }
+           
+   
+           filteredComponents.forEach { prod in
+               var prodString: [String] = []
+               prodString.append(contentsOf: prod.components(separatedBy: "("))
+               prodString = prodString.map({ aprod in
+                   aprod.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+               })
+
+               var name: String = ""
+               var isPromoted: Bool = false
+               var noOfsamples: String = ""
+               var rxQty: String = ""
+               var rcpa: String = ""
+
+               prodString.enumerated().forEach { prodindex, prod in
+                   switch prodindex {
+                   case 0:
+                       name = prod
+                   case 1:
+                       noOfsamples = prod
+                   case 2:
+                       rxQty = prod
+                   case 3:
+                       if let index = prod.firstIndex(of: "^") {
+                           let startIndex = prod.index(after: index)
+                           let numberString = String(prod[startIndex...])
+                           rcpa = numberString
+                           print(numberString) // This will print "5"
+                       } else {
+                           print("'^' not found in the expression.")
+                           rcpa = "-"
+                       }
+                   default:
+                       print("default")
+                   }
+               }
+
+               let promotdProduct: String? = approvadetail.promotedProduct
+               guard let promotdProduct = promotdProduct, promotdProduct != "" else {
+                   let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false, remarks: approvadetail.remarks)
+
+                   productStrArr.append(aProduct)
+
+                   return
+               }
+
+               // Split the promotedProduct string by the "$" delimiter
+               let components = promotdProduct.components(separatedBy: "$")
+
+               // Process each component to remove "#" character
+               let namesWithoutHash = components.map { $0.replacingOccurrences(of: "#", with: "") }
+
+               // Extract words after the "$" sign and flatten the resulting array
+               let words = namesWithoutHash.flatMap { $0.components(separatedBy: " ") }
+
+               // Check if any of the extracted words matches the name
+               if namesWithoutHash[1] == name.trimmingCharacters(in: .whitespaces) {
+                   print("The 'promotedProduct' contains '\(name)'")
+                   _ = DBManager.shared.getProduct().filter { $0.code == words[0] }.first
+                   isPromoted = true
+               } else {
+                   print("The 'promotedProduct' does not contain '\(name)'")
+                   isPromoted = false
+               }
+
+               let aProduct = SampleProduct(prodName: name, isPromoted: isPromoted, noOfSamples: noOfsamples, rxQTY: rxQty, rcpa: rcpa, isDemoProductCell: false, remarks: approvadetail.remarks)
+
+               productStrArr.append(aProduct)
+           }
+       } else {
+           productStrArr.append(SampleProduct(prodName: "-", isPromoted: nil, noOfSamples: "-", rxQTY: "-", rcpa: "-", isDemoProductCell: true, remarks: "-"))
+       }
+
+        dump(productStrArr)
+         
+    }
+    
 }
 
 extension DCRapprovalinfoView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
-            return 10
+        guard let approvals = dcrApprovalinfoVC.allApprovals else {return 0}
+        return approvals.count
 
 
     }
@@ -541,7 +831,7 @@ extension DCRapprovalinfoView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        guard let approvals = dcrApprovalinfoVC.allApprovals else {return UITableViewCell()}
             let cell: DCRApprovalsTVC = approvalTable.dequeueReusableCell(withIdentifier: "DCRApprovalsTVC", for: indexPath) as! DCRApprovalsTVC
             cell.selectionStyle = .none
             cell.approcalDateLbl.textColor = .appTextColor
@@ -551,7 +841,8 @@ extension DCRapprovalinfoView: UITableViewDelegate, UITableViewDataSource {
             cell.accessoryIV.image = UIImage(named: "chevlon.right")
             cell.accessoryIV.tintColor = .appTextColor
             cell.dateHolderView.isHidden = true
-            
+            let model = approvals[indexPath.row]
+            cell.populateCell(model)
             if selectedBrandsIndex == indexPath.row {
                 cell.contentHolderView.backgroundColor = .appTextColor
                 cell.mrNameLbl.textColor = .appWhiteColor
@@ -562,7 +853,9 @@ extension DCRapprovalinfoView: UITableViewDelegate, UITableViewDataSource {
                 guard let welf = self else {return}
                 welf.selectedBrandsIndex = indexPath.row
                 welf.approvalTable.reloadData()
-              //  welf.approvalCollection.reloadData()
+                welf.dcrApprovalinfoVC.approvalDetail = welf.dcrApprovalinfoVC.allApprovals?[indexPath.row]
+                welf.toSetDataSourceForInputs()
+                welf.toSetDataSourceForProducts()
                 welf.loadApprovalDetailCollection()
             }
             

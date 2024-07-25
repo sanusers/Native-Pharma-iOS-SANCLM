@@ -17,8 +17,7 @@ extension DCRApprovalsWorkTypeTVC: UICollectionViewDelegate, UICollectionViewDat
 //        } else {
 //            return 1
 //        }
-        
-        return 2
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -35,7 +34,8 @@ extension DCRApprovalsWorkTypeTVC: UICollectionViewDelegate, UICollectionViewDat
 //            cell.isLastElement = true
 //        }
 //        cell.populateCell(model: self.wtModel ?? ReportsModel())
-
+        guard let model = self.listModel else {return UICollectionViewCell()}
+        cell.populateCell(model: model)
         
         return cell
     }
@@ -57,13 +57,23 @@ class DCRApprovalsWorkTypeTVC: UITableViewCell {
     @IBOutlet var submittedDateLbl: UILabel!
     @IBOutlet var activityDateLbl: UILabel!
     
-    var wtModel:  ReportsModel?
+    var detailsmodel:  [ApprovalDetailsModel]?
+    var listModel: ApprovalsListModel?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         setupUI()
         cellRegistration()
         
+    }
+    
+    func toPopulatecell(detailsmodel: [ApprovalDetailsModel], listModel: ApprovalsListModel) {
+        mrNameLbl.text = listModel.sfName
+        submittedDateLbl.text =   listModel.submissionDate.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
+        activityDateLbl.text =  listModel.activityDate.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
+        self.detailsmodel = detailsmodel
+        self.listModel = listModel
+        self.toloadData()
     }
     
     func setupUI() {

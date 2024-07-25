@@ -37,15 +37,38 @@ class DCRApprovalsInfoTVC: UITableViewCell {
         imgProfile.layer.cornerRadius =  imgProfile.height / 2
     }
     
-    func populateDCRArroval() {
+    func populateDCRArroval(model: ApprovalDetailsModel) {
         
  
         
         nameLbl.setFont(font: .bold(size: .BODY))
         timeLbl.setFont(font: .medium(size: .SMALL))
         
-        nameLbl.text =  "Ram kumar"
-        timeLbl.text = "Nandhanam"
+        nameLbl.text =  model.transDetailName
+        timeLbl.text = model.sdpName
+        
+        switch model.type {
+        case "DOCTOR":
+            
+            imgProfile.image = UIImage(named: "ListedDoctor")
+            
+        case "CHEMIST":
+            
+            imgProfile.image = UIImage(named: "Chemist")
+        case "STOCKIST":
+            
+            imgProfile.image = UIImage(named: "Stockist")
+            
+        case "ULDOCTOR":
+            
+            imgProfile.image = UIImage(named: "Doctor")
+            
+        default:
+            print("Yet to")
+            
+        }
+        
+     
         
     }
     

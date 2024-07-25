@@ -93,7 +93,7 @@ class VisitsCountCVC: UICollectionViewCell {
     func toPopulatecell() {
         holderView.layer.cornerRadius = 5
         contsView.layer.cornerRadius = contsView.height / 2
-        countsLbl.setFont(font: .medium(size: .BODY))
+        countsLbl.setFont(font: .regular(size: .SMALL))
         countsLbl.textColor = .appWhiteColor
         typesLbl.setFont(font: .medium(size: .BODY))
         holderView.layer.cornerRadius = 4

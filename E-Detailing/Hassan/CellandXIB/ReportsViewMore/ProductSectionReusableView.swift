@@ -11,6 +11,7 @@ import UIKit
 
 class ProductSectionReusableView: UICollectionReusableView {
 
+    var isRCPAneeded: Bool = false
     let sectionTitle: UILabel = {
         let label = UILabel()
         label.textColor = .appLightTextColor
@@ -87,7 +88,7 @@ class ProductSectionReusableView: UICollectionReusableView {
     
 
     override func layoutSubviews()  {
-        let labels: [UILabel] = [productLbl, promoterLbl, samplesLbl, rxQTYlbl, rcpaLbl]
+        var labels: [UILabel] = []
         
         // Create a stack view
         let stackView = UIStackView()
@@ -96,18 +97,31 @@ class ProductSectionReusableView: UICollectionReusableView {
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
         stackView.spacing = 0
-       
-//
-        
-        // Define the width for the first label (1/3 of the stack view's width)
-        let firstLabelWidth = stackView.frame.width / 4
-        
-        // Calculate the remaining width for the other 4 labels
-        let remainingWidth = stackView.frame.width - firstLabelWidth
-        
-        // Distribute the remaining width equally among the other 4 labels
-        let otherLabelsWidth = remainingWidth / 4
-        
+        stackView.frame = self.bounds
+        var firstLabelWidth: Double = 0
+        var  remainingWidth: Double = 0
+        var  otherLabelsWidth: Double = 0
+                // Define the width for the first label (1/3 of the stack view's width)
+                
+                
+                // Calculate the remaining width for the other 4 labels
+     
+                
+                // Distribute the remaining width equally among the other 4 labels
+             
+        if isRCPAneeded {
+            labels = [productLbl, promoterLbl, samplesLbl, rxQTYlbl, rcpaLbl]
+           firstLabelWidth = stackView.frame.width / 4
+           remainingWidth =  stackView.frame.width - firstLabelWidth
+           otherLabelsWidth = remainingWidth / 4
+        } else {
+            labels = [productLbl, promoterLbl, samplesLbl, rxQTYlbl]
+           firstLabelWidth = stackView.frame.width / 3
+           remainingWidth =  stackView.frame.width - firstLabelWidth
+           otherLabelsWidth = remainingWidth / 3
+           rcpaLbl.removeFromSuperview()
+        }
+
         labels.enumerated().forEach {index, label in
               // Set the frame for the label
             switch label {

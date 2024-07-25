@@ -317,6 +317,10 @@
 		38E189262BB16DF60093C446 /* JfwView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E189252BB16DF60093C446 /* JfwView.swift */; };
 		38E220722B032DC900FBF6B0 /* SessionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E220712B032DC900FBF6B0 /* SessionDetails.swift */; };
 		38E2DE3B2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2DE3A2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift */; };
+		38E37F0C2C5108E2002EB294 /* LeaveApprovalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E37F0B2C5108E2002EB294 /* LeaveApprovalVC.swift */; };
+		38E37F0E2C510932002EB294 /* LeaveApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E37F0D2C510932002EB294 /* LeaveApprovalView.swift */; };
+		38E37F122C511295002EB294 /* LeaveApprovalTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E37F102C511295002EB294 /* LeaveApprovalTVC.swift */; };
+		38E37F132C511295002EB294 /* LeaveApprovalTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E37F112C511295002EB294 /* LeaveApprovalTVC.xib */; };
 		38E3C3572AF9F93F00623C33 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */; };
 		38E3C3592AF9F98C00623C33 /* ConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C3582AF9F98C00623C33 /* ConnectionHandler.swift */; };
 		38E3C35C2AF9F9CF00623C33 /* APIresponseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3C35B2AF9F9CF00623C33 /* APIresponseProtocol.swift */; };
@@ -745,6 +749,10 @@
 		38E189252BB16DF60093C446 /* JfwView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JfwView.swift; sourceTree = "<group>"; };
 		38E220712B032DC900FBF6B0 /* SessionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetails.swift; sourceTree = "<group>"; };
 		38E2DE3A2ABEFFDB0005C91A /* DCRSelectionTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCRSelectionTitleCell.swift; sourceTree = "<group>"; };
+		38E37F0B2C5108E2002EB294 /* LeaveApprovalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApprovalVC.swift; sourceTree = "<group>"; };
+		38E37F0D2C510932002EB294 /* LeaveApprovalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApprovalView.swift; sourceTree = "<group>"; };
+		38E37F102C511295002EB294 /* LeaveApprovalTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveApprovalTVC.swift; sourceTree = "<group>"; };
+		38E37F112C511295002EB294 /* LeaveApprovalTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeaveApprovalTVC.xib; sourceTree = "<group>"; };
 		38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		38E3C3582AF9F98C00623C33 /* ConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHandler.swift; sourceTree = "<group>"; };
 		38E3C35B2AF9F9CF00623C33 /* APIresponseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIresponseProtocol.swift; sourceTree = "<group>"; };
@@ -1137,6 +1145,7 @@
 		3865F8CA2AFCCE3D009AB984 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				38E37F092C510829002EB294 /* Approvals */,
 				B287E63629F29F6C0097974D /* MVC-Controllers */,
 				38FAA1742B7F265D00714AA2 /* MasterSync+Ex */,
 				384A58E82BF5CC60009628F5 /* MainVc */,
@@ -1155,8 +1164,6 @@
 				38EF4C682B74D78900F78F2E /* SpecifiedTypeMenuVC.swift */,
 				380566252B983AFD00BB9117 /* DCRdetailViewEditVC.swift */,
 				38F933202BE4D61200D5A195 /* SplashVC.swift */,
-				388ABCFD2C4E306100965C12 /* DCRapprovalVC.swift */,
-				3809E0662C4E7D13002B345A /* DCRapprovalinfoVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1164,6 +1171,7 @@
 		3865F8CD2AFCCE57009AB984 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				38E37F0A2C510844002EB294 /* Approvals */,
 				387BDAFE2BAB1D9D002B5E7D /* Addcalls */,
 				3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */,
 				38EA3D112AFDE66E00DA7018 /* MenuVIew.swift */,
@@ -1181,8 +1189,6 @@
 				38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */,
 				380566272B983B7C00BB9117 /* DCRdetailViewEditView.swift */,
 				38F9331E2BE4D5F800D5A195 /* SplashVIew.swift */,
-				388ABCFF2C4E30A500965C12 /* DCRapprovalView.swift */,
-				3809E0682C4E7D40002B345A /* DCRapprovalinfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1190,6 +1196,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				38E37F0F2C510AEF002EB294 /* LeaveAppoval */,
 				3809E06A2C4E8CA7002B345A /* SpecificDCRApprovalInfo */,
 				388ABD012C4E357300965C12 /* DCRapprovals */,
 				385BD27D2C2C128100036026 /* AddCompetitors */,
@@ -1572,6 +1579,35 @@
 				38D738222B120A6F00162548 /* TableSetupModel.swift */,
 			);
 			path = TourPlan;
+			sourceTree = "<group>";
+		};
+		38E37F092C510829002EB294 /* Approvals */ = {
+			isa = PBXGroup;
+			children = (
+				388ABCFD2C4E306100965C12 /* DCRapprovalVC.swift */,
+				3809E0662C4E7D13002B345A /* DCRapprovalinfoVC.swift */,
+				38E37F0B2C5108E2002EB294 /* LeaveApprovalVC.swift */,
+			);
+			path = Approvals;
+			sourceTree = "<group>";
+		};
+		38E37F0A2C510844002EB294 /* Approvals */ = {
+			isa = PBXGroup;
+			children = (
+				388ABCFF2C4E30A500965C12 /* DCRapprovalView.swift */,
+				3809E0682C4E7D40002B345A /* DCRapprovalinfoView.swift */,
+				38E37F0D2C510932002EB294 /* LeaveApprovalView.swift */,
+			);
+			path = Approvals;
+			sourceTree = "<group>";
+		};
+		38E37F0F2C510AEF002EB294 /* LeaveAppoval */ = {
+			isa = PBXGroup;
+			children = (
+				38E37F102C511295002EB294 /* LeaveApprovalTVC.swift */,
+				38E37F112C511295002EB294 /* LeaveApprovalTVC.xib */,
+			);
+			path = LeaveAppoval;
 			sourceTree = "<group>";
 		};
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
@@ -2054,6 +2090,7 @@
 				38C9AD552AAB2330002E57C2 /* RcpaSelectedCompetitorView.xib in Resources */,
 				387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */,
 				380906CD2C4F829F00706554 /* SpecificDCRremarksCVC.xib in Resources */,
+				38E37F132C511295002EB294 /* LeaveApprovalTVC.xib in Resources */,
 				38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2300,6 +2337,7 @@
 				381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */,
 				38B18B722BD93AD7001FC958 /* ProductSectionTitleCVC.swift in Sources */,
 				38C9991D2A66A96E005FB922 /* CustomCalenderView.swift in Sources */,
+				38E37F122C511295002EB294 /* LeaveApprovalTVC.swift in Sources */,
 				38EF48942B6A40F3004B6600 /* MasterSyncVC + SlideEx.swift in Sources */,
 				38FA7EEB2BAD4B3600BB2593 /* AddAdditionalproductsHeader.swift in Sources */,
 				38107C5E2B36F97E00ACEDF3 /* ReportsCVC.swift in Sources */,
@@ -2311,6 +2349,7 @@
 				385BD2812C2C151E00036026 /* AddCompetitorsView.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,
 				386BEA0D2B7381CF0083D61F /* PreviewTypeCVC.swift in Sources */,
+				38E37F0C2C5108E2002EB294 /* LeaveApprovalVC.swift in Sources */,
 				38E42B222B67D265001E0F07 /* CoreDataManager.swift in Sources */,
 				38F289B22B0C8FC200045D4F /* NotificationEnum.swift in Sources */,
 				38CBA4D02A9F59B3001992C4 /* DcrTagTitleCell.swift in Sources */,
@@ -2385,6 +2424,7 @@
 				38D95FF82BEB8EA300348FB8 /* MainVC + EditCallEX.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
+				38E37F0E2C510932002EB294 /* LeaveApprovalView.swift in Sources */,
 				388ABD042C4E35B700965C12 /* DCRApprovalsTVC.swift in Sources */,
 				38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */,
 				380906C42C4F745000706554 /* SpecificDCRslideinfoCVC.swift in Sources */,

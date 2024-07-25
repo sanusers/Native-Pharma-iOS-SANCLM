@@ -110,6 +110,7 @@ class ViewDayReportVC: BaseViewController {
             switch result {
             case .success(let response):
                 dump(response)
+                
                 self.dayReportView.detailedReportsModelArr = response
                 self.dayReportView.initialSerups()
                // self.reportsView.setupUI()

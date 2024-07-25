@@ -14,19 +14,21 @@ class ProductsDescriptionCVC: UICollectionViewCell {
     @IBOutlet var seperatorView: UIView!
     @IBOutlet var holderVoew: UIStackView!
     
+    @IBOutlet var rcpaHolderView: UIView!
     @IBOutlet var rcpaLbl: UILabel!
     @IBOutlet var rxQTYlbl: UILabel!
     @IBOutlet var samplesLbl: UILabel!
     @IBOutlet var promoterLbl: UILabel!
     @IBOutlet var productLbl: UILabel!
     var productsArr : [SampleProduct] = []
-    
+    var isRCPAneeded: Bool = false
     func topopulateCell(modelStr: SampleProduct){
         //SECREMET 1 MG ( 0 ), )
 //        let productDescArr = modelStr.components(separatedBy: " ")
 //        self.productLbl.text = productDescArr[0]
 //        self.promoterLbl.text = "Yes"
 //        samplesLbl.text =
+        rcpaHolderView.isHidden = false
         
         self.productLbl.text = modelStr.prodName == "-" ? "No products" :  modelStr.prodName
 
@@ -44,7 +46,14 @@ class ProductsDescriptionCVC: UICollectionViewCell {
         
         self.samplesLbl.text = modelStr.noOfSamples == "" ? "-" :  String(modelStr.noOfSamples.dropLast())
         self.rxQTYlbl.text = modelStr.rxQTY == "" ? "-" :   String(modelStr.rxQTY.dropLast())
-        self.rcpaLbl.text = modelStr.rcpa == "" ? "-" :  String(modelStr.rcpa.dropLast()) 
+        
+        if isRCPAneeded {
+            self.rcpaLbl.text = modelStr.rcpa == "" ? "-" :  String(modelStr.rcpa.dropLast())
+            rcpaHolderView.isHidden = false
+        } else {
+            rcpaHolderView.isHidden = true
+        }
+
     }
     
     override func awakeFromNib() {

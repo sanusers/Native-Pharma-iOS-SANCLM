@@ -23,7 +23,7 @@ class Shared {
     var selectedProductCode: String = ""
     var selectedProductName : String = ""
     var selectedDate : Date = Date()
-    
+    var selectedDCRtype: CellType = .Doctor
     func toReset() {
         
     selectedPhoneCode = ""

@@ -125,7 +125,26 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 headerView.backgroundColor = .clear
                 guard let typedHeaderView = headerView as? ProductSectionReusableView else { return headerView
                 }
-
+        
+                switch reportModel?.typ {
+                    
+                case 0:
+                    if isDoctorRCPAneeded {
+                        typedHeaderView.isRCPAneeded = true
+                    }
+                case 1 :
+                    if isChemistRCPAneeded {
+                        typedHeaderView.isRCPAneeded = true
+                    }
+          
+                case 3:
+                    if isUnListedDoctorRCPAneeded {
+                        typedHeaderView.isRCPAneeded = true
+                    }
+                default:
+                    typedHeaderView.isRCPAneeded = false
+                }
+                typedHeaderView.layoutSubviews()
                 return typedHeaderView
             default:
                 print("No header")
@@ -248,7 +267,70 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         // Return the size of your header
-        if section == 2 || section == 3 || section == 4  || section == 5 || section == 6   {
+ 
+        if  section == 4  {
+            switch Shared.instance.selectedDCRtype {
+            case .Doctor:
+                if isDoctorRCPAneeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case .Chemist:
+                if isChemistRCPAneeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case .UnlistedDoctor:
+                if isUnListedDoctorRCPAneeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            default:
+                return CGSize()
+            }
+        }
+        if  section == 5  {
+            switch Shared.instance.selectedDCRtype {
+            case .Doctor:
+                if isDoctorDetailingNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case .Chemist:
+                if isChemistDetailingNeeded{
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+
+            case .UnlistedDoctor:
+                if isUnListedDoctorDetailingNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            default:
+                return CGSize()
+            }
+        }
+        if  section == 6  {
+            switch Shared.instance.selectedDCRtype{
+            case .Doctor:
+                if isDoctorEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case .Chemist:
+                if isChemistEventCaptureNeeded{
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                   
+                }
+            case .Stockist:
+                if isStockistEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+                }
+            case .UnlistedDoctor:
+                if isUnListedDoctorEventCaptureNeeded {
+                    return CGSize(width: collectionView.frame.width, height: 60)
+             
+                }
+            default:
+                return CGSize()
+            }
+        }
+        
+        if section == 2 || section == 3   {
             return CGSize(width: collectionView.frame.width, height: 60)
         } else {
             return CGSize()
@@ -276,6 +358,28 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                 let modelStr = self.productStrArr[indexPath.row]
 
+            switch reportModel?.typ {
+                
+            case 0:
+                if isDoctorEventCaptureNeeded {
+                    cell.isRCPAneeded = true
+                }
+            case 1 :
+                if isChemistEventCaptureNeeded {
+                    cell.isRCPAneeded = true
+                }
+            case 2:
+                if isStockistEventCaptureNeeded {
+                    cell.isRCPAneeded = true
+                }
+            case 3:
+                if isUnListedDoctorEventCaptureNeeded {
+                    cell.isRCPAneeded = true
+                }
+            default:
+                cell.isRCPAneeded = false
+            }
+            
                 cell.topopulateCell(modelStr: modelStr)
                 
                 return cell

@@ -228,6 +228,17 @@ class UserStatisticsVM {
         })
     }
     
+    func getArrovalDetail(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[ApprovalDetailsModel],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [ApprovalDetailsModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
 }
 
 

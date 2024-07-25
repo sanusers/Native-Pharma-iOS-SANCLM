@@ -39,6 +39,9 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
                     let vc = DCRapprovalVC.initWithStory()
                     welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
                 default:
+                    
+                    let vc = LeaveApprovalVC.initWithStory()
+                    welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
                     print("Yet to")
                 }
             case .myResource:
@@ -338,6 +341,7 @@ class ReportsView : BaseView {
     
     func toSetupResources() -> [[String: String]] {
         let appsetup = AppDefaults.shared.getAppSetUp()
+        
 
         
    

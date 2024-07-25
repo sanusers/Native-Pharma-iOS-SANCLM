@@ -31,7 +31,12 @@ class DCRApprovalsTVC: UITableViewCell {
     
     func populateCell(_ model: ApprovalsListModel) {
         self.mrNameLbl.text = model.sfName
-        self.approcalDateLbl.text = model.activityDate.toDate(format: "yyyy/MM/dd").toString(format: "d MMM yyyy")
+        self.approcalDateLbl.text = model.activityDate.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
+    }
+    
+    func populateCell(_ model: ApprovalDetailsModel) {
+        self.mrNameLbl.text = model.transDetailName
+      //  self.approcalDateLbl.text = model.visitTime.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
     }
     
 }

@@ -41,11 +41,7 @@ extension VisitsCountTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             self.selectedIndex[model.type] = true
             cell.selectedIndex = indexPath.row
             self.visitTypesCVC.reloadData()
-            if indexPath.row == 0 {
-                
-            } else {
-                self.delegate?.typeChanged(index: indexPath.row, type: model.type)
-            }
+            self.delegate?.typeChanged(index: indexPath.row, type: model.type)
          
         }
         
@@ -98,6 +94,70 @@ class VisitsCountTVC: UITableViewCell {
         visitTypesCVC.register(UINib(nibName: "VisitsCountCVC", bundle: nil), forCellWithReuseIdentifier: "VisitsCountCVC")
     }
     
+    
+    func toPopulateCell(model: [ApprovalDetailsModel]) {
+        let setups = AppDefaults.shared.getAppSetUp()
+        type.removeAll()
+        type.append(.All)
+        
+        if setups.docNeed == 0 {
+            type.append(.Doctor)
+        }
+        
+        if setups.chmNeed == 0 {
+            type.append(.Chemist)
+        }
+        
+        if setups.stkNeed == 0 {
+            type.append(.Stockist)
+        }
+        
+        if setups.unlNeed == 0 {
+            type.append(.UnlistedDoctor)
+        }
+        
+        var totalVisitCount: Int = 0
+        let  docCount = model.filter { $0.type == "DOCTOR"}.count
+        let chmCount = model.filter { $0.type == "CHEMIST"}.count
+        let  stkCount = model.filter { $0.type == "STOCKIST"}.count
+        let cipCount = model.filter { $0.type == "CIP"}.count
+        let unlistCount =  model.filter { $0.type == "ULDOCTOR"}.count
+        let hospCount = model.filter { $0.type == "HOSPITAL"}.count
+
+        totalVisitCount = docCount + chmCount + stkCount + hospCount + cipCount + unlistCount
+        visitsInfo.removeAll()
+        self.type.forEach { cellType in
+            switch cellType {
+                
+            case .All:
+                let avisitsInfo = VisitCount(type: cellType, count: totalVisitCount)
+                visitsInfo.append(avisitsInfo)
+            case .Doctor:
+                let avisitsInfo = VisitCount(type: cellType, count: docCount)
+                visitsInfo.append(avisitsInfo)
+            case .Chemist:
+                let avisitsInfo = VisitCount(type: cellType, count: chmCount)
+                visitsInfo.append(avisitsInfo)
+            case .Stockist:
+                let avisitsInfo = VisitCount(type: cellType, count: stkCount)
+                visitsInfo.append(avisitsInfo)
+            case .Hospital:
+                let avisitsInfo = VisitCount(type: cellType, count: hospCount)
+                visitsInfo.append(avisitsInfo)
+            case .CIP:
+                let avisitsInfo = VisitCount(type: cellType, count: cipCount)
+                visitsInfo.append(avisitsInfo)
+            case .UnlistedDoctor:
+                let avisitsInfo = VisitCount(type: cellType, count: unlistCount)
+                visitsInfo.append(avisitsInfo)
+            }
+          
+        }
+        
+        toloadData()
+        
+    }
+    
     func topopulateCell(model: ReportsModel) {
         let setups = AppDefaults.shared.getAppSetUp()
         type.removeAll()
@@ -126,55 +186,7 @@ class VisitsCountTVC: UITableViewCell {
         let cipCount = model.cip
         let unlistCount = model.udr
         let hospCount = model.hos
-       // visitsInfo.removeAll()
-      //  if model.drs != 0 {
-           // let type: CellType = .Doctor
-          //  let avisitsInfo = VisitCount(type: type, count: model.drs)
-          //  visitsInfo.append(avisitsInfo)
-          
-           // totalVisitCount = totalVisitCount + model.drs
-       // }
-        
-//        if model.chm != 0 {
-//            let type: CellType = .Chemist
-//            let avisitsInfo = VisitCount(type: type, count: model.chm)
-//            visitsInfo.append(avisitsInfo)
-//            totalVisitCount = totalVisitCount + model.chm
-//        }
-//
-//
-//        if model.stk != 0 {
-//            let type: CellType = .Stockist
-//            let avisitsInfo = VisitCount(type: type, count: model.stk)
-//            visitsInfo.append(avisitsInfo)
-//            totalVisitCount = totalVisitCount + model.stk
-//        }
-//
-//        if model.udr != 0 {
-//            let type: CellType = .CIP
-//            let avisitsInfo = VisitCount(type: type, count: model.udr)
-//            visitsInfo.append(avisitsInfo)
-//            totalVisitCount = totalVisitCount + model.udr
-//        }
-//        if model.cip != 0 {
-//            let type: CellType = .CIP
-//            let avisitsInfo = VisitCount(type: type, count: model.cip)
-//            visitsInfo.append(avisitsInfo)
-//            totalVisitCount = totalVisitCount + model.cip
-//        }
-//
-//        if model.hos != 0 {
-//            let type: CellType = .Hospital
-//            let avisitsInfo = VisitCount(type: type, count: model.hos)
-//            visitsInfo.append(avisitsInfo)
-//            totalVisitCount = totalVisitCount + model.hos
-//        }
-//
-//        if visitsInfo.count > 0 {
-//            let type: CellType = .All
-//            let avisitsInfo = VisitCount(type: type, count: totalVisitCount)
-//            visitsInfo.append(avisitsInfo)
-//        }
+
          totalVisitCount = docCount + chmCount + stkCount + hospCount + cipCount + unlistCount
         visitsInfo.removeAll()
         self.type.forEach { cellType in
