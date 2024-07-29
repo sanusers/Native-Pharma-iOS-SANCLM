@@ -728,10 +728,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         switch productStrArr.count  {
             
         case 1:
-            return CGFloat(productStrArr.count  * (eachCellSize * 2))
-            
-            
-            
+            return CGFloat(eachCellSize * 2)
         default:
             return CGFloat(productStrArr.count * eachCellSize)
         }
@@ -750,9 +747,9 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
         }
 
         switch productStrArr.count  {
-            
+
         case 1:
-            return CGFloat(productStrArr.count  * (eachCellSize * 2))
+            return CGFloat(eachCellSize * 2)
 
         default:
             return CGFloat(productStrArr.count * eachCellSize)

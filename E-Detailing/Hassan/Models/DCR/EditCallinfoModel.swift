@@ -276,7 +276,7 @@ class DCRDetail: Codable {
     var giftQty: String
     var additionalGiftCode: String
     var additionalGiftDetail: String
-    var pobValue: Int
+    var pobValue: Int?
     var sdp: String
     var activityRemarks: String
     var divisionCode: String
@@ -413,8 +413,8 @@ class DCRMain: Codable {
     var planNumber: String
     var planName: String
     var halfDayFW: String
-    var startTime: String
-    var endTime: String
+    var startTime: TimeInfo
+    var endTime: TimeInfo
     var divisionCode: String
     var remarks: String
     var confirmed: String
@@ -457,8 +457,8 @@ class DCRMain: Codable {
         self.planNumber = container.safeDecodeValue(forKey: .planNumber)
         self.planName = container.safeDecodeValue(forKey: .planName)
         self.halfDayFW = container.safeDecodeValue(forKey: .halfDayFW)
-        self.startTime = container.safeDecodeValue(forKey: .startTime)
-        self.endTime = container.safeDecodeValue(forKey: .endTime)
+        self.startTime = try container.decode(TimeInfo.self, forKey: .startTime)
+        self.endTime = try container.decode(TimeInfo.self, forKey: .endTime)
         self.divisionCode = container.safeDecodeValue(forKey: .divisionCode)
         self.remarks = container.safeDecodeValue(forKey: .remarks)
         self.confirmed = container.safeDecodeValue(forKey: .confirmed)

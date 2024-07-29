@@ -1840,7 +1840,6 @@ class MainVC : UIViewController {
                 isCurrentMonth = false
                 istwoMonthsAgo = false
                 self.currentPage = twoMonthBack ?? Date()
-                
                 toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
                 
             } else if selectedMonth == twoMonthBack?.toString(format: "yyyy-MM-dd") {
@@ -1848,7 +1847,6 @@ class MainVC : UIViewController {
                 isPrevMonth = false
                 isCurrentMonth = false
                 self.currentPage = twoMonthBack ?? Date()
-                
                 toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
             }
             
@@ -3963,7 +3961,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             if obj_sections[section].collapsed {
                 header?.collapseIV.image = UIImage(named: "chevlon.expand")
             } else {
-                header?.collapseIV.image = UIImage(named: "chevlon.collapse")
+                header?.collapseIV.image = UIImage(named: "chevlon.expand")
             }
             header?.refreshdelegate = self
             
@@ -4227,6 +4225,9 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         }  else if  model?.fw_Indicator ==  "R" {
             cell.addedIV.backgroundColor = .appDeepBrown
             
+        }  else if  model?.fw_Indicator ==  "RE" {
+            cell.addedIV.backgroundColor = .appPink
+            
         }
         cell.customLabel.text = toTrimDate(date: date)
         cell.customLabel.textColor = .appTextColor
@@ -4379,7 +4380,7 @@ extension MainVC : outboxCollapseTVCDelegate {
                     welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
                         welf.toUploadWindups(date: refreshDate) { _ in
                             welf.toLoadOutboxTable()
-                            welf.setSegment(.calls)
+                           // welf.setSegment(.calls)
                             welf.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) {  _ in
                                 welf.btnCalenderSync(welf.btnSyncDate!)
                                 Shared.instance.removeLoaderInWindow()

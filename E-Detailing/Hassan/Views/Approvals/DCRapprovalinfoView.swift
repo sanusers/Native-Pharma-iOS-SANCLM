@@ -8,6 +8,47 @@
 import Foundation
 import UIKit
 
+extension DCRapprovalinfoView:  UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text as NSString? {
+            let newText = text.replacingCharacters(in: range, with: string).lowercased()
+            print("New text: \(newText)")
+            
+            
+            var filteredlist = [ApprovalDetailsModel]()
+            filteredlist.removeAll()
+            var isMatched = false
+            dcrApprovalinfoVC.allApprovals?.forEach({ list in
+                if list.transDetailName.lowercased().contains(newText) {
+                    filteredlist.append(list)
+                    isMatched = true
+                    
+                }
+            })
+            
+            if newText.isEmpty {
+                dcrApprovalinfoVC.filteredApprovals = dcrApprovalinfoVC.allApprovals
+                self.loadApprovalTable()
+            } else if isMatched {
+                dcrApprovalinfoVC.filteredApprovals = filteredlist
+                isSearched = true
+                self.selectedBrandsIndex = nil
+               // self.approvalDetails = nil
+                //self.loadApprovalDetailTable()
+                self.loadApprovalTable()
+            } else {
+                isSearched = false
+                self.loadApprovalTable()
+                print("Not matched")
+            }
+            
+            return true
+        }
+        return true
+    }
+}
+
+
 extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -525,7 +566,9 @@ class DCRapprovalinfoView : BaseView {
     
     @IBOutlet var dismissVIew: UIView!
     
+    @IBOutlet var searchTF: UITextField!
     //@IBOutlet var approveView: UIView!
+    var isSearched: Bool = false
     var typeImage : UIImage?
     weak var delegate: ViewAllInfoTVCDelegate?
     var selectedIndex : Int? = nil
@@ -568,6 +611,7 @@ class DCRapprovalinfoView : BaseView {
         dismissVIew.layer.borderWidth = 1
         dismissVIew.layer.borderColor = UIColor.appTextColor.withAlphaComponent(0.2).cgColor
         dcrApprovalinfoVC.reportsVM = ReportsVM()
+        searchTF.delegate = self
     }
     
     func loadApprovalTable() {
@@ -816,7 +860,7 @@ class DCRapprovalinfoView : BaseView {
 
 extension DCRapprovalinfoView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let approvals = dcrApprovalinfoVC.allApprovals else {return 0}
+        guard let approvals = isSearched ? dcrApprovalinfoVC.filteredApprovals : dcrApprovalinfoVC.allApprovals else {return 0}
         return approvals.count
 
 
@@ -831,7 +875,7 @@ extension DCRapprovalinfoView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let approvals = dcrApprovalinfoVC.allApprovals else {return UITableViewCell()}
+        guard let approvals =  isSearched ? dcrApprovalinfoVC.filteredApprovals : dcrApprovalinfoVC.allApprovals else {return UITableViewCell()}
             let cell: DCRApprovalsTVC = approvalTable.dequeueReusableCell(withIdentifier: "DCRApprovalsTVC", for: indexPath) as! DCRApprovalsTVC
             cell.selectionStyle = .none
             cell.approcalDateLbl.textColor = .appTextColor

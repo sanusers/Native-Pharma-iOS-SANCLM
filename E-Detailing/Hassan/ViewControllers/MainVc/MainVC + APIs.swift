@@ -109,7 +109,6 @@ extension MainVC {
                     case .success(let response):
                         if response.isSuccess ?? false {
                             welf.toCreateToast(response.msg ?? "Day completed successfully...")
-                            
                             welf.handleWindups(date: date, isSynced: true, didUserWindup: true, paramData: aEachDayStatus.param ?? Data()) { isSaved in
                                // welf.toCreateToast("Saved log offline")
                                 dispatchGroup.leave()
@@ -216,7 +215,23 @@ extension MainVC {
             return
         }
         toReturnOutboxParam(dcrCall: dcrCall) { [weak self] jsonArr in
-            guard let welf = self else {return}
+            guard let welf = self, !jsonArr.isEmpty else {
+                let dispatchGroup = DispatchGroup()
+                dcrCall.forEach {call in
+                    dispatchGroup.enter()
+                    var param: [String: Any] = [:]
+                    param["CustCode"] = call.custCode
+                    self?.toRemoveOutboxandDefaultParams(refreshDate:  date.toDate(format: "yyyy-MM-dd"), param: param) { isRemoved in
+                        dispatchGroup.leave()
+                    
+                    }
+                   
+                }
+                dispatchGroup.notify(queue: .main) {
+                    completion(false)
+                }
+
+                return}
             welf.toSendParamsToAPISerially(refreshDate: date.toDate(format: "yyyy-MM-dd"), index: 0, items: jsonArr) { _ in
                 completion(true)
             }
@@ -233,6 +248,7 @@ extension MainVC {
             let callType = toReturnCallType(dcrCall: todayCallsModel)
             guard let call = callType?.call, let type = callType?.type else {
                 print("Error: Invalid call type for \(todayCallsModel)")
+                completion(addcallParams)
                 return
             }
             

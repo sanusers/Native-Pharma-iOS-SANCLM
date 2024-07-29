@@ -142,6 +142,7 @@ class LeaveAvailablityCell : UICollectionViewCell{
                     self.lblLeaveTypeName.text = "LOP days"
                 default:
                  print("Yet to implement")
+                    self.isHidden = true
                 }
             
             

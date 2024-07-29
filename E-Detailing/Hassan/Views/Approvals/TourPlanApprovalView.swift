@@ -1,62 +1,23 @@
 //
-//  DCRapprovalView.swift
+//  TourPlanApprovalView.swift
 //  SAN ZEN
 //
-//  Created by San eforce on 22/07/24.
+//  Created by San eforce on 26/07/24.
 //
 
 import Foundation
 import UIKit
 import CoreData
 
-extension DCRapprovalView:  UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let text = textField.text as NSString? {
-            let newText = text.replacingCharacters(in: range, with: string).lowercased()
-            print("New text: \(newText)")
-            
-            
-            var filteredlist = [ApprovalsListModel]()
-            filteredlist.removeAll()
-            var isMatched = false
-            approvalList?.forEach({ list in
-                if list.sfName.lowercased().contains(newText) {
-                    filteredlist.append(list)
-                    isMatched = true
-                    
-                }
-            })
-            
-            if newText.isEmpty {
-               filteredApprovalList = self.approvalList
-                self.loadApprovalTable()
-            } else if isMatched {
-                filteredApprovalList = filteredlist
-                isSearched = true
-                self.selectedBrandsIndex = nil
-                self.approvalDetails = nil
-                //self.loadApprovalDetailTable()
-                self.loadApprovalTable()
-            } else {
-                isSearched = false
-                self.loadApprovalTable()
-                print("Not matched")
-            }
-            
-            return true
-        }
-        return true
-    }
-}
- 
-extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
+extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case approvalTable :
             guard let approvalList = isSearched ? filteredApprovalList : approvalList else { return 0}
             return approvalList.count
+         //   return 10
         default:
-            return 3
+            return 2
         }
         
       
@@ -72,31 +33,17 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
                 
             case 0:
                 //top - 10 || MR name - 60 ||Date info - 60 || work type info 2 *  90 (Max) || bottom 15
-                return 10 + 60 + 60 + 90 + 15
+                return 10 + 60 + 60 + 15
             case 1:
-                return 60
-            case 2:
-                guard let approvalDetails = approvalDetails else {return CGFloat()}
-                switch selectedType {
-                    
-                case .All:
-                    return CGFloat(70 * approvalDetails.count)
-                case .Doctor:
-                    return CGFloat(70 * approvalDetails.filter { $0.type == "DOCTOR" }.count)
-                case .Chemist:
-                    return CGFloat(70 * approvalDetails.filter { $0.type == "CHEMIST" }.count)
-                case .Stockist:
-                    return CGFloat(70 * approvalDetails.filter { $0.type == "STOCKIST" }.count)
-                case .UnlistedDoctor:
-                    return CGFloat(70 * approvalDetails.filter { $0.type == "ULDOCTOR" }.count)
-                case .Hospital:
-                    print("YET TO")
-                case .CIP:
-                    print("YET TO")
+                //session height - 670 + 100
+                guard let approvalDetails = self.approvalDetails else {  return 0 }
+                let model = approvalDetails[indexPath.row]
+                if !model.isExtended {
+                   return 10 + 60 + 10
+                } else {
+                    return 10 + 60 + 670 + 100  + 10
                 }
-                
-                
-                return CGFloat(70 * approvalDetails.count)
+               
             default:
                 return 0
                 
@@ -123,7 +70,7 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
             
             guard let approvalList = isSearched ? filteredApprovalList : approvalList  else {
                 return UITableViewCell()
-            }
+           }
             let model = approvalList[indexPath.row]
             cell.populateCell(model)
             
@@ -140,9 +87,10 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
                 welf.selectedBrandsIndex = indexPath.row
                 welf.approvalTable.reloadData()
               //  welf.approvalCollection.reloadData()
-              //  welf.loadApprovalDetailTable()
+               // welf.loadApprovalDetailTable()
                 Shared.instance.showLoaderInWindow()
-                welf.dcrApprovalVC.fetchApprovalDetail(transNumber: model.transSlNo, vm: UserStatisticsVM()) { approvalDetailModel in
+                let additionalParam = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
+                welf.tourPlanApprovalVC.getTPapprovalDetail(additionalparam: additionalParam, vm: UserStatisticsVM()) { approvalDetailModel in
                     Shared.instance.removeLoaderInWindow()
                     guard let approvalDetailModel = approvalDetailModel else {return}
                     //dump(approvalDetailModel)
@@ -156,56 +104,28 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
         default:
             switch indexPath.row {
             case 0:
-                let cell: DCRApprovalsWorkTypeTVC = approvalDetailsTable.dequeueReusableCell(withIdentifier: "DCRApprovalsWorkTypeTVC") as! DCRApprovalsWorkTypeTVC
+                let cell: TourPlanApprovalinfoTVC = approvalDetailsTable.dequeueReusableCell(withIdentifier: "TourPlanApprovalinfoTVC") as! TourPlanApprovalinfoTVC
                 cell.selectionStyle = .none
                 guard let approvalDetails = self.approvalDetails, let approvalList = approvalList?[selectedBrandsIndex ?? 0] else {return UITableViewCell()}
                
-                cell.toPopulatecell(detailsmodel: approvalDetails, listModel: approvalList)
+                cell.toPopulatecell(model: approvalDetails, list: approvalList)
                 return cell
                 
             case 1:
-                let cell: VisitsCountTVC = tableView.dequeueReusableCell(withIdentifier: "VisitsCountTVC", for: indexPath) as! VisitsCountTVC
-            
-               
-           //     cell.wtModel = self.reportsModel
-                guard  let approvalDetailModel =  approvalDetails else {return UITableViewCell() }
-                cell.selectionStyle = .none
-                cell.delegate = self
-                cell.toPopulateCell(model: approvalDetailModel)
-                cell.toloadData()
-                return cell
-            case 2:
-                
-                let cell: DCRAllApprovalsTVC = tableView.dequeueReusableCell(withIdentifier: "DCRAllApprovalsTVC", for: indexPath) as! DCRAllApprovalsTVC
-                
-                guard  let approvalDetailModel =  approvalDetails else {return UITableViewCell() }
-                
-                
-                switch selectedType {
-                    
-                case .All:
-                    cell.populateCell(model: approvalDetailModel)
-                case .Doctor:
-                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "DOCTOR" })
-                case .Chemist:
-                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "CHEMIST" })
-                case .Stockist:
-                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "STOCKIST" })
-                case .UnlistedDoctor:
-                    cell.populateCell(model: approvalDetailModel.filter { $0.type == "ULDOCTOR" })
-                case .Hospital:
-                    print("YET TO")
-                case .CIP:
-                    print("YET TO")
-                }
-                
+                let cell: TourplanApprovalDetailedInfoTVC = tableView.dequeueReusableCell(withIdentifier: "TourplanApprovalDetailedInfoTVC", for: indexPath) as! TourplanApprovalDetailedInfoTVC
 
-                cell.rootController = self.dcrApprovalVC
-                cell.selectedapproval = approvalList?[selectedBrandsIndex ?? 0]
+                guard let approvalDetails = self.approvalDetails else {  return UITableViewCell() }
+                let model = approvalDetails[indexPath.row]
+                cell.populateCell(model: model)
+                
+                cell.chevlonIV.addTap {[weak self] in
+                    guard let welf = self else {return}
+                    model.isExtended = !model.isExtended
+                    
+                    welf.loadApprovalDetailTable()
+                }
                 cell.selectionStyle = .none
                 return cell
-                
-                
             default:
                 return UITableViewCell()
             }
@@ -218,7 +138,7 @@ extension DCRapprovalView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-class DCRapprovalView : BaseView {
+class TourPlanApprovalView : BaseView, UITextFieldDelegate {
     
     
     @IBOutlet var approvalTitle: UILabel!
@@ -247,18 +167,17 @@ class DCRapprovalView : BaseView {
     @IBOutlet var searchTF: UITextField!
     var isSearched = false
     var tpDeviateReasonView:  TPdeviateReasonView?
-    var filteredApprovalList: [ApprovalsListModel]?
-    var approvalDetails: [ApprovalDetailsModel]?
-    var approvalList: [ApprovalsListModel]?
-    var dcrApprovalVC : DCRapprovalVC!
+    var filteredApprovalList: [TourPlanApprovalModel]?
+    var approvalDetails: [TourPlanApprovalDetailModel]?
+    var tourPlanApprovalVC : TourPlanApprovalVC!
     var selectedBrandsIndex: Int?
     var selectedType: CellType = .All
-    
+    var approvalList: [TourPlanApprovalModel]?
     var isRemarksadded = false
     var dayRemarks = ""
     override func didLoad(baseVC: BaseViewController) {
         super.didLoad(baseVC: baseVC)
-        self.dcrApprovalVC = baseVC as? DCRapprovalVC
+        self.tourPlanApprovalVC = baseVC as? TourPlanApprovalVC
         initTaps()
         setupUI()
         cellregistration()
@@ -281,16 +200,17 @@ class DCRapprovalView : BaseView {
     
     func callAPI() {
         Shared.instance.showLoaderInWindow()
-        dcrApprovalVC.fetchApprovalList(vm: UserStatisticsVM()) {[weak self] approvalist in
+        tourPlanApprovalVC.fetchTPapproval(vm: UserStatisticsVM()) {[weak self] approvalist in
             Shared.instance.removeLoaderInWindow()
             guard let welf = self, let approvalist = approvalist else {return}
             welf.approvalList = approvalist
             welf.loadApprovalTable()
-            welf.dcrApprovalVC.fetchFirstIndex()
+          //  loadApprovalDetailTable()
+         //   welf.dcrApprovalVC.fetchFirstIndex()
             
         }
     }
-    
+
     func setupUI() {
         self.backgroundColor = .appSelectionColor
         backgroundView.isHidden = true
@@ -318,19 +238,16 @@ class DCRapprovalView : BaseView {
     func cellregistration() {
         approvalTable.register(UINib(nibName: "DCRApprovalsTVC", bundle: nil), forCellReuseIdentifier: "DCRApprovalsTVC")
         
-        approvalDetailsTable.register(UINib(nibName: "DCRApprovalsWorkTypeTVC", bundle: nil), forCellReuseIdentifier: "DCRApprovalsWorkTypeTVC")
+        approvalDetailsTable.register(UINib(nibName: "TourPlanApprovalinfoTVC", bundle: nil), forCellReuseIdentifier: "TourPlanApprovalinfoTVC")
         
-        approvalDetailsTable.register(UINib(nibName: "VisitsCountTVC", bundle: nil), forCellReuseIdentifier: "VisitsCountTVC")
-        
-        approvalDetailsTable.register(UINib(nibName: "DCRAllApprovalsTVC", bundle: nil), forCellReuseIdentifier: "DCRAllApprovalsTVC")
-        
+        approvalDetailsTable.register(UINib(nibName: "TourplanApprovalDetailedInfoTVC", bundle: nil), forCellReuseIdentifier: "TourplanApprovalDetailedInfoTVC")
         
     }
 
     
     func initTaps() {
         backHolderView.addTap {
-            self.dcrApprovalVC.navigationController?.popViewController(animated: true)
+            self.tourPlanApprovalVC.navigationController?.popViewController(animated: true)
         }
         
         rejectView.addTap { [weak self] in
@@ -348,17 +265,9 @@ class DCRapprovalView : BaseView {
         }
         
         approveView.addTap {[weak self] in
-            guard let welf = self else {return}
+            //guard let welf = self else {return}
              print("Yet to")
-            Shared.instance.showLoaderInWindow()
-            welf.dcrApprovalVC.dcrApprovalAPI(vm: UserStatisticsVM()) { result in
-                Shared.instance.removeLoaderInWindow()
-                if result?.isSuccess ?? false {
-                    welf.toCreateToast("Plan Approved successfully.")
-                    welf.callAPI()
-                }
-               
-            }
+
         }
         
     }
@@ -383,7 +292,7 @@ class DCRapprovalView : BaseView {
             
         }
         
-        tpDeviateReasonView = self.dcrApprovalVC.loadCustomView(nibname: XIBs.tpDeviateReasonView) as? TPdeviateReasonView
+        tpDeviateReasonView = self.tourPlanApprovalVC.loadCustomView(nibname: XIBs.tpDeviateReasonView) as? TPdeviateReasonView
         tpDeviateReasonView?.delegate = self
         
         tpDeviateReasonView?.addedSubviewDelegate = self
@@ -394,20 +303,7 @@ class DCRapprovalView : BaseView {
     }
     
 }
-extension DCRapprovalView: VisitsCountTVCDelegate {
-    func typeChanged(index: Int, type: CellType) {
-        
-        guard self.selectedType != type else {
-            return
-        }
-
-        self.selectedType = type
-        self.loadApprovalDetailTable()
-    }
-    
-    
-}
-extension DCRapprovalView : addedSubViewsDelegate {
+extension TourPlanApprovalView : addedSubViewsDelegate {
     func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
         print("Yet to implement")
     }
@@ -466,8 +362,7 @@ extension DCRapprovalView : addedSubViewsDelegate {
     
     
 }
-
-extension DCRapprovalView : SessionInfoTVCDelegate {
+extension TourPlanApprovalView : SessionInfoTVCDelegate {
     func remarksAdded(remarksStr: String, index: Int) {
         
         guard !remarksStr.isEmpty else {
@@ -483,19 +378,7 @@ extension DCRapprovalView : SessionInfoTVCDelegate {
             case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-             //   self.setDeviateSwitch(istoON: true)
-                Shared.instance.showLoaderInWindow()
-                dcrApprovalVC.dcrRejectAPI(vm: UserStatisticsVM()) {[weak self] result in
-                    guard let welf = self else {return}
-                    welf.isRemarksadded = false
-                    welf.dayRemarks = ""
-                    Shared.instance.removeLoaderInWindow()
-                    if result?.isSuccess ?? false {
-                        welf.toCreateToast("Plan rejected.")
-                        welf.callAPI()
-                    }
-                   
-                }
+
             default:
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1

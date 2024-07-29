@@ -39,4 +39,9 @@ class DCRApprovalsTVC: UITableViewCell {
       //  self.approcalDateLbl.text = model.visitTime.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
     }
     
+    func populateCell(_ model: TourPlanApprovalModel) {
+        self.mrNameLbl.text = model.sfName
+        self.approcalDateLbl.text = "\(model.mnth) \(model.yr)"
+    }
+    
 }

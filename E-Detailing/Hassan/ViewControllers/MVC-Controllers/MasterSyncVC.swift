@@ -972,7 +972,7 @@ extension MasterSyncVC : tableViewProtocols {
         } else {
             cell.contentHolderView.backgroundColor = .appWhiteColor
             cell.lblName.textColor = .appTextColor
-            cell.selectedIV.image = UIImage(named:   "chevlon.down")
+            cell.selectedIV.image = UIImage(named:   "chevlon.expand")
            
           
             cell.selectedIV.tintColor = .appTextColor

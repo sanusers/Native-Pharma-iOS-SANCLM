@@ -7,10 +7,14 @@
 
 import Foundation
 import UIKit
+
+
+
 class DCRapprovalinfoVC: BaseViewController {
     var selectedList: ApprovalsListModel?
     var approvalDetail: ApprovalDetailsModel?
     var allApprovals: [ApprovalDetailsModel]?
+    var filteredApprovals: [ApprovalDetailsModel]?
     var reportsVM: ReportsVM?
     @IBOutlet var dcrApprovalinfoView: DCRapprovalinfoView!
     override func viewDidLoad() {

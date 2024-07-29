@@ -22,20 +22,16 @@ extension DCRApprovalsWorkTypeTVC: UICollectionViewDelegate, UICollectionViewDat
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: DCRApprovalsWorkSheetsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "DCRApprovalsWorkSheetsCVC", for: indexPath) as! DCRApprovalsWorkSheetsCVC
-       
-        
-//        if self.wtModel?.halfDayFWType != "" {
-//            if indexPath.row == 1 {
-//                cell.isLastElement = true
-//            } else {
-//                cell.isLastElement = false
-//            }
-//        } else {
-//            cell.isLastElement = true
-//        }
-//        cell.populateCell(model: self.wtModel ?? ReportsModel())
+
         guard let model = self.listModel else {return UICollectionViewCell()}
-        cell.populateCell(model: model)
+        var routes: [String] = []
+        self.detailsmodel?.forEach({ approvalDetailsModel in
+            if !routes.contains(where: { $0 == approvalDetailsModel.sdpName
+            }) {
+                routes.append(approvalDetailsModel.sdpName)
+            }
+        })
+        cell.populateCell(model: model, routes: routes.joined(separator: ", "))
         
         return cell
     }

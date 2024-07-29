@@ -95,6 +95,7 @@ class TPdeviateReasonView : UIView {
     @IBOutlet var btnsend: ShadowButton!
     weak var delegate : SessionInfoTVCDelegate?
     var isForRemarks: Bool = false
+    var isForRejection: Bool = false
     var productIndex: Int = 0
     weak var addedSubviewDelegate: addedSubViewsDelegate?
     var remarks: String?
@@ -111,7 +112,14 @@ class TPdeviateReasonView : UIView {
             titleLbl.text = "Remarks"
             btnsend.setTitle("Save", for: .normal)
             btnCancel.setTitle("Skip", for: .normal)
-        } else {
+        } else  if isForRejection {
+            titleLbl.text = "Rejection Reason"
+            btnsend.setTitle("Reject", for: .normal)
+            btnsend.backgroundColor = .appLightPink
+            btnCancel.setTitle("Cancel", for: .normal)
+        }
+        
+        else {
             titleLbl.text = "Deviation Reason"
             btnsend.setTitle("Send", for: .normal)
             btnsend.setTitle("Cancel", for: .normal)

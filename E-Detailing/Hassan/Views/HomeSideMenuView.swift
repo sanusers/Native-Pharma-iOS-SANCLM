@@ -291,9 +291,9 @@ class HomeSideMenuView : BaseView{
         menuItemArr.append(refreshItem)
         
         
-//        let tourplanVC = TourPlanVC.initWithStory()
-//        let tourPlan : MenuItems = MenuItems(menuName: "Tour Plan", menuIcon: UIImage(named: "tourplan") ?? UIImage(), VC: tourplanVC)
-//        menuItemArr.append(tourPlan)
+        let tourplanVC = TourPlanVC.initWithStory()
+        let tourPlan : MenuItems = MenuItems(menuName: "Tour Plan", menuIcon: UIImage(named: "tourplan") ?? UIImage(), VC: tourplanVC)
+        menuItemArr.append(tourPlan)
         
         let resourceVC = ReportsVC.initWithStory(pageType: .myResource)
         let myResource : MenuItems = MenuItems(menuName: "My Resource", menuIcon: UIImage(named: "SideMenuMyResource") ?? UIImage(), VC: resourceVC)

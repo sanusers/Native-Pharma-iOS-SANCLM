@@ -126,18 +126,18 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 guard let typedHeaderView = headerView as? ProductSectionReusableView else { return headerView
                 }
         
-                switch reportModel?.typ {
+                switch Shared.instance.selectedDCRtype {
                     
-                case 0:
+                case .Doctor:
                     if isDoctorRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
-                case 1 :
+                case .Chemist :
                     if isChemistRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
           
-                case 3:
+                case .UnlistedDoctor:
                     if isUnListedDoctorRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
@@ -358,21 +358,21 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                 let modelStr = self.productStrArr[indexPath.row]
 
-            switch reportModel?.typ {
+            switch Shared.instance.selectedDCRtype {
                 
-            case 0:
+            case .Doctor:
                 if isDoctorEventCaptureNeeded {
                     cell.isRCPAneeded = true
                 }
-            case 1 :
+            case .Chemist :
                 if isChemistEventCaptureNeeded {
                     cell.isRCPAneeded = true
                 }
-            case 2:
+            case .Stockist:
                 if isStockistEventCaptureNeeded {
                     cell.isRCPAneeded = true
                 }
-            case 3:
+            case .UnlistedDoctor:
                 if isUnListedDoctorEventCaptureNeeded {
                     cell.isRCPAneeded = true
                 }
@@ -674,7 +674,7 @@ class ViewAllInfoTVC: UITableViewCell {
               //  Check if any of the extracted words matches the name
                if namesWithoutHash[1] == name.trimmingCharacters(in: .whitespaces) {
                    print("The 'promotedProduct' contains '\(name)'")
-                   let promotedCacheProduct = DBManager.shared.getProduct().filter { $0.code ==  words[0]}.first
+                   _ = DBManager.shared.getProduct().filter { $0.code ==  words[0]}.first
                    isPromoted = true
                } else {
                    print("The 'promotedProduct' does not contain '\(name)'")

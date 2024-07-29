@@ -17,8 +17,8 @@ struct ApprovalsCountModel: Codable {
 
 // MARK: - ApprCount
 class ApprCount: Codable {
-    let dcrapprCount, leaveapprCount, tpapprCount, devapprCount: Int?
-    let geotagCount: Int?
+    let dcrapprCount, leaveapprCount, tpapprCount, devapprCount: String?
+    let geotagCount: String?
 
     enum CodingKeys: String, CodingKey {
         case dcrapprCount = "dcrappr_count"

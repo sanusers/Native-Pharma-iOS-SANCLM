@@ -33,16 +33,16 @@
                                         <rect key="frame" x="15.666666666666686" y="3" width="591" height="110"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Zw0-KL-yz5">
-                                                <rect key="frame" x="0.0" y="0.0" width="147.66666666666666" height="110"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="197" height="110"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i3Q-t8-sRC">
-                                                        <rect key="frame" x="0.0" y="0.0" width="147.66666666666666" height="33"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="197" height="33"/>
                                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Field Work" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qsP-X8-yKt">
-                                                        <rect key="frame" x="0.0" y="33" width="147.66666666666666" height="77"/>
+                                                        <rect key="frame" x="0.0" y="33" width="197" height="77"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -53,16 +53,16 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ziF-Uq-Xrx">
-                                                <rect key="frame" x="147.66666666666666" y="0.0" width="147.99999999999997" height="110"/>
+                                                <rect key="frame" x="197" y="0.0" width="197" height="110"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cluster" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kRt-Mr-16I">
-                                                        <rect key="frame" x="0.0" y="0.0" width="148" height="33"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Route A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kRt-Mr-16I">
+                                                        <rect key="frame" x="0.0" y="0.0" width="197" height="33"/>
                                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nandanam, Alwarpet, Velechery" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X1I-7Z-Mgz">
-                                                        <rect key="frame" x="0.0" y="33" width="148" height="77"/>
+                                                        <rect key="frame" x="0.0" y="33" width="197" height="77"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -72,17 +72,17 @@
                                                     <constraint firstItem="kRt-Mr-16I" firstAttribute="height" secondItem="ziF-Uq-Xrx" secondAttribute="height" multiplier="0.3" id="2Cb-P0-teP"/>
                                                 </constraints>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="dFf-rA-6Kh">
-                                                <rect key="frame" x="295.66666666666669" y="0.0" width="147.66666666666669" height="110"/>
+                                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="dFf-rA-6Kh">
+                                                <rect key="frame" x="394" y="0.0" width="0.0" height="110"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HQ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kuk-uB-IPn">
-                                                        <rect key="frame" x="0.0" y="0.0" width="147.66666666666666" height="33"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="33"/>
                                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Siva kumar - HQ - designation" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uTu-sl-NEA">
-                                                        <rect key="frame" x="0.0" y="33" width="147.66666666666666" height="77"/>
+                                                        <rect key="frame" x="0.0" y="33" width="0.0" height="77"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -93,16 +93,16 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="p2m-Dd-iyS">
-                                                <rect key="frame" x="443.33333333333331" y="0.0" width="147.66666666666669" height="110"/>
+                                                <rect key="frame" x="394" y="0.0" width="197" height="110"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remarks" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jl5-uP-7EK">
-                                                        <rect key="frame" x="0.0" y="0.0" width="147.66666666666666" height="33"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="197" height="33"/>
                                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Field work added,work added per allocation" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DBc-ly-TtE">
-                                                        <rect key="frame" x="0.0" y="33" width="147.66666666666666" height="77"/>
+                                                        <rect key="frame" x="0.0" y="33" width="197" height="77"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>

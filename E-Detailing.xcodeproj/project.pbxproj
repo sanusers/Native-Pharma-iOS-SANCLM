@@ -35,6 +35,10 @@
 		3809E06E2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3809E06B2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.swift */; };
 		380B52072B5A9F5A006E21A9 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */; };
 		380DCDB42BFB4BE600F455C9 /* LeaveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */; };
+		380FC3E92C53D2910059D80A /* TourPlanApprovalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3E82C53D2910059D80A /* TourPlanApprovalVC.swift */; };
+		380FC3EB2C53D2D40059D80A /* TourPlanApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */; };
+		380FC3EF2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */; };
+		380FC3F02C53D9170059D80A /* TourPlanApprovalinfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
 		38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */; };
 		38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */; };
@@ -346,6 +350,11 @@
 		38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */; };
 		38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E48DA12AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift */; };
 		38E48DA42AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E48DA32AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib */; };
+		38E52A6B2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E52A6A2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.xib */; };
+		38E52A6C2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E52A692C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.swift */; };
+		38E52A712C54F79200767AF6 /* TourplanApprovalessionInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E52A702C54F79200767AF6 /* TourplanApprovalessionInfoTVC.xib */; };
+		38E52A722C54F79200767AF6 /* TourplanApprovalessionInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E52A6F2C54F79200767AF6 /* TourplanApprovalessionInfoTVC.swift */; };
+		38E52A752C55139E00767AF6 /* TourPlanApprovalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E52A742C55139E00767AF6 /* TourPlanApprovalModel.swift */; };
 		38E5E4612AEBB39B00AF053A /* JointWorkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E5E4602AEBB39B00AF053A /* JointWorkTableViewCell.swift */; };
 		38E5E4632AEBB3A600AF053A /* JointWorkTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E5E4622AEBB3A600AF053A /* JointWorkTableViewCell.xib */; };
 		38E5E4652AEBFA6600AF053A /* ChemistCallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E5E4642AEBFA6600AF053A /* ChemistCallCell.swift */; };
@@ -467,6 +476,10 @@
 		3809E06C2C4E8D00002B345A /* SpecificDCRgeneralinfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpecificDCRgeneralinfoCVC.xib; sourceTree = "<group>"; };
 		380B52062B5A9F5A006E21A9 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveModels.swift; sourceTree = "<group>"; };
+		380FC3E82C53D2910059D80A /* TourPlanApprovalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalVC.swift; sourceTree = "<group>"; };
+		380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalView.swift; sourceTree = "<group>"; };
+		380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalinfoTVC.swift; sourceTree = "<group>"; };
+		380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TourPlanApprovalinfoTVC.xib; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
 		38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAllInfoTVC.xib; sourceTree = "<group>"; };
 		38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoCVC.swift; sourceTree = "<group>"; };
@@ -778,6 +791,11 @@
 		38E453A12AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcpaAddedListTableViewCell.swift; sourceTree = "<group>"; };
 		38E48DA12AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameWithSampleTableViewCell.swift; sourceTree = "<group>"; };
 		38E48DA32AED387C00081E7F /* ProductNameWithSampleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductNameWithSampleTableViewCell.xib; sourceTree = "<group>"; };
+		38E52A692C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourplanApprovalDetailedInfoTVC.swift; sourceTree = "<group>"; };
+		38E52A6A2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TourplanApprovalDetailedInfoTVC.xib; sourceTree = "<group>"; };
+		38E52A6F2C54F79200767AF6 /* TourplanApprovalessionInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourplanApprovalessionInfoTVC.swift; sourceTree = "<group>"; };
+		38E52A702C54F79200767AF6 /* TourplanApprovalessionInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TourplanApprovalessionInfoTVC.xib; sourceTree = "<group>"; };
+		38E52A742C55139E00767AF6 /* TourPlanApprovalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalModel.swift; sourceTree = "<group>"; };
 		38E5E4602AEBB39B00AF053A /* JointWorkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JointWorkTableViewCell.swift; sourceTree = "<group>"; };
 		38E5E4622AEBB3A600AF053A /* JointWorkTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JointWorkTableViewCell.xib; sourceTree = "<group>"; };
 		38E5E4642AEBFA6600AF053A /* ChemistCallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChemistCallCell.swift; sourceTree = "<group>"; };
@@ -890,6 +908,7 @@
 			isa = PBXGroup;
 			children = (
 				380906D72C4FC3A300706554 /* ApprovalsCountModel.swift */,
+				38E52A742C55139E00767AF6 /* TourPlanApprovalModel.swift */,
 			);
 			path = Approvals;
 			sourceTree = "<group>";
@@ -928,6 +947,19 @@
 				380DCDB32BFB4BE600F455C9 /* LeaveModels.swift */,
 			);
 			path = LeaveApplication;
+			sourceTree = "<group>";
+		};
+		380FC3EC2C53D8D40059D80A /* TourPlanApprovals */ = {
+			isa = PBXGroup;
+			children = (
+				380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */,
+				380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */,
+				38E52A692C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.swift */,
+				38E52A6A2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.xib */,
+				38E52A6F2C54F79200767AF6 /* TourplanApprovalessionInfoTVC.swift */,
+				38E52A702C54F79200767AF6 /* TourplanApprovalessionInfoTVC.xib */,
+			);
+			path = TourPlanApprovals;
 			sourceTree = "<group>";
 		};
 		38107C4A2B36F18900ACEDF3 /* ReportsViewMore */ = {
@@ -1196,6 +1228,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				380FC3EC2C53D8D40059D80A /* TourPlanApprovals */,
 				38E37F0F2C510AEF002EB294 /* LeaveAppoval */,
 				3809E06A2C4E8CA7002B345A /* SpecificDCRApprovalInfo */,
 				388ABD012C4E357300965C12 /* DCRapprovals */,
@@ -1587,6 +1620,7 @@
 				388ABCFD2C4E306100965C12 /* DCRapprovalVC.swift */,
 				3809E0662C4E7D13002B345A /* DCRapprovalinfoVC.swift */,
 				38E37F0B2C5108E2002EB294 /* LeaveApprovalVC.swift */,
+				380FC3E82C53D2910059D80A /* TourPlanApprovalVC.swift */,
 			);
 			path = Approvals;
 			sourceTree = "<group>";
@@ -1597,6 +1631,7 @@
 				388ABCFF2C4E30A500965C12 /* DCRapprovalView.swift */,
 				3809E0682C4E7D40002B345A /* DCRapprovalinfoView.swift */,
 				38E37F0D2C510932002EB294 /* LeaveApprovalView.swift */,
+				380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */,
 			);
 			path = Approvals;
 			sourceTree = "<group>";
@@ -1965,6 +2000,7 @@
 				38E189242BB15FB30093C446 /* JfwView.xib in Resources */,
 				38E040A12AA1FEB8007B757E /* TagDetailsView.xib in Resources */,
 				38DD9E6C2C088761000A9575 /* SlidesDescriptionCVC.xib in Resources */,
+				38E52A6B2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.xib in Resources */,
 				38D528A82A9A033E00AD3F78 /* Tagging.storyboard in Resources */,
 				383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */,
 				B287E67F29F2A20F0097974D /* Satoshi-Bold.otf in Resources */,
@@ -1999,6 +2035,7 @@
 				38B18B732BD93AD7001FC958 /* ProductSectionTitleCVC.xib in Resources */,
 				3845556C2BA9C62B00F6CE1A /* ProductdetailsHeader.xib in Resources */,
 				38EF4C672B749DAE00F78F2E /* BrandsPreviewCVC.xib in Resources */,
+				38E52A712C54F79200767AF6 /* TourplanApprovalessionInfoTVC.xib in Resources */,
 				38DB8B202BF770F50041B25C /* CustomCalenderView.xib in Resources */,
 				38E453A02AAA07C300A62644 /* RcpaAddedListTableViewCell.xib in Resources */,
 				38111E1D2BB41E8100C46358 /* CompetitorsMultiselectionTVC.xib in Resources */,
@@ -2091,6 +2128,7 @@
 				387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */,
 				380906CD2C4F829F00706554 /* SpecificDCRremarksCVC.xib in Resources */,
 				38E37F132C511295002EB294 /* LeaveApprovalTVC.xib in Resources */,
+				380FC3EF2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib in Resources */,
 				38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2195,6 +2233,7 @@
 				385A42502AFBABC300C0A58A /* BaseViewController.swift in Sources */,
 				38E6B0912B9866B80014AF1E /* resourceInfoTVC.swift in Sources */,
 				38FAA15E2B7F229200714AA2 /* ReportsVM.swift in Sources */,
+				380FC3F02C53D9170059D80A /* TourPlanApprovalinfoTVC.swift in Sources */,
 				38C41C2D2B8E0AFA0013361E /* ChangePasswordView.swift in Sources */,
 				38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */,
 				38EA3D122AFDE66E00DA7018 /* MenuVIew.swift in Sources */,
@@ -2213,6 +2252,7 @@
 				38E659832B33075200E7BF42 /* ReportTypesCVC.swift in Sources */,
 				B287E6C229F2BC9C0097974D /* TableCell.swift in Sources */,
 				3801D4972B4ECFB700A9740F /* HomeSideMenuView.swift in Sources */,
+				38E52A6C2C54EE3300767AF6 /* TourplanApprovalDetailedInfoTVC.swift in Sources */,
 				38FAA15B2B7F229200714AA2 /* TourPlanVM.swift in Sources */,
 				38E3DF6F2B8F23F70093DF4B /* HomeCheckinView.swift in Sources */,
 				38CBA4CE2A9F4512001992C4 /* TaggingViewModel.swift in Sources */,
@@ -2235,6 +2275,7 @@
 				38C1C4392AC595A200DE95D1 /* AdditionalCallSampleInputTableViewCell.swift in Sources */,
 				38E3E5382A80C75000AE5AF6 /* DoctorCallCell.swift in Sources */,
 				388ABD182C4E7A5B00965C12 /* DCRAllApprovalsTVC.swift in Sources */,
+				38E52A752C55139E00767AF6 /* TourPlanApprovalModel.swift in Sources */,
 				38EDEA7A2A6A5F16000E857C /* MainVC.swift in Sources */,
 				B291878429FA4D940033DE16 /* EventCell.swift in Sources */,
 				38FAA16D2B7F255600714AA2 /* CommonStructs.swift in Sources */,
@@ -2280,6 +2321,7 @@
 				380566282B983B7C00BB9117 /* DCRdetailViewEditView.swift in Sources */,
 				3809319E2C04BF4400FC6A20 /* DayReportsSortView.swift in Sources */,
 				3885463B2B5F80BF005FC9FC /* ObjectFormatter.swift in Sources */,
+				380FC3E92C53D2910059D80A /* TourPlanApprovalVC.swift in Sources */,
 				38C855252A8CC9AB00C34A58 /* ProductViewModel.swift in Sources */,
 				380906C72C4F802F00706554 /* SpecificDCRadditioanCallsinfoReusableView.swift in Sources */,
 				38C5986E2ADFF0F200B2659F /* AdditionalCallSampleInputView.swift in Sources */,
@@ -2312,6 +2354,7 @@
 				38F72E502A557D8F0051BFEA /* Product + Extension.swift in Sources */,
 				38C7F0DF2A5D630100363E24 /* LeaveType + Extension.swift in Sources */,
 				3803E1032A470E5B0066AF15 /* Stockist + Extension.swift in Sources */,
+				38E52A722C54F79200767AF6 /* TourplanApprovalessionInfoTVC.swift in Sources */,
 				38CA58D32B80AAFB00E28C3D /* MainVC + DayPlanEX.swift in Sources */,
 				38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */,
 				385D15C32C300D0100C47B7F /* MainVC+Dates.swift in Sources */,
@@ -2438,6 +2481,7 @@
 				38E78FCD2A820EE200E3F3F0 /* PreCallVC.swift in Sources */,
 				38E453A22AAA07CD00A62644 /* RcpaAddedListTableViewCell.swift in Sources */,
 				38E3C35E2AF9FA0400623C33 /* APIenums.swift in Sources */,
+				380FC3EB2C53D2D40059D80A /* TourPlanApprovalView.swift in Sources */,
 				386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */,
 				3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */,
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,

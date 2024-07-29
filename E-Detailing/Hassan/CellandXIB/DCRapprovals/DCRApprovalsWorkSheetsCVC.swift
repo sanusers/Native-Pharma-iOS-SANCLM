@@ -30,11 +30,12 @@ class DCRApprovalsWorkSheetsCVC: UICollectionViewCell {
         setupUI()
     }
     
-    func populateCell(model: ApprovalsListModel) {
+    func populateCell(model: ApprovalsListModel, routes: String) {
         seperatorView.backgroundColor = isLastElement ? .clear : .appSelectionColor
         workTypeDesc.text = model.workTypeName
         remasrksDesc.text = model.remarks
-        clusterDesc.text = model.planName
+        clusterDesc.text = routes
+        //model.planName
         HQdesc.text = model.sfName
         if LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
             HQ.isHidden = true

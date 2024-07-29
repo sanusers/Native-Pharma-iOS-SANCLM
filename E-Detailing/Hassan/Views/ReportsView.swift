@@ -38,11 +38,16 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
                 case "DCR Approvals":
                     let vc = DCRapprovalVC.initWithStory()
                     welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
-                default:
                     
+                case "Leave Approvals":
                     let vc = LeaveApprovalVC.initWithStory()
                     welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
                     print("Yet to")
+                default:
+                    let vc = TourPlanApprovalVC.initWithStory()
+                    welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
+                    print("Yet to")
+               
                 }
             case .myResource:
                 
@@ -181,7 +186,9 @@ class ReportsView : BaseView {
     override func willAppear(baseVC: BaseViewController) {
         super.willAppear(baseVC: baseVC)
         self.reporsVC = baseVC as? ReportsVC
-      
+        if reporsVC.pageType == .approvals {
+            setPagetype(pagetype: reporsVC.pageType)
+        }
 
     }
     
@@ -251,16 +258,16 @@ class ReportsView : BaseView {
             
            
         case .approvals:
+            resouceHQholderVIew.isHidden = true
+            reportTitle.text = "Approvals"
             Shared.instance.showLoaderInWindow()
             reporsVC.fetchApprovals(vm: UserStatisticsVM()) {[weak self] approvalsCount in
                 Shared.instance.removeLoaderInWindow()
                 guard let welf = self, let approvalsCount = approvalsCount, !approvalsCount.apprCount.isEmpty else {return}
-                let dcrApprovalCount = approvalsCount.apprCount[0].dcrapprCount ?? 0
-                let leaveApprovalCount = approvalsCount.apprCount[0].leaveapprCount ?? 0
-                
-                welf.resouceHQholderVIew.isHidden = true
-                welf.reportTitle.text = "Approvals"
-                welf.contentDict = [["Leave Approvals" : "\(leaveApprovalCount)"],  ["DCR Approvals" : "\(dcrApprovalCount)"]]
+                let dcrApprovalCount = approvalsCount.apprCount[0].dcrapprCount ?? "0"
+                let leaveApprovalCount = approvalsCount.apprCount[0].leaveapprCount ?? "0"
+                let tpApprovalCount = approvalsCount.apprCount[0].tpapprCount ?? "0"
+                welf.contentDict = [["Leave Approvals" : "\(leaveApprovalCount)"],  ["DCR Approvals" : "\(dcrApprovalCount)"], ["TP Approvals" : "\(tpApprovalCount)"]]
                 welf.reportInfoArr = welf.generateModel(contentDict: welf.contentDict as! [[String: String]])
                 welf.toLoadData()
             }

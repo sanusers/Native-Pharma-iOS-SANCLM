@@ -173,7 +173,7 @@ extension PreCallVC: UITableViewDelegate, UITableViewDataSource, CollapsibleTabl
                     if weeklyoffSections[section].collapsed {
                         header?.collapseIV.image = UIImage(named: "chevlon.expand")
                     } else {
-                        header?.collapseIV.image = UIImage(named: "chevlon.collapse")
+                        header?.collapseIV.image = UIImage(named: "chevlon.expand")
                     }
 
                     let object = weeklyoffSections[section]
@@ -190,7 +190,7 @@ extension PreCallVC: UITableViewDelegate, UITableViewDataSource, CollapsibleTabl
                 if holidaysSections[section].collapsed {
                     header?.collapseIV.image = UIImage(named: "chevlon.expand")
                 } else {
-                    header?.collapseIV.image = UIImage(named: "chevlon.collapse")
+                    header?.collapseIV.image = UIImage(named: "chevlon.expand")
                 }
 
             let object = holidaysSections[section]

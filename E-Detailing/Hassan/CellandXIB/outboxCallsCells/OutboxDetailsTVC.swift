@@ -478,7 +478,7 @@ class OutboxDetailsTVC: UITableViewCell {
 
 
         }
-        callsCollapseIV.image = callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.collapse")
+        callsCollapseIV.image = callsExpandState == .callsNotExpanded ? UIImage(named: "chevlon.expand") : UIImage(named: "chevlon.expand")
 
     }
     

@@ -239,6 +239,41 @@ class UserStatisticsVM {
         })
     }
     
+    
+    func approveDCR(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: GeneralResponseModal.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
+    
+    func getTPapprovals(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[TourPlanApprovalModel],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [TourPlanApprovalModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
+    func getTPapprovalDetail(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[TourPlanApprovalDetailModel],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [TourPlanApprovalDetailModel].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
 }
 
 

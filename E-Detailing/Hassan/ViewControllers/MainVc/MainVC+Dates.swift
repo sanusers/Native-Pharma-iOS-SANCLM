@@ -281,7 +281,7 @@ extension MainVC {
                 let entityHomedata = HomeData(entity: entityDescription, insertInto: context)
 
                 entityHomedata.dcr_dt = date
-                entityHomedata.fw_Indicator =  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "1"  &&  tbName == "leave") ? "LAP" : (flag == "2"  &&  tbName == "dcr") ? "R" : ""
+                entityHomedata.fw_Indicator =  (flag == "1"  &&  tbName == "missed") ?  "M" : (flag == "1"  &&  tbName == "leave") ? "LAP" : (flag == "2"  &&  tbName == "dcr") ? "R" : (flag == "3"  &&  tbName == "dcr") ? "RE" : ""
                 
                 self.homeDataArr.append(entityHomedata)
             }

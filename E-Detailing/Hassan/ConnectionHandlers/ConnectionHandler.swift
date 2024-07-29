@@ -31,6 +31,8 @@ final class ConnectionHandler : NSObject {
         case  getSlides = "getslidedet"
         case approvalList = "getvwdcr"
         case approvalDetail = "getvwdcrone"
+        case tpApprovals = "gettpapproval"
+        case tpApprovalDetail = "gettpdetail"
     }
     
     static let shared = ConnectionHandler()
@@ -368,7 +370,8 @@ final class ConnectionHandler : NSObject {
                 }
             
                 
-                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.approvalDetail.rawValue) {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.approvalDetail.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.tpApprovals.rawValue) || (api == .getAllPlansData && data["tableName"] as! String == TableName.tpApprovalDetail.rawValue) {
+                    //gettpdetail
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
                     var encodedMyDayPlanResponseModelData : [MyDayPlanResponseModel]?
@@ -383,6 +386,66 @@ final class ConnectionHandler : NSObject {
                     var encodedSlidesResponse : [SlideDetailsResponse]?
                     var encodedApprovalListResponse : [ApprovalsListModel]?
                     var encodedApprovalDetailResponse : [ApprovalDetailsModel]?
+                    var encodedTPapprovalsResponse : [TourPlanApprovalModel]?
+                    var encodedTPapprovalDetailResponse : [TourPlanApprovalDetailModel]?
+                    
+                    
+                    if data["tableName"] as! String == TableName.tpApprovalDetail.rawValue {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TourPlanApprovalDetailModel].self) { result in
+                           // decodecObj
+                            switch result {
+                            case .success(let decodecObj):
+                                
+                                encodedTPapprovalDetailResponse = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedTPapprovalDetailResponse)
+    
+                                    // Convert Swift object to JSON string
+    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedTPapprovalDetailResponse) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+           
+                        }
+                        
+                    }
+                    
+                    if data["tableName"] as! String == TableName.tpApprovals.rawValue {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TourPlanApprovalModel].self) { result in
+                           // decodecObj
+                            switch result {
+                            case .success(let decodecObj):
+                                
+                                encodedTPapprovalsResponse = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedTPapprovalsResponse)
+    
+                                    // Convert Swift object to JSON string
+    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedTPapprovalsResponse) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+           
+                        }
+                    }
                     
                     if data["tableName"] as! String == TableName.approvalDetail.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [ApprovalDetailsModel].self) { result in
@@ -781,7 +844,7 @@ final class ConnectionHandler : NSObject {
                     if let data = anyData,
                        let json = JSON(data){
                         
-                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag || api == .approvals {
+                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag || api == .approvals || api == .dcrApproval {
                            
                             if json.isEmpty {
                                 responseHandler.handleFailure(value: json.status_message)

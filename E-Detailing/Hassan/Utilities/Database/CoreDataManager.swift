@@ -1519,6 +1519,7 @@ extension CoreDataManager {
                 CoreDataManager.shared.fetchDcrDates { dcrDates in
                     if dcrDates.isEmpty {
                         completion()
+                        return
                     }
                     let toDayDates = dcrDates.filter {
                         if $0.date?.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "yyyy-MM-dd") ==  Date().toString(format: "yyyy-MM-dd") {

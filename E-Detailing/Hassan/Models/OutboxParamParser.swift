@@ -469,17 +469,17 @@ class DCRCallObjectParser {
         self.dcrCall = updatedCallVM
         CoreDataManager.shared.tofetchaSavedCalls(editDate: updatedCallVM.dcrDate ?? Date(), callID: updatedCallVM.code) { addedDCRcall in
             
-            
-            
             dump(addedDCRcall)
             
+            guard let addedDCRcalls = addedDCRcall else {
+               // self.toCreateToast("Unable to edit selected call")
+                completion(OutboxModel())
+                return
+            }
             
             let context = self.context
          
-            guard let addedDCRcalls = addedDCRcall else {
-               // self.toCreateToast("Unable to edit selected call")
-                return
-            }
+
             
             var filteredcalls: [AddedDCRCall] = []
             
