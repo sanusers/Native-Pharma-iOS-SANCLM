@@ -268,7 +268,19 @@ class ReportsView : BaseView {
                 let dcrApprovalCount = approvalsCount.apprCount[0].dcrapprCount ?? "0"
                 let leaveApprovalCount = approvalsCount.apprCount[0].leaveapprCount ?? "0"
                 let tpApprovalCount = approvalsCount.apprCount[0].tpapprCount ?? "0"
-                welf.contentDict = [["Leave Approvals" : "\(leaveApprovalCount)"],  ["DCR Approvals" : "\(dcrApprovalCount)"], ["TP Approvals" : "\(tpApprovalCount)"]]
+                welf.contentDict.removeAll()
+                if leaveApprovalCount != "0" || !leaveApprovalCount.isEmpty {
+                    welf.contentDict.append(["Leave Approvals" : "\(leaveApprovalCount)"])
+                }
+                
+                if dcrApprovalCount != "0" ||  !dcrApprovalCount.isEmpty {
+                    welf.contentDict.append(["DCR Approvals" : "\(dcrApprovalCount)"])
+                }
+                
+                if tpApprovalCount != "0" || !tpApprovalCount.isEmpty {
+                    welf.contentDict.append(["TP Approvals" : "\(tpApprovalCount)"])
+                }
+                
                 welf.reportInfoArr = welf.generateModel(contentDict: welf.contentDict as! [[String: String]])
                 welf.toLoadData()
             }

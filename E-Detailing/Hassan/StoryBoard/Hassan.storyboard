@@ -196,7 +196,7 @@
                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XuO-Qt-gsa">
                                                                         <rect key="frame" x="0.0" y="0.0" width="90.5" height="33"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="TJy-t3-TXH">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="91" height="33"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="90.5" height="33"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemPinkColor"/>
@@ -259,7 +259,7 @@
                                                                         <visualEffectView opaque="NO" alpha="0.05000000074505806" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0on-AS-Tco">
                                                                             <rect key="frame" x="2" y="0.0" width="358.5" height="64"/>
                                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="NF0-wt-8i6">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="358" height="64"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="358.5" height="64"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             </view>
                                                                             <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -825,7 +825,7 @@
                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cV9-fd-EA4">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="41.5" height="29.5"/>
                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="yU0-I1-8PT">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="42" height="30"/>
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="29.5"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         </view>
                                                                                         <color key="backgroundColor" systemColor="systemGray6Color"/>
@@ -856,7 +856,7 @@
                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.14999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QTq-39-aDR">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="83" height="29.5"/>
                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="SHg-aJ-18f">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="83" height="30"/>
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="83" height="29.5"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         </view>
                                                                                         <color key="backgroundColor" systemColor="systemCyanColor"/>
@@ -1264,7 +1264,7 @@
                                                                     <visualEffectView opaque="NO" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p8p-7m-3oI">
                                                                         <rect key="frame" x="0.0" y="0.0" width="30.5" height="30.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Igx-l6-RqA">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="30" height="31"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="30.5" height="30.5"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemGreenColor"/>
@@ -1428,7 +1428,7 @@
                                                                     <visualEffectView opaque="NO" alpha="0.20000000298023224" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OYh-eI-a4p">
                                                                         <rect key="frame" x="1" y="1" width="163" height="41.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ZPg-te-AFp">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="163" height="41"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="163" height="41.5"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" systemColor="systemGreenColor"/>
@@ -3865,7 +3865,7 @@
                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.80000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tBq-Y7-Az0">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="41.5" height="29.5"/>
                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="J9C-KX-5Ot">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="42" height="29"/>
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="29.5"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         </view>
                                                                                         <color key="backgroundColor" systemColor="systemGray6Color"/>
@@ -4231,7 +4231,7 @@
                                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UyM-ES-8Pg">
                                                                                         <rect key="frame" x="5" y="0.0" width="25" height="25"/>
                                                                                         <subviews>
-                                                                                            <visualEffectView opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lWH-d2-ZA5">
+                                                                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lWH-d2-ZA5">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ZxI-FF-xeR">
                                                                                                     <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -4273,7 +4273,7 @@
                                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b91-Yg-UiO">
                                                                                         <rect key="frame" x="5" y="0.0" width="25" height="25"/>
                                                                                         <subviews>
-                                                                                            <visualEffectView opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aHK-Qp-yWo">
+                                                                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aHK-Qp-yWo">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="PEe-Vd-5be">
                                                                                                     <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -4315,7 +4315,7 @@
                                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="woC-vH-ZIa">
                                                                                         <rect key="frame" x="5" y="0.0" width="25" height="25"/>
                                                                                         <subviews>
-                                                                                            <visualEffectView opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pbA-yE-EPz">
+                                                                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pbA-yE-EPz">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="MWX-NE-VQT">
                                                                                                     <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -4357,7 +4357,7 @@
                                                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ja-CP-xs0">
                                                                                         <rect key="frame" x="5" y="0.0" width="25" height="25"/>
                                                                                         <subviews>
-                                                                                            <visualEffectView opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4A-Ro-MC4">
+                                                                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4A-Ro-MC4">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="cuA-aZ-AmH">
                                                                                                     <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -7731,7 +7731,7 @@
                                     <visualEffectView opaque="NO" alpha="0.30000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F1e-Cl-Kmz">
                                         <rect key="frame" x="0.0" y="0.0" width="1195.5" height="820"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="MGi-B8-WUw">
-                                            <rect key="frame" x="0.0" y="0.0" width="1196" height="820"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="1195.5" height="820"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -8437,7 +8437,7 @@
                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" alpha="0.10000000149011612" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pzC-ih-esu">
                                                                         <rect key="frame" x="2" y="0.0" width="352.5" height="42.5"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="wXJ-Lo-jIK">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="352" height="43"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="352.5" height="42.5"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         </view>
                                                                         <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="0.83143153530000002" colorSpace="custom" customColorSpace="sRGB"/>
@@ -9229,7 +9229,7 @@
                                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o5B-Ik-TvA">
                                                                                                         <rect key="frame" x="0.0" y="0.0" width="218" height="53.5"/>
                                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="8yt-oe-bL3">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="54"/>
+                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="53.5"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                         </view>
                                                                                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
@@ -9260,7 +9260,7 @@
                                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjI-eF-3YO">
                                                                                                         <rect key="frame" x="0.0" y="0.0" width="218.5" height="53.5"/>
                                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Jmh-Hp-dAu">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="219" height="54"/>
+                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218.5" height="53.5"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                         </view>
                                                                                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
@@ -9291,7 +9291,7 @@
                                                                                                     <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="twn-fX-LNl">
                                                                                                         <rect key="frame" x="0.0" y="0.0" width="218" height="53.5"/>
                                                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Fl3-Jf-OxK">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="54"/>
+                                                                                                            <rect key="frame" x="0.0" y="0.0" width="218" height="53.5"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                         </view>
                                                                                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
@@ -11982,7 +11982,7 @@
                                                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bNO-re-wEP">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="333.5" height="639"/>
                                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="JPU-g4-3Df">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="334" height="639"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="333.5" height="639"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 </view>
                                                                                 <blurEffect style="regular"/>
@@ -12607,13 +12607,13 @@
                                     <constraint firstAttribute="bottom" secondItem="1sh-qt-snf" secondAttribute="bottom" constant="15" id="xQk-ji-zKi"/>
                                 </constraints>
                             </view>
-                            <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HGj-VI-D9j">
+                            <view hidden="YES" alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HGj-VI-D9j">
                                 <rect key="frame" x="0.0" y="2" width="1180" height="820"/>
                                 <color key="backgroundColor" systemColor="labelColor"/>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kXl-xL-wU1"/>
-                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="HGj-VI-D9j" firstAttribute="height" secondItem="3AW-OW-V6K" secondAttribute="height" id="0tt-K4-b3z"/>
                             <constraint firstItem="QTz-h1-JTT" firstAttribute="height" secondItem="3AW-OW-V6K" secondAttribute="height" multiplier="0.1" id="7Ai-r5-zFt"/>

@@ -203,7 +203,7 @@ class LeaveApprovalView : BaseView {
 
     
     func setupUI() {
-        self.backgroundColor = .appSelectionColor
+        self.backgroundColor = .appGreyColor
         approvalDetailsTable.backgroundColor = .clear
         approvalDetailsTable.separatorStyle = .none
         approvalDetailsTable.layer.cornerRadius = 5

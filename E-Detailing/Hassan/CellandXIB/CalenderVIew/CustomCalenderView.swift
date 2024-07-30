@@ -200,8 +200,6 @@ extension CustomCalenderView : FSCalendarDelegate,FSCalendarDataSource,FSCalenda
         if !self.isPastDaysAllowed {
             if date <= today {
                 cell.customLabel.textColor = .appLightTextColor
-            } else {
-                cell.customLabel.textColor = .appTextColor
             }
         }
 

@@ -698,7 +698,7 @@ extension NearMeVC : collectionViewProtocols {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if let cell = collectionView.cellForItem(at: indexPath) as? DcrTagTitleCell {
-            cell.viewTitle.backgroundColor =  UIColor.label.withAlphaComponent(0.5)
+            cell.viewTitle.backgroundColor =  UIColor.label.withAlphaComponent(0.7)
             //UIColor.lightGray
         }
         

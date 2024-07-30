@@ -35,7 +35,7 @@ extension DCRapprovalView:  UITextFieldDelegate {
                 isSearched = true
                 self.selectedBrandsIndex = nil
                 self.approvalDetails = nil
-                //self.loadApprovalDetailTable()
+                self.loadApprovalDetailTable()
                 self.loadApprovalTable()
             } else {
                 isSearched = false
@@ -297,7 +297,7 @@ class DCRapprovalView : BaseView {
     }
     
     func setupUI() {
-        self.backgroundColor = .appSelectionColor
+        self.backgroundColor = .appGreyColor
         backgroundView.isHidden = true
         collectionHolderView.layer.cornerRadius = 5
         searchHolderView.layer.cornerRadius = 5

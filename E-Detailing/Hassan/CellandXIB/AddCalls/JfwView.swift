@@ -209,6 +209,7 @@ extension JfwView: UITableViewDelegate, UITableViewDataSource {
         
         
         vc.selectedJwID = selectedJwID
+        vc.menuDelegate = self
         self.rootVC?.modalPresentationStyle = .custom
         self.rootVC?.navigationController?.present(vc, animated: false)
         

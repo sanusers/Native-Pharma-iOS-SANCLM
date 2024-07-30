@@ -665,16 +665,19 @@ extension CoreDataManager {
 //    }
     
     func toRemoveAllCacheJointWorks() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CacheJointworks.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+      
+        let fetchRequest:  NSFetchRequest<CacheJointworks> = NSFetchRequest(entityName: "CacheJointworks")
+       // let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {
-            try context.execute(batchDeleteRequest)
+            let Jointworks = try context.fetch(fetchRequest)
+            for Jointwork in Jointworks {
+                context.delete(Jointwork)
+            }
+
             try context.save()
-            // completion()
         } catch {
             print("Error deleting slide brands: \(error)")
-            //  completion()
         }
     }
     

@@ -602,7 +602,7 @@ class DCRapprovalinfoView : BaseView {
     }
     
     func setupUI() {
-        self.backgroundColor = .appSelectionColor
+        self.backgroundColor = .appGreyColor
         collectionHolderView.layer.cornerRadius = 5
         searchHolderView.layer.cornerRadius = 5
         dismissVIew.layer.cornerRadius = 5

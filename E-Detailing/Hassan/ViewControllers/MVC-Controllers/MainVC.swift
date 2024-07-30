@@ -193,7 +193,6 @@ class MainVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       // toModifyDayStatus(dcrDate: Shared.instance.selectedDate.toString(format: "yyyy-MM-dd"))
         updateLinks()
         setupUI()
         addObservers()
@@ -201,40 +200,9 @@ class MainVC : UIViewController {
             guard let welf = self else {return}
             welf.btnCalenderSync(welf.btnSyncDate!)
         }
-        
-//makeAPIcallUsingURLSession()
-        
-       // btnCalenderSync(btnSyncDate!)
+       // fetchEmptyDates()
     }
     
-    
-//    func makeAPIcallUsingURLSession() {
-//  //      - "http://sanffa.info/iOSServer/db_api.php?axn=table/products"
-//    //    {"tableName":"getproducts","subdivision_code":"103,","Rsf":"MR7362","state_code":12,"sfcode":"MR7362","division_code":"70,","Designation":"SBE","sf_type":1}
-//        
-//        let endPointurl = URL(string: "http://sanffa.info/iOSServer/db_api.php?axn=table/products")
-//        let param = MasterSyncParams.productParams
-//        
-//        var request = URLRequest(url: endPointurl!)
-//        request.httpMethod = "POST"
-//     
-//        let boundary = UUID().uuidString
-//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-//        var data = Data()
-//        for(key, value) in param{
-//              
-//                data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-//                data.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
-//                data.append("\(value)".data(using: .utf8)!)
-//            }
-//        
-//        URLSession.shared.uploadTask(with: request, from: data) { data, response, error in
-//            let apiResponse = ObjectFormatter.shared.convertDataToJsonArr(data: data ?? Data())
-//            
-//            dump(apiResponse)
-//            
-//        }.resume()
-//    }
     
     func toPostAlldayPlan(completion: @escaping () -> ()) {
         
@@ -313,7 +281,7 @@ class MainVC : UIViewController {
                 let homeDataSyncOperation = BlockOperation {
                     let dispatchGroup = DispatchGroup()
                     dispatchGroup.enter()
-                    welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
+                    welf.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) {  _ in
                         dispatchGroup.leave()
                     }
                     dispatchGroup.wait()
@@ -2174,6 +2142,52 @@ extension MainVC {
         }
     }
     
+    func fetchEmptyDates()  {
+        let calendar = Calendar.current
+        let today = Date()
+        let twoMonthsBack = calendar.date(byAdding: .month, value: -2, to: today)!
+        let startOfTwoMonthsBack = calendar.date(from: calendar.dateComponents([.year, .month], from: twoMonthsBack))
+        let dates = getDates(from: startOfTwoMonthsBack ?? Date(), to: today)
+        dates.forEach { date in
+            dump(date.toString(format: "yyyy-MM-dd"))
+        }
+        let allDates =  dates.map { $0.toString(format: "yyyy-MM-dd") }
+        
+        let homeData = DBManager.shared.getHomeData()
+      
+        
+      
+        var plannedDates = homeData.map { $0.dcr_dt?.toDate(format: "yyyy-MM-dd").toString(format: "yyyy-MM-dd") }
+        
+        if let unsyncedHomeDta = DBManager.shared.geUnsyncedtHomeData() {
+            var unSyncedplannedDates = unsyncedHomeDta.map { $0.dcr_dt?.toDate(format: "yyyy-MM-dd").toString(format: "yyyy-MM-dd") }
+            plannedDates.append(contentsOf: unSyncedplannedDates)
+        }
+        // Convert plannedDates to a set for efficient lookups
+          let plannedDatesSet = Set(plannedDates)
+          
+          // Filter allDates to exclude dates present in plannedDatesSet
+          let filteredDates = allDates.filter { !plannedDatesSet.contains($0) }
+        
+         dump(filteredDates)
+    }
+ 
+
+    // Function to generate an array of dates from start date to end date
+    func getDates(from startDate: Date, to endDate: Date) -> [Date] {
+        let calendar = Calendar.current
+        var dates: [Date] = []
+        var currentDate = startDate
+        
+        while currentDate <= endDate {
+            dates.append(currentDate)
+            guard let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) else { break }
+            currentDate = nextDate
+        }
+        
+        return dates
+    }
+    
     func doSequentialFlow(completion: @escaping () -> () ) {
         setDCRdates {[weak self] sequenceDate  in
             guard let welf = self else {return}
@@ -3961,7 +3975,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             if obj_sections[section].collapsed {
                 header?.collapseIV.image = UIImage(named: "chevlon.expand")
             } else {
-                header?.collapseIV.image = UIImage(named: "chevlon.expand")
+                header?.collapseIV.image = UIImage(named: "chevlon.collapse")
             }
             header?.refreshdelegate = self
             
@@ -4376,6 +4390,7 @@ extension MainVC : outboxCollapseTVCDelegate {
             Shared.instance.showLoaderInWindow()
             toPostDayplan(byDate: refreshDate, istoupdateUI: false) { [weak self] in
                 guard let welf = self else {return}
+              
                 welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _  in
                     welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
                         welf.toUploadWindups(date: refreshDate) { _ in

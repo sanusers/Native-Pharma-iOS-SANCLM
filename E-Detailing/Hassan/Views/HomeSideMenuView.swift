@@ -204,6 +204,8 @@ class HomeSideMenuView : BaseView{
         chemistFencingViewWidthConstraint.constant = 0
         stockistFencingViewWidthConstraint.constant = 0
         unlistedDoctorFencingViewWidthConstraint.constant = 0
+        sequentialViewWidthConstraint.constant = 0
+        
         sequentialView.isHidden = true
         doctorFencingView.isHidden = true
         geoCheckView.isHidden = true
@@ -216,7 +218,7 @@ class HomeSideMenuView : BaseView{
         locationBtn.isHidden = geoFencingEnabled ? false : true
         
         if isSequentialDCRenabled {
-            unlistedDoctorFencingViewWidthConstraint.constant = 35
+            sequentialViewWidthConstraint.constant = 35
             sequentialVXview.backgroundColor = .appDeepBrown
             sequentialView.layer.cornerRadius = 25 / 2
             sequentialView.isHidden = false
@@ -315,10 +317,12 @@ class HomeSideMenuView : BaseView{
         let nearMe : MenuItems = MenuItems(menuName: "Near Me", menuIcon: UIImage(named: "SideMenuNearMe") ?? UIImage(), VC: nearMeVC)
         menuItemArr.append(nearMe)
         
-        
-        let approvalsVC = ReportsVC.initWithStory(pageType: .approvals)
-        let approvals : MenuItems = MenuItems(menuName: "Approvals", menuIcon: UIImage(named: "approval") ?? UIImage(), VC: approvalsVC)
-        menuItemArr.append(approvals)
+        if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isMR) {
+            let approvalsVC = ReportsVC.initWithStory(pageType: .approvals)
+            let approvals : MenuItems = MenuItems(menuName: "Approvals", menuIcon: UIImage(named: "approval") ?? UIImage(), VC: approvalsVC)
+            menuItemArr.append(approvals)
+        }
+
         
 //        let quiz : MenuItems = MenuItems(menuName: "Quiz", menuIcon: UIImage(named: "SideMenuQuiz") ?? UIImage(), VC: nil)
 //        menuItemArr.append(quiz)

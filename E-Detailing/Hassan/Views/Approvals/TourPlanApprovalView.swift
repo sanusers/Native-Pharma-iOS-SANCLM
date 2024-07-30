@@ -274,7 +274,7 @@ class TourPlanApprovalView : BaseView {
     }
 
     func setupUI() {
-        self.backgroundColor = .appSelectionColor
+        self.backgroundColor = .appGreyColor
         rejectView.isHidden = true
         approveView.isHidden = true
         backgroundView.isHidden = true

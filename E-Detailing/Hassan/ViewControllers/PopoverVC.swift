@@ -78,6 +78,8 @@ class PopOverVC: UIViewController {
             customMarkerView.isHidden = false
             timeInfoView.isHidden = true
             rcpaInfoView.isHidden = true
+            self.contentTable.isHidden = true
+            graphInfoView.isHidden = true
             print("Yet to implement")
             setCustomerInfo()
             
