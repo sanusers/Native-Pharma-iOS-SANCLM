@@ -240,6 +240,18 @@ class UserStatisticsVM {
     }
     
     
+    
+    func getLeaveArrovalDetail(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<[LeaveApprovalDetail],UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: [LeaveApprovalDetail].self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
     func approveDCR(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
         ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
             .responseDecode(to: GeneralResponseModal.self, { (json) in
@@ -273,6 +285,19 @@ class UserStatisticsVM {
             result(.failure(UserStatisticsError.unableConnect))
         })
     }
+    
+    
+    func approveTP(params: JSON, api : APIEnums, paramData: JSON, _ result : @escaping (Result<GeneralResponseModal,UserStatisticsError>) -> Void) {
+        ConnectionHandler.shared.uploadRequest(for: api, params: params, data: paramData)
+            .responseDecode(to: GeneralResponseModal.self, { (json) in
+            result(.success(json))
+            dump(json)
+        }).responseFailure({ (error) in
+            print(error.description)
+            result(.failure(UserStatisticsError.unableConnect))
+        })
+    }
+    
     
 }
 

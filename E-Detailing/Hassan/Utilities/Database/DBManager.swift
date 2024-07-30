@@ -629,10 +629,6 @@ class DBManager {
                     saturdays.append(date)
                 }
                 
-//                
-//                if calendar.component(.weekday, from: date) == weekoffday { // Sunday is represented as 1, so Saturday is 7
-//                    saturdays.append(date)
-//                }
             }
         }
         

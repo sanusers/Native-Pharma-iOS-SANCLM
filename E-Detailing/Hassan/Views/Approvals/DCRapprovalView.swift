@@ -280,6 +280,11 @@ class DCRapprovalView : BaseView {
     }
     
     func callAPI() {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+            self.showAlert(desc: "Please connect to internet to fetch approvals.")
+            return
+        }
+        
         Shared.instance.showLoaderInWindow()
         dcrApprovalVC.fetchApprovalList(vm: UserStatisticsVM()) {[weak self] approvalist in
             Shared.instance.removeLoaderInWindow()
@@ -429,9 +434,10 @@ extension DCRapprovalView : addedSubViewsDelegate {
     func showAlert(desc: String) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
-        commonAlert.addAdditionalCancelAction {
+        commonAlert.addAdditionalOkAction(isForSingleOption: true, customAction: {
             print("no action")
-        }
+            self.dcrApprovalVC.navigationController?.popViewController(animated: true)
+        })
     }
     
     

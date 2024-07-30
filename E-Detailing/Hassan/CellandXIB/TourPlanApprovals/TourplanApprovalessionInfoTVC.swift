@@ -114,7 +114,16 @@ class TourplanApprovalessionInfoTVC: UITableViewCell {
         
         @IBOutlet var unlistedDocSeperator: UIView!
 
-        
+    @IBOutlet var lblJWcount: UILabel!
+    
+    @IBOutlet var lblHQcount: UILabel!
+    
+    @IBOutlet var lblULdocCount: UILabel!
+    @IBOutlet var lblStockistCount: UILabel!
+    @IBOutlet var lblChemCount: UILabel!
+    @IBOutlet var lblDocCount: UILabel!
+    @IBOutlet var lblClusterCount: UILabel!
+    
         override func awakeFromNib() {
             super.awakeFromNib()
             // Initialization code
@@ -127,20 +136,20 @@ class TourplanApprovalessionInfoTVC: UITableViewCell {
         func setupUI() {
             
             workselectionHolder.backgroundColor =  .appSelectionColor
-            workselectionHolder.layer.cornerRadius = 3
+            workselectionHolder.layer.cornerRadius = 5
             let seperators : [UIView] =  [wtSeperator, hqSeperator, clusterSerperator, jointcallSeperator, docSeperator, chemistSeperator, stockistSeperator, unlistedDocSeperator]
             
             seperators.forEach { view in
                 view.backgroundColor = .appSelectionColor
             }
             
-            let labels : [UILabel] = [lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblstockist, lblunlistedDoc, remarksDesc]
+            let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblstockist, lblunlistedDoc, remarksDesc]
             labels.forEach { label in
                 label.textColor = .appTextColor
                 label.setFont(font: .medium(size: .BODY))
             }
             
-            let titleLabels : [UILabel] = [lblWorkType, clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle, remarksTitle]
+            let titleLabels : [UILabel] = [ clusterTitle, headQuartersTitle, jointCallTitle, listedDocTitle,  chemistTitle, stockistTitle, newCustomersTitle, remarksTitle]
             titleLabels.forEach { label in
                 label.textColor = .appLightTextColor
                 label.setFont(font: .bold(size: .SMALL))

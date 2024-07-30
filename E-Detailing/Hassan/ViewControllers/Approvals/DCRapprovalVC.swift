@@ -128,7 +128,7 @@ class DCRapprovalVC: BaseViewController {
 
       //  http://sanffa.info/iOSServer/db_api.php/?axn=save%2Fapprovals
         
-        guard let approvalList = dcrApprovalView.approvalList,  !approvalList.isEmpty else {
+        guard let approvalList = dcrApprovalView.isSearched ?  dcrApprovalView.filteredApprovalList : dcrApprovalView.approvalList,  !approvalList.isEmpty else {
             return
         }
         
@@ -148,7 +148,7 @@ class DCRapprovalVC: BaseViewController {
         
      //   model.activityDate.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
         
-        param["date"] = dcrApprovalView.approvalList?[dcrApprovalView.selectedBrandsIndex ?? 0].activityDate
+        param["date"] = approvalList[dcrApprovalView.selectedBrandsIndex ?? 0].activityDate
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
         var toSendData = [String : Any]()
          toSendData["data"] = jsonDatum
@@ -169,7 +169,8 @@ class DCRapprovalVC: BaseViewController {
     }
     
     func dcrRejectAPI(vm: UserStatisticsVM, completion: @escaping(GeneralResponseModal?) -> ()) {
-        guard let approvalList = dcrApprovalView.approvalList,  !approvalList.isEmpty else {
+        
+        guard let approvalList = dcrApprovalView.isSearched ?  dcrApprovalView.filteredApprovalList : dcrApprovalView.approvalList,  !approvalList.isEmpty else {
             return
         }
 
@@ -194,7 +195,7 @@ class DCRapprovalVC: BaseViewController {
         param["reason"] = self.dcrApprovalView.dayRemarks
      //   model.activityDate.toDate(format: "dd/MM/yyyy").toString(format: "d MMM yyyy")
         
-        param["date"] = dcrApprovalView.approvalList?[dcrApprovalView.selectedBrandsIndex ?? 0].activityDate
+        param["date"] = approvalList[dcrApprovalView.selectedBrandsIndex ?? 0].activityDate
         let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
         var toSendData = [String : Any]()
          toSendData["data"] = jsonDatum

@@ -9,6 +9,46 @@ import Foundation
 import UIKit
 import CoreData
 
+extension TourPlanApprovalView:  UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text as NSString? {
+            let newText = text.replacingCharacters(in: range, with: string).lowercased()
+            print("New text: \(newText)")
+            
+            
+            var filteredlist = [TourPlanApprovalModel]()
+            filteredlist.removeAll()
+            var isMatched = false
+            approvalList?.forEach({ list in
+                if list.sfName.lowercased().contains(newText) {
+                    filteredlist.append(list)
+                    isMatched = true
+                    
+                }
+            })
+            
+            if newText.isEmpty {
+               filteredApprovalList = self.approvalList
+                self.loadApprovalTable()
+            } else if isMatched {
+                filteredApprovalList = filteredlist
+                isSearched = true
+                self.selectedBrandsIndex = nil
+                self.approvalDetails = nil
+                //self.loadApprovalDetailTable()
+                self.loadApprovalTable()
+            } else {
+                isSearched = false
+                self.loadApprovalTable()
+                print("Not matched")
+            }
+            
+            return true
+        }
+        return true
+    }
+}
+
 extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
@@ -16,8 +56,13 @@ extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
             guard let approvalList = isSearched ? filteredApprovalList : approvalList else { return 0}
             return approvalList.count
          //   return 10
+        case approvalDetailsTable:
+            guard let approvalDetails = self.approvalDetails else {return 0}
+            dump(approvalDetails.count)
+            return approvalDetails.count
+            
         default:
-            return 2
+            return 0
         }
         
       
@@ -28,26 +73,37 @@ extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
         switch tableView {
         case approvalTable :
             return tableView.height / 11
-        default:
+        case approvalDetailsTable:
             switch indexPath.row {
                 
             case 0:
-                //top - 10 || MR name - 60 ||Date info - 60 || work type info 2 *  90 (Max) || bottom 15
+                ///top - 10 || MR name - 60 ||Date info - 60 || work type info 2 *  90 (Max) || bottom 15
                 return 10 + 60 + 60 + 15
-            case 1:
-                //session height - 670 + 100
+            default :
+              //  return 10 + 60 + 10
+              ///  session height - 670 + 100
                 guard let approvalDetails = self.approvalDetails else {  return 0 }
                 let model = approvalDetails[indexPath.row]
+                
                 if !model.isExtended {
                    return 10 + 60 + 10
                 } else {
-                    return 10 + 60 + 670 + 100  + 10
+                    var cellHeight: CGFloat = 0
+                   let sessions = convertToSessionDetails(from: model)
+                    sessions.forEach { aSessionDetail in
+                        if aSessionDetail.FWFlg == "F" {
+                            cellHeight += 670 + 100
+                         
+                       } else {
+                           cellHeight +=  60 + 20 + 100
+                        
+                       }
+                    }
+                    return 10 + 60 + cellHeight
                 }
-               
-            default:
-                return 0
-                
             }
+        default:
+            return 0
         }
         
       
@@ -70,7 +126,7 @@ extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
             
             guard let approvalList = isSearched ? filteredApprovalList : approvalList  else {
                 return UITableViewCell()
-           }
+            }
             let model = approvalList[indexPath.row]
             cell.populateCell(model)
             
@@ -86,59 +142,57 @@ extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
                 guard let welf = self else {return}
                 welf.selectedBrandsIndex = indexPath.row
                 welf.approvalTable.reloadData()
-              //  welf.approvalCollection.reloadData()
-               // welf.loadApprovalDetailTable()
+                //  welf.approvalCollection.reloadData()
+                // welf.loadApprovalDetailTable()
                 Shared.instance.showLoaderInWindow()
                 let additionalParam = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
                 welf.tourPlanApprovalVC.getTPapprovalDetail(additionalparam: additionalParam, vm: UserStatisticsVM()) { approvalDetailModel in
                     Shared.instance.removeLoaderInWindow()
                     guard let approvalDetailModel = approvalDetailModel else {return}
-                    //dump(approvalDetailModel)
+                    dump(approvalDetailModel)
                     welf.selectedType = .All
                     welf.approvalDetails = approvalDetailModel
+                    welf.rejectView.isHidden = false
+                    welf.approveView.isHidden = false
                     welf.loadApprovalDetailTable()
                 }
             }
             
-     return cell
-        default:
+            return cell
+        case approvalDetailsTable:
             switch indexPath.row {
             case 0:
                 let cell: TourPlanApprovalinfoTVC = approvalDetailsTable.dequeueReusableCell(withIdentifier: "TourPlanApprovalinfoTVC") as! TourPlanApprovalinfoTVC
                 cell.selectionStyle = .none
                 guard let approvalDetails = self.approvalDetails, let approvalList = approvalList?[selectedBrandsIndex ?? 0] else {return UITableViewCell()}
-               
                 cell.toPopulatecell(model: approvalDetails, list: approvalList)
                 return cell
                 
-            case 1:
+            default:
                 let cell: TourplanApprovalDetailedInfoTVC = tableView.dequeueReusableCell(withIdentifier: "TourplanApprovalDetailedInfoTVC", for: indexPath) as! TourplanApprovalDetailedInfoTVC
-
                 guard let approvalDetails = self.approvalDetails else {  return UITableViewCell() }
                 let model = approvalDetails[indexPath.row]
                 cell.populateCell(model: model)
-                
                 cell.chevlonIV.addTap {[weak self] in
-                    guard let welf = self else {return}
-                    model.isExtended = !model.isExtended
-                    
-                    welf.loadApprovalDetailTable()
+                                        guard let welf = self else {return}
+                                        model.isExtended = !model.isExtended
+                                        welf.loadApprovalDetailTable()
                 }
                 cell.selectionStyle = .none
                 return cell
-            default:
-                return UITableViewCell()
             }
-          
+            
+            
+        default:
+            return UITableViewCell()
         }
-        
 
     }
     
     
 }
 
-class TourPlanApprovalView : BaseView, UITextFieldDelegate {
+class TourPlanApprovalView : BaseView {
     
     
     @IBOutlet var approvalTitle: UILabel!
@@ -199,11 +253,19 @@ class TourPlanApprovalView : BaseView, UITextFieldDelegate {
     }
     
     func callAPI() {
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+            self.showAlert(desc: "Please connect to internet to fetch approvals.")
+            return
+        }
         Shared.instance.showLoaderInWindow()
         tourPlanApprovalVC.fetchTPapproval(vm: UserStatisticsVM()) {[weak self] approvalist in
             Shared.instance.removeLoaderInWindow()
             guard let welf = self, let approvalist = approvalist else {return}
             welf.approvalList = approvalist
+            welf.approvalDetails = nil
+            welf.loadApprovalDetailTable()
+            welf.approveView.isHidden = true
+            welf.rejectView.isHidden = true
             welf.loadApprovalTable()
           //  loadApprovalDetailTable()
          //   welf.dcrApprovalVC.fetchFirstIndex()
@@ -213,6 +275,8 @@ class TourPlanApprovalView : BaseView, UITextFieldDelegate {
 
     func setupUI() {
         self.backgroundColor = .appSelectionColor
+        rejectView.isHidden = true
+        approveView.isHidden = true
         backgroundView.isHidden = true
         collectionHolderView.layer.cornerRadius = 5
         searchHolderView.layer.cornerRadius = 5
@@ -250,13 +314,20 @@ class TourPlanApprovalView : BaseView, UITextFieldDelegate {
             self.tourPlanApprovalVC.navigationController?.popViewController(animated: true)
         }
         
-        rejectView.addTap { [weak self] in
-            guard let welf = self else {return}
-            if !welf.isRemarksadded && welf.dayRemarks.isEmpty {
-                welf.deviateAction(isForremarks: false)
-                return
-            }
-           
+//        rejectView.addTap { [weak self] in
+//            guard let welf = self else {return}
+//            if !welf.isRemarksadded && welf.dayRemarks.isEmpty {
+//                welf.deviateAction(isForremarks: false)
+//                return
+//            }
+            
+            rejectView.addTap { [weak self] in
+                guard let welf = self else {return}
+                if !welf.isRemarksadded && welf.dayRemarks.isEmpty {
+                    welf.deviateAction(isForremarks: false)
+                    return
+                }
+            
         }
         
         backgroundView.addTap { [weak self] in
@@ -265,10 +336,39 @@ class TourPlanApprovalView : BaseView, UITextFieldDelegate {
         }
         
         approveView.addTap {[weak self] in
-            //guard let welf = self else {return}
-             print("Yet to")
-
+            guard let welf = self else {return}
+            guard let approvalDetails = welf.approvalDetails else {return}
+            let model = approvalDetails[welf.selectedBrandsIndex ?? 0]
+            let param = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
+            welf.tourPlanApprovalVC.approveAPI(additionalparam: param, vm: UserStatisticsVM()) { response in
+                if response?.isSuccess ?? false  {
+                    welf.toCreateToast("Tout plan Approved.")
+                    welf.callAPI()
+                } else {
+                    welf.toCreateToast("Failed to approve. Try again later")
+                }
+            
+                
+            }
         }
+        
+//        rejectView.addTap {[weak self] in
+//            guard let welf = self else {return}
+//            guard let approvalDetails = welf.approvalDetails else {return}
+//            let model = approvalDetails[welf.selectedBrandsIndex ?? 0]
+//            let param = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
+//            welf.tourPlanApprovalVC.rejectAPI(additionalparam: param, vm: UserStatisticsVM()) { response in
+//                if response?.isSuccess ?? false  {
+//                    welf.toCreateToast(response?.msg ?? "")
+//                    welf.callAPI()
+//                } else {
+//                    welf.toCreateToast("Failed to approve. Try again later")
+//                }
+//          
+//                
+//            }
+//        }
+        
         
     }
     
@@ -301,7 +401,80 @@ class TourPlanApprovalView : BaseView, UITextFieldDelegate {
         tpDeviateReasonView?.setupui()
         self.addSubview(tpDeviateReasonView ?? TPdeviateReasonView())
     }
-    
+    func convertToSessionDetails(from model: TourPlanApprovalDetailModel) -> [SessionDetail] {
+        var sessionDetails = [SessionDetail]()
+
+        // Create first SessionDetail
+        let session1 = SessionDetail()
+        session1.workTypeCode = model.wtCode
+        session1.FWFlg = model.fwFlg
+        session1.HQCodes = model.hqCodes
+        session1.HQNames = model.hqNames
+        session1.WTCode = model.wtCode
+        session1.WTName = model.wtName
+        session1.chemCode = model.chemCode
+        session1.chemName = model.chemName
+        session1.clusterCode = model.clusterCode
+        session1.clusterName = model.clusterName
+        session1.drCode = model.drCode
+        session1.drName = model.drName
+        session1.jwCode = model.jwCodes
+        session1.jwName = model.jwNames
+        session1.remarks = model.dayRemarks
+        session1.stockistCode = model.stockistCode
+        session1.stockistName = model.stockistName
+        sessionDetails.append(session1)
+
+        guard model.wtCode2 != "" else {
+            return sessionDetails
+        }
+        // Create second SessionDetail
+        let session2 = SessionDetail()
+        session2.workTypeCode = model.wtCode2
+        session2.FWFlg = model.fwFlg2
+        session2.HQCodes = model.hqCodes2
+        session2.HQNames = model.hqNames2
+        session2.WTCode = model.wtCode2
+        session2.WTName = model.wtName2
+        session2.chemCode = model.chemTwoCode
+        session2.chemName = model.chemTwoName
+        session2.clusterCode = model.clusterCode2
+        session2.clusterName = model.clusterName2
+        session2.drCode = model.drTwoCode
+        session2.drName = model.drTwoName
+        session2.jwCode = model.jwCodes2
+        session2.jwName = model.jwNames2
+        session2.remarks = model.dayRemarks2
+        session2.stockistCode = model.stockistTwoCode
+        session2.stockistName = model.stockistTwoName
+        sessionDetails.append(session2)
+        
+        guard model.wtCode3 != "" else {
+            return sessionDetails
+        }
+        // Create third SessionDetail
+        let session3 = SessionDetail()
+        session3.workTypeCode = model.wtCode3
+        session3.FWFlg = model.fwFlg3
+        session3.HQCodes = model.hqCodes3
+        session3.HQNames = model.hqNames3
+        session3.WTCode = model.wtCode3
+        session3.WTName = model.wtName3
+        session3.chemCode = model.chemThreeCode
+        session3.chemName = model.chemThreeName
+        session3.clusterCode = model.clusterCode3
+        session3.clusterName = model.clusterName3
+        session3.drCode = model.drThreeCode
+        session3.drName = model.drThreeName
+        session3.jwCode = model.jwCodes3
+        session3.jwName = model.jwNames3
+        session3.remarks = model.dayRemarks3
+        session3.stockistCode = model.stockistThreeCode
+        session3.stockistName = model.stockistThreeName
+        sessionDetails.append(session3)
+
+        return sessionDetails
+    }
 }
 extension TourPlanApprovalView : addedSubViewsDelegate {
     func didUpdateCustomerCheckin(dcrCall: CallViewModel) {
@@ -325,9 +498,10 @@ extension TourPlanApprovalView : addedSubViewsDelegate {
     func showAlert(desc: String) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
-        commonAlert.addAdditionalCancelAction {
+        commonAlert.addAdditionalOkAction(isForSingleOption: true, customAction: {
             print("no action")
-        }
+            self.tourPlanApprovalVC.navigationController?.popViewController(animated: true)
+        })
     }
     
     
@@ -378,7 +552,22 @@ extension TourPlanApprovalView : SessionInfoTVCDelegate {
             case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
-
+                guard let approvalDetails = approvalDetails else {return}
+                let model = approvalDetails[selectedBrandsIndex ?? 0]
+                let param = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
+                tourPlanApprovalVC.rejectAPI(additionalparam: param, vm: UserStatisticsVM()) {[weak self] response in
+                    guard let welf = self else {return}
+                    welf.isRemarksadded = false
+                    welf.dayRemarks = ""
+                    if response?.isSuccess ?? false  {
+                        welf.toCreateToast(response?.msg ?? "")
+                        welf.callAPI()
+                    } else {
+                        welf.toCreateToast("Failed to approve. Try again later")
+                    }
+              
+                    
+                }
             default:
                 aAddedView.isUserInteractionEnabled = true
                 aAddedView.alpha = 1

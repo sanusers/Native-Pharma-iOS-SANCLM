@@ -26,8 +26,11 @@ class TourPlanApprovalinfoTVC: UITableViewCell {
     func toPopulatecell(model: [TourPlanApprovalDetailModel], list: TourPlanApprovalModel) {
         mrNameLbl.text = list.sfName
         tourPlannedforLbl.text = "\(list.mnth) \(list.yr)"
-        totalPlannedDaysLbl.text = "\(model.count)"
-        weeklyoffDaysLbl.text = "\(model.filter { $0.fwFlg == "W" }.count)" 
+        
+        let weeklyoffs = (model.filter { $0.fwFlg == "W" }.count)
+        
+        totalPlannedDaysLbl.text = "\(model.count - weeklyoffs)"
+        weeklyoffDaysLbl.text = "\(weeklyoffs)"
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -122,3 +122,44 @@ class ApprovalDetailsModel: Codable {
         self.promotedProduct = container.safeDecodeValue(forKey: .promotedProduct)
     }
 }
+
+
+class LeaveApprovalDetail: Codable {
+    let lvID, sfCode, sfName: String
+    let fromDate, toDate: DateInfo
+    let fDate, tDate, sfEmpID, noOfDays: String
+    let lAvail, reason, address, lType: String
+
+    enum CodingKeys: String, CodingKey {
+        case lvID = "LvID"
+        case sfCode = "Sf_Code"
+        case sfName = "SFName"
+        case fromDate = "From_Date"
+        case toDate = "To_Date"
+        case fDate = "FDate"
+        case tDate = "TDate"
+        case sfEmpID = "Sf_Emp_Id"
+        case noOfDays = "No_of_Days"
+        case lAvail = "LAvail"
+        case reason = "Reason"
+        case address = "Address"
+        case lType = "LType"
+    }
+    
+    required init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.lvID = try container.decode(String.self, forKey: .lvID)
+        self.sfCode = try container.decode(String.self, forKey: .sfCode)
+        self.sfName = try container.decode(String.self, forKey: .sfName)
+        self.fromDate = try container.decode(DateInfo.self, forKey: .fromDate)
+        self.toDate = try container.decode(DateInfo.self, forKey: .toDate)
+        self.fDate = try container.decode(String.self, forKey: .fDate)
+        self.tDate = try container.decode(String.self, forKey: .tDate)
+        self.sfEmpID = try container.decode(String.self, forKey: .sfEmpID)
+        self.noOfDays = try container.decode(String.self, forKey: .noOfDays)
+        self.lAvail = try container.decode(String.self, forKey: .lAvail)
+        self.reason = try container.decode(String.self, forKey: .reason)
+        self.address = try container.decode(String.self, forKey: .address)
+        self.lType = try container.decode(String.self, forKey: .lType)
+    }
+}

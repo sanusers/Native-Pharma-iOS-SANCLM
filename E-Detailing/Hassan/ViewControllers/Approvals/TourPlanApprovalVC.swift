@@ -75,9 +75,6 @@ class TourPlanApprovalVC: BaseViewController {
 //        {"AppName":"SAN ZEN","Appver":"Test.H.8","Mod":"Android-Edet","sf_emp_id":"2","sfname":"SELVA ASM","Device_version":"10","Device_name":"HUAWEI - KOB2-L09","language":"en","sf_type":"2","Designation":"MGR","state_code":"12","subdivision_code":"170,","key":"mark2023","Configurl":"http:\/\/sanffa.info\/","battery":"25","tableName":"gettpdetail","sfcode":"MGR1705","Month":"7","Year":"2024","division_code":"44,","Rsf":"MG1705"}
         
         var param: [String: Any] = [:]
-        param["AppName"] = "SAN ZEN"
-        param["Appver"] = "Test.H.8"
-        param["Mod"] = "Android-Edet"
         param["sf_emp_id"] = appsetup.sfEmpId
         param["sfname"] = appsetup.sfName
         param["sf_type"] = "\(appsetup.sfType ?? 0)"
@@ -110,6 +107,81 @@ class TourPlanApprovalVC: BaseViewController {
         }
     }
     
+    func approveAPI(additionalparam: TPdetailParam, vm: UserStatisticsVM, completion : @escaping(GeneralResponseModal?) ->()) {
+       // {"AppName":"SAN ZEN","Appver":"Test.H.8","Mod":"Android-Edet","sf_emp_id":"2","sfname":"SELVA ASM","Device_version":"10","Device_name":"HUAWEI - KOB2-L09","language":"en","sf_type":"2","Designation":"MGR","state_code":"12","subdivision_code":"170,","key":"mark2023","Configurl":"http:\/\/sanffa.info\/","tableName":"savetpapproval","sfcode":"MGR1244","Month":"7","Year":"2024","division_code":"44,","Rsf":"MGR3313"}
+      //   http://sanffa.info/iOSServer/db_api.php/?axn=save%2Ftp
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        var param: [String: Any] = [:]
+        param["sf_emp_id"] = appsetup.sfEmpId
+        param["sfname"] = appsetup.sfName
+        param["sf_type"] = "\(appsetup.sfType ?? 0)"
+        param["Designation"] = appsetup.desig
+        param["state_code"] = "\(appsetup.stateCode ?? 0)"
+        param["subdivision_code"] = appsetup.subDivisionCode
+        param["tableName"] = "savetpapproval"
+        param["sfcode"] =  appsetup.sfCode
+        param["Month"] =  additionalparam.month
+        param["Year"] = additionalparam.year
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] =   additionalparam.sfcode
+        //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+        var toSendData = [String : Any]()
+         toSendData["data"] = jsonDatum
+        
+        vm.approveTP(params: toSendData, api: .sendToApproval, paramData: param) { result in
+            
+            switch result {
+                
+            case .success(let response):
+                dump(response)
+                completion(response)
+            case .failure(let error):
+                dump(error)
+                completion(nil)
+            }
+            
+        }
+        
+    }
+    
+    func rejectAPI(additionalparam: TPdetailParam, vm: UserStatisticsVM, completion : @escaping(GeneralResponseModal?) ->()) {
+       // {"AppName":"SAN ZEN","Appver":"Test.H.8","Mod":"Android-Edet","sf_emp_id":"2","sfname":"SELVA ASM","Device_version":"10","Device_name":"HUAWEI - KOB2-L09","language":"en","sf_type":"2","Designation":"MGR","state_code":"12","subdivision_code":"170,","key":"mark2023","Configurl":"http:\/\/sanffa.info\/","tableName":"savetpreject","sfcode":"MGR1244","Month":"6","Year":"2024","reason":"9kjhu\n","division_code":"44,","Rsf":"MGR3313"}
+        // http://sanffa.info/iOSServer/db_api.php/?axn=save%2Ftp
+        let appsetup = AppDefaults.shared.getAppSetUp()
+        var param: [String: Any] = [:]
+        param["sf_emp_id"] = appsetup.sfEmpId
+        param["sfname"] = appsetup.sfName
+        param["sf_type"] = "\(appsetup.sfType ?? 0)"
+        param["Designation"] = appsetup.desig
+        param["state_code"] = "\(appsetup.stateCode ?? 0)"
+        param["subdivision_code"] = appsetup.subDivisionCode
+        param["tableName"] = "savetpreject"
+        param["sfcode"] =  appsetup.sfCode
+        param["Month"] =  additionalparam.month
+        param["Year"] = additionalparam.year
+        param["division_code"] = appsetup.divisionCode
+        param["Rsf"] =   additionalparam.sfcode
+        param["reason"] = self.tourPlanApprovalView.dayRemarks
+        //LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+        let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: param)
+        var toSendData = [String : Any]()
+         toSendData["data"] = jsonDatum
+        
+        vm.approveTP(params: toSendData, api: .sendToApproval, paramData: param) { result in
+            
+            switch result {
+                
+            case .success(let response):
+                dump(response)
+                completion(response)
+            case .failure(let error):
+                dump(error)
+                completion(nil)
+            }
+            
+        }
+    }
     
   
 }

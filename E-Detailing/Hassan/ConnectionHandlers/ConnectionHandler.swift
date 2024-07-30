@@ -33,6 +33,7 @@ final class ConnectionHandler : NSObject {
         case approvalDetail = "getvwdcrone"
         case tpApprovals = "gettpapproval"
         case tpApprovalDetail = "gettpdetail"
+        case getLeaveApproval = "getlvlapproval"
     }
     
     static let shared = ConnectionHandler()
@@ -370,7 +371,7 @@ final class ConnectionHandler : NSObject {
                 }
             
                 
-                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.approvalDetail.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.tpApprovals.rawValue) || (api == .getAllPlansData && data["tableName"] as! String == TableName.tpApprovalDetail.rawValue) {
+                if api == .getReports || api == .getTodayCalls || api == .masterData || api == .checkin || api == .home || api == .leaveinfo  || (api == .approvals && data["tableName"] as! String == TableName.approvalList.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.approvalDetail.rawValue) || (api == .approvals && data["tableName"] as! String == TableName.tpApprovals.rawValue) || (api == .getAllPlansData && data["tableName"] as? String == TableName.tpApprovalDetail.rawValue) || (api == .approvals && data["tableName"] as? String == TableName.getLeaveApproval.rawValue)   {
                     //gettpdetail
                     var encodedReportsModelData: [ReportsModel]?
                     var encodedDetailedReportsModelData: [DetailedReportsModel]?
@@ -388,7 +389,36 @@ final class ConnectionHandler : NSObject {
                     var encodedApprovalDetailResponse : [ApprovalDetailsModel]?
                     var encodedTPapprovalsResponse : [TourPlanApprovalModel]?
                     var encodedTPapprovalDetailResponse : [TourPlanApprovalDetailModel]?
+                    var encodedLeaveapprovalResponse : [LeaveApprovalDetail]?
                     
+                    if data["tableName"] as! String == TableName.getLeaveApproval.rawValue {
+                        self.toConvertDataToObj(responseData: anyData ?? Data(), to: [LeaveApprovalDetail].self) { result in
+                           // decodecObj
+                            switch result {
+                            case .success(let decodecObj):
+                                
+                                encodedLeaveapprovalResponse = decodecObj
+                                do {
+                                    let jsonData = try JSONEncoder().encode(encodedLeaveapprovalResponse)
+    
+                                    // Convert Swift object to JSON string
+    
+                                    responseHandler.handleSuccess(value: self.convertToDictionary(encodedLeaveapprovalResponse) ?? JSON(), data: jsonData)
+                                    print("JSON Data:")
+                                    print(jsonData)
+                                } catch {
+                                    responseHandler.handleFailure(value: "Unable to decode.")
+                                    print("Error encoding JSON: \(error)")
+                                }
+                                
+                            case .failure(let error):
+                                responseHandler.handleFailure(value: "Unable to decode.")
+                                print("Error encoding JSON: \(error)")
+                            }
+           
+                        }
+                        
+                    }
                     
                     if data["tableName"] as! String == TableName.tpApprovalDetail.rawValue {
                         self.toConvertDataToObj(responseData: anyData ?? Data(), to: [TourPlanApprovalDetailModel].self) { result in

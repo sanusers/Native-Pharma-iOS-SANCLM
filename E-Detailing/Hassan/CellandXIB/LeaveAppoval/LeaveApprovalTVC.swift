@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol LeaveApprovalTVCDelegate: AnyObject {
+    func diduserApprove(index: Int)
+    func diduserReject(index: Int)
+}
+
 class LeaveApprovalTVC: UITableViewCell {
     @IBOutlet var contentHolderView: UIView!
     @IBOutlet var empCodeTitle: UILabel!
     
+    @IBOutlet var yettoArroverName: UILabel!
     @IBOutlet var approveView: UIView!
     @IBOutlet var rejectView: UIView!
     @IBOutlet var reasonDesc: UILabel!
@@ -26,10 +32,22 @@ class LeaveApprovalTVC: UITableViewCell {
     @IBOutlet var leaveTypeDesc: UILabel!
     @IBOutlet var leaveTypeTitle: UILabel!
     @IBOutlet var empCodeDesc: UILabel!
+    weak var delegate: LeaveApprovalTVCDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         setupUI()
+    }
+
+    func toPopulateCell(model: LeaveApprovalDetail) {
+        yettoArroverName.text = model.sfName
+        empCodeDesc.text = model.sfCode
+        leaveTypeDesc.text = model.lType
+        fromDesc.text = model.fromDate.date.toDate().toString(format: "yyyy/MM/dd")
+        toDesc.text = model.toDate.date.toDate().toString(format: "yyyy/MM/dd")
+        noofDaysDesc.text = model.noOfDays
+        addressonDesc.text = model.address
+        reasonDesc.text = model.reason
     }
     
     func setupUI() {

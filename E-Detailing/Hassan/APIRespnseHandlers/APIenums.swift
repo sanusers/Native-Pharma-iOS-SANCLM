@@ -36,7 +36,6 @@ enum APIEnums : String{
     case toSubmitLeave = "save/leavemodule"
     case finalSubmit = "save/daysubmit"
     case approvals = "get/approvals"
-   // case tpApproval = "get/tp"
     case dcrApproval = "save/approvals"
 }
 

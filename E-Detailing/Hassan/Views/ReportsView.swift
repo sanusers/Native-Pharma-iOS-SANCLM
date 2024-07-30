@@ -250,9 +250,6 @@ class ReportsView : BaseView {
             self.reportTitle.text = "Reports"
            // contentDict
             contentDict = [["Day Report" : "Day Report"], ["Monthly Report": "Monthly"], ["Day Check in Report": "Day Check in"], ["Customer Check in Report" : "Day Check in"], ["Visit Monitor" : "Visit"]]
-       
-          
-             
                 reportInfoArr = generateModel(contentDict: contentDict as! [[String: String]])
             
             
@@ -260,6 +257,10 @@ class ReportsView : BaseView {
         case .approvals:
             resouceHQholderVIew.isHidden = true
             reportTitle.text = "Approvals"
+            if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                self.showAlert(desc: "Please connect to internet to fetch approvals.")
+                return
+            }
             Shared.instance.showLoaderInWindow()
             reporsVC.fetchApprovals(vm: UserStatisticsVM()) {[weak self] approvalsCount in
                 Shared.instance.removeLoaderInWindow()
@@ -282,7 +283,14 @@ class ReportsView : BaseView {
         toLoadData()
     }
     
-    
+    func showAlert(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true, customAction: {
+            print("no action")
+            self.reporsVC.navigationController?.popViewController(animated: true)
+        })
+    }
     
     func setHQlbl() {
         // let appsetup = AppDefaults.shared.getAppSetUp()
@@ -329,7 +337,10 @@ class ReportsView : BaseView {
         resourceHQlbl.textColor = .appTextColor
         resouceHQholderVIew.layer.cornerRadius = 5
         resouceHQholderVIew.backgroundColor = .appWhiteColor
-        setPagetype(pagetype: reporsVC.pageType)
+        if reporsVC.pageType != .approvals {
+            setPagetype(pagetype: reporsVC.pageType)
+        }
+      
     }
     
     func generateModel(contentDict: [[String: String]]) -> [ReportInfo] {
