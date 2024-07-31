@@ -534,7 +534,9 @@ public class CallViewModel {
                 mobile = doccall.mobile ?? ""
                 email = doccall.email ?? ""
                 address = doccall.addrs ?? ""
-                qualification =  ""
+              var qualifictions =  DBManager.shared.getQualification()
+              let  filteredqualifictions = qualifictions.filter { $0.code == doccall.qual ?? "" }.first?.name
+                qualification = filteredqualifictions ?? ""
                 townName = doccall.townName ?? ""
                 category = doccall.category ?? ""
                 speciality = doccall.specialtyName ?? ""

@@ -485,7 +485,7 @@ class MasterSyncVC : UIViewController {
 
         
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: .headQuater)
-        
+        vc.isFromMasterSync = true
         vc.menuDelegate = self
         
         if isTosetDayplanHQ {

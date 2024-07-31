@@ -64,20 +64,9 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
             if self.btnDownArrow.isSelected {
                 
                 if additionalCall.productSelectedListViewModel.numberOfRows() != 0 || additionalCall.inputSelectedListViewModel.numberOfRows() != 0{
-                    
-                    
                     let productCount =      additionalCall.productSelectedListViewModel.fetchAllProducts()?.count ?? 0
-                    //additionalCall.productSelectedListViewModel.numberOfRows()
                     let inputCount = additionalCall.inputSelectedListViewModel.fetchAllInput()?.count ?? 0
-                    //additionalCall.inputSelectedListViewModel.numberOfRows()
-                    
-                  //  var products = additionalCall.productSelectedListViewModel.productData()
-                    
-                 //   var inputs = additionalCall.inputSelectedListViewModel.inputData()
-                    
                     let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProductData()
-                    //productData()
-                    
                     let optionalinputs = additionalCall.inputSelectedListViewModel.fetchAllInputData()
                     //inputData()
                     guard var inputs = optionalinputs else {return}
@@ -101,8 +90,8 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                         products.removeFirst()
                     }else {
                     
-                        self.lblInputQty.text = ""
-                        self.lblInputName.text = ""
+                      //  self.lblInputQty.text = ""
+                     //   self.lblInputName.text = ""
                     }
                     
                     
@@ -181,7 +170,7 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                                 // Handle the case where index is out of range
                                 // For example, provide a default value or handle the error
                                 print("Index is out of range.")
-                                // You might want to provide a default input or inputQty value here
+                       
                             }
                             
                             if index == 0 {
@@ -216,13 +205,12 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                 
                 additionalCall.productSelectedListViewModel.fetchAllProducts()?.count ?? 0
                 
-                
-               // additionalCall.productSelectedListViewModel.numberOfRows()
+     
                 let inputCount =
                 
                 additionalCall.inputSelectedListViewModel.fetchAllInput()?.count ?? 0
                 
-               // additionalCall.inputSelectedListViewModel.numberOfRows()
+
                 
                 let optionalproducts = additionalCall.productSelectedListViewModel.fetchAllProductData()
            
@@ -251,8 +239,8 @@ class AdditionalCallSampleInputTableViewCell : UITableViewCell {
                     products.removeFirst()
                 }else {
                     productqtyCorneredVIew.isHidden = true
-                    self.lblInputQty.text = ""
-                    self.lblInputName.text = ""
+                //    self.lblInputQty.text = ""
+                //   self.lblInputName.text = ""
                 }
                 
                 if self.heightViewAdditionalSampleInputList != nil{

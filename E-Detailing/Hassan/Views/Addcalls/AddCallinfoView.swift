@@ -245,7 +245,10 @@ extension AddCallinfoView {
         guard let indexPath = self.loadedContentsTable.indexPathForRow(at: buttonPosition) else {
             return
         }
-        
+        let model = self.additionalCallListViewModel.fetchDataAtIndex(indexPath.row)
+//        if model.inputSelectedListViewModel.inputViewModel.count == 1 {
+//            return
+//        }
         let isView = self.additionalCallListViewModel.fetchDataAtIndex(indexPath.row).isView
         
         self.additionalCallListViewModel.updateInCallSection(indexPath.row, isView: !isView)
@@ -791,7 +794,7 @@ extension AddCallinfoView: tableViewProtocols {
                         if let doctorCall = self.addCallinfoVC.dcrCall.call   as? DoctorFencing  {
                             if addedDcrCall.code == doctorCall.code {
                               //  self.toCreateToast("OOPS! Addition call is same as selected call")
-                                self.showAlertToNotifyExistance(desc: "Addition call is same as selected call")
+                                self.showAlertToNotifyExistance(desc: "Additional call is same as selected call")
                                 self.endEditing(true)
                                 return
                             }
@@ -1843,7 +1846,7 @@ class AddCallinfoView : BaseView {
         yetTosearchTF.delegate = self
         
         backHolderView.addTap {
-            self.showAlertToEnableLocation(desc: "Are you sure about exiting from selected call?", isToPop: true)
+            self.showAlertToEnableLocation(desc: "Are you sure you want to cancel?", isToPop: true)
         
         }
         
@@ -1898,7 +1901,7 @@ class AddCallinfoView : BaseView {
         }
         
         clearView.addTap {
-            self.showAlertToEnableLocation(desc: "Are you sure about exiting from selected call?", isToPop: true)
+            self.showAlertToEnableLocation(desc: "Are you sure you want to cancel?", isToPop: true)
           //  self.addCallinfoVC.navigationController?.popViewController(animated: true)
         }
         
@@ -2021,12 +2024,12 @@ class AddCallinfoView : BaseView {
                 }
             }
             
-            if isDoctorEventCaptureNeededMandatory {
-                guard evenetCaptureValue != 0 else {
-                    showAlertToFillFields(desc: "Add Event capture to save call", type: .jointWork)
-                    return
-                }
-            }
+//            if isDoctorEventCaptureNeededMandatory {
+//                guard evenetCaptureValue != 0 else {
+//                    showAlertToFillFields(desc: "Add Event capture to save call", type: .jointWork)
+//                    return
+//                }
+//            }
             
             self.addCallinfoVC.setupParam(dcrCall: self.addCallinfoVC.dcrCall)
         case is Chemist:

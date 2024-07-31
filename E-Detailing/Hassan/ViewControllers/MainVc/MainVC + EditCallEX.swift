@@ -38,19 +38,23 @@ extension MainVC {
        
      //   {"headerno":"DP8-681","detno":"DP8-816","sfcode":"MR5940","division_code":"63,","Rsf":"MR5940","sf_type":"1","Designation":"MR","state_code":"2","subdivision_code":"86,","cusname":"A JAIN --- [ Doctor ]","custype":"1","pob":"1"}
         var dcrCalls: AnyObject?
-        
+        var   type:  DCRType?
         switch dcrCall.custType {
         case 1:
             let listedDocters = DBManager.shared.getDoctor()
            let filteredDoctores = listedDocters.filter { aDoctorFencing in
                 aDoctorFencing.code == dcrCall.custCode
             }
+            type = .doctor
+            Shared.instance.selectedDCRtype = .Doctor
             dcrCalls = filteredDoctores.first
         case 2:
             let listedChemist = DBManager.shared.getChemist()
            let filteredChemist = listedChemist.filter { aChemist in
                aChemist.code == dcrCall.custCode
             }
+            type = .chemist
+            Shared.instance.selectedDCRtype = .Chemist
             dcrCalls = filteredChemist.first
             
         case 3:
@@ -58,6 +62,8 @@ extension MainVC {
            let filteredStockist = listedStockist.filter { aStockist in
                aStockist.code == dcrCall.custCode
             }
+            type = .stockist
+            Shared.instance.selectedDCRtype = .Stockist
             dcrCalls = filteredStockist.first
             
             
@@ -66,6 +72,8 @@ extension MainVC {
            let filteredCustomers = listedCustomers.filter { aCustomer in
                aCustomer.code == dcrCall.custCode
             }
+            type = .unlistedDoctor
+            Shared.instance.selectedDCRtype = .UnlistedDoctor
             dcrCalls = filteredCustomers.first
             
             
@@ -74,7 +82,7 @@ extension MainVC {
         }
         guard let nonNilDcrCalls = dcrCalls else{return}
         Shared.instance.showLoaderInWindow()
-        let aCallVM = CallViewModel(call: nonNilDcrCalls , type: DCRType.doctor)
+        let aCallVM = CallViewModel(call: nonNilDcrCalls , type: type ?? .doctor)
         var param = [String: Any]()
         param["headerno"] = dcrCall.transSlNo 
         param["detno"] = dcrCall.aDetSLNo
@@ -111,8 +119,10 @@ extension MainVC {
         let vc = AddCallinfoVC.initWithStory(viewmodel: self.userststisticsVM ?? UserStatisticsVM())
         
         vc.isForEdit = true
-        
-        vc.rcpaDetailsModel =  toCreateRCPAdetailsModel(rcpa: model.rcpaHeadArr)
+        if let rcpaHeadArr = model.rcpaHeadArr  {
+            vc.rcpaDetailsModel =  toCreateRCPAdetailsModel(rcpa: rcpaHeadArr )
+        }
+    
         
         vc.productSelectedListViewModel = tocreateProductsViewModal(fetchedproducts: model.dcrDetailArr)
         
@@ -156,7 +166,7 @@ extension MainVC {
             
             let cacheFeedback = DBManager.shared.getFeedback()
             let fechedFeedback = cacheFeedback.filter { aFeedback in
-                aFeedback.name == aDCRDetail.callFeedback
+                aFeedback.id == aDCRDetail.drCallFeedbackCode
             }.first
             
             fetchedInfo.feedback = fechedFeedback
@@ -370,7 +380,7 @@ extension MainVC {
         
         let fetchedProductSelectedListViewModel = ProductSelectedListViewModel()
         fetchedproducts.forEach { aDCRDetail in
-            let productCode = aDCRDetail.productCode
+            let productCode = aDCRDetail.productCode + aDCRDetail.additionalProductCode
             
             fetchedProductInfoArr =  self.transformStringToProductObjects(productCode)
             
@@ -406,7 +416,7 @@ extension MainVC {
         let fetchedInputSelectedListViewModel = InputSelectedListViewModel()
         fetchedinputs.forEach { aDCRDetail in
             //Main gifts
-            let giftCode = aDCRDetail.giftCode
+            let giftCode = aDCRDetail.giftCode +  aDCRDetail.additionalGiftCode
             let addedInput = cacheInputs.filter { aInput in
                 aInput.code == giftCode
             }.first

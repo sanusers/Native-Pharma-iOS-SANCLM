@@ -907,6 +907,7 @@ class AddCallinfoVC: BaseViewController {
     
     
         private func popToBack<T>(_ VC : T) {
+            Shared.instance.detailedSlides = []
             let mainVC = navigationController?.viewControllers.first{$0 is T}
     
             if let vc = mainVC {

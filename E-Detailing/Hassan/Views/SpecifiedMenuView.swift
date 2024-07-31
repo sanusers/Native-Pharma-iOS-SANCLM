@@ -1017,7 +1017,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                 let doctorObj = self.previouslySelectdObj as! Subordinate
                  if doctorObj.id == model?.id {
                     // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                     cell.lblName.textColor = .appLightTextColor
+                     cell.lblName.textColor = .appLightGrey
                  }
             }
             
@@ -1025,7 +1025,10 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
                let doctorObj = self.selectedObject as! Subordinate
                 if doctorObj.id == model?.id {
                    // cell.menuIcon?.image = UIImage(named: "checkBoxSelected")
-                    cell.lblName.textColor = .appGreen
+                    if specifiedMenuVC.isFromMasterSync  {
+                        cell.lblName.textColor = .appGreen
+                    }
+               
                 }
             } else {
                 if self.isSearched {
@@ -2295,7 +2298,10 @@ class SpecifiedMenuView: BaseView {
                self.selectedObject = specifiedMenuVC.selectedObject as! Subordinate
                let docObj =  self.selectedObject as! Subordinate
                if !(isfromTF ?? false) {
-                   self.searchTF.text = docObj.name
+                   if specifiedMenuVC.isFromMasterSync  {
+                       self.searchTF.text = docObj.name
+                   }
+                  
                }
               
                self.headQuatersArr?.enumerated().forEach({ index, doctor in

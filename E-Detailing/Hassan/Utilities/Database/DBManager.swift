@@ -1917,6 +1917,9 @@ class DBManager {
         let masterData = self.getMasterData()
         var feedbackArray = [Feedback]()
         for (index,feedback) in values.enumerated() {
+            if feedback["name"] as? String == "" {
+              continue
+            }
             let contextNew = self.managedContext()
             let feedbackEntity = NSEntityDescription.entity(forEntityName: "Feedback", in: contextNew)
             let feedbackItem = Feedback(entity: feedbackEntity!, insertInto: contextNew)

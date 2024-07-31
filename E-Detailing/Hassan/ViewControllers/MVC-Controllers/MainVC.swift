@@ -2813,6 +2813,17 @@ extension MainVC: MenuResponseProtocol {
             switch self.selectedSessionIndex {
                 
             case 0:
+                
+                guard let subordinateObj = selectedObject as? Subordinate else {return}
+                let territories = DBManager.shared.getTerritory(mapID:  subordinateObj.id ?? "")
+                
+                if territories.isEmpty {
+                    if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                        showAlertToFilldates(description: "Clusters not yet synced connect to internet to sync.")
+                        return
+                    }
+                }
+                
                 if  self.fetchedHQObject1 == nil {
                     self.fetchedHQObject1 = selectedObject as? Subordinate
                 }
@@ -2864,7 +2875,7 @@ extension MainVC: MenuResponseProtocol {
                 sessions?[selectedSessionIndex ?? 0].headQuarters = temporaryselectedHqobj
 
                 toLoadWorktypeTable()
-                let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
+                    // let territories = DBManager.shared.getTerritory(mapID:  aHQobj.code)
                 
                 if territories.isEmpty {
                     Shared.instance.showLoaderInWindow()

@@ -704,7 +704,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 // (170 - visit info, 100 - Time info, product title header - 60, products cell - 40, input title Header - 60, input cell - 40 Each, RCPA header - 60 , Each RCPA cell - 40, Remarks - 75, show options - 50, 20 - cache)
                let productCellHeight = toCalculateProductsHeight(index: indexPath.row)
                 let inputCellHeight = toCalculateInputHeight(index: indexPath.row)
-                return 170 + timeinfoHeight + 40 + productCellHeight + 40 + inputCellHeight + rcpaHeaderHeight + rcpaSectionHeight + slideHeaderHeight + slidesSectionHeight + eventsHeaderHeight + 75 + 50 + 20
+                return 170 + timeinfoHeight + 40 + productCellHeight + 40 + inputCellHeight + rcpaHeaderHeight + rcpaSectionHeight + slideHeaderHeight + slidesSectionHeight + eventsHeaderHeight + 75 + 50 
      
             }  else {
                 return CGFloat()
@@ -724,7 +724,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 productStrArr.removeLast()
             }
         }
-
+        productStrArr = productStrArr.filter { !$0.isEmpty }
         switch productStrArr.count  {
             
         case 1:
@@ -745,7 +745,7 @@ extension DayReportView: UITableViewDelegate, UITableViewDataSource {
                 productStrArr.removeLast()
             }
         }
-
+        productStrArr = productStrArr.filter { !$0.isEmpty }
         switch productStrArr.count  {
 
         case 1:

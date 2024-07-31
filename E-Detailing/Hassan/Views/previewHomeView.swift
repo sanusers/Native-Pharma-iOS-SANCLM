@@ -948,7 +948,7 @@ class PreviewHomeView : BaseView {
         toSetPageType(pageType: .exists)
         previewType = [.home, .brand, .speciality, .customPresentation]
          let setups = AppDefaults.shared.getAppSetUp()
-        if setups.therapticNd == "1" {
+        if setups.therapticNd == "0" {
             previewType.append(.therapist)
         }
         setSortVIew()

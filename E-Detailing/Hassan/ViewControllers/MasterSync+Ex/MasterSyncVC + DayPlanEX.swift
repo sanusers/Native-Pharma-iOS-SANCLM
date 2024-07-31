@@ -78,6 +78,15 @@ extension MasterSyncVC: MenuResponseProtocol {
                     }
                 }
             } else {
+                let territories = DBManager.shared.getTerritory(mapID:  selectedObject.id ?? "")
+                
+                if territories.isEmpty {
+                    if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                        toSetupAlert(desc: "Clusters not yet synced connect to internet to sync.", istoNavigate: false)
+                        Shared.instance.isFetchingHQ = false
+                        return
+                    }
+                }
                 self.fetchedHQObject = selectedObject
                 CoreDataManager.shared.removeHQ()
                 CoreDataManager.shared.saveToHQCoreData(hqModel: aHQobj) { _ in

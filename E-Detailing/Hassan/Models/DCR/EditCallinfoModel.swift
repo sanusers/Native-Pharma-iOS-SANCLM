@@ -478,7 +478,7 @@ class EditCallinfoModel : Codable {
     var dcrDetailArr: [DCRDetail]
     var eventCaptureArr: [EventCaptureResponse]
     var digitalHeadArr: [DigitalHead]
-    var rcpaHeadArr: [RCPAHead]
+    var rcpaHeadArr: [RCPAHead]?
     
     
     enum CodingKeys: String, CodingKey {
@@ -496,7 +496,10 @@ class EditCallinfoModel : Codable {
         self.dcrDetailArr = try container.decode([DCRDetail].self, forKey: .dcrDetailArr)
         self.eventCaptureArr = try container.decode([EventCaptureResponse].self, forKey: .eventCaptureArr)
         self.digitalHeadArr = try container.decode([DigitalHead].self, forKey: .digitalHeadArr)
-        self.rcpaHeadArr = try container.decode([RCPAHead].self, forKey: .rcpaHeadArr)
+        if Shared.instance.selectedDCRtype == .Doctor || Shared.instance.selectedDCRtype == .Chemist {
+            self.rcpaHeadArr = try container.decode([RCPAHead].self, forKey: .rcpaHeadArr)
+        }
+     
     }
     
 }

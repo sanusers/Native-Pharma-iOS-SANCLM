@@ -22,7 +22,7 @@ class SpecifiedMenuVC : BaseViewController {
     var selectedCompetitorsID: [String : Bool]?
     var selectedJwID: [String : Bool]?
     var isFromfilter = Bool()
-    
+    var isFromMasterSync = Bool()
     override func viewDidLoad() {
         super.viewDidLoad()
 
