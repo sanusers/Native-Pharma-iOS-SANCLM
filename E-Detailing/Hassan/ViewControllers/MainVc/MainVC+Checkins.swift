@@ -145,6 +145,8 @@ extension MainVC {
         }
     }
     
+    /// set home dashboard selected date
+    /// - Parameter date: of type Date
     func toSetCacheDate(date: Date? = nil) {
         Shared.instance.selectedDate = date ?? Date()
         currentPage = date ?? Date()
@@ -157,6 +159,10 @@ extension MainVC {
         
     }
     
+    /// function to setup not submitted dates
+    /// - Parameters:
+    ///   - pageType: Home page page type
+    ///   - completion: empty completion
     func configurePastWindups(pageType:  MainVC.SegmentType?, completion: @escaping () -> ()) {
         if let notWindedups = toReturnNotWindedupDate() {
             if let notWindedupDate = notWindedups.statusDate {
@@ -189,6 +195,10 @@ extension MainVC {
         
     }
     
+    /// if user final submitted day then Home page is resetted
+    /// - Parameters:
+    ///   - lastCheckinDate:
+    ///   - completion: users past non winded up date
     func reserCallModule(lastCheckinDate: Date?, completion: @escaping () -> ()) {
         if let lastCheckinDate = lastCheckinDate {
             let lastCheckinDateStr = lastCheckinDate.toString(format: "yyyy-MM-dd")
@@ -221,6 +231,8 @@ extension MainVC {
         }
     }
     
+    /// operation made after user final submitted for day
+    /// - Parameter completion: Empty completion
     func validateWindups(completion: @escaping () -> ()) {
         var isDateWindup: Bool = false
         let selectedDateStr = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd")

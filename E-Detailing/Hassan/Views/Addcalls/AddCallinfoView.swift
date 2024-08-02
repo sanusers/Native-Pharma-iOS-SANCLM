@@ -2334,16 +2334,16 @@ class AddCallinfoView : BaseView {
                 segmentType = []
             }
             
-            if  isDoctorProductNedded {
+            if  isUnListedDoctorProductNedded {
                 segmentType.append(.products)
             }
-            if isDoctorInputNeeded {
+            if isUnListedDoctorInputNeeded {
                 segmentType.append(.inputs)
             }
-            if  isDoctorAdditionalCallNeeded {
+            if  isUnListedDoctorAdditionalCallNeeded {
                 segmentType.append(.additionalCalls)
             }
-            if  isDoctorRCPAneeded {
+            if  isUnListedDoctorRCPAneeded {
                 segmentType.append(.rcppa)
             }
             

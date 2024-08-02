@@ -25,6 +25,7 @@ class PopOverVC: UIViewController {
         case customMarker
         case timeLine
         case RCPA
+        case hover
     }
     
     
@@ -34,6 +35,7 @@ class PopOverVC: UIViewController {
         switch pageType {
             
         case .TP:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             self.contentTable.isHidden = false
             graphInfoView.isHidden = true
@@ -42,6 +44,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             toLOadData()
         case .HomeGraph:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = true
@@ -51,6 +54,7 @@ class PopOverVC: UIViewController {
             setupUI()
             
         case .calls, .outbox:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
@@ -59,6 +63,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             toLOadData()
         case .presentation:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
@@ -67,6 +72,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             toLOadData()
         case .profile:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = false
             self.contentTable.isHidden = true
@@ -75,6 +81,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             setProfileInfo()
         case .customMarker:
+            hoverView.isHidden = true
             customMarkerView.isHidden = false
             timeInfoView.isHidden = true
             rcpaInfoView.isHidden = true
@@ -84,6 +91,7 @@ class PopOverVC: UIViewController {
             setCustomerInfo()
             
         case .events:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = false
@@ -92,6 +100,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             toLOadData()
         case .timeLine:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = true
@@ -100,6 +109,7 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = true
             setTimeline()
         case .RCPA:
+            hoverView.isHidden = true
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             self.contentTable.isHidden = true
@@ -108,9 +118,24 @@ class PopOverVC: UIViewController {
             rcpaInfoView.isHidden = false
             guard let modal = self.rcpaInfo else {return}
             setRCPAinfo(modal: modal)
+        case .hover:
+            customMarkerView.isHidden = true
+            userProfileInfoView.isHidden = true
+            commentsTV.text = comments
+            commentsTV.backgroundColor = .clear
+            commentsTV.textColor = .appWhiteColor
+            commentsTV.isUserInteractionEnabled = false
+            contentTable.isHidden = true
+            graphInfoView.isHidden = true
+            timeInfoView.isHidden = true
+            rcpaInfoView.isHidden = true
+            hoverView.isHidden = false
         }
     }
     
+    @IBOutlet var hoverView: UIView!
+    
+    @IBOutlet var commentsTV: UITextView!
     @IBOutlet var userProfileInfoView: UIView!
     
     @IBOutlet var userDesignationLbl: UILabel!
@@ -192,6 +217,7 @@ class PopOverVC: UIViewController {
     var totalCalls: Int = 0
     var avgCalls: Float = 0
     var color : UIColor? = .appWhiteColor
+    var comments: String = ""
     var visitViewModel : VisitViewModel?
     var startTime: String = ""
     var endTime: String = ""
@@ -426,6 +452,8 @@ extension PopOverVC: UITableViewDelegate, UITableViewDataSource {
         case .timeLine:
             return UITableView.automaticDimension
         case .RCPA:
+            return UITableView.automaticDimension
+        case .hover:
             return UITableView.automaticDimension
         }
         

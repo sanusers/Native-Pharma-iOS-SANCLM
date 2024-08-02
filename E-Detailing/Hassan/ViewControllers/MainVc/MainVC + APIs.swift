@@ -143,7 +143,8 @@ extension MainVC {
             dayEntities = dayplan
             
             let aDayplan = dayEntities.first
-            guard let  aDayplan = aDayplan,  !aDayplan.isSynced else  {
+            guard let  aDayplan = aDayplan else  {
+                //  !aDayplan.isSynced
                 completion(true)
                 return
             }
@@ -311,6 +312,11 @@ extension MainVC {
       }
     }
     
+    /// My day plan API call
+    /// - Parameters:
+    ///   - date: Date for with day plan to be fetched
+    ///   - isFromDCRDates: Boolean
+    ///   - completion: empty completion
     func callDayPLanAPI(date: Date, isFromDCRDates: Bool, completion: @escaping () -> ()) {
        // Shared.instance.showLoaderInWindow()
         if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {

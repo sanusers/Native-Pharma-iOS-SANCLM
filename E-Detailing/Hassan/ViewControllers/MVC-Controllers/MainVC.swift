@@ -204,6 +204,11 @@ class MainVC : UIViewController {
     }
     
     
+    /// sync outbox datas
+    ///
+    ///uses `OperationQueue` to perform async API calls
+    ///
+    /// - Parameter completion: empty completion once sync completes Date sync API is called
     func toPostAlldayPlan(completion: @escaping () -> ()) {
         
         if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
@@ -309,6 +314,7 @@ class MainVC : UIViewController {
         return mainVC
     }
     
+    /// Notification observers that oberve notification
     func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
@@ -395,7 +401,7 @@ class MainVC : UIViewController {
         cellRegistration()
         initView()
         rejectionVIew.isHidden = true
-        //toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
+        toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
         toHideDeviateView(isTohide: true)
         backgroundView.isHidden = true
         backGroundVXview.alpha = 0
@@ -511,6 +517,13 @@ class MainVC : UIViewController {
     }
     
     
+    /// function to refresh home Dashboard use this fincton to refresh Homepage without making API calls
+    /// - Parameters:
+    ///   - date: Sets App selected date
+    ///   - rejectionReason: reason of rejection if exists (from ``DCRdatesModel``)
+    ///   - issynced: Boolean
+    ///   - segmentType: Home ui segment type
+    ///   - completion: empty completion
     func refreshUI(date: Date? = nil, rejectionReason: String? = nil, issynced: Bool? = false, _ segmentType: SegmentType, completion: @escaping () -> ()) {
        
         toSetCacheDate(date: date)
@@ -1251,6 +1264,11 @@ class MainVC : UIViewController {
 
 
     
+    /// Fetched all added DCR call from API
+    /// - Parameters:
+    ///   - date: Date for which call to be fetched
+    ///   - isfromSyncCall: Boolean
+    ///   - completion: empty completion
     func toSetParams(date: Date, isfromSyncCall: Bool, completion: @escaping () -> ()) {
         if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             self.toCreateToast("Please connect to internet")
@@ -1782,7 +1800,7 @@ class MainVC : UIViewController {
                 
                 toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
             }
-        } else if !moveUp{
+        } else if !moveUp {
             
             // Calculate the previous month
             
@@ -1878,7 +1896,13 @@ extension MainVC {
     @IBAction func didTapCalNextBtn(_ sender: Any) {
         self.moveCurrentPage(moveUp: true)
     }
-
+    
+    /// API call to sync dates
+    ///
+    /// ``DCRdatesModel`` from response is saved to core data
+    ///
+    ///Upon saving App process  to select date from ``DCRdatesModel``
+    /// - Parameter sender: Any of type UIButton
     @IBAction func btnCalenderSync(_ sender: Any) {
         if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
             Shared.instance.showLoaderInWindow()
@@ -2280,6 +2304,14 @@ extension MainVC {
         let rejectionReason: String
     }
     
+    /// App `Sequential flow` date auto selection function
+    ///
+    /// fetches incompleted pending dcrDates from core data (if date satifies below condition then it is pending date)
+    /// 
+    /// ```Swift
+    ///$0.isDateAdded == false
+    /// ```
+    /// - Parameter completion: ``RejectionReason``
     func setDCRdates(completion: @escaping (RejectionReason?) -> ()) {
         var yetToreturnDate: RejectionReason?
         let dispatchGroup = DispatchGroup()
@@ -2502,7 +2534,7 @@ extension MainVC {
         }
         Shared.instance.showLoaderInWindow()
         toSetParams(date: selectedToday, isfromSyncCall: true) {
-            self.refreshDashboard(date: Shared.instance.selectedDate) {
+            self.refreshDashboard(date: selectedToday) {
                 Shared.instance.removeLoaderInWindow()
             }
         }
@@ -2640,13 +2672,13 @@ extension MainVC {
                 yetToSaveSession.indices.forEach { index in
                     yetToSaveSession[index].isRetrived = true
                     yetToSaveSession[index].planDate = self.selectedRawDate
-                    yetToSaveSession[index].isSynced = true
+                  //  yetToSaveSession[index].isSynced = true
                 }
             } else {
                 yetToSaveSession.indices.forEach { index in
                     if  yetToSaveSession[index].isRetrived == true {
                         yetToSaveSession[index].planDate =  selectedToday ?? Date()
-                        yetToSaveSession[index].isSynced = false
+                        yetToSaveSession[index].isSynced = true
                     } else {
                         yetToSaveSession[index].isRetrived = true
                         yetToSaveSession[index].planDate =  selectedToday ?? Date()
@@ -4330,9 +4362,17 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                     return
                     
                 }
-                
-               let isExists = yetToModifiedDates.contains { aDcrDates in
-                   aDcrDates.date == date.toString(format: "yyyy-MM-dd") &&  !aDcrDates.isDateAdded
+                var reason : String?
+               var isExists = Bool()
+//                yetToModifiedDates.contains { aDcrDates in
+//                   aDcrDates.date == date.toString(format: "yyyy-MM-dd") &&  !aDcrDates.isDateAdded
+//            
+//                }
+                if let matchedDate = yetToModifiedDates.first(where: { $0.date == date.toString(format: "yyyy-MM-dd") && !$0.isDateAdded }) {
+                    reason = matchedDate.reason == "" ? nil : matchedDate.reason
+                    isExists = true
+                } else {
+                     isExists = false
                 }
                 
                 if !isExists {
@@ -4345,7 +4385,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.validateWindups() {
                     welf.callDayPLanAPI(date: date, isFromDCRDates: true) {
                         welf.toSetParams(date: date, isfromSyncCall: true) {
-                            welf.refreshUI(date: mergedDate, SegmentType.workPlan) {
+                            welf.refreshUI(date: mergedDate, rejectionReason: reason, SegmentType.workPlan) {
                   
                         
                             }

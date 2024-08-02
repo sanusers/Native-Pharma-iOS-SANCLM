@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 extension DCRapprovalinfoView:  UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -567,6 +568,11 @@ class DCRapprovalinfoView : BaseView {
     @IBOutlet var dismissVIew: UIView!
     
     @IBOutlet var searchTF: UITextField!
+    
+
+    
+    var commentsSubject = PassthroughSubject<Int, Never>()
+    
     //@IBOutlet var approveView: UIView!
     var isSearched: Bool = false
     var typeImage : UIImage?

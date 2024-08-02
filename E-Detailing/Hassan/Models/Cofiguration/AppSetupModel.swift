@@ -985,13 +985,11 @@ class AppSetUp : Codable {
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductRXneeded, value:  self.ulPobNeed == 0 ? true : false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDoctorInputNeeded, value:  self.niNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorInputNeeded, value:  self.niNeed == 0 ? true : false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorAdditionalCallNeeded, value:  false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRCPAneeded, value:  false)
-        
-        
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorJointWorkNeeded, value:  self.ulJointWrlNeed == 0 ? true : false)
         
@@ -1004,26 +1002,25 @@ class AppSetUp : Codable {
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorDetailingNeeded, value: self.detailingUdr == 0 ? true : false)
         
         ///Listed doctor Mandatory
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductNeddedMandatory, value:  self.docProductMdNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductNeddedMandatory, value:  false)
         
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductSampleNeededMandatory, value:   false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductSampleNeededMandatory, value:  self.docSampleQMdNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductRXneededMandatory, value:   false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorProductRXneededMandatory, value:  self.docRxQMd == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorInputNeededMandatory, value:   false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorInputNeededMandatory, value:  self.docInputMdNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRCPAneededMandatory, value:   false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRCPAneededMandatory, value:  self.rcpaMdNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorJointWorkNeededMandatory, value:  self.ulJointWrlMdNeed == 0 ? true : false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorJointWorkNeededMandatory, value:  self.docJointWrkMdNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorPOBNeededMandatory, value:  self.ulPobMdNeed == 0 ? true : false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorPOBNeededMandatory, value:  self.docPobMandatoryNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorFeedbackNeededMandatory, value:  false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorFeedbackNeededMandatory, value:  self.docFeedMdNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRemarksNeededMandatory, value:  false)
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRemarksNeededMandatory, value:  self.tempNeed == 0 ? true : false)
-        
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorEventCaptureNeededMandatory, value:  self.docEventMdNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorEventCaptureNeededMandatory, value:  self.ulDocEventMd == 0 ? true : false)
       
         
     }

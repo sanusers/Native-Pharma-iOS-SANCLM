@@ -439,7 +439,29 @@ class JfwView: UIView {
         
         self.rootVC?.present(pickerVC, animated: true)
     }
-    
+//    func setupCamera() {
+//        let pickerVC = UIImagePickerController()
+//        pickerVC.sourceType = .camera
+//        pickerVC.delegate = self
+//
+//        
+//       let customOverlayView = pickerVC.loadCustomView(nibname: XIBs.CustomOverlayView) as? CustomOverlayView
+//        
+//        let checkinDetailsVIewwidth = self.bounds.width / 3
+//        let checkinDetailsVIewheight = self.bounds.height / 2.3
+//        
+//        let checkinDetailsVIewcenterX = self.bounds.midX - (checkinDetailsVIewwidth / 2)
+//        let checkinDetailsVIewcenterY = self.bounds.midY - (checkinDetailsVIewheight / 2)
+//        
+//        customOverlayView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
+//        
+//        // Create an instance of your custom overlay view
+//        let overlayView = customOverlayView
+//        pickerVC.cameraOverlayView = overlayView
+//
+//        // Present the UIImagePickerController
+//        self.rootVC?.present(pickerVC, animated: true)
+//    }
     
     
     func toSetupAlert(desc: String) {
@@ -756,4 +778,36 @@ extension JfwView:UITextFieldDelegate {
         }
     
     
+}
+class CustomOverlayView: UIView {
+    
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+         super.init(coder: aDecoder)
+       
+     }
+    
+    private func setupView() {
+//        // Customize your view (add buttons, labels, etc.)
+//        self.backgroundColor = UIColor.clear // Transparent background
+//        
+//        let overlayButton = UIButton(frame: CGRect(x: 20, y: 20, width: 100, height: 50))
+//        overlayButton.setTitle("Overlay", for: .normal)
+//        overlayButton.setTitleColor(.white, for: .normal)
+//        overlayButton.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+//        overlayButton.addTarget(self, action: #selector(overlayButtonTapped), for: .touchUpInside)
+//        
+//        self.addSubview(overlayButton)
+    }
+    
+    @objc private func overlayButtonTapped() {
+        // Handle button tap
+        print("Overlay button tapped")
+    }
 }

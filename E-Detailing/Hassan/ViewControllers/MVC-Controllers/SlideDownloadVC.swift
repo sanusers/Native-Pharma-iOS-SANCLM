@@ -639,6 +639,7 @@ class SlideDownloadVC : UIViewController {
             
             self.didDownloadCompleted(arrayOfAllSlideObjects: self.arrayOfAllSlideObjects, index: cacheIndexInt, isForSingleSelection: false, isfrorBackgroundTask: true, istoreturn: true, didEncounterError: false) {_ in
                 //  BackgroundTaskManager.shared.stopBackgroundTask()
+                self.toSetupAlert(text: "Slide download suspended please do retry manually.", isEncounteredError: true)
      
             }
         }

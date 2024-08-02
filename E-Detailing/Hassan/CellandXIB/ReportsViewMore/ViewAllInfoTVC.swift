@@ -8,7 +8,7 @@
 //
 
 import UIKit
-
+import Combine
 
 extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -404,7 +404,25 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 default:
                     let cell: RCPAdetailsDesctiptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "RCPAdetailsDesctiptionCVC", for: indexPath) as! RCPAdetailsDesctiptionCVC
                     let model = rcpaResponseModel[indexPath.row]
+                    
                     cell.populateCell(model: model)
+                    
+                    cell.commentSubject.sink { index in
+                        print("index tapped: \(index)")
+                     //   cell.commentsSubject.send(index)
+                        print(model.remarks)
+//                        if model.remarks.isEmpty {
+//                            self.toCreateToast("No comments found")
+//                            return
+//                        }
+                        //model.remarks
+                        self.delegate?.didRCPACommentsTapped(view: cell.commentsIV, comments: "Ok remarks found")
+                    }.store(in: &observer)
+                    
+                    cell.commentsIV.addTap {
+                        cell.commentSubject.send(indexPath.row)
+                    }
+                    
                     cell.infoView.addTap {
                         self.delegate?.didRCPAinfoTapped(view: cell.infoView, model: model)
                     }
@@ -465,6 +483,7 @@ protocol ViewAllInfoTVCDelegate: AnyObject {
     func didLessTapped(islessTapped: Bool, index: Int)
     func didDurationInfoTapped(view: UIView, startTime: String, endTime: String)
     func didRCPAinfoTapped(view: UIView, model: RCPAresonseModel)
+    func didRCPACommentsTapped(view: UIView, comments: String)
     
 }
 
@@ -522,6 +541,7 @@ class ViewAllInfoTVC: UITableViewCell {
     var typeImage: UIImage?
     var isTohideLocationInfo = false
     var selectedIndex : Int? = nil
+    var observer: [AnyCancellable] = []
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

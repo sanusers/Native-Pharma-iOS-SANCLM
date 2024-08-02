@@ -113,6 +113,9 @@ extension MainVC {
         
         
     }
+    /// function that merges date with no time into date with current time
+    /// - Parameter selectedDate: of type Date
+    /// - Returns: Date with current time
     func toMergeDate(selectedDate: Date) -> Date? {
         var yetToReturnDate : Date?
         // Assume selectedDate is a Date object without time component
@@ -197,6 +200,21 @@ extension MainVC {
         }
         
     }
+    
+    ///Fetch saved dcr dates from CoreData, convert and append it to `homeDataArr`
+    ///
+    ///>  if `isToUpdateDate` param is true currently planning date is set from ``DcrDates`` Array fetched from core data
+    ///
+    ///if below condition satisfieed then it is users current planning date
+    ///
+    ///```Swift
+    /// $0.flag == "0" && $0.tbname == "dcr" && !$0.isDateAdded
+    ///```
+    ///
+    ///if currently planning date exists then app flow continues based up on ``isSequentialDCRenabled`` Variable
+    /// - Parameters:
+    ///   - isToUpdateDate: Boolean is true App date gets updated
+    ///   - completion: empty completion
     
     func togetDCRdates(isToUpdateDate: Bool, completion: @escaping () -> ()) {
         CoreDataManager.shared.fetchDcrDates { [weak self]  savedDcrDates in

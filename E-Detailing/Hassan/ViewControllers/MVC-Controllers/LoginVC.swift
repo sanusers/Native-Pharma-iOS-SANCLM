@@ -188,27 +188,72 @@ class LoginVC : UIViewController {
     
     
     
-    func isPlanExists(completion: @escaping (Bool) -> ())  {
-     if  let tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData(){
-         if !tempUnsyncedArr.isEmpty {
-             completion(true)
-         } else {
-             CoreDataManager.shared.fetchEachDayPlan { eachDayPlans in
-                 let isAllsynced = eachDayPlans.filter { $0.isSynced }.isEmpty
-                 completion(isAllsynced)
-             }
-         }
-     } else {
-         CoreDataManager.shared.fetchEachDayPlan { eachDayPlans in
-             let isAllsynced = eachDayPlans.filter { $0.isSynced }.isEmpty
-             completion(isAllsynced)
-         }
-     }
+    func isPlanExists(completion: @escaping (Bool) -> ()) {
+
+       isOutboxcallExists() { isExists in
+           if isExists {
+               completion(isExists)
+               return
+           } else {
+               self.isDayPlanExists() { isExists in
+               completion(isExists)
+               }
+           }
+         
+        }
+
+        
+    }
+    
+    func isOutboxcallExists(completion: @escaping (Bool) -> ()) {
+        var isCallExists: Bool = false
+       let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        guard let  tempUnsyncedArr = DBManager.shared.geUnsyncedtHomeData() else {
+            isCallExists = false
+            completion(isCallExists)
+            dispatchGroup.leave()
+            return
+        }
+        if tempUnsyncedArr.isEmpty{
+            isCallExists = false
+            dispatchGroup.leave()
+        } else {
+            isCallExists = true
+            dispatchGroup.leave()
+        }
+        dispatchGroup.notify(queue: .main) {
+            completion(isCallExists)
+        }
+    }
+    
+    func isDaySubmitexists(completion: @escaping (Bool) -> ()) {
+        var isDaysStatusSubmitted = true
+        CoreDataManager.shared.toFetchAllDayStatus { eachDayStatus in
+            for daystatus in eachDayStatus {
+                if !daystatus.isSynced {
+                    isDaysStatusSubmitted = false
+                    break
+                }
+            }
+            completion(isDaysStatusSubmitted)
+        }
+    }
+    
+    func isDayPlanExists(completion: @escaping (Bool) -> ()) {
+        CoreDataManager.shared.fetchEachDayPlan { eachDayPlans in
+            if eachDayPlans.isEmpty {
+                completion(false)
+                return
+            }
+            let isAllSynced = eachDayPlans.allSatisfy { !$0.isSynced }
+            completion(isAllSynced)
+        }
     }
     
     func toSetupClearCacheAlert(text: String) {
-        isPlanExists { isAllsynced in
-            if !isAllsynced {
+        isPlanExists { isExists in
+            if isExists {
                 let commonAlert = CommonAlert()
                 commonAlert.setupAlert(alert: AppName, alertDescription: text, okAction: "Ok", cancelAction: "Cancel")
                 commonAlert.addAdditionalOkAction(isForSingleOption: false) {
@@ -223,6 +268,7 @@ class LoginVC : UIViewController {
                 }
             
             } else {
+                print("Resetted ")
                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                     self.startBackgroundTaskWithLoader(delegate: appDelegate)
                 }

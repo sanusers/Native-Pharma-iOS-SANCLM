@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class RCPAdetailsDesctiptionCVC: UICollectionViewCell {
 
@@ -17,6 +18,7 @@ class RCPAdetailsDesctiptionCVC: UICollectionViewCell {
     
     @IBOutlet var competitorNameLbl: UILabel!
     
+    @IBOutlet var commentsIV: UIImageView!
     
     @IBOutlet var competitorProductNameLbl: UILabel!
     
@@ -24,6 +26,8 @@ class RCPAdetailsDesctiptionCVC: UICollectionViewCell {
     @IBOutlet var competitorProductQty: UILabel!
     
     @IBOutlet var infoView: UIView!
+    
+    var commentSubject = PassthroughSubject<Int, Never>()
     
     func populateCell(model: RCPAresonseModel) {
         productNameLbl.text = model.opName

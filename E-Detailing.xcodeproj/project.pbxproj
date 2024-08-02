@@ -39,6 +39,7 @@
 		380FC3EB2C53D2D40059D80A /* TourPlanApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */; };
 		380FC3EF2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */; };
 		380FC3F02C53D9170059D80A /* TourPlanApprovalinfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */; };
+		38105D0F2C5D0C290091B952 /* CameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38105D0E2C5D0C290091B952 /* CameraOverlayView.xib */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
 		38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */; };
 		38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */; };
@@ -480,6 +481,7 @@
 		380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalView.swift; sourceTree = "<group>"; };
 		380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalinfoTVC.swift; sourceTree = "<group>"; };
 		380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TourPlanApprovalinfoTVC.xib; sourceTree = "<group>"; };
+		38105D0E2C5D0C290091B952 /* CameraOverlayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CameraOverlayView.xib; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
 		38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAllInfoTVC.xib; sourceTree = "<group>"; };
 		38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoCVC.swift; sourceTree = "<group>"; };
@@ -1257,6 +1259,7 @@
 				38E48D332B14AA9A00878DA9 /* TourPlan */,
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
 				3825CFC72BA806B600217D40 /* DCRfilters */,
+				38105D0E2C5D0C290091B952 /* CameraOverlayView.xib */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -2103,6 +2106,7 @@
 				3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
+				38105D0F2C5D0C290091B952 /* CameraOverlayView.xib in Resources */,
 				388ABD192C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib in Resources */,
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
 				38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */,

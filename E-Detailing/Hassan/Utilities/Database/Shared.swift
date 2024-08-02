@@ -22,7 +22,16 @@ class Shared {
     var isDetailed: Bool = false
     var selectedProductCode: String = ""
     var selectedProductName : String = ""
-    var selectedDate : Date = Date()
+    private var _selectedDate: Date?
+
+    var selectedDate: Date {
+        get {
+            return _selectedDate ?? Date() // Always return the current date when getting
+        }
+        set {
+            _selectedDate = newValue // Allow setting a specific date
+        }
+    }
     var selectedDCRtype: CellType = .Doctor
     func toReset() {
         
