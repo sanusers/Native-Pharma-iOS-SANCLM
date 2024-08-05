@@ -96,11 +96,10 @@ class Pipelines : NSObject, CLLocationManagerDelegate {
             return
         }
 
-        locationCompletion = completion
+   
         locManager.delegate = self
         locManager.desiredAccuracy = kCLLocationAccuracyBest
-      //  locManager.requestWhenInUseAuthorization()
-
+        locationCompletion = completion
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
            CLLocationManager.authorizationStatus() == .authorizedAlways {
             locManager.startUpdatingLocation()

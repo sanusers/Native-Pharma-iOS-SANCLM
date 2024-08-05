@@ -196,12 +196,48 @@ class MainVC : UIViewController {
         updateLinks()
         setupUI()
         addObservers()
-        toPostAlldayPlan() {[weak self] in
+        fetchLocations() { [weak self]  locationinfo in
             guard let welf = self else {return}
-            welf.btnCalenderSync(welf.btnSyncDate!)
+            welf.toPostAlldayPlan() {
+                welf.btnCalenderSync(welf.btnSyncDate!)
+            }
         }
+ //      makeAPIcallUsingURLSession()
+
        // fetchEmptyDates()
     }
+    
+//    func makeAPIcallUsingURLSession() {
+//     // - "http://sanffa.info/iOSServer/db_api.php?axn=table/products"
+//     // {"tableName":"getproducts","subdivision_code":"103,","Rsf":"MR7362","state_code":12,"sfcode":"MR7362","division_code":"70,","Designation":"SBE","sf_type":1}
+//     
+//     let endPointurl = URL(string: "http://edetailing.sanffa.info/iOSServer/db_api.php?axn=table/products")
+//        
+//        
+//        
+//     let param = MasterSyncParams.productParams
+//     
+//     var request = URLRequest(url: endPointurl!)
+//     request.httpMethod = "POST"
+//     
+//     let boundary = UUID().uuidString
+//     request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+//     var data = Data()
+//     for(key, value) in param {
+//     
+//     // data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+//     data.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+//     data.append("\(value)".data(using: .utf8)!)
+//     }
+//     
+//     URLSession.shared.uploadTask(with: request, from: data) { data, response, error in
+//     let apiResponse = ObjectFormatter.shared.convertDataToJsonArr(data: data ?? Data())
+//     
+//     dump(apiResponse)
+//     
+//     }.resume()
+//     }
+    
     
     
     /// sync outbox datas
@@ -2182,9 +2218,8 @@ extension MainVC {
         
       
         var plannedDates = homeData.map { $0.dcr_dt?.toDate(format: "yyyy-MM-dd").toString(format: "yyyy-MM-dd") }
-        
         if let unsyncedHomeDta = DBManager.shared.geUnsyncedtHomeData() {
-            var unSyncedplannedDates = unsyncedHomeDta.map { $0.dcr_dt?.toDate(format: "yyyy-MM-dd").toString(format: "yyyy-MM-dd") }
+            let unSyncedplannedDates = unsyncedHomeDta.map { $0.dcr_dt?.toDate(format: "yyyy-MM-dd").toString(format: "yyyy-MM-dd") }
             plannedDates.append(contentsOf: unSyncedplannedDates)
         }
         // Convert plannedDates to a set for efficient lookups
@@ -2548,6 +2583,7 @@ extension MainVC {
         fetchLocations { locationInfo in
             guard let locationInfo = locationInfo else {return}
             self.toCreateToast(locationInfo.address == "No address found" || locationInfo.address == ""  ? "Latitude: \(locationInfo.latitude), Longitude: \(locationInfo.longitude)" : locationInfo.address)
+            Shared.instance.locationInfo = locationInfo
         }
     }
 
@@ -2555,7 +2591,8 @@ extension MainVC {
         Pipelines.shared.requestAuth() {[weak self] coordinates  in
             guard let welf = self else {
                 completion(nil)
-                return}
+                return
+            }
             
             if geoFencingEnabled {
                 guard coordinates != nil else {

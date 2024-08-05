@@ -77,11 +77,23 @@ extension DetailedReportView: UITableViewDelegate, UITableViewDataSource {
             if isTohideCheckin(modal) && isTohideCheckout(modal) {
                 vc.isToReduceLocationHeight = true
             }
-            
-         
             self.detailedreporsVC.navigationController?.pushViewController(vc, animated: true)
         }
+        
+        cell.remarksDescLbl.addTap { [weak self] in
+            self?.didCommentsTapped(view:  cell.remarksDescLbl, comments: modal.remarks)
+        }
+        
         return cell
+    }
+    
+    func didCommentsTapped(view: UIView, comments: String) {
+        
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 3, height: self.height / 7), on: view,  pagetype: .hover)
+
+        vc.color = .appTextColor
+        vc.comments = comments
+        self.detailedreporsVC?.navigationController?.present(vc, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

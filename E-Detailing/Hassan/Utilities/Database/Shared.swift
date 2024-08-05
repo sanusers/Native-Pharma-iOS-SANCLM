@@ -22,6 +22,7 @@ class Shared {
     var isDetailed: Bool = false
     var selectedProductCode: String = ""
     var selectedProductName : String = ""
+    var locationInfo: LocationInfo?
     private var _selectedDate: Date?
 
     var selectedDate: Date {

@@ -432,36 +432,55 @@ class JfwView: UIView {
         }
     }
     
-    func setupCamera() {
-        let pickerVC = UIImagePickerController()
-        pickerVC.sourceType = .camera
-        pickerVC.delegate = self
-        
-        self.rootVC?.present(pickerVC, animated: true)
-    }
 //    func setupCamera() {
 //        let pickerVC = UIImagePickerController()
 //        pickerVC.sourceType = .camera
 //        pickerVC.delegate = self
-//
 //        
-//       let customOverlayView = pickerVC.loadCustomView(nibname: XIBs.CustomOverlayView) as? CustomOverlayView
-//        
-//        let checkinDetailsVIewwidth = self.bounds.width / 3
-//        let checkinDetailsVIewheight = self.bounds.height / 2.3
-//        
-//        let checkinDetailsVIewcenterX = self.bounds.midX - (checkinDetailsVIewwidth / 2)
-//        let checkinDetailsVIewcenterY = self.bounds.midY - (checkinDetailsVIewheight / 2)
-//        
-//        customOverlayView?.frame = CGRect(x: checkinDetailsVIewcenterX, y: checkinDetailsVIewcenterY, width: checkinDetailsVIewwidth, height: checkinDetailsVIewheight)
-//        
-//        // Create an instance of your custom overlay view
-//        let overlayView = customOverlayView
-//        pickerVC.cameraOverlayView = overlayView
-//
-//        // Present the UIImagePickerController
 //        self.rootVC?.present(pickerVC, animated: true)
 //    }
+    func setupCamera() {
+   
+        let picker = UIImagePickerController() //make a clean controller
+        picker.allowsEditing = false
+        picker.sourceType = UIImagePickerController.SourceType.camera
+        picker.modalPresentationStyle = .fullScreen
+//        if !geoFencingEnabled {
+//            self.rootVC?.present(picker,
+//                animated: true)
+//            return
+//        }
+        
+        self.rootVC?.present(picker,
+            animated: true)
+        
+//        var customOverlayView: CustomOverlayView?
+//        customOverlayView =  picker.loadCustomView(nibname: XIBs.CustomOverlayView) as? CustomOverlayView
+//        customOverlayView?.setupView()
+//        let pickerViewWidth = picker.view.bounds.width
+//                let pickerViewHeight = picker.view.bounds.height
+//                let overlayHeight = picker.view.bounds.height / 3
+//        let overlayFrame = CGRect(
+//              x: 0,
+//              y: pickerViewHeight - overlayHeight ,
+//              width: pickerViewWidth,
+//              height: overlayHeight
+//          )
+//          
+//          customOverlayView?.frame = overlayFrame
+//            //presentation of the camera
+//          
+//            self.rootVC?.present(picker,
+//                animated: true,
+//                completion: {
+//                if geoFencingEnabled {
+//                    picker.cameraOverlayView = customOverlayView
+//                }
+//                   
+//            })
+             
+    
+    }
     
     
     func toSetupAlert(desc: String) {
@@ -793,21 +812,9 @@ class CustomOverlayView: UIView {
        
      }
     
-    private func setupView() {
-//        // Customize your view (add buttons, labels, etc.)
-//        self.backgroundColor = UIColor.clear // Transparent background
-//        
-//        let overlayButton = UIButton(frame: CGRect(x: 20, y: 20, width: 100, height: 50))
-//        overlayButton.setTitle("Overlay", for: .normal)
-//        overlayButton.setTitleColor(.white, for: .normal)
-//        overlayButton.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-//        overlayButton.addTarget(self, action: #selector(overlayButtonTapped), for: .touchUpInside)
-//        
-//        self.addSubview(overlayButton)
+     func setupView() {
+        self.backgroundColor = .clear
     }
     
-    @objc private func overlayButtonTapped() {
-        // Handle button tap
-        print("Overlay button tapped")
-    }
+
 }

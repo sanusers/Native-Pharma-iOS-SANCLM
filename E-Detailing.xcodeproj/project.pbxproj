@@ -39,7 +39,7 @@
 		380FC3EB2C53D2D40059D80A /* TourPlanApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */; };
 		380FC3EF2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */; };
 		380FC3F02C53D9170059D80A /* TourPlanApprovalinfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */; };
-		38105D0F2C5D0C290091B952 /* CameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38105D0E2C5D0C290091B952 /* CameraOverlayView.xib */; };
+		38105D0F2C5D0C290091B952 /* CustomOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38105D0E2C5D0C290091B952 /* CustomOverlayView.xib */; };
 		38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */; };
 		38107C492B36EF7000ACEDF3 /* ViewAllInfoTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */; };
 		38107C4D2B36F1B900ACEDF3 /* VisitInfoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */; };
@@ -125,6 +125,8 @@
 		386BEA152B739A480083D61F /* SelectedPreviewTypesCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */; };
 		386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */; };
 		386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */; };
+		3870AA2F2C60F8CC006E430D /* ActivityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3870AA2E2C60F8CC006E430D /* ActivityVC.swift */; };
+		3870AA322C60F930006E430D /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3870AA312C60F930006E430D /* ActivityView.swift */; };
 		387B8A2E2BB3DCDA007F38AB /* _demo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */; };
 		387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */; };
 		387BDB002BAB1DCB002B5E7D /* AddCallinfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */; };
@@ -481,7 +483,7 @@
 		380FC3EA2C53D2D40059D80A /* TourPlanApprovalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalView.swift; sourceTree = "<group>"; };
 		380FC3ED2C53D9170059D80A /* TourPlanApprovalinfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlanApprovalinfoTVC.swift; sourceTree = "<group>"; };
 		380FC3EE2C53D9170059D80A /* TourPlanApprovalinfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TourPlanApprovalinfoTVC.xib; sourceTree = "<group>"; };
-		38105D0E2C5D0C290091B952 /* CameraOverlayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CameraOverlayView.xib; sourceTree = "<group>"; };
+		38105D0E2C5D0C290091B952 /* CustomOverlayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomOverlayView.xib; sourceTree = "<group>"; };
 		38107C462B36EF7000ACEDF3 /* ViewAllInfoTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAllInfoTVC.swift; sourceTree = "<group>"; };
 		38107C472B36EF7000ACEDF3 /* ViewAllInfoTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAllInfoTVC.xib; sourceTree = "<group>"; };
 		38107C4B2B36F1B900ACEDF3 /* VisitInfoCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitInfoCVC.swift; sourceTree = "<group>"; };
@@ -567,6 +569,8 @@
 		386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedPreviewTypesCVC.swift; sourceTree = "<group>"; };
 		386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedPreviewTypesCVC.xib; sourceTree = "<group>"; };
 		386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTimer.swift; sourceTree = "<group>"; };
+		3870AA2E2C60F8CC006E430D /* ActivityVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityVC.swift; sourceTree = "<group>"; };
+		3870AA312C60F930006E430D /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _demo.xcconfig; sourceTree = "<group>"; };
 		387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _live.xcconfig; sourceTree = "<group>"; };
 		387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCallinfoView.swift; sourceTree = "<group>"; };
@@ -1179,6 +1183,7 @@
 		3865F8CA2AFCCE3D009AB984 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				3870AA2D2C60F847006E430D /* Activity */,
 				38E37F092C510829002EB294 /* Approvals */,
 				B287E63629F29F6C0097974D /* MVC-Controllers */,
 				38FAA1742B7F265D00714AA2 /* MasterSync+Ex */,
@@ -1205,6 +1210,7 @@
 		3865F8CD2AFCCE57009AB984 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3870AA302C60F920006E430D /* Activity */,
 				38E37F0A2C510844002EB294 /* Approvals */,
 				387BDAFE2BAB1D9D002B5E7D /* Addcalls */,
 				3865F8CB2AFCCE4F009AB984 /* TourPlanView.swift */,
@@ -1259,7 +1265,7 @@
 				38E48D332B14AA9A00878DA9 /* TourPlan */,
 				38EA3D132AFDECFB00DA7018 /* SessionCell */,
 				3825CFC72BA806B600217D40 /* DCRfilters */,
-				38105D0E2C5D0C290091B952 /* CameraOverlayView.xib */,
+				38105D0E2C5D0C290091B952 /* CustomOverlayView.xib */,
 			);
 			path = CellandXIB;
 			sourceTree = "<group>";
@@ -1275,6 +1281,22 @@
 				38EF4C652B749DAE00F78F2E /* BrandsPreviewCVC.xib */,
 			);
 			path = SlidePreview;
+			sourceTree = "<group>";
+		};
+		3870AA2D2C60F847006E430D /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				3870AA2E2C60F8CC006E430D /* ActivityVC.swift */,
+			);
+			path = Activity;
+			sourceTree = "<group>";
+		};
+		3870AA302C60F920006E430D /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				3870AA312C60F930006E430D /* ActivityView.swift */,
+			);
+			path = Activity;
 			sourceTree = "<group>";
 		};
 		387B8A2D2BB3DCDA007F38AB /* ConfigurationFiles */ = {
@@ -2106,7 +2128,7 @@
 				3825CFD32BA8650D00217D40 /* productSectiontitleTVC.xib in Resources */,
 				B287E68129F2A20F0097974D /* Satoshi-Italic.otf in Resources */,
 				38D568FA2B356077007CB86D /* VisitsCountTVC.xib in Resources */,
-				38105D0F2C5D0C290091B952 /* CameraOverlayView.xib in Resources */,
+				38105D0F2C5D0C290091B952 /* CustomOverlayView.xib in Resources */,
 				388ABD192C4E7A5B00965C12 /* DCRAllApprovalsTVC.xib in Resources */,
 				38C4B7AC2A6E7B47001C2FD5 /* DCRCallAnalysisCell.xib in Resources */,
 				38C90ADE2A7785FE003CC0C8 /* DCRCallCell.xib in Resources */,
@@ -2431,6 +2453,7 @@
 				3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */,
 				38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */,
 				38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */,
+				3870AA2F2C60F8CC006E430D /* ActivityVC.swift in Sources */,
 				38CF07E22A9C99090051B577 /* LocationManager.swift in Sources */,
 				38DD14BA2B5002340036384F /* MenuResponseProtocol.swift in Sources */,
 				38E3C3642AF9FB0B00623C33 /* Constants.swift in Sources */,
@@ -2489,6 +2512,7 @@
 				386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */,
 				3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */,
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,
+				3870AA322C60F930006E430D /* ActivityView.swift in Sources */,
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,

@@ -353,8 +353,6 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             cell.toPopulateCell(model: self.reportModel ?? ReportsModel())
             return cell
         case 2:
-            
-
                 let cell: ProductsDescriptionCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductsDescriptionCVC", for: indexPath) as! ProductsDescriptionCVC
                 let modelStr = self.productStrArr[indexPath.row]
 
@@ -458,6 +456,10 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
         case 7:
             let cell: ReportsCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "ReportsCVC", for: indexPath) as! ReportsCVC
             cell.remarksDesc.text = detailedReportModel?.remarks
+            cell.remarksDesc.addTap {
+                self.delegate?.didRCPACommentsTapped(view: cell.remarksDesc, comments: self.detailedReportModel?.remarks ?? "")
+            }
+            
             return cell
             
         case 8:
