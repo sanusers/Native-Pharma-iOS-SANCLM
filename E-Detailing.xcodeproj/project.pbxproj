@@ -68,6 +68,15 @@
 		381BC2622BAC65D400804B85 /* AddproductsMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */; };
 		381BC2642BAC65E900804B85 /* AddproductsMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */; };
 		381E75102C0758710003B892 /* RCPASectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381E750F2C0758710003B892 /* RCPASectionHeader.swift */; };
+		3822D1D32C69F080001DF96C /* Hassan.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3822D1D22C69F080001DF96C /* Hassan.storyboard */; };
+		3822D1D52C69F0AF001DF96C /* ActivityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1D42C69F0AF001DF96C /* ActivityVC.swift */; };
+		3822D1D72C69F0C3001DF96C /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1D62C69F0C3001DF96C /* ActivityView.swift */; };
+		3822D1E12C69F12E001DF96C /* ActivitySelectionTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1DB2C69F12E001DF96C /* ActivitySelectionTVC.swift */; };
+		3822D1E22C69F12E001DF96C /* ActivitySelectionTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3822D1DC2C69F12E001DF96C /* ActivitySelectionTVC.xib */; };
+		3822D1E32C69F12E001DF96C /* ActivityDualEntryVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3822D1DD2C69F12E001DF96C /* ActivityDualEntryVC.xib */; };
+		3822D1E42C69F12E001DF96C /* ActivityTextEntryTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3822D1DE2C69F12E001DF96C /* ActivityTextEntryTVC.xib */; };
+		3822D1E52C69F12E001DF96C /* ActivityDualEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1DF2C69F12E001DF96C /* ActivityDualEntryVC.swift */; };
+		3822D1E62C69F12E001DF96C /* ActivityTextEntryTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1E02C69F12E001DF96C /* ActivityTextEntryTVC.swift */; };
 		3825CFCC2BA806B600217D40 /* DCRfiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFC82BA806B600217D40 /* DCRfiltersView.swift */; };
 		3825CFCD2BA806B600217D40 /* addedFiltersCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */; };
 		3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */; };
@@ -125,8 +134,6 @@
 		386BEA152B739A480083D61F /* SelectedPreviewTypesCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */; };
 		386BEA162B739A480083D61F /* SelectedPreviewTypesCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */; };
 		386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */; };
-		3870AA2F2C60F8CC006E430D /* ActivityVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3870AA2E2C60F8CC006E430D /* ActivityVC.swift */; };
-		3870AA322C60F930006E430D /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3870AA312C60F930006E430D /* ActivityView.swift */; };
 		387B8A2E2BB3DCDA007F38AB /* _demo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */; };
 		387B8A2F2BB3DCDA007F38AB /* _live.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */; };
 		387BDB002BAB1DCB002B5E7D /* AddCallinfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */; };
@@ -168,7 +175,6 @@
 		38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA1FD62B60DB6700AFCFD2 /* CreatePresentationView.swift */; };
 		38BCA67B2A248838002C77F6 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCA67A2A248838002C77F6 /* LoginVC.swift */; };
 		38BD4C1F2A29F14500A3A5BF /* MasterSyncVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */; };
-		38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38BFB7852AFB68F9005E141E /* Hassan.storyboard */; };
 		38C0890E2A42FE45001F628C /* SlideDownloadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C0890D2A42FE44001F628C /* SlideDownloadVC.swift */; };
 		38C089102A431726001F628C /* SlideDownloaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38C0890F2A431726001F628C /* SlideDownloaderCell.xib */; };
 		38C089122A431738001F628C /* SlideDownloaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C089112A431738001F628C /* SlideDownloaderCell.swift */; };
@@ -512,6 +518,15 @@
 		381BC2612BAC65D400804B85 /* AddproductsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddproductsMenuView.swift; sourceTree = "<group>"; };
 		381BC2632BAC65E900804B85 /* AddproductsMenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddproductsMenuVC.swift; sourceTree = "<group>"; };
 		381E750F2C0758710003B892 /* RCPASectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCPASectionHeader.swift; sourceTree = "<group>"; };
+		3822D1D22C69F080001DF96C /* Hassan.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Hassan.storyboard; sourceTree = "<group>"; };
+		3822D1D42C69F0AF001DF96C /* ActivityVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityVC.swift; sourceTree = "<group>"; };
+		3822D1D62C69F0C3001DF96C /* ActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		3822D1DB2C69F12E001DF96C /* ActivitySelectionTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitySelectionTVC.swift; sourceTree = "<group>"; };
+		3822D1DC2C69F12E001DF96C /* ActivitySelectionTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivitySelectionTVC.xib; sourceTree = "<group>"; };
+		3822D1DD2C69F12E001DF96C /* ActivityDualEntryVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityDualEntryVC.xib; sourceTree = "<group>"; };
+		3822D1DE2C69F12E001DF96C /* ActivityTextEntryTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityTextEntryTVC.xib; sourceTree = "<group>"; };
+		3822D1DF2C69F12E001DF96C /* ActivityDualEntryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityDualEntryVC.swift; sourceTree = "<group>"; };
+		3822D1E02C69F12E001DF96C /* ActivityTextEntryTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityTextEntryTVC.swift; sourceTree = "<group>"; };
 		3825CFC82BA806B600217D40 /* DCRfiltersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCRfiltersView.swift; sourceTree = "<group>"; };
 		3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addedFiltersCVC.xib; sourceTree = "<group>"; };
 		3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addedFiltersCVC.swift; sourceTree = "<group>"; };
@@ -569,8 +584,6 @@
 		386BEA132B739A480083D61F /* SelectedPreviewTypesCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedPreviewTypesCVC.swift; sourceTree = "<group>"; };
 		386BEA142B739A480083D61F /* SelectedPreviewTypesCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedPreviewTypesCVC.xib; sourceTree = "<group>"; };
 		386D22352BDB762B005BF8C3 /* BackgroundTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTimer.swift; sourceTree = "<group>"; };
-		3870AA2E2C60F8CC006E430D /* ActivityVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityVC.swift; sourceTree = "<group>"; };
-		3870AA312C60F930006E430D /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		387B8A2B2BB3DCDA007F38AB /* _demo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _demo.xcconfig; sourceTree = "<group>"; };
 		387B8A2C2BB3DCDA007F38AB /* _live.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = _live.xcconfig; sourceTree = "<group>"; };
 		387BDAFF2BAB1DCB002B5E7D /* AddCallinfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCallinfoView.swift; sourceTree = "<group>"; };
@@ -611,7 +624,6 @@
 		38BA66892B46A3CD008C6D2C /* HomeLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLineChartView.swift; sourceTree = "<group>"; };
 		38BCA67A2A248838002C77F6 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		38BD4C1E2A29F14500A3A5BF /* MasterSyncVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterSyncVC.swift; sourceTree = "<group>"; };
-		38BFB7852AFB68F9005E141E /* Hassan.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Hassan.storyboard; sourceTree = "<group>"; };
 		38C0890D2A42FE44001F628C /* SlideDownloadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideDownloadVC.swift; sourceTree = "<group>"; };
 		38C0890F2A431726001F628C /* SlideDownloaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SlideDownloaderCell.xib; sourceTree = "<group>"; };
 		38C089112A431738001F628C /* SlideDownloaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideDownloaderCell.swift; sourceTree = "<group>"; };
@@ -1038,6 +1050,19 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		3822D1DA2C69F119001DF96C /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				3822D1DF2C69F12E001DF96C /* ActivityDualEntryVC.swift */,
+				3822D1DD2C69F12E001DF96C /* ActivityDualEntryVC.xib */,
+				3822D1DB2C69F12E001DF96C /* ActivitySelectionTVC.swift */,
+				3822D1DC2C69F12E001DF96C /* ActivitySelectionTVC.xib */,
+				3822D1E02C69F12E001DF96C /* ActivityTextEntryTVC.swift */,
+				3822D1DE2C69F12E001DF96C /* ActivityTextEntryTVC.xib */,
+			);
+			path = Activities;
+			sourceTree = "<group>";
+		};
 		3825CFC72BA806B600217D40 /* DCRfilters */ = {
 			isa = PBXGroup;
 			children = (
@@ -1236,6 +1261,7 @@
 		3865F8D22AFCE38E009AB984 /* CellandXIB */ = {
 			isa = PBXGroup;
 			children = (
+				3822D1DA2C69F119001DF96C /* Activities */,
 				380FC3EC2C53D8D40059D80A /* TourPlanApprovals */,
 				38E37F0F2C510AEF002EB294 /* LeaveAppoval */,
 				3809E06A2C4E8CA7002B345A /* SpecificDCRApprovalInfo */,
@@ -1286,7 +1312,7 @@
 		3870AA2D2C60F847006E430D /* Activity */ = {
 			isa = PBXGroup;
 			children = (
-				3870AA2E2C60F8CC006E430D /* ActivityVC.swift */,
+				3822D1D42C69F0AF001DF96C /* ActivityVC.swift */,
 			);
 			path = Activity;
 			sourceTree = "<group>";
@@ -1294,7 +1320,7 @@
 		3870AA302C60F920006E430D /* Activity */ = {
 			isa = PBXGroup;
 			children = (
-				3870AA312C60F930006E430D /* ActivityView.swift */,
+				3822D1D62C69F0C3001DF96C /* ActivityView.swift */,
 			);
 			path = Activity;
 			sourceTree = "<group>";
@@ -1390,7 +1416,7 @@
 		38B52CE32B29D13900CF30D9 /* StoryBoard */ = {
 			isa = PBXGroup;
 			children = (
-				38BFB7852AFB68F9005E141E /* Hassan.storyboard */,
+				3822D1D22C69F080001DF96C /* Hassan.storyboard */,
 				38D528A72A9A033E00AD3F78 /* Tagging.storyboard */,
 				38C673212A3C2B5800528E36 /* Activity.storyboard */,
 				B287E62D29F29C220097974D /* LaunchScreen.storyboard */,
@@ -2020,6 +2046,7 @@
 				38D568FE2B3560C6007CB86D /* VisitsCountCVC.xib in Resources */,
 				38CA1FF02B611CBF00AFCFD2 /* PlayPresentationCVC.xib in Resources */,
 				38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */,
+				3822D1E32C69F12E001DF96C /* ActivityDualEntryVC.xib in Resources */,
 				38DD9E5E2C08587D000A9575 /* RCPAdetailsInfoCVC.xib in Resources */,
 				38E42B1F2B679634001E0F07 /* VideoPlayerCVC.xib in Resources */,
 				38E189242BB15FB30093C446 /* JfwView.xib in Resources */,
@@ -2039,13 +2066,16 @@
 				38E6B0922B9866B80014AF1E /* resourceInfoTVC.xib in Resources */,
 				38C4649F2BDA8D8C00B7F377 /* DetailedInfoTVC.xib in Resources */,
 				B287E67E29F2A20F0097974D /* Satoshi-BlackItalic.otf in Resources */,
+				3822D1E22C69F12E001DF96C /* ActivitySelectionTVC.xib in Resources */,
 				38C464962BDA8B3A00B7F377 /* DetailedSlideInfoView.xib in Resources */,
+				3822D1E42C69F12E001DF96C /* ActivityTextEntryTVC.xib in Resources */,
 				38F289B82B0CB59A00045D4F /* EditSessionTVC.xib in Resources */,
 				38C8C0302AA5BD8A0068F0C0 /* RcpaTableViewCell.xib in Resources */,
 				38107C632B36FA0400ACEDF3 /* ViewmoreCVC.xib in Resources */,
 				38107C5F2B36F97E00ACEDF3 /* ReportsCVC.xib in Resources */,
 				383708202C09A485002A0F3C /* EventCaptureCVC.xib in Resources */,
 				38DAADE62B58FFBA00966B33 /* outboxCollapseTVC.xib in Resources */,
+				3822D1D32C69F080001DF96C /* Hassan.storyboard in Resources */,
 				38FDD4162B99881500566A04 /* CommonResouceInfoTVC.xib in Resources */,
 				38E5E4672AEBFA7300AF053A /* ChemistCallCell.xib in Resources */,
 				3865F8DA2AFCE924009AB984 /* WorkPlansInfoCVC.xib in Resources */,
@@ -2054,7 +2084,6 @@
 				38C25EA22B64D88E00A8E076 /* DeletePHIAlertview.xib in Resources */,
 				B287E62F29F29C220097974D /* LaunchScreen.storyboard in Resources */,
 				384555702BA9C87F00F6CE1A /* ProductsInfoHeader.xib in Resources */,
-				38BFB7862AFB68F9005E141E /* Hassan.storyboard in Resources */,
 				38EBB8912A6BD447008E007C /* QuickLinkCell.xib in Resources */,
 				38DD9E622C085E13000A9575 /* RCPAdetailsDesctiptionCVC.xib in Resources */,
 				38B18B732BD93AD7001FC958 /* ProductSectionTitleCVC.xib in Resources */,
@@ -2232,6 +2261,7 @@
 				38DAADE52B58FFBA00966B33 /* outboxCollapseTVC.swift in Sources */,
 				38DA83C52AA093D3001FE1A8 /* NearMeViewModel.swift in Sources */,
 				38EF4C692B74D78900F78F2E /* SpecifiedTypeMenuVC.swift in Sources */,
+				3822D1E62C69F12E001DF96C /* ActivityTextEntryTVC.swift in Sources */,
 				38F4B8172A49C92400BD4FD2 /* MyDayPlan + Extension.swift in Sources */,
 				381BC25F2BAC617800804B85 /* AdditionalCallsHeader.swift in Sources */,
 				388ABD002C4E30A500965C12 /* DCRapprovalView.swift in Sources */,
@@ -2311,6 +2341,7 @@
 				38BC16342B69050D0098AC0F /* CreatePresentationView.swift in Sources */,
 				38FD4F022BBD714700EF9D3D /* CustomerCheckinView.swift in Sources */,
 				38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */,
+				3822D1E12C69F12E001DF96C /* ActivitySelectionTVC.swift in Sources */,
 				38B18B712BD93AD7001FC958 /* InputSectionReusableView.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
 				38DD14B12B4FBAA70036384F /* Shared.swift in Sources */,
@@ -2416,6 +2447,7 @@
 				38FADFAD2B3C04D200632C2F /* CustomCollectionHeader.swift in Sources */,
 				38C855272A8CD9E000C34A58 /* InputViewModel.swift in Sources */,
 				385BD2812C2C151E00036026 /* AddCompetitorsView.swift in Sources */,
+				3822D1D52C69F0AF001DF96C /* ActivityVC.swift in Sources */,
 				38D569002B356468007CB86D /* ViewDayReportVC.swift in Sources */,
 				386BEA0D2B7381CF0083D61F /* PreviewTypeCVC.swift in Sources */,
 				38E37F0C2C5108E2002EB294 /* LeaveApprovalVC.swift in Sources */,
@@ -2453,7 +2485,6 @@
 				3825CFD62BA8665400217D40 /* ProductsDescriptionTVC.swift in Sources */,
 				38CAE5D92AC312E300DA554F /* MultiSelectionVC.swift in Sources */,
 				38D6E88A2B34081B003CC4D8 /* BasicReportsInfoTVC.swift in Sources */,
-				3870AA2F2C60F8CC006E430D /* ActivityVC.swift in Sources */,
 				38CF07E22A9C99090051B577 /* LocationManager.swift in Sources */,
 				38DD14BA2B5002340036384F /* MenuResponseProtocol.swift in Sources */,
 				38E3C3642AF9FB0B00623C33 /* Constants.swift in Sources */,
@@ -2494,6 +2525,7 @@
 				38D95FF82BEB8EA300348FB8 /* MainVC + EditCallEX.swift in Sources */,
 				38F4B8152A49979100BD4FD2 /* WorkType + Extension.swift in Sources */,
 				38CCA2B52A656B84008D5B12 /* LeaveAvailablityCell.swift in Sources */,
+				3822D1E52C69F12E001DF96C /* ActivityDualEntryVC.swift in Sources */,
 				38E37F0E2C510932002EB294 /* LeaveApprovalView.swift in Sources */,
 				388ABD042C4E35B700965C12 /* DCRApprovalsTVC.swift in Sources */,
 				38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */,
@@ -2512,7 +2544,7 @@
 				386D22362BDB762B005BF8C3 /* BackgroundTimer.swift in Sources */,
 				3803E0FF2A46F0DE0066AF15 /* Doctor + Extension.swift in Sources */,
 				38CF0DD32A8E572A000EDD96 /* JointWorkViewModel.swift in Sources */,
-				3870AA322C60F930006E430D /* ActivityView.swift in Sources */,
+				3822D1D72C69F0C3001DF96C /* ActivityView.swift in Sources */,
 				38107C512B36F2A700ACEDF3 /* TimeInfoCVC.swift in Sources */,
 				388546482B5FE65F005FC9FC /* CreatedPresentationCVC.swift in Sources */,
 				38CA1FDC2B60E61900AFCFD2 /* BrandsNameTVC.swift in Sources */,

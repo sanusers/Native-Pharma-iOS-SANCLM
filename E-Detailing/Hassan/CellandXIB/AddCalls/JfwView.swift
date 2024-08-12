@@ -432,55 +432,55 @@ class JfwView: UIView {
         }
     }
     
-//    func setupCamera() {
-//        let pickerVC = UIImagePickerController()
-//        pickerVC.sourceType = .camera
-//        pickerVC.delegate = self
-//        
-//        self.rootVC?.present(pickerVC, animated: true)
-//    }
     func setupCamera() {
-   
-        let picker = UIImagePickerController() //make a clean controller
-        picker.allowsEditing = false
-        picker.sourceType = UIImagePickerController.SourceType.camera
-        picker.modalPresentationStyle = .fullScreen
-//        if !geoFencingEnabled {
-//            self.rootVC?.present(picker,
-//                animated: true)
-//            return
-//        }
+        let pickerVC = UIImagePickerController()
+        pickerVC.sourceType = .camera
+        pickerVC.delegate = self
         
-        self.rootVC?.present(picker,
-            animated: true)
-        
-//        var customOverlayView: CustomOverlayView?
-//        customOverlayView =  picker.loadCustomView(nibname: XIBs.CustomOverlayView) as? CustomOverlayView
-//        customOverlayView?.setupView()
-//        let pickerViewWidth = picker.view.bounds.width
-//                let pickerViewHeight = picker.view.bounds.height
-//                let overlayHeight = picker.view.bounds.height / 3
-//        let overlayFrame = CGRect(
-//              x: 0,
-//              y: pickerViewHeight - overlayHeight ,
-//              width: pickerViewWidth,
-//              height: overlayHeight
-//          )
-//          
-//          customOverlayView?.frame = overlayFrame
-//            //presentation of the camera
-//          
-//            self.rootVC?.present(picker,
-//                animated: true,
-//                completion: {
-//                if geoFencingEnabled {
-//                    picker.cameraOverlayView = customOverlayView
-//                }
-//                   
-//            })
-             
-    
+        self.rootVC?.present(pickerVC, animated: true)
     }
+//    func setupCamera() {
+//   
+//        let picker = UIImagePickerController() //make a clean controller
+//        picker.allowsEditing = false
+//        picker.sourceType = UIImagePickerController.SourceType.camera
+//        picker.modalPresentationStyle = .fullScreen
+////        if !geoFencingEnabled {
+////            self.rootVC?.present(picker,
+////                animated: true)
+////            return
+////        }
+//        
+//        self.rootVC?.present(picker,
+//            animated: true)
+//        
+////        var customOverlayView: CustomOverlayView?
+////        customOverlayView =  picker.loadCustomView(nibname: XIBs.CustomOverlayView) as? CustomOverlayView
+////        customOverlayView?.setupView()
+////        let pickerViewWidth = picker.view.bounds.width
+////                let pickerViewHeight = picker.view.bounds.height
+////                let overlayHeight = picker.view.bounds.height / 3
+////        let overlayFrame = CGRect(
+////              x: 0,
+////              y: pickerViewHeight - overlayHeight ,
+////              width: pickerViewWidth,
+////              height: overlayHeight
+////          )
+////          
+////          customOverlayView?.frame = overlayFrame
+////            //presentation of the camera
+////          
+////            self.rootVC?.present(picker,
+////                animated: true,
+////                completion: {
+////                if geoFencingEnabled {
+////                    picker.cameraOverlayView = customOverlayView
+////                }
+////                   
+////            })
+//             
+//    
+//    }
     
     
     func toSetupAlert(desc: String) {

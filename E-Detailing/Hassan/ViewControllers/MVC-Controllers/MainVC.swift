@@ -198,9 +198,9 @@ class MainVC : UIViewController {
         addObservers()
         fetchLocations() { [weak self]  locationinfo in
             guard let welf = self else {return}
-            welf.toPostAlldayPlan() {
+           // welf.toPostAlldayPlan() {
                 welf.btnCalenderSync(welf.btnSyncDate!)
-            }
+          //  }
         }
  //      makeAPIcallUsingURLSession()
 
@@ -626,6 +626,12 @@ class MainVC : UIViewController {
         }
     }
 
+
+    @IBAction func didTapActivity(_ sender: Any) {
+        let vc = ActivityVC.initWithStory()
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
     
     func toSetupSubmitAlert() {
         let commonAlert = CommonAlert()

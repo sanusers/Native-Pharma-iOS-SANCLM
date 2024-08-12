@@ -7,7 +7,48 @@
 
 import Foundation
 import UIKit
+
+extension ActivityView: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.height / 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 0:
+            let cell: ActivityTextEntryTVC = tableView.dequeueReusableCell(withIdentifier: "ActivityTextEntryTVC") as! ActivityTextEntryTVC
+            cell.selectionStyle = .none
+            return cell
+        case 1:
+            let cell: ActivitySelectionTVC = tableView.dequeueReusableCell(withIdentifier: "ActivitySelectionTVC") as! ActivitySelectionTVC
+            cell.selectionStyle = .none
+            return cell
+        case 2:
+            let cell: ActivityDualEntryVC = tableView.dequeueReusableCell(withIdentifier: "ActivityDualEntryVC") as! ActivityDualEntryVC
+            cell.selectionStyle = .none
+            return cell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    
+}
+
 class ActivityView: BaseView {
+    
+    func cellRegistration() {
+        activityDetailsTable.register(UINib(nibName: "ActivityTextEntryTVC", bundle: nil), forCellReuseIdentifier: "ActivityTextEntryTVC")
+        
+        activityDetailsTable.register(UINib(nibName: "ActivitySelectionTVC", bundle: nil), forCellReuseIdentifier: "ActivitySelectionTVC")
+        
+        activityDetailsTable.register(UINib(nibName: "ActivityDualEntryVC", bundle: nil), forCellReuseIdentifier: "ActivityDualEntryVC")
+    }
+    
 //    func containsOnlyApprovedCharacters(in userText: String, toCheckString: String) -> Bool {
 //        let approvedCharacters = Set(toCheckString)
 //        
@@ -28,28 +69,37 @@ class ActivityView: BaseView {
     
     @IBOutlet var sortCalenderView: UIView!
     
-    @IBOutlet var sortSearchView: UIView!
     
-    @IBOutlet var sortFiltersView: UIView!
+    @IBOutlet var activityView: UIView!
     
     @IBOutlet var filterDateTF: UITextField!
     
     @IBOutlet var activitiesTable: UITableView!
     
-    @IBOutlet var noreportsView: UIView!
+  //  @IBOutlet var noreportsView: UIView!
     
-    @IBOutlet var noreportsLbl: UILabel!
+   // @IBOutlet var noreportsLbl: UILabel!
     
     @IBOutlet var searchTF: UITextField!
     
-    @IBOutlet var clearView: UIView!
+  //  @IBOutlet var clearView: UIView!
     
     @IBOutlet var resourceHQlbl: UITextField!
     
     @IBOutlet var resouceHQholderVIew: UIView!
     
     @IBOutlet var viewActivity: UIView!
-    @IBOutlet var calendarView: UIView!
+    
+    @IBOutlet var searchActivityView: UIView!
+    
+    @IBOutlet var viewCalender: UIView!
+    
+    @IBOutlet var activityDetailsHolder: UIView!
+    
+    @IBOutlet var activityDetailsTable: UITableView!
+    @IBOutlet var activityTitleLbl: UILabel!
+    @IBOutlet var btnSubmit: ShadowButton!
+    //  @IBOutlet var calendarView: UIView!
     var selectedSortIndex: Int? = nil
     
     var isSortPresented = false
@@ -64,9 +114,15 @@ class ActivityView: BaseView {
     override func didLoad(baseVC: BaseViewController) {
         
         self.activityVC = baseVC as? ActivityVC
-      //  self.setupUI()
-
+        self.setupUI()
+        toloadData()
         
+    }
+    
+    func toloadData() {
+        activityDetailsTable.delegate = self
+        activityDetailsTable.dataSource = self
+        activityDetailsTable.reloadData()
     }
     
     override func didLayoutSubviews(baseVC: BaseViewController) {
@@ -84,39 +140,43 @@ class ActivityView: BaseView {
     }
     
     func setupUI() {
-        self.noreportsView.isHidden = true
+        activityDetailsTable.backgroundColor = .appGreyColor
+        activityDetailsTable.layer.cornerRadius = 5
         backgroundView.isHidden = true
-        self.noreportsLbl.setFont(font: .bold(size: .BODY))
-        //searchTF.delegate = self
+        btnSubmit.layer.cornerRadius = 5
         initTaps()
-       //searchTF.placeholder = UIFont(name: "Satoshi-Bold", size: 14)
         searchTF.font = UIFont(name: "Satoshi-Bold", size: 14)
         titleLBL.setFont(font: .bold(size: .BODY))
-
+        activityTitleLbl.setFont(font: .bold(size: .BODY))
         filterDateTF.font = UIFont(name: "Satoshi-Bold", size: 14)
-     
+        
         filterDateTF.text = toConvertDate(date: Date())
         self.fromDate = Date()
         filterDateTF.isUserInteractionEnabled = false
         resourceHQlbl.isUserInteractionEnabled = false
-        cellRegistration()
         activitiesTable.separatorStyle = .none
         self.backgroundColor = .appGreyColor
         sortCalenderView.layer.borderColor = UIColor.appTextColor.cgColor
         sortCalenderView.layer.borderWidth = 0.5
         sortCalenderView.backgroundColor = .appWhiteColor
-       // sortCalenderView.elevate(2)
         sortCalenderView.layer.cornerRadius = 5
         resouceHQholderVIew.layer.cornerRadius = 5
-        sortSearchView.backgroundColor = .appWhiteColor
-       // sortSearchView.elevate(2)
-        sortSearchView.layer.cornerRadius = 5
+        activityView.layer.cornerRadius = 5
+        searchTF.font  = UIFont(name: "Satoshi-Bold", size: 14)
+        resourceHQlbl.font = UIFont(name: "Satoshi-Bold", size: 14)
+        resouceHQholderVIew.layer.borderColor = UIColor.appTextColor.cgColor
+        resouceHQholderVIew.layer.borderWidth = 0.5
+        resouceHQholderVIew.backgroundColor = .appWhiteColor
         
-       // sortFiltersView.elevate(2)
-        sortFiltersView.layer.cornerRadius = 5
+        searchActivityView.layer.cornerRadius = 5
         
+        activitiesTable.layer.cornerRadius = 5
         
+        activityDetailsHolder.layer.cornerRadius = 5
         initTaps()
+        setHQlbl()
+        activityDetailsTable.separatorStyle = .none
+        cellRegistration()
     }
     
     
@@ -163,11 +223,20 @@ class ActivityView: BaseView {
         
     }
     
-    func cellRegistration() {
-        
-    }
     
     func initTaps() {
+        viewCalender.addTap {
+            self.calenderAction(isForFrom: true)
+        }
+        
+        backHolderView.addTap {
+            self.activityVC.navigationController?.popViewController(animated: true)
+        }
+        
+        backgroundView.addTap {
+          //  self.activityVC.navigationController?.popViewController(animated: true)
+            self.didClose()
+        }
         
     }
     
