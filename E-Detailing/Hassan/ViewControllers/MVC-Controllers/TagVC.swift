@@ -47,6 +47,52 @@ class TagVC : UIViewController {
     var selectedDCRcall: CallViewModel?
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        fetchLocations() {[weak self] coordinates in
+            guard let coordinates = coordinates, let welf = self  else {
+                self?.navigationController?.popViewController(animated: true)
+                return}
+            welf.setupUI()
+            let locationCoordinate : CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude)
+            let camera  = GMSCameraPosition(latitude: coordinates.latitude, longitude: coordinates.longitude, zoom: 17)
+            welf.viewMapView.camera = camera
+            welf.selectedCoordinate = locationCoordinate
+            let marker = GMSMarker()
+            marker.position = locationCoordinate
+            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
+            marker.iconView?.tintColor = .appLightPink
+            marker.iconView?.frame.size = CGSize(width: 35, height: 45)
+            marker.title = welf.customer.name
+            marker.map = welf.viewMapView
+            
+        }
+        //        LocationManager.shared.getCurrentLocation { (coordinate) in
+        //
+        //            let camera  = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 17)
+        //
+        //            self.viewMapView.camera = camera
+        //            self.selectedCoordinate = coordinate
+        //
+        //
+        //            let marker = GMSMarker()
+        //            marker.position = coordinate
+        //            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
+        //            marker.iconView?.tintColor = .appLightPink
+        //            marker.iconView?.frame.size = CGSize(width: 35, height: 45)
+        //            marker.title = self.customer.name
+        //            marker.map = self.viewMapView
+        //        }
+        
+        backgroundView.addTap {
+            self.didClose()
+        }
+    }
+    
+    deinit {
+        print("TagVC deallocated")
+    }
+    
+    func setupUI() {
         self.backgroundView.isHidden = true
         self.backGroundVXview.isHidden = true
         self.viewMapView.isMyLocationEnabled = true
@@ -58,33 +104,34 @@ class TagVC : UIViewController {
         custName.text = customer.name
         btnTag.addTarget(self, action: #selector(checkCameraAuthorization), for: .touchUpInside)
         btnTag.backgroundColor = .appLightPink
-        
-
-        
-        LocationManager.shared.getCurrentLocation { (coordinate) in
-            
-            let camera  = GMSCameraPosition(latitude: coordinate.latitude, longitude: coordinate.longitude, zoom: 17)
-            
-            self.viewMapView.camera = camera
-            self.selectedCoordinate = coordinate
-            
-            
-            let marker = GMSMarker()
-            marker.position = coordinate
-            marker.iconView = UIImageView(image: UIImage(named: "locationRedIcon"))
-            marker.iconView?.tintColor = .appLightPink
-            marker.iconView?.frame.size = CGSize(width: 35, height: 45)
-            marker.title = self.customer.name
-            marker.map = self.viewMapView
-        }
-        
-        backgroundView.addTap {
-            self.didClose()
-        }
     }
     
-    deinit {
-        print("TagVC deallocated")
+    func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {
+                completion(nil)
+                return
+            }
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlert(desc: "Please enable location services in Settings.")
+                    completion(nil)
+                    return
+                }
+            }
+
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) {  address in
+                    completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address: address ?? "No address found"))
+                    return
+                }
+            } else {
+                
+                completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address:  "No address found"))
+                return
+            }
+        }
     }
     
     
@@ -142,7 +189,7 @@ class TagVC : UIViewController {
     
     func toSetupAlert(desc: String, istoToreTry: Bool) {
         let commonAlert = CommonAlert()
-        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "cancel", cancelAction: "Ok")
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Cancel", cancelAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("yes action")
          
@@ -357,7 +404,9 @@ class TagVC : UIViewController {
        
         guard let pickedImage = self.pickedImage else {return}
         if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-            self.toCreateToast("oops you are not connected to network.")
+          //  self.toCreateToast("oops you are not connected to network.")
+            self.showAlert(desc: "Please connect to internet to add new tag")
+            //toSetupAlert(desc: "Please connect to internet to tag", istoToreTry: false)
             return
         }
         Shared.instance.showLoaderInWindow()

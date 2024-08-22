@@ -9,6 +9,21 @@
 
 import Foundation
 
+extension JSONDecoder{
+    func decode<T : Decodable>(_ model : T.Type,
+                               result : @escaping Closure<T>) ->Closure<Data>{
+        return { data in
+            do{
+                let value = try self.decode(model.self, from: data)
+                result(value)
+                
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
 class APIResponseHandler : APIResponseProtocol{
   
     init(){

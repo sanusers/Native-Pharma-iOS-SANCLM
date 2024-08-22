@@ -560,7 +560,6 @@ class NearMeVC : UIViewController {
         
         let taggingListVC = UIStoryboard.taggingListVC
         taggingListVC.type = self.tagType
-
         self.navigationController?.pushViewController(taggingListVC, animated: true)
         
     }

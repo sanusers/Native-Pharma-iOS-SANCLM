@@ -228,7 +228,7 @@ class AddCallinfoVC: BaseViewController {
                     var aproduct : [String : Any] = [:]
                     aproduct["Code"] = product.product?.code
                     aproduct["Name"] =  product.product?.name
-                    aproduct["SmpQty"] = product.sampleCount
+                    aproduct["SamQty"] = product.sampleCount
                     products.append(aproduct)
                 }
                 aAdditioanlcall["Products"] = products

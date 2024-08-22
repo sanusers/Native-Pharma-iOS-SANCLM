@@ -12,6 +12,10 @@ import Foundation
 import UIKit
 import ImageIO
 
+protocol splashVCDelegate: AnyObject {
+    func setupControllers(isFromlaunch: Bool)
+}
+
 class SplashVC: BaseViewController{
     
  
@@ -19,6 +23,8 @@ class SplashVC: BaseViewController{
     @IBOutlet var splashView: SplashView!
     var isFirstTimeLaunch : Bool = false
     var isTimeZoneChanged : Bool = false
+    weak var delegate : splashVCDelegate?
+   // let delegate =   AppDelegate.shared?
     override func viewDidLoad() {
         super.viewDidLoad()
       //  callCheckVersion()

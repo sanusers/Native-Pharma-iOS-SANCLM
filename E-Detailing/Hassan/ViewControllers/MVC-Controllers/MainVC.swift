@@ -105,6 +105,7 @@ class MainVC : UIViewController {
     @IBOutlet var closeRejectionVIew: UIView!
     @IBOutlet var deviateView: UIView!
     @IBOutlet var deviateViewHeight: NSLayoutConstraint!
+    @IBOutlet var viewNoCalls: UIView!
     let dcrCallObjectParser =  DCRCallObjectParser.instance
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var  latitude : Double?
@@ -198,47 +199,18 @@ class MainVC : UIViewController {
         addObservers()
         fetchLocations() { [weak self]  locationinfo in
             guard let welf = self else {return}
-           // welf.toPostAlldayPlan() {
-                welf.btnCalenderSync(welf.btnSyncDate!)
-          //  }
+            welf.toPostAlldayPlan() {
+                   welf.handleDateSync()
+            }
         }
- //      makeAPIcallUsingURLSession()
-
-       // fetchEmptyDates()
     }
     
-//    func makeAPIcallUsingURLSession() {
-//     // - "http://sanffa.info/iOSServer/db_api.php?axn=table/products"
-//     // {"tableName":"getproducts","subdivision_code":"103,","Rsf":"MR7362","state_code":12,"sfcode":"MR7362","division_code":"70,","Designation":"SBE","sf_type":1}
-//     
-//     let endPointurl = URL(string: "http://edetailing.sanffa.info/iOSServer/db_api.php?axn=table/products")
-//        
-//        
-//        
-//     let param = MasterSyncParams.productParams
-//     
-//     var request = URLRequest(url: endPointurl!)
-//     request.httpMethod = "POST"
-//     
-//     let boundary = UUID().uuidString
-//     request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-//     var data = Data()
-//     for(key, value) in param {
-//     
-//     // data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-//     data.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
-//     data.append("\(value)".data(using: .utf8)!)
-//     }
-//     
-//     URLSession.shared.uploadTask(with: request, from: data) { data, response, error in
-//     let apiResponse = ObjectFormatter.shared.convertDataToJsonArr(data: data ?? Data())
-//     
-//     dump(apiResponse)
-//     
-//     }.resume()
-//     }
-    
-    
+    func handleDateSync() {
+        isUserPlanning{ [weak self] isUserPlanning in
+            guard let welf = self else {return}
+            isUserPlanning ?   welf.planningAction() : welf.btnCalenderSync(welf.btnSyncDate!)
+        }
+    }
     
     /// sync outbox datas
     ///
@@ -260,84 +232,91 @@ class MainVC : UIViewController {
                 return
             }
             
-          //  Shared.instance.showLoaderInWindow()
             let operationQueue = OperationQueue()
+
+            // Completion Operation
             let completionOperation = BlockOperation {
                 DispatchQueue.main.async {
                     Shared.instance.removeLoaderInWindow()
-                    welf.showAlertToFilldates(description: "Sync completed")
+                  //  welf.showAlertToFilldates(description: "Sync completed")
                     completion()
                 }
             }
-            
-          //  Shared.instance.showLoaderInWindow()
-          
+
             obj_sections.forEach { section in
-           
-                    let refreshDateStr = section.date
-                    let callitems = section.items
-                    let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
-                    
-                    let postDayPlanOperation = BlockOperation {
-                        let dispatchGroup = DispatchGroup()
-                        dispatchGroup.enter()
-                        welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {
-                            dispatchGroup.leave()
-                        }
-                        dispatchGroup.wait()
-                    }
-                    
-                    let retryDCROperation = BlockOperation {
-                        let dispatchGroup = DispatchGroup()
-                        dispatchGroup.enter()
-                        welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in
-                            dispatchGroup.leave()
-                        }
-                        dispatchGroup.wait()
-                    }
-                    retryDCROperation.addDependency(postDayPlanOperation)
-                    
-                    let uploadImageOperation = BlockOperation {
-                        let dispatchGroup = DispatchGroup()
-                        dispatchGroup.enter()
-                        welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
-                            dispatchGroup.leave()
-                        }
-                        dispatchGroup.wait()
-                    }
-                    uploadImageOperation.addDependency(retryDCROperation)
-                    
-                    let uploadWindupsOperation = BlockOperation {
-                        let dispatchGroup = DispatchGroup()
-                        dispatchGroup.enter()
-                        welf.toUploadWindups(date: refreshDate) { _ in
-                            welf.toLoadOutboxTable()
-                            welf.setSegment(.calls)
-                            dispatchGroup.leave()
-                        }
-                        dispatchGroup.wait()
-                    }
-                    uploadWindupsOperation.addDependency(uploadImageOperation)
-                    
-                let homeDataSyncOperation = BlockOperation {
+                let refreshDateStr = section.date
+                let callitems = section.items
+                let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
+                
+                // Post Day Plan Operation
+                let postDayPlanOperation = BlockOperation {
                     let dispatchGroup = DispatchGroup()
                     dispatchGroup.enter()
-                    welf.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) {  _ in
+                    welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {
                         dispatchGroup.leave()
                     }
                     dispatchGroup.wait()
                 }
                 
-                homeDataSyncOperation.addDependency(uploadWindupsOperation)
-                    // Add the final operation to the queue
-                    completionOperation.addDependency(homeDataSyncOperation)
-                    
-                    // Add operations to the queue
-                    operationQueue.addOperations([postDayPlanOperation, retryDCROperation, uploadImageOperation, uploadWindupsOperation, homeDataSyncOperation], waitUntilFinished: false)
+                // Retry DCR Upload Operation
+                let retryDCROperation = BlockOperation {
+                    let dispatchGroup = DispatchGroup()
+                    dispatchGroup.enter()
+                    welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in
+                        dispatchGroup.leave()
+                    }
+                    dispatchGroup.wait()
+                }
+                retryDCROperation.addDependency(postDayPlanOperation)
                 
+                // Upload Unsynced Images Operation
+                let uploadImageOperation = BlockOperation {
+                    let dispatchGroup = DispatchGroup()
+                    dispatchGroup.enter()
+                    welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
+                        dispatchGroup.leave()
+                    }
+                    dispatchGroup.wait()
+                }
+                uploadImageOperation.addDependency(retryDCROperation)
+                
+                // Upload Windups Operation
+                let uploadWindupsOperation = BlockOperation {
+                    let dispatchGroup = DispatchGroup()
+                    dispatchGroup.enter()
+                    welf.toUploadWindups(date: refreshDate) { _ in
+                        welf.toLoadOutboxTable()
+                        welf.setSegment(.calls)
+                        dispatchGroup.leave()
+                    }
+                    dispatchGroup.wait()
+                }
+                uploadWindupsOperation.addDependency(uploadImageOperation)
+                
+                // Home Data Sync Operation
+                let homeDataSyncOperation = BlockOperation {
+                    let dispatchGroup = DispatchGroup()
+                    dispatchGroup.enter()
+                    welf.masterVM?.fetchMasterData(
+                        type: .homeSetup,
+                        sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID),
+                        istoUpdateDCRlist: false,
+                        mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                    ) { _ in
+                        dispatchGroup.leave()
+                    }
+                    dispatchGroup.wait()
+                }
+                homeDataSyncOperation.addDependency(uploadWindupsOperation)
+                
+                // Adding operations to the queue
+                operationQueue.addOperations([postDayPlanOperation, retryDCROperation, uploadImageOperation, uploadWindupsOperation, homeDataSyncOperation], waitUntilFinished: false)
+                
+                // Ensure the completion operation runs after all others
+                completionOperation.addDependency(homeDataSyncOperation)
             }
-            
-            // Add the completion operation
+
+            // Add the completion operation to the queue
             operationQueue.addOperation(completionOperation)
         }
     }
@@ -355,9 +334,18 @@ class MainVC : UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(dcrcallsAdded) , name: NSNotification.Name("callsAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshDayplan) , name: NSNotification.Name("daplanRefreshed"), object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(postAllPlan) , name: NSNotification.Name("postAllPlan"), object: nil)
     }
      
+    @objc func postAllPlan() {
+        Shared.instance.showLoaderInWindow()
+        self.toPostAlldayPlan{ [weak self] in
+            guard let welf = self else {return}
+            welf.handleDateSync()
+            Shared.instance.removeLoaderInWindow()
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
       // CoreDataManager.shared.removeAllDayPlans()
@@ -397,10 +385,10 @@ class MainVC : UIViewController {
         layout.scrollDirection = .horizontal
         self.quickLinkCollectionView.collectionViewLayout = layout
         
-        if let layout = self.analysisCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .horizontal
-            layout.collectionView?.isScrollEnabled = true
-        }
+//        if let layout = self.analysisCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+//            layout.scrollDirection = .horizontal
+//            layout.collectionView?.isScrollEnabled = true
+//        }
  
         if let layout = self.dcrCallsCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
@@ -436,6 +424,7 @@ class MainVC : UIViewController {
       
         cellRegistration()
         initView()
+        viewNoCalls.isHidden = true
         rejectionVIew.isHidden = true
         toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
         toHideDeviateView(isTohide: true)
@@ -574,6 +563,8 @@ class MainVC : UIViewController {
         case .outbox:
             self.setSegment(.outbox)
         }
+        viewNoCalls.isHidden = self.todayCallsModel?.count != 0
+        
         if let selectedToday = self.selectedToday  {
             toConfigureMydayPlan(planDate: selectedToday, isRetrived: true) { [weak self] in
                 guard let welf = self else {return}
@@ -879,9 +870,7 @@ class MainVC : UIViewController {
 
     
     @objc func refreshDayplan() {
-        
-        btnCalenderSync(btnSyncDate!)
-       // refreshUI(date: Shared.instance.selectedDate, segmentType[selectedSegmentsIndex]) {}
+        handleDateSync()
     }
     
     @objc func dcrcallsAdded() {
@@ -1037,7 +1026,7 @@ class MainVC : UIViewController {
         
         self.dcrCallsCollectionView.register(UINib(nibName: "DCRCallAnalysisCell", bundle: nil), forCellWithReuseIdentifier: "DCRCallAnalysisCell")
         
-        self.analysisCollectionView.register(UINib(nibName: "AnalysisCell", bundle: nil), forCellWithReuseIdentifier: "AnalysisCell")
+     //   self.analysisCollectionView.register(UINib(nibName: "AnalysisCell", bundle: nil), forCellWithReuseIdentifier: "AnalysisCell")
         
 
         self.callTableView.register(UINib(nibName: "DCRCallCell", bundle: nil), forCellReuseIdentifier: "DCRCallCell")
@@ -1983,6 +1972,26 @@ extension MainVC {
 
         }
         
+    }
+    
+    func isUserPlanning(completion: @escaping(Bool) -> ()) {
+     
+            CoreDataManager.shared.fetchDcrDates {  savedDcrDates in
+        
+                let notAddedDates = savedDcrDates.filter { $0.isDateAdded == false }
+                completion(notAddedDates.isEmpty ? false : true)
+            }
+        
+    }
+    
+    func planningAction() {
+        CoreDataManager.shared.tpAppendToday { [weak self] in
+            guard let welf = self else {return}
+            welf.togetDCRdates(isToUpdateDate: false) {
+                welf.configurePastWindups(pageType: .calender) {}
+            }
+        }
+
     }
     
     func doUserWindupAPIcall(completion: @escaping(Bool) -> () ) {
@@ -3082,6 +3091,26 @@ extension MainVC: MenuResponseProtocol {
     
     
     func routeToView(_ view : UIViewController) {
+        
+        if view is NearMeVC  {
+            let fieldWorkSession = sessions?.filter { $0.workType?.fwFlg == "F" }
+            if fieldWorkSession?.count == 0 {
+                showAlert(desc: "Field work is required to add tag")
+                return
+            }
+
+    
+            fetchLocations() {[weak self] coordinates in
+                guard (coordinates != nil) else {return}
+               // self?.modalPresentationStyle = .fullScreen
+              //  self?.navigationController?.pushViewController(view, animated: true)
+                return
+            }
+            self.modalPresentationStyle = .fullScreen
+            self.navigationController?.pushViewController(view, animated: true)
+            return
+        }
+        
         self.modalPresentationStyle = .fullScreen
         self.navigationController?.pushViewController(view, animated: true)
     }
@@ -3244,8 +3273,8 @@ extension MainVC : collectionViewProtocols {
             return self.links.count
         case self.dcrCallsCollectionView:
             return self.dcrCount.count
-        case self.analysisCollectionView:
-            return 4
+//        case self.analysisCollectionView:
+//            return 4
         case self.eventCollectionView:
             return eventArr.count
         default:
@@ -3399,14 +3428,14 @@ extension MainVC : collectionViewProtocols {
       
             }
             return cell
-        case self.analysisCollectionView:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AnalysisCell", for: indexPath) as! AnalysisCell
-            if indexPath.row != 0 {
-           
-                cell.imgArrow.isHidden = true
-            }
-
-            return cell
+//        case self.analysisCollectionView:
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AnalysisCell", for: indexPath) as! AnalysisCell
+//            if indexPath.row != 0 {
+//           
+//                cell.imgArrow.isHidden = true
+//            }
+//
+//            return cell
         case self.eventCollectionView :
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DayPlanEventCell", for: indexPath) as! DayPlanEventCell
 
@@ -3436,10 +3465,10 @@ extension MainVC : collectionViewProtocols {
             let width = self.dcrCallsCollectionView.frame.width / 3
             let size = CGSize(width: width - 10, height: self.dcrCallsCollectionView.frame.height)
             return size
-        case self.analysisCollectionView :
-            let width = self.analysisCollectionView.frame.width / 3
-            let size = CGSize(width: width - 10, height: self.analysisCollectionView.frame.height)
-            return size
+//        case self.analysisCollectionView :
+//            let width = self.analysisCollectionView.frame.width / 3
+//            let size = CGSize(width: width - 10, height: self.analysisCollectionView.frame.height)
+//            return size
         case self.eventCollectionView:
           //  eventArr[indexPath.row]
             return CGSize(width:eventArr[indexPath.item].size(withAttributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)]).width + 20, height: collectionView.height / 5.5)
@@ -3587,7 +3616,7 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                         print("Yet to")
                     }
                 }
-                if !secondPlan.isEmpty {
+                if !secondPlan.isEmpty && secondPlan != firstPlan {
                     cell.workPlanTitLbl.text = "Work Plan - \(firstPlan), \(secondPlan)"
                 } else {
                     cell.workPlanTitLbl.text = "Work Plan - \(firstPlan)"
@@ -3614,7 +3643,10 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
             
             cell.workPlanRefreshView.addTap {[weak self] in
                 guard let welf = self else {return}
-              
+                if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                    welf.showAlertToFilldates(description: "Internet connection is required to sync Day plan.")
+                    return
+                }
                 let dateString = date
                 let rawDate = dateString.toDate(format: "yyyy-MM-dd")
                 Shared.instance.showLoaderInWindow()
@@ -4073,12 +4105,17 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 header?.dateLbl.text = formattedDate
             } else {
                 let object = obj_sections[section].items.first
-                
-                let dateString = object?.vstTime ?? ""
+                if let dateString = object?.vstTime, !dateString.isEmpty  {
                     let date = dateString.toDate()
                     let formattedDate = date.toString(format: "MMMM dd, yyyy")
                     print(formattedDate)  // Output: January 19, 2024
                     header?.dateLbl.text = formattedDate
+                } else {
+                    let dateStr = obj_sections[section].date
+                    let date = dateStr.toDate(format: "yyyy-MM-dd")
+                    let formattedDate = date.toString(format: "MMMM dd, yyyy")
+                    header?.dateLbl.text = formattedDate
+                }
             }
             
 
@@ -5187,12 +5224,13 @@ extension MainVC: OutboxDetailsTVCDelegate {
         guard let call = call, let type = type else {
             Shared.instance.showLoaderInWindow()
             toUploadUnsyncedImage(custCode: syncCode ?? dcrCall.custCode) {
-             
+                
                 self.toSetupOutBoxDataSource(isSynced: true) {
                     Shared.instance.removeLoaderInWindow()
                 }
             }
-            return}
+            return
+        }
         dcrCallObjectParser.toReturnModelobjects(call: call, type: type) {[weak self]  outboxModel in
             guard let welf = self else {return}
             welf.dcrCallObjectParser.dcrCall = call as? CallViewModel

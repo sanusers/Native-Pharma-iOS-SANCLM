@@ -27,11 +27,53 @@ class TagViewVC : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchLocations() { coordinates in
+            guard coordinates != nil else {return}
+            self.updateCustomerData()
+        }
         
         
-        self.updateCustomerData()
         
     }
+    func showAlert(desc: String) {
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
+        commonAlert.addAdditionalOkAction(isForSingleOption: true) {
+            print("no action")
+            // self.toDeletePresentation()
+            
+        }
+
+    }
+    
+    func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
+        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+            guard let welf = self else {
+                completion(nil)
+                return
+            }
+            
+            if geoFencingEnabled {
+                guard coordinates != nil else {
+                    welf.showAlert(desc: "Please enable location services in Settings.")
+                    completion(nil)
+                    return
+                }
+            }
+
+            if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                Pipelines.shared.getAddressString(latitude: coordinates?.latitude ?? Double(), longitude:  coordinates?.longitude ?? Double()) {  address in
+                    completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address: address ?? "No address found"))
+                    return
+                }
+            } else {
+                
+                completion(LocationInfo(latitude: coordinates?.latitude ?? Double(), longitude: coordinates?.longitude ?? Double(), address:  "No address found"))
+                return
+            }
+        }
+    }
+    
     
     func updateCustomerData() {
         

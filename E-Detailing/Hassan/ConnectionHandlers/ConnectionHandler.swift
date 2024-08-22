@@ -38,7 +38,7 @@ final class ConnectionHandler : NSObject {
     
     static let shared = ConnectionHandler()
     private let alamofireManager : Session
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    //var appDelegate = UIApplication.shared.delegate as! AppDelegate
     var preference = UserDefaults.standard
     let strDeviceType = "1"
     let strDeviceToken = "20591310"

@@ -59,9 +59,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func makeSplashView(isFirstTime:Bool, isTimeZoneChanged: Bool? = false)
     {
         let splashView = SplashVC.initWithStory()
+        splashView.delegate = self
         splashView.isFirstTimeLaunch = isFirstTime
         splashView.isTimeZoneChanged = isTimeZoneChanged ?? false
-        window?.rootViewController = splashView
+        window?.rootViewController = UINavigationController.init(rootViewController: splashView)
         window?.makeKeyAndVisible()
     }
     
@@ -121,6 +122,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     } else if  status == ReachabilityManager.ReachabilityStatus.wifi.rawValue || status ==  ReachabilityManager.ReachabilityStatus.cellular.rawValue   {
                         
                         LocalStorage.shared.setBool(LocalStorage.LocalValue.isConnectedToNetwork, value: true)
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name("postAllPlan"), object: nil)
                     }
                 }
             }
@@ -200,3 +203,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+
+
+extension AppDelegate: splashVCDelegate {
+    func setupControllers(isFromlaunch: Bool) {
+        self.window?.rootViewController = nil
+        self.setupRootViewControllers(isFromlaunch: isFromlaunch)
+    }
+    
+    
+}

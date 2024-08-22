@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 public enum UserStatisticsError: String, Error {
-    case unableConnect = "An issue occured data will be saved to device"
+    case unableConnect = "An issue occured"
     case failedToLOG = "Not connected to active network. Data will be saved to device"
     case failedToupdatePassword = "Failed to update password please try again later"
     case failedTouploadImage = "Failed to upload captured events"

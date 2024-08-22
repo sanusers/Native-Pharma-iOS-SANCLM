@@ -63,7 +63,7 @@ extension SplashView: CLLocationManagerDelegate {
 class SplashView: BaseView{
     var previousAuthorizationStatus: CLAuthorizationStatus = .notDetermined
     var splashVC : SplashVC!
-    var locationManager = CLLocationManager()
+  //  var locationManager = CLLocationManager()
     @IBOutlet var btnLogout: UIButton!
     @IBOutlet var lblMenuTitle: UILabel!
     @IBOutlet var imgAppIcon: UIImageView!
@@ -117,8 +117,8 @@ class SplashView: BaseView{
     }
     
     func addObserverForTimeZoneChange() {
-        NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
+       // NotificationCenter.default.addObserver(self, selector: #selector(networkModified(_:)) , name: NSNotification.Name("connectionChanged"), object: nil)
+       // NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
     }
     
     @objc func networkModified(_ notification: NSNotification) {
@@ -164,7 +164,7 @@ class SplashView: BaseView{
                             }
                         }
                         
-                   
+                        self.toCreateToast("You are now connected.")
                     }
                 }
             }
@@ -300,8 +300,27 @@ class SplashView: BaseView{
     
     @objc func onSetRootViewController()
     {
-        splashVC.callStartupActions()
+        callStartupActions()
 
+    }
+    
+    
+    func callStartupActions(){
+        
+        self.SplashImageHolderView.isHidden = false
+        if let gifImage = UIImage.gif(asset: "launch", speedMultiplier: 4) {
+            self.launchIV.image = gifImage
+         }
+        
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                self?.SplashImageHolderView.isHidden = true
+                self?.launchIV.image = nil
+                self?.splashVC.delegate?.setupControllers(isFromlaunch: true)
+                self?.splashVC.navigationController?.popViewController(animated: true)
+        }
+        
+  
     }
 
 }

@@ -359,19 +359,16 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
             switch Shared.instance.selectedDCRtype {
                 
             case .Doctor:
-                if isDoctorEventCaptureNeeded {
+                if isDoctorRCPAneeded{
                     cell.isRCPAneeded = true
                 }
             case .Chemist :
-                if isChemistEventCaptureNeeded {
+                if isChemistRCPAneeded {
                     cell.isRCPAneeded = true
                 }
-            case .Stockist:
-                if isStockistEventCaptureNeeded {
-                    cell.isRCPAneeded = true
-                }
+     
             case .UnlistedDoctor:
-                if isUnListedDoctorEventCaptureNeeded {
+                if isUnListedDoctorRCPAneeded{
                     cell.isRCPAneeded = true
                 }
             default:

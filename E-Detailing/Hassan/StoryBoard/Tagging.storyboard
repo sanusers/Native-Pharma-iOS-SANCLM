@@ -19,6 +19,9 @@
         <array key="Satoshi-Medium.otf">
             <string>Satoshi-Medium</string>
         </array>
+        <array key="Satoshi-Regular.otf">
+            <string>Satoshi-Regular</string>
+        </array>
     </customFonts>
     <scenes>
         <!--Near MeVC-->
@@ -678,15 +681,15 @@
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Jis-Ed-W93">
                                                                 <rect key="frame" x="37.5" y="0.0" width="1083.5" height="53.5"/>
                                                                 <subviews>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j8S-fm-ldk">
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j8S-fm-ldk">
                                                                         <rect key="frame" x="0.0" y="0.0" width="1083.5" height="24.5"/>
-                                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                                        <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="17"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ur-r3-GWc">
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ur-r3-GWc">
                                                                         <rect key="frame" x="0.0" y="29.5" width="1083.5" height="24"/>
-                                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                        <fontDescription key="fontDescription" name="Satoshi-Regular" family="Satoshi" pointSize="14"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
@@ -830,7 +833,7 @@
                                 <rect key="frame" x="0.0" y="-4" width="1180" height="82"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lPv-97-KuH">
-                                        <rect key="frame" x="15" y="16.5" width="65.5" height="65.5"/>
+                                        <rect key="frame" x="0.0" y="16.5" width="65.5" height="65.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -842,7 +845,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tagging" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XaR-3J-fE5">
-                                        <rect key="frame" x="95.5" y="40" width="56" height="19"/>
+                                        <rect key="frame" x="80.5" y="40" width="56" height="19"/>
                                         <fontDescription key="fontDescription" name="Satoshi-Bold" family="Satoshi" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -852,15 +855,14 @@
                                 <constraints>
                                     <constraint firstItem="lPv-97-KuH" firstAttribute="centerY" secondItem="Nfw-RE-CTp" secondAttribute="centerY" multiplier="1.2" id="2mm-x0-yaA"/>
                                     <constraint firstItem="lPv-97-KuH" firstAttribute="height" secondItem="Nfw-RE-CTp" secondAttribute="height" multiplier="0.8" id="KFv-3t-g8S"/>
-                                    <constraint firstItem="lPv-97-KuH" firstAttribute="leading" secondItem="Nfw-RE-CTp" secondAttribute="leading" constant="15" id="S0k-yZ-m8O"/>
+                                    <constraint firstItem="lPv-97-KuH" firstAttribute="leading" secondItem="Nfw-RE-CTp" secondAttribute="leading" id="S0k-yZ-m8O"/>
                                     <constraint firstItem="XaR-3J-fE5" firstAttribute="centerY" secondItem="lPv-97-KuH" secondAttribute="centerY" id="Yom-4b-YRH"/>
                                     <constraint firstItem="XaR-3J-fE5" firstAttribute="leading" secondItem="lPv-97-KuH" secondAttribute="trailing" constant="15" id="aym-wy-VZ6"/>
                                     <constraint firstItem="lPv-97-KuH" firstAttribute="width" secondItem="Nfw-RE-CTp" secondAttribute="height" multiplier="0.8" id="uOD-g6-6Ow"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qmJ-mb-KVy">
-                                <rect key="frame" x="0.0" y="118" width="1180" height="661"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qmJ-mb-KVy">
+                                <rect key="frame" x="0.0" y="78" width="1180" height="722"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Ni-OV-gVL" customClass="GMSMapView">
                                         <rect key="frame" x="0.0" y="0.0" width="1180" height="738"/>
@@ -875,9 +877,13 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Nfw-RE-CTp" firstAttribute="height" secondItem="OSd-xE-FZs" secondAttribute="height" multiplier="0.1" id="6WW-kq-O0a"/>
+                            <constraint firstItem="qmJ-mb-KVy" firstAttribute="trailing" secondItem="agr-FS-ahh" secondAttribute="trailing" id="9uO-1P-elJ"/>
+                            <constraint firstItem="agr-FS-ahh" firstAttribute="bottom" secondItem="qmJ-mb-KVy" secondAttribute="bottom" id="F0x-XH-IZ4"/>
                             <constraint firstItem="Nfw-RE-CTp" firstAttribute="centerX" secondItem="agr-FS-ahh" secondAttribute="centerX" id="Q4N-mr-ymp"/>
+                            <constraint firstItem="qmJ-mb-KVy" firstAttribute="leading" secondItem="agr-FS-ahh" secondAttribute="leading" id="hgk-zh-LIj"/>
                             <constraint firstItem="Nfw-RE-CTp" firstAttribute="width" secondItem="OSd-xE-FZs" secondAttribute="width" id="oLw-e9-QHU"/>
                             <constraint firstItem="Nfw-RE-CTp" firstAttribute="centerY" secondItem="agr-FS-ahh" secondAttribute="centerY" multiplier="0.09" id="oxK-c6-iQy"/>
+                            <constraint firstItem="qmJ-mb-KVy" firstAttribute="top" secondItem="Nfw-RE-CTp" secondAttribute="bottom" id="r6A-aF-U3c"/>
                         </constraints>
                     </view>
                     <connections>
@@ -905,7 +911,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray6Color">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

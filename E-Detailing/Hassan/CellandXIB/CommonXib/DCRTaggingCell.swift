@@ -38,6 +38,7 @@ class DCRTaggingCell : UICollectionViewCell {
            // self.lblCluster.text = customer.townName
             self.lblTagCount.text = (customer.geoCount == "" ? "0" : customer.geoCount) + "/" + (customer.maxCount == "" ? "0" : customer.maxCount)
             
+            self.btnView.isHidden =  customer.geoCount == "" || customer.geoCount == "0" ? true : false
             
             self.btnCluster.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
             
