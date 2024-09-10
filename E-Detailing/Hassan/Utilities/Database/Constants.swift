@@ -57,7 +57,7 @@ var LicenceKey : String  {
         licenseKey = newKey
     }
 }
-
+//let appSetup = AppDefaults.shared.getAppSetUp()
 
 //(infoPlist?.value(for: .App_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
@@ -113,7 +113,7 @@ var isDoctorInputNeeded = LocalStorage.shared.getBool(key: .isDoctorInputNeeded)
 
 var isDoctorAdditionalCallNeeded = LocalStorage.shared.getBool(key: .isDoctorAdditionalCallNeeded)
 
-var isDoctorRCPAneeded = LocalStorage.shared.getBool(key: .isDoctorRCPAneeded)
+var isDoctorRCPAneeded =  LocalStorage.shared.getBool(key: .isDoctorRCPAneeded)
 
 var isDoctorJointWorkNeeded = LocalStorage.shared.getBool(key: .isDoctorJointWorkNeeded)
 

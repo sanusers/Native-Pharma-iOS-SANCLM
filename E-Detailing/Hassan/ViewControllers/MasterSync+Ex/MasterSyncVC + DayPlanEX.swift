@@ -429,28 +429,6 @@ extension CoreDataManager {
             }
             selectedterritories = filteredTerritories
             
-            
-//            if filteredTerritories.isEmpty {
-//               dispatchGroup.enter()
-//              let masterVM =  MasterSyncVM()
-//                masterVM.fetchMasterData(type: .clusters, sfCode: eachDayPlan.rsf, istoUpdateDCRlist: false, mapID: eachDayPlan.rsf) { _ in
-//                    
-//                    let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
-//                    let filteredTerritories = clusterArr.filter { aTerritory in
-//                        // Check if any code in codesArray is contained in aTerritory
-//                        return codesArray.contains { code in
-//                            return aTerritory.code?.contains(code) ?? false
-//                      
-//                        }
-//                    }
-//                    
-//                    selectedterritories = filteredTerritories
-//                    dispatchGroup.leave()
-//                }
-//            }
-            
-           
-            
             workTypeArr.forEach { aWorkType in
                 if aWorkType.code == eachDayPlan.wtCode  {
                     selectedWorkTypes = aWorkType
@@ -511,27 +489,6 @@ extension CoreDataManager {
                 }
             }
             selectedterritories = filteredTerritories
-            
-            
-//            if filteredTerritories.isEmpty {
-//               dispatchGroup.enter()
-//              let masterVM =  MasterSyncVM()
-//                masterVM.fetchMasterData(type: .clusters, sfCode: eachDayPlan.rsf, istoUpdateDCRlist: false, mapID: eachDayPlan.rsf) { _ in
-//                    
-//                    let clusterArr = DBManager.shared.getTerritory(mapID: eachDayPlan.rsf)
-//                    let filteredTerritories = clusterArr.filter { aTerritory in
-//                        // Check if any code in codesArray is contained in aTerritory
-//                        return codesArray.contains { code in
-//                            return aTerritory.code?.contains(code) ?? false
-//                      
-//                        }
-//                    }
-//                    
-//                    selectedterritories = filteredTerritories
-//                    dispatchGroup.leave()
-//                }
-//            }
-            
             
             workTypeArr.forEach { aWorkType in
                 if aWorkType.code == eachDayPlan.wtCode2  {

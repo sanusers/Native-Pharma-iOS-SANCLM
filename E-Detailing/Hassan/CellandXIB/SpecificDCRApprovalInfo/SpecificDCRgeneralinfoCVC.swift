@@ -1,8 +1,10 @@
 //
 //  SpecificDCRgeneralinfoCVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 22/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 22/07/24.
 //
 
 import UIKit
@@ -59,7 +61,7 @@ class SpecificDCRgeneralinfoCVC: UICollectionViewCell {
 
          self.pobDesc.text = model.pob == 0 ? "-" : "\(model.pob)"
         
-         self.jointWorkDesc.text = model.jointwrk == "" ? "-" : model.jointwrk
+         self.jointWorkDesc.text = model.jointwrk == "" ? "-" : model.jointwrk.replacingOccurrences(of: "$$", with: ", ")
         switch model.type {
         case "DOCTOR":
             

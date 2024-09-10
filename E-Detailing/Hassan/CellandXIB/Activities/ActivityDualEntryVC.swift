@@ -1,8 +1,10 @@
 //
 //  ActivityDualEntryVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 09/08/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 09/08/24.
 //
 
 import UIKit

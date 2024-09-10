@@ -10,10 +10,10 @@
 import UIKit
 
 class ProductsDescriptionCVC: UICollectionViewCell {
-
+    @IBOutlet var samplesHolderView: UIView!
+    @IBOutlet var rxHolderView: UIView!
     @IBOutlet var seperatorView: UIView!
     @IBOutlet var holderVoew: UIStackView!
-    
     @IBOutlet var rcpaHolderView: UIView!
     @IBOutlet var rcpaLbl: UILabel!
     @IBOutlet var rxQTYlbl: UILabel!
@@ -22,6 +22,8 @@ class ProductsDescriptionCVC: UICollectionViewCell {
     @IBOutlet var productLbl: UILabel!
     var productsArr : [SampleProduct] = []
     var isRCPAneeded: Bool = false
+    var isrxNeeded : Bool = false
+    var isSampleNeeded: Bool = false
     func topopulateCell(modelStr: SampleProduct){
         //SECREMET 1 MG ( 0 ), )
 //        let productDescArr = modelStr.components(separatedBy: " ")
@@ -53,6 +55,21 @@ class ProductsDescriptionCVC: UICollectionViewCell {
         } else {
             rcpaHolderView.isHidden = true
         }
+        
+        if isSampleNeeded {
+            self.samplesLbl.text = modelStr.noOfSamples == "" ? "-" :  String(modelStr.noOfSamples.dropLast())
+            samplesHolderView.isHidden = false
+        } else {
+            samplesHolderView.isHidden = true
+        }
+        
+        if isrxNeeded {
+            self.rxQTYlbl.text = modelStr.rxQTY == "" ? "-" :  String(modelStr.rxQTY.dropLast())
+            rxHolderView.isHidden = false
+        } else {
+            rxHolderView.isHidden = true
+        }
+        
 
     }
     

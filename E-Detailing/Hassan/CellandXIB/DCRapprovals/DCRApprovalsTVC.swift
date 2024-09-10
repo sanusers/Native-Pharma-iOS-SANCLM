@@ -1,8 +1,10 @@
 //
 //  DCRApprovalsTVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 22/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 22/07/24.
 //
 
 import UIKit

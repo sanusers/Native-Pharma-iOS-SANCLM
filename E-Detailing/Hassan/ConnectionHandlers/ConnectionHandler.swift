@@ -874,7 +874,7 @@ final class ConnectionHandler : NSObject {
                     if let data = anyData,
                        let json = JSON(data){
                         
-                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag || api == .approvals || api == .dcrApproval {
+                        if api == .getAllPlansData || api == .getReports || api == .saveDCR || api == .updatePassword  || api == .actionLogin || api == .editCall || api == .saveTag || api == .approvals || api == .dcrApproval  {
                            
                             if json.isEmpty {
                                 responseHandler.handleFailure(value: json.status_message)

@@ -453,24 +453,27 @@ class DBManager {
             dateFormatter.dateFormat = "yyyy-MM-dd"
             holidayDates.removeAll()
             dateString.forEach { aDate in
-                if let date = dateFormatter.date(from: aDate) {
+                //if let date = dateFormatter.date(from: aDate) {
                     // Now 'date' contains the Date object
-                    print(date)
-                    dateFormatter.dateFormat = "yyyy"
-                    let holidayYear = dateFormatter.string(from: date)
-                    let thisYear = dateFormatter.string(from:  Date())
+                  //  print(date)
+                   // dateFormatter.dateFormat = "yyyy"
+                 //   let holidayYear = dateFormatter.string(from: date)
+                  //  let thisYear = dateFormatter.string(from:  Date())
                     
-                    dateFormatter.dateFormat = "MMMM"
+                  //  dateFormatter.dateFormat = "MMMM"
                     
-                    let toRemoveMonth =  dateFormatter.string(from: date)
+                   // let toRemoveMonth =  dateFormatter.string(from: date)
                     
-                    if holidayYear == thisYear && toRemoveMonth != "January" {
-                        holidayDates.append(date)
-                    }
+                   // date = aDate.toDate(format: "yyyy-MM-dd")
                     
-                } else {
-                    print("Failed to convert string to Date.")
-                }
+                   // if holidayYear == thisYear && toRemoveMonth != "January" {
+                        holidayDates.append(aDate.toDate(format: "yyyy-MM-dd"))
+                //    }
+                    
+              // }
+                //else {
+                //    print("Failed to convert string to Date.")
+               // }
             }
             holidayDateStr.removeAll()
             holidayDates.forEach { rawDate in
@@ -611,29 +614,58 @@ class DBManager {
     func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
         let currentDate = getFirstDayOfCurrentMonth() ?? Date()
         let calendar = Calendar.current
-        
-        var saturdays: [Date] = []
+
+        var weeklyoffDays: [Date] = []
+
+        // Map weekoffday: 0 (Sunday) to 1, 1 (Monday) to 2, ..., 6 (Saturday) to 7
+        let mappedWeekoffday = (weekoffday == 0) ? 1 : (weekoffday + 1)
         
         for monthOffset in months {
             guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
                 continue
             }
-            
+
             let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
-            
+
             for day in monthRange.lowerBound..<monthRange.upperBound {
                 guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
                     continue
                 }
-                if calendar.component(.weekday, from: date) == (weekoffday == 0 ? 1 : weekoffday) {
-                    saturdays.append(date)
+                if calendar.component(.weekday, from: date) == mappedWeekoffday {
+                    weeklyoffDays.append(date)
                 }
-                
             }
         }
-        
-        return saturdays
+
+        return weeklyoffDays
     }
+    
+//    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
+//        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
+//        let calendar = Calendar.current
+//        
+//        var saturdays: [Date] = []
+//        
+//        for monthOffset in months {
+//            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
+//                continue
+//            }
+//            
+//            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
+//            
+//            for day in monthRange.lowerBound..<monthRange.upperBound {
+//                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
+//                    continue
+//                }
+//                if calendar.component(.weekday, from: date) == (weekoffday == 0 ? 1 : weekoffday) {
+//                    saturdays.append(date)
+//                }
+//                
+//            }
+//        }
+//        
+//        return saturdays
+//    }
     
     
     func toAppendWeeklyoffs(date: [String], rawDate: [Date], isHolidayDict: [String: Bool], eachDatePlan: EachDatePlan) {

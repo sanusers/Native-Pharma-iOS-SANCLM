@@ -1,8 +1,10 @@
 //
 //  TourPlanApprovalView.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 26/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 26/07/24.
 //
 
 import Foundation
@@ -91,7 +93,7 @@ extension TourPlanApprovalView: UITableViewDelegate, UITableViewDataSource {
                     var cellHeight: CGFloat = 0
                    let sessions = convertToSessionDetails(from: model)
                     sessions.forEach { aSessionDetail in
-                        if aSessionDetail.FWFlg == "F" {
+                        if aSessionDetail.FWFlg == "F" || aSessionDetail.FWFlg == "Y"  {
                             cellHeight += 670 + 100
                          
                        } else {
@@ -326,6 +328,23 @@ class TourPlanApprovalView : BaseView {
                 if !welf.isRemarksadded && welf.dayRemarks.isEmpty {
                     welf.deviateAction(isForremarks: false)
                     return
+                } else if  welf.isRemarksadded {
+                    guard let approvalDetails = welf.approvalDetails else {return}
+                    let model = approvalDetails[welf.selectedBrandsIndex ?? 0]
+                    let param = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
+                    welf.tourPlanApprovalVC.rejectAPI(additionalparam: param, vm: UserStatisticsVM()) {[weak self] response in
+                        guard let welf = self else {return}
+                        welf.isRemarksadded = false
+                        welf.dayRemarks = ""
+                        if response?.isSuccess ?? false  {
+                            welf.toCreateToast(response?.msg ?? "")
+                            welf.callAPI()
+                        } else {
+                            welf.toCreateToast(response?.checkinMasg ??  "Failed to reject plan. Try again later")
+                        }
+                  
+                        
+                    }
                 }
             
         }
@@ -337,6 +356,12 @@ class TourPlanApprovalView : BaseView {
         
         approveView.addTap {[weak self] in
             guard let welf = self else {return}
+            
+            if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                welf.toCreateToast("Please connect to interner")
+                return
+            }
+            
             guard let approvalDetails = welf.approvalDetails else {return}
             let model = approvalDetails[welf.selectedBrandsIndex ?? 0]
             let param = TPdetailParam(month: model.mnth, year: model.yr, sfcode: model.sfCode)
@@ -550,6 +575,10 @@ extension TourPlanApprovalView : SessionInfoTVCDelegate {
         self.subviews.forEach { aAddedView in
             switch aAddedView {
             case tpDeviateReasonView:
+                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                    self.toCreateToast("Please connect to internet.")
+                    return
+                }
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
                 guard let approvalDetails = approvalDetails else {return}
@@ -563,7 +592,7 @@ extension TourPlanApprovalView : SessionInfoTVCDelegate {
                         welf.toCreateToast(response?.msg ?? "")
                         welf.callAPI()
                     } else {
-                        welf.toCreateToast("Failed to approve. Try again later")
+                        welf.toCreateToast(response?.checkinMasg ??  "Failed to reject plan. Try again later")
                     }
               
                     

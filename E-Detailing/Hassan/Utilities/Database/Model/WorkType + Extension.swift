@@ -266,6 +266,11 @@ extension TableSetup {
         if let terrslFlgValue = dictionary["tp_objective"] as? String{
             tp_objective = terrslFlgValue
         }
+        
+        if let drNeedValue = dictionary["DrNeed"] as? String{
+            drNeed = drNeedValue
+        }
+        
         if let terrslFlgValue = dictionary["UnDrNeed"] as? String{
             unDrNeed = terrslFlgValue
         }

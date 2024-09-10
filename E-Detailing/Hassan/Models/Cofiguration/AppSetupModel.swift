@@ -285,8 +285,9 @@ class AppSetUp : Codable {
     var visitNeed : Int?
     var workAreaName : String?
     var therapticNd : String?
-    
+    var sfDCRDate : Dt?
     init() {
+        sfDCRDate = Dt()
         successMessage = ""
         isSuccess = false
         activityNeed = 0
@@ -839,6 +840,7 @@ class AppSetUp : Codable {
         self.workAreaName = container.safeDecodeValue(forKey: .workAreaName)
         self.therapticNd =  container.safeDecodeValue(forKey: .therapticNd)
         self.success = Int()
+        self.sfDCRDate = try? container.decode(Dt.self, forKey: .sfDCRDate)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
         
@@ -1026,6 +1028,7 @@ class AppSetUp : Codable {
     }
     
     enum CodingKeys: String, CodingKey {
+        case sfDCRDate = "SFDCRDate"
         case isSuccess = "success"
         case successMessage = "msg"
         case activityNeed = "ActivityNd"

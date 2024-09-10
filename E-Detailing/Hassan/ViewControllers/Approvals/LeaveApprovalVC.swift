@@ -1,8 +1,10 @@
 //
 //  LeaveApprovalVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 24/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 24/07/24.
 //
 
 import Foundation
@@ -52,6 +54,10 @@ class LeaveApprovalVC: BaseViewController {
             switch result {
                 
             case .success(let response):
+                if response.isEmpty {
+                    self.toCreateToast("Leave Approvals not Available")
+                    self.navigationController?.popViewController(animated: true)
+                }
                 dump(response)
                 completion(response)
             case .failure(let error):

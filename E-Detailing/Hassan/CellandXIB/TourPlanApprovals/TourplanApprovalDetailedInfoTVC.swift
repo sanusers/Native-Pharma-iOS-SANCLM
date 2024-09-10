@@ -1,8 +1,10 @@
 //
 //  TourplanApprovalDetailedInfoTVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 27/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 27/07/24.
 //
 
 import UIKit
@@ -15,9 +17,9 @@ extension TourplanApprovalDetailedInfoTVC:UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: TourplanApprovalessionInfoTVC = tableView.dequeueReusableCell(withIdentifier: "TourplanApprovalessionInfoTVC", for: indexPath) as! TourplanApprovalessionInfoTVC
         
-
+        cell.selectionStyle = .none
         let model = sessions[indexPath.row]
-        let isForFieldWork = model.FWFlg == "F" ? true : false
+        let isForFieldWork = model.FWFlg == "F" || model.FWFlg == "Y"  ? true : false
         cell.lblWorkType.text = model.WTName
         cell.lblHeadquaters.text = model.HQNames
         cell.lblCluster.text = model.clusterName
@@ -41,8 +43,11 @@ extension TourplanApprovalDetailedInfoTVC:UITableViewDelegate, UITableViewDataSo
         
         cell.lblULdocCount.text = countNonEmptyComponents(in: model.unListedDrName ?? "")
         
+        cell.remarksDesc.text = model.remarks
+        
+        var cellStackHeight = CGFloat()
         if  isForFieldWork   {
-            cell.stackHeight.constant = cellStackHeightforFW
+            cellStackHeight = cellStackHeightforFW
             
             let cellViewArr : [UIView] = [cell.workTypeView, cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView]
             
@@ -92,14 +97,15 @@ extension TourplanApprovalDetailedInfoTVC:UITableViewDelegate, UITableViewDataSo
                 }
             }
         }  else {
-            cell.stackHeight.constant = 80
+            cellStackHeight += 80
             [cell.headQuatersView,cell.clusterView,cell.jointCallView,cell.listedDoctorView, cell.chemistView, cell.stockistView, cell.unlistedDocView].forEach { view in
                 view?.isHidden = true
-                // cell.workselectionHolder,
+                
             }
             
         }
         
+        cell.stackHeight.constant  = cellStackHeight
         return cell
     }
     
@@ -117,7 +123,7 @@ extension TourplanApprovalDetailedInfoTVC:UITableViewDelegate, UITableViewDataSo
         
         let model = sessions[indexPath.row]
       
-        let isForFieldWork = model.FWFlg == "F" ? true : false
+        let isForFieldWork = model.FWFlg == "F" || model.FWFlg == "Y" ? true : false
         
         if isForFieldWork {
             return cellEditHeightForFW
@@ -160,7 +166,7 @@ class TourplanApprovalDetailedInfoTVC: UITableViewCell {
     }
     
     func populateCell(model: TourPlanApprovalDetailModel) {
-        self.wtLbl.text = model.wtName + model.wtName2 + model.wtName3
+        self.wtLbl.text = model.wtName + ", " + model.wtName2 + ", " + model.wtName3
         self.dateLbl.text = model.day
         guard model.isExtended else {
             contentViewHeightConstraint.constant = 60
@@ -173,7 +179,7 @@ class TourplanApprovalDetailedInfoTVC: UITableViewCell {
         var cellHeight: CGFloat = 0
         sessions = convertToSessionDetails(from: model)
         sessions.forEach { aSessionDetail in
-            if aSessionDetail.FWFlg == "F" {
+            if aSessionDetail.FWFlg == "Y" || aSessionDetail.FWFlg == "F" {
                 cellHeight += 670 + 100
              
            } else {

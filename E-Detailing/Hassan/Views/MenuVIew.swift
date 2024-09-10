@@ -246,7 +246,7 @@ extension MenuView {
                    // aDaySessions.changeStatus = "False"
                   //  aDaySessions.isSucessfullySubmited = true
                     LocalStorage.shared.setBool(LocalStorage.LocalValue.TPalldatesAppended, value: true)
-                    self.toCreateToast("Data uploaded to server successfully.")
+                    self.toCreateToast("Saved Successfully.")
                     self.saveObjecttoDevice()
                   
                 } else {
@@ -254,7 +254,7 @@ extension MenuView {
                   //  aDaySessions.isSucessfullySubmited = false
                   //  self.saveObjecttoDevice()
                     aDaySessions.isDataSentToApi = false
-                    self.toCreateToast("Error while uploading data to server please try again!")
+                    self.toCreateToast("unable to connect to internet, data saved locally.")
                     self.saveObjecttoDevice()
                  
                 }
@@ -264,7 +264,7 @@ extension MenuView {
                 aDaySessions.isDataSentToApi = false
                 self.saveObjecttoDevice()
                 Shared.instance.removeLoader(in: self)
-                self.toCreateToast("Error while uploading data to server please try again!")
+                self.toCreateToast("unable to connect to internet, data saved locally.")
              
             }
         }
@@ -2819,10 +2819,15 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                            })
                             
                                 
-                            if asession?.count ?? 0 > 1 {
-                                    isExist = true
-                                }
-                  
+//                            if asession?.count ?? 0 > 1  {
+//
+//                            }
+                            
+                            if LocalStorage.shared.getBool(key: .isMR) {
+                                isExist = true
+                            
+                            }
+                   
                                 if isExist {
                                     self.toCreateToast("You have already choosen similar work type for another session")
                                     sessionDetailsArr.sessionDetails?[selectedSession].selectedWorkTypeIndex = cacheIndex

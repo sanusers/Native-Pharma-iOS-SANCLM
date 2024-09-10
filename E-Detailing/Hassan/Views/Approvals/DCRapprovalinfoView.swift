@@ -1,8 +1,10 @@
 //
 //  DCRapprovalinfoView.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 22/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 22/07/24.
 //
 
 import Foundation
@@ -213,14 +215,56 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                     if isDoctorRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
+                    
+                    
+                    if isDoctorProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+                    
+                    if isDoctorProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
+                    
+
+
+                    
+                    
                 case "CHEMIST" :
                     if isChemistRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
+                    
+                    if isChemistProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+                    
+                    if isChemistProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
+                    
+                case "STOCKIST" :
+                 
+                    typedHeaderView.isRCPAneeded = false
+                    
+                    
+                    if isStockistProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+                    
+                    if isStockistProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
+                
+                    
                 case "ULDOCTOR":
                     if isUnListedDoctorRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
+                    
+                    
+                    typedHeaderView.isrxNeeded = false
+       
+                    typedHeaderView.isSampleNeeded = false
                 default:
                     typedHeaderView.isRCPAneeded = false
                 }
@@ -454,15 +498,55 @@ extension DCRapprovalinfoView: UICollectionViewDelegate, UICollectionViewDataSou
                 if isDoctorRCPAneeded {
                     cell.isRCPAneeded = true
                 }
+                
+                if isDoctorProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isDoctorProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
+                
             case "CHEMIST" :
                 if isChemistRCPAneeded {
                     cell.isRCPAneeded = true
                 }
+                
+                if isChemistProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isChemistProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
     
+                
+            case "STOCKIST" :
+             
+                cell.isRCPAneeded = false
+                
+                
+                if isStockistProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isStockistProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
+                
             case "ULDOCTOR":
                 if isUnListedDoctorRCPAneeded {
                     cell.isRCPAneeded = true
                 }
+                
+            
+                cell.isrxNeeded = false
+           
+                
+   
+                cell.isSampleNeeded = false
+                
+                
             default:
                 cell.isRCPAneeded = false
             }

@@ -1,8 +1,10 @@
 //
 //  DCRapprovalVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 22/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 22/07/24.
 //
 
 import Foundation
@@ -160,6 +162,7 @@ class DCRapprovalVC: BaseViewController {
             case .success(let response):
                 dump(response)
                 completion(response)
+                self.toCreateToast(response.checkinMasg ?? response.msg ?? "Approved Successfully")
             case .failure(let error):
                 dump(error)
                 completion(nil)
@@ -206,6 +209,7 @@ class DCRapprovalVC: BaseViewController {
                 
             case .success(let response):
                 dump(response)
+                self.toCreateToast(response.checkinMasg ?? response.msg ?? "Rejected Successfully")
                 completion(response)
             case .failure(let error):
                 dump(error)

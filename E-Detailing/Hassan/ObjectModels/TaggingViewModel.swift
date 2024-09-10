@@ -98,9 +98,13 @@ class CustomerViewModel {
         if type == TaggingType.doctor {
             return tag.category ?? ""
         } else if type == TaggingType.chemist {
-           // if let tag = tag as? Chemist {
-                return ""
-         //   }
+        
+            if let tag = tag as? Chemist {
+               let chemCat = DBManager.shared.getChemistCategory()
+               let filteredCat = chemCat.filter{ $0.code ==  tag.categoryCode  }.first
+                return filteredCat?.categoryName ?? ""
+            }
+       
         } else if type == TaggingType.stockist {
           //  if let tag = tag as? Stockist {
                 return ""

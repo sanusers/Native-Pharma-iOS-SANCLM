@@ -1,8 +1,10 @@
 //
 //  OutboxParamParser.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 11/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 11/07/24.
 //
 
 import Foundation
@@ -315,7 +317,7 @@ class DCRCallObjectParser {
        
         
         
-//Joint works
+
 
         var addedJointWorks  : [[String: Any]] = [[:]]
      

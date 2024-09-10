@@ -1,8 +1,10 @@
 //
 //  ActivityView.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 05/08/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 05/08/24.
 //
 
 import Foundation

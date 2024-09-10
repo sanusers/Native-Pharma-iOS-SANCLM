@@ -12,6 +12,10 @@ import UIKit
 class ProductSectionReusableView: UICollectionReusableView {
 
     var isRCPAneeded: Bool = false
+    var isrxNeeded: Bool = false
+    var isSampleNeeded: Bool = false
+    
+    
     let sectionTitle: UILabel = {
         let label = UILabel()
         label.textColor = .appLightTextColor
@@ -95,12 +99,12 @@ class ProductSectionReusableView: UICollectionReusableView {
         stackView.axis = .horizontal
         stackView.backgroundColor = .clear
         stackView.alignment = .fill
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fillEqually
         stackView.spacing = 0
         stackView.frame = self.bounds
-        var firstLabelWidth: Double = 0
-        var  remainingWidth: Double = 0
-        var  otherLabelsWidth: Double = 0
+       // var firstLabelWidth: Double = 0
+      //  var  remainingWidth: Double = 0
+      //  var  otherLabelsWidth: Double = 0
                 // Define the width for the first label (1/3 of the stack view's width)
                 
                 
@@ -108,30 +112,47 @@ class ProductSectionReusableView: UICollectionReusableView {
      
                 
                 // Distribute the remaining width equally among the other 4 labels
-             
-        if isRCPAneeded {
-            labels = [productLbl, promoterLbl, samplesLbl, rxQTYlbl, rcpaLbl]
-           firstLabelWidth = stackView.frame.width / 4
-           remainingWidth =  stackView.frame.width - firstLabelWidth
-           otherLabelsWidth = remainingWidth / 4
+        labels.append(productLbl)
+        labels.append(promoterLbl)
+        
+        if isSampleNeeded {
+            labels.append(samplesLbl)
         } else {
-            labels = [productLbl, promoterLbl, samplesLbl, rxQTYlbl]
-           firstLabelWidth = stackView.frame.width / 3
-           remainingWidth =  stackView.frame.width - firstLabelWidth
-           otherLabelsWidth = remainingWidth / 3
-           rcpaLbl.removeFromSuperview()
+            rcpaLbl.removeFromSuperview()
         }
+        if isrxNeeded {
+            labels.append(rxQTYlbl)
+        } else {
+            rxQTYlbl.removeFromSuperview()
+        }
+        if isRCPAneeded {
+            labels.append(rcpaLbl)
+        } else {
+            rcpaLbl.removeFromSuperview()
+        }
+//        if isRCPAneeded {
+//            labels = [productLbl, promoterLbl, samplesLbl, rxQTYlbl, rcpaLbl]
+//          // firstLabelWidth = stackView.frame.width / 4
+//         //  remainingWidth =  stackView.frame.width - firstLabelWidth
+//          // otherLabelsWidth = remainingWidth / 4
+//        } else {
+//            labels = [productLbl, promoterLbl, samplesLbl, rxQTYlbl]
+//         //  firstLabelWidth = stackView.frame.width / 3
+//        //   remainingWidth =  stackView.frame.width - firstLabelWidth
+//         //  otherLabelsWidth = remainingWidth / 3
+//           rcpaLbl.removeFromSuperview()
+//        }
+        
+        
 
         labels.enumerated().forEach {index, label in
               // Set the frame for the label
-            switch label {
-            case productLbl:
-                label.frame = CGRect(origin: .zero, size: CGSize(width: firstLabelWidth, height: stackView.frame.height))
-             default:
-                label.frame = CGRect(origin: .zero, size: CGSize(width: otherLabelsWidth, height: stackView.frame.height))
-//            default:
-//                print("yet to")
-            }
+//            switch label {
+//            case productLbl:
+//                label.frame = CGRect(origin: .zero, size: CGSize(width: firstLabelWidth, height: stackView.frame.height))
+//             default:
+//                label.frame = CGRect(origin: .zero, size: CGSize(width: otherLabelsWidth, height: stackView.frame.height))
+//            }
 
             stackView.addArrangedSubview(label)
     

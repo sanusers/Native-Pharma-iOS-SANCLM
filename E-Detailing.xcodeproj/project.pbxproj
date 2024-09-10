@@ -540,6 +540,7 @@
 		3829304D2C11888C00E71160 /* MainVC+OutboxEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+OutboxEX.swift"; sourceTree = "<group>"; };
 		3836A0672C01C14D0034DBCC /* FunEventsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunEventsTVC.swift; sourceTree = "<group>"; };
 		3836A0682C01C14D0034DBCC /* FunEventsTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FunEventsTVC.xib; sourceTree = "<group>"; };
+		3836D9942C7F5725000BE85A /* SAN ZEN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SAN ZEN.entitlements"; sourceTree = "<group>"; };
 		3837081D2C09A485002A0F3C /* EventCaptureCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCaptureCVC.swift; sourceTree = "<group>"; };
 		3837081E2C09A485002A0F3C /* EventCaptureCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCVC.xib; sourceTree = "<group>"; };
 		383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TPdeviateReasonView.xib; sourceTree = "<group>"; };
@@ -1881,6 +1882,7 @@
 		B287E61629F29C190097974D = {
 			isa = PBXGroup;
 			children = (
+				3836D9942C7F5725000BE85A /* SAN ZEN.entitlements */,
 				B287E62129F29C1B0097974D /* E-Detailing */,
 				B287E62029F29C1B0097974D /* Products */,
 				A8343534F7C81EDB68431942 /* Pods */,
@@ -2696,6 +2698,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "SAN ZEN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = N89SJ534H4;
@@ -2733,6 +2736,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "SAN ZEN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = N89SJ534H4;

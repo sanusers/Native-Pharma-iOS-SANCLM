@@ -2,7 +2,9 @@
 //  ConfigVC.swift
 //  E-Detailing
 //
-//  Created by NAGAPRASATH N on 27/05/23.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 27/10/23.
 //
 
 import Foundation

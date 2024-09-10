@@ -36,6 +36,12 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
             case .approvals:
                 switch welf.reportInfoArr?[indexPath.row].name {
                 case "DCR Approvals":
+                    
+                    if welf.approvalsCountModel?.apprCount[0].leaveapprCount == "0" {
+                        welf.showAlert(desc: "Leave Approvals not Available")
+                        return
+                    }
+                    
                     let vc = DCRapprovalVC.initWithStory()
                     welf.reporsVC.navigationController?.pushViewController(vc, animated: true)
                     
@@ -172,6 +178,7 @@ class ReportsView : BaseView {
     var reportInfoArr : [ReportInfo]?
     var approvalInfoArr: [ApprovalInfo]?
     var pagetype: ReportsVC.PageType = .reports
+    var approvalsCountModel: ApprovalsCountModel?
     lazy var contentDict : Array<JSON> = [JSON]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override func didLoad(baseVC: BaseViewController) {
@@ -249,9 +256,10 @@ class ReportsView : BaseView {
             resouceHQholderVIew.isHidden = true
             self.reportTitle.text = "Reports"
            // contentDict
-            contentDict = [["Day Report" : "Day Report"], ["Monthly Report": "Monthly"], ["Day Check in Report": "Day Check in"], ["Customer Check in Report" : "Day Check in"], ["Visit Monitor" : "Visit"]]
+            contentDict = [["Day Report" : "Day Report"]]
                 reportInfoArr = generateModel(contentDict: contentDict as! [[String: String]])
             
+            //, ["Monthly Report": "Monthly"], ["Day Check in Report": "Day Check in"], ["Customer Check in Report" : "Day Check in"], ["Visit Monitor" : "Visit"]
             
            
         case .approvals:

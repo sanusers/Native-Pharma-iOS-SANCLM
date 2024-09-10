@@ -1,8 +1,10 @@
 //
 //  MainVC + APIs.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 29/06/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 29/06/24.
 //
 
 import Foundation
@@ -157,12 +159,24 @@ extension MainVC {
                      print("JSON Dictionary: \(jsonObject)")
                      jsonObject["InsMode"] = "0"
                      jsonObject["day_flag"] = "0"
+                     jsonObject["SubmittedDate"] = Date().toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+                     jsonObject["battery"] = ""
+                     jsonObject["Configurl"] = ""
+                     jsonObject["address"] = ""
+                     jsonObject["AppName"] = ""
+                     jsonObject["key"] = ""
+                     jsonObject["language"] = ""
+                     jsonObject["sf_emp_id"] = ""
+                     jsonObject["sfname"] = ""
+                     jsonObject["Device_version"] = ""
+                     jsonObject["Device_name"] = ""
+             
                      var toSendData = [String: Any]()
                      
                      let jsonDatum = ObjectFormatter.shared.convertJson2Data(json: jsonObject)
                      
                      toSendData["data"] = jsonDatum
-                     
+   
                      
                      self.userststisticsVM?.saveMyDayPlan(params: toSendData, api: .myDayPlan, paramData: jsonObject, { [ weak self ] result in
                          guard let welf = self else {return}

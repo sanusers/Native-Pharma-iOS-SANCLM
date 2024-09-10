@@ -131,17 +131,17 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nty-6E-VCh">
                                 <rect key="frame" x="868" y="0.0" width="69" height="72.666666666666671"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="redraw" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="comments" translatesAutoresizingMaskIntoConstraints="NO" id="c0e-gO-wtf">
-                                        <rect key="frame" x="5" y="25.333333333333329" width="22" height="22"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="message.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="c0e-gO-wtf">
+                                        <rect key="frame" x="0.0" y="0.6666666666666643" width="69" height="71.666666666666686"/>
                                         <color key="tintColor" red="0.15686274510000001" green="0.1647058824" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="c0e-gO-wtf" firstAttribute="centerY" secondItem="nty-6E-VCh" secondAttribute="centerY" id="1sq-Jj-ba2"/>
-                                    <constraint firstItem="c0e-gO-wtf" firstAttribute="width" secondItem="nty-6E-VCh" secondAttribute="height" multiplier="0.3" id="QmI-P0-qG8"/>
-                                    <constraint firstItem="c0e-gO-wtf" firstAttribute="leading" secondItem="nty-6E-VCh" secondAttribute="leading" constant="5" id="SH3-5t-zON"/>
-                                    <constraint firstItem="c0e-gO-wtf" firstAttribute="height" secondItem="nty-6E-VCh" secondAttribute="height" multiplier="0.3" id="a8o-qE-JgV"/>
+                                    <constraint firstAttribute="bottom" secondItem="c0e-gO-wtf" secondAttribute="bottom" id="Ai4-Fo-WTm"/>
+                                    <constraint firstItem="c0e-gO-wtf" firstAttribute="leading" secondItem="nty-6E-VCh" secondAttribute="leading" id="FNG-ej-ifs"/>
+                                    <constraint firstAttribute="trailing" secondItem="c0e-gO-wtf" secondAttribute="trailing" id="QFD-0P-Hzd"/>
+                                    <constraint firstItem="c0e-gO-wtf" firstAttribute="top" secondItem="nty-6E-VCh" secondAttribute="top" id="cKe-GZ-RhD"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QrR-FM-Jeg">
@@ -198,8 +198,8 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="comments" width="9" height="9"/>
         <image name="info.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="message.fill" catalog="system" width="128" height="114"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -1,8 +1,10 @@
 //
 //  MainVC+Dates.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 29/06/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 29/06/24.
 //
 
 import Foundation
@@ -374,29 +376,58 @@ extension MainVC {
     func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
         let currentDate = getFirstDayOfCurrentMonth() ?? Date()
         let calendar = Calendar.current
-        
-        var saturdays: [Date] = []
+
+        var weeklyoffDays: [Date] = []
+
+        // Map weekoffday: 0 (Sunday) to 1, 1 (Monday) to 2, ..., 6 (Saturday) to 7
+        let mappedWeekoffday = (weekoffday == 0) ? 1 : (weekoffday + 1)
         
         for monthOffset in months {
             guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
                 continue
             }
-            
+
             let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
-            
+
             for day in monthRange.lowerBound..<monthRange.upperBound {
                 guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
                     continue
                 }
-                
-                if calendar.component(.weekday, from: date)  == (weekoffday == 0 ? 1 : weekoffday) { // Sunday is represented as 1, so Saturday is 7
-                    saturdays.append(date)
+                if calendar.component(.weekday, from: date) == mappedWeekoffday {
+                    weeklyoffDays.append(date)
                 }
             }
         }
-        
-        return saturdays
+
+        return weeklyoffDays
     }
+    
+//    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
+//        let currentDate = getFirstDayOfCurrentMonth() ?? Date()
+//        let calendar = Calendar.current
+//        
+//        var saturdays: [Date] = []
+//        
+//        for monthOffset in months {
+//            guard let targetDate = calendar.date(byAdding: .month, value: monthOffset, to: currentDate) else {
+//                continue
+//            }
+//            
+//            let monthRange = calendar.range(of: .day, in: .month, for: targetDate)!
+//            
+//            for day in monthRange.lowerBound..<monthRange.upperBound {
+//                guard let date = calendar.date(bySetting: .day, value: day, of: targetDate) else {
+//                    continue
+//                }
+//                
+//                if calendar.component(.weekday, from: date)  == (weekoffday == 0 ? 1 : weekoffday) { // Sunday is represented as 1, so Saturday is 7
+//                    saturdays.append(date)
+//                }
+//            }
+//        }
+//        
+//        return saturdays
+//    }
     
     func getFirstDayOfCurrentMonth() -> Date? {
         let calendar = Calendar.current

@@ -4,7 +4,7 @@
 //
 //  Created by Hassan
 //
-//  Copyright © 2024 san eforce. All rights reserved. 21/07/23.
+//  Copyright © 2024 san eforce. All rights reserved. 21/07/24.
 //
 
 import UIKit
@@ -199,8 +199,13 @@ class MainVC : UIViewController {
         addObservers()
         fetchLocations() { [weak self]  locationinfo in
             guard let welf = self else {return}
+            if  welf.isFromLaunch {
+                welf.getDCRdates()
+                //welf.btnCalenderSync(welf.btnSyncDate!)
+                return
+            }
             welf.toPostAlldayPlan() {
-                   welf.handleDateSync()
+                welf.handleDateSync()
             }
         }
     }
@@ -208,22 +213,27 @@ class MainVC : UIViewController {
     func handleDateSync() {
         isUserPlanning{ [weak self] isUserPlanning in
             guard let welf = self else {return}
-            isUserPlanning ?   welf.planningAction() : welf.btnCalenderSync(welf.btnSyncDate!)
+            isUserPlanning ?   welf.planningAction() : welf.getDCRdates()
+            //welf.btnCalenderSync(welf.btnSyncDate!)
+            //welf.getDCRdates()
+            //welf.btnCalenderSync(welf.btnSyncDate!)
         }
     }
     
-    /// sync outbox datas
-    ///
-    ///uses `OperationQueue` to perform async API calls
-    ///
-    /// - Parameter completion: empty completion once sync completes Date sync API is called
+    func getDCRdates() {
+        togetDCRdates(isToUpdateDate: false) { [weak self] in
+         //   if !isSequentialDCRenabled {
+            self?.configurePastWindups(pageType: .calender) {}
+          //  }
+        }
+    }
+    
     func toPostAlldayPlan(completion: @escaping () -> ()) {
         
-        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
-            completion()
-            return
-        }
+        let customQueue = DispatchQueue(label: "com.queue.concurrent", qos: .background, attributes: .concurrent)
       
+        //let customDispatchGroup = DispatchGroup()
+        
         toSetupOutBoxDataSource(isSynced: false) { [weak self] in
             guard let welf = self else { return }
             
@@ -231,95 +241,196 @@ class MainVC : UIViewController {
                 completion()
                 return
             }
-            
-            let operationQueue = OperationQueue()
-
-            // Completion Operation
-            let completionOperation = BlockOperation {
-                DispatchQueue.main.async {
-                    Shared.instance.removeLoaderInWindow()
-                  //  welf.showAlertToFilldates(description: "Sync completed")
-                    completion()
-                }
-            }
-
             obj_sections.forEach { section in
                 let refreshDateStr = section.date
                 let callitems = section.items
                 let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
                 
-                // Post Day Plan Operation
-                let postDayPlanOperation = BlockOperation {
-                    let dispatchGroup = DispatchGroup()
-                    dispatchGroup.enter()
-                    welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {
-                        dispatchGroup.leave()
+                customQueue.async( qos: .background, flags: .barrier) {
+                    let operationQueue = OperationQueue()
+                    
+                    let myDaplanOperation = BlockOperation()
+                    
+                    myDaplanOperation.addExecutionBlock {
+                        DispatchQueue.main.async {
+                            welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {}
+                        }
+                       
                     }
-                    dispatchGroup.wait()
+                    
+                    let postCallsOperation = BlockOperation()
+                    myDaplanOperation.addExecutionBlock {
+                        DispatchQueue.main.async {
+                            welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in }
+                        }
+                        
+                    }
+                    
+                    let postImagesOperation = BlockOperation()
+                    postImagesOperation.addExecutionBlock {
+                        DispatchQueue.main.async { 
+                            
+                            welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {}
+                        }
+                        
+                    }
+                    
+                    let uploadWindupsOperation = BlockOperation {
+                        welf.toUploadWindups(date: refreshDate) { _ in
+                            DispatchQueue.main.async {
+                                welf.toLoadOutboxTable()
+                                welf.setSegment(.calls)
+                            }
+                    
+                        }
+                    }
+                    
+                    let homeDataSyncOperation = BlockOperation {
+                  
+                   
+                        welf.masterVM?.fetchMasterData(
+                            type: .homeSetup,
+                            sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID),
+                            istoUpdateDCRlist: false,
+                            mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                        ) { _ in }
+                      
+                    }
+                    
+                    let completionOperation = BlockOperation {
+                        DispatchQueue.main.async {
+                            Shared.instance.removeLoaderInWindow()
+                          //  welf.showAlertToFilldates(description: "Sync completed")
+                            completion()
+                        }
+                    }
+                    
+                    operationQueue.maxConcurrentOperationCount = 1
+                    
+                    postCallsOperation.addDependency(myDaplanOperation)
+                    postImagesOperation.addDependency(postCallsOperation)
+                    uploadWindupsOperation.addDependency(postImagesOperation)
+                    homeDataSyncOperation.addDependency(uploadWindupsOperation)
+                    completionOperation.addDependency(homeDataSyncOperation)
+                    
+                    operationQueue.addOperations([myDaplanOperation, postCallsOperation, postImagesOperation, uploadWindupsOperation, homeDataSyncOperation, completionOperation], waitUntilFinished: true)
                 }
                 
-                // Retry DCR Upload Operation
-                let retryDCROperation = BlockOperation {
-                    let dispatchGroup = DispatchGroup()
-                    dispatchGroup.enter()
-                    welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in
-                        dispatchGroup.leave()
-                    }
-                    dispatchGroup.wait()
-                }
-                retryDCROperation.addDependency(postDayPlanOperation)
-                
-                // Upload Unsynced Images Operation
-                let uploadImageOperation = BlockOperation {
-                    let dispatchGroup = DispatchGroup()
-                    dispatchGroup.enter()
-                    welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
-                        dispatchGroup.leave()
-                    }
-                    dispatchGroup.wait()
-                }
-                uploadImageOperation.addDependency(retryDCROperation)
-                
-                // Upload Windups Operation
-                let uploadWindupsOperation = BlockOperation {
-                    let dispatchGroup = DispatchGroup()
-                    dispatchGroup.enter()
-                    welf.toUploadWindups(date: refreshDate) { _ in
-                        welf.toLoadOutboxTable()
-                        welf.setSegment(.calls)
-                        dispatchGroup.leave()
-                    }
-                    dispatchGroup.wait()
-                }
-                uploadWindupsOperation.addDependency(uploadImageOperation)
-                
-                // Home Data Sync Operation
-                let homeDataSyncOperation = BlockOperation {
-                    let dispatchGroup = DispatchGroup()
-                    dispatchGroup.enter()
-                    welf.masterVM?.fetchMasterData(
-                        type: .homeSetup,
-                        sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID),
-                        istoUpdateDCRlist: false,
-                        mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-                    ) { _ in
-                        dispatchGroup.leave()
-                    }
-                    dispatchGroup.wait()
-                }
-                homeDataSyncOperation.addDependency(uploadWindupsOperation)
-                
-                // Adding operations to the queue
-                operationQueue.addOperations([postDayPlanOperation, retryDCROperation, uploadImageOperation, uploadWindupsOperation, homeDataSyncOperation], waitUntilFinished: false)
-                
-                // Ensure the completion operation runs after all others
-                completionOperation.addDependency(homeDataSyncOperation)
             }
-
-            // Add the completion operation to the queue
-            operationQueue.addOperation(completionOperation)
+       
         }
+        
     }
+    
+    
+    /// sync outbox datas
+    ///
+    ///uses `OperationQueue` to perform async API calls
+    ///
+    /// - Parameter completion: empty completion once sync completes Date sync API is called
+//    func toPostAlldayPlan(completion: @escaping () -> ()) {
+//        
+//        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+//            completion()
+//            return
+//        }
+//      
+//        toSetupOutBoxDataSource(isSynced: false) { [weak self] in
+//            guard let welf = self else { return }
+//            
+//            guard !obj_sections.isEmpty else {
+//                completion()
+//                return
+//            }
+//            
+//            let operationQueue = OperationQueue()
+//
+//            // Completion Operation
+//            let completionOperation = BlockOperation {
+//                DispatchQueue.main.async {
+//                    Shared.instance.removeLoaderInWindow()
+//                  //  welf.showAlertToFilldates(description: "Sync completed")
+//                    completion()
+//                }
+//            }
+//
+//            obj_sections.forEach { section in
+//                let refreshDateStr = section.date
+//                let callitems = section.items
+//                let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
+//                
+//                // Post Day Plan Operation
+//                let postDayPlanOperation = BlockOperation {
+//                    let dispatchGroup = DispatchGroup()
+//                    dispatchGroup.enter()
+//                    welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {
+//                        dispatchGroup.leave()
+//                    }
+//                    dispatchGroup.wait()
+//                }
+//                
+//                // Retry DCR Upload Operation
+//                let retryDCROperation = BlockOperation {
+//                    let dispatchGroup = DispatchGroup()
+//                    dispatchGroup.enter()
+//                    welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in
+//                        dispatchGroup.leave()
+//                    }
+//                    dispatchGroup.wait()
+//                }
+//                retryDCROperation.addDependency(postDayPlanOperation)
+//                
+//                // Upload Unsynced Images Operation
+//                let uploadImageOperation = BlockOperation {
+//                    let dispatchGroup = DispatchGroup()
+//                    dispatchGroup.enter()
+//                    welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
+//                        dispatchGroup.leave()
+//                    }
+//                    dispatchGroup.wait()
+//                }
+//                uploadImageOperation.addDependency(retryDCROperation)
+//                
+//                // Upload Windups Operation
+//                let uploadWindupsOperation = BlockOperation {
+//                    let dispatchGroup = DispatchGroup()
+//                    dispatchGroup.enter()
+//                    welf.toUploadWindups(date: refreshDate) { _ in
+//                        welf.toLoadOutboxTable()
+//                        welf.setSegment(.calls)
+//                        dispatchGroup.leave()
+//                    }
+//                    dispatchGroup.wait()
+//                }
+//                uploadWindupsOperation.addDependency(uploadImageOperation)
+//                
+//                // Home Data Sync Operation
+//                let homeDataSyncOperation = BlockOperation {
+//                    let dispatchGroup = DispatchGroup()
+//                    dispatchGroup.enter()
+//                    welf.masterVM?.fetchMasterData(
+//                        type: .homeSetup,
+//                        sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID),
+//                        istoUpdateDCRlist: false,
+//                        mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+//                    ) { _ in
+//                        dispatchGroup.leave()
+//                    }
+//                    dispatchGroup.wait()
+//                }
+//                homeDataSyncOperation.addDependency(uploadWindupsOperation)
+//                
+//                // Adding operations to the queue
+//                operationQueue.addOperations([postDayPlanOperation, retryDCROperation, uploadImageOperation, uploadWindupsOperation, homeDataSyncOperation], waitUntilFinished: false)
+//                
+//                // Ensure the completion operation runs after all others
+//                completionOperation.addDependency(homeDataSyncOperation)
+//            }
+//
+//            // Add the completion operation to the queue
+//            operationQueue.addOperation(completionOperation)
+//        }
+//    }
     
     class func initWithStory(isfromLaunch: Bool, ViewModel: UserStatisticsVM) -> MainVC {
         let mainVC : MainVC = UIStoryboard.Hassan.instantiateViewController()
@@ -1495,7 +1606,7 @@ class MainVC : UIViewController {
             }
           let uniqueCalls = uniqueUnsyncCustCodes.union(uniqueSyncCustCodes)
              
-            self.dcrCount.append(DcrCount(name: "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "dashboardDoctor") ?? UIImage(), callsCount: uniqueCalls.count))
+            self.dcrCount.append(DcrCount(name: appSetups.docCap ??  "Listed Doctor",color: .appGreen,count: doctorCount.description, image: UIImage(named: "dashboardDoctor") ?? UIImage(), callsCount: uniqueCalls.count))
             // doctorfilteredArray.count + unsyncedDocilteredArray.count
         }
 
@@ -1542,7 +1653,7 @@ class MainVC : UIViewController {
             }
             let uniqueCalls = uniqueUnsyncCustCodes.union(uniquesyncCustCodes)
             
-            self.dcrCount.append(DcrCount(name: "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "dashboardChemist") ?? UIImage(), callsCount:  uniqueCalls.count))
+            self.dcrCount.append(DcrCount(name: appSetups.chmCap ??  "Chemist",color: .appBlue,count: chemistCount.description, image: UIImage(named: "dashboardChemist") ?? UIImage(), callsCount:  uniqueCalls.count))
             //chemistfilteredArray.count + unsyncedChemistilteredArray.count
         }
         
@@ -1591,7 +1702,7 @@ class MainVC : UIViewController {
             
             let uniqueCalls = uniqueSyncCustCodes.union(uniqueUnSyncCustCodes)
             
-            self.dcrCount.append(DcrCount(name: "Stockist",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "dashboardStockist") ?? UIImage(), callsCount: uniqueCalls.count))
+            self.dcrCount.append(DcrCount(name: appSetups.stkCap ??  "Stockist",color: .appLightPink,count: stockistCount.description, image: UIImage(named: "dashboardStockist") ?? UIImage(), callsCount: uniqueCalls.count))
             //stockistFilteredArray.count + unsyncedStockistilteredArray.count
         }
         
@@ -1640,7 +1751,7 @@ class MainVC : UIViewController {
             
             let uniqueCalls = uniqueUnsyncCustCodes.union(uniqueUnSyncCustCodes)
             
-            self.dcrCount.append(DcrCount(name: "UnListed Doctor",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "dashboardUnlistedDoctor") ?? UIImage(), callsCount: uniqueCalls.count))
+            self.dcrCount.append(DcrCount(name: appSetups.nlCap ?? "UnListed Doctor",color: .appLightTextColor.withAlphaComponent(0.2) ,count: unlistedDocCount.description, image: UIImage(named: "dashboardUnlistedDoctor") ?? UIImage(), callsCount: uniqueCalls.count))
             //unlistedDocFilteredArray.count + unsyncedunlistedDocilteredArray.count
         }
 
@@ -2011,7 +2122,7 @@ extension MainVC {
         param["day_flag"] = "1"
         param["Activity_Dt"] = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
         param["current_Dt"] = Shared.instance.selectedDate.toString(format: "yyyy-MM-dd HH:mm:ss")
-        param["day_remarks"] = self.dayRemarks
+        param["day_remarks"] = self.dayRemarks == "Type here.." ? "" :  self.dayRemarks
         
         let paramData = ObjectFormatter.shared.convertJson2Data(json: param)
         var tosendData = [String: Any]()
@@ -4433,7 +4544,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
          
             ///Allow selection only from fetched dates from date Sync API
             CoreDataManager.shared.fetchDcrDates { savedDcrDates in
-                let yetToModifiedDates =  savedDcrDates.filter { $0.date == date.toString(format: "yyyy-MM-dd") && $0.isDateAdded == false  &&  $0.flag == "0" || $0.flag == "1" || $0.flag == "2" || $0.flag == "3" }
+                let yetToModifiedDates =  savedDcrDates.filter { $0.date == date.toString(format: "yyyy-MM-dd") && $0.isDateAdded == false  &&  $0.flag == "0" || $0.flag == "1" || $0.flag == "2" || $0.flag == "3" || $0.flag == "1000" }
                 
                 guard !yetToModifiedDates.isEmpty else {
                     
@@ -4442,7 +4553,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                     return
                     
                 }
-                var reason : String?
+               var reason : String?
                var isExists = Bool()
 //                yetToModifiedDates.contains { aDcrDates in
 //                   aDcrDates.date == date.toString(format: "yyyy-MM-dd") &&  !aDcrDates.isDateAdded
@@ -4451,6 +4562,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 if let matchedDate = yetToModifiedDates.first(where: { $0.date == date.toString(format: "yyyy-MM-dd") && !$0.isDateAdded }) {
                     reason = matchedDate.reason == "" ? nil : matchedDate.reason
                     isExists = true
+                    dump(matchedDate)
                 } else {
                      isExists = false
                 }
@@ -5243,6 +5355,7 @@ extension MainVC: OutboxDetailsTVCDelegate {
                 Shared.instance.showLoaderInWindow()
                 welf.toSendParamsToAPISerially(refreshDate: callDate, index: 0, items: [json]) { _ in
                     welf.toUploadUnsyncedImage(custCode: syncCode ?? dcrCall.custCode) {
+                        welf.toCreateToast("Sync completed")
                         Shared.instance.removeLoaderInWindow()
                     }
                     

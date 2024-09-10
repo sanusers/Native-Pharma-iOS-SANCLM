@@ -211,7 +211,9 @@ extension AddCallinfoView {
     
     
     func removeAddedRCPAInfo() {
-        self.selectedChemistRcpa = nil
+        if !(addCallinfoVC.dcrCall.call is Chemist) {
+            self.selectedChemistRcpa = nil
+        }
         self.selectedProductRcpa = nil
         productObj = nil
         chemistObj = nil
@@ -1221,40 +1223,65 @@ extension AddCallinfoView : collectionViewProtocols {
         
         cell.selectionView.isHidden =  selectedSegmentsIndex == indexPath.row ? false : true
         cell.titleLbl.textColor =  selectedSegmentsIndex == indexPath.row ? .appTextColor : .appLightTextColor
-        cell.titleLbl.text = segmentType[indexPath.row].rawValue
         
+        if segmentType[indexPath.row].rawValue == "Products"  {
+            cell.titleLbl.text = setProductInputsTitle(type: "Products")
+        } else if segmentType[indexPath.row].rawValue == "Inputs" {
+            cell.titleLbl.text = setProductInputsTitle(type: "Inputs")
+        } else {
+            cell.titleLbl.text =  segmentType[indexPath.row].rawValue
+        }
         
-        
-        
-//        cell.addTap { [weak self] in
-//            guard let welf = self else {return}
-//            welf.selectedSegmentsIndex  = indexPath.row
-//            
-//            welf.segmentsCollection.reloadData()
-//            
-//            
-//            switch welf.segmentType[welf.selectedSegmentsIndex] {
-//
-//            case .detailed:
-//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-//            case .products:
-//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-//            case .inputs:
-//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-//            case .additionalCalls:
-//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-//            case .rcppa:
-//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-//            case .jointWork:
-//                welf.setSegment(welf.segmentType[welf.selectedSegmentsIndex])
-//            }
-//            
-//            
-//            
-//        }
+
         
         
         return cell
+    }
+    
+    
+    func setProductInputsTitle(type: String) -> String {
+        var title: String = ""
+        switch addCallinfoVC.dcrCall.call {
+        case is DoctorFencing:
+            switch type {
+            case "Products":
+                title = appsetup.docProductCaption ?? "Products"
+            case "Inputs":
+                title = appsetup.docInputCaption ?? "Inputs"
+            default:
+                print("Yet to")
+            }
+        case is Chemist:
+            switch type {
+            case "Products":
+                title = appsetup.chmProductCaption ?? "Products"
+            case "Inputs":
+                title = appsetup.chmInputCaption ?? "Inputs"
+            default:
+                print("Yet to")
+            }
+        case is Stockist:
+            switch type {
+            case "Products":
+                title = appsetup.stkProductCaption ?? "Products"
+            case "Inputs":
+                title = appsetup.stkInputCaption ?? "Inputs"
+            default:
+                print("Yet to")
+            }
+        case is UnListedDoctor:
+            switch type {
+            case "Products":
+                title = appsetup.ulProductCaption ?? "Products"
+            case "Inputs":
+                title = appsetup.ulInputCaption ?? "Inputs"
+            default:
+                print("Yet to")
+            }
+        default:
+            print("Yet to")
+        }
+        return title
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -1850,15 +1877,24 @@ class AddCallinfoView : BaseView {
         
         }
         
-        dcrNameCurvedView.addTap {
-            let vc = SpecifiedMenuVC.initWithStory(self, celltype: .chemist)
-            vc.isFromfilter = true
-            if let chemistobj = self.chemistObj {
-                vc.previousselectedObj = chemistobj
+        if addCallinfoVC.dcrCall.call is Chemist {
+            let chem = addCallinfoVC.dcrCall.call as! Chemist
+            self.chemistObj  = chem
+            self.selectedChemistRcpa = chem
+            self.lblSeclectedDCRName.text = chem.name ?? ""
+        } else {
+            dcrNameCurvedView.addTap {
+                let vc = SpecifiedMenuVC.initWithStory(self, celltype: .chemist)
+                vc.isFromfilter = true
+                if let chemistobj = self.chemistObj {
+                    vc.previousselectedObj = chemistobj
+                }
+                self.addCallinfoVC.modalPresentationStyle = .custom
+                self.addCallinfoVC.navigationController?.present(vc, animated: false)
             }
-            self.addCallinfoVC.modalPresentationStyle = .custom
-            self.addCallinfoVC.navigationController?.present(vc, animated: false)
         }
+        
+
         
         productnameCurvedView.addTap {
             

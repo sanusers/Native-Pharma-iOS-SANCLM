@@ -32,6 +32,21 @@ public extension KeyedDecodingContainer{
         return T.init()
        
     }
+    
+//    func returnFile() {
+//        if let fileURL = Bundle.main.url(forResource: "demo", withExtension: "json") {
+//            // The file URL is successfully retrieved
+//            do {
+//              let data =  try Data(contentsOf: fileURL)
+//            } catch {
+//                
+//            }
+//            print("File URL: \(fileURL)")
+//        } else {
+//            // The file was not found
+//            print("File not found.")
+//        }
+//    }
    
 }
 

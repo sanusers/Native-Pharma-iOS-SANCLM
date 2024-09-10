@@ -359,7 +359,10 @@ extension DayReportView: VisitsCountTVCDelegate {
 
 extension DayReportView : ViewAllInfoTVCDelegate {
     func didRCPACommentsTapped(view: UIView, comments: String) {
-        
+        if comments.isEmpty {
+            self.toCreateToast("No remarks found!")
+            return
+        }
         let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 3, height: self.height / 7), on: view,  pagetype: .hover)
 
         vc.color = .appTextColor

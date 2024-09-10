@@ -38,7 +38,31 @@ class ProductSampleTableViewCell : UITableViewCell {
     @IBOutlet weak var viewRcpa: UIView!
     
     @IBOutlet weak var viewDeviation: UIView!
-    var call: AnyObject?
+    var call: AnyObject! {
+        didSet {
+            switch call {
+            case is DoctorFencing:
+                viewRxQty.isHidden = isDoctorProductRXneeded ? false : true
+                viewRcpa.isHidden =  isDoctorRCPAneeded ? false : true
+                viewSample.isHidden = isDoctorProductSampleNeeded ? false : true
+            case is Chemist:
+                viewRxQty.isHidden = isChemistProductRXneeded ? false : true
+                viewRcpa.isHidden =  isChemistRCPAneeded ? false : true
+                viewSample.isHidden = isChemistProductSampleNeeded ? false : true
+            case is Stockist:
+                viewRxQty.isHidden = isStockistProductRXneeded ? false : true
+                viewRcpa.isHidden =   true
+                viewSample.isHidden = isStockistProductSampleNeeded ? false : true
+            case is UnListedDoctor:
+                viewRxQty.isHidden = isUnListedDoctorProductRXneeded ? false : true
+                viewRcpa.isHidden =  isUnListedDoctorRCPAneeded ? false : true
+                viewSample.isHidden = false
+            default:
+                print("Yet to")
+                
+            }
+        }
+    }
     
     
     
@@ -73,29 +97,9 @@ class ProductSampleTableViewCell : UITableViewCell {
             
         }
      
-        guard let call = call else {return}
+     
         
-        switch call {
-        case is DoctorFencing:
-            viewRxQty.isHidden = isDoctorProductRXneeded ? false : true
-            viewRcpa.isHidden =  isDoctorRCPAneeded ? false : true
-            viewSample.isHidden = isDoctorProductSampleNeeded ? false : true
-        case is Chemist:
-            viewRxQty.isHidden = isChemistProductRXneeded ? false : true
-            viewRcpa.isHidden =  isChemistRCPAneeded ? false : true
-            viewSample.isHidden = isChemistProductSampleNeeded ? false : true
-        case is Stockist:
-            viewRxQty.isHidden = isStockistProductRXneeded ? false : true
-            viewRcpa.isHidden =   true
-            viewSample.isHidden = isStockistProductSampleNeeded ? false : true
-        case is UnListedDoctor:
-            viewRxQty.isHidden = isUnListedDoctorProductRXneeded ? false : true
-            viewRcpa.isHidden =  isUnListedDoctorRCPAneeded ? false : true
-            viewSample.isHidden = false
-        default:
-            print("Yet to")
-            
-        }
+
         
     }
 }

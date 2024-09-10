@@ -563,6 +563,12 @@ class MasterSyncVC : UIViewController {
                     }
                 }
                 
+                AppDefaults.shared.save(key: .syncTime, value: Date())
+                
+                let date = Date().toString(format: "dd MMM yyyy hh:mm a")
+                
+                self.lblSyncStatus.text = "Last Sync: " + date
+                
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.hasMasterData, value: true)
                 
                 NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
@@ -799,7 +805,7 @@ class MasterSyncVC : UIViewController {
                                 let subordinateArr =  DBManager.shared.getSubordinate()
                                 let cacheHQ = subordinateArr.first
                                 welf.fetchedHQObject = cacheHQ
-                                welf.toSaveDayplansToDB(isSynced: true, planDate: Date(), model: responseModel)
+                                welf.toSaveDayplansToDB(isSynced: true, planDate: Shared.instance.selectedDate, model: responseModel)
                                 welf.setHQlbl(isTosetDayplanHQ: true)
                                 welf.masterVM?.fetchMasterData(type: .clusters, sfCode:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID:  LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID) ) { _ in
                                     completion(true)
@@ -932,12 +938,7 @@ class MasterSyncVC : UIViewController {
                                 }
                                 
                             }
-                        
-                    
-                    AppDefaults.shared.save(key: .syncTime, value: Date())
-                    let date = Date().toString(format: "dd MMM yyyy hh:mm a")
-                    welf.lblSyncStatus.text = "Last Sync: " + date
-
+ 
                     completion(true)
                 case .failure(let error):
                     
@@ -1105,7 +1106,8 @@ extension MasterSyncVC : collectionViewProtocols{
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MasterSyncCell", for: indexPath) as! MasterSyncCell
-        cell.lblName.text = self.masterData[indexPath.row].rawValue
+      //  cell.lblName.text = self.masterData[indexPath.row].rawValue
+        cell.lblName.text = self.masterData[indexPath.row] == .doctorFencing ?  appsetup.docCap : self.masterData[indexPath.row] == .chemists ?  appsetup.chmCap : self.masterData[indexPath.row] == .stockists ?  appsetup.stkCap :  self.masterData[indexPath.row] == .unlistedDoctors ?  appsetup.nlCap :  self.masterData[indexPath.row].rawValue
         cell.loaderImage.isHidden = false
         var status :  LoadingStatus = .loaded
         MasterInfoState.loadingStatusDict.forEach({ masterinfo, loadingStatus  in

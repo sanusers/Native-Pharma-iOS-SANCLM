@@ -129,18 +129,68 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 switch Shared.instance.selectedDCRtype {
                     
                 case .Doctor:
+                    typedHeaderView.productLbl.text = " \(appSetup.docProductCaption ?? "Products")"
+                    typedHeaderView.samplesLbl.text =    appSetup.docSampleQCap
+                    typedHeaderView.rxQTYlbl.text = appSetup.docRxQCap
                     if isDoctorRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
+                    
+                    if isDoctorProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+
+                    if isDoctorProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
+                    
                 case .Chemist :
+                    typedHeaderView.productLbl.text =  " \(appSetup.chmProductCaption ?? "Products")"
+                    typedHeaderView.samplesLbl.text =  appSetup.chmSampleCap ?? "Sample"
+                    typedHeaderView.rxQTYlbl.text =  appSetup.chmQcap ?? "Rx Qty"
                     if isChemistRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
+
+                    
+                    if isChemistProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+                    
+                    if isChemistProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
           
                 case .UnlistedDoctor:
+                    typedHeaderView.productLbl.text =  " \(appSetup.ulProductCaption ?? "Products")"
+                    typedHeaderView.samplesLbl.text =  appSetup.nlSampleQCap ?? "Sample"
+                    typedHeaderView.rxQTYlbl.text = appSetup.nlRxQCap ?? "Rx Qty"
                     if isUnListedDoctorRCPAneeded {
                         typedHeaderView.isRCPAneeded = true
                     }
+          
+                    if isUnListedDoctorProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+                    
+                    if  isUnListedDoctorProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
+                case .Stockist :
+                    typedHeaderView.productLbl.text =  " \(appSetup.stkProductCaption ?? "Products")"
+                    typedHeaderView.samplesLbl.text =  "Sample"
+                    typedHeaderView.rxQTYlbl.text = appSetup.stkQCap ?? "Rx Qty"
+                    if isStockistProductRXneeded {
+                        typedHeaderView.isrxNeeded = true
+                    }
+          
+                    typedHeaderView.isRCPAneeded = false
+                    
+                    if  isStockistProductSampleNeeded {
+                        typedHeaderView.isSampleNeeded = true
+                    }
+                    
+                    
                 default:
                     typedHeaderView.isRCPAneeded = false
                 }
@@ -362,15 +412,57 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 if isDoctorRCPAneeded{
                     cell.isRCPAneeded = true
                 }
+                
+                if isDoctorProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isDoctorProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
+                
+                
+                
             case .Chemist :
                 if isChemistRCPAneeded {
                     cell.isRCPAneeded = true
                 }
+                
+                if isChemistProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isChemistProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
+                
+                
+            case .Stockist:
+            
+                
+                if isStockistProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isStockistProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
+                
+                cell.isRCPAneeded  = false
      
             case .UnlistedDoctor:
                 if isUnListedDoctorRCPAneeded{
                     cell.isRCPAneeded = true
                 }
+                
+                if isUnListedDoctorProductRXneeded {
+                    cell.isrxNeeded = true
+                }
+                
+                if isUnListedDoctorProductSampleNeeded {
+                    cell.isSampleNeeded = true
+                }
+                
             default:
                 cell.isRCPAneeded = false
             }
@@ -411,7 +503,7 @@ extension ViewAllInfoTVC: UICollectionViewDelegate, UICollectionViewDataSource, 
 //                            return
 //                        }
                         //model.remarks
-                        self.delegate?.didRCPACommentsTapped(view: cell.commentsIV, comments: "Ok remarks found")
+                        self.delegate?.didRCPACommentsTapped(view: cell.commentsIV, comments: model.remarks)
                     }.store(in: &observer)
                     
                     cell.commentsIV.addTap {
@@ -520,7 +612,7 @@ enum CellSlidesType {
 
 class ViewAllInfoTVC: UITableViewCell {
 
-    
+    let appSetup = AppDefaults.shared.getAppSetUp()
     @IBOutlet var extendedInfoCollection: UICollectionView!
     weak var delegate: ViewAllInfoTVCDelegate?
     var rcpaTapped: Bool = false

@@ -1,9 +1,12 @@
 //
 //  MainVC + CoreData.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 29/06/24.
+//  Created by Hassan
 //
+//  Copyright © 2024 san eforce. All rights reserved. 29/06/24.
+//
+
 
 import Foundation
 import CoreData
@@ -33,7 +36,23 @@ extension MainVC {
         }
     }
     
-    func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel) {
+    func showAlertToremoveEvents(desc: String, event: UnsyncedEventCaptureModel) {
+  
+        let commonAlert = CommonAlert()
+        commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok",cancelAction: "cancel")
+        commonAlert.addAdditionalCancelAction {
+            
+            print("no action")
+        }
+        commonAlert.addAdditionalOkAction(isForSingleOption: false) {
+            print("yes action")
+            self.toRemoveEvent(event: event)
+
+            
+        }
+    }
+    
+    func toRemoveEvent(event: UnsyncedEventCaptureModel) {
         guard let custCode = event.custCode, let date = event.eventcaptureDate  else {return}
 
         CoreDataManager.shared.removeUnsyncedEventCaptures(date: date, withCustCode: custCode) {[weak self] _  in
@@ -78,6 +97,13 @@ extension MainVC {
             }
             
         }
+
+    }
+    
+    func didTapEventcaptureDelete(event: UnsyncedEventCaptureModel) {
+        
+        self.showAlertToremoveEvents(desc: "Are you sure about removing events", event: event)
+        
         
 
 

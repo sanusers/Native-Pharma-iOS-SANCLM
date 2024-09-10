@@ -1,8 +1,10 @@
 //
 //  TourPlanApprovalinfoTVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 26/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 26/07/24.
 //
 
 import UIKit

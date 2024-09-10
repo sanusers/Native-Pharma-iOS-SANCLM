@@ -47,7 +47,7 @@ class SplashVC: BaseViewController{
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             UIView.animate(withDuration: 1, delay: 0, animations: {
                 self.splashView.SplashImageHolderView.isHidden = true
-                AppDelegate.shared.setupRootViewControllers(isFromlaunch: true)
+                AppDelegate.shared.setupRootViewControllers(isFromlaunch: AppDefaults.shared.isSyncCompleted() ? false : true)
             })
         }
         

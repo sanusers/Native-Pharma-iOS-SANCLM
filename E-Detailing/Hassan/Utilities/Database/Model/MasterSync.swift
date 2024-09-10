@@ -39,6 +39,7 @@ enum MasterCellType : Int {
 
     
     var name : String {
+     
         switch self {
             
         case .syncAll:
@@ -131,6 +132,7 @@ enum MasterCellType : Int {
 
 //[MasterInfo.slides,MasterInfo.doctorFencing,MasterInfo.chemists,MasterInfo.stockists,MasterInfo.unlistedDoctors,MasterInfo.worktype,MasterInfo.clusters,MasterInfo.myDayPlan,MasterInfo.subordinate,MasterInfo.subordinateMGR,MasterInfo.jointWork,MasterInfo.products,
 //                   MasterInfo.inputs,MasterInfo.brands,MasterInfo.competitors,MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.speciality,MasterInfo.departments,MasterInfo.category,MasterInfo.qualifications,MasterInfo.doctorClass,MasterInfo.setups,MasterInfo.customSetup]
+
 
 class MasterInfoState {
     static var loadingStatusDict: [MasterInfo: LoadingStatus] = MasterInfo.loadingStatusDict

@@ -1477,9 +1477,28 @@ extension CoreDataManager {
        // guard let dcrDates = dcrDates else {return}
         CoreDataManager.shared.removeAllDcrDates()
         
+        var filteredArr = model.filter { $0.flg == 0 || ($0.flg == 1 && $0.tbname != "leave") ||  $0.flg == 2 || $0.flg == 3 }
         
-        let filteredArr = model.filter { $0.flg == 0 || ($0.flg == 1 && $0.tbname != "leave") ||  $0.flg == 2 || $0.flg == 3 }
-    
+        var yettofilledDates : [DCRdatesModel] = []
+        
+        let nonFilledDates = fetchAllNonfilledDates()
+        
+
+        // Assuming filteredArr contains at most one element
+        if let eachDayData = filteredArr.first {
+            // Filter nonFilledDates, excluding the date from filteredArr
+            let filteredNonFilledDates = nonFilledDates.filter { $0.dt.date != eachDayData.dt.date }
+            
+            // Append the filtered non-filled dates to yettofilledDates
+            yettofilledDates.append(contentsOf: filteredNonFilledDates)
+        } else {
+            // If filteredArr is empty, append all nonFilledDates
+            yettofilledDates.append(contentsOf: nonFilledDates)
+        }
+
+        
+        
+        filteredArr.append(contentsOf: yettofilledDates)
         
         CoreDataManager.shared.saveDCRDates(fromDcrModel: filteredArr) { [weak self] in
 
@@ -1490,6 +1509,83 @@ extension CoreDataManager {
             
         }
     }
+    
+    
+    func toGetLeastDate() -> Date? {
+        let setups = AppDefaults.shared.getAppSetUp()
+        
+        let calendar = Calendar.current
+        if let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil) {
+            if let  twoMonthsBackDate = calendar.date(byAdding: .month, value: -2, to: Date()) {
+                let components = calendar.dateComponents([.year, .month], from: twoMonthsBackDate)
+                if let firstDateOfMonth = calendar.date(from: components) {
+                    return min(firstDateOfMonth, joiningDate)
+                }
+            }
+        }
+        return nil
+    }
+    
+    func fetchAllNonfilledDates() -> [DCRdatesModel] {
+        let setups = AppDefaults.shared.getAppSetUp()
+        
+        let calendar = Calendar.current
+        
+        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: Date()) , let leaseDate = toGetLeastDate()  else {return []}
+
+        return  fetchAllDatesFromJoiningDate(fromDate: leaseDate, toDate: yesterday, dt: setups.sfDCRDate ?? Dt())
+         
+            
+        }
+
+    
+    func fetchAllDatesFromJoiningDate(fromDate: Date, toDate: Date, dt: Dt) -> [DCRdatesModel] {
+        var dates: [DCRdatesModel] = []
+        // Create a calendar instance to manipulate dates
+        let calendar = Calendar.current
+        
+        // Start from the fromDate
+        var currentDate = fromDate
+        
+        // Loop until currentDate reaches toDate
+        while currentDate <= toDate {
+            // Append the current date to the array
+            let dateInfo = Dt()
+            dateInfo.date =   currentDate.toString(format: "yyyy-MM-dd HH:mm:ss")
+            dateInfo.timezone = dt.timezone
+            dateInfo.timezoneType = dt.timezoneType
+            
+            let datesModel = DCRdatesModel()
+            datesModel.sfCode = ""
+            datesModel.flg = 1000
+            datesModel.tbname = "NotFilled"
+            datesModel.editFlag  = "CanEdit"
+            datesModel.reason  = ""
+            datesModel.dt = dateInfo
+            
+            
+            let homeData = DBManager.shared.getHomeData()
+
+            // Filter `homeData`, excluding the records where the date matches `currentDate`
+            if !homeData.contains(where: { eachDayData in
+                eachDayData.dcr_dt == currentDate.toString(format: "yyyy-MM-dd")
+            }) {
+                // Append the `datesModel` only if the date does not match
+                dates.append(datesModel)
+            }
+
+            // Move to the next day
+            guard let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) else {
+                break
+            }
+            currentDate = nextDate
+        }
+        
+
+        
+        return dates
+    }
+    
     
     func tpAppendToday(completion : @escaping () -> ()) {
 

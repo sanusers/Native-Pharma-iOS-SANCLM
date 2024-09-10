@@ -4,7 +4,7 @@
 //
 //  Created by Hassan
 //
-//  Copyright © 2024 san eforce. All rights reserved. 12/07/23.
+//  Copyright © 2024 san eforce. All rights reserved. 12/07/24.
 //
 
 import Foundation
@@ -335,7 +335,7 @@ class LeaveApplicationVC: UIViewController {
         holerCurvedViews.forEach { aView in
             aView.layer.cornerRadius = 5
         }
-        self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
+        self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Leave Type" :  selectedLeveType?.leaveName ?? ""
         leaveEntryHolderVIew.layer.borderWidth = 1
         leaveEntryHolderVIew.layer.borderColor = UIColor.appBlue.cgColor
         leaveEntryHolderVIew.layer.cornerRadius = 5
@@ -424,11 +424,14 @@ class LeaveApplicationVC: UIViewController {
         self.selectedLeveType = nil
         self.totalDays = []
         self.selectedLeaveTypeLbl.text = selectedLeveType == nil ? "Select leave type" :  selectedLeveType?.leaveName ?? ""
-        
+        leaveReadseon = nil
+        leaveAddress = nil
+        configureTextField(textView: self.txtViewLeaveReason)
+        configureTextField(textView: self.txtViewLeaveAddress)
         txtFromDate.text = fromDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
-
         txtToDate.text = toDate == nil ? "Select date" : fromDate?.toString(format: "MMM dd, yyyy")
-    
+        lblAvailableDays.text = ""
+        lblRemainingDays.text = ""
         self.toLoadTable()
      
     }
@@ -672,9 +675,23 @@ class LeaveApplicationVC: UIViewController {
     }
     
     @IBAction func submitAction(_ sender: UIButton) {
+        
+        
+        var leaveRemarks : String {
+            guard self.txtViewLeaveReason.text != "Type here.."  else {return ""}
+            return self.txtViewLeaveReason.text
+        }
+        var leaveAddress : String {
+            guard self.txtViewLeaveAddress.text != "Type here.." else {return ""}
+            return self.txtViewLeaveAddress.text
+        }
+        
         if self.fromDate == nil || self.toDate == nil {
             return
         } else if self.selectedLeveType == nil{
+            return
+        } else if leaveRemarks.isEmpty {
+            self.toCreateToast("please enter Reason for Leave")
             return
         }
         
@@ -689,8 +706,7 @@ class LeaveApplicationVC: UIViewController {
         
         let numberofDays = "\(self.totalDays.count)"
         
-        let leaveRemarks = self.txtViewLeaveReason.text ?? ""
-        let leaveAddress = self.txtViewLeaveAddress.text ?? ""
+   
         
         let selectedLeaveType = self.selectedLeveType
         

@@ -1,8 +1,10 @@
 //
 //  DCRapprovalView.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 22/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 22/07/24.
 //
 
 import Foundation
@@ -39,7 +41,10 @@ extension DCRapprovalView:  UITextFieldDelegate {
                 self.loadApprovalTable()
             } else {
                 isSearched = false
+                showAlert(desc: "No Records Found")
+                self.endEditing(true)
                 self.loadApprovalTable()
+                
                 print("Not matched")
             }
             
@@ -289,7 +294,8 @@ class DCRapprovalView : BaseView {
         dcrApprovalVC.fetchApprovalList(vm: UserStatisticsVM()) {[weak self] approvalist in
             Shared.instance.removeLoaderInWindow()
             guard let welf = self, let approvalist = approvalist else {return}
-            welf.approvalList = approvalist
+         
+            welf.approvalList = approvalist.sorted { $0.activityDate.toDate(format: "dd/MM/yyyy") > $1.activityDate.toDate(format: "dd/MM/yyyy") }
             welf.loadApprovalTable()
             welf.dcrApprovalVC.fetchFirstIndex()
             
@@ -343,6 +349,23 @@ class DCRapprovalView : BaseView {
             if !welf.isRemarksadded && welf.dayRemarks.isEmpty {
                 welf.deviateAction(isForremarks: false)
                 return
+            } else if welf.isRemarksadded {
+                if !LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) {
+                    welf.toCreateToast("Please connect to internet.")
+                    return
+                }
+                Shared.instance.showLoaderInWindow()
+                welf.dcrApprovalVC.dcrRejectAPI(vm: UserStatisticsVM()) {[weak self] result in
+                    guard let welf = self else {return}
+                    welf.isRemarksadded = false
+                    welf.dayRemarks = ""
+                    Shared.instance.removeLoaderInWindow()
+                    if result?.isSuccess ?? false {
+                        welf.toCreateToast("Rejected Successfully.")
+                        welf.callAPI()
+                    }
+                   
+                }
             }
            
         }
@@ -359,7 +382,7 @@ class DCRapprovalView : BaseView {
             welf.dcrApprovalVC.dcrApprovalAPI(vm: UserStatisticsVM()) { result in
                 Shared.instance.removeLoaderInWindow()
                 if result?.isSuccess ?? false {
-                    welf.toCreateToast("Plan Approved successfully.")
+                    welf.toCreateToast("Approved Successfully.")
                     welf.callAPI()
                 }
                
@@ -436,7 +459,8 @@ extension DCRapprovalView : addedSubViewsDelegate {
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true, customAction: {
             print("no action")
-            self.dcrApprovalVC.navigationController?.popViewController(animated: true)
+            self.searchTF.text = ""
+           // self.dcrApprovalVC.navigationController?.popViewController(animated: true)
         })
     }
     
@@ -497,7 +521,7 @@ extension DCRapprovalView : SessionInfoTVCDelegate {
                     welf.dayRemarks = ""
                     Shared.instance.removeLoaderInWindow()
                     if result?.isSuccess ?? false {
-                        welf.toCreateToast("Plan rejected.")
+                        welf.toCreateToast("Rejected Successfully.")
                         welf.callAPI()
                     }
                    

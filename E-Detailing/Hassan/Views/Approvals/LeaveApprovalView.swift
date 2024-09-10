@@ -1,8 +1,10 @@
 //
 //  LeaveApprovalView.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 24/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 24/07/24.
 //
 
 import Foundation
@@ -47,12 +49,20 @@ extension LeaveApprovalView:  UITextFieldDelegate {
         }
         return true
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.endEditing(true)
+    }
 }
 
 extension LeaveApprovalView: LeaveApprovalTVCDelegate {
     func diduserApprove(index: Int) {
         selectedActionIndex = index
         print("Yet to")
+        if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+            toCreateToast("Please connect to active internet")
+            return
+        }
         Shared.instance.showLoaderInWindow()
         leaveApprovalVC.leaveApprovalAPI(vm: UserStatisticsVM()) {[weak self] result in
             guard let welf = self else {return}
@@ -60,7 +70,7 @@ extension LeaveApprovalView: LeaveApprovalTVCDelegate {
             welf.dayRemarks = ""
             Shared.instance.removeLoaderInWindow()
             if result?.isSuccess ?? false {
-                welf.toCreateToast(result?.checkinMasg ?? "Leave approved.")
+                welf.toCreateToast(result?.checkinMasg ?? "Approved successfully")
                 welf.callAPI()
             } else {
                 welf.toCreateToast(result?.checkinMasg ?? "Unable to approve leave please do try again later.")
@@ -91,14 +101,25 @@ extension LeaveApprovalView: UITableViewDelegate, UITableViewDataSource {
         cell.toPopulateCell(model: model)
         cell.delegate = self
         cell.approveView.addTap { [weak self] in
-            guard let welf = self else {return}
+        
             cell.delegate?.diduserApprove(index: indexPath.row)
             
         }
         
         cell.rejectView.addTap {[weak self] in
-            guard let welf = self else {return}
+          
             cell.delegate?.diduserReject(index: indexPath.row)
+        }
+        
+        cell.addressonDesc.addTap {[weak self] in
+            guard let welf = self else {return}
+            welf.showHover(view: cell.addressonDesc, comment: model.address)
+        }
+        
+        cell.reasonDesc.addTap {[weak self] in
+            guard let welf = self else {return}
+            welf.showHover(view: cell.reasonDesc, comment: model.reason)
+            
         }
         
         return cell
@@ -151,6 +172,15 @@ class LeaveApprovalView : BaseView {
         callAPI()
     
         
+    }
+    
+    
+    func showHover(view: UIView, comment: String) {
+        let vc = PopOverVC.initWithStory(preferredFrame: CGSize(width: self.width / 3, height: self.height / 7), on: view,  pagetype: .hover)
+
+        vc.color = .appTextColor
+        vc.comments = comment
+        self.leaveApprovalVC?.navigationController?.present(vc, animated: true)
     }
     
     override func didLayoutSubviews(baseVC: BaseViewController) {
@@ -266,7 +296,8 @@ extension LeaveApprovalView : addedSubViewsDelegate {
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
         commonAlert.addAdditionalOkAction(isForSingleOption: true, customAction: {
             print("no action")
-            self.leaveApprovalVC.navigationController?.popViewController(animated: true)
+            self.searchTF.text = ""
+          //  self.leaveApprovalVC.navigationController?.popViewController(animated: true)
         })
     }
     
@@ -318,14 +349,19 @@ extension LeaveApprovalView : SessionInfoTVCDelegate {
             case tpDeviateReasonView:
                 aAddedView.removeFromSuperview()
                 aAddedView.alpha = 0
+                if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+                    toCreateToast("Please connect to active internet")
+                    return
+                }
                 Shared.instance.showLoaderInWindow()
+                
                 leaveApprovalVC.leaveRejectAPI(vm: UserStatisticsVM()) {[weak self] result in
                     guard let welf = self else {return}
                     welf.isRemarksadded = false
                     welf.dayRemarks = ""
                     Shared.instance.removeLoaderInWindow()
                     if result?.isSuccess ?? false {
-                        welf.toCreateToast( result?.checkinMasg ?? "Plan rejected.")
+                        welf.toCreateToast( result?.checkinMasg ?? "Rejected successfully")
                         welf.callAPI()
                     } else {
                         welf.toCreateToast( result?.checkinMasg ?? "Unable to reject leave try again later.")

@@ -1,8 +1,10 @@
 //
 //  LeaveApprovalTVC.swift
-//  SAN ZEN
+//  E-Detailing
 //
-//  Created by San eforce on 24/07/24.
+//  Created by Hassan
+//
+//  Copyright © 2024 san eforce. All rights reserved. 24/07/24.
 //
 
 import UIKit
@@ -41,7 +43,7 @@ class LeaveApprovalTVC: UITableViewCell {
 
     func toPopulateCell(model: LeaveApprovalDetail) {
         yettoArroverName.text = model.sfName
-        empCodeDesc.text = model.sfCode
+        empCodeDesc.text = model.sfEmpID
         leaveTypeDesc.text = model.lType
         fromDesc.text = model.fromDate.date.toDate().toString(format: "yyyy/MM/dd")
         toDesc.text = model.toDate.date.toDate().toString(format: "yyyy/MM/dd")

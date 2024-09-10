@@ -119,6 +119,8 @@ class PopOverVC: UIViewController {
             guard let modal = self.rcpaInfo else {return}
             setRCPAinfo(modal: modal)
         case .hover:
+            self.view.backgroundColor = color
+            hoverView.backgroundColor = color
             customMarkerView.isHidden = true
             userProfileInfoView.isHidden = true
             commentsTV.text = comments
@@ -380,7 +382,7 @@ class PopOverVC: UIViewController {
      
         popover.backgroundColor = .appWhiteColor
        // popover.permittedArrowDirections = pagetype == .calls ? UIPopoverArrowDirection.up : pagetype == .presentation ?  UIPopoverArrowDirection.up :  UIPopoverArrowDirection.down
-        popover.permittedArrowDirections = pagetype == .HomeGraph || pagetype == .customMarker  || pagetype == .timeLine ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
+        popover.permittedArrowDirections = pagetype == .HomeGraph || pagetype == .customMarker  || pagetype == .timeLine  ? UIPopoverArrowDirection.down :  UIPopoverArrowDirection.up
         
         return infoWindow
     }
