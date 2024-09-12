@@ -143,6 +143,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
              
                 BackgroundTaskManager.shared.stopBackgroundTask()
                 
+
+
                 self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: isFromlaunch ?? false, ViewModel: UserStatisticsVM()))
 
             }else if AppDefaults.shared.isLoggedIn() {

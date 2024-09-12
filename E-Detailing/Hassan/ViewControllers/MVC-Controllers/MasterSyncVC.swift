@@ -130,7 +130,7 @@ class MasterSyncVC : UIViewController {
     @IBOutlet var retryVIew: UIView!
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var pageType: PageType = .loaded
-    var loadedSlideInfo = [MasterInfo]()
+   // var loadedSlideInfo = [MasterInfo]()
     var extractedFileName: String?
     var isFromLaunch : Bool = false
     var masterVM: MasterSyncVM?
@@ -917,7 +917,7 @@ class MasterSyncVC : UIViewController {
                        
                             DBManager.shared.saveMasterData(type: type, Values: apiResponse,id: welf.getRSF ?? "")
                             if type == MasterInfo.slides || type == MasterInfo.slideBrand {
-                                welf.loadedSlideInfo.append(type)
+                              //  welf.loadedSlideInfo.append(type)
                                 switch type {
                                 case MasterInfo.slides:
                                     
@@ -938,6 +938,10 @@ class MasterSyncVC : UIViewController {
                                 }
                                 
                             }
+                    
+                    if type == .customSetup {
+                        refreshConstants()
+                    }
  
                     completion(true)
                 case .failure(let error):
@@ -999,10 +1003,11 @@ extension MasterSyncVC : tableViewProtocols {
             self.dcrList[i].isSelected = false
         }
         
+       
+
+        self.masterData = self.dcrList[indexPath.row].cellType.groupDetail
+        
         self.tableView.reloadData()
-
-       self.masterData = self.dcrList[indexPath.row].cellType.groupDetail
-
         self.collectionView.reloadData()
     }
     
@@ -1030,7 +1035,7 @@ extension MasterSyncVC : tableViewProtocols {
         
         self.isMaterSyncInProgress = true
         
-        self.loadedSlideInfo = []
+      //  self.loadedSlideInfo = []
       
 
         
@@ -1089,8 +1094,8 @@ extension MasterSyncVC : collectionViewProtocols{
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = self.collectionView.frame.width / 3
-        
-        if self.masterData[indexPath.row].rawValue == "Holidays" || self.masterData[indexPath.row].rawValue == "Weekly Off" || self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
+        //self.masterData[indexPath.row].rawValue == "Holidays" || self.masterData[indexPath.row].rawValue == "Weekly Off" ||
+        if  self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
             return CGSize(width: width - 10, height: 0)
         }
             let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
@@ -1107,8 +1112,11 @@ extension MasterSyncVC : collectionViewProtocols{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MasterSyncCell", for: indexPath) as! MasterSyncCell
       //  cell.lblName.text = self.masterData[indexPath.row].rawValue
-        cell.lblName.text = self.masterData[indexPath.row] == .doctorFencing ?  appsetup.docCap : self.masterData[indexPath.row] == .chemists ?  appsetup.chmCap : self.masterData[indexPath.row] == .stockists ?  appsetup.stkCap :  self.masterData[indexPath.row] == .unlistedDoctors ?  appsetup.nlCap :  self.masterData[indexPath.row].rawValue
+        cell.lblName.text = self.masterData[indexPath.row].rawValue
+        //self.masterData[indexPath.row] == .doctorFencing ?  appsetup.docCap : self.masterData[indexPath.row] == .chemists ?  appsetup.chmCap : self.masterData[indexPath.row] == .stockists ?  appsetup.stkCap :  self.masterData[indexPath.row] == .unlistedDoctors ?  appsetup.nlCap :
+        
         cell.loaderImage.isHidden = false
+        
         var status :  LoadingStatus = .loaded
         MasterInfoState.loadingStatusDict.forEach({ masterinfo, loadingStatus  in
         if masterinfo.rawValue == self.masterData[indexPath.row].rawValue {
@@ -1198,9 +1206,11 @@ extension MasterSyncVC : collectionViewProtocols{
         case .docFeedback:
             cell.lblCount.text = String(DBManager.shared.getFeedback().count)
         case .holidays:
-            cell.lblCount.text = String(DBManager.shared.getHolidays().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getHolidays().count)
         case .weeklyOff:
-            cell.lblCount.text = String(DBManager.shared.getWeeklyOff().count)
+            cell.lblCount.text =  ""
+            //String(DBManager.shared.getWeeklyOff().count)
         case .tourPlanSetup:
             cell.lblCount.text =  ""
             //String(DBManager.shared.getTableSetUp().count)

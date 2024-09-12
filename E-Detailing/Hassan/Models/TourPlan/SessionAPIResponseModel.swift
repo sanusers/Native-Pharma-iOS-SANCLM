@@ -65,7 +65,10 @@ enum ApprovalStatus: String {
 }
 
 
-class SentToApprovalModelArr : NSObject, NSCoding {
+class SentToApprovalModelArr : NSObject, NSCoding, NSSecureCoding {
+    static var supportsSecureCoding: Bool {
+          return true
+      }
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("SentToApprovalModelArr")
     var sentToApprovalModelArr : [SentToApprovalModel]
@@ -91,7 +94,11 @@ class SentToApprovalModelArr : NSObject, NSCoding {
     }
 }
 
-class SentToApprovalModel: NSObject, NSCoding {
+class SentToApprovalModel: NSObject, NSCoding, NSSecureCoding {
+    static var supportsSecureCoding: Bool {
+          return true
+      }
+    
     
 
     

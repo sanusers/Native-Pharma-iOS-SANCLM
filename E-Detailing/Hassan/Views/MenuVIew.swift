@@ -124,7 +124,8 @@ extension MenuView {
                     
                     otherFieldMandatorySessions?.forEach { session in
                         if self.isDocNeeded {
-                            if session.selectedlistedDoctorsID?.count == 0{
+                           let doCcount = Int(tableSetup?.max_doc ?? "0")
+                            if session.selectedlistedDoctorsID?.count == 0 && doCcount != 0 {
                                 self.toCreateToast("Please select doctor")
                                 subActivitySeected = false
                             }
@@ -1171,6 +1172,8 @@ class MenuView : BaseView{
             self.sessionDetailsArr.sessionDetails?[self.selectedSession].cluster = self.clusterArr
         
         case .headQuater:
+
+            
             self.cellType = .headQuater
             addSessionView.isHidden = true
             saveView.isHidden = true
@@ -2947,6 +2950,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                                     sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex = index
                                     sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = HQs.id ?? ""
                                     sessionDetailsArr.sessionDetails?[selectedSession].HQNames = HQs.name ?? ""
+                                    updateEntries(mapID: HQs.id ?? "" , sessionIndex: selectedSession)
                                     isToremove = false
                                 } else {
                                     sessionDetailsArr.sessionDetails?[selectedSession].searchedHQIndex = index
@@ -2974,6 +2978,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex = indexPath.row
                             sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = item?.id ?? ""
                             sessionDetailsArr.sessionDetails?[selectedSession].HQNames = item?.name ?? ""
+                            updateEntries(mapID: item?.id ?? "" , sessionIndex: selectedSession)
                             setPageType(.session, for: self.selectedSession)
                             self.endEditing(true)
                         } else {
@@ -2981,11 +2986,13 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             sessionDetailsArr.sessionDetails?[selectedSession].selectedHQIndex = indexPath.row
                             sessionDetailsArr.sessionDetails?[selectedSession].HQCodes = item?.id ?? ""
                             sessionDetailsArr.sessionDetails?[selectedSession].HQNames = item?.name ?? ""
+                            updateEntries(mapID: item?.id ?? "" , sessionIndex: selectedSession)
                             setPageType(.session, for: self.selectedSession)
                             self.endEditing(true)
                             
                         }
                     }
+                  
                 }
                 
                 
@@ -3548,7 +3555,35 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
         }
     }
     
-
+    func updateEntries(mapID: String, sessionIndex: Int) {
+        
+        sessionDetailsArr.sessionDetails?[sessionIndex].chemist = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].stockist = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].listedDoctors = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].unlistedDoctors = nil
+        
+        
+        sessionDetailsArr.sessionDetails?[sessionIndex].drName = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].drCode = nil
+       
+        sessionDetailsArr.sessionDetails?[sessionIndex].chemCode = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].chemName = nil
+        
+        sessionDetailsArr.sessionDetails?[sessionIndex].stockistCode = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].stockistName = nil
+        
+        sessionDetailsArr.sessionDetails?[sessionIndex].unListedDrCode = nil
+        sessionDetailsArr.sessionDetails?[sessionIndex].unListedDrName = nil
+        
+        
+        self.listedDocArr = DBManager.shared.getDoctor(mapID: mapID)
+       
+        self.chemistArr = DBManager.shared.getChemist(mapID: mapID)
+         
+        self.stockistArr =  DBManager.shared.getStockist(mapID: mapID)
+        
+        self.unlisteedDocArr = DBManager.shared.getUnListedDoctor(mapID: mapID)
+    }
 
 }
 

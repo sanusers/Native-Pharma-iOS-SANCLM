@@ -430,6 +430,7 @@
 		38FADFB12B3C26BE00632C2F /* RemarksEditSessionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */; };
 		38FADFB22B3C26BE00632C2F /* RemarksEditSessionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */; };
 		38FADFB42B3C561000632C2F /* DetailedReportsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */; };
+		38FCFA8F2C90595100A0F5FD /* MainVC + TourplanEX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FCFA8E2C90595100A0F5FD /* MainVC + TourplanEX.swift */; };
 		38FD4F022BBD714700EF9D3D /* CustomerCheckinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38FD4F012BBD714700EF9D3D /* CustomerCheckinView.swift */; };
 		38FD4F042BBD763000EF9D3D /* CustomerCheckinView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FD4F032BBD763000EF9D3D /* CustomerCheckinView.xib */; };
 		38FD4F062BBD868500EF9D3D /* CustomerCheckoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38FD4F052BBD868500EF9D3D /* CustomerCheckoutView.xib */; };
@@ -881,6 +882,7 @@
 		38FADFAF2B3C26BE00632C2F /* RemarksEditSessionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarksEditSessionCell.swift; sourceTree = "<group>"; };
 		38FADFB02B3C26BE00632C2F /* RemarksEditSessionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemarksEditSessionCell.xib; sourceTree = "<group>"; };
 		38FADFB32B3C561000632C2F /* DetailedReportsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedReportsModel.swift; sourceTree = "<group>"; };
+		38FCFA8E2C90595100A0F5FD /* MainVC + TourplanEX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC + TourplanEX.swift"; sourceTree = "<group>"; };
 		38FD4F012BBD714700EF9D3D /* CustomerCheckinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerCheckinView.swift; sourceTree = "<group>"; };
 		38FD4F032BBD763000EF9D3D /* CustomerCheckinView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerCheckinView.xib; sourceTree = "<group>"; };
 		38FD4F052BBD868500EF9D3D /* CustomerCheckoutView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerCheckoutView.xib; sourceTree = "<group>"; };
@@ -1124,6 +1126,7 @@
 				385D15C62C300E2500C47B7F /* MainVC + CoreData.swift */,
 				385D15C82C300E6D00C47B7F /* MainVC + APIs.swift */,
 				385D15CA2C3011AB00C47B7F /* MainVC + DashBoard.swift */,
+				38FCFA8E2C90595100A0F5FD /* MainVC + TourplanEX.swift */,
 			);
 			path = MainVc;
 			sourceTree = "<group>";
@@ -2431,6 +2434,7 @@
 				B287E62329F29C1B0097974D /* AppDelegate.swift in Sources */,
 				38111E1E2BB41E8100C46358 /* CompetitorsMultiselectionTVC.swift in Sources */,
 				38866E722BB2D3D500F9E576 /* CompetitorsFooter.swift in Sources */,
+				38FCFA8F2C90595100A0F5FD /* MainVC + TourplanEX.swift in Sources */,
 				38DD9E642C085E31000A9575 /* RCPAdetailsDesctiptionCVC.swift in Sources */,
 				385D15C52C300DA800C47B7F /* MainVC+Checkins.swift in Sources */,
 				38CF0DD72A8E57B7000EDD96 /* FeedbackViewModel.swift in Sources */,

@@ -509,11 +509,11 @@ class TourPlanView: BaseView {
                 if let approvalModel = approvalModel as? SentToApprovalModelArr {
                     LocalStorage.shared.sentToApprovalModelArr = approvalModel.sentToApprovalModelArr
                 } else {
-                    print("unable to convert to EachDatePlan")
+                    print("unable to convert to SentToApprovalModelArr")
                 }
             } else {
                 // Fallback to default initialization if unarchiving fails
-                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+                print("Failed to unarchive SentToApprovalModelArr: Data is nil or incorrect class type")
            
             }
         } catch {
@@ -707,9 +707,17 @@ class TourPlanView: BaseView {
                 thisMonthPaln.append(plan)
             }
         })
+        
+        var uniquePlans = [String: SessionDetailsArr]() // Assuming `date` is String or can be cast to String
+        thisMonthPaln.forEach { plan in
+            uniquePlans[plan.date] = plan
+        }
+        
+        thisMonthPaln = Array(uniquePlans.values)
       
         thisMonthPaln = thisMonthPaln.sorted(by: { $0.rawDate.compare($1.rawDate) == .orderedAscending })
         
+
         self.tempArrofPlan = thisMonthPaln
         
         DispatchQueue.main.async {
@@ -776,8 +784,8 @@ class TourPlanView: BaseView {
             // Attempt to unarchive EachDatePlan directly
             if let approvalModel = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
                 
-                if let approvalModel = approvalModel as? SentToApprovalModelArr {
-                    LocalStorage.shared.sentToApprovalModelArr = approvalModel.sentToApprovalModelArr
+                if let approvalModel = approvalModel as? [SentToApprovalModel] {
+                    LocalStorage.shared.sentToApprovalModelArr = approvalModel
                 } else {
                     print("unable to convert to EachDatePlan")
                 }
@@ -933,179 +941,179 @@ class TourPlanView: BaseView {
     }
     
     
-    
-    func toAppendWeeklyoffs(date: [String], rawDate: [Date], isHolidayDict: [String: Bool]) {
-        
-        AppDefaults.shared.eachDatePlan.weekoffsDates = rawDate
-        
-//            let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-//            if !initialsavefinish {
-//                print("Error")
+//    
+//    func toAppendWeeklyoffs(date: [String], rawDate: [Date], isHolidayDict: [String: Bool]) {
+//        
+//        AppDefaults.shared.eachDatePlan.weekoffsDates = rawDate
+//        
+////            let initialsavefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+////            if !initialsavefinish {
+////                print("Error")
+////            }
+//        
+//        do {
+//            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+//            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+//            print("Save successful")
+//        } catch {
+//            print("Unable to save: \(error)")
+//        }
+//       // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
+//        do {
+//            // Read the data from the file URL
+//            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
+//            
+//            // Attempt to unarchive EachDatePlan directly
+//            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
+//                
+//                if let aPlan = eachDatePlan as? EachDatePlan {
+//                    AppDefaults.shared.eachDatePlan = aPlan
+//                } else {
+//                    print("unable to convert to EachDatePlan")
+//                }
+//            } else {
+//                // Fallback to default initialization if unarchiving fails
+//                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
+//                AppDefaults.shared.eachDatePlan = EachDatePlan()
 //            }
-        
-        do {
-            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
-            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
-            print("Save successful")
-        } catch {
-            print("Unable to save: \(error)")
-        }
-       // AppDefaults.shared.eachDatePlan = NSKeyedUnarchiver.unarchiveObject(withFile: EachDatePlan.ArchiveURL.path) as? EachDatePlan ?? EachDatePlan()
-        do {
-            // Read the data from the file URL
-            let data = try Data(contentsOf: EachDatePlan.ArchiveURL)
-            
-            // Attempt to unarchive EachDatePlan directly
-            if let eachDatePlan = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
-                
-                if let aPlan = eachDatePlan as? EachDatePlan {
-                    AppDefaults.shared.eachDatePlan = aPlan
-                } else {
-                    print("unable to convert to EachDatePlan")
-                }
-            } else {
-                // Fallback to default initialization if unarchiving fails
-                print("Failed to unarchive EachDatePlan: Data is nil or incorrect class type")
-                AppDefaults.shared.eachDatePlan = EachDatePlan()
-            }
-        } catch {
-            // Handle any errors that occur during reading or unarchiving
-            print("Unable to unarchive: \(error)")
-            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
-        }
-        dump(AppDefaults.shared.eachDatePlan)
-        
-        var includedSessionArr = [SessionDetailsArr]()
-        
-        if AppDefaults.shared.eachDatePlan.tourPlanArr.count > 0 {
-            
-            AppDefaults.shared.tpArry.arrOfPlan.removeAll()
-            
-            AppDefaults.shared.tpArry.arrOfPlan =  AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan
-            includedSessionArr = AppDefaults.shared.tpArry.arrOfPlan
-        }
-        
-        var  dates = [String]()
-        
-        includedSessionArr.forEach { SessionDetailsArr in
-            dates.append(SessionDetailsArr.date)
-        }
-        
-
-                AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
-                    
-                    
-                  //  let dateArray = [/* Your Date array */]
-                  //  let dateBoolDictionary = [Date: Bool](/* Your [Date: Bool] dictionary */)
-                    let aSessionDetArr = SessionDetailsArr()
-                    var isTrue = Bool()
-                    let dateStr = toModifyDate(date: adate)
-                    
-                    
-                    isHolidayDict.forEach { (key, value) in
-                        if key == dateStr && value == true {
-                            isTrue = true
-                        }
-                    }
-                
-
-                  
-                    
-                  // let isTrue = isHolidayDict[dateStr]
-
-                    let aSession = SessionDetail()
-                    
-                    aSession.isForFieldWork = false
-              
-
-                    
-                    if isTrue {
-                        
-                        self.holidays?.forEach({ aholiday in
-                            var toCompareStr = ""
-                            let dateString = aholiday.holiday_Date
-
-                            let dateFormatter = DateFormatter()
-                            dateFormatter.dateFormat = "yyyy-MM-dd"
-
-                            if let date = dateFormatter.date(from: dateString ?? "") {
-                                let outputFormatter = DateFormatter()
-                                outputFormatter.dateFormat = "d MMMM yyyy"
-                                
-                                let formattedString = outputFormatter.string(from: date)
-                                print(formattedString) // Output: "1 January 2023"
-                                toCompareStr = formattedString
-                            } else {
-                                print("Failed to convert string to Date.")
-                            }
-                            
-                            if toCompareStr == dateStr {
-                                aSession.WTCode = aholiday.wtcode
-                                //self.weeklyOff?.wtcode ?? ""
-                                aSession.WTName =  aholiday.wtname
-                            }
-                        })
-                        
-
-                        aSessionDetArr.isForWeekoff = false
-                        aSessionDetArr.isForHoliday = true
-                    } else {
-                        aSession.WTCode = self.weeklyOff?.wtcode ?? ""
-                        aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
-                        aSessionDetArr.isForWeekoff = true
-                        aSessionDetArr.isForHoliday = false
-                    }
-                    
-            
-                    aSessionDetArr.date = toModifyDate(date: adate)
-                    aSessionDetArr.rawDate = adate
-                    
-                    aSessionDetArr.isDataSentToApi = false
-                    aSessionDetArr.sessionDetails.append(aSession)
-                    
-                    if !dates.contains(aSessionDetArr.date) {
-                        includedSessionArr.append(aSessionDetArr)
-                    }
-                    
-                   
-                }
-            
-
-            dump(includedSessionArr)
-           // let  temptpArray =  TourPlanArr()
-           // temptpArray.arrOfPlan = includedSessionArr
-             AppDefaults.shared.tpArry.arrOfPlan.removeAll()
-            AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
-        if AppDefaults.shared.eachDatePlan.tourPlanArr.count == 0 {
-            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
-        } else {
-            AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.removeAll()
-            AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.append(contentsOf: includedSessionArr)
-        }
-   
-        
-        do {
-            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
-            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
-            print("Save successful")
-            DispatchQueue.main.async {
-                self.toLoadData()
-            }
-        } catch {
-            print("Unable to save: \(error)")
-        }
-        
-//        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
-//        if !savefinish {
-//            print("Error")
-//         
+//        } catch {
+//            // Handle any errors that occur during reading or unarchiving
+//            print("Unable to unarchive: \(error)")
+//            AppDefaults.shared.eachDatePlan = EachDatePlan() // Fallback to default initialization
+//        }
+//        dump(AppDefaults.shared.eachDatePlan)
+//        
+//        var includedSessionArr = [SessionDetailsArr]()
+//        
+//        if AppDefaults.shared.eachDatePlan.tourPlanArr.count > 0 {
+//            
+//            AppDefaults.shared.tpArry.arrOfPlan.removeAll()
+//            
+//            AppDefaults.shared.tpArry.arrOfPlan =  AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan
+//            includedSessionArr = AppDefaults.shared.tpArry.arrOfPlan
+//        }
+//        
+//        var  dates = [String]()
+//        
+//        includedSessionArr.forEach { SessionDetailsArr in
+//            dates.append(SessionDetailsArr.date)
+//        }
+//        
+//
+//                AppDefaults.shared.eachDatePlan.weekoffsDates.enumerated().forEach { adateIndex, adate in
+//                    
+//                    
+//                  //  let dateArray = [/* Your Date array */]
+//                  //  let dateBoolDictionary = [Date: Bool](/* Your [Date: Bool] dictionary */)
+//                    let aSessionDetArr = SessionDetailsArr()
+//                    var isTrue = Bool()
+//                    let dateStr = toModifyDate(date: adate)
+//                    
+//                    
+//                    isHolidayDict.forEach { (key, value) in
+//                        if key == dateStr && value == true {
+//                            isTrue = true
+//                        }
+//                    }
+//                
+//
+//                  
+//                    
+//                  // let isTrue = isHolidayDict[dateStr]
+//
+//                    let aSession = SessionDetail()
+//                    
+//                    aSession.isForFieldWork = false
+//              
+//
+//                    
+//                    if isTrue {
+//                        
+//                        self.holidays?.forEach({ aholiday in
+//                            var toCompareStr = ""
+//                            let dateString = aholiday.holiday_Date
+//
+//                            let dateFormatter = DateFormatter()
+//                            dateFormatter.dateFormat = "yyyy-MM-dd"
+//
+//                            if let date = dateFormatter.date(from: dateString ?? "") {
+//                                let outputFormatter = DateFormatter()
+//                                outputFormatter.dateFormat = "d MMMM yyyy"
+//                                
+//                                let formattedString = outputFormatter.string(from: date)
+//                                print(formattedString) // Output: "1 January 2023"
+//                                toCompareStr = formattedString
+//                            } else {
+//                                print("Failed to convert string to Date.")
+//                            }
+//                            
+//                            if toCompareStr == dateStr {
+//                                aSession.WTCode = aholiday.wtcode
+//                                //self.weeklyOff?.wtcode ?? ""
+//                                aSession.WTName =  aholiday.wtname
+//                            }
+//                        })
+//                        
+//
+//                        aSessionDetArr.isForWeekoff = false
+//                        aSessionDetArr.isForHoliday = true
+//                    } else {
+//                        aSession.WTCode = self.weeklyOff?.wtcode ?? ""
+//                        aSession.WTName = self.weeklyOff?.wtname ?? "Weekly off"
+//                        aSessionDetArr.isForWeekoff = true
+//                        aSessionDetArr.isForHoliday = false
+//                    }
+//                    
+//            
+//                    aSessionDetArr.date = toModifyDate(date: adate)
+//                    aSessionDetArr.rawDate = adate
+//                    
+//                    aSessionDetArr.isDataSentToApi = false
+//                    aSessionDetArr.sessionDetails.append(aSession)
+//                    
+//                    if !dates.contains(aSessionDetArr.date) {
+//                        includedSessionArr.append(aSessionDetArr)
+//                    }
+//                    
+//                   
+//                }
+//            
+//
+//            dump(includedSessionArr)
+//           // let  temptpArray =  TourPlanArr()
+//           // temptpArray.arrOfPlan = includedSessionArr
+//             AppDefaults.shared.tpArry.arrOfPlan.removeAll()
+//            AppDefaults.shared.tpArry.arrOfPlan.append(contentsOf: includedSessionArr)
+//        if AppDefaults.shared.eachDatePlan.tourPlanArr.count == 0 {
+//            AppDefaults.shared.eachDatePlan.tourPlanArr.append(AppDefaults.shared.tpArry)
 //        } else {
+//            AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.removeAll()
+//            AppDefaults.shared.eachDatePlan.tourPlanArr[0].arrOfPlan.append(contentsOf: includedSessionArr)
+//        }
+//   
+//        
+//        do {
+//            let data = try NSKeyedArchiver.archivedData(withRootObject: AppDefaults.shared.eachDatePlan, requiringSecureCoding: false)
+//            try data.write(to: EachDatePlan.ArchiveURL, options: .atomic)
+//            print("Save successful")
 //            DispatchQueue.main.async {
 //                self.toLoadData()
 //            }
-//          
+//        } catch {
+//            print("Unable to save: \(error)")
 //        }
-    }
+//        
+////        let savefinish = NSKeyedArchiver.archiveRootObject(AppDefaults.shared.eachDatePlan, toFile: EachDatePlan.ArchiveURL.path)
+////        if !savefinish {
+////            print("Error")
+////         
+////        } else {
+////            DispatchQueue.main.async {
+////                self.toLoadData()
+////            }
+////          
+////        }
+//    }
     
     
   
@@ -2185,13 +2193,28 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
     
     func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
         // let borderColor = UIColor(red: CGFloat(40.0/255.0), green: CGFloat(42.0/255.0), blue: CGFloat(60.0/255.0), alpha: CGFloat(0.25))
+        let setups = AppDefaults.shared.getAppSetUp()
         let cell = calendar.dequeueReusableCell(withIdentifier: "CustomCalendarCell", for: date, at: position) as! CustomCalendarCell
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMMM yyyy"
         var isExist = Bool()
+        //let joiningDateStr = "2024-09-12"
         let toCompareDate = dateFormatter.string(from: date)
+
         cell.addedIV.isHidden = true
 
+        var isDateLesserThanJoiningDate = false
+        if let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+        {
+            if date < joiningDate {
+               // cell.isUserInteractionEnabled = false
+              //  cell.contentHolderView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
+                isDateLesserThanJoiningDate = true
+                
+            }
+
+        }
+        
         self.arrOfPlan?.forEach({ arrPlan in
             dump(arrPlan.date)
             if arrPlan.date == "1 January 2024" {
@@ -2250,18 +2273,35 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         cell.shapeLayer.isHidden = true
        // cell.shapeLayer.frame = bounds
         cell.layer.borderColor = UIColor.appSelectionColor.cgColor
-          cell.layer.borderWidth = 0.5
+        cell.layer.borderWidth = 0.5
        // cell.layer.masksToBounds = true
       //  cell.layer.addSublayer(addExternalBorder())
         if selectedDate == cell.customLabel.text {
             cell.contentHolderView.backgroundColor = .appSelectionColor
-        } else {
+        } else if isDateLesserThanJoiningDate {
+            cell.contentHolderView.backgroundColor = .appSelectionColor
+            cell.addedIV .isHidden = true
+        }
+        else {
             cell.contentHolderView.backgroundColor = .clear
         }
         
 
         cell.addTap { [weak self] in
             guard let welf = self else {return}
+      
+            if
+                let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+            {
+                //"yyyy-MM-dd HH:mm:ss"
+                if date < joiningDate {
+                    cell.isUserInteractionEnabled = false
+                    welf.toCreateToast("Selected date is lesser than joining date.")
+                    return
+                }
+
+            }
+            
             welf.responseHolidaydates.forEach { aHolisayDate in
                 if welf.toModifyDate(date: date, isForHoliday: true) == aHolisayDate {
                     isForHoliday = true

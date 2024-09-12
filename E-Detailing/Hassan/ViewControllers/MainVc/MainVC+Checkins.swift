@@ -153,7 +153,7 @@ extension MainVC {
         Shared.instance.selectedDate = date ?? Date()
         currentPage = date ?? Date()
         selectedToday = date
-        celenderToday = date ?? Date()
+       // celenderToday = date ?? Date()
         setDateLbl(date: date ?? Date())
     }
     
@@ -174,9 +174,23 @@ extension MainVC {
                     welf.toSetParams(date: mergedDate, isfromSyncCall: true) {
                         welf.toConfigureMydayPlan(planDate: mergedDate) {
                             welf.validateWindups() {
-                                welf.refreshUI(date: mergedDate, pageType ?? .workPlan) {
-                                    completion()
+                                
+                                CoreDataManager.shared.fetchDcrDates { dcrDates in
+                                  let filteredDates = dcrDates.filter { $0.date ==  mergedDate.toString(format: "yyyy-MM-dd") }
+                                    if let firstEntry = filteredDates.first {
+                                        welf.refreshUI(date: mergedDate, rejectionReason: firstEntry.reason, SegmentType.workPlan) {
+                                            completion()
+                                        }
+                                    } else {
+                                        welf.refreshUI(date: mergedDate, SegmentType.workPlan) {
+                                            completion()
+                                        }
+                                    }
                                 }
+                                
+//                                welf.refreshUI(date: mergedDate, pageType ?? .workPlan) {
+//                                    completion()
+//                                }
                             }
                         }
                         

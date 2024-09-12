@@ -64,6 +64,11 @@ class LocalStorage {
         case isConfigAdded
         case isSlidesDownloadPending
         case isTimeZoneChanged
+        
+        
+        
+        case isTPmandatoryNeeded
+        
         case isDayCheckinEnabled
         case isSequentialDCR
         case isGeoFencingEnabled

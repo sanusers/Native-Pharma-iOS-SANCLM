@@ -92,7 +92,7 @@ class DayPlan: Codable {
         case sfcode = "sfcode"
         case divisionCode = "division_code"
         case rsf = "Rsf"
- case rsf2 = "Rsf2"
+        case rsf2 = "Rsf2"
         case sfType = "sf_type"
         case designation = "Designation"
         case stateCode = "state_code"

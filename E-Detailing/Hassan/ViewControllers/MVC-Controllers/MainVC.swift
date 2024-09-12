@@ -154,7 +154,7 @@ class MainVC : UIViewController {
     var selectedSessionIndex : Int?
     var unsavedIndex : Int?
     var isTohightCell: Bool = false
-    var celenderToday = Date()
+    let celenderToday = Date()
     var selectedToday : Date?
     var planSubmitted: Bool = false
     var isToRegretCheckin: Bool = false
@@ -197,11 +197,20 @@ class MainVC : UIViewController {
         updateLinks()
         setupUI()
         addObservers()
+        makeBackgroundTask()
+        if isTPmandatoryNeeded && findDateExistsinTPrange() {
+            self.navigationController?.pushViewController(TourPlanVC.initWithStory(), animated: true)
+            return
+        }
+    }
+    
+    func loadHome() {
         fetchLocations() { [weak self]  locationinfo in
             guard let welf = self else {return}
+
             if  welf.isFromLaunch {
-                welf.getDCRdates()
-                //welf.btnCalenderSync(welf.btnSyncDate!)
+               // welf.getDCRdates()
+                welf.btnCalenderSync(welf.btnSyncDate!)
                 return
             }
             welf.toPostAlldayPlan() {
@@ -210,11 +219,19 @@ class MainVC : UIViewController {
         }
     }
     
+    func makeBackgroundTask() {
+        let homeQueue = DispatchQueue(label: "com.home.dispatchQueue", qos: .userInteractive, attributes: .concurrent, autoreleaseFrequency: .never, target: nil)
+        homeQueue.async(group: nil, qos: .userInteractive, flags: .barrier) { [weak self] in
+            DispatchQueue.main.async {
+                self?.loadHome()
+            }
+        }
+    }
+    
     func handleDateSync() {
         isUserPlanning{ [weak self] isUserPlanning in
             guard let welf = self else {return}
-            isUserPlanning ?   welf.planningAction() : welf.getDCRdates()
-            //welf.btnCalenderSync(welf.btnSyncDate!)
+            isUserPlanning ?   welf.planningAction() : welf.btnCalenderSync(welf.btnSyncDate!)
             //welf.getDCRdates()
             //welf.btnCalenderSync(welf.btnSyncDate!)
         }
@@ -449,6 +466,13 @@ class MainVC : UIViewController {
     }
      
     @objc func postAllPlan() {
+        if isSequentialDCRenabled {
+            guard let sessions = sessions, sessions.count > 0 else {return}
+            guard sessions[0].workType == nil else {return}
+        } else {
+            guard selectedDate == nil else {return}
+        }
+       
         Shared.instance.showLoaderInWindow()
         self.toPostAlldayPlan{ [weak self] in
             guard let welf = self else {return}
@@ -995,7 +1019,7 @@ class MainVC : UIViewController {
 //            self.showAlertToPushCalls(desc: "NOTE! you have more than 40 calls in your out box")
 //        }
         
-                if totalDays > 3 {
+                if totalDays > 2 {
                     self.showAlertToPushCalls(desc: "Note: You have unsynced data for more than 3 days. Please synchronize your data by performing sync calls in the Outbox.")
                 }
         
@@ -1914,9 +1938,9 @@ class MainVC : UIViewController {
             
         //    var isToMoveindex: Int? = nil
             
-            let selectedMonth = currentPage.toString(format: "yyyy-MM-dd")
+            let selectedMonth = currentPage.toString(format: "yyyy-MM")
             
-            if selectedMonth == thisMonth?.toString(format: "yyyy-MM-dd") {
+            if selectedMonth == thisMonth?.toString(format: "yyyy-MM") {
                 
                 istwoMonthsAgo = false
                 isPrevMonth = false
@@ -1925,7 +1949,7 @@ class MainVC : UIViewController {
                 
                 toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
                 
-            } else if selectedMonth == previousMonth?.toString(format: "yyyy-MM-dd") {
+            } else if selectedMonth == previousMonth?.toString(format: "yyyy-MM") {
                 
                 isPrevMonth = true
                 isCurrentMonth = false
@@ -1934,7 +1958,7 @@ class MainVC : UIViewController {
                 
                 toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: false)
                 
-            } else if selectedMonth == twoMonthBack?.toString(format: "yyyy-MM-dd") {
+            } else if selectedMonth == twoMonthBack?.toString(format: "yyyy-MM") {
                 istwoMonthsAgo = true
                 isPrevMonth = false
                 isCurrentMonth = false
@@ -1952,9 +1976,9 @@ class MainVC : UIViewController {
             
         //    var isToMoveindex: Int? = nil
             
-            let selectedMonth = currentPage.toString(format: "yyyy-MM-dd")
+            let selectedMonth = currentPage.toString(format: "yyyy-MM")
             
-            if selectedMonth == thisMonth?.toString(format: "yyyy-MM-dd") {
+            if selectedMonth == thisMonth?.toString(format: "yyyy-MM") {
                 
                 istwoMonthsAgo = false
                 isPrevMonth = false
@@ -1963,14 +1987,14 @@ class MainVC : UIViewController {
                 
                 toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
                 
-            } else if selectedMonth == previousMonth?.toString(format: "yyyy-MM-dd") {
+            } else if selectedMonth == previousMonth?.toString(format: "yyyy-MM") {
                 isPrevMonth = true
                 isCurrentMonth = false
                 istwoMonthsAgo = false
                 self.currentPage = twoMonthBack ?? Date()
                 toDisableNextPrevBtn(enableprevBtn: false, enablenextBtn: true)
                 
-            } else if selectedMonth == twoMonthBack?.toString(format: "yyyy-MM-dd") {
+            } else if selectedMonth == twoMonthBack?.toString(format: "yyyy-MM") {
                 istwoMonthsAgo = true
                 isPrevMonth = false
                 isCurrentMonth = false
@@ -2085,13 +2109,25 @@ extension MainVC {
         
     }
     
-    func isUserPlanning(completion: @escaping(Bool) -> ()) {
+    func isUserPlanning(completion: (Bool) -> ()) {
      
-            CoreDataManager.shared.fetchDcrDates {  savedDcrDates in
         
-                let notAddedDates = savedDcrDates.filter { $0.isDateAdded == false }
-                completion(notAddedDates.isEmpty ? false : true)
+        if isSequentialDCRenabled {
+            guard let sessions = sessions, sessions.count > 0 else {
+                completion(false)
+                return
             }
+            guard sessions[0].workType == nil else {
+                completion(false)
+                return
+            }
+            completion(true)
+        } else {
+            completion(selectedDate == nil  ? false : true)
+        }
+        
+
+     
         
     }
     
@@ -2203,7 +2239,8 @@ extension MainVC {
                 CoreDataManager.shared.saveDayStatusToCoreData(date: date, didUserWindup: didUserWindup, isSynced: isSynced, params: cacheParam) {isSaved in
                     completion(isSaved)
                 }
-                return}
+                return
+            }
             
             CoreDataManager.shared.saveDayStatusToCoreData(date: date, didUserWindup: didUserWindup, isSynced: isSynced, checkinInfo: aCheckinInfo, params: cacheParam) {isSaved in
                 completion(isSaved)
@@ -2217,6 +2254,12 @@ extension MainVC {
     }
 
     @IBAction func didTapFinalSubmit(_ sender: Any) {
+        
+        
+        if findDateExistsinTPrange() {
+            self.showAlertToFilldates(description: "Prepare your Tour Plan")
+            return
+        }
         
         guard let selectedToday = self.selectedToday else {
             showAlertToFilldates(description: "Please select date to submit.")
@@ -2416,21 +2459,29 @@ extension MainVC {
                 
                 doUserWindupAPIcall { [weak self] _ in
                     guard let welf = self else {return}
-                    if isSequentialDCRenabled {
-                        welf.doRemoveActions {
-                            welf.doSequentialFlow() {
-                            welf.showAlertToFilldates(description: "Final submission done.")
-                            return
+                    
+                    welf.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
+                        guard let welf = self else {return}
+                        
+                        if isSequentialDCRenabled {
+                            welf.doRemoveActions {
+                                welf.doSequentialFlow() {
+                                welf.showAlertToFilldates(description: "Final submission done.")
+                                return
+                                }
                             }
+                        } else {
+                            welf.doRemoveActions() {
+                                welf.doNonSequentialFlow()
+                                welf.showAlertToFilldates(description: "Final submission done.")
+                                return
+                            }
+               
                         }
-                    } else {
-                        welf.doRemoveActions() {
-                            welf.doNonSequentialFlow()
-                            welf.showAlertToFilldates(description: "Final submission done.")
-                            return
-                        }
-           
+                        
                     }
+                    
+       
                 }
             }
         } else {
@@ -2590,7 +2641,12 @@ extension MainVC {
 
     @IBAction func callAction(_ sender: UIButton) {
         
-        if selectedToday == nil {
+//        if findDateExistsinTPrange() {
+//            self.showAlertToFilldates(description: "Please complete your tour plan to Add Call")
+//            return
+//        }
+        
+        if selectedToday == nil  {
             self.showAlertToFilldates(description: "Please select date to Add Call")
             return
         }
@@ -2764,6 +2820,12 @@ extension MainVC {
 
     @IBAction func didTapAddplan(_ sender: Any) {
         
+        
+        if findDateExistsinTPrange() {
+            self.showAlertToFilldates(description: "Prepare your Tour Plan")
+            return
+        }
+        
         toHighlightAddedCell()
         self.configureAddplanBtn(false)
         self.toLoadWorktypeTable()
@@ -2785,6 +2847,12 @@ extension MainVC {
 
 
     @IBAction func dateAction(_ sender: UIButton) {
+        
+        
+        if findDateExistsinTPrange() {
+            self.showAlertToFilldates(description: "Prepare your Tour Plan")
+            return
+        }
         
      //  if !isSequentialDCRenabled {
             self.selectedSegment  = self.selectedSegment  != .calender ?   .calender :   segmentType[selectedSegmentsIndex]
@@ -2808,6 +2876,11 @@ extension MainVC {
 
 
     @IBAction func didTapSaveBtn(_ sender: Any) {
+        
+        if findDateExistsinTPrange() {
+            self.showAlertToFilldates(description: "Prepare your Tour Plan")
+            return
+        }
         // Ensure you have sessions to save
        // if !isSequentialDCRenabled {
             guard self.selectedToday != nil else {
@@ -4530,7 +4603,15 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                             } else {
                                 welf.callDayPLanAPI(date: notWindedupDays, isFromDCRDates: true) {
                                     welf.toSetParams(date: notWindedupDays, isfromSyncCall: true) {
-                                        welf.refreshUI(date: notWindedupDays, SegmentType.workPlan) {}
+                                        CoreDataManager.shared.fetchDcrDates { dcrDates in
+                                          let filteredDates = dcrDates.filter { $0.date ==  notWindedupDays.toString(format: "yyyy-MM-dd") }
+                                            if let firstEntry = filteredDates.first {
+                                                welf.refreshUI(date: notWindedupDays, rejectionReason: firstEntry.reason, SegmentType.workPlan) {}
+                                            } else {
+                                                welf.refreshUI(date: notWindedupDays, SegmentType.workPlan) {}
+                                            }
+                                        }
+                                        
                                     }
                                 }
                             }

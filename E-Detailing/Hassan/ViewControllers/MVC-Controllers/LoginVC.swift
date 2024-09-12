@@ -407,6 +407,7 @@ class LoginVC : UIViewController {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.UserName, text: self.txtUserName.text ?? "")
         LocalStorage.shared.setSting(LocalStorage.LocalValue.UserPassword, text: self.txtPassWord.text ?? "")
+        refreshConstants()
         appDelegate.setupRootViewControllers()
         
     }

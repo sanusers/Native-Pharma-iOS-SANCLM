@@ -129,7 +129,7 @@ class MasterSyncVM {
             case .success(let model):
                 dump(model)
                 if isToloadDB {
-                    welf.toUpdateDataBase(isSynced: true, planDate: date, aDayplan: welf.toConvertResponseToDayPlan(isSynced: true, model: model)) {_ in
+                    welf.toUpdateDataBase(isSynced: true, planDate: date, aDayplan: welf.toConvertResponseToDayPlan(isSynced: true, model: model)) { _ in
                         completion(result)
                     }
                     

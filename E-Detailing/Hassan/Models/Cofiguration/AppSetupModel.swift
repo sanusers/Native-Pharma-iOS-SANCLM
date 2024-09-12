@@ -842,23 +842,23 @@ class AppSetUp : Codable {
         self.success = Int()
         self.sfDCRDate = try? container.decode(Dt.self, forKey: .sfDCRDate)
         
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isTPmandatoryNeeded, value:  self.tpMdNeed == 0 ? true : false)
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
+        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isSequentialDCR, value:  self.sequentailDcr == 0 ? true : false)
-        //
-        
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isGeoFencingEnabled, value:  self.geoCheck == 0 ? true : false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isCustomerChekinNeeded, value:  self.custSrtNeed == 0 ? true : false)
         
-
-        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isChemistFencingEnabled, value:  self.geoTagNeedChe == 1 ? true : false)
         
-        
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isStockistFencingEnabled, value:  self.geoTagNeedStock == 1 ? true : false)
-        
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled, value:  self.geoTagNeedUnList == 1 ? true : false)
         

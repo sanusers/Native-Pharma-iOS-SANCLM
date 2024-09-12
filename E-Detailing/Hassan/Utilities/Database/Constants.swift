@@ -83,6 +83,8 @@ var customerChekinEnabled : Bool =  false
 //LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isCustomerChekinNeeded)
 
 
+var isTPmandatoryNeeded : Bool =  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTPmandatoryNeeded)
+
 var isDoctorFencingNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isDoctorFencingEnabled)
 
 
@@ -242,6 +244,104 @@ var isUnListedDoctorFeedbackNeededMandatory = LocalStorage.shared.getBool(key: .
 var isUnListedDoctorRemarksNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorRemarksNeededMandatory)
 
 var isUnListedDoctorEventCaptureNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorEventCaptureNeededMandatory)
+
+func refreshConstants() {
+   isTPmandatoryNeeded = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isTPmandatoryNeeded)
+    isDayCheckinNeeded = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isDayCheckinEnabled)
+    isSequentialDCRenabled = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSequentialDCR)
+    geoFencingEnabled = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isGeoFencingEnabled)
+    customerChekinEnabled = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isCustomerChekinNeeded)
+
+    isDoctorFencingNeeded = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isDoctorFencingEnabled)
+    isChemistFencingNeeded = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isChemistFencingEnabled)
+    isStockistFencingNeeded = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isStockistFencingEnabled)
+    isUnliatedDoctorFencingNeeded = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isUnlistedDoctorFencingEnabled)
+
+    // DCR setups for Doctor
+    isDoctorDetailingNeeded = LocalStorage.shared.getBool(key: .isDoctorDetailingNeeded)
+    isDoctorProductNedded = LocalStorage.shared.getBool(key: .isDoctorProductNedded)
+    isDoctorProductSampleNeeded = LocalStorage.shared.getBool(key: .isDoctorProductSampleNeeded)
+    isDoctorProductRXneeded = LocalStorage.shared.getBool(key: .isDoctorProductRXneeded)
+    isDoctorInputNeeded = LocalStorage.shared.getBool(key: .isDoctorInputNeeded)
+    isDoctorAdditionalCallNeeded = LocalStorage.shared.getBool(key: .isDoctorAdditionalCallNeeded)
+    isDoctorRCPAneeded = LocalStorage.shared.getBool(key: .isDoctorRCPAneeded)
+    isDoctorJointWorkNeeded = LocalStorage.shared.getBool(key: .isDoctorJointWorkNeeded)
+    isDoctorPOBNeeded = LocalStorage.shared.getBool(key: .isDoctorPOBNeeded)
+    isDoctorFeedbackNeeded = LocalStorage.shared.getBool(key: .isDoctorFeedbackNeeded)
+    isDoctorEventCaptureNeeded = LocalStorage.shared.getBool(key: .isDoctorEventCaptureNeeded)
+
+    // Mandatory settings
+    isDoctorProductNeddedMandatory = LocalStorage.shared.getBool(key: .isDoctorProductNeddedMandatory)
+    isDoctorProductSampleNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorProductSampleNeededMandatory)
+    isDoctorProductRXneededMandatory = LocalStorage.shared.getBool(key: .isDoctorProductRXneededMandatory)
+    isDoctorInputNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorInputNeededMandatory)
+    isDoctorRCPAneededMandatory = LocalStorage.shared.getBool(key: .isDoctorRCPAneededMandatory)
+    isDoctorJointWorkNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorJointWorkNeededMandatory)
+    isDoctorPOBNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorPOBNeededMandatory)
+    isDoctorFeedbackNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorFeedbackNeededMandatory)
+    isDoctorRemarksNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorRemarksNeededMandatory)
+    isDoctorEventCaptureNeededMandatory = LocalStorage.shared.getBool(key: .isDoctorEventCaptureNeededMandatory)
+
+    // Chemist
+    isChemistDetailingNeeded = LocalStorage.shared.getBool(key: .isChemistDetailingNeeded)
+    isChemistProductNedded = LocalStorage.shared.getBool(key: .isChemistProductNedded)
+    isChemistProductSampleNeeded = LocalStorage.shared.getBool(key: .isChemistProductSampleNeeded)
+    isChemistProductRXneeded = LocalStorage.shared.getBool(key: .isChemistProductRXneeded)
+    isChemistInputNeeded = LocalStorage.shared.getBool(key: .isChemistInputNeeded)
+    isChemistRCPAneeded = LocalStorage.shared.getBool(key: .isChemistRCPAneeded)
+    isChemistJointWorkNeeded = LocalStorage.shared.getBool(key: .isChemistJointWorkNeeded)
+    isChemistPOBNeeded = LocalStorage.shared.getBool(key: .isChemistPOBNeeded)
+    isChemistFeedbackNeeded = LocalStorage.shared.getBool(key: .isChemistFeedbackNeeded)
+    isChemistEventCaptureNeeded = LocalStorage.shared.getBool(key: .isChemistEventCaptureNeeded)
+
+    // Mandatory settings
+    isChemistRCPAneededMandatory = LocalStorage.shared.getBool(key: .isChemistRCPAneededMandatory)
+    isChemistJointWorkNeededMandatory = LocalStorage.shared.getBool(key: .isChemistJointWorkNeededMandatory)
+    isChemistPOBNeededMandatory = LocalStorage.shared.getBool(key: .isChemistPOBNeededMandatory)
+    isChemistEventCaptureNeededMandatory = LocalStorage.shared.getBool(key: .isChemistEventCaptureNeededMandatory)
+
+    // Stockist
+    istockisDetailingNeeded = LocalStorage.shared.getBool(key: .istockisDetailingNeeded)
+    isStockistProductNedded = LocalStorage.shared.getBool(key: .isStockistProductNedded)
+    isStockistProductSampleNeeded = LocalStorage.shared.getBool(key: .isStockistProductSampleNeeded)
+    isStockistProductRXneeded = LocalStorage.shared.getBool(key: .isStockistProductRXneeded)
+    isStockistInputNeeded = LocalStorage.shared.getBool(key: .isStockistInputNeeded)
+    isStockistJointWorkNeeded = LocalStorage.shared.getBool(key: .isStockistJointWorkNeeded)
+    isStockistPOBNeeded = LocalStorage.shared.getBool(key: .isStockistPOBNeeded)
+    isStockistFeedbackNeeded = LocalStorage.shared.getBool(key: .isStockistFeedbackNeeded)
+    isStockistEventCaptureNeeded = LocalStorage.shared.getBool(key: .isStockistEventCaptureNeeded)
+
+    // Mandatory settings
+    isStockistJointWorkNeededMandatory = LocalStorage.shared.getBool(key: .isStockistJointWorkNeededMandatory)
+    isStockistPOBNeededMandatory = LocalStorage.shared.getBool(key: .isStockistPOBNeededMandatory)
+    isStockistEventCaptureNeededMandatory = LocalStorage.shared.getBool(key: .isStockistEventCaptureNeededMandatory)
+
+    // Unlisted Doctors
+    isUnListedDoctorDetailingNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorDetailingNeeded)
+    isUnListedDoctorProductNedded = LocalStorage.shared.getBool(key: .isUnListedDoctorProductNedded)
+    isUnListedDoctorProductSampleNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorProductSampleNeeded)
+    isUnListedDoctorProductRXneeded = LocalStorage.shared.getBool(key: .isUnListedDoctorProductRXneeded)
+    isUnListedDoctorInputNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorInputNeeded)
+    isUnListedDoctorAdditionalCallNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorAdditionalCallNeeded)
+    isUnListedDoctorRCPAneeded = LocalStorage.shared.getBool(key: .isUnListedDoctorRCPAneeded)
+    isUnListedDoctorJointWorkNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorJointWorkNeeded)
+    isUnListedDoctorPOBNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorPOBNeeded)
+    isUnListedDoctorFeedbackNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorFeedbackNeeded)
+    isUnListedDoctorEventCaptureNeeded = LocalStorage.shared.getBool(key: .isUnListedDoctorEventCaptureNeeded)
+
+    // Mandatory settings
+    isUnListedDoctorProductNeddedMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorProductNeddedMandatory)
+    isUnListedDoctorProductSampleNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorProductSampleNeededMandatory)
+    isUnListedDoctorProductRXneededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorProductRXneededMandatory)
+    isUnListedDoctorInputNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorInputNeededMandatory)
+    isUnListedDoctorRCPAneededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorRCPAneededMandatory)
+    isUnListedDoctorJointWorkNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorJointWorkNeededMandatory)
+    isUnListedDoctorPOBNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorPOBNeededMandatory)
+    isUnListedDoctorFeedbackNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorFeedbackNeededMandatory)
+    isUnListedDoctorRemarksNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorRemarksNeededMandatory)
+    isUnListedDoctorEventCaptureNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorEventCaptureNeededMandatory)
+}
+
 
 
 var AppConfigURL: String = "" {

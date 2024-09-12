@@ -543,6 +543,14 @@
         <attribute name="sfHq" optional="YES" attributeType="String"/>
         <attribute name="steps" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="SentToApprovalCDM" representedClassName="SentToApprovalCDM" syncable="YES" codeGenerationType="class">
+        <relationship name="approvals" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SentToApprovalEntity"/>
+    </entity>
+    <entity name="SentToApprovalEntity" representedClassName="SentToApprovalEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="approvalStatus" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateStr" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="SlideBrand" representedClassName="SlideBrand" syncable="YES" codeGenerationType="class">
         <attribute name="divisionCode" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>

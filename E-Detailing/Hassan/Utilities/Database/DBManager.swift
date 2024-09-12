@@ -453,28 +453,22 @@ class DBManager {
             dateFormatter.dateFormat = "yyyy-MM-dd"
             holidayDates.removeAll()
             dateString.forEach { aDate in
-                //if let date = dateFormatter.date(from: aDate) {
-                    // Now 'date' contains the Date object
-                  //  print(date)
-                   // dateFormatter.dateFormat = "yyyy"
-                 //   let holidayYear = dateFormatter.string(from: date)
-                  //  let thisYear = dateFormatter.string(from:  Date())
-                    
-                  //  dateFormatter.dateFormat = "MMMM"
-                    
-                   // let toRemoveMonth =  dateFormatter.string(from: date)
-                    
-                   // date = aDate.toDate(format: "yyyy-MM-dd")
-                    
-                   // if holidayYear == thisYear && toRemoveMonth != "January" {
-                        holidayDates.append(aDate.toDate(format: "yyyy-MM-dd"))
-                //    }
-                    
-              // }
-                //else {
-                //    print("Failed to convert string to Date.")
-               // }
+
+            
+            holidayDates.append(aDate.toDate(format: "yyyy-MM-dd"))
+   
             }
+            
+            
+            let setups = AppDefaults.shared.getAppSetUp()
+            if let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil) {
+                holidayDates.removeAll { addedDate in
+                //  let dateStr =  appendedDates.toString(format: "yyyy-MM-dd", timeZone: nil)
+                 //   let joiningDate = joiningDate.toString(format: "yyyy-MM-dd", timeZone: nil)
+                    addedDate < joiningDate
+                }
+            }
+            
             holidayDateStr.removeAll()
             holidayDates.forEach { rawDate in
                 holidayDateStr.append(toModifyDate(date: rawDate))
@@ -527,6 +521,18 @@ class DBManager {
             
             // let weekoffDates = getDatesForDayIndex(weekoffIndex + 1, self.offsets)
             weeklyOffRawDates.append(contentsOf: weekoffDates)
+            
+            if let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil) {
+                weeklyOffRawDates.removeAll { addedDate in
+                //  let dateStr =  appendedDates.toString(format: "yyyy-MM-dd", timeZone: nil)
+                 //   let joiningDate = joiningDate.toString(format: "yyyy-MM-dd", timeZone: nil)
+                    addedDate < joiningDate
+                }
+            }
+            
+       
+            
+            
             weeklyOffDates.removeAll()
             weeklyOffRawDates.forEach { rawDate in
                 weeklyOffDates.append(toModifyDate(date: rawDate))
@@ -757,6 +763,13 @@ class DBManager {
         
         dump(includedSessionArr)
         
+        var uniquePlans = [String: SessionDetailsArr]() // Assuming `date` is String or can be cast to String
+        includedSessionArr.forEach { plan in
+            uniquePlans[plan.date] = plan
+        }
+        
+        includedSessionArr = Array(uniquePlans.values)
+        
         AppDefaults.shared.tpArry.arrOfPlan = includedSessionArr
  
         
@@ -902,8 +915,8 @@ class DBManager {
             // Attempt to unarchive EachDatePlan directly
             if let approvalModel = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSObject.self], from: data) {
                 
-                if let approvalModel = approvalModel as? SentToApprovalModelArr {
-                    LocalStorage.shared.sentToApprovalModelArr = approvalModel.sentToApprovalModelArr
+                if let approvalModel = approvalModel as? [SentToApprovalModel] {
+                    LocalStorage.shared.sentToApprovalModelArr = approvalModel
                 } else {
                     print("unable to convert to EachDatePlan")
                 }
@@ -962,6 +975,13 @@ class DBManager {
 //                    print("Error")
 //                }
         
+        
+      //  CoreDataManager.shared.removeAllApprovals()
+       // CoreDataManager.shared.toSaveTPApprovals(approvals: LocalStorage.shared.sentToApprovalModelArr) {_ in
+          //  CoreDataManager.shared.fetchAppapprovals() { approvals in
+          //  dump(approvals)
+          //  }
+       // }
         
         do {
             let data = try NSKeyedArchiver.archivedData(withRootObject: LocalStorage.shared.sentToApprovalModelArr, requiringSecureCoding: false)

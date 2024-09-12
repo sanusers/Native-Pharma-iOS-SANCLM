@@ -1515,11 +1515,13 @@ extension CoreDataManager {
         let setups = AppDefaults.shared.getAppSetUp()
         
         let calendar = Calendar.current
+       
         if let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil) {
             if let  twoMonthsBackDate = calendar.date(byAdding: .month, value: -2, to: Date()) {
-                let components = calendar.dateComponents([.year, .month], from: twoMonthsBackDate)
+                var components = calendar.dateComponents([.year, .month], from: twoMonthsBackDate)
+                components.day = 1
                 if let firstDateOfMonth = calendar.date(from: components) {
-                    return min(firstDateOfMonth, joiningDate)
+                    return max(firstDateOfMonth, joiningDate)
                 }
             }
         }
@@ -1550,12 +1552,13 @@ extension CoreDataManager {
         // Loop until currentDate reaches toDate
         while currentDate <= toDate {
             // Append the current date to the array
+            let datesModel = DCRdatesModel()
             let dateInfo = Dt()
             dateInfo.date =   currentDate.toString(format: "yyyy-MM-dd HH:mm:ss")
             dateInfo.timezone = dt.timezone
             dateInfo.timezoneType = dt.timezoneType
             
-            let datesModel = DCRdatesModel()
+           
             datesModel.sfCode = ""
             datesModel.flg = 1000
             datesModel.tbname = "NotFilled"
@@ -1567,7 +1570,11 @@ extension CoreDataManager {
             let homeData = DBManager.shared.getHomeData()
 
             // Filter `homeData`, excluding the records where the date matches `currentDate`
+            if currentDate.toString(format: "yyyy-MM-dd") == "2024-07-01" {
+                print("Maatikuchu")
+            }
             if !homeData.contains(where: { eachDayData in
+            
                 eachDayData.dcr_dt == currentDate.toString(format: "yyyy-MM-dd")
             }) {
                 // Append the `datesModel` only if the date does not match
@@ -2970,6 +2977,108 @@ extension CoreDataManager {
         
     }
     
+}
+
+
+
+//TPApprovals
+extension CoreDataManager {
+    
+    func removeAllApprovals() {
+        let fetchRequest: NSFetchRequest<SentToApprovalCDM> = NSFetchRequest(entityName: "SentToApprovalCDM")
+
+        do {
+            let approvals = try context.fetch(fetchRequest)
+            for approval in approvals {
+                context.delete(approval)
+            }
+
+            try context.save()
+        } catch {
+            print("Error deleting slide brands: \(error)")
+        }
+    }
+    
+    func fetchAppapprovals(completion: @escaping  Closure<[SentToApprovalModel]?> ) {
+        
+        do {
+           let approvalsCDMS = try  context.fetch(SentToApprovalCDM.fetchRequest())
+            
+            guard let approvalsCDM = approvalsCDMS.first else {
+                completion(nil)
+                return
+            }
+            var approvalsArr : [SentToApprovalModel] = []
+            
+            if let approvalsSet = approvalsCDM.approvals as? Set<SentToApprovalEntity>  {
+                let approvalsCDArray = Array(approvalsSet)
+                approvalsCDArray.forEach { approvalsCDM in
+                    let approvalModel = SentToApprovalModel()
+                    approvalModel.approvalStatus = approvalsCDM.approvalStatus
+                    approvalModel.date = approvalsCDM.dateStr
+                    approvalModel.rawDate = approvalsCDM.date
+                    approvalsArr.append(approvalModel)
+                }
+            }
+            completion(approvalsArr)
+           // completion(approvalsCDM )
+            
+        } catch {
+            print("unable to fetch approvals")
+            completion(nil)
+           
+        }
+        
+        
+    }
+    
+    
+    func toSaveTPApprovals(approvals: [SentToApprovalModel], completion: @escaping (Bool) -> ()) {
+     
+        if let approvalCDMentity = NSEntityDescription.entity(forEntityName: "SentToApprovalCDM", in: context) {
+            let approvalCDM = SentToApprovalCDM(entity: approvalCDMentity, insertInto: context)
+            
+            
+            approvalCDM.approvals = convertEachApprovals(approvals)
+            
+            do {
+                try context.save()
+                completion(true)
+            } catch {
+                print("Failed to save to Core Data: \(error)")
+                completion(false)
+            }
+        }
+    }
+    
+    
+     func convertEachApprovals(_ approvals : [SentToApprovalModel]) -> NSSet {
+        
+
+        
+        let cdDayPlans = NSMutableSet()
+        
+
+        guard let sentToApprovalEntity = NSEntityDescription.entity(forEntityName: "SentToApprovalEntity", in: context)
+        else {
+            fatalError("Entity not found")
+        }
+
+        let approvalobj = NSManagedObject(entity: sentToApprovalEntity, insertInto: nil)  as! SentToApprovalEntity
+
+        approvals.forEach { approval in
+            approvalobj.approvalStatus = approval.approvalStatus
+            approvalobj.date = approval.rawDate
+            approvalobj.dateStr = approval.date
+            
+            cdDayPlans.add(approvalobj)
+        }
+
+        
+        
+        
+        return cdDayPlans
+    }
 }
 
 /// - Author:  hassan
