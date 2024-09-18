@@ -730,8 +730,12 @@ class MainVC : UIViewController {
         togetDCRdates(isToUpdateDate: false) { }
        
         toIntegrateChartView(chartType, cacheDCRindex)
-        if let reasonOfRejection = reasonOfRejection {
-            setupRejectionVIew(isRejected: true, reason: reasonOfRejection)
+        if let reasonOfRejection = reasonOfRejection   {
+            if !reasonOfRejection.isEmpty {
+                setupRejectionVIew(isRejected: true, reason: reasonOfRejection)
+            } else {
+                setupRejectionVIew(isRejected: false, reason:  "")
+            }
         } else {
             setupRejectionVIew(isRejected: false, reason:  "")
         }
@@ -2026,11 +2030,12 @@ class MainVC : UIViewController {
             prevBtn.alpha = 1
             prevBtn.isUserInteractionEnabled = true
             
-            btnNext.alpha = 0.3
+        
+            btnNext.alpha = 1
             btnNext.isUserInteractionEnabled = false
             
         } else if enablenextBtn {
-            prevBtn.alpha = 0.3
+            prevBtn.alpha = 1
             prevBtn.isUserInteractionEnabled = false
             
             btnNext.alpha = 1
@@ -2462,18 +2467,17 @@ extension MainVC {
                     
                     welf.masterVM?.fetchMasterData(type: .homeSetup, sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID), istoUpdateDCRlist: false, mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) { [weak self] isProcessed in
                         guard let welf = self else {return}
-                        
                         if isSequentialDCRenabled {
                             welf.doRemoveActions {
                                 welf.doSequentialFlow() {
-                                welf.showAlertToFilldates(description: "Final submission done.")
+                                welf.showAlertToFilldates(description: LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) == true ? "Final submission done." : "Not connected to internet submission saved locally.")
                                 return
                                 }
                             }
                         } else {
                             welf.doRemoveActions() {
                                 welf.doNonSequentialFlow()
-                                welf.showAlertToFilldates(description: "Final submission done.")
+                                welf.showAlertToFilldates(description: LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isConnectedToNetwork) == true ? "Final submission done." : "Not connected to internet submission saved locally.")
                                 return
                             }
                
@@ -4577,7 +4581,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         
         
         cell.addTap { [weak self] in
-
+           
             
             guard let welf = self else {return}
         
@@ -4594,8 +4598,10 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 welf.setSegment(.workPlan)
                 return
             }
-              //  if !isSequentialDCRenabled {
+            
+       
                     if let notWindedups = welf.toReturnNotWindedupDate()  {
+                        Shared.instance.showLoaderInWindow()
                         if let notWindedupDays = notWindedups.statusDate {
                             if selectedDate != notWindedupDays.toString(format: "MMMM dd, yyyy") {
                                 welf.showAlertToFilldates(description: "Kindly submit your status on \(notWindedupDays.toString(format: "MMMM dd, yyyy")) to change date.")
@@ -4606,31 +4612,38 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                                         CoreDataManager.shared.fetchDcrDates { dcrDates in
                                           let filteredDates = dcrDates.filter { $0.date ==  notWindedupDays.toString(format: "yyyy-MM-dd") }
                                             if let firstEntry = filteredDates.first {
-                                                welf.refreshUI(date: notWindedupDays, rejectionReason: firstEntry.reason, SegmentType.workPlan) {}
+                                                welf.refreshUI(date: notWindedupDays, rejectionReason: firstEntry.reason, SegmentType.workPlan) {
+                                                    Shared.instance.removeLoaderInWindow()
+                                                }
                                             } else {
-                                                welf.refreshUI(date: notWindedupDays, SegmentType.workPlan) {}
+                                                welf.refreshUI(date: notWindedupDays, SegmentType.workPlan) {
+                                                    Shared.instance.removeLoaderInWindow()
+                                                }
                                             }
                                         }
                                         
                                     }
                                 }
                             }
+                            Shared.instance.removeLoaderInWindow()
                             return
                         }
 
                     }
-                   
-               // }
+        
        
-         
+          
+          
             ///Allow selection only from fetched dates from date Sync API
             CoreDataManager.shared.fetchDcrDates { savedDcrDates in
+              
+                
                 let yetToModifiedDates =  savedDcrDates.filter { $0.date == date.toString(format: "yyyy-MM-dd") && $0.isDateAdded == false  &&  $0.flag == "0" || $0.flag == "1" || $0.flag == "2" || $0.flag == "3" || $0.flag == "1000" }
                 
                 guard !yetToModifiedDates.isEmpty else {
                     
                     welf.showAlertToFilldates(description: "you cant select \(selectedDate)")
-
+                   // Shared.instance.removeLoaderInWindow()
                     return
                     
                 }
@@ -4649,29 +4662,31 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 }
                 
                 if !isExists {
+                 
                     welf.showAlertToFilldates(description: "you cant select \(selectedDate)")
+                
                     return
                 }
 
                 let mergedDate =  welf.toMergeDate(selectedDate: date) ?? Date()
                 welf.lblDate.text = mergedDate.toString(format: "MMMM d, yyyy")
                 welf.validateWindups() {
+                    Shared.instance.showLoaderInWindow()
                     welf.callDayPLanAPI(date: date, isFromDCRDates: true) {
                         welf.toSetParams(date: date, isfromSyncCall: true) {
                             welf.refreshUI(date: mergedDate, rejectionReason: reason, SegmentType.workPlan) {
-                  
-                        
+                                Shared.instance.removeLoaderInWindow()
                             }
                         }
                     }
                     
                 }
-                
+        
                 return
             }
 
         }
-        
+     
         return cell
     }
     

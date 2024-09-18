@@ -93,8 +93,8 @@ class DBManager {
             self.saveSlidesData(values: Values)
         case .brands:
             self.saveBrandData(values: Values)
-        case .departments:
-            self.saveDepartsData(values: Values)
+//        case .departments:
+//            self.saveDepartsData(values: Values)
         case .speciality:
             self.saveSpecialityData(values: Values)
         case .category:
@@ -147,16 +147,16 @@ class DBManager {
             self.saveSlideSpecialityData(values: Values)
         case .docFeedback:
             self.saveFeedbackData(values: Values)
-        case .customSetup:
-            break
+//        case .customSetup:
+//            break
         case .leaveType:
             self.saveLeaveTypeData(values: Values)
         case .tourPlanStatus:
             break
         case .visitControl:
             self.saveVisitControlData(values: Values)
-        case .stockBalance:
-            self.saveStockBalance(values: Values)
+//        case .stockBalance:
+//            self.saveStockBalance(values: Values)
         case .mappedCompetitors:
             self.saveMapCompDetData(values: Values)
         case .empty:

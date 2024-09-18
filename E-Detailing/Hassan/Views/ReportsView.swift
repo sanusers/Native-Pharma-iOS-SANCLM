@@ -383,19 +383,19 @@ class ReportsView : BaseView {
 
         
    
-        let docDict: [String: String] = [MenuView.CellType.listedDoctor.rawValue: String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
+        let docDict: [String: String] = [MenuView.CellType.listedDoctor.dynamicValue: String(DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
         
         contentDict.append(docDict)
         
         if appsetup.chmNeed == 0 {
       
-            let  checmistDict: [String: String] = [MenuView.CellType.chemist.rawValue : String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
+            let  checmistDict: [String: String] = [MenuView.CellType.chemist.dynamicValue : String(DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
             
             contentDict.append(checmistDict)
         }
         if appsetup.stkNeed == 0 {
        
-            let  StockistDict: [String: String] = [MenuView.CellType.stockist.rawValue : String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
+            let  StockistDict: [String: String] = [MenuView.CellType.stockist.dynamicValue : String(DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
             
             contentDict.append(StockistDict)
         }
@@ -403,7 +403,7 @@ class ReportsView : BaseView {
         
         if appsetup.unlNeed == 0 {
         
-            let  UnlistedDict: [String: String] = [MenuView.CellType.unlistedDoctor.rawValue : String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
+            let  UnlistedDict: [String: String] = [MenuView.CellType.unlistedDoctor.dynamicValue : String(DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).count)]
             
             contentDict.append(UnlistedDict)
         }

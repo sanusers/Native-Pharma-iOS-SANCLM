@@ -842,9 +842,14 @@ class AppSetUp : Codable {
         self.success = Int()
         self.sfDCRDate = try? container.decode(Dt.self, forKey: .sfDCRDate)
         
+        LocalStorage.shared.setSting(.doctor, text: self.docCap ?? "Doctors")
+        LocalStorage.shared.setSting(.chemist, text: self.chmCap ?? "Chemiss")
+        LocalStorage.shared.setSting(.stockist, text: self.stkCap ?? "stokists")
+        LocalStorage.shared.setSting(.unlistedDoctor, text: self.nlCap ?? "unlisted Doctors")
+        LocalStorage.shared.setSting(.cluster, text: self.clusterCap ?? "Cluster")
         
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isTPmandatoryNeeded, value:  self.tpMdNeed == 0 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isTPmandatoryNeeded, value:  self.tpMdNeed == 1 ? true : false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
         
@@ -1082,7 +1087,7 @@ class AppSetUp : Codable {
         case chmJointWrkNeed = "Chm_jointwork_Need"
         case cipEventMdNeed = "CipEvent_Md"
         case cipSrtNd = "CipSrtNd"
-        case clusterCap = "Cluster_Cap"
+        case clusterCap = "cluster_cap"
         case cmpgnNeed = "CmpgnNeed"
         case currentdayTpPlanned = "Currentday_TPplanned"
         case custSrtNeed = "CustSrtNd"

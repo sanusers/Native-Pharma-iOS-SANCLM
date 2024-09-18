@@ -41,6 +41,9 @@ extension MasterSyncVC {
             
             } else  if (type == .slides) {
             _ = toCheckExistenceOfNewSlides(didEncountererror: false)
+              //  let paramData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse)
+              //  let localParamArr = parseParamData(paramData)
+              //  arrayOfAllSlideObjects = decodeSlideObjects(from: localParamArr)
                 removeNonExistingSlides(from: arrayOfAllSlideObjects)
                     if isNewSlideExists {
                         moveToDownloadSlide(isFromcache: true)
@@ -90,13 +93,18 @@ extension MasterSyncVC {
         if arrayOfAllSlideObjects.isEmpty {
             arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
         }
-
+        
         let nonExistingSlides = findNonExistingSlides(in: existingCDSlides, from: arrayOfAllSlideObjects)
        
         let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
+        
+     
 
         isNewSlideExists = !notDownloadedSlides.isEmpty || !nonExistingSlides.isEmpty
-
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: isNewSlideExists)
+        
         updateSlideObjects(existingSlides: existingCDSlides, nonExistingSlides: nonExistingSlides)
 
         return handleSlideDownloadStatus(nonExistingSlides: nonExistingSlides)
@@ -105,35 +113,34 @@ extension MasterSyncVC {
     
     func removeNonExistingSlides(from apiFetchedSlides: [SlidesModel]) {
         CoreDataManager.shared.fetchSlides { savedCDslides in
-            let nonExistingSlides = findNonExistingSlides(in: savedCDslides, from: apiFetchedSlides)
+            let nonExistingSlidesIds = findNonExistingSlides(in: savedCDslides, from: apiFetchedSlides)
             
-            
-          //  removeSlides(withId: Int16(2061))
-           //  Assuming CoreDataManager has a deleteSlide method
-            nonExistingSlides.forEach { slide in
-                if let slideToDelete = savedCDslides.first(where: { $0.slideId == slide.slideId }) {
-                    
-                    removeSlides(withId: Int(slideToDelete.slideId))
-                }
+            let slidesToRemove = savedCDslides.filter { slide in
+                nonExistingSlidesIds.contains(Int(slide.slideId))
             }
+            removeSlides(slidesToRemove)
         }
     }
     
-    func removeSlides(withId slideId: Int) {
-         let context = context
-         let fetchRequest: NSFetchRequest<SavedSlidesCDModel> = SavedSlidesCDModel.fetchRequest()
-         fetchRequest.predicate = NSPredicate(format:  "slideId %@", slideId)
-         
-         do {
-             let slidesToDelete = try context.fetch(fetchRequest)
-             for slide in slidesToDelete {
-                 context.delete(slide)
-             }
-             try context.save()
-         } catch {
-             print("Error deleting slides: \(error)")
-         }
-     }
+    func removeSlides(_ slides: [SlidesCDModel]) {
+        let context = context // Ensure context is correctly set up
+        
+        // Begin a batch operation to handle all deletions
+        context.perform {
+            for slide in slides {
+                context.delete(slide)
+            }
+            
+            do {
+                // Save context after all deletions
+                try context.save()
+                print("Successfully removed and saved slides.")
+            } catch {
+                print("Failed to remove slides: \(error)")
+            }
+        }
+    }
+
  
     
 
@@ -174,37 +181,93 @@ extension MasterSyncVC {
 //        return apiFetchedSlides.filter { !existingSlideIds.contains($0.slideId) }
 //    }
     private func findNonExistingSlides(in existingCDSlides: [SlidesModel], from apiFetchedSlides: [SlidesModel]) -> [SlidesModel] {
-        let apiSlideIds = Set(apiFetchedSlides.map { $0.slideId })
         
+        let apiSlideIds = Set(apiFetchedSlides.map { $0.slideId })
+        let apiSlideNames = Set(apiFetchedSlides.map { $0.filePath })
         // Filter out slides from existingCDSlides whose slideId is not in apiSlideIds
         let filteredExistingCDSlides = existingCDSlides.filter { apiSlideIds.contains($0.slideId) }
         
         // Find the slides in apiFetchedSlides that are not in filteredExistingCDSlides
         let existingSlideIds = Set(filteredExistingCDSlides.map { $0.slideId })
-        let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains($0.slideId) }
+        let existingSlideNames = Set(filteredExistingCDSlides.map { $0.filePath })
         
-        return nonExistingSlides
+       // let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains($0.slideId) }
+        let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains(Int($0.slideId)) || !existingSlideNames.contains($0.filePath)  }
+        
+        let nonExistingSlidesCD = existingCDSlides.filter { !apiSlideIds.contains(Int(Int16($0.slideId))) || !apiSlideNames.contains($0.filePath) }
+        
+        // Get the common slides between nonExistingSlides and nonExistingSlidesCD based on slideId
+        let commonSlides = findCommonSlidesBySlideId(nonExistingSlides: nonExistingSlides, nonExistingSlidesCD: nonExistingSlidesCD)
+        
+        return commonSlides
+ 
+        
+      
+        
     }
     
+    private func findCommonSlidesBySlideId(nonExistingSlides: [SlidesModel], nonExistingSlidesCD: [SlidesModel]) -> [SlidesModel] {
+        // Create a set of slideIds from nonExistingSlidesCD to identify common elements
+        let nonExistingCDSlideIds = Set(nonExistingSlidesCD.map { $0.slideId })
+        
+        // Filter nonExistingSlides to include only those slides whose slideId exists in nonExistingSlidesCD
+        let commonSlides = nonExistingSlides.filter { nonExistingCDSlideIds.contains($0.slideId) }
+        
+        // If no common slides are found, return all nonExistingSlides
+        if commonSlides.isEmpty {
+            return nonExistingSlides + nonExistingSlidesCD
+        }
+        
+        return commonSlides
+    }
+
+
     
-    private func findNonExistingSlides(in existingCDSlides: [SlidesCDModel], from apiFetchedSlides: [SlidesModel]) -> [SlidesModel] {
+    
+    private func findNonExistingSlides(in existingCDSlides: [SlidesCDModel], from apiFetchedSlides: [SlidesModel]) -> [Int] {
+        
         let apiSlideIds = Set(apiFetchedSlides.map { $0.slideId })
+        
+        let apiSlideNames = Set(apiFetchedSlides.map { $0.filePath })
         
         // Filter out slides from existingCDSlides whose slideId is not in apiSlideIds
         let filteredExistingCDSlides = existingCDSlides.filter { apiSlideIds.contains(Int($0.slideId)) }
         
         // Find the slides in apiFetchedSlides that are not in filteredExistingCDSlides
         let existingSlideIds = Set(filteredExistingCDSlides.map { $0.slideId })
-        let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains(Int16($0.slideId)) }
         
-        return nonExistingSlides
+        
+        let existingSlideNames = Set(filteredExistingCDSlides.map { $0.filePath })
+
+        let nonExistingSlides = apiFetchedSlides.filter { !existingSlideIds.contains(Int16($0.slideId)) || !existingSlideNames.contains($0.filePath)  }
+        
+        let nonExistingSlidesCD = existingCDSlides.filter { !apiSlideIds.contains(Int(Int16($0.slideId))) || !apiSlideNames.contains($0.filePath ?? "") }
+        
+        return nonExistingSlides.map { Int($0.slideId) } + nonExistingSlidesCD.map { Int($0.slideId) }
+        
     }
     
 
     private func updateSlideObjects(existingSlides: [SlidesModel], nonExistingSlides: [SlidesModel]) {
+        // Create a set of slideIds from existingSlides
+        var existingSlideDict = Dictionary(uniqueKeysWithValues: existingSlides.map { ($0.slideId, $0) })
+        
+        // Filter nonExistingSlides to include only those slides whose slideId is in existingSlides
+        let existingSlideIds = Set(existingSlides.map { $0.slideId })
+        let commonSlides = nonExistingSlides.filter { existingSlideIds.contains($0.slideId) }
+        
+        // If no common slides are found, consider all nonExistingSlides
+        let slidesToAdd = commonSlides.isEmpty ? nonExistingSlides : commonSlides
+        
+        // Update existingSlides with slides from slidesToAdd (replacing slides with same slideId)
+        for slide in slidesToAdd {
+            existingSlideDict[slide.slideId] = slide
+        }
+        
+        // Clear the array and append unique slides (i.e., existing slides + updated slidesToAdd)
         arrayOfAllSlideObjects.removeAll()
-        arrayOfAllSlideObjects.append(contentsOf: existingSlides)
-        arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
+        
+        arrayOfAllSlideObjects.append(contentsOf: Array(existingSlideDict.values))
     }
 
     private func handleSlideDownloadStatus(nonExistingSlides: [SlidesModel]) -> Bool? {

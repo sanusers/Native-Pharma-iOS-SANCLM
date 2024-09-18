@@ -1873,7 +1873,7 @@ class AddCallinfoView : BaseView {
         yetTosearchTF.delegate = self
         
         backHolderView.addTap {
-            self.showAlertToEnableLocation(desc: "Are you sure you want to cancel?", isToPop: true)
+            self.showAlertToEnableLocation(desc: "Are you sure, want to cancel?", isToPop: true)
         
         }
         
@@ -1937,7 +1937,7 @@ class AddCallinfoView : BaseView {
         }
         
         clearView.addTap {
-            self.showAlertToEnableLocation(desc: "Are you sure you want to cancel?", isToPop: true)
+            self.showAlertToEnableLocation(desc: "Are you sure, want to cancel?", isToPop: true)
           //  self.addCallinfoVC.navigationController?.popViewController(animated: true)
         }
         
@@ -2634,7 +2634,21 @@ extension AddCallinfoView : addedSubViewsDelegate {
         commonAlert.addAdditionalOkAction(isForSingleOption: false) {
             print("yes action")
             if isToPop {
-                self.addCallinfoVC.navigationController?.popViewController(animated: true)
+                
+                if let navigationController = self.addCallinfoVC.navigationController {
+                    // Find the PreCallVC instance in the navigation stack
+                    for viewController in navigationController.viewControllers {
+                        if let preCallVC = viewController as? CallVC {
+                            // Pop to the found PreCallVC instance
+                          
+                            navigationController.popToViewController(preCallVC, animated: true)
+                            
+                            break
+                        }
+                    }
+                }
+                
+             //   self.addCallinfoVC.navigationController?.popToRootViewController(animated: true)
                 Shared.instance.detailedSlides = []
             } else {
                 self.redirectToSettings()

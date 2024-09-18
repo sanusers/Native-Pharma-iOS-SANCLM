@@ -72,7 +72,7 @@ extension TourPlanView {
         }
     }
     
-    func getWeekoffDates(forMonths months: [Int], weekoffday: Int) -> [Date] {
+    func getWeekoffDates(forMonth months: [Int], weekoffday: Int) -> [Date] {
         let currentDate = getFirstDayOfCurrentMonth() ?? Date()
         let calendar = Calendar.current
         
@@ -834,13 +834,52 @@ class TourPlanView: BaseView {
  
     
     
-    func toEnableApprovalBtn(totaldate: Date, filleddate: Int, isRejected: Bool) {
+    func toEnableApprovalBtn( totaldate: Date, filleddate: Int, isRejected: Bool) {
+        let setups = AppDefaults.shared.getAppSetUp()
         totalDays = 0
        // filledDates.forEach { date in
-            let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: totaldate)
-                totalDays = totalDays + (range?.count ?? 30)
+
       //  }
-        print("Total days--->\(totalDays)----||")
+        var isJoinedAtToggledMonth = true
+
+        // Get the selected month from totaldate
+        let selectedMonth = Calendar.current.component(.month, from: totaldate)
+        // Convert setups.sfDCRDate to Date
+        if let joiningDate = setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+        {
+//        let joiningDateStr = "2024-09-12"
+//       let joiningDate = joiningDateStr.toDate(format: "yyyy-MM-dd", timeZone: nil)
+            // Get the month component of the joiningDate
+            let joiningMonth = Calendar.current.component(.month, from: joiningDate)
+            
+            // Compare both months
+            if selectedMonth == joiningMonth {
+                isJoinedAtToggledMonth = true
+            }
+        }
+        
+        if !isJoinedAtToggledMonth {
+            let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: totaldate)
+        
+                totalDays = totalDays + (range?.count ?? 30)
+        
+                print("Total days--->\(totalDays)----||")
+        } else {
+            // Calculate days from the joined date to the end of the month
+            if let joiningDate = setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+            //
+            //setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
+            {
+                // Get the last day of the month for totaldate
+                if let endOfMonth = Calendar.current.dateInterval(of: .month, for: totaldate)?.end {
+                    // Calculate the difference in days between joiningDate and the end of the month
+                    let numberOfDays = Calendar.current.dateComponents([.day], from: joiningDate, to: endOfMonth).day ?? 0
+                    totalDays += numberOfDays
+                    print("Total days from joining date ---> \(totalDays) ---- ||")
+                }
+         }
+        }
+
         
         
         
@@ -2206,6 +2245,8 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
         var isDateLesserThanJoiningDate = false
         if let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
         {
+     //   let joiningDateStr = "2024-09-12"
+   // let joiningDate = joiningDateStr.toDate(format: "yyyy-MM-dd", timeZone: nil)
             if date < joiningDate {
                // cell.isUserInteractionEnabled = false
               //  cell.contentHolderView.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
@@ -2293,6 +2334,8 @@ extension TourPlanView : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDel
             if
                 let joiningDate =  setups.sfDCRDate?.date.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
             {
+           // let joiningDateStr = "2024-09-12"
+       // let joiningDate = joiningDateStr.toDate(format: "yyyy-MM-dd", timeZone: nil)
                 //"yyyy-MM-dd HH:mm:ss"
                 if date < joiningDate {
                     cell.isUserInteractionEnabled = false

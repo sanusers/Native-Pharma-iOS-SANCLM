@@ -45,13 +45,13 @@ enum MasterCellType : Int {
         case .syncAll:
             return "Sync All"
         case .listedDoctor:
-            return "Listed Doctor"
+            return LocalStorage.shared.getString(key: .doctor)
         case .chemist:
-            return "Chemist"
+            return  LocalStorage.shared.getString(key: .chemist)
         case .stockist:
-            return "Stockist"
+            return  LocalStorage.shared.getString(key: .stockist)
         case .unLstDoctor:
-            return "Unlisted Doctor"
+            return  LocalStorage.shared.getString(key: .unlistedDoctor)
         case .cip:
             return "CIP"
         case .hospital:
@@ -65,7 +65,7 @@ enum MasterCellType : Int {
         case .input:
             return "input"
         case .cluster:
-            return "Cluster"
+            return  LocalStorage.shared.getString(key: .cluster)
 
         case .dcr:
             return "DCR"
@@ -87,8 +87,9 @@ enum MasterCellType : Int {
             
         case .syncAll:
             return [MasterInfo.slides,MasterInfo.worktype]
+            //MasterInfo.departments
         case .listedDoctor:
-            return [MasterInfo.doctorFencing,MasterInfo.speciality,MasterInfo.qualifications, MasterInfo.category,MasterInfo.departments,MasterInfo.doctorClass, MasterInfo.syncAll]
+            return [MasterInfo.doctorFencing,MasterInfo.speciality,MasterInfo.qualifications, MasterInfo.category,MasterInfo.doctorClass, MasterInfo.empty, MasterInfo.syncAll]
             //MasterInfo.category,
         case .chemist:
             return [MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.empty,MasterInfo.syncAll]
@@ -108,14 +109,16 @@ enum MasterCellType : Int {
             return [MasterInfo.slides, MasterInfo.slideSpeciality, MasterInfo.slideBrand, MasterInfo.slideTheraptic, MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .Product:
             // MasterInfo.competitors,
-            return [MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands, MasterInfo.mappedCompetitors, MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
+            //MasterInfo.productcategory,
+            //, MasterInfo.empty,  MasterInfo.empty,
+            return [MasterInfo.products,  MasterInfo.brands, MasterInfo.mappedCompetitors, MasterInfo.syncAll]
         case .input:
             return [MasterInfo.inputs,   MasterInfo.empty,  MasterInfo.empty, MasterInfo.syncAll]
         case .cluster:
             return [MasterInfo.clusters,MasterInfo.empty,MasterInfo.empty,MasterInfo.syncAll]
-
+//, MasterInfo.stockBalance
         case .dcr:
-            return [MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.myDayPlan, MasterInfo.visitControl, MasterInfo.stockBalance, MasterInfo.empty, MasterInfo.syncAll]
+            return [MasterInfo.homeSetup, MasterInfo.dcrDateSync, MasterInfo.myDayPlan, MasterInfo.visitControl, MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
         case .tourPlan:
             return [MasterInfo.tourPlanSetup , MasterInfo.getTP, MasterInfo.empty ,MasterInfo.syncAll]
         case .leave:
@@ -124,8 +127,9 @@ enum MasterCellType : Int {
             return [MasterInfo.worktype, MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.syncAll]
         case .other:
             return [MasterInfo.docFeedback, MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
+            //MasterInfo.customSetup
         case .setup:
-            return [MasterInfo.setups, MasterInfo.customSetup , MasterInfo.empty, MasterInfo.syncAll]
+            return [MasterInfo.setups,  MasterInfo.empty, MasterInfo.empty, MasterInfo.syncAll]
         }
     }
 }
@@ -140,6 +144,24 @@ class MasterInfoState {
 
 enum `MasterInfo` : String, CaseIterable {
     
+    var dynamicTitle: String {
+        switch self {
+        case .doctorFencing:
+            return LocalStorage.shared.getString(key: .doctor)
+        case .chemists:
+            return LocalStorage.shared.getString(key: .chemist)
+        case .stockists:
+            return LocalStorage.shared.getString(key: .stockist)
+        case .unlistedDoctors:
+            return LocalStorage.shared.getString(key: .unlistedDoctor)
+            
+        case .clusters:
+            return LocalStorage.shared.getString(key: .cluster)
+        default:
+            return ""
+        }
+    }
+    
     case myDayPlan = "My Day Plan"
     case worktype = "Work Types"
     case headquartes = "Headquarters"
@@ -152,10 +174,10 @@ enum `MasterInfo` : String, CaseIterable {
     case slideSpeciality = "Speciality Slides"
     case slideTheraptic = "Theraptic slides"
     case brands = "Brands"
-    case departments = "Departments"
+    //case departments = "Departments"
     case speciality = "Speciality"
     case category = "Category"
-    case productcategory = "Product Category"
+    //case productcategory = "Product Category"
     case qualifications = "Qualifications"
     case doctorClass = "Class"
     case docTypes = "DocTypes"
@@ -180,11 +202,11 @@ enum `MasterInfo` : String, CaseIterable {
     case doctorFencing = "Listed Doctor"
     case docFeedback = "Feedback"
     
-    case customSetup = "Custom Setup"
+   // case customSetup = "Custom Setup"
     case leaveType = "Leave Type"
     case tourPlanStatus = "Tour Plan Status"
     case visitControl = "Visit Control"
-    case stockBalance = "Stock Balance"
+    //case stockBalance = "Stock Balance"
     case empty = "Empty"
     case syncAll = "Sync All"
     case getTP = "Tour Plan"
@@ -240,7 +262,8 @@ enum `MasterInfo` : String, CaseIterable {
             return String(format: "%@GET/Participant", mainUrl)
         case .indicationList:
             return String(format: "%@GET/Indication", mainUrl)
-        case .setups,.customSetup:
+            //.customSetup
+        case .setups:
             return String(format: "%@table/setups", mainUrl)
         case .doctors:
             return String(format: "%@GET/Doctors", mainUrl)
@@ -248,8 +271,8 @@ enum `MasterInfo` : String, CaseIterable {
             return String(format: "%@GET/Hospitals", mainUrl)
         case .leaveType:
             return String(format: "%@get/leave", mainUrl)
-            
-        case .tourPlanStatus,.visitControl,.stockBalance,.mappedCompetitors:
+            //.stockBalance
+        case .tourPlanStatus,.visitControl,.mappedCompetitors:
             return String(format: "%@table/additionaldcrmasterdata", mainUrl)
         
         case .products,.inputs,.brands :
@@ -259,7 +282,9 @@ enum `MasterInfo` : String, CaseIterable {
         case .subordinate , .jointWork:
             // .subordinateMGR,
             return String(format: "%@table/subordinates", mainUrl)
-        case .doctorFencing ,.chemists , .chemistCategory, .stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.speciality,.departments,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
+            //.speciality,.departments,
+            
+        case .doctorFencing ,.chemists , .chemistCategory, .stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
             return String(format: "%@table/dcrmasterdata", mainUrl)
         case .tourPlanSetup:
             return String(format: "%@table/setups", mainUrl)
@@ -302,8 +327,8 @@ enum `MasterInfo` : String, CaseIterable {
             return MasterSyncParams.productSlideParams
         case .brands:
             return MasterSyncParams.brandParams
-        case .departments:
-            return MasterSyncParams.departsParams
+//        case .departments:
+//            return MasterSyncParams.departsParams
         case .speciality:
             return MasterSyncParams.specialityParams
         case .category:
@@ -356,16 +381,16 @@ enum `MasterInfo` : String, CaseIterable {
             return MasterSyncParams.slideSpecialityParams
         case .docFeedback:
             return MasterSyncParams.docFeedBackParams
-        case .customSetup:
-            return MasterSyncParams.customSetupParams
+//        case .customSetup:
+//            return MasterSyncParams.customSetupParams
         case .leaveType:
             return MasterSyncParams.leaveTypeParams
         case .tourPlanStatus:
             return MasterSyncParams.tpStatusParams
         case .visitControl:
             return MasterSyncParams.visitControlParams
-        case .stockBalance:
-            return MasterSyncParams.stockBalanceParams
+//        case .stockBalance:
+//            return MasterSyncParams.stockBalanceParams
         case .mappedCompetitors:
             return MasterSyncParams.mapCompdetParams
         case .empty:
@@ -387,8 +412,7 @@ enum `MasterInfo` : String, CaseIterable {
             return [String: Any]()
         case .tourPlanSetup:
             return MasterSyncParams.tourplanSetupParams
-        case .productcategory:
-            return [String : Any]()
+
         case .slideTheraptic:
             return MasterSyncParams.slideTherapticParams
         case .chemistCategory:

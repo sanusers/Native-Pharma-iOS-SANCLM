@@ -127,8 +127,8 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
                             }
                             
                             welf.toGroupSlidesBrandWise() { _ in
-                            LocalStorage.shared.setSting( LocalStorage.LocalValue.slideDownloadIndex, text: "")
-                              
+                                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+                                LocalStorage.shared.setBool(.isSlidesGrouped, value: true)
                                 welf.isDownloadingInProgress = false
                                 Shared.instance.isSlideDownloading = false
                                 Shared.instance.iscelliterating = false
@@ -232,6 +232,7 @@ extension SlideDownloadVC : SlideDownloaderCellDelegate {
 //}
 
 protocol SlideDownloadVCDelegate: AnyObject {
+    func retryDownload(slide: SlidesModel, completion: @escaping () -> ())
     func didDownloadCompleted()
     func isBackgroundSyncInprogress(isCompleted: Bool, cacheObject: [SlidesModel], isToshowAlert: Bool, didEncountererror: Bool)
     func didEncounterError()
@@ -576,14 +577,36 @@ class SlideDownloadVC : UIViewController {
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
         let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 
-        // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
-        self.arrayOfAllSlideObjects.removeAll()
-        self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
-        self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
+        updateSlideObjects(existingSlides: existingCDSlides, nonExistingSlides: nonExistingSlides)
+        
         let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
+        
         self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
+        
         return !nonExistingSlides.isEmpty
         
+    }
+    
+    private func updateSlideObjects(existingSlides: [SlidesModel], nonExistingSlides: [SlidesModel]) {
+        // Create a set of slideIds from existingSlides
+        var existingSlideDict = Dictionary(uniqueKeysWithValues: existingSlides.map { ($0.slideId, $0) })
+        
+        // Filter nonExistingSlides to include only those slides whose slideId is in existingSlides
+        let existingSlideIds = Set(existingSlides.map { $0.slideId })
+        let commonSlides = nonExistingSlides.filter { existingSlideIds.contains($0.slideId) }
+        
+        // If no common slides are found, consider all nonExistingSlides
+        let slidesToAdd = commonSlides.isEmpty ? nonExistingSlides : commonSlides
+        
+        // Update existingSlides with slides from slidesToAdd (replacing slides with same slideId)
+        for slide in slidesToAdd {
+            existingSlideDict[slide.slideId] = slide
+        }
+        
+        // Clear the array and append unique slides (i.e., existing slides + updated slidesToAdd)
+        arrayOfAllSlideObjects.removeAll()
+        
+        arrayOfAllSlideObjects.append(contentsOf: Array(existingSlideDict.values))
     }
     
     func togroupSlides(completion: @escaping () -> ()) {
@@ -630,7 +653,7 @@ class SlideDownloadVC : UIViewController {
             Shared.instance.iscelliterating = false
             Shared.instance.isSlideDownloading = false
             print("Cant able to retrive cell.")
-            
+            self.tableView.isUserInteractionEnabled =  true
             isDownloadingInProgress = false
             
             let cacheIndexstr: String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex) == "" ? "\(0)" :  LocalStorage.shared.getString(key: LocalStorage.LocalValue.slideDownloadIndex)
@@ -1221,7 +1244,7 @@ extension SlideDownloadVC : tableViewProtocols {
         } else if model.isFailed {
             cell.toSetupErrorCell(false)
         } else {
-            cell.toSetupDownloadingCell(true)
+            cell.toSetupDownloadingCell(model.slideData.isEmpty ? false : true)
         }
         
  
@@ -1234,7 +1257,17 @@ extension SlideDownloadVC : tableViewProtocols {
            
             if Shared.instance.isSlideDownloading {return}
             welf.isDownloadingInProgress = true
-            welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)
+            
+            
+            guard let model = self?.arrayOfAllSlideObjects[indexPath.row]  else {
+                return
+            }
+            
+            welf.delegate?.retryDownload(slide: model) {
+                welf.toDownloadMedia(index: indexPath.row, items: self?.arrayOfAllSlideObjects ?? [SlidesModel](), isForsingleRetry: true)
+            }
+            
+         //
          
         }
         cell.selectionStyle = .none

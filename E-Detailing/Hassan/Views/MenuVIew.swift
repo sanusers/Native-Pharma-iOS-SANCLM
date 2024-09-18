@@ -150,7 +150,12 @@ extension MenuView {
                     
                     //subActivitySeected
                 } else {
-                    self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
+                    if LocalStorage.shared.getBool(key: .isMR) {
+                        self.toCreateToast("Please fill the cluster to save sessions")
+                    } else {
+                        self.toCreateToast("Please fill the HeadQuarters and cluster to save sessions")
+                    }
+                  
                     return territoryNotFilledSessions ?? [SessionDetail]()
                 }
             }
@@ -469,6 +474,24 @@ class MenuView : BaseView{
     
     
     enum CellType: String {
+        
+        
+        var dynamicValue: String {
+            switch self {
+            case .listedDoctor:
+                return LocalStorage.shared.getString(key: .doctor)
+            case .chemist:
+                return LocalStorage.shared.getString(key: .chemist)
+            case .stockist:
+                return LocalStorage.shared.getString(key: .stockist)
+            case .unlistedDoctor:
+                return LocalStorage.shared.getString(key: .unlistedDoctor)
+            default:
+                return ""
+            }
+        }
+        
+        
         case edit
         case session
         case workType

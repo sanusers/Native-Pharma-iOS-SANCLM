@@ -453,6 +453,7 @@ class AddCallinfoVC: BaseViewController {
                             welf.toCacheCapturedEvents() { iscached in
                                 Shared.instance.removeLoaderInWindow()
                                 NotificationCenter.default.post(name: NSNotification.Name("callsAdded"), object: nil)
+                                welf.toCreateToast("Call saved locally")
                                 welf.popToBack(MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
                             }
                         

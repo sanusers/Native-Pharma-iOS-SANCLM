@@ -64,19 +64,20 @@ class LocalStorage {
         case isConfigAdded
         case isSlidesDownloadPending
         case isTimeZoneChanged
-        
-        
-        
         case isTPmandatoryNeeded
-        
         case isDayCheckinEnabled
         case isSequentialDCR
         case isGeoFencingEnabled
         case isCustomerChekinNeeded
-     
         case isChemistFencingEnabled
         case isStockistFencingEnabled
         case isUnlistedDoctorFencingEnabled
+        //MARK: - DCR Titles
+        case doctor
+        case chemist
+        case stockist
+        case unlistedDoctor
+        case cluster
         
         //MARK: - DCR setups
         ///Listed doctor setups

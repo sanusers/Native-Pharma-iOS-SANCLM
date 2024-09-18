@@ -137,7 +137,7 @@ class TPdeviateReasonView : UIView {
     }
     @IBAction func didTapCancel(_ sender: Any) {
         addedSubviewDelegate?.didClose()
-        delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: productIndex)
+       // delegate?.remarksAdded(remarksStr: self.remarks ?? "", index: productIndex)
     }
     
     

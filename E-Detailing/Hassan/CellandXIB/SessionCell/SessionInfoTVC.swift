@@ -202,6 +202,12 @@ class SessionInfoTVC: UITableViewCell {
     
     func setupUI() {
         
+        clusterTitle.text = LocalStorage.shared.getString(key: .cluster)
+        listedDocTitle.text = LocalStorage.shared.getString(key: .doctor)
+        chemistTitle.text = LocalStorage.shared.getString(key: .chemist)
+        stockistTitle.text = LocalStorage.shared.getString(key: .stockist)
+        newCustomersTitle.text = LocalStorage.shared.getString(key: .unlistedDoctor)
+        
         let labels : [UILabel] = [lblWorkType, lblCluster, lblHeadquaters, lblJointCall, lblListedDoctor, lblChemist, lblStockist, lblNewCustomers]
         labels.forEach { label in
             label.textColor = .appTextColor

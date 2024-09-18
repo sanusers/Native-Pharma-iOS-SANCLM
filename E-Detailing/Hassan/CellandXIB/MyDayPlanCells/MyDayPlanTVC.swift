@@ -102,7 +102,8 @@ class MyDayPlanTVC: UITableViewCell {
                     self.selectClusterLbl.text = namesArr.joined(separator: ", ")
                     
                  } else {
-                     self.selectClusterLbl.text = "Select Cluster"
+                     self.selectClusterLbl.text = "Select \(LocalStorage.shared.getString(key: .cluster))"
+                     //"Select Cluster"
                  }
                 
             case let hqObj as Subordinate:
@@ -135,7 +136,8 @@ class MyDayPlanTVC: UITableViewCell {
             default:
                 self.selectHQlbl.text = "Select HQ"
                 self.selectWTlbl.text = "Select Worktype"
-                self.selectClusterLbl.text = "Select Cluster"
+                self.selectClusterLbl.text =  "Select \(LocalStorage.shared.getString(key: .cluster))" 
+                //"Select Cluster"
             }
         }
         setupHeight(istoDelete, isForFW: isForFW)

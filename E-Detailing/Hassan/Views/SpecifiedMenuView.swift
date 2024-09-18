@@ -951,7 +951,7 @@ extension SpecifiedMenuView: UITableViewDelegate, UITableViewDataSource {
             let cell: SpecifiedMenuTCell = tableView.dequeueReusableCell(withIdentifier: "SpecifiedMenuTCell", for: indexPath) as!  SpecifiedMenuTCell
             cell.selectionStyle = .none
             cell.setCheckBox(isToset: true)
-            titleLbl.text = "Select Cluster"
+            titleLbl.text = "Select \(LocalStorage.shared.getString(key: .cluster))"
             let model =  self.clusterArr?[indexPath.row]
             cell.lblName.text = model?.name
             cell.lblName.textColor = .appTextColor

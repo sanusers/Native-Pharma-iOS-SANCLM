@@ -10,6 +10,12 @@ import UIKit
 import Alamofire
 import CoreData
 extension MasterSyncVC:  SlideDownloadVCDelegate {
+    func retryDownload(slide: SlidesModel, completion: @escaping () -> ()) {
+        fetchmasterData(type: .slides) { isFetched in
+            completion()
+        }
+    }
+    
     func didEncounterError() {
         isSlideDownloading = false
         retryVIew.isHidden = false
@@ -677,7 +683,7 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.stockists)
         self.masterData.append(MasterInfo.unlistedDoctors)
         self.masterData.append(MasterInfo.setups)
-        self.masterData.append(MasterInfo.customSetup)
+      //  self.masterData.append(MasterInfo.customSetup)
         
         self.masterData.append(MasterInfo.dcrDateSync)
         
@@ -685,11 +691,11 @@ class MasterSyncVC : UIViewController {
         self.masterData.append(MasterInfo.leaveType)
         self.masterData.append(MasterInfo.visitControl)
         self.masterData.append(MasterInfo.mappedCompetitors)
-        self.masterData.append(MasterInfo.stockBalance)
+      //  self.masterData.append(MasterInfo.stockBalance)
         self.masterData.append(MasterInfo.subordinate)
         //self.masterData.append(MasterInfo.subordinateMGR)
         self.masterData.append(MasterInfo.speciality)
-        self.masterData.append(MasterInfo.departments)
+      //  self.masterData.append(MasterInfo.departments)
         self.masterData.append(MasterInfo.category)
         self.masterData.append(MasterInfo.qualifications)
         self.masterData.append(MasterInfo.doctorClass)
@@ -738,7 +744,7 @@ class MasterSyncVC : UIViewController {
 
     
     
-    func fetchmasterData(type : MasterInfo, completion: @escaping (Bool) -> ()) {
+    func fetchmasterData(type : MasterInfo, istoNavigate: Bool? = false, completion: @escaping (Bool) -> ()) {
         
         
         switch type {
@@ -924,7 +930,7 @@ class MasterSyncVC : UIViewController {
                                     var slides = AppDefaults.shared.getSlides()
                                     slides.removeAll()
                                     slides.append(contentsOf: apiResponse)
-                                    
+                                    welf.toLoadPresentationData(type: type, count: apiResponse.count, istoNavigate: istoNavigate ?? false)
                                     LocalStorage.shared.setData(LocalStorage.LocalValue.slideResponse, data: response.data!)
                                     
                                   //  welf.setLoader(pageType: .navigate, type: .slides)
@@ -939,7 +945,7 @@ class MasterSyncVC : UIViewController {
                                 
                             }
                     
-                    if type == .customSetup {
+                    if type == .setups {
                         refreshConstants()
                     }
  
@@ -955,6 +961,47 @@ class MasterSyncVC : UIViewController {
             
         }
         
+    }
+    
+    
+    
+    func toLoadPresentationData(type : MasterInfo, count: Int, istoNavigate: Bool) {
+        
+        let paramData = type == MasterInfo.slides ? LocalStorage.shared.getData(key: LocalStorage.LocalValue.slideResponse) :  LocalStorage.shared.getData(key: LocalStorage.LocalValue.BrandSlideResponse)
+        //   var localParamArr = [[String: Any]]()
+        //  var encodedSlideModelData: [SlidesModel]?
+        
+        var localParamArr = [[String:  Any]]()
+        do {
+            localParamArr  = try JSONSerialization.jsonObject(with: paramData, options: []) as?  [[String:  Any]] ??  [[String:  Any]]()
+            dump(localParamArr)
+            
+        } catch {
+            //  self.toCreateToast("unable to retrive")
+        }
+        
+    
+        if localParamArr.count != count {
+        
+            LocalStorage.shared.setBool(.isSlidesGrouped, value: false)
+            if localParamArr.count == 0 {
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+            }
+           else if count > localParamArr.count {
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "\(localParamArr.count + 1)")
+            } else  {
+                LocalStorage.shared.setSting(LocalStorage.LocalValue.slideDownloadIndex, text: "")
+                LocalStorage.shared.setBool(.isSlidesGrouped, value: true)
+                
+            }
+           
+            
+        }
+            
+         if  type == .slides && istoNavigate {
+             setLoader(pageType: .navigate, type: .slides)
+        }
+
     }
     
 }
@@ -1038,8 +1085,11 @@ extension MasterSyncVC : tableViewProtocols {
       //  self.loadedSlideInfo = []
       
 
-        
-        self.masterData = [MasterInfo.dcrDateSync, MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category, MasterInfo.departments, MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products, MasterInfo.productcategory, MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup,  MasterInfo.visitControl, MasterInfo.stockBalance,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,MasterInfo.customSetup,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
+//        MasterInfo.productcategory,
+//        MasterInfo.stockBalance,
+//        MasterInfo.customSetup,
+        //MasterInfo.departments,
+        self.masterData = [MasterInfo.dcrDateSync, MasterInfo.subordinate, MasterInfo.worktype, MasterInfo.myDayPlan,  MasterInfo.doctorFencing, MasterInfo.speciality, MasterInfo.qualifications, MasterInfo.category,  MasterInfo.doctorClass, MasterInfo.chemists, MasterInfo.chemistCategory, MasterInfo.stockists, MasterInfo.unlistedDoctors, MasterInfo.clusters, MasterInfo.inputs ,   MasterInfo.products,  MasterInfo.brands,  MasterInfo.mappedCompetitors,  MasterInfo.leaveType,  MasterInfo.homeSetup,  MasterInfo.visitControl,  MasterInfo.holidays, MasterInfo.weeklyOff, MasterInfo.getTP, MasterInfo.tourPlanSetup, MasterInfo.setups ,   MasterInfo.jointWork, MasterInfo.slideSpeciality,MasterInfo.slideBrand,MasterInfo.slides, MasterInfo.slideTheraptic, MasterInfo.docFeedback]
         //MasterInfo.competitors,
         //MasterInfo.subordinateMGR,
 
@@ -1098,9 +1148,9 @@ extension MasterSyncVC : collectionViewProtocols{
         if  self.masterData[indexPath.row].rawValue == "Table Setup" || self.masterData[indexPath.row].rawValue == "Charts" {
             return CGSize(width: width - 10, height: 0)
         }
-            let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
-       // let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 7)
-            return size
+        let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 5.5)
+        // let size = CGSize(width: collectionView.width / 3 - 10 , height: collectionView.height / 7)
+        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -1111,9 +1161,11 @@ extension MasterSyncVC : collectionViewProtocols{
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MasterSyncCell", for: indexPath) as! MasterSyncCell
-      //  cell.lblName.text = self.masterData[indexPath.row].rawValue
+        //  cell.lblName.text = self.masterData[indexPath.row].rawValue
         cell.lblName.text = self.masterData[indexPath.row].rawValue
-        //self.masterData[indexPath.row] == .doctorFencing ?  appsetup.docCap : self.masterData[indexPath.row] == .chemists ?  appsetup.chmCap : self.masterData[indexPath.row] == .stockists ?  appsetup.stkCap :  self.masterData[indexPath.row] == .unlistedDoctors ?  appsetup.nlCap :
+        
+        cell.lblName.text =  self.masterData[indexPath.row] == .clusters || self.masterData[indexPath.row] == .doctorFencing || self.masterData[indexPath.row] == .chemists || self.masterData[indexPath.row] == .stockists || self.masterData[indexPath.row] == .unlistedDoctors ? self.masterData[indexPath.row].dynamicTitle :  self.masterData[indexPath.row].rawValue
+            //. appsetup.docCap : self.masterData[indexPath.row] == .chemists ?  appsetup.chmCap : self.masterData[indexPath.row] == .stockists ?  appsetup.stkCap :  self.masterData[indexPath.row] == .unlistedDoctors ?  appsetup.nlCap :  self.masterData[indexPath.row].rawValue
         
         cell.loaderImage.isHidden = false
         
@@ -1222,8 +1274,8 @@ extension MasterSyncVC : collectionViewProtocols{
         case   .headquartes:
           //  cell.lblCount.text = DBManager.shared.gethe
             cell.lblCount.text = ""
-        case   .departments:
-            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
+//        case   .departments:
+//            cell.lblCount.text = "\(DBManager.shared.getDeparts().count)"
         case   .docTypes:
             cell.lblCount.text = ""
         case   .ratingDetails:
@@ -1242,12 +1294,12 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text = ""
         case   .institutions:
             cell.lblCount.text = ""
-        case   .customSetup:
-            cell.lblCount.text = ""
+//        case   .customSetup:
+//            cell.lblCount.text = ""
         case   .tourPlanStatus:
             cell.lblCount.text = ""
-        case   .stockBalance:
-            cell.lblCount.text =  ""
+//        case   .stockBalance:
+//            cell.lblCount.text =  ""
 //            let balance = DBManager.shared.getStockBalance()
 //            cell.lblCount.text = "\(balance?.product?.allObjects.count)"
         case   .empty:
@@ -1268,9 +1320,9 @@ extension MasterSyncVC : collectionViewProtocols{
             cell.lblCount.text = ""
         case .none:
             cell.lblCount.text = "Yet to"
-
-        case .productcategory:
-            cell.lblCount.text = ""
+//
+//        case .productcategory:
+//            cell.lblCount.text = ""
  
         case .chemistCategory:
             cell.lblCount.text = ""
@@ -1370,7 +1422,7 @@ extension MasterSyncVC : collectionViewProtocols{
            guard let self = self else { return }
 
            
-             self.fetchmasterData(type: self.masterData[indexPath.row]) {isCompleted in
+           self.fetchmasterData(type: self.masterData[indexPath.row], istoNavigate: self.masterData[indexPath.row] == .slides ? true : false ) {isCompleted in
                  UIApplication.shared.endBackgroundTask(self.backgroundTask)
                if isCompleted {
                    MasterInfoState.loadingStatusDict[selectedMasterInfo] = .loaded
@@ -1379,6 +1431,9 @@ extension MasterSyncVC : collectionViewProtocols{
                }
                
                  DispatchQueue.main.async {
+                     
+                     
+                     
                      self.collectionView.reloadData()
                  }
               

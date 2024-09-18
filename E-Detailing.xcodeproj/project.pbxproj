@@ -775,6 +775,7 @@
 		38DD9E662C0886B9000A9575 /* SlidesInfoCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SlidesInfoCVC.xib; sourceTree = "<group>"; };
 		38DD9E692C088761000A9575 /* SlidesDescriptionCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesDescriptionCVC.swift; sourceTree = "<group>"; };
 		38DD9E6A2C088761000A9575 /* SlidesDescriptionCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SlidesDescriptionCVC.xib; sourceTree = "<group>"; };
+		38DEF0922C9B06DE00F03D53 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		38E0409E2AA1FEAA007B757E /* TagDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDetailsView.swift; sourceTree = "<group>"; };
 		38E040A02AA1FEB8007B757E /* TagDetailsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagDetailsView.xib; sourceTree = "<group>"; };
 		38E040A22AA215E8007B757E /* TagViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewVC.swift; sourceTree = "<group>"; };
@@ -1885,6 +1886,7 @@
 		B287E61629F29C190097974D = {
 			isa = PBXGroup;
 			children = (
+				38DEF0922C9B06DE00F03D53 /* PrivacyInfo.xcprivacy */,
 				3836D9942C7F5725000BE85A /* SAN ZEN.entitlements */,
 				B287E62129F29C1B0097974D /* E-Detailing */,
 				B287E62029F29C1B0097974D /* Products */,
