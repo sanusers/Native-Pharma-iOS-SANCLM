@@ -849,7 +849,7 @@ class AppSetUp : Codable {
         LocalStorage.shared.setSting(.cluster, text: self.clusterCap ?? "Cluster")
         
         
-        LocalStorage.shared.setBool(LocalStorage.LocalValue.isTPmandatoryNeeded, value:  self.tpMdNeed == 1 ? true : false)
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isTPmandatoryNeeded, value:  self.tpMdNeed == 0 ? true : false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
         
