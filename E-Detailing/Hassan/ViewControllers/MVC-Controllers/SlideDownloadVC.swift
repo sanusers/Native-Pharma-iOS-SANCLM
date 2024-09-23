@@ -1,6 +1,6 @@
 //
 //  SlideDownloadVC.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -569,20 +569,27 @@ class SlideDownloadVC : UIViewController {
     
     func toCheckExistenceOfNewSlides() -> Bool {
         let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
+        
         let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
 
         // Extract slideId values from each array
         let existingSlideIds = Set(existingCDSlides.map { $0.slideId })
-       // let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
+        
+     //   _ = Set(apiFetchedSlide.map { $0.slideId })
+
         // Filter apiFetchedSlide to get slides with slideIds not present in existingCDSlides
         let nonExistingSlides = apiFetchedSlide.filter { !existingSlideIds.contains($0.slideId) }
 
-        updateSlideObjects(existingSlides: existingCDSlides, nonExistingSlides: nonExistingSlides)
-        
+
+
+        // Now, nonExistingSlides contains the slides that exist in apiFetchedSlide but not in existingCDSlides based on slideId
+        self.arrayOfAllSlideObjects.removeAll()
+           self.arrayOfAllSlideObjects.append(contentsOf: existingCDSlides)
+           self.arrayOfAllSlideObjects.append(contentsOf: nonExistingSlides)
         let downloadedArr = self.arrayOfAllSlideObjects.filter { $0.isDownloadCompleted }
-        
+
         self.countLbl.text = "\(downloadedArr.count)/\( self.arrayOfAllSlideObjects .count)"
-        
+
         return !nonExistingSlides.isEmpty
         
     }
@@ -593,6 +600,7 @@ class SlideDownloadVC : UIViewController {
         
         // Filter nonExistingSlides to include only those slides whose slideId is in existingSlides
         let existingSlideIds = Set(existingSlides.map { $0.slideId })
+        
         let commonSlides = nonExistingSlides.filter { existingSlideIds.contains($0.slideId) }
         
         // If no common slides are found, consider all nonExistingSlides
@@ -606,7 +614,7 @@ class SlideDownloadVC : UIViewController {
         // Clear the array and append unique slides (i.e., existing slides + updated slidesToAdd)
         arrayOfAllSlideObjects.removeAll()
         
-        arrayOfAllSlideObjects.append(contentsOf: Array(existingSlideDict.values))
+        arrayOfAllSlideObjects.append(contentsOf: slidesToAdd)
     }
     
     func togroupSlides(completion: @escaping () -> ()) {
@@ -1009,6 +1017,8 @@ class SlideDownloadVC : UIViewController {
         let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
         
         if existingCDSlides.count == apiFetchedSlide.count {
+           
+            LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesDownloadPending, value: false)
             LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
             self.isDownloading = false
             isSlideDownloadCompleted = true

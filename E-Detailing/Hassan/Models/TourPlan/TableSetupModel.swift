@@ -1,6 +1,6 @@
 //
 //  TableSetupModel.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //

@@ -1,6 +1,6 @@
 //
 //  SplashVIew.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -316,7 +316,7 @@ class SplashView: BaseView{
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
                 self?.SplashImageHolderView.isHidden = true
                 self?.launchIV.image = nil
-                self?.splashVC.delegate?.setupControllers(isFromlaunch: true)
+                self?.splashVC.delegate?.setupControllers()
                 self?.splashVC.navigationController?.popViewController(animated: true)
         }
         

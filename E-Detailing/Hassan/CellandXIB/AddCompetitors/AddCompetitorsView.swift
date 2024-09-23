@@ -1,6 +1,6 @@
 //
 //  AddCompetitorsView.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by San eforce on 26/06/24.
 //

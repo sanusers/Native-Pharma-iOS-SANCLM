@@ -1,6 +1,6 @@
 //
 //  CreatePresentationView.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -556,13 +556,13 @@ extension CreatePresentationView: UITableViewDelegate, UITableViewDataSource {
             cell.contentsHolderView.layer.borderWidth = 0
             cell.contentsHolderView.layer.borderColor = UIColor.clear.cgColor
             cell.contentsHolderView.elevate(0)
-            cell.accessoryIV.image = UIImage(systemName: "Vector")
+            cell.accessoryIV.image = UIImage(named: "chevlon.right")
         
             if selectedBrandsIndex == indexPath.row {
                 cell.contentsHolderView.layer.borderWidth = 0.5
                 cell.contentsHolderView.layer.borderColor = UIColor.appTextColor.cgColor
                 cell.contentsHolderView.elevate(1)
-                cell.accessoryIV.image = UIImage(systemName: "chevlon.right")
+                cell.accessoryIV.image = UIImage(named: "chevlon.right")
             
        
             }

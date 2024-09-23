@@ -1,6 +1,6 @@
 //
 //  LoginVC.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -76,7 +76,7 @@ class LoginVC : UIViewController {
         lblPassword.textColor = .appTextColor
         lblVersion.setFont(font: .medium(size: .SMALL))
         lblVersion.textColor = .appLightTextColor
-        
+        lblVersion.text = LocalStorage.shared.getString(key: .AppVersion)
         txtUserName.font = UIFont(name: "Satoshi-Medium", size: 14)
         txtPassWord.font = UIFont(name: "Satoshi-Medium", size: 14)
         lblPoweredBy.setFont(font: .medium(size: .BODY))

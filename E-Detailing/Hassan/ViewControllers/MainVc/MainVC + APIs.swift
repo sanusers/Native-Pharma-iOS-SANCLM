@@ -1,6 +1,6 @@
 //
 //  MainVC + APIs.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -98,6 +98,16 @@ extension MainVC {
                 dispatchGroup.enter()
                 
                 var tosendData = [String: Any]()
+                if let jsonData = aEachDayStatus.param {
+                    do {
+                        let param = try JSONSerialization.jsonObject(with: jsonData)
+                        dump(param)
+                    } catch {
+                        print("unable to serialize")
+                    }
+                
+                }
+           
                 tosendData["data"] = aEachDayStatus.param
                 let param = ObjectFormatter.shared.convertDataToJson(data: aEachDayStatus.param ?? Data())
                 

@@ -1,8 +1,8 @@
 //
 //  AppConfig.swift
-//  E-Detailing
+//  SAN ZEN
 //
-//  E-Detailing
+//  SAN ZEN
 
 //  Created by Hassan
 

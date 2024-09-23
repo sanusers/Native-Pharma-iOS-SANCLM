@@ -1,6 +1,6 @@
 //
 //  HomeSideMenuMenuView.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -147,6 +147,7 @@ class HomeSideMenuView : BaseView{
     @IBOutlet var chemistFencingViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet var doctorFencingViewWidthConstraint: NSLayoutConstraint!
     
+    @IBOutlet var appVersionLbl: UILabel!
     
     //MARK: UDF, gestures  and animations
     var menuItemArr: [MenuItems] = []
@@ -191,6 +192,7 @@ class HomeSideMenuView : BaseView{
     
     
     func setupUI() {
+        appVersionLbl.text = LocalStorage.shared.getString(key: .AppVersion)
         locationBtn.layer.cornerRadius = syncBtn.height / 2
         profileBtn.layer.cornerRadius = syncBtn.height / 2
         syncBtn.layer.cornerRadius = syncBtn.height / 2

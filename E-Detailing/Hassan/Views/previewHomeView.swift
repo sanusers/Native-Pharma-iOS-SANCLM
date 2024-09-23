@@ -1,6 +1,6 @@
 //
 //  previewHomeView.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -672,6 +672,7 @@ class PreviewHomeView : BaseView {
     @IBOutlet var decendingIV: UIImageView!
     @IBOutlet var ascendingIV: UIImageView!
     
+    @IBOutlet var doctorsLbl: UILabel!
     @IBOutlet var viewFinishDetailing: UIView!
     var fetchedObject:  DoctorFencing?
     var fetchedSpecialityObject: Speciality?
@@ -951,6 +952,7 @@ class PreviewHomeView : BaseView {
         if setups.therapticNd == "0" {
             previewType.append(.therapist)
         }
+        doctorsLbl.text = LocalStorage.shared.getString(key: .doctor)
         setSortVIew()
         cellRegistration()
         toLoadPreviewCollection()

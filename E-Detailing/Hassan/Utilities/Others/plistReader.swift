@@ -1,6 +1,6 @@
 //
 //  InfoPlistKeys.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -34,6 +34,7 @@ enum InfoPlistKeys : String{
     case UserType
     case Google_Places_keys = "GMSServicesAPIKey"
     case App_Name = "App name"
+    case CFBundleShortVersionString
 }
 extension InfoPlistKeys : PlistKeys{
     var key: String{

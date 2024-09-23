@@ -1,6 +1,6 @@
 //
 //  Pipelines.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -90,13 +90,11 @@ class Pipelines : NSObject, CLLocationManagerDelegate {
     }
     
     
-    func requestAuth(completion: @escaping (Coordinates?) -> Void) {
+    func requestAuth(isFromLaunch: Bool? = false, completion: @escaping (Coordinates?) -> Void) {
         if !geoFencingEnabled {
             completion(nil)
             return
         }
-
-   
         locManager.delegate = self
         locManager.desiredAccuracy = kCLLocationAccuracyBest
         locationCompletion = completion
@@ -104,37 +102,16 @@ class Pipelines : NSObject, CLLocationManagerDelegate {
            CLLocationManager.authorizationStatus() == .authorizedAlways {
             locManager.startUpdatingLocation()
         } else {
-            locManager.requestWhenInUseAuthorization()
+            if isFromLaunch ?? false {
+                locManager.requestWhenInUseAuthorization()
+            } 
             completion(nil)
+            return
         }
     }
 
 
-    
-//    func requestAuth(completion: @escaping (Coordinates?) -> Void)  {
-//
-//        if !geoFencingEnabled {
-//            completion(nil)
-//            return
-//        }
-//        
-//     
-//        var currentLocation = CLLocation()
-//      //  locManager.delegate = self
-//
-//        locManager.requestWhenInUseAuthorization()
-//
-//        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
-//            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways){
-//            currentLocation = locManager.location ?? CLLocation()
-//            
-//       let coordinates = Coordinates(latitude: (currentLocation.coordinate.latitude), longitude: (currentLocation.coordinate.longitude))
-//            completion(coordinates)
-//        } else {
-//            completion(nil)
-//           
-//        }
-//    }
+
     
     
     func callCheckinCheckoutAPI(userstrtisticsVM: UserStatisticsVM, model: CheckinInfo, appsetup: AppSetUp, completion : @escaping (Result<[GeneralResponseModal],UserStatisticsError>) -> Void) {

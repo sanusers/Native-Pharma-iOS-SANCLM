@@ -1,6 +1,6 @@
 //
 //  CompetitorsFooter.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //

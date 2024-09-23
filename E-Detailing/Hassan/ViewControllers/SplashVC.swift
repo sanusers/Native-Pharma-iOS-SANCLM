@@ -1,6 +1,6 @@
 //
 //  SplashVC.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -13,7 +13,7 @@ import UIKit
 import ImageIO
 
 protocol splashVCDelegate: AnyObject {
-    func setupControllers(isFromlaunch: Bool)
+    func setupControllers()
 }
 
 class SplashVC: BaseViewController{
@@ -27,6 +27,18 @@ class SplashVC: BaseViewController{
    // let delegate =   AppDelegate.shared?
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+
+        if let plistReader = PlistReader<InfoPlistKeys>() {
+            // Retrieve a string value for App_URL
+            if let appVersion: String = plistReader.value(for: .CFBundleShortVersionString) {
+                print("App version: \(appVersion)")
+                LocalStorage.shared.setSting(.AppVersion, text: "Version \(appVersion)")
+            } else {
+                print("App version not found")
+            }
+        }
+        
       //  callCheckVersion()
     }
     
@@ -47,7 +59,7 @@ class SplashVC: BaseViewController{
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             UIView.animate(withDuration: 1, delay: 0, animations: {
                 self.splashView.SplashImageHolderView.isHidden = true
-                AppDelegate.shared.setupRootViewControllers(isFromlaunch: AppDefaults.shared.isSyncCompleted() ? false : true)
+                AppDelegate.shared.setupRootViewControllers()
             })
         }
         

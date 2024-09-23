@@ -1,6 +1,6 @@
 //
 //  UnsyncedEventsCVC.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by San eforce on 22/05/24.
 //

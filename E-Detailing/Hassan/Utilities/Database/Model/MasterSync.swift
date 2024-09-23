@@ -1,6 +1,6 @@
 //
 //  MasterSync.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -284,7 +284,7 @@ enum `MasterInfo` : String, CaseIterable {
             return String(format: "%@table/subordinates", mainUrl)
             //.speciality,.departments,
             
-        case .doctorFencing ,.chemists , .chemistCategory, .stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.doctorClass,.docTypes,.qualifications,.category,.docFeedback :
+        case .doctorFencing ,.chemists , .chemistCategory, .stockists,.unlistedDoctors,.worktype ,.clusters,.myDayPlan,.doctorClass,.docTypes,.qualifications,.category,.docFeedback,.speciality :
             return String(format: "%@table/dcrmasterdata", mainUrl)
         case .tourPlanSetup:
             return String(format: "%@table/setups", mainUrl)

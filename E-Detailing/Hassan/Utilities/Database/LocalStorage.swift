@@ -1,6 +1,6 @@
 //
 //  LocalStorage.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -22,6 +22,7 @@ class LocalStorage {
     var sentToApprovalModelArr = [SentToApprovalModel]()
     
     enum LocalValue:String {
+        case AppVersion
         case AppMainURL
         case AppconfigURL
         case SlideURL

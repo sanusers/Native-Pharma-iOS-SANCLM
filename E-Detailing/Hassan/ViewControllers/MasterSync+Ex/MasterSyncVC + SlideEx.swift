@@ -1,6 +1,6 @@
 //
 //  Appdelegate+Ex.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -61,13 +61,9 @@ extension MasterSyncVC {
     }
     
     func moveToHome() {
-        
-        //self.toCreateToast("sync completed")
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0) {
             if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                appDelegate.setupRootViewControllers(isFromlaunch: true)
+                appDelegate.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: true, ViewModel: UserStatisticsVM()))
             }
-        }
     }
     
     func toCheckExistenceOfNewSlides(didEncountererror: Bool) -> Bool? {
@@ -97,8 +93,6 @@ extension MasterSyncVC {
         let nonExistingSlides = findNonExistingSlides(in: existingCDSlides, from: arrayOfAllSlideObjects)
        
         let notDownloadedSlides = existingCDSlides.filter { !$0.isDownloadCompleted }
-        
-     
 
         isNewSlideExists = !notDownloadedSlides.isEmpty || !nonExistingSlides.isEmpty
         
@@ -257,7 +251,7 @@ extension MasterSyncVC {
         let commonSlides = nonExistingSlides.filter { existingSlideIds.contains($0.slideId) }
         
         // If no common slides are found, consider all nonExistingSlides
-        let slidesToAdd = commonSlides.isEmpty ? nonExistingSlides : commonSlides
+        let slidesToAdd = commonSlides.isEmpty ? nonExistingSlides + existingSlides : commonSlides
         
         // Update existingSlides with slides from slidesToAdd (replacing slides with same slideId)
         for slide in slidesToAdd {

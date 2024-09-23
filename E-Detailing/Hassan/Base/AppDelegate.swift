@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -38,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      
         return true
     }
+
     
     func addObservers() {
        // NotificationCenter.default.addObserver(self, selector: #selector(timeZoneChanged), name: UIApplication.significantTimeChangeNotification, object: nil)
@@ -131,7 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
-    func setupRootViewControllers(isFromlaunch: Bool? = false) {
+    func setupRootViewControllers() {
         
         if !AppDefaults.shared.isConfigAdded() {
             
@@ -142,12 +143,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if AppDefaults.shared.isLoggedIn() && AppDefaults.shared.isSyncCompleted() {
              
                 BackgroundTaskManager.shared.stopBackgroundTask()
-                
 
+                self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: false, ViewModel: UserStatisticsVM()))
 
-                self.window?.rootViewController = UINavigationController.init(rootViewController: MainVC.initWithStory(isfromLaunch: isFromlaunch ?? false, ViewModel: UserStatisticsVM()))
-
-            }else if AppDefaults.shared.isLoggedIn() {
+            } else if AppDefaults.shared.isLoggedIn() {
                 
                 let mastersyncVC = MasterSyncVC.initWithStory()
                 mastersyncVC.isFromLaunch = true
@@ -208,9 +207,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 extension AppDelegate: splashVCDelegate {
-    func setupControllers(isFromlaunch: Bool) {
+    func setupControllers() {
         self.window?.rootViewController = nil
-        self.setupRootViewControllers(isFromlaunch: isFromlaunch)
+        self.setupRootViewControllers()
     }
     
     

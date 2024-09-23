@@ -1,6 +1,6 @@
 //
 //  MainVC.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -106,6 +106,8 @@ class MainVC : UIViewController {
     @IBOutlet var deviateView: UIView!
     @IBOutlet var deviateViewHeight: NSLayoutConstraint!
     @IBOutlet var viewNoCalls: UIView!
+    
+    @IBOutlet var viewNoOutboxCalls: UIView!
     let dcrCallObjectParser =  DCRCallObjectParser.instance
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
     var  latitude : Double?
@@ -205,18 +207,25 @@ class MainVC : UIViewController {
     }
     
     func loadHome() {
-        fetchLocations() { [weak self]  locationinfo in
-            guard let welf = self else {return}
-
-            if  welf.isFromLaunch {
-               // welf.getDCRdates()
-                welf.btnCalenderSync(welf.btnSyncDate!)
-                return
-            }
-            welf.toPostAlldayPlan() {
-                welf.handleDateSync()
-            }
+        fetchLocations() { _ in }
+        
+        
+        if  isFromLaunch {
+           // welf.getDCRdates()
+          btnCalenderSync(btnSyncDate!)
+          return
         }
+        
+        if LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+           toPostAlldayPlan() { [weak self]  in
+               guard let welf = self else {return}
+               welf.handleDateSync()
+            }
+            return
+        }
+        
+        handleDateSync()
+        
     }
     
     func makeBackgroundTask() {
@@ -245,98 +254,86 @@ class MainVC : UIViewController {
         }
     }
     
+    /// sync outbox datas
+    ///
+    ///uses `OperationQueue` to perform async API calls
+    ///
+    /// - Parameter completion: empty completion once sync completes Date sync API is called
+    
     func toPostAlldayPlan(completion: @escaping () -> ()) {
-        
-        let customQueue = DispatchQueue(label: "com.queue.concurrent", qos: .background, attributes: .concurrent)
-      
-        //let customDispatchGroup = DispatchGroup()
-        
+
+        let customQueue = DispatchQueue(label: "com.queue.concurrent", qos: .background)
+        let dcrSyncGroup = DispatchGroup()
+
         toSetupOutBoxDataSource(isSynced: false) { [weak self] in
             guard let welf = self else { return }
-            
+
+         
             guard !obj_sections.isEmpty else {
                 completion()
                 return
             }
+
             obj_sections.forEach { section in
+                // Enter the group for each section
+                dcrSyncGroup.enter()
+
                 let refreshDateStr = section.date
                 let callitems = section.items
                 let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
-                
-                customQueue.async( qos: .background, flags: .barrier) {
+
+                customQueue.async(qos: .background, flags: .barrier) {
                     let operationQueue = OperationQueue()
-                    
-                    let myDaplanOperation = BlockOperation()
-                    
-                    myDaplanOperation.addExecutionBlock {
+
+                    let myDaplanOperation = BlockOperation {
                         DispatchQueue.main.async {
                             welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {}
                         }
-                       
                     }
-                    
-                    let postCallsOperation = BlockOperation()
-                    myDaplanOperation.addExecutionBlock {
+
+                    let postCallsOperation = BlockOperation {
                         DispatchQueue.main.async {
                             welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in }
                         }
-                        
                     }
-                    
-                    let postImagesOperation = BlockOperation()
-                    postImagesOperation.addExecutionBlock {
-                        DispatchQueue.main.async { 
-                            
+
+                    let postImagesOperation = BlockOperation {
+                        DispatchQueue.main.async {
                             welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {}
                         }
-                        
                     }
-                    
+
                     let uploadWindupsOperation = BlockOperation {
                         welf.toUploadWindups(date: refreshDate) { _ in
-                            DispatchQueue.main.async {
-                                welf.toLoadOutboxTable()
-                                welf.setSegment(.calls)
-                            }
-                    
+                            dcrSyncGroup.leave()  // Leave the group after this operation completes
                         }
                     }
-                    
-                    let homeDataSyncOperation = BlockOperation {
-                  
-                   
-                        welf.masterVM?.fetchMasterData(
-                            type: .homeSetup,
-                            sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID),
-                            istoUpdateDCRlist: false,
-                            mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
-                        ) { _ in }
-                      
-                    }
-                    
-                    let completionOperation = BlockOperation {
-                        DispatchQueue.main.async {
-                            Shared.instance.removeLoaderInWindow()
-                          //  welf.showAlertToFilldates(description: "Sync completed")
-                            completion()
-                        }
-                    }
-                    
-                    operationQueue.maxConcurrentOperationCount = 1
-                    
+
+                    // Set up operation dependencies
                     postCallsOperation.addDependency(myDaplanOperation)
                     postImagesOperation.addDependency(postCallsOperation)
                     uploadWindupsOperation.addDependency(postImagesOperation)
-                    homeDataSyncOperation.addDependency(uploadWindupsOperation)
-                    completionOperation.addDependency(homeDataSyncOperation)
-                    
-                    operationQueue.addOperations([myDaplanOperation, postCallsOperation, postImagesOperation, uploadWindupsOperation, homeDataSyncOperation, completionOperation], waitUntilFinished: true)
+
+                    // Execute all operations
+                    operationQueue.maxConcurrentOperationCount = 1
+                    operationQueue.addOperations([myDaplanOperation, postCallsOperation, postImagesOperation, uploadWindupsOperation], waitUntilFinished: true)
                 }
-                
             }
-       
+
+            // Notify completion once all operations across all sections are done
+            dcrSyncGroup.notify(queue: .main) {
+                welf.masterVM?.fetchMasterData(
+                    type: .homeSetup,
+                    sfCode: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID),
+                    istoUpdateDCRlist: false,
+                    mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
+                ) { _ in
+                    Shared.instance.removeLoaderInWindow()
+                    welf.showAlertToFilldates(description: "Sync completed")
+                    completion()  // Now the completion is called once everything finishes
+                }
+            }
         }
-        
     }
     
     
@@ -560,6 +557,7 @@ class MainVC : UIViewController {
         cellRegistration()
         initView()
         viewNoCalls.isHidden = true
+        viewNoOutboxCalls.isHidden = true
         rejectionVIew.isHidden = true
         toDisableNextPrevBtn(enableprevBtn: true, enablenextBtn: true)
         toHideDeviateView(isTohide: true)
@@ -698,7 +696,14 @@ class MainVC : UIViewController {
         case .outbox:
             self.setSegment(.outbox)
         }
-        viewNoCalls.isHidden = self.todayCallsModel?.count != 0
+        
+//        viewNoOutboxCalls.isHidden = obj_sections.isEmpty ? false : true
+//        
+//        if let todayCallsModel = self.todayCallsModel, todayCallsModel.count != 0 {
+//            viewNoCalls.isHidden  = true
+//        } else {
+//            viewNoCalls.isHidden  = false
+//        }
         
         if let selectedToday = self.selectedToday  {
             toConfigureMydayPlan(planDate: selectedToday, isRetrived: true) { [weak self] in
@@ -1248,6 +1253,7 @@ class MainVC : UIViewController {
             self.outboxTableView.delegate = self
             self.outboxTableView.dataSource = self
             self.outboxTableView.reloadData()
+            self.viewNoOutboxCalls.isHidden = obj_sections.isEmpty ? false : true
         }
     }
     
@@ -1548,13 +1554,13 @@ class MainVC : UIViewController {
     private func updateLinks () {
         
         let presentationColor = UIColor.appGreen
-        let activityColor = UIColor.appBrown
+       // let activityColor = UIColor.appBrown
         let reportsColor = UIColor.appLightPink
         let previewColor = UIColor.appBlue
         
         
         let presentation = QuicKLink(color: presentationColor, name: "Presentaion", image: UIImage(imageLiteralResourceName: "presentationIcon"))
-        let activity = QuicKLink(color: activityColor, name: "Activity", image: UIImage(imageLiteralResourceName: "SideMenuActivity"))
+      //  let activity = QuicKLink(color: activityColor, name: "Activity", image: UIImage(imageLiteralResourceName: "SideMenuActivity"))
         let reports = QuicKLink(color: reportsColor, name: "Reports", image: UIImage(imageLiteralResourceName: "reportIcon"))
         
         let slidePreview = QuicKLink(color: previewColor, name: "Slide Preview", image: UIImage(imageLiteralResourceName: "slidePreviewIcon"))
@@ -1562,7 +1568,7 @@ class MainVC : UIViewController {
         self.links.append(presentation)
         self.links.append(slidePreview)
         self.links.append(reports)
-        self.links.append(activity)
+      //  self.links.append(activity)
         
         
         
@@ -1891,6 +1897,12 @@ class MainVC : UIViewController {
             
             
         case .calls:
+            if let todayCallsModel = self.todayCallsModel, todayCallsModel.count != 0 {
+                viewNoCalls.isHidden  = true
+            } else {
+                viewNoCalls.isHidden  = false
+            }
+       
             // callsSegmentHolderVIew.isHidden = false
             // outboxSegmentHolderView.isHidden = true
             viewWorkPlan.isHidden = true
@@ -1905,7 +1917,7 @@ class MainVC : UIViewController {
             
             
         case .outbox:
-            // outboxSegmentHolderView.isHidden = false
+            viewNoOutboxCalls.isHidden = obj_sections.isEmpty ? false : true
             viewWorkPlan.isHidden = true
             viewCalls.isHidden = true
             viewOutBox.isHidden = false
@@ -2774,7 +2786,7 @@ extension MainVC {
     }
 
     func fetchLocations(completion: @escaping(LocationInfo?) -> ()) {
-        Pipelines.shared.requestAuth() {[weak self] coordinates  in
+        Pipelines.shared.requestAuth(isFromLaunch: isFromLaunch) {[weak self] coordinates  in
             guard let welf = self else {
                 completion(nil)
                 return
@@ -3288,8 +3300,9 @@ extension MainVC: MenuResponseProtocol {
             }
 
     
-            fetchLocations() {[weak self] coordinates in
-                guard (coordinates != nil) else {return}
+            fetchLocations() { _ in
+//                [weak self] coordinates in
+//                guard (coordinates != nil) else {return}
                // self?.modalPresentationStyle = .fullScreen
               //  self?.navigationController?.pushViewController(view, animated: true)
                 return
@@ -4599,9 +4612,8 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 return
             }
             
-       
                     if let notWindedups = welf.toReturnNotWindedupDate()  {
-                        Shared.instance.showLoaderInWindow()
+                     
                         if let notWindedupDays = notWindedups.statusDate {
                             if selectedDate != notWindedupDays.toString(format: "MMMM dd, yyyy") {
                                 welf.showAlertToFilldates(description: "Kindly submit your status on \(notWindedupDays.toString(format: "MMMM dd, yyyy")) to change date.")
@@ -4613,11 +4625,11 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                                           let filteredDates = dcrDates.filter { $0.date ==  notWindedupDays.toString(format: "yyyy-MM-dd") }
                                             if let firstEntry = filteredDates.first {
                                                 welf.refreshUI(date: notWindedupDays, rejectionReason: firstEntry.reason, SegmentType.workPlan) {
-                                                    Shared.instance.removeLoaderInWindow()
+                                                  
                                                 }
                                             } else {
                                                 welf.refreshUI(date: notWindedupDays, SegmentType.workPlan) {
-                                                    Shared.instance.removeLoaderInWindow()
+                                                  
                                                 }
                                             }
                                         }
@@ -4625,7 +4637,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                                     }
                                 }
                             }
-                            Shared.instance.removeLoaderInWindow()
+                        
                             return
                         }
 
@@ -4671,11 +4683,11 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
                 let mergedDate =  welf.toMergeDate(selectedDate: date) ?? Date()
                 welf.lblDate.text = mergedDate.toString(format: "MMMM d, yyyy")
                 welf.validateWindups() {
-                    Shared.instance.showLoaderInWindow()
+                
                     welf.callDayPLanAPI(date: date, isFromDCRDates: true) {
                         welf.toSetParams(date: date, isfromSyncCall: true) {
                             welf.refreshUI(date: mergedDate, rejectionReason: reason, SegmentType.workPlan) {
-                                Shared.instance.removeLoaderInWindow()
+                              
                             }
                         }
                     }
@@ -5631,7 +5643,6 @@ extension MainVC:  MenuAlertProtocols {
         Shared.instance.showLoaderInWindow()
         CoreDataManager.shared.removeAllSlides{  isRemoved in
          
-          
             Shared.instance.iscelliterating = false
             Shared.instance.isSlideDownloading = false
             

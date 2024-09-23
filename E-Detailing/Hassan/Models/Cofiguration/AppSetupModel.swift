@@ -1,6 +1,6 @@
 //
 //  AppSetupModel.swift
-//  E-Detailing
+//  SAN ZEN
 //
 //  Created by Hassan
 //
@@ -81,7 +81,6 @@ class AppSetUp : Codable {
     var detailingChem : Int?
     var detailingstk : Int?
     var detailingUdr : Int?
-    
     var detailingType :Int?
     var deviceIdNeed : Int?
     var deviceRegId : String?
@@ -286,6 +285,7 @@ class AppSetUp : Codable {
     var workAreaName : String?
     var therapticNd : String?
     var sfDCRDate : Dt?
+    
     init() {
         sfDCRDate = Dt()
         successMessage = ""
