@@ -43,7 +43,7 @@ class Shared {
     isFetchingHQ = false
     detailedSlides = []
     isDetailed = false
-        selectedProductCode = ""
+    selectedProductCode = ""
  
     }
     

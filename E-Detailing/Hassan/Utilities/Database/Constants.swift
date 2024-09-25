@@ -361,10 +361,10 @@ var AppConfigURL: String = "" {
     AppConfigURL = "http://\(AppConfigURL)/apps/ConfigiOS.json"
      
     LocalStorage.shared.setSting(LocalStorage.LocalValue.AppconfigURL, text: AppConfigURL)
+        
     }
 }
-var licenseKey : String = ""
-
+var  licenseKey : String = ""
 var  attachmentsUrl : String = ""
 var  webEndPoint: String = ""
 var  iosEndPoint : String = ""
@@ -393,7 +393,6 @@ var ImageUploadURL : String {
         
         LocalStorage.shared.setSting(LocalStorage.LocalValue.AttachmentsURL, text: attachmentsUrl + "/")
     }
-    
 }
 
 

@@ -305,13 +305,12 @@ class SplashView: BaseView{
     }
     
     
-    func callStartupActions(){
+    func callStartupActions() {
         
         self.SplashImageHolderView.isHidden = false
         if let gifImage = UIImage.gif(asset: "launch", speedMultiplier: 4) {
             self.launchIV.image = gifImage
          }
-        
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
                 self?.SplashImageHolderView.isHidden = true

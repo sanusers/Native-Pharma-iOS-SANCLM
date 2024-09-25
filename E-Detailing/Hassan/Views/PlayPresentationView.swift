@@ -181,7 +181,7 @@ class  PlayPresentationView: BaseView {
     
     var tpDeviateReasonView:  TPdeviateReasonView?
     var previewType: [PreviewType] = []
-    var pageState : PageState = .minimized
+    var pageState : PageState = .expanded
     var optionsState: OptionsState = .minimized
     var selectedLoadPresentationIndex : Int? = 0
     var selectedSlideModel : [SlidesModel]?

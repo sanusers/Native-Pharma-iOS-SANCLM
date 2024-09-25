@@ -2663,6 +2663,17 @@ extension MainVC {
 //        }
         
         if selectedToday == nil  {
+            UIView.animate(withDuration: 1, delay: 0, animations: {
+                self.viewDate.backgroundColor = .appLightPink
+            })
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                UIView.animate(withDuration: 1, delay: 0, animations: {
+                    self.viewDate.backgroundColor = .appWhiteColor
+                   
+                })
+            }
+            
             self.showAlertToFilldates(description: "Please select date to Add Call")
             return
         }
@@ -3608,19 +3619,19 @@ extension MainVC : collectionViewProtocols {
                 let model = self.dcrCount[indexPath.row]
                 self.cacheDCRindex = indexPath.row
                 self.selectedCallIndex = indexPath.row
-                if model.name == "Listed Doctor" {
+                if model.name == LocalStorage.shared.getString(key: .doctor) {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.doctor, indexPath.row)
                     self.lblAverageDocCalls.text = "Average Doctor Calls"
-                } else if model.name == "Chemist" {
+                } else if model.name ==  LocalStorage.shared.getString(key: .chemist)  {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.chemist, indexPath.row)
                     self.lblAverageDocCalls.text = "Average Chemist Calls"
-                } else if model.name == "Stockist" {
+                } else if model.name ==  LocalStorage.shared.getString(key: .stockist)  {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.stockist, indexPath.row)
                     self.lblAverageDocCalls.text = "Average Stockist Calls"
-                } else if model.name == "UnListed Doctor" {
+                } else if model.name ==  LocalStorage.shared.getString(key: .unlistedDoctor)  {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.unlistedDoctor, indexPath.row)
                     self.lblAverageDocCalls.text = "Average UnListed Doctor Calls"

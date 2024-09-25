@@ -107,10 +107,11 @@ class LoginVC : UIViewController {
     @IBOutlet var PasswordIVHolderView: UIView!
     
     let network: ReachabilityManager = ReachabilityManager.sharedInstance
-    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+//    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     var homeVM: HomeViewModal?
 
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var resetQueue = DispatchQueue(label: "com.reset.queue", qos: .background, attributes: .concurrent, autoreleaseFrequency: .never)
     
     var isCahcheUser : Bool = {
           let cacheName = LocalStorage.shared.getString(key: LocalStorage.LocalValue.UserName)
@@ -270,7 +271,12 @@ class LoginVC : UIViewController {
             } else {
                 print("Resetted ")
                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                    self.startBackgroundTaskWithLoader(delegate: appDelegate)
+                    
+               
+                        self.startBackgroundTaskWithLoader(delegate: appDelegate)
+                  
+                    
+                    
                 }
             }
         }
@@ -331,8 +337,11 @@ class LoginVC : UIViewController {
 
     @IBAction func resetConfiguration(_ sender: UIButton) {
         
-        
         toSetupClearCacheAlert(text: "This action will clear all of unsynced outbox calls, Day plans and other cached datas. Are you sure you want to proceed?")
+        
+  
+        
+   
 
     }
     
@@ -483,62 +492,36 @@ class LoginVC : UIViewController {
 
     }
     
-    func endBackgroundTask() {
-        if backgroundTask != .invalid {
-            UIApplication.shared.endBackgroundTask(backgroundTask)
-            backgroundTask = .invalid
-        }
-    }
+//    func endBackgroundTask() {
+//        if backgroundTask != .invalid {
+//            UIApplication.shared.endBackgroundTask(backgroundTask)
+//            backgroundTask = .invalid
+//        }
+//    }
     
     
     func startBackgroundTaskWithLoader(delegate: AppDelegate?) {
-        
+
         guard let appDelegate = delegate else {
             return
         }
-        
-        // Show loader on the main thread
-        DispatchQueue.main.async {
-            Shared.instance.showLoaderInWindow()
-        }
-        
-        // Begin a background task and store its identifier
-        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
-            // End the background task if the expiration handler is called
-            self?.endBackgroundTask()
-        }
-        
-        // Perform API calls or other background activities
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            
-            let dispatchGroup = DispatchGroup()
-            
-            dispatchGroup.enter()
+
+        Shared.instance.showLoaderInWindow()
+        resetQueue.async {
             self.resetCoreDataStack(delegate: appDelegate) { isCompleted in
-                dispatchGroup.leave()
-            }
-            
-   //         dispatchGroup.enter()
-//            do {
-//                try self.clearDocumentsAndData()
-//                dispatchGroup.leave()
-//            } catch {
-//                print("Error clearing documents and data: \(error.localizedDescription)")
-//                dispatchGroup.leave()
-//            }
-            
-            
-            dispatchGroup.notify(queue: .main) {
-                // Hide your loader here
-                Shared.instance.removeLoaderInWindow()
-                self.toSetupAlert(text: "Data cleared successfully", istoValidate: true)
-               
-                // Call endBackgroundTask when the task completes if it's not already stopped
-                self.endBackgroundTask()
-            }
+            Shared.instance.removeLoaderInWindow()
+            self.toSetupAlert(text: "Data cleared successfully", istoValidate: true)
         }
+
+        }
+
+        
+ 
+        
     }
+
+
+    
     
     
     func clearDocumentsAndData() throws {
@@ -556,56 +539,7 @@ class LoginVC : UIViewController {
         }
     }
     
-//    func resetCoreDataStack(delegate: AppDelegate?, completion: @escaping (Bool) -> Void) {
-//        
-//        UserDefaults.resetDefaults()
-//        Shared.instance.toReset()
-//        guard let appDelegate = delegate else {
-//            completion(false)
-//            return
-//        }
-//        
-//        // Get a reference to the NSPersistentStoreCoordinator
-//        let storeContainer = appDelegate.persistentContainer.persistentStoreCoordinator
-//        
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            do {
-//                // Delete each existing persistent store
-//                for store in storeContainer.persistentStores {
-//                    try storeContainer.destroyPersistentStore(at: store.url!, ofType: store.type, options: nil)
-//                }
-//                
-//                // Create a new container and ensure it loads persistent stores synchronously
-//                let newContainer = NSPersistentContainer(name: "E-Detailing")
-//                
-//                var loadError: Error?
-//                let semaphore = DispatchSemaphore(value: 0)
-//                
-//                newContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
-//                    if let error = error as NSError? {
-//                        loadError = error
-//                    }
-//                    semaphore.signal()
-//                })
-//                
-//                semaphore.wait()
-//                
-//                if let error = loadError {
-//                    throw error
-//                }
-//                
-//                DispatchQueue.main.async {
-//                    appDelegate.persistentContainer = newContainer
-//                    completion(true)
-//                }
-//            } catch {
-//                print("Failed to reset Core Data stack: \(error.localizedDescription)")
-//                DispatchQueue.main.async {
-//                    completion(false)
-//                }
-//            }
-//        }
-//    }
+
     
     
     
