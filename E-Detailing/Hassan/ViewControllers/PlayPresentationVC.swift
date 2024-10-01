@@ -15,6 +15,7 @@ class PlayPresentationVC: BaseViewController {
     var selectedSlideModel: [SlidesModel]?
     @IBOutlet var playPresentationView: PlayPresentationView!
     var pagetype: PreviewHomeView.pageType = .preview
+    var pageState: PlayPresentationView.PageState = .expanded
     override func viewDidLoad() {
         super.viewDidLoad()
         if let navigationController = self.navigationController {
@@ -22,7 +23,7 @@ class PlayPresentationVC: BaseViewController {
            }
         // Do any additional setup after loading the view.
     }
-    class func initWithStory(model: [SlidesModel], pagetype: PreviewHomeView.pageType? = .preview) -> PlayPresentationVC {
+    class func initWithStory(model: [SlidesModel], pagetype: PreviewHomeView.pageType? = .preview, pagestate: PlayPresentationView.PageState) -> PlayPresentationVC {
         let reportsVC : PlayPresentationVC = UIStoryboard.Hassan.instantiateViewController()
         reportsVC.pagetype = pagetype ?? .preview
         reportsVC.selectedSlideModel = model

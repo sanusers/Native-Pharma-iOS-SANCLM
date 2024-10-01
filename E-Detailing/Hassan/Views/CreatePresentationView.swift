@@ -120,7 +120,7 @@ class CreatePresentationView : BaseView {
             
             let isToproceed =  welf.sledeCountLbl.text == "0" ||  welf.sledeCountLbl.text == "" ? false : true
             if isToproceed {
-                let vc = PlayPresentationVC.initWithStory(model: welf.toSetupPlayerModel())
+                let vc = PlayPresentationVC.initWithStory(model: welf.toSetupPlayerModel(), pagestate: .minimized)
                 
                 welf.createPresentationVC.navigationController?.pushViewController(vc, animated: true)
             } else {
@@ -142,10 +142,13 @@ class CreatePresentationView : BaseView {
         saveVIew.addTap { [weak self] in
             guard let welf = self else {return}
             welf.endEditing(true)
+
             let isToproceed =  welf.toCheckDataPersistance()
             
             if isToproceed {
-                
+                welf.saveLbl.text = "Saving.."
+                welf.saveVIew.alpha = 0.5
+                welf.saveVIew.isUserInteractionEnabled = false
                 CoreDataManager.shared.retriveSavedPresentations{ [weak self] savedPresentationArr in
                     guard let welf = self else {return}
                     let filteredPresentations = savedPresentationArr.filter { $0.name == welf.addNameTF.text }
@@ -158,6 +161,9 @@ class CreatePresentationView : BaseView {
                                 welf.toSaveNewPresentation()
                             } else {
                                 welf.toSetupAlert(desc: "Presentation with given name might persist already. please do try modifyng name.")
+                                welf.saveLbl.text = "Save"
+                                welf.saveVIew.alpha = 1
+                                welf.saveVIew.isUserInteractionEnabled = true
                             }
                             
                           
@@ -276,9 +282,13 @@ class CreatePresentationView : BaseView {
                 guard let welf = self else {return}
                 if isEdited {
                     welf.toCreateToast("Presentation saved successfully.")
+                    
                     welf.toExiteVC()
                 } else {
                     welf.toSetupAlert(desc: "Presentation with given name might persist already. please do try modifyng name.")
+                    welf.saveLbl.text = "Save"
+                    welf.saveVIew.alpha = 1
+                    welf.saveVIew.isUserInteractionEnabled = true
                 }
                
             }

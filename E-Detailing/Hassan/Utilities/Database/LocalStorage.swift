@@ -73,6 +73,9 @@ class LocalStorage {
         case isChemistFencingEnabled
         case isStockistFencingEnabled
         case isUnlistedDoctorFencingEnabled
+        case isTherapistNeeded
+        case istoAllowImageTag
+        
         //MARK: - DCR Titles
         case doctor
         case chemist

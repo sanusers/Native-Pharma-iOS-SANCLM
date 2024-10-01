@@ -12,7 +12,7 @@ import Foundation
 import Alamofire
 
 enum APIEnums : String{
-    
+    case chemist
     case none = ""
     case actionLogin = "action/login_edet"
     case tableSetup = "table/setups"

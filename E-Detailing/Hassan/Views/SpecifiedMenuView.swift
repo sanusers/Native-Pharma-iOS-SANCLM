@@ -64,7 +64,7 @@ extension SpecifiedMenuView:UITextFieldDelegate {
                 
                 
             case .cluster, .clusterInfo:
-                if newText.isEmpty {
+                if newText.isEmpty && selectedClusterID.isEmpty {
                     self.toLoadRequiredData()
                     toLOadData()
                 }
@@ -78,7 +78,7 @@ extension SpecifiedMenuView:UITextFieldDelegate {
                         isMatched = true
                     }
                 })
-                if newText.isEmpty {
+                if newText.isEmpty && selectedClusterID.isEmpty  {
 
                     self.noresultsView.isHidden = true
 
@@ -92,6 +92,9 @@ extension SpecifiedMenuView:UITextFieldDelegate {
                         self.noresultsView.isHidden = true
                         self.menuTable.isHidden = false
                         self.menuTable.reloadData()
+                    } else if !selectedClusterID.isEmpty && !isMatched {
+                        self.toLoadRequiredData()
+                        toLOadData()
                     } else {
                         print("Not matched")
                         self.noresultsView.isHidden = false
@@ -2146,7 +2149,10 @@ class SpecifiedMenuView: BaseView {
     
     func toLoadRequiredData(isfromTF: Bool? = false) {
         var selectedIndex : Int?
-        self.selectedClusterID = specifiedMenuVC.selectedClusterID ?? [String: Bool]()
+      if  self.selectedClusterID.isEmpty {
+          self.selectedClusterID = specifiedMenuVC.selectedClusterID ?? [String: Bool]()
+      } 
+        //
       
        switch self.cellType {
          

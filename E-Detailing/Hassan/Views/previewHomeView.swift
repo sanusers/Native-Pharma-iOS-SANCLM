@@ -194,7 +194,9 @@ extension PreviewHomeView: MenuResponseProtocol {
         dump(selectedObject)
         self.fetchedObject = selectedObject as? DoctorFencing
         dump(fetchedObject?.mappProducts)
-        self.selectDoctorsLbl.text = fetchedObject?.name ?? ""
+        let docName = fetchedObject?.name ?? ""
+        let docSpeciality = fetchedObject?.speciality ?? ""
+        self.selectDoctorsLbl.text = docName + docSpeciality
         let mapProd = fetchedObject?.mappProducts ?? ""
         let mProd = fetchedObject?.mProd ?? ""
         _ = fetchedObject?.specialityCode ?? ""
@@ -258,11 +260,14 @@ extension PreviewHomeView: MenuResponseProtocol {
 }
 
 extension PreviewHomeView:  SelectedPreviewTypesCVCDelegate {
-    func didPlayTapped(playerModel: [SlidesModel]) {
-        let vc = PlayPresentationVC.initWithStory(model:  playerModel, pagetype: self.previewHomeVC.pageType)
+
+    
+    func didPlayTapped(playerModel: [SlidesModel], pageState: PlayPresentationView.PageState) {
+        let vc = PlayPresentationVC.initWithStory(model:  playerModel, pagetype: self.previewHomeVC.pageType, pagestate: pageState)
         if previewHomeVC.pageType == .detailing {
             vc.previewTypeIndex = self.previewTypeIndex
             vc.delegete = self
+            vc.pageState = pageState
             self.previewHomeVC.navigationController?.pushViewController(vc, animated: false)
         } else {
             self.previewHomeVC.navigationController?.pushViewController(vc, animated: true)
@@ -320,7 +325,7 @@ extension PreviewHomeView:  PlayPresentationViewDelegate {
             
         }
         
-        didPlayTapped(playerModel: allSlides)
+        didPlayTapped(playerModel: allSlides, pageState: .minimized)
     }
     
     func didUserDetailedSlides() {

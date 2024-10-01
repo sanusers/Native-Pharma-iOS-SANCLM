@@ -56,17 +56,17 @@ final class ConnectionHandler : NSObject {
         // + api.rawValue
         
         if istoDownload ?? false {
-            return self.getRequest(forAPI: slideURL + (apiFilepath ?? ""),
+            return self.getRequest(forAPI: LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL) + (apiFilepath ?? ""),
                                    params: params,
                                    CacheAttribute: api.cacheAttribute ?  .none : api)
         }
         
         if api.method == .get {
-            return self.getRequest(forAPI: api == .none ? AppConfigURL  + api.rawValue : APIUrl + api.rawValue,
+            return self.getRequest(forAPI: api == .none ? AppConfigURL  + api.rawValue : LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL) + api.rawValue,
                                    params: params,
                                    CacheAttribute: api.cacheAttribute ?  .none : api)
         } else {
-            return self.postRequest(forAPI: api == .none ? AppConfigURL  + api.rawValue : APIUrl  + api.rawValue,
+            return self.postRequest(forAPI: api == .none ? AppConfigURL  + api.rawValue : LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)  + api.rawValue,
                                     params: params, CacheAttribute: api)
         }
     }
@@ -198,7 +198,7 @@ final class ConnectionHandler : NSObject {
                 return
             }
             guard response.response?.statusCode != 401 else{//Unauthorized
-                if response.request?.url?.description.contains(APIUrl) ?? false{
+                if response.request?.url?.description.contains(LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)) ?? false{
                     //self.doLogoutActions()
                 }
                 return
@@ -352,7 +352,7 @@ final class ConnectionHandler : NSObject {
 //            if data != Data(){
 //                multipartFormData.append(data, withName: imageName, fileName: fileName, mimeType: "image/jpeg")
 //            }
-        }, to: "\(APIUrl)\(api.rawValue)").response { results in
+        }, to: "\(LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL))\(api.rawValue)").response { results in
             
             let endTime = Date()
             

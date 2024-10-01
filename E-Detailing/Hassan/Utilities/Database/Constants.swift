@@ -63,15 +63,15 @@ var LicenceKey : String  {
 //= (infoPlist?.value(for: .Image_URL) ?? "").replacingOccurrences(of: "\\", with: "")
 var APIUrl : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppMainURL)
 
-var slideURL : String =   LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)
-
-var appConfigURL : String =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppconfigURL)
-
-var imageUploadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageUploadURL)
-
-var imageDownloadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
-
-var attachmentURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AttachmentsURL)
+//var slideURL : String =   LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)
+//
+//var appConfigURL : String =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.AppconfigURL)
+//
+//var imageUploadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageUploadURL)
+//
+//var imageDownloadURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.ImageDownloadURL)
+//
+//var attachmentURL : String = LocalStorage.shared.getString(key: LocalStorage.LocalValue.AttachmentsURL)
 
 var isDayCheckinNeeded : Bool = LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isDayCheckinEnabled)
 
@@ -340,22 +340,13 @@ func refreshConstants() {
     isUnListedDoctorFeedbackNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorFeedbackNeededMandatory)
     isUnListedDoctorRemarksNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorRemarksNeededMandatory)
     isUnListedDoctorEventCaptureNeededMandatory = LocalStorage.shared.getBool(key: .isUnListedDoctorEventCaptureNeededMandatory)
-//    AppConfigURL = ""
-//    licenseKey  = ""
-//    attachmentsUrl = ""
-//    webEndPoint = ""
-//    iosEndPoint  = ""
-//    syncEndPoint = ""
-//    slideEndPoint = ""
-//    AppMainAPIURL = ""
-//    ImageUploadURL = ""
-//    AppMainSlideURL = ""
 
 }
 
 
 
 var AppConfigURL: String = "" {
+    
     didSet {
         
     AppConfigURL = "http://\(AppConfigURL)/apps/ConfigiOS.json"
@@ -372,39 +363,7 @@ var  syncEndPoint : String = ""
 var  slideEndPoint: String = ""
 
 
-var AppMainAPIURL : String  {
-    get {
-        webEndPoint
-    }
-    set(newURL){
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.AppMainURL, text: webEndPoint + iosEndPoint)
-    }
-}
 
-var ImageUploadURL : String {
-    get {
-        attachmentsUrl
-    }
-    set {
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageUploadURL, text: attachmentsUrl + "/" + iosEndPoint)
-        
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageDownloadURL, text: attachmentsUrl + "/photos/")
-        
-        
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.AttachmentsURL, text: attachmentsUrl + "/")
-    }
-}
-
-
-var AppMainSlideURL : String  {
-    get {
-        slideEndPoint
-    }
-    set(newURL){
-        LocalStorage.shared.setSting(LocalStorage.LocalValue.SlideURL, text: attachmentsUrl + "/" + slideEndPoint)
-        
-    }
-}
 
 
 

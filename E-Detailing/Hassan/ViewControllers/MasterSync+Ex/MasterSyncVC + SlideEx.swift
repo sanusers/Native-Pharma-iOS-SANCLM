@@ -244,10 +244,13 @@ extension MasterSyncVC {
 
     private func updateSlideObjects(existingSlides: [SlidesModel], nonExistingSlides: [SlidesModel]) {
         // Create a set of slideIds from existingSlides
-        var existingSlideDict = Dictionary(uniqueKeysWithValues: existingSlides.map { ($0.slideId, $0) })
-        
+       // var existingSlideDict = Dictionary(uniqueKeysWithValues: existingSlides.map { ($0.slideId, $0) })
+        var existingSlideDict = existingSlides.reduce(into: [Int: SlidesModel]()) { dict, slide in
+            dict[slide.slideId] = slide
+        }
         // Filter nonExistingSlides to include only those slides whose slideId is in existingSlides
         let existingSlideIds = Set(existingSlides.map { $0.slideId })
+        
         let commonSlides = nonExistingSlides.filter { existingSlideIds.contains($0.slideId) }
         
         // If no common slides are found, consider all nonExistingSlides

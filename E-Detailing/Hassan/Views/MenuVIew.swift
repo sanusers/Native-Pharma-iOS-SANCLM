@@ -2850,7 +2850,11 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
 //                            }
                             
                             if LocalStorage.shared.getBool(key: .isMR) {
-                                isExist = true
+                                if sessionDetailsArr.sessionDetails.count > 1 {
+                                    if sessionDetailsArr.sessionDetails[0].WTCode ==  sessionDetailsArr.sessionDetails[1].WTCode {
+                                        isExist = true
+                                    }
+                                }
                             
                             }
                    

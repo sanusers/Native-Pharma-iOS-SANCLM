@@ -198,6 +198,32 @@ class MasterSyncVC : UIViewController {
     
     var groupedBrandsSlideModel:  [GroupedBrandsSlideModel]?
     
+    
+    func cacheFAQs() {
+        
+        guard let saneforceURL = URL(string: "https://san.saneforce.com/zenfaq/index.html") else {return}
+        
+        let request = URLRequest(url: saneforceURL)
+        
+        let faqQueue = DispatchQueue(label: "com.saneforce.faqs", qos: .background, attributes: .concurrent)
+        
+        faqQueue.async {
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            
+                if let httpResponse = response as? HTTPURLResponse, let data = data, error == nil {
+                    // Cache the response
+                    URLCache.shared.removeCachedResponse(for: request)
+                    let cachedResponse = CachedURLResponse(response: httpResponse, data: data)
+                    URLCache.shared.storeCachedResponse(cachedResponse, for: request)
+                   
+                }
+                
+            }
+            
+            task.resume()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addobservers()
@@ -212,21 +238,14 @@ class MasterSyncVC : UIViewController {
         self.updateList()
 
         if !isFromLaunch {
+
             selectedMasterGroupIndex = 0
     
         }else {
             selectedMasterGroupIndex = nil
             LocalStorage.shared.setBool(LocalStorage.LocalValue.hasMasterData, value: false)
-           // if isConnected {
                 syncAllAction(self)
-          //  } else {
-            //  toSetupAlert(desc: "please connect to internet for initial setups", istoNavigate: false, istoNavigatetoSettings: true)
-        //    }
-            
-           
-            
-          
-            
+
         }
         
         print(DBManager.shared.getSlide())
@@ -1079,7 +1098,7 @@ extension MasterSyncVC : tableViewProtocols {
         if Shared.instance.isSlideDownloading {
             return
         }
-        
+        cacheFAQs()
         self.isMaterSyncInProgress = true
         
       //  self.loadedSlideInfo = []

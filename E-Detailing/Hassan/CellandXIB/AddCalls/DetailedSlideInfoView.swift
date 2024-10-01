@@ -33,6 +33,8 @@ extension DetailedSlideInfoView: UITableViewDelegate, UITableViewDataSource {
         let name =  model.slidesModel?.name
         if let brand = model.brand as? Brand {
             cell.brandName.text = brand.name
+        } else {
+            cell.brandName.text = name
         }
        
         cell.delegate = self

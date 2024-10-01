@@ -13,6 +13,28 @@ import CoreData
 
 extension Chemist {
     
+    func populateCodeData(fomModel  chemist: ChemistModel, id : String) {
+        addr = chemist.addr
+        chemistContact = chemist.chemistsContact
+        chemistEmail = chemist.chemistsEmail
+        chemistFax = chemist.chemistsFax
+        chemistMobile = chemist.chemistsMobile
+        chemistPhone = chemist.chemistsPhone
+        code = chemist.code
+        geoTagCnt = "\(chemist.geoTagCnt)"
+        maxGeoMap = "\(chemist.maxGeoMap)"
+        name = chemist.name
+        sfCode = chemist.sfCode
+        townCode = chemist.townCode
+        townName = chemist.townName
+        lat = chemist.lat
+        long = chemist.long
+        imgName = chemist.imgName
+        categoryCode = chemist.chmCat
+        mapId = id
+    }
+    
+    
     func setValues(fromDictionary dictionary: [String:Any],id : String)    {
         if let addrValue = dictionary["Addr"] as? String{
             addr = addrValue

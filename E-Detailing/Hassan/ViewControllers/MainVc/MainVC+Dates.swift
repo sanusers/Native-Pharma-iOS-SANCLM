@@ -196,7 +196,7 @@ extension MainVC {
         let filteredDetails =  homeDataArr.filter { $0.dcr_dt ?? "" == dateString}
         
         if !filteredDetails.isEmpty {
-            return filteredDetails.first
+            return filteredDetails.filter { $0.fw_Indicator != nil && $0.fw_Indicator != ""  }.first
         } else {
             return nil
         }
@@ -363,8 +363,6 @@ extension MainVC {
                 
                 homeDataWeekoffEntities.append(entityHomedata)
             }
-            
-            
         }
         self.homeDataArr.append(contentsOf: homeDataWeekoffEntities)
         

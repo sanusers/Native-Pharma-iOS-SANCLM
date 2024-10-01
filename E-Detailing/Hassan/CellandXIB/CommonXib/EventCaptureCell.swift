@@ -11,11 +11,15 @@ import Foundation
 import UIKit
 
 
+
+
 extension EventCaptureCell : MediaDownloaderDelegate {
     func mediaDownloader(_ downloader: MediaDownloader, didUpdateProgress progress: Float) {
         print("Yet to")
         //self.imgView.image = UIImage(named: "masterSync")
     }
+
+
     
     func mediaDownloader(_ downloader: MediaDownloader, didFinishDownloadingData data: Data?) {
         print("Yet to")
@@ -51,7 +55,7 @@ class EventCaptureCell: UITableViewCell,UITextFieldDelegate {
     
     @IBOutlet weak var imgView: UIImageView!
     
-    
+
     @IBOutlet var nameTFholder: UIView!
     @IBOutlet weak var txtName: UITextField!
     @IBOutlet weak var txtDescription: UITextView!

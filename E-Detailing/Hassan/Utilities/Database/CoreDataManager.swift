@@ -2789,8 +2789,6 @@ extension CoreDataManager {
                             let aEventCapture  =  EventCapture(image: capturedImage, title: aEventCaptureViewModelElemet.title ?? "", description: aEventCaptureViewModelElemet.imageDescription ?? "", imageUrl: aEventCaptureViewModelElemet.imageUrl ?? "", time: aEventCaptureViewModelElemet.time ?? "", timeStamp: aEventCaptureViewModelElemet.timeStamp ?? "")
                             capturedEvents.append(aEventCapture)
                         }
-                        
-                    
                 })
                 
                 aEventCapture.capturedEvents = capturedEvents

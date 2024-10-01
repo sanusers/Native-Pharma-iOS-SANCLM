@@ -184,6 +184,7 @@ extension DCRfiltersView: collectionViewProtocols {
         
         let vc = SpecifiedMenuVC.initWithStory(self, celltype: type)
         vc.isFromfilter = true
+        vc.menuDelegate = self
         rootVC?.modalPresentationStyle = .custom
         rootVC?.present(vc, animated: false)
         
@@ -325,9 +326,9 @@ class DCRfiltersView: UIView {
     }
     
     enum AddedFilters: String {
-        case speciality
-        case category
-        case territory
+        case speciality = "Speciality"
+        case category = "Category"
+        case territory = "Territory"
         case dcrClass = "Class"
     }
     

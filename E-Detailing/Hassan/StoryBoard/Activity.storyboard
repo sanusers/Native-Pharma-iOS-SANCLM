@@ -1366,6 +1366,7 @@
                         <outlet property="emailTit" destination="k5S-7l-rwS" id="8rZ-9d-KSE"/>
                         <outlet property="funEventsHolderVIew" destination="dcO-bf-5nv" id="tXf-xa-gZT"/>
                         <outlet property="funEventsTable" destination="I4h-40-wgj" id="QKO-kP-Z7H"/>
+                        <outlet property="lblInputs" destination="cqB-qY-fkr" id="rVj-7e-kR7"/>
                         <outlet property="mobileINfoHeightConst" destination="Xca-ul-71Z" id="ggk-4X-o5g"/>
                         <outlet property="mobileInfoVIew" destination="srY-ob-HH2" id="Z48-AW-S6n"/>
                         <outlet property="mobileLbl" destination="raD-6x-UwO" id="TjS-WL-NPT"/>

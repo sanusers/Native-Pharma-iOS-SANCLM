@@ -848,7 +848,8 @@ class AppSetUp : Codable {
         LocalStorage.shared.setSting(.unlistedDoctor, text: self.nlCap ?? "unlisted Doctors")
         LocalStorage.shared.setSting(.cluster, text: self.clusterCap ?? "Cluster")
         
-        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.istoAllowImageTag, value:  self.geoTagImg == 0 ? true : false)
+    
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isTPmandatoryNeeded, value:  self.tpMdNeed == 0 ? true : false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isDayCheckinEnabled, value:  false)
@@ -1028,6 +1029,10 @@ class AppSetUp : Codable {
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorRemarksNeededMandatory, value:  false)
         
         LocalStorage.shared.setBool(LocalStorage.LocalValue.isUnListedDoctorEventCaptureNeededMandatory, value:  self.ulDocEventMd == 0 ? true : false)
+        
+        
+        LocalStorage.shared.setBool(LocalStorage.LocalValue.isTherapistNeeded, value:  self.therapticNd == "0" ? true : false)
+   
       
         
     }

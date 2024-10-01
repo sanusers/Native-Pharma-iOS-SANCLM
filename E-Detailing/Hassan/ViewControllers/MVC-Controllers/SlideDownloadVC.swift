@@ -366,7 +366,7 @@ class SlideDownloadVC : UIViewController {
             let existingCDSlides: [SlidesModel] = CoreDataManager.shared.retriveSavedSlides()
             let apiFetchedSlide: [SlidesModel] = self.arrayOfAllSlideObjects
             
-            if existingCDSlides.count == apiFetchedSlide.count {
+            if existingCDSlides.count == apiFetchedSlide.count || existingCDSlides.count >= apiFetchedSlide.count {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: true)
             } else {
                 LocalStorage.shared.setBool(LocalStorage.LocalValue.isSlidesLoaded, value: false)
@@ -689,7 +689,7 @@ class SlideDownloadVC : UIViewController {
 
         let params = items[index]
         let filePath = params.filePath
-        let url =  slideURL+filePath
+        let url =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)+filePath
         let type = mimeTypeForPath(path: url)
         params.utType = type
         
@@ -721,7 +721,7 @@ class SlideDownloadVC : UIViewController {
         }
         CoreDataManager.shared.removeAllGeneralGroupedSlides()
 
-        let groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
+        var groupedBrandsSlideModels = brandSlideObjects.compactMap { brandSlideModel -> GroupedBrandsSlideModel? in
             let brandSlides = allSlideObjects.filter { $0.code == brandSlideModel.productBrdCode }
 
             guard !brandSlides.isEmpty else {
@@ -740,7 +740,9 @@ class SlideDownloadVC : UIViewController {
 
             return groupedBrandModel
         }
-
+        groupedBrandsSlideModels =  groupedBrandsSlideModels.sorted { brandSlide1, brandSlide2 in
+            brandSlide1.priority < brandSlide2.priority
+        }
         processBrandsSlideModels(groupedBrandsSlideModels: groupedBrandsSlideModels, index: 0) { _ in
             completion(true)
         }

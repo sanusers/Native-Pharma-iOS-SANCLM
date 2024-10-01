@@ -45,7 +45,7 @@ extension PresentationHomeView: PopOverVCDelegate {
         switch index {
         case 0:
             //VIEW
-            let vc = PlayPresentationVC.initWithStory(model:  toSetupPlayerModel(createdPresentationSelectedIndex ?? 0))
+            let vc = PlayPresentationVC.initWithStory(model:  toSetupPlayerModel(createdPresentationSelectedIndex ?? 0), pagestate: .expanded)
             self.presentationHomeVC.navigationController?.pushViewController(vc, animated: true)
            
         case 1:

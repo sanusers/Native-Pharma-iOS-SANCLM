@@ -53,6 +53,19 @@ class TaggingListVC : UIViewController {
         self.doctor = DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID))
         setHQlbl()
         
+        switch type {
+            
+        case .doctor:
+            txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .doctor))"
+        case .chemist:
+            txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .chemist))"
+        case .stockist:
+            txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .stockist))"
+        case .unlistedDoctor:
+            txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .unlistedDoctor))"
+         default:
+            print("Yet to")
+        }
         
         selectHQholder.addTap {
             if   Shared.instance.isFetchingHQ {

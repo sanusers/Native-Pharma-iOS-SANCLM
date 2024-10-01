@@ -158,7 +158,7 @@ class BackgroundTaskManager {
 
         let params = items[index]
         let filePath = params.filePath
-        let url =  slideURL+filePath
+        let url =  LocalStorage.shared.getString(key: .SlideURL)+filePath
         let type = mimeTypeForPath(path: url)
         params.utType = type
         

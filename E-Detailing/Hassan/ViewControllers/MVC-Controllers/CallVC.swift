@@ -103,11 +103,12 @@ extension CallVC : addedSubViewsDelegate {
 
     
     
+    
     func didUpdateFilters(filteredObjects: [NSManagedObject]) {
         if !filteredObjects.isEmpty {
             addedFiltersCount.isHidden = false
             filterCountHolderVIew.isHidden = false
-            addedFiltersCount.text = "\(filteredObjects.count)"
+           // addedFiltersCount.text = "\(filteredObjects.count)"
         } else {
             addedFiltersCount.isHidden = true
             filterCountHolderVIew.isHidden = true
@@ -281,6 +282,7 @@ class CallVC : UIViewController {
     @IBOutlet var  backGroundVXview : UIView!
     
     var selectedTerritories = [Territory]()
+    var clusterCodes: [String] = []
     private var dcrSegmentControl : UISegmentedControl!
     private var callListViewModel : CallListViewModel!
     
@@ -338,6 +340,7 @@ class CallVC : UIViewController {
     }
 
     func setupUI() {
+        self.clusterCodes = self.selectedTerritories.compactMap{ $0.code }
         filterCountHolderVIew.backgroundColor = .appGreen
         addedFiltersCount.isHidden = true
         filterCountHolderVIew.isHidden = true
@@ -352,6 +355,8 @@ class CallVC : UIViewController {
         self.backgroundView.addTap {
             self.didClose()
         }
+        
+        txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .doctor))"
         
 
     }
@@ -546,7 +551,7 @@ class CallVC : UIViewController {
     
     func navigateToPrecallVC(dcrCall: CallViewModel, index: Int) {
         let precallvc = PreCallVC.initWithStory(pageType: .Precall)
-        precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: index, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+        precallvc.dcrCall = self.CallListArray.fetchDataAtIndex(index: index, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil, clusterCodes: self.clusterCodes)
         self.navigationController?.pushViewController(precallvc, animated: true)
     }
     
@@ -718,25 +723,35 @@ extension CallVC : collectionViewProtocols {
             switch self.type {
             case .doctor:
                 if let filterscase = self.filterscase   {
-                    return self.CallListArray.filteredDCRrows(self.type, searchText: searchText, filterscase: filterscase)
+                    let objCount: Int = self.CallListArray.filteredDCRrows(self.type, searchText: searchText, filterscase: filterscase)
+                    addedFiltersCount.text = "\(objCount)"
+                    return objCount
+                   
                 } else {
                     return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
                 }
             case .chemist:
                 if let filterscase = self.filterscase   {
-                    return self.CallListArray.filteredChemistRows(self.type, searchText: searchText, filterscase: filterscase)
+                    let objCount: Int =  self.CallListArray.filteredChemistRows(self.type, searchText: searchText, filterscase: filterscase)
+                    
+                    addedFiltersCount.text = "\(objCount)"
+                    return objCount
                 } else {
                     return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
                 }
             case .stockist:
                 if let filterscase = self.filterscase   {
-                    return self.CallListArray.filteredStockistRows(self.type, searchText: searchText, filterscase: filterscase)
+                    let objCount: Int = self.CallListArray.filteredStockistRows(self.type, searchText: searchText, filterscase: filterscase)
+                    addedFiltersCount.text = "\(objCount)"
+                    return objCount
                 } else {
                     return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
                 }
             case  .unlistedDoctor:
                 if let filterscase = self.filterscase   {
-                    return self.CallListArray.filteredUnlistedDocrows(self.type, searchText: searchText, filterscase: filterscase)
+                    let objCount: Int = self.CallListArray.filteredUnlistedDocrows(self.type, searchText: searchText, filterscase: filterscase)
+                    addedFiltersCount.text = "\(objCount)"
+                    return objCount
                 } else {
                     return self.CallListArray.numberofDoctorsRows(self.type,searchText: self.searchText)
                 }
@@ -759,18 +774,13 @@ extension CallVC : collectionViewProtocols {
             case self.callCollectionView :
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DoctorCallCell", for: indexPath) as! DoctorCallCell
            // cell.selectedTerritories = self.selectedTerritories
-            cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+            cell.CallDetail = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil, clusterCodes: self.clusterCodes)
             cell.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
             cell.btnTownName.tintColor = .appLightTextColor.withAlphaComponent(0.2)
-            
-            selectedTerritories.forEach { aTerritory in
-                if aTerritory.code ==  cell.CallDetail.townCode {
-                    cell.btnTownName.backgroundColor = .appLightPink.withAlphaComponent(0.2)
-                    cell.btnTownName.setTitleColor(.appLightPink, for: .normal)
-                } else {
-                    cell.btnTownName.backgroundColor = .appLightTextColor.withAlphaComponent(0.2)
-                    cell.btnTownName.setTitleColor(.appTextColor, for: .normal)
-                }
+            if selectedTerritories.contains(where: { aTerritory in
+                aTerritory.name == cell.CallDetail.townName
+            }) {
+                updateTownButtonAppearance(cell: cell, isSelected: true)
             }
             
                 return cell
@@ -790,12 +800,20 @@ extension CallVC : collectionViewProtocols {
         }
     }
     
+    private func updateTownButtonAppearance(cell: DoctorCallCell, isSelected: Bool) {
+        let backgroundColor: UIColor = isSelected ? .appLightPink.withAlphaComponent(0.2) : .appLightTextColor.withAlphaComponent(0.2)
+      //  let _: UIColor = isSelected ? .appLightPink : .appTextColor
+        
+        cell.btnTownName.backgroundColor = backgroundColor
+       // cell.btnTownName.tintColor = titleColor
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         switch collectionView {
             case self.callCollectionView:
             self.selectedDCRIndex = indexPath.row
-            let adcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil)
+            let adcrCall = self.CallListArray.fetchDataAtIndex(index: indexPath.row, type: self.type,searchText: self.searchText, isFiltered: self.filterscase == nil ? false : true, filterscase: self.filterscase ?? nil, clusterCodes: self.clusterCodes)
            // self.checkinDetailsAction(dcrCall: adcrCall)
             
             let homeDataArr : [HomeData] = DBManager.shared.getHomeData()
@@ -1030,7 +1048,22 @@ extension CallVC : collectionViewProtocols {
         
 
             case self.headerCollectionView:
-                self.type = self.CallListArray.fetchAtIndex(indexPath.row).type
+            self.type = self.CallListArray.fetchAtIndex(indexPath.row).type
+            
+            switch type {
+                
+            case .doctor:
+                txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .doctor))"
+            case .chemist:
+                txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .chemist))"
+            case .stockist:
+                txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .stockist))"
+            case .unlistedDoctor:
+                txtSearch.placeholder = "Search \(LocalStorage.shared.getString(key: .unlistedDoctor))"
+             default:
+                print("Yet to")
+            }
+            
                 addedFiltersCount.isHidden = true
                 filterCountHolderVIew.isHidden = true
                 self.filterscase = nil

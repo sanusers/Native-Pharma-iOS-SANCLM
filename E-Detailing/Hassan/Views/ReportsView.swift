@@ -62,8 +62,7 @@ extension ReportsView: UICollectionViewDelegate, UICollectionViewDataSource, UIC
                     switch modal.name {
                     case "Holiday / Weekly off":
                        
-                            let precallvc = PreCallVC.initWithStory(pageType: .Fundays)
-                          
+                        let precallvc = PreCallVC.initWithStory(pageType: .Fundays)
                         self?.reporsVC .navigationController?.pushViewController(precallvc, animated: true)
                         
                     default:

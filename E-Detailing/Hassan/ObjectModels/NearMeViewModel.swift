@@ -12,8 +12,8 @@ import CoreLocation
 
 class VisitListViewModel {
     
-    private var visitListViewModel = [VisitViewModel]()
-    private var tagTitleListViewModel = [TagTitleViewModel]()
+     var visitListViewModel = [VisitViewModel]()
+     var tagTitleListViewModel = [TagTitleViewModel]()
     
     func fetchDataAtIndex(_ index : Int) -> VisitViewModel {
         return visitListViewModel[index]

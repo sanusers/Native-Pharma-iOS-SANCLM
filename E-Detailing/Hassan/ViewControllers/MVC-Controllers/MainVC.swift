@@ -263,63 +263,87 @@ class MainVC : UIViewController {
     func toPostAlldayPlan(completion: @escaping () -> ()) {
 
         let customQueue = DispatchQueue(label: "com.queue.concurrent", qos: .background)
-        let dcrSyncGroup = DispatchGroup()
-
+  
         toSetupOutBoxDataSource(isSynced: false) { [weak self] in
             guard let welf = self else { return }
-
-         
+            
+            
             guard !obj_sections.isEmpty else {
                 completion()
                 return
             }
-
+            
+            print("Outbox sync started")
+            customQueue.async {
+                let dcrSyncGroup = DispatchGroup()
+                let maxConcurrentloads = 1
+                let semaphore = DispatchSemaphore(value: maxConcurrentloads)
+                let operationQueue = OperationQueue()
+                operationQueue.maxConcurrentOperationCount = 1
             obj_sections.forEach { section in
                 // Enter the group for each section
+                
+                
                 dcrSyncGroup.enter()
-
+                semaphore.wait()
                 let refreshDateStr = section.date
                 let callitems = section.items
                 let refreshDate = section.date.toDate(format: "yyyy-MM-dd")
-
-                customQueue.async(qos: .background, flags: .barrier) {
-                    let operationQueue = OperationQueue()
-
-                    let myDaplanOperation = BlockOperation {
-                        DispatchQueue.main.async {
-                            welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {}
+                
+                print("Outbox sync for date \(refreshDate) started")
+                
+                
+                
+                let myDaplanOperation = BlockOperation {
+                    DispatchQueue.main.async {
+                        print("Posting day plan for \(refreshDate)")
+                        welf.toPostDayplan(byDate: refreshDate, istoupdateUI: welf.selectedDate != nil) {
+                            print("completed day plan for \(refreshDate) ✅")
                         }
                     }
-
-                    let postCallsOperation = BlockOperation {
-                        DispatchQueue.main.async {
-                            welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in }
-                        }
-                    }
-
-                    let postImagesOperation = BlockOperation {
-                        DispatchQueue.main.async {
-                            welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {}
-                        }
-                    }
-
-                    let uploadWindupsOperation = BlockOperation {
-                        welf.toUploadWindups(date: refreshDate) { _ in
-                            dcrSyncGroup.leave()  // Leave the group after this operation completes
-                        }
-                    }
-
-                    // Set up operation dependencies
-                    postCallsOperation.addDependency(myDaplanOperation)
-                    postImagesOperation.addDependency(postCallsOperation)
-                    uploadWindupsOperation.addDependency(postImagesOperation)
-
-                    // Execute all operations
-                    operationQueue.maxConcurrentOperationCount = 1
-                    operationQueue.addOperations([myDaplanOperation, postCallsOperation, postImagesOperation, uploadWindupsOperation], waitUntilFinished: true)
                 }
+                
+                let postCallsOperation = BlockOperation {
+                    DispatchQueue.main.async {
+                        print("Posting calls for \(refreshDate)")
+                        welf.toretryDCRupload(dcrCall: callitems, date: refreshDateStr) { _ in
+                            print("completed calls upload for \(refreshDate) ✅")
+                        }
+                    }
+                }
+                
+                let postImagesOperation = BlockOperation {
+                    DispatchQueue.main.async {
+                        print("Posting Event captures for \(refreshDate)")
+                        welf.toUploadUnsyncedImageByDate(date: refreshDateStr) {
+                            print("completed Event captures upload for \(refreshDate) ✅")
+                        }
+                    }
+                }
+                
+                let uploadWindupsOperation = BlockOperation {
+                    print("Posting windups for \(refreshDate)")
+                    welf.toUploadWindups(date: refreshDate) { _ in
+                        print("completed windups upload for \(refreshDate) ✅ ---> Now Iterating to next day")
+                        semaphore.signal()
+                        dcrSyncGroup.leave()// Leave the group after this operation completes
+                    }
+                }
+                
+                // Set up operation dependencies
+                postCallsOperation.addDependency(myDaplanOperation)
+                postImagesOperation.addDependency(postCallsOperation)
+                uploadWindupsOperation.addDependency(postImagesOperation)
+                
+                operationQueue.addOperation(myDaplanOperation) // First operation
+                operationQueue.addOperation(postCallsOperation)   // Second operation
+                operationQueue.addOperation(postImagesOperation)  // Third operation
+                operationQueue.addOperation(uploadWindupsOperation)  // Fourth operation
+                
+              //  operationQueue.addOperations([myDaplanOperation, postCallsOperation, postImagesOperation, uploadWindupsOperation], waitUntilFinished: true)
+              
             }
-
+            operationQueue.waitUntilAllOperationsAreFinished()
             // Notify completion once all operations across all sections are done
             dcrSyncGroup.notify(queue: .main) {
                 welf.masterVM?.fetchMasterData(
@@ -329,10 +353,12 @@ class MainVC : UIViewController {
                     mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)
                 ) { _ in
                     Shared.instance.removeLoaderInWindow()
-                    welf.showAlertToFilldates(description: "Sync completed")
+                    print("Outbox sync completed")
+                    welf.showAlertToFilldates(description: "Outbox Sync completed")
                     completion()  // Now the completion is called once everything finishes
                 }
             }
+        }
         }
     }
     
@@ -575,6 +601,7 @@ class MainVC : UIViewController {
             self.toConfigureDynamicHeader(true)
             
         }
+        lblAverageDocCalls.text = "Average \(LocalStorage.shared.getString(key: .doctor)) Calls"
         closeRejectionVIew.layer.cornerRadius =  closeRejectionVIew.height / 2
         rejectionTitle.setFont(font: .medium(size: .BODY))
         rejectionTitle.textColor = .appLightPink
@@ -1563,7 +1590,7 @@ class MainVC : UIViewController {
       //  let activity = QuicKLink(color: activityColor, name: "Activity", image: UIImage(imageLiteralResourceName: "SideMenuActivity"))
         let reports = QuicKLink(color: reportsColor, name: "Reports", image: UIImage(imageLiteralResourceName: "reportIcon"))
         
-        let slidePreview = QuicKLink(color: previewColor, name: "Slide Preview", image: UIImage(imageLiteralResourceName: "slidePreviewIcon"))
+        let slidePreview = QuicKLink(color: previewColor, name: "Preview", image: UIImage(imageLiteralResourceName: "slidePreviewIcon"))
         
         self.links.append(presentation)
         self.links.append(slidePreview)
@@ -2279,6 +2306,18 @@ extension MainVC {
         }
         
         guard let selectedToday = self.selectedToday else {
+            
+            UIView.animate(withDuration: 1, delay: 0, animations: {
+                self.viewDate.backgroundColor = .appLightPink
+            })
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                UIView.animate(withDuration: 1, delay: 0, animations: {
+                    self.viewDate.backgroundColor = .appWhiteColor
+                   
+                })
+            }
+            
             showAlertToFilldates(description: "Please select date to submit.")
             return
         }
@@ -3574,7 +3613,7 @@ extension MainVC : collectionViewProtocols {
                         self.toSetupAlert()
                    }
                     
-                case "Slide Preview":
+                case "Preview":
                     if  LocalStorage.shared.getBool(key: LocalStorage.LocalValue.isSlidesLoaded) {
                     let vc = PreviewHomeVC.initWithStory()
                     self.navigationController?.pushViewController(vc, animated: true)
@@ -3622,19 +3661,19 @@ extension MainVC : collectionViewProtocols {
                 if model.name == LocalStorage.shared.getString(key: .doctor) {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.doctor, indexPath.row)
-                    self.lblAverageDocCalls.text = "Average Doctor Calls"
+                    self.lblAverageDocCalls.text = "Average \(LocalStorage.shared.getString(key: .doctor)) Calls"
                 } else if model.name ==  LocalStorage.shared.getString(key: .chemist)  {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.chemist, indexPath.row)
-                    self.lblAverageDocCalls.text = "Average Chemist Calls"
+                    self.lblAverageDocCalls.text = "Average \(LocalStorage.shared.getString(key: .chemist)) Calls"
                 } else if model.name ==  LocalStorage.shared.getString(key: .stockist)  {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.stockist, indexPath.row)
-                    self.lblAverageDocCalls.text = "Average Stockist Calls"
+                    self.lblAverageDocCalls.text = "Average \(LocalStorage.shared.getString(key: .stockist)) Calls"
                 } else if model.name ==  LocalStorage.shared.getString(key: .unlistedDoctor)  {
                     self.chartType = .doctor
                     self.toIntegrateChartView(.unlistedDoctor, indexPath.row)
-                    self.lblAverageDocCalls.text = "Average UnListed Doctor Calls"
+                    self.lblAverageDocCalls.text = "Average \(LocalStorage.shared.getString(key: .unlistedDoctor)) Calls"
                 }
                 self.dcrCallsCollectionView.reloadData()
       
@@ -4054,6 +4093,20 @@ extension MainVC : tableViewProtocols , CollapsibleTableViewHeaderDelegate {
                 
             //    if !isSequentialDCRenabled {
                     if welf.selectedToday == nil {
+                        
+                        UIView.animate(withDuration: 1, delay: 0, animations: {
+                            welf.viewDate.backgroundColor = .appLightPink
+                        })
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            UIView.animate(withDuration: 1, delay: 0, animations: {
+                                welf.viewDate.backgroundColor = .appWhiteColor
+                               
+                            })
+                        }
+                        
+                        
+                        
                         welf.showAlertToFilldates(description: "Please select date to Add Work type")
                         return
                     }
@@ -4542,7 +4595,7 @@ extension MainVC : FSCalendarDelegate, FSCalendarDataSource ,FSCalendarDelegateA
         //  let toCompareDate = dateFormatter.string(from: date)
         cell.addedIV.isHidden = false
         
-        if date.toString(format: "yyyy-MM-dd") == "2024-06-04" {
+        if date.toString(format: "yyyy-MM-dd") == "2024-08-11" {
             let model: HomeData? = toExtractWorkDetails(date: date)
             dump(model)
         }
@@ -5692,6 +5745,9 @@ extension MainVC:  MenuAlertProtocols {
         switch type {
         case .clearSlides:
             self.showAlertToClearSlides(desc: "Are you sure about clearing all saved slides?")
+            
+        case .notConnected:
+            self.showAlert(desc: "Please connect to internet.")
         }
     }
     

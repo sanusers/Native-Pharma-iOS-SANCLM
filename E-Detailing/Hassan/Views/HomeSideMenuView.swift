@@ -48,6 +48,16 @@ extension HomeSideMenuView: UITableViewDelegate, UITableViewDataSource {
                     
                 case "Clear slides":
                     self.menuVC.menuAlertDelegate?.addAlert(.clearSlides)
+                    
+//                case "FAQ":
+//                    if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
+//                        self.menuVC.menuAlertDelegate?.addAlert(.notConnected)
+//                        return
+//                    }
+//                    if let vc = _selectedItem.viewController{
+//                            self.menuVC.menuDelegate?.routeToView(vc)
+//                    }
+                    
                 default:
                     if let vc = _selectedItem.viewController{
                             self.menuVC.menuDelegate?.routeToView(vc)
@@ -340,6 +350,9 @@ class HomeSideMenuView : BaseView{
         
 //        let profiling : MenuItems = MenuItems(menuName: "Profiling", menuIcon: UIImage(named: "SideMenuProfiling") ?? UIImage(), VC: nil)
 //        menuItemArr.append(profiling)
+        let faqVC =  FAQwebController.initWithStory()
+        let FAQ : MenuItems = MenuItems(menuName: "FAQ", menuIcon: UIImage(systemName: "questionmark.circle") ?? UIImage(), VC: faqVC)
+        menuItemArr.append(FAQ)
         
         
         let removeSlide : MenuItems = MenuItems(menuName: "Clear slides", menuIcon: UIImage(systemName: "text.append") ?? UIImage(), VC: nil)

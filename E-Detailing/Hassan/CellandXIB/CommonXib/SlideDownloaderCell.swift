@@ -139,7 +139,7 @@ class SlideDownloaderCell : UITableViewCell  {
         btnRetry.isHidden = true
         let params = items[index]
         let filePath = params.filePath
-        let url =  slideURL+filePath
+        let url =  LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)+filePath
         print(url)
         let type = mimeTypeForPath(path: url)
         params.utType = type

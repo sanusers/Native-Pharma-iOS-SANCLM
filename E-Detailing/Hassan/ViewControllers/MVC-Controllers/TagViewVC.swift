@@ -11,7 +11,63 @@ import Foundation
 import UIKit
 import GoogleMaps
 
+extension TagViewVC: GMSMapViewDelegate {
+    internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        let geocoder = CLGeocoder()
+        let location = CLLocation(latitude: marker.position.latitude, longitude: marker.position.longitude)
+        
+        // Perform reverse geocoding
+        geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+            if let error = error {
+                print("Reverse geocoding failed: \(error.localizedDescription)")
+                return
+            }
+            
+            // Extract the first placemark (if available)
+            if let placemark = placemarks?.first {
+               
+                let subThoroughfare = placemark.subThoroughfare ?? ""
+                let thoroughfare = placemark.thoroughfare ?? ""
+                let locality = placemark.locality ?? ""
+                let administrativeArea = placemark.administrativeArea ?? ""
+                let subAdministrativeArea = placemark.subAdministrativeArea ?? ""
+                let country = placemark.country ?? ""
 
+                let formattedAddress = [subThoroughfare, thoroughfare, locality, administrativeArea, subAdministrativeArea, country]
+                    .filter { !$0.isEmpty } // Filters out empty components
+                    .joined(separator: ", ") // Joins non-empty components with a comma
+
+                print("Formatted Address: \(formattedAddress)")
+                
+                
+                if let userCoordinate = self.userCoordinate {
+                    let cllocation = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
+                    
+                    let distanceInMeters = cllocation.distance(from: location)
+                    
+                            
+                            
+                    if distanceInMeters >= 1000 {
+                        let kmValue = distanceInMeters / 1000
+                        self.setDCRinfo(address: formattedAddress, distance: String(format: "%.2f KM", kmValue))
+                    } else {
+                        self.setDCRinfo(address: formattedAddress, distance:  String(format: "%.2f Meter", distanceInMeters))
+                      
+                    }
+                    
+                    
+                }
+                
+  
+                
+               
+             
+            }
+        }
+        
+        return true
+    }
+}
 
 class TagViewVC : UIViewController {
     
@@ -20,21 +76,40 @@ class TagViewVC : UIViewController {
     
     @IBOutlet weak var viewMapView: GMSMapView!
     
+    @IBOutlet var dcrNameLbl: UILabel!
     
+    @IBOutlet var dcrAddressLbl: UILabel!
     
+    @IBOutlet var distanceHolderView: UIView!
+    @IBOutlet var distanceLbl: UILabel!
     var customer : CustomerViewModel!
-    
+    var userCoordinate : LocationInfo?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchLocations() { coordinates in
-            guard coordinates != nil else {return}
-            self.updateCustomerData()
+        
+        distanceHolderView.layer.borderWidth = 1
+        distanceHolderView.layer.borderColor = UIColor.appLightPink.cgColor
+        distanceHolderView.layer.cornerRadius = 5
+        
+        fetchLocations() {[weak self] coordinates in
+            guard coordinates != nil, let welf = self else {return}
+            welf.userCoordinate = coordinates
+            welf.updateCustomerData()
         }
         
         
-        
     }
+    
+    
+    
+    
+    func setDCRinfo(address: String, distance: String) {
+        dcrNameLbl.text = customer.name
+        dcrAddressLbl.text = address
+        distanceLbl.text = distance
+    }
+    
     func showAlert(desc: String) {
         let commonAlert = CommonAlert()
         commonAlert.setupAlert(alert: AppName, alertDescription: desc, okAction: "Ok")
@@ -75,6 +150,8 @@ class TagViewVC : UIViewController {
     }
     
     
+
+    
     func updateCustomerData() {
         
         switch self.customer.type {
@@ -93,7 +170,9 @@ class TagViewVC : UIViewController {
                     marker.title = doctor.name ?? ""
                     marker.snippet = doctor.addrs ?? ""
                     marker.map = viewMapView
-                    
+                    _ = self.mapView(self.viewMapView, didTap: marker)
+                   // setDCRinfo
+                  
                     let camera : GMSCameraPosition = GMSCameraPosition(latitude: douableLat, longitude: doubleLong, zoom: 12)
                     self.viewMapView.camera =  camera
                 }

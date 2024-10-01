@@ -77,6 +77,10 @@
 		3822D1E42C69F12E001DF96C /* ActivityTextEntryTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3822D1DE2C69F12E001DF96C /* ActivityTextEntryTVC.xib */; };
 		3822D1E52C69F12E001DF96C /* ActivityDualEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1DF2C69F12E001DF96C /* ActivityDualEntryVC.swift */; };
 		3822D1E62C69F12E001DF96C /* ActivityTextEntryTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3822D1E02C69F12E001DF96C /* ActivityTextEntryTVC.swift */; };
+		3824AEE92CA55ACF003F2CC6 /* ChemistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3824AEE82CA55ACF003F2CC6 /* ChemistModel.swift */; };
+		3824AEED2CA55CB1003F2CC6 /* StockistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3824AEEC2CA55CB1003F2CC6 /* StockistModel.swift */; };
+		3824AEEF2CA55D86003F2CC6 /* DoctorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3824AEEE2CA55D86003F2CC6 /* DoctorModel.swift */; };
+		3824AEF12CA56210003F2CC6 /* MastersyncVM + EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3824AEF02CA56210003F2CC6 /* MastersyncVM + EX.swift */; };
 		3825CFCC2BA806B600217D40 /* DCRfiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFC82BA806B600217D40 /* DCRfiltersView.swift */; };
 		3825CFCD2BA806B600217D40 /* addedFiltersCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */; };
 		3825CFCE2BA806B600217D40 /* addedFiltersCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */; };
@@ -94,6 +98,7 @@
 		383708202C09A485002A0F3C /* EventCaptureCVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3837081E2C09A485002A0F3C /* EventCaptureCVC.xib */; };
 		383A7DA42B932EDD00635D38 /* TPdeviateReasonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */; };
 		383A7DA62B93319D00635D38 /* TPdeviateReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */; };
+		383B46FB2CA810B6006B4BA4 /* FAQwebController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383B46FA2CA810B6006B4BA4 /* FAQwebController.swift */; };
 		38405ED62B8CAD5200CEC814 /* MyDayPlanCalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */; };
 		38405ED82B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */; };
 		3845556B2BA9C62B00F6CE1A /* ProductdetailsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384555692BA9C62B00F6CE1A /* ProductdetailsHeader.swift */; };
@@ -528,6 +533,10 @@
 		3822D1DE2C69F12E001DF96C /* ActivityTextEntryTVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityTextEntryTVC.xib; sourceTree = "<group>"; };
 		3822D1DF2C69F12E001DF96C /* ActivityDualEntryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityDualEntryVC.swift; sourceTree = "<group>"; };
 		3822D1E02C69F12E001DF96C /* ActivityTextEntryTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityTextEntryTVC.swift; sourceTree = "<group>"; };
+		3824AEE82CA55ACF003F2CC6 /* ChemistModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChemistModel.swift; sourceTree = "<group>"; };
+		3824AEEC2CA55CB1003F2CC6 /* StockistModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockistModel.swift; sourceTree = "<group>"; };
+		3824AEEE2CA55D86003F2CC6 /* DoctorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorModel.swift; sourceTree = "<group>"; };
+		3824AEF02CA56210003F2CC6 /* MastersyncVM + EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MastersyncVM + EX.swift"; sourceTree = "<group>"; };
 		3825CFC82BA806B600217D40 /* DCRfiltersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCRfiltersView.swift; sourceTree = "<group>"; };
 		3825CFC92BA806B600217D40 /* addedFiltersCVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addedFiltersCVC.xib; sourceTree = "<group>"; };
 		3825CFCA2BA806B600217D40 /* addedFiltersCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addedFiltersCVC.swift; sourceTree = "<group>"; };
@@ -546,6 +555,7 @@
 		3837081E2C09A485002A0F3C /* EventCaptureCVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCaptureCVC.xib; sourceTree = "<group>"; };
 		383A7DA32B932EDD00635D38 /* TPdeviateReasonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TPdeviateReasonView.xib; sourceTree = "<group>"; };
 		383A7DA52B93319D00635D38 /* TPdeviateReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPdeviateReasonView.swift; sourceTree = "<group>"; };
+		383B46FA2CA810B6006B4BA4 /* FAQwebController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQwebController.swift; sourceTree = "<group>"; };
 		38405ED52B8CAD5200CEC814 /* MyDayPlanCalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderView.swift; sourceTree = "<group>"; };
 		38405ED72B8CAF9300CEC814 /* MyDayPlanCalenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDayPlanCalenderCell.swift; sourceTree = "<group>"; };
 		384555692BA9C62B00F6CE1A /* ProductdetailsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductdetailsHeader.swift; sourceTree = "<group>"; };
@@ -1067,6 +1077,16 @@
 			path = Activities;
 			sourceTree = "<group>";
 		};
+		3824AEE72CA55824003F2CC6 /* DCRModels */ = {
+			isa = PBXGroup;
+			children = (
+				3824AEE82CA55ACF003F2CC6 /* ChemistModel.swift */,
+				3824AEEC2CA55CB1003F2CC6 /* StockistModel.swift */,
+				3824AEEE2CA55D86003F2CC6 /* DoctorModel.swift */,
+			);
+			path = DCRModels;
+			sourceTree = "<group>";
+		};
 		3825CFC72BA806B600217D40 /* DCRfilters */ = {
 			isa = PBXGroup;
 			children = (
@@ -1483,6 +1503,7 @@
 				38FAA1592B7F229200714AA2 /* UserStstisticsVM.swift */,
 				38E3C3562AF9F93F00623C33 /* HomeViewModel.swift */,
 				38E8B5D92B0B703000C40042 /*  SessionResponseVM.swift */,
+				3824AEF02CA56210003F2CC6 /* MastersyncVM + EX.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1704,6 +1725,7 @@
 		38E3C35A2AF9F99C00623C33 /* Hassan */ = {
 			isa = PBXGroup;
 			children = (
+				3824AEE72CA55824003F2CC6 /* DCRModels */,
 				387B8A2D2BB3DCDA007F38AB /* ConfigurationFiles */,
 				38BFB7842AFB62DD005E141E /* Models */,
 				3865F8CD2AFCCE57009AB984 /* Views */,
@@ -1932,6 +1954,7 @@
 				38E040A22AA215E8007B757E /* TagViewVC.swift */,
 				38CAE5D82AC312E300DA554F /* MultiSelectionVC.swift */,
 				38DB6CB52AC45B0B00F3F930 /* SingleSelectionRightVC.swift */,
+				383B46FA2CA810B6006B4BA4 /* FAQwebController.swift */,
 			);
 			path = "MVC-Controllers";
 			sourceTree = "<group>";
@@ -2351,6 +2374,7 @@
 				3822D1E12C69F12E001DF96C /* ActivitySelectionTVC.swift in Sources */,
 				38B18B712BD93AD7001FC958 /* InputSectionReusableView.swift in Sources */,
 				38E48DA22AED385B00081E7F /* ProductNameWithSampleTableViewCell.swift in Sources */,
+				3824AEED2CA55CB1003F2CC6 /* StockistModel.swift in Sources */,
 				38DD14B12B4FBAA70036384F /* Shared.swift in Sources */,
 				38EA3D162AFDED4C00DA7018 /* SessionInfoTVC.swift in Sources */,
 				38EBB88F2A6BD43B008E007C /* QuickLinkCell.swift in Sources */,
@@ -2393,6 +2417,7 @@
 				38E6598A2B33193F00E7BF42 /* DetailedReportVC.swift in Sources */,
 				38C424602A2B4DC5004A89EF /* MasterSyncCell.swift in Sources */,
 				38EF48972B6A791E004B6600 /* PlayHTMLCVC.swift in Sources */,
+				3824AEEF2CA55D86003F2CC6 /* DoctorModel.swift in Sources */,
 				38D569082B35A785007CB86D /* SortView.swift in Sources */,
 				38C9AD532AAB2329002E57C2 /* RcpaSelectedCompetitorView.swift in Sources */,
 				38B52CE22B29CC8900CF30D9 /* PopoverVC.swift in Sources */,
@@ -2421,6 +2446,7 @@
 				38E52A722C54F79200767AF6 /* TourplanApprovalessionInfoTVC.swift in Sources */,
 				38CA58D32B80AAFB00E28C3D /* MainVC + DayPlanEX.swift in Sources */,
 				38107C482B36EF7000ACEDF3 /* ViewAllInfoTVC.swift in Sources */,
+				3824AEE92CA55ACF003F2CC6 /* ChemistModel.swift in Sources */,
 				385D15C32C300D0100C47B7F /* MainVC+Dates.swift in Sources */,
 				384ED2BD2A39F8B900285B02 /* AppDefaults.swift in Sources */,
 				38E3C3662AF9FB4400623C33 /* plistReader.swift in Sources */,
@@ -2468,6 +2494,7 @@
 				38FAA16F2B7F25F800714AA2 /* MasterSyncVC + DayPlanEX.swift in Sources */,
 				3825CFCC2BA806B600217D40 /* DCRfiltersView.swift in Sources */,
 				381BC2622BAC65D400804B85 /* AddproductsMenuView.swift in Sources */,
+				383B46FB2CA810B6006B4BA4 /* FAQwebController.swift in Sources */,
 				38BA66882B4685BC008C6D2C /* DCRGraphModel.swift in Sources */,
 				3801D4952B4ECF4800A9740F /* HomeSideMenuVC.swift in Sources */,
 				385D15C72C300E2500C47B7F /* MainVC + CoreData.swift in Sources */,
@@ -2538,6 +2565,7 @@
 				388ABD042C4E35B700965C12 /* DCRApprovalsTVC.swift in Sources */,
 				38D95FF62BEB7E0900348FB8 /* EditCallinfoModel.swift in Sources */,
 				380906C42C4F745000706554 /* SpecificDCRslideinfoCVC.swift in Sources */,
+				3824AEF12CA56210003F2CC6 /* MastersyncVM + EX.swift in Sources */,
 				38DD14B72B4FEEF60036384F /* HomeSideMenuTVC.swift in Sources */,
 				38A2C20A2ADD60D5008EEDBB /* SingleSelectionTableViewCell.swift in Sources */,
 				38CBA4D22A9F80B3001992C4 /* TagViewCell.swift in Sources */,
@@ -2706,7 +2734,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "SAN ZEN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = N89SJ534H4;
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2728,7 +2756,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "T 2.1.1";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.scc.E-Detailing";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -2749,7 +2777,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "SAN ZEN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = N89SJ534H4;
 				"EXCLUDED_ARCHS[sdk=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2771,7 +2799,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "T 2.1.1";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.scc.E-Detailing";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

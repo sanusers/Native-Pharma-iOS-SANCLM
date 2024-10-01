@@ -10,7 +10,7 @@
 import UIKit
 
 protocol SelectedPreviewTypesCVCDelegate: AnyObject {
-    func didPlayTapped(playerModel: [SlidesModel])
+    func didPlayTapped(playerModel: [SlidesModel], pageState: PlayPresentationView.PageState)
 }
 
 extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -41,7 +41,7 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row), pageState: .minimized)
             }
         case .brand:
             let model: GroupedBrandsSlideModel = groupedBrandsSlideModel?[indexPath.row] ?? GroupedBrandsSlideModel()
@@ -49,7 +49,7 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row), pageState: .minimized)
             }
            
         case .speciality:
@@ -58,7 +58,7 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row), pageState: .minimized)
             }
         case .customPresentation:
             let model: SavedPresentation = self.savedPresentationArr?[indexPath.row] ?? SavedPresentation()
@@ -66,7 +66,7 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row), pageState: .minimized)
             }
             
         case .therapist:
@@ -75,7 +75,7 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
             
             cell.addTap { [weak self] in
                 guard let welf = self else {return}
-                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row))
+                welf.delegate?.didPlayTapped(playerModel: welf.toSetupPlayerModel(indexPath.row), pageState: .expanded)
             }
         }
         
@@ -97,7 +97,7 @@ extension SelectedPreviewTypesCVC: UICollectionViewDelegate, UICollectionViewDat
          if let savePresentationArr = self.savedPresentationArr {
              let selectedPresentation = savePresentationArr[index]
              selectedPresentation.groupedBrandsSlideModel.forEach({ aGroupedBrandsSlideModel in
-                var selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
+                 let selectedSlidesModelElement = aGroupedBrandsSlideModel.groupedSlide.filter { aSlidesModel in
                      aSlidesModel.isSelected == true
                  }
                

@@ -9,46 +9,45 @@
 
 import Foundation
 
-
 class CallListViewModel {
     
      var callListArray =  [CallViewModel]()
      var dcrActivityList = [DcrActivityViewModel]()
     
-    func fetchDataAtIndex(index : Int, type : DCRType, searchText : String, isFiltered: Bool, filterscase: FilteredCase?) -> CallViewModel {
+    func fetchDataAtIndex(index : Int, type : DCRType, searchText : String, isFiltered: Bool, filterscase: FilteredCase?, clusterCodes: [String]) -> CallViewModel {
         
         
         switch type {
             case .doctor:
 
             if isFiltered {
-                return self.fetchDoctorAtIndex(index: index, type: .doctor, searchText: searchText, filterscase: filterscase)
+                return self.fetchDoctorAtIndex(index: index, type: .doctor, searchText: searchText, filterscase: filterscase, clusterCodes: clusterCodes)
             } else {
-                return self.fetchDoctorAtIndex(index: index, type: .doctor, searchText: searchText, filterscase: nil)
+                return self.fetchDoctorAtIndex(index: index, type: .doctor, searchText: searchText, filterscase: nil, clusterCodes: clusterCodes)
             }
           
             case .chemist:
   
             if isFiltered {
-                return self.fetchChemistAtIndex(index: index, type: .chemist, searchText: searchText, filterscase: filterscase)
+                return self.fetchChemistAtIndex(index: index, type: .chemist, searchText: searchText, filterscase: filterscase, clusterCodes: clusterCodes)
             } else {
-                return self.fetchChemistAtIndex(index: index, type: .chemist, searchText: searchText, filterscase: nil)
+                return self.fetchChemistAtIndex(index: index, type: .chemist, searchText: searchText, filterscase: nil, clusterCodes: clusterCodes)
             }
 
             case .stockist:
      
             if isFiltered {
-                return self.fetchStockistAtIndex(index: index, type: .stockist, searchText: searchText, filterscase: filterscase)
+                return self.fetchStockistAtIndex(index: index, type: .stockist, searchText: searchText, filterscase: filterscase, clusterCodes: clusterCodes)
             } else {
-                return self.fetchStockistAtIndex(index: index, type: .stockist, searchText: searchText, filterscase: nil)
+                return self.fetchStockistAtIndex(index: index, type: .stockist, searchText: searchText, filterscase: nil, clusterCodes: clusterCodes)
             }
             
      
             case .unlistedDoctor:
             if isFiltered {
-                return self.fetchUnlistedDoctorAtIndex(index: index, type: .unlistedDoctor, searchText: searchText, filterscase: filterscase)
+                return self.fetchUnlistedDoctorAtIndex(index: index, type: .unlistedDoctor, searchText: searchText, filterscase: filterscase, clusterCodes: clusterCodes)
             } else {
-                return self.fetchUnlistedDoctorAtIndex(index: index, type: .unlistedDoctor, searchText: searchText, filterscase: nil)
+                return self.fetchUnlistedDoctorAtIndex(index: index, type: .unlistedDoctor, searchText: searchText, filterscase: nil, clusterCodes: clusterCodes)
             }
 
             
@@ -69,7 +68,7 @@ class CallListViewModel {
         }
     }
     
-    func fetchChemistAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase?) -> CallViewModel {
+    func fetchChemistAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase? , clusterCodes: [String]) -> CallViewModel {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         
@@ -78,30 +77,56 @@ class CallListViewModel {
         }else {
             
         }
-        let chemists = searchText == "" ? DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        var chemists = searchText == "" ? DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getChemist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        
+        // Sort the doctors array such that doctors with matching clusterCodes come first
+        chemists.sort { doctor1, doctor2 in
+            let isDoctor1InCluster = clusterCodes.contains(doctor1.townCode ?? "")
+            let isDoctor2InCluster = clusterCodes.contains(doctor2.townCode ?? "")
+            
+            if isDoctor1InCluster && !isDoctor2InCluster {
+                return true // doctor1 should come first
+            } else if !isDoctor1InCluster && isDoctor2InCluster {
+                return false // doctor2 should come first
+            } else {
+                return false // maintain existing order
+            }
+        }
         
         if let filterscase = filterscase {
             // Access the properties directly and use optional chaining
         //    let categoryCode = filterscase.categoryCode?.name
        
-            let territoryCode = filterscase.territoryCode?.name
-         
             // Use filter to find the matching doctors
-          
+            let territoryCode = filterscase.territoryCode?.code
+            let categoryCode = filterscase.categoryCode?.code
      
             
-            let filteredChem = chemists.filter { chemist in
-//                if let categoryCode = categoryCode, chemist.code != categoryCode {
-//                    return false
-//                }
-//      
-                if let territoryCode = territoryCode, chemist.townName != territoryCode {
+            let filteredChem =  chemists.filter { doctor in
+       
+                if let categoryCode = categoryCode, doctor.categoryCode != categoryCode {
                     return false
                 }
-
+                
+                if let territoryCode = territoryCode, doctor.townCode != territoryCode {
+                    return false
+                }
                 
                 return true
             }
+            
+//            let filteredChem = chemists.filter { chemist in
+//                if let categoryCode = categoryCode, chemist.code != categoryCode {
+//                    return false
+//                }
+////      
+//                if let territoryCode = territoryCode, chemist.townName != territoryCode {
+//                    return false
+//                }
+//
+//                
+//                return true
+//            }
             if !filteredChem.isEmpty {
                 if filteredChem.count > index {
                     let chemObj = filteredChem[index]
@@ -126,7 +151,7 @@ class CallListViewModel {
  
     }
     
-    func fetchStockistAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase?) -> CallViewModel {
+    func fetchStockistAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase?, clusterCodes: [String]) -> CallViewModel {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         
@@ -135,7 +160,21 @@ class CallListViewModel {
         }else {
             
         }
-        let stockists = searchText == "" ? DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        var stockists = searchText == "" ? DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getStockist(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        
+        // Sort the doctors array such that doctors with matching clusterCodes come first
+        stockists.sort { doctor1, doctor2 in
+            let isDoctor1InCluster = clusterCodes.contains(doctor1.townCode ?? "")
+            let isDoctor2InCluster = clusterCodes.contains(doctor2.townCode ?? "")
+            
+            if isDoctor1InCluster && !isDoctor2InCluster {
+                return true // doctor1 should come first
+            } else if !isDoctor1InCluster && isDoctor2InCluster {
+                return false // doctor2 should come first
+            } else {
+                return false // maintain existing order
+            }
+        }
         
         if let filterscase = filterscase {
             // Access the properties directly and use optional chaining
@@ -182,7 +221,7 @@ class CallListViewModel {
         
  
     }
-    func fetchUnlistedDoctorAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase?) -> CallViewModel {
+    func fetchUnlistedDoctorAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase? , clusterCodes: [String]) -> CallViewModel {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         
@@ -191,7 +230,21 @@ class CallListViewModel {
         }else {
             
         }
-        let doctors = searchText == "" ? DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        var doctors = searchText == "" ? DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        
+        // Sort the doctors array such that doctors with matching clusterCodes come first
+        doctors.sort { doctor1, doctor2 in
+            let isDoctor1InCluster = clusterCodes.contains(doctor1.townCode ?? "")
+            let isDoctor2InCluster = clusterCodes.contains(doctor2.townCode ?? "")
+            
+            if isDoctor1InCluster && !isDoctor2InCluster {
+                return true // doctor1 should come first
+            } else if !isDoctor1InCluster && isDoctor2InCluster {
+                return false // doctor2 should come first
+            } else {
+                return false // maintain existing order
+            }
+        }
         
         if let filterscase = filterscase {
             // Access the properties directly and use optional chaining
@@ -218,7 +271,7 @@ class CallListViewModel {
                 
                 return true
             }
-            if !filteredDoc.isEmpty {
+            if !filteredDoc.isEmpty && filteredDoc.count > index {
                 let docObj = filteredDoc[index]
                 let aCallViewmodel = CallViewModel(call: docObj , type: .unlistedDoctor)
                 return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
@@ -238,7 +291,7 @@ class CallListViewModel {
     }
     
     
-    func fetchDoctorAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase?) -> CallViewModel {
+    func fetchDoctorAtIndex(index : Int, type : DCRType, searchText : String, filterscase: FilteredCase?, clusterCodes: [String]) -> CallViewModel {
         let appsetup = AppDefaults.shared.getAppSetUp()
         
         
@@ -247,7 +300,21 @@ class CallListViewModel {
         }else {
             
         }
-        let doctors = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        var doctors = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
+        
+        // Sort the doctors array such that doctors with matching clusterCodes come first
+        doctors.sort { doctor1, doctor2 in
+            let isDoctor1InCluster = clusterCodes.contains(doctor1.townCode ?? "")
+            let isDoctor2InCluster = clusterCodes.contains(doctor2.townCode ?? "")
+            
+            if isDoctor1InCluster && !isDoctor2InCluster {
+                return true // doctor1 should come first
+            } else if !isDoctor1InCluster && isDoctor2InCluster {
+                return false // doctor2 should come first
+            } else {
+                return false // maintain existing order
+            }
+        }
         
         if let filterscase = filterscase {
             // Access the properties directly and use optional chaining
@@ -274,7 +341,7 @@ class CallListViewModel {
                 
                 return true
             }
-            if !filteredDoc.isEmpty {
+            if !filteredDoc.isEmpty  && filteredDoc.count > index {
                 let docObj = filteredDoc[index]
                 let aCallViewmodel = CallViewModel(call: docObj , type: .doctor)
                 return aCallViewmodel.toRetriveDCRdata(dcrcall: aCallViewmodel.call)
@@ -340,21 +407,21 @@ class CallListViewModel {
         
         let doctors = searchText == "" ? DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getUnListedDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
-        let categoryCode = filterscase.categoryCode?.code
-        let specialityCode = filterscase.specialityCode?.code
-        let territoryCode = filterscase.territoryCode?.code
+        let categoryCode = filterscase.categoryCode?.name
+        let specialityCode = filterscase.specialityCode?.name
+        let territoryCode = filterscase.territoryCode?.name
         let doctorClasscode = filterscase.classCode?.code
 
         // Use filter to find the matching doctors
         // Use filter to find the matching doctors
         return doctors.filter { doctor in
-            if let categoryCode = categoryCode, doctor.categoryCode != categoryCode {
+            if let categoryCode = categoryCode, doctor.category != categoryCode {
                 return false
             }
             if let specialityCode = specialityCode, doctor.specialty != specialityCode {
                 return false
             }
-            if let territoryCode = territoryCode, doctor.townCode != territoryCode {
+            if let territoryCode = territoryCode, doctor.townName != territoryCode {
                 return false
             }
             
@@ -371,20 +438,20 @@ class CallListViewModel {
         
         let doctors = searchText == "" ? DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)) :  DBManager.shared.getDoctor(mapID: LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)).filter{($0.name?.lowercased() ?? "").contains(searchText.lowercased())}
         
-        let categoryCode = filterscase.categoryCode?.code
-        let specialityCode = filterscase.specialityCode?.code
-        let territoryCode = filterscase.territoryCode?.code
+        let categoryCode = filterscase.categoryCode?.name
+        let specialityCode = filterscase.specialityCode?.name
+        let territoryCode = filterscase.territoryCode?.name
         let doctorClassCode = filterscase.classCode?.doctorClassName
 
         // Use filter to find the matching doctors
-        return doctors.filter { doctor in
-            if let categoryCode = categoryCode, doctor.categoryCode != categoryCode {
+        let doctorsCount = doctors.filter { doctor in
+            if let categoryCode = categoryCode, doctor.category != categoryCode {
                 return false
             }
-            if let specialityCode = specialityCode, doctor.specialityCode != specialityCode {
+            if let specialityCode = specialityCode, doctor.speciality != specialityCode {
                 return false
             }
-            if let territoryCode = territoryCode, doctor.townCode != territoryCode {
+            if let territoryCode = territoryCode, doctor.townName != territoryCode {
                 return false
             }
             
@@ -394,6 +461,8 @@ class CallListViewModel {
             
             return true
         }.count
+        
+        return doctorsCount
        // return doctors.filter { $0.categoryCode ==  categoryCode ?? "" || $0.specialityCode == specialityCode ?? "" || $0.townCode == territoryCode ?? ""}.count
     }
     
@@ -473,8 +542,8 @@ public class CallViewModel {
                 type = .doctor
                 name = doccall.name ?? ""
                 code = doccall.code ?? ""
-                dob = doccall.dob ?? ""
-                dow = doccall.dow ?? ""
+                dob = doccall.dob?.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil).toString(format: "dd-MMM", timeZone: nil) ?? ""
+                dow = doccall.dow?.toDate(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil).toString(format: "dd-MMM", timeZone: nil) ?? ""
                 mobile = doccall.mobile ?? ""
                 email = doccall.docEmail ?? ""
                 address = doccall.addrs ?? ""
@@ -497,7 +566,12 @@ public class CallViewModel {
                 email = doccall.chemistEmail ?? ""
                 address = doccall.addr ?? ""
                 
-                category =  ""
+               let categoryCDM =  DBManager.shared.getChemistCategory()
+                 
+                if let filteredCat = categoryCDM.filter({ $0.code == doccall.categoryCode }).first {
+                    category = filteredCat.name ?? ""
+                }
+
                 speciality =  ""
                 townName = doccall.townName ?? ""
                 territory = doccall.townName ?? ""
@@ -524,13 +598,14 @@ public class CallViewModel {
                 cateCode = ""
                 
             }
+            
         case .unlistedDoctor:
             if let doccall = dcrcall as? UnListedDoctor {
                 type = .unlistedDoctor
                 name = doccall.name ?? ""
                 code = doccall.code ?? ""
-                dob = doccall.dob?.date ?? ""
-                dow = doccall.dow?.date ?? ""
+                dob = doccall.dob?.date?.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "dd-MMM") ?? ""
+                dow = doccall.dow?.date?.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "dd-MMM") ?? ""
                 mobile = doccall.mobile ?? ""
                 email = doccall.email ?? ""
                 address = doccall.addrs ?? ""

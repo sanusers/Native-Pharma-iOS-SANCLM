@@ -441,9 +441,15 @@ class NearMeVC : UIViewController {
                             marker.map = viewMapView
                             
                             
-                            let distanceRound = Double(round(1000 * distance) / 1000)
+                            let distanceRound = Double(round(1000 * distance) / 100)
+                            
                             
                             self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: doctor.name ?? "", address: doctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: doctor.code ?? "", imageURL: doctor.imageName ?? "", tagType: self.tagType)))
+                            
+                            self.visitListViewModel.visitListViewModel = self.visitListViewModel.visitListViewModel.sorted { vist1, visit2 in
+                                Double(vist1.meter) ?? Double() < Double(visit2.meter) ?? Double()
+                            }
+                            
                             markers.append(marker)
                         }
                     }
@@ -473,9 +479,14 @@ class NearMeVC : UIViewController {
                             marker.snippet = chemist.code ?? ""
                             marker.map = viewMapView
                             
-                            let distanceRound = Double(round(1000 * distance) / 1000)
+                            let distanceRound = Double(round(1000 * distance) / 100)
                             
                             self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name:  chemist.name ?? "", address: chemist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: chemist.code ?? "", imageURL: chemist.imgName ?? "", tagType: self.tagType)))
+                            
+                            self.visitListViewModel.visitListViewModel = self.visitListViewModel.visitListViewModel.sorted { vist1, visit2 in
+                                Double(vist1.meter) ?? Double() < Double(visit2.meter) ?? Double()
+                            }
+                            
                             markers.append(marker)
                         }
                     }
@@ -505,9 +516,14 @@ class NearMeVC : UIViewController {
                             marker.snippet = stockist.code ?? ""
                             marker.map = viewMapView
                             
-                            let distanceRound = Double(round(1000 * distance) / 1000)
+                            let distanceRound = Double(round(1000 * distance) / 100)
                             
                             self.visitListViewModel.addVisitViewModel(VisitViewModel(taggedDetail: TaggedDetails(name: stockist.name ?? "", address: stockist.addr ?? "", meter: "\(distanceRound)", coordinates: location, custCode: stockist.code ?? "", imageURL: stockist.imgName ?? "", tagType: self.tagType)))
+                            
+                            self.visitListViewModel.visitListViewModel = self.visitListViewModel.visitListViewModel.sorted { vist1, visit2 in
+                                Double(vist1.meter) ?? Double() < Double(visit2.meter) ?? Double()
+                            }
+                            
                             markers.append(marker)
                         }
                     }
@@ -538,9 +554,14 @@ class NearMeVC : UIViewController {
                             marker.snippet = unlistedDoctor.code ?? ""
                             marker.map = viewMapView
                             
-                            let distanceRound = Double(round(1000 * distance) / 1000)
+                            let distanceRound = Double(round(1000 * distance) / 100)
                             
                             self.visitListViewModel.addVisitViewModel(VisitViewModel( taggedDetail: TaggedDetails(name: unlistedDoctor.name ?? "", address: unlistedDoctor.addrs ?? "", meter: "\(distanceRound)", coordinates: location, custCode: unlistedDoctor.code ?? "", imageURL: unlistedDoctor.imgName ?? "", tagType: self.tagType)))
+                            
+                            self.visitListViewModel.visitListViewModel = self.visitListViewModel.visitListViewModel.sorted { vist1, visit2 in
+                                Double(vist1.meter) ?? Double() < Double(visit2.meter) ?? Double()
+                            }
+                            
                             markers.append(marker)
                         }
                     }
@@ -643,6 +664,7 @@ extension NearMeVC : tableViewProtocols {
                 cell.btnInfo.tintColor = .appTextColor
             }
          
+            
         }
         
         cell.addTap {

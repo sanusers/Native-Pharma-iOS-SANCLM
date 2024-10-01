@@ -4,6 +4,7 @@ import CoreData
 
 enum AlertTypes: String {
     case clearSlides
+    case notConnected
 }
 
 protocol MenuAlertProtocols: AnyObject {

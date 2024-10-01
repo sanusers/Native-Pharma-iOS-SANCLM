@@ -29,7 +29,21 @@ class TagViewCell: UITableViewCell {
         didSet {
             self.lblName.text = visitDetail.name
             self.lblAddress.text = visitDetail.address
-            self.lblMeter.text = visitDetail.meter + "  Meter"
+           
+            guard let distance = Double(visitDetail.meter) else { 
+                
+                self.lblMeter.text = String(format: "%.2f Meter", visitDetail.address)
+                return
+            }
+                    
+                    
+            if distance >= 1000 {
+                let kmValue = distance / 1000
+                      self.lblMeter.text = String(format: "%.2f KM", kmValue)
+            } else {
+                self.lblMeter.text = String(format: "%.2f Meter", distance)
+            }
+            
         }
     }
     

@@ -42,21 +42,70 @@ class ProductSampleTableViewCell : UITableViewCell {
         didSet {
             switch call {
             case is DoctorFencing:
-                viewRxQty.isHidden = isDoctorProductRXneeded ? false : true
-                viewRcpa.isHidden =  isDoctorRCPAneeded ? false : true
-                viewSample.isHidden = isDoctorProductSampleNeeded ? false : true
+//                viewRxQty.isHidden = isDoctorProductRXneeded ? false : true
+//                viewRcpa.isHidden =  isDoctorRCPAneeded ? false : true
+//                viewSample.isHidden = isDoctorProductSampleNeeded ? false : true
+                
+                
+                if !LocalStorage.shared.getBool(key: .isDoctorProductSampleNeeded) {
+                    viewSample.isHidden = true
+                }
+                
+                if !LocalStorage.shared.getBool(key: .isDoctorProductRXneeded) {
+                    viewRxQty.isHidden = true
+                }
+                
+                if !LocalStorage.shared.getBool(key: .isDoctorRCPAneeded) {
+                    viewRcpa.isHidden = true
+                }
+                
             case is Chemist:
-                viewRxQty.isHidden = isChemistProductRXneeded ? false : true
-                viewRcpa.isHidden =  isChemistRCPAneeded ? false : true
-                viewSample.isHidden = isChemistProductSampleNeeded ? false : true
+
+                if !LocalStorage.shared.getBool(key: .isChemistProductSampleNeeded) {
+                    viewSample.isHidden = true
+                }
+                
+                if !LocalStorage.shared.getBool(key: .isChemistProductRXneeded) {
+                    viewRxQty.isHidden = true
+                }
+                
+                viewRcpa.isHidden = true
+                viewDeviation.isHidden = true
+                
             case is Stockist:
-                viewRxQty.isHidden = isStockistProductRXneeded ? false : true
-                viewRcpa.isHidden =   true
-                viewSample.isHidden = isStockistProductSampleNeeded ? false : true
+//                viewRxQty.isHidden = isStockistProductRXneeded ? false : true
+//                viewRcpa.isHidden =   true
+//                viewSample.isHidden = isStockistProductSampleNeeded ? false : true
+                
+                
+                if !LocalStorage.shared.getBool(key: .isStockistProductSampleNeeded) {
+                    viewSample.isHidden = true
+                }
+                
+                if !LocalStorage.shared.getBool(key: .isStockistProductRXneeded) {
+                    viewRxQty.isHidden = true
+                }
+                
+            
+                viewRcpa.isHidden = true
+                viewDeviation.isHidden = true
+                
             case is UnListedDoctor:
-                viewRxQty.isHidden = isUnListedDoctorProductRXneeded ? false : true
-                viewRcpa.isHidden =  isUnListedDoctorRCPAneeded ? false : true
-                viewSample.isHidden = false
+//                viewRxQty.isHidden = isUnListedDoctorProductRXneeded ? false : true
+//                viewRcpa.isHidden =  isUnListedDoctorRCPAneeded ? false : true
+//                viewSample.isHidden = false
+                
+                if !LocalStorage.shared.getBool(key: .isUnListedDoctorProductSampleNeeded) {
+                    viewSample.isHidden = true
+                }
+                
+                if !LocalStorage.shared.getBool(key: .isUnListedDoctorProductRXneeded) {
+                    viewRxQty.isHidden = true
+                }
+         
+            
+                viewRcpa.isHidden = true
+                
             default:
                 print("Yet to")
                 
@@ -97,7 +146,7 @@ class ProductSampleTableViewCell : UITableViewCell {
             
         }
      
-     
+        viewStock.isHidden = true
         
 
         

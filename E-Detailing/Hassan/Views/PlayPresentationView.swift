@@ -87,7 +87,6 @@ class  PlayPresentationView: BaseView {
             self.viewMInimize.isHidden = false
             self.viewClosePreview.isHidden = playPresentationVC.pagetype == .detailing ? true : true
             backHolderView.isHidden =  playPresentationVC.pagetype == .detailing ? true : true
-            
             self.loadedCollectionHolderView.isHidden = true
             self.previewCollectionHolderView.isHidden = true
             NotificationCenter.default.post(name: NSNotification.Name("viewExpanded"), object: nil)
@@ -98,9 +97,7 @@ class  PlayPresentationView: BaseView {
            
             self.previewCollectionHolderView.isHidden = playPresentationVC.pagetype == .detailing ? false : true
             self.loadedCollectionHolderView.isHidden = false
-            
             NotificationCenter.default.post(name: NSNotification.Name("viewminimized"), object: nil)
-           
         }
         
         
@@ -181,7 +178,7 @@ class  PlayPresentationView: BaseView {
     
     var tpDeviateReasonView:  TPdeviateReasonView?
     var previewType: [PreviewType] = []
-    var pageState : PageState = .expanded
+    var pageState : PageState = .minimized
     var optionsState: OptionsState = .minimized
     var selectedLoadPresentationIndex : Int? = 0
     var selectedSlideModel : [SlidesModel]?
@@ -195,7 +192,6 @@ class  PlayPresentationView: BaseView {
 
     override func didLayoutSubviews(baseVC: BaseViewController) {
         super.didLayoutSubviews(baseVC: baseVC)
-        
         let  tpDeviateVIewwidth = self.bounds.width / 1.7
         let  tpDeviateVIewheight = self.bounds.height / 2.7
         
@@ -209,7 +205,7 @@ class  PlayPresentationView: BaseView {
     
     func toHandleFirstSlide() {
         guard let slideID = self.selectedSlideID else {return}
-        var adetailedSlide = DetailedSlide(slideID: slideID, isLiked: nil, isDisliked: nil, remarks: nil, isShared: nil)
+        let adetailedSlide = DetailedSlide(slideID: slideID, isLiked: nil, isDisliked: nil, remarks: nil, isShared: nil)
 //        let slideTime = backgroundTimer.stop()
 //        let startTime = slideTime.startTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
 //        let endTime = slideTime.endTime?.toString(format: "yyyy-MM-dd HH:mm:ss", timeZone: nil)
@@ -603,7 +599,7 @@ class  PlayPresentationView: BaseView {
         self.selectedSlideModel = playPresentationVC.selectedSlideModel
         if let selectedSlideModel =  self.selectedSlideModel , selectedSlideModel.count > 0 {
             self.selectedSlideID =  selectedSlideModel.first?.slideId ?? Int()
-            self.selectedSlideURL = slideURL+(selectedSlideModel.first?.filePath ?? String())
+            self.selectedSlideURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)+(selectedSlideModel.first?.filePath ?? String())
             self.backgroundTimer = BackgroundTimer()
             self.backgroundTimer.start()
             self.toHandleFirstSlide()
@@ -723,8 +719,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
         if let videoCell = cell as? VideoPlayerCVC {
             videoCell.pauseVideo()
         }
-         
-         
+
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -734,7 +729,7 @@ extension PlayPresentationView: UICollectionViewDelegate, UICollectionViewDataSo
             
             
             let model =  self.selectedSlideModel?[indexPath.row]
-            self.selectedSlideURL = slideURL+(model?.filePath ?? String())
+            self.selectedSlideURL = LocalStorage.shared.getString(key: LocalStorage.LocalValue.SlideURL)+(model?.filePath ?? String())
         default:
             print("Yet to")
         }

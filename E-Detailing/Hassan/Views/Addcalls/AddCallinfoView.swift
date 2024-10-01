@@ -650,9 +650,14 @@ extension AddCallinfoView: tableViewProtocols {
                     cell.lblName.textColor =    cell.btnSelected.isSelected ? .appTextColor : .appLightTextColor
                     
                     cell.addTap {
-                        self.productSelectedListViewModel.removeAllProducts()
-                        self.loadedContentsTable.reloadData()
-                        self.yetToloadContentsTable.reloadData()
+                     
+                        guard  !self.productSelectedListViewModel.productViewModel.isEmpty else {
+                            self.productSelectedListViewModel.removeAllProducts()
+                            self.loadedContentsTable.reloadData()
+                            self.yetToloadContentsTable.reloadData()
+                            return
+                        }
+                       // self.toCreateToast("Re")
                         
                     }
                     return cell
@@ -2643,7 +2648,8 @@ extension AddCallinfoView : addedSubViewsDelegate {
                           
                             navigationController.popToViewController(preCallVC, animated: true)
                             
-                            break
+                        } else {
+                            navigationController.popViewController(animated: true)
                         }
                     }
                 }

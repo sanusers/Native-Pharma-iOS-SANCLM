@@ -284,9 +284,14 @@ class PopOverVC: UIViewController {
         case .unlistedDoctor:
             customerIcon.image = UIImage(named: "Doctor")
         }
+        
+        viewTaggedImgHolder.isHidden = LocalStorage.shared.getBool(key: .istoAllowImageTag) ? false : true
+        
+        viewTaggedImgHolder.isUserInteractionEnabled = LocalStorage.shared.getBool(key: .istoAllowImageTag) ? false : true
+
         viewTaggedImgHolder.addTap {
             self.dismissPopover()
-          //  self.delegate?.changePasswordAction()
+
         }
        //
     }

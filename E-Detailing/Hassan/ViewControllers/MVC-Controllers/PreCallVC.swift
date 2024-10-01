@@ -127,7 +127,7 @@ extension PreCallVC: UITableViewDelegate, UITableViewDataSource, CollapsibleTabl
     
     struct HolidaysInfo {
     var holidayName: String
-        var holidayDate: Date
+    var holidayDate: Date
     }
     
     
@@ -777,6 +777,9 @@ class PreCallVC : UIViewController {
     
     @IBOutlet var addressinfoVIewHeightConst: NSLayoutConstraint!
     @IBOutlet var productsTable: UITableView!
+    
+    @IBOutlet var lblInputs: UILabel!
+    
     var pagetype: PageType = .Precall
     var isDatafetched: Bool = false
     var userStatisticsVM: UserStatisticsVM?
@@ -974,6 +977,7 @@ class PreCallVC : UIViewController {
         super.viewDidLoad()
         setPagetype(pageType: self.pagetype)
        //updateSegment()
+       // lblInputs.text = LocalStorage.shared.getString(key: .AppIcon)
         initgestures()
     }
     
@@ -1082,7 +1086,8 @@ class PreCallVC : UIViewController {
         param["tableName"] = "getcuslvst"
         param["CusCode"] = self.dcrCall.code
 
-        param["typ"] = "D"
+        param["typ"] = self.dcrCall.type.rawValue
+        
         param["sfcode"] =  setup.sfCode
 
         param["division_code"] =  setup.divisionCode
@@ -1129,7 +1134,7 @@ class PreCallVC : UIViewController {
         self.precallFeedbackLbl.text = callresponse.feedback.isEmpty ? "No feedback" : callresponse.feedback
       
         let rawDate = callresponse.visitDate.date.toDate(format: "yyyy-MM-dd HH:mm:ss")
-        self.precallLastVIsitLbl.text = rawDate.toString(format:  "yyyy-MM-dd HH:mm:ss")
+        self.precallLastVIsitLbl.text = rawDate.toString(format:  "dd-MMM")
         
         toSetDataSourceForProducts(detailedReportModel: callresponse)
     }

@@ -255,15 +255,19 @@ class ConfigVC : UIViewController {
         iosEndPoint = appConfig.config.iosUrl
         webEndPoint = appConfig.config.webUrl
         slideEndPoint = appConfig.config.slideUrl
-     
-        
-        AppMainAPIURL = iosEndPoint
-        AppMainSlideURL = slideEndPoint
-        ImageUploadURL = attachmentsUrl
 
-        dump(APIUrl)
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.AppMainURL, text: webEndPoint + iosEndPoint)
+
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageUploadURL, text: attachmentsUrl + "/" + iosEndPoint)
+        
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.ImageDownloadURL, text: attachmentsUrl + "/photos/")
+                
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.AttachmentsURL, text: attachmentsUrl + "/")
+
+        LocalStorage.shared.setSting(LocalStorage.LocalValue.SlideURL, text: attachmentsUrl + "/" + slideEndPoint)
+
         dump(AppConfigURL)
-        dump(slideURL)
+
         
         do {
             try AppDefaults.shared.toSaveEncodedData(object: appConfig, key: .config) { isSuccess in

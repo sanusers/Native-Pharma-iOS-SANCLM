@@ -150,7 +150,7 @@ class LoginVC : UIViewController {
         let data = AppDefaults.shared.getConfig()
 
         if !isCahcheUser {
-            Pipelines.shared.downloadData(mediaURL:  attachmentURL + data.config.logoImg, delegate: self)
+            Pipelines.shared.downloadData(mediaURL:  LocalStorage.shared.getString(key: .AttachmentsURL) + data.config.logoImg, delegate: self)
         } else {
          let imageData = LocalStorage.shared.getData(key: LocalStorage.LocalValue.AppIcon)
             self.imgLogo.image = UIImage(data: imageData)
@@ -525,6 +525,7 @@ class LoginVC : UIViewController {
     
     
     func clearDocumentsAndData() throws {
+        URLCache.shared.removeAllCachedResponses()
         let fileManager = FileManager.default
         let urls = [
             fileManager.urls(for: .documentDirectory, in: .userDomainMask).first,
