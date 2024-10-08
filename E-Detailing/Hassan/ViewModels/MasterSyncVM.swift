@@ -247,7 +247,6 @@ class MasterSyncVM {
     
 
     func updateDCRLists(sfCode: String, mapID: String, completion: @escaping (Bool) -> ()) {
-        let dispatchgroup = DispatchGroup()
         isUpdating = true
         let dcrEntries : [MasterInfo] = [.doctorFencing, .chemists, .unlistedDoctors, .stockists]
         

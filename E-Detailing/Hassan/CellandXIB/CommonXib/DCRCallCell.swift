@@ -31,7 +31,8 @@ class DCRCallCell: UITableViewCell {
     }
     
     func topopulateCell(_ model: TodayCallsModel) {
-        nameLbl.text =  "\(model.name)(\(model.designation))"
+        nameLbl.text =   model.custName
+        //"\(model.name)(\(model.designation))"
         timeLbl.text = model.vstTime.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "MMM d, h:mm a")
         
         if model.custType == 1 {

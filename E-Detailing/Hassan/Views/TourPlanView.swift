@@ -173,12 +173,13 @@ extension TourPlanView {
               
                 param["DayRemarks\(index)"] = session.remarks
             }
+            param["Change_Status"] = "1"
             param["submittedTime"] = "\(Date())"
             param["Mode"] = "iOS-Edet"
             param["Entry_mode"] = "iOS-Edet"
             param["Approve_mode"] = ""
             param["Approved_time"] = ""
-            param["app_version"] = "N 1.6.9"
+            param["app_version"] = LocalStorage.shared.getString(key: .AppVersion)
             
             sessions.append(param)
         }
@@ -415,6 +416,7 @@ class TourPlanView: BaseView {
         param["Designation"] = "\(appsetup.dsName!)"
         param["state_code"] = "\(appsetup.stateCode!)"
         param["subdivision_code"] = "\(appsetup.subDivisionCode!)"
+        
 
         let currentDate = Date()
         let calendar = Calendar.current
@@ -1436,6 +1438,7 @@ class TourPlanView: BaseView {
         param["Designation"] =  appdefaultSetup.dsName
         param["state_code"] =  appdefaultSetup.stateCode
         param["subdivision_code"] =  appdefaultSetup.subDivisionCode
+        param["Change_Status"] = "1"
         let thisMonth = self.currentPage ?? Date()
         dateFormatter.dateFormat = "MM/dd/yyyy"
         let dayNo = dateFormatter.string(from: thisMonth)
@@ -2076,6 +2079,10 @@ extension TourPlanView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : worksPlanTVC = tableView.dequeueReusableCell(withIdentifier: "worksPlanTVC", for: indexPath) as! worksPlanTVC
         let modal =  self.tempArrofPlan?[indexPath.row]
+        if modal?.date == "3 October 2024" {
+            print("Maatikuchu")
+        }
+        
         cell.toPopulateCell(modal ?? SessionDetailsArr())
         cell.selectionStyle = .none
         cell.addTap {

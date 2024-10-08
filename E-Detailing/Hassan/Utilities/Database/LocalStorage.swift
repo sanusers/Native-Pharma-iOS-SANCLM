@@ -97,7 +97,10 @@ class LocalStorage {
         case isDoctorPOBNeeded
         case isDoctorFeedbackNeeded
         case isDoctorEventCaptureNeeded
-      
+        case pobCaption
+        case chemPOBCaption
+        case stockistPOBCaption
+        case unlistedPOBCaption
         ///Listed doctor Mandatory
         case isDoctorProductNeddedMandatory
         case isDoctorProductSampleNeededMandatory

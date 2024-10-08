@@ -33,8 +33,7 @@ extension MenuView {
         
         
         let aDaySessions = self.sessionDetailsArr
-        
-        
+
         // toCheckSessionInfo() returns unfilled sessions
         let filteredSessions = toCheckSessionInfo()
         
@@ -74,6 +73,90 @@ extension MenuView {
     struct NotfilledPlans {
         let planindex: Int
         let isValidated : Bool
+    }
+    
+    
+    func removeAddedClusterDCR(clustureCode: String) {
+        if var selectedStockistID = sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID {
+            
+            let yetToremoveDocCode = DBManager.shared.getStockistByTerritory(townCodes: [clustureCode]).compactMap{ $0.code }
+            
+            // Collect the keys to remove
+            let keysToRemove = selectedStockistID.keys.filter { key in
+                yetToremoveDocCode.contains { clusCode in clusCode == key }
+            }
+
+            // Remove the keys from the dictionary
+            keysToRemove.forEach { key in
+                selectedStockistID.removeValue(forKey: key)
+            }
+            
+            dump(selectedStockistID)
+            
+            sessionDetailsArr.sessionDetails?[selectedSession].selectedStockistID = selectedStockistID
+        }
+        
+        
+        if var selectedChemistID = sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID {
+            
+            let yetToremoveDocCode = DBManager.shared.getChemistByTerritory(townCodes: [clustureCode]).compactMap{ $0.code }
+            
+            // Collect the keys to remove
+            let keysToRemove = selectedChemistID.keys.filter { key in
+                yetToremoveDocCode.contains { clusCode in clusCode == key }
+            }
+
+            // Remove the keys from the dictionary
+            keysToRemove.forEach { key in
+                selectedChemistID.removeValue(forKey: key)
+            }
+            
+            dump(selectedChemistID)
+            
+            sessionDetailsArr.sessionDetails?[selectedSession].selectedchemistID = selectedChemistID
+        }
+        
+        
+        if var selectedDoctorID = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID {
+            
+            let yetToremoveDocCode = DBManager.shared.getDoctorByTerritory(townCodes: [clustureCode]).compactMap{ $0.code }
+            
+            // Collect the keys to remove
+            let keysToRemove = selectedDoctorID.keys.filter { key in
+                yetToremoveDocCode.contains { clusCode in clusCode == key }
+            }
+
+            // Remove the keys from the dictionary
+            keysToRemove.forEach { key in
+                selectedDoctorID.removeValue(forKey: key)
+            }
+            
+            dump(selectedDoctorID)
+            
+            sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID = selectedDoctorID
+        }
+        
+        
+        
+        if var selectedUnlID = sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID {
+            
+            let yetToremoveDocCode = DBManager.shared.getUnlistedDocByTerritory(townCodes: [clustureCode]).compactMap{ $0.code }
+            
+            // Collect the keys to remove
+            let keysToRemove = selectedUnlID.keys.filter { key in
+                yetToremoveDocCode.contains { clusCode in clusCode == key }
+            }
+
+            // Remove the keys from the dictionary
+            keysToRemove.forEach { key in
+                selectedUnlID.removeValue(forKey: key)
+            }
+            
+            dump(selectedUnlID)
+            
+            sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID = selectedUnlID
+        }
+        
     }
     
     func toCheckSessionInfo() -> [SessionDetail] {
@@ -389,8 +472,8 @@ extension MenuView {
             
             param["ClusterCode\(index)"] = session.clusterCode
             param["ClusterName\(index)"] = session.clusterName
-            param["Dr\(drIndex)code"] = session.drCode
-            param["Dr\(drIndex)name"] = session.drName
+            param["Dr\(drIndex)Code"] = session.drCode
+            param["Dr\(drIndex)Name"] = session.drName
             param["JWCodes\(index)"] = session.jwCode
             param["JWNames\(index)"] = session.jwName
             
@@ -421,13 +504,13 @@ extension MenuView {
         let dateString = Date()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS"
         let submittedtime = dateFormatter.string(from: dateString)
-        
+        param["Change_Status"] = "1"
         param["submitted_time"] = submittedtime
         param["Mode"] = "iOS-Edet"
         param["Entry_mode"] = "iOS-Edet"
         param["Approve_mode"] = ""
         param["Approved_time"] = ""
-        param["app_version"] = "N 1.6.9"
+        param["app_version"] = LocalStorage.shared.getString(key: .AppVersion)
         
         let jsonDatum = ObjectFormatter.shared.convertJsonArr2Data(json: [param])
  
@@ -929,7 +1012,7 @@ class MenuView : BaseView{
             
             if !(sessionDetail.drCode?.isEmpty ?? false) {
                 
-                drCodes = sessionDetail.stockistCode?.components(separatedBy: ",") ?? [String]()
+                drCodes = sessionDetail.drCode?.components(separatedBy: ",") ?? [String]()
                 var selectedDrCodeID = [String: Bool]()
                // var selectedstockistCodeID = [String: Bool]()
                 drCodes.forEach { codes in
@@ -2116,6 +2199,7 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                         }
                     }
                 })
+                
                 cell.lblChemist.text = chemistNameArr.joined(separator:", ")
                 sessionDetailsArr.sessionDetails?[indexPath.row].chemName =  chemistNameArr.joined(separator:",")
                 sessionDetailsArr.sessionDetails?[indexPath.row].chemCode = chemistCodeArr.joined(separator:",")
@@ -2615,6 +2699,13 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             cell.listedDoctorView.addTap { [self] in
+                
+                
+                if let selectedClusterID = sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID, selectedClusterID.isEmpty {
+                    self.toCreateToast("Please select cluster")
+                    return
+                }
+                
                 toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedlistedDoctorsID?.count ?? 0)
                 if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != "" {
                     isToproceed = true
@@ -2633,6 +2724,12 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
             }
             cell.chemistView.addTap { [weak self] in
                 guard let welf = self else {return}
+                
+                if let selectedClusterID = welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedClusterID, selectedClusterID.isEmpty {
+                    welf.toCreateToast("Please select cluster")
+                    return
+                }
+                
                 welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedchemistID?.count ?? 0)
                 if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
@@ -2649,23 +2746,36 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
             }
             
-            cell.stockistView.addTap { [self] in
-                toSetSelectAllImage(selectedIndexCount: sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.count ?? 0)
-                if sessionDetailsArr.sessionDetails?[indexPath.row].WTCode  != "" {
+            cell.stockistView.addTap { [weak self] in
+                guard let welf = self else {return}
+                if let selectedClusterID = welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedClusterID, selectedClusterID.isEmpty {
+                    self?.toCreateToast("Please select cluster")
+                    return
+                }
+                
+                welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedStockistID?.count ?? 0)
+                if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode  != "" {
                     isToproceed = true
                 }
                 if isToproceed {
-                    self.cellType = .stockist
-                    self.selectedSession = indexPath.row
-                    self.setPageType(.stockist)
+                    welf.cellType = .stockist
+                    welf.selectedSession = indexPath.row
+                    welf.setPageType(.stockist)
                 } else {
-                    self.toCreateToast("Please select work type")
+                    welf.toCreateToast("Please select work type")
                 }
             }
             
             
             cell.newCustomersView.addTap { [weak self] in
                 guard let welf = self else {return}
+                
+                
+                if let selectedClusterID = welf.sessionDetailsArr.sessionDetails?[welf.selectedSession].selectedClusterID, selectedClusterID.isEmpty {
+                    welf.toCreateToast("Please select cluster")
+                    return
+                }
+                
                 welf.toSetSelectAllImage(selectedIndexCount: welf.sessionDetailsArr.sessionDetails?[indexPath.row].selectedUnlistedDoctorsID?.count ?? 0)
                 if welf.sessionDetailsArr.sessionDetails?[indexPath.row].WTCode != ""  {
                     isToproceed = true
@@ -3128,12 +3238,42 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                             if sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID![item?.code ?? ""] == false {
                                 sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID!.removeValue(forKey: item?.code ?? "")
                                 self.selectAllIV.image =  UIImage(named: "checkBoxEmpty")
+                                
+                                
+                                if let clustureCode =  item?.code {
+                                    
+                                    removeAddedClusterDCR(clustureCode: clustureCode)
+                                }
+                                
+                                
+                                
+                                
+                            
+                                
                             }
                             
                         } else {
                             sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?[item?.code ?? ""] = true
                         }
                     }
+                    
+                    if let townCodes = sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID?.keys {
+                        // Convert keys to an array of Strings and pass to getDoctorByTerritory
+                        let townCodeArray = Array(townCodes) // Convert Dictionary.Keys to an array
+                        
+                        self.listedDocArr = DBManager.shared.getDoctorByTerritory(townCodes: townCodeArray)
+                        
+                        self.chemistArr = DBManager.shared.getChemistByTerritory(townCodes: townCodeArray)
+                        
+                        self.stockistArr = DBManager.shared.getStockistByTerritory(townCodes: townCodeArray)
+                        
+                        self.unlisteedDocArr = DBManager.shared.getUnlistedDocByTerritory(townCodes: townCodeArray)
+                        
+                    } else {
+                        // Handle case where selectedSession or townCodes is nil
+                        self.listedDocArr = nil
+                    }
+                    
                     tableView.reloadData()
                     
                 }
@@ -3258,7 +3398,14 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                     
                    let exixtingIDs = sessionDetailsArr.sessionDetails?[selectedSession].selectedlistedDoctorsID
                    
-                    if   Int(tableSetup?.max_doc ?? "0")  ==  exixtingIDs?.count {
+                    
+                    var maxDoccount = tableSetup?.max_doc ?? "0"
+                    
+                    if maxDoccount == "0" {
+                        maxDoccount = "\(DBManager.shared.getDoctor().count)"
+                    }
+
+                    if Int(maxDoccount)  ==  exixtingIDs?.count {
                         self.toCreateToast("Maximum doctors added")
                     } else {
                         if self.isSearched {
@@ -3499,7 +3646,10 @@ extension MenuView : UITableViewDelegate,UITableViewDataSource{
                 
                 cell.addTap { [self] in
                     _ = sessionDetailsArr.sessionDetails?[selectedSession].selectedUnlistedDoctorsID
-                    
+                    if let selectedClusterID = sessionDetailsArr.sessionDetails?[selectedSession].selectedClusterID, selectedClusterID.isEmpty {
+                        self.toCreateToast("Please select cluster")
+                        return
+                    }
                     if self.isSearched {
                         self.unlisteedDocArr?.enumerated().forEach({ index, chemist in
                             if chemist.code  ==  item?.code {

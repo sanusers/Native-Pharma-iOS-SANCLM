@@ -218,16 +218,37 @@ class TagVC : UIViewController {
     }
     
     @objc func checkCameraAuthorization() {
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-         case .authorized:
-             setupCamera()
-         case .notDetermined:
-             requestCameraPermission()
-         case .denied, .restricted:
-             promptToOpenSettings()
-         @unknown default:
-             fatalError("Unknown case for camera authorization status.")
-         }
+        
+        if LocalStorage.shared.getBool(key: .istoAllowImageTag) {
+            
+            switch AVCaptureDevice.authorizationStatus(for: .video) {
+             case .authorized:
+                 setupCamera()
+             case .notDetermined:
+                 requestCameraPermission()
+             case .denied, .restricted:
+                 promptToOpenSettings()
+             @unknown default:
+                 fatalError("Unknown case for camera authorization status.")
+             }
+        } else {
+            switch customer.type {
+                
+            case .doctor:
+                self.selectedDCRcall = CallViewModel(call: customer.tag, type: .doctor)
+            case .chemist:
+                self.selectedDCRcall = CallViewModel(call: customer.tag, type: .chemist)
+            case .stockist:
+                self.selectedDCRcall = CallViewModel(call: customer.tag, type: .stockist)
+            case .unlistedDoctor:
+                self.selectedDCRcall = CallViewModel(call: customer.tag, type: .unlistedDoctor)
+            }
+            guard let aCallVM =  self.selectedDCRcall else {return}
+            self.selectedDCRcall =    aCallVM.toRetriveDCRdata(dcrcall: aCallVM.call)
+          
+            self.fetchLatLongAndAddress(dcrCall:  self.selectedDCRcall!)
+        }
+
      }
     
     @IBAction func didTapBackBtn(_ sender: Any) {
@@ -401,8 +422,10 @@ class TagVC : UIViewController {
         var toSendParam = [String: Any]()
         
         toSendParam["data"] = jsonDatum
-       
-        guard let pickedImage = self.pickedImage else {return}
+        if LocalStorage.shared.getBool(key: .istoAllowImageTag) {
+            guard self.pickedImage != nil else {return}
+        }
+    
         if !LocalStorage.shared.getBool(key: .isConnectedToNetwork) {
           //  self.toCreateToast("oops you are not connected to network.")
             self.showAlert(desc: "Please connect to internet to add new tag")
@@ -410,7 +433,7 @@ class TagVC : UIViewController {
             return
         }
         Shared.instance.showLoaderInWindow()
-        self.uploadImagess(image: pickedImage) { isSuccess in
+        self.uploadImagess(image: pickedImage ?? UIImage()) { isSuccess in
             Shared.instance.removeLoaderInWindow()
             if isSuccess {
                 Shared.instance.showLoaderInWindow()
@@ -433,7 +456,30 @@ class TagVC : UIViewController {
                     
                 }
             } else {
-                self.toSetupAlert(desc: "Image upload Failed Try again", istoToreTry: true)
+                if !LocalStorage.shared.getBool(key: .istoAllowImageTag) {
+                    Shared.instance.showLoaderInWindow()
+                    self.userStatisticsVM.toUploadTaggedInfo(params: toSendParam, api: .saveTag, paramData: params) { result in
+                        Shared.instance.removeLoaderInWindow()
+                        switch result {
+                            
+                        case .success(let model):
+                            if model.isSuccess ?? false {
+                                self.delegate?.didUsertagged()
+                                self.navigationController?.popViewController(animated: true)
+                            } else {
+                                self.toCreateToast(model.msg ?? "Couldn't tag info for now try again later.")
+                            }
+                
+                        case .failure(_):
+                            self.toCreateToast("Couldn't tag info for now try again later.")
+                            
+                        }
+                        
+                    }
+                } else {
+                    self.toSetupAlert(desc: "Image upload Failed Try again", istoToreTry: true)
+                }
+               
             }
         }
         

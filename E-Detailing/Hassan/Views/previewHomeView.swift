@@ -54,7 +54,11 @@ extension PreviewHomeView: MenuResponseProtocol {
             dump(selectedObject)
             self.fetchedObject = selectedObject as? DoctorFencing
             dump(fetchedObject?.mappProducts)
-            self.selectDoctorsLbl.text = fetchedObject?.name ?? ""
+            let docName = fetchedObject?.name ?? ""
+            let docSpeciality = fetchedObject?.speciality ?? ""
+            let valArr = [docName, docSpeciality].filter { !$0.isEmpty } .joined(separator: " - ")
+            self.selectDoctorsLbl.text =  valArr
+            //docName + " - \(docSpeciality)"
             let mapProd = fetchedObject?.mappProducts ?? ""
             let mProd = fetchedObject?.mProd ?? ""
             let specialityCode = fetchedObject?.specialityCode ?? ""
@@ -196,7 +200,8 @@ extension PreviewHomeView: MenuResponseProtocol {
         dump(fetchedObject?.mappProducts)
         let docName = fetchedObject?.name ?? ""
         let docSpeciality = fetchedObject?.speciality ?? ""
-        self.selectDoctorsLbl.text = docName + docSpeciality
+        //self.selectDoctorsLbl.text = docName + docSpeciality
+        self.selectDoctorsLbl.text = docName + " - \(docSpeciality)"
         let mapProd = fetchedObject?.mappProducts ?? ""
         let mProd = fetchedObject?.mProd ?? ""
         _ = fetchedObject?.specialityCode ?? ""

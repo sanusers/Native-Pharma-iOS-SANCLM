@@ -874,7 +874,7 @@
                                             <visualEffectView opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fvO-xc-ehp">
                                                 <rect key="frame" x="0.0" y="0.0" width="1180" height="72.5"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="S4m-C5-v8t">
-                                                    <rect key="frame" x="0.0" y="0.0" width="1180" height="72.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="1180" height="72"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -922,7 +922,7 @@
                                                             <visualEffectView opaque="NO" alpha="0.10000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5SM-Sx-iHq">
                                                                 <rect key="frame" x="0.0" y="0.0" width="112" height="57.5"/>
                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="K8M-QF-oTs">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="112" height="57.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="112" height="58"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 </view>
                                                                 <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

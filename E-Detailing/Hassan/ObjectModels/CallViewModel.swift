@@ -313,9 +313,9 @@ class CallListViewModel {
                 return false // doctor2 should come first
             } else {
                 return false // maintain existing order
+       
             }
         }
-        
         if let filterscase = filterscase {
             // Access the properties directly and use optional chaining
             let categoryCode = filterscase.categoryCode?.name

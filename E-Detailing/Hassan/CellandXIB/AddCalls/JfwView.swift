@@ -504,9 +504,12 @@ class JfwView: UIView {
      }
     
     func setupUI() {
-        
-        
+
         if self.dcrCall.call is DoctorFencing {
+            
+            lblPOBValue.text = LocalStorage.shared.getString(key: .pobCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .pobCaption)
+            
+            pobTF.placeholder = "Enter \(LocalStorage.shared.getString(key: .pobCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .pobCaption)) value"
             
             viewPOB.isHidden = isDoctorPOBNeeded ? false : true
         
@@ -522,6 +525,10 @@ class JfwView: UIView {
             
             
         } else if self.dcrCall.call is Chemist {
+            
+            lblPOBValue.text =  LocalStorage.shared.getString(key: .chemPOBCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .chemPOBCaption)
+            
+            pobTF.placeholder = "Enter \(LocalStorage.shared.getString(key: .chemPOBCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .chemPOBCaption)) value"
           
             viewPOB.isHidden = isChemistPOBNeeded ? false : true
         
@@ -537,6 +544,9 @@ class JfwView: UIView {
             
         }  else if self.dcrCall.call is Stockist {
             
+            lblPOBValue.text = LocalStorage.shared.getString(key: .stockistPOBCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .stockistPOBCaption)
+            
+            pobTF.placeholder = "Enter \(LocalStorage.shared.getString(key: .pobCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .pobCaption)) value"
     
             viewPOB.isHidden = isStockistPOBNeeded ? false : true
          
@@ -553,6 +563,9 @@ class JfwView: UIView {
             
         } else if self.dcrCall.call is UnListedDoctor {
             
+            lblPOBValue.text = LocalStorage.shared.getString(key: .unlistedPOBCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .unlistedPOBCaption)
+            
+            pobTF.placeholder = "Enter \(LocalStorage.shared.getString(key: .pobCaption).isEmpty ? "POB" : LocalStorage.shared.getString(key: .pobCaption)) value"
           
             viewPOB.isHidden = isUnListedDoctorPOBNeeded ? false : true
 

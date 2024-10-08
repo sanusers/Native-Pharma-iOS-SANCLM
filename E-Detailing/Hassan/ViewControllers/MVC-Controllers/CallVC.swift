@@ -844,7 +844,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Selected Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Selected Doctor call today already exists in outbox you can edit call in outbox")
                             self.view.endEditing(true)
                           //  self.toCreateToast("Doctor aldready visited today")
                             return
@@ -864,7 +864,8 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+//                        self.showAlertForCallExistence(desc: "Doctor already visited today")
+                                                self.showAlertForCallExistence(desc: "Already visited today")
                         self.view.endEditing(true)
                         return
                     } else {
@@ -901,7 +902,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Selected Chemist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Already exists in outbox you can edit call in outbox")
                             self.view.endEditing(true)
                             return
                         }
@@ -919,7 +920,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.showAlertForCallExistence(desc: "Chemist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.showAlertForCallExistence(desc: "Already visited today")
                         self.view.endEditing(true)
                         return
                     } else {
@@ -956,7 +957,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Selected Stockist call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Already exists in outbox you can edit call in outbox")
                             self.view.endEditing(true)
                             return
                         }
@@ -974,7 +975,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.showAlertForCallExistence(desc: "Stockist already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.showAlertForCallExistence(desc: "Already visited today")
                         self.view.endEditing(true)
                         return
                     } else {
@@ -1006,7 +1007,7 @@ extension CallVC : collectionViewProtocols {
                               return false
                           }
                         if !filteredArray.isEmpty  {
-                            self.showAlertForCallExistence(desc: "Selected Doctor call on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy")) already exists in outbox you can edit call in outbox")
+                            self.showAlertForCallExistence(desc: "Already exists in outbox you can edit call in outbox")
                             self.view.endEditing(true)
                             return
                         }
@@ -1025,7 +1026,7 @@ extension CallVC : collectionViewProtocols {
                         return false
                     }
                     if !filteredArray.isEmpty  {
-                        self.showAlertForCallExistence(desc: "Doctor already visited on \(Shared.instance.selectedDate.toString(format: "MMM d, yyyy"))")
+                        self.showAlertForCallExistence(desc: "Already visited today")
                         self.view.endEditing(true)
                         return
                     } else {

@@ -105,12 +105,13 @@ extension MasterSyncVC {
               
                 param["DayRemarks\(index)"] = session.remarks
             }
+            param["Change_Status"] = "1"
             param["submittedTime"] = "\(Date())"
             param["Mode"] = "Android-App"
             param["Entry_mode"] = "Apps"
             param["Approve_mode"] = ""
             param["Approved_time"] = ""
-            param["app_version"] = "N 1.6.9"
+            param["app_version"] = LocalStorage.shared.getString(key: .AppVersion)
             sessions.append(param)
         }
         dump(sessions)

@@ -144,7 +144,7 @@ class CalldetailsCVC: UICollectionViewCell {
     func topopulateCell(_ model: TodayCallsModel) {
         callStack.isHidden = false
         eventsStack.isHidden = true
-        callDCRinfoLbl.text = "\(model.name)(\(model.designation))"
+        callDCRinfoLbl.text = "\(model.name)"
         timeinfoLbl.text = model.vstTime.toDate(format: "yyyy-MM-dd HH:mm:ss").toString(format: "MMM d, h:mm a")
         callStatusLbl.text = model.submissionStatus
         if model.designation == "Doctor" {
