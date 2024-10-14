@@ -227,6 +227,19 @@ class MasterSyncVM {
                 }
 
                 print(apiResponse)
+                
+                if type == .subordinate {
+                    DBManager.shared.saveSubordinate(Values: apiResponse, id: mapID) {
+                        if istoUpdateDCRlist && !welf.isUpdating {
+                            welf.updateDCRLists(sfCode: sfCode, mapID: mapID) { _ in
+                                completionHandler(response)
+                            }
+                        } else   {
+                            completionHandler(response)
+                        }
+                    }
+                    return
+                }
                 // Save to Core Data or perform any other actions
                 DBManager.shared.saveMasterData(type: type, Values: apiResponse, id: mapID)
 

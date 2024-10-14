@@ -384,7 +384,15 @@ class MasterSyncVC : UIViewController {
                     let savedEntity = hqModelArr.first
                     guard let savedEntity = savedEntity else{
                         
-                        self.lblHqName.text = "Select HQ"
+                        let subordinates = DBManager.shared.getSubordinate()
+                        
+                     //   let asubordinate = subordinates.filter{$0.id == savedEntity.code}
+                        
+                        if !subordinates.isEmpty {
+                            self.fetchedHQObject = subordinates.first
+                            LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  subordinates.first?.id ?? "")
+                            self.lblHqName.text = subordinates.first?.name ?? "Select HQ"
+                        }
                         
                         return
                         
@@ -449,8 +457,15 @@ class MasterSyncVC : UIViewController {
                 let savedEntity = hqModelArr.first
                 guard let savedEntity = savedEntity else{
                     
-                    self.lblHqName.text = "Select HQ"
+                    let subordinates = DBManager.shared.getSubordinate()
                     
+                 //   let asubordinate = subordinates.filter{$0.id == savedEntity.code}
+                    
+                    if !subordinates.isEmpty {
+                        self.fetchedHQObject = subordinates.first
+                        LocalStorage.shared.setSting(LocalStorage.LocalValue.selectedRSFID, text:  subordinates.first?.id ?? "")
+                        self.lblHqName.text = subordinates.first?.name ?? "Select HQ"
+                    }
                     return
                     
                 }
@@ -767,7 +782,8 @@ class MasterSyncVC : UIViewController {
 
     
     
-    func fetchmasterData(type : MasterInfo, istoNavigate: Bool? = false, completion: @escaping (Bool) -> ()) {
+    func
+    fetchmasterData(type : MasterInfo, istoNavigate: Bool? = false, completion: @escaping (Bool) -> ()) {
         
         
         switch type {
@@ -899,13 +915,10 @@ class MasterSyncVC : UIViewController {
                                     
                                     let subordinateArr =  DBManager.shared.getSubordinate()
                                     let filteredHQ = subordinateArr.first
-                                    //.filter {$0.mapId == LocalStorage.shared.getString(key: LocalStorage.LocalValue.selectedRSFID)}
-                                    // if !filteredHQ.isEmpty {
-                                    
                                     let cacheHQ = filteredHQ
                                     welf.fetchedHQObject = cacheHQ
                                     welf.setHQlbl(isTosetDayplanHQ: true)
-                                    // }
+
                                     NotificationCenter.default.post(name: NSNotification.Name("daplanRefreshed"), object: nil)
                                     completion(true)
                               

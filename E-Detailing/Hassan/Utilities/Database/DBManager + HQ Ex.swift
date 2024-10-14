@@ -22,9 +22,7 @@ extension DBManager {
                 inputItem.index = Int16(index)
                 inputArray.append(inputItem)
             }
-            if let list = masterData.input?.allObjects as? [Input]{
-                _ = list.map{masterData.removeFromInput($0)}
-            }
+
             inputArray.forEach { (input) in
                 masterData.addToInput(input)
             }
@@ -33,44 +31,70 @@ extension DBManager {
 
     }
     
-    func saveSubordinateData(values: [[String: Any]], id: String) {
+    
+    func deleteEntityInfo(_ entity : String, completion: @escaping  (Bool) -> ()) {
+        let context = self.managedContext()
+
+        let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+
+        do {
+            try context.execute(deleteRequest)
+            context.reset()
+            completion(true)
+        } catch {
+            print ("There was an error")
+            completion(false)
+        }
+    }
+    
+    func saveSubordinateData(values: [[String: Any]], id: String, completion: @escaping () -> ()) {
         // Get the master data object
-        let masterData = self.getMasterData()
         
-        // Create an array to hold new Subordinate objects
-        var subordinateArray = [Subordinate]()
         
-        // Prepare new Subordinate objects from the input values
-        for (index, subordinateData) in values.enumerated() {
-            let contextNew = self.managedContext()
+        deleteEntityInfo("Subordinate") { isRemoved in
             
-            // Create a new Subordinate entity
-            if let subordinateEntity = NSEntityDescription.entity(forEntityName: "Subordinate", in: contextNew) {
-                let subordinateItem = Subordinate(entity: subordinateEntity, insertInto: contextNew)
+            let masterData = self.getMasterData()
+            
+            // Create an array to hold new Subordinate objects
+            var subordinateArray = [Subordinate]()
+            
+            // Prepare new Subordinate objects from the input values
+            for (index, subordinateData) in values.enumerated() {
+                let contextNew = self.managedContext()
                 
-                // Set the values from the dictionary and assign an index
-                subordinateItem.setValues(fromDictionary: subordinateData, context: contextNew, id1: id)
-                subordinateItem.index = Int16(index)
-                
-                // Add the created subordinate to the array
-                subordinateArray.append(subordinateItem)
-            }
-        }
-
-        // Perform deletion and addition of new subordinates within the Core Data context
-        self.managedContext().perform {
-            // Remove existing subordinates from masterData
-            if let subordinateSet = masterData.subordinate,
-               let existingSubordinates = subordinateSet.allObjects as? [Subordinate] {
-                existingSubordinates.forEach { masterData.removeFromSubordinate($0) }
+                // Create a new Subordinate entity
+                if let subordinateEntity = NSEntityDescription.entity(forEntityName: "Subordinate", in: contextNew) {
+                    let subordinateItem = Subordinate(entity: subordinateEntity, insertInto: contextNew)
+                    
+                    // Set the values from the dictionary and assign an index
+                    subordinateItem.setValues(fromDictionary: subordinateData, context: contextNew, id1: id)
+                    subordinateItem.index = Int16(index)
+                    
+                    // Add the created subordinate to the array
+                    subordinateArray.append(subordinateItem)
+                }
             }
 
-            // Add the new subordinates to masterData
-            subordinateArray.forEach { masterData.addToSubordinate($0) }
-            
-            // Save the context after making the changes
-            self.saveContext()
+            // Perform deletion and addition of new subordinates within the Core Data context
+            self.managedContext().perform {
+                // Remove existing subordinates from masterData
+                if let subordinateSet = masterData.subordinate,
+                   let existingSubordinates = subordinateSet.allObjects as? [Subordinate] {
+                    existingSubordinates.forEach { masterData.removeFromSubordinate($0) }
+                }
+
+                // Add the new subordinates to masterData
+                subordinateArray.forEach { masterData.addToSubordinate($0) }
+                
+                // Save the context after making the changes
+                self.saveContext()
+                
+                completion()
+            }
         }
+        
+
     }
     
     
@@ -207,9 +231,9 @@ extension DBManager {
                 jointWorkItem.index = Int16(index)
                 jointWorkArray.append(jointWorkItem)
             }
-            if let list = masterData.jointWork?.allObjects as? [JointWork]{
-                _ = list.map{masterData.removeFromJointWork($0)}
-            }
+//            if let list = masterData.jointWork?.allObjects as? [JointWork]{
+//                _ = list.map{masterData.removeFromJointWork($0)}
+//            }
             jointWorkArray.forEach{ (jointWork) in
                 masterData.addToJointWork(jointWork)
             }
@@ -231,9 +255,9 @@ extension DBManager {
                // productItem.index = Int16(index)
                 productArray.append(productItem)
             }
-            if let list = masterData.product?.allObjects as? [Product]{
-                _ = list.map{masterData.removeFromProduct($0)}
-            }
+//            if let list = masterData.product?.allObjects as? [Product]{
+//                _ = list.map{masterData.removeFromProduct($0)}
+//            }
             // Filter products by different modes
             let saleArr = productArray.filter { $0.productMode?.lowercased() == "sale" }
             let saleSampleArr = productArray.filter { $0.productMode?.lowercased() == "sale/sample" }
